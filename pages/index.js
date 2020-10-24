@@ -103,7 +103,6 @@ export default function Home() {
 	const [email, setEmail] = useState('')
 	const [formBtnText, setFormBtnText] = useState('NOTIFY ME')
 	const [errMsg, setErrMsg] = useState('empty')
-	const rng = Math.floor(Math.random() * (3 - 1 + 1)) + 1
 
 	useEffect(() => {
 		if (errMsg != 'empty') {
@@ -221,8 +220,8 @@ export default function Home() {
 							fill="white"
 						/>
 						<path
-							fill-rule="evenodd"
-							clip-rule="evenodd"
+							fillRule="evenodd"
+							clipRule="evenodd"
 							d="M2.45097 18.3823L0 0L10.3553 1.83823C10.7955 1.95407 11.2031 2.0472 11.5784 2.13296C12.9897 2.45543 13.9444 2.67359 14.4607 3.60292C15.1143 4.77122 15.4411 6.20912 15.4411 7.91663C15.4411 9.63231 15.1143 11.0743 14.4607 12.2426C13.8071 13.4109 12.4387 13.995 10.3553 13.995H5.87007L6.72791 18.3823H2.45097ZM3.799 3.799L9.3876 4.78089C9.62517 4.84277 9.84513 4.89252 10.0477 4.93832C10.8093 5.11057 11.3246 5.2271 11.6032 5.72351C11.9559 6.34755 12.1323 7.11561 12.1323 8.02767C12.1323 8.9441 11.9559 9.71434 11.6032 10.3384C11.2505 10.9624 10.5119 11.2745 9.3876 11.2745H6.8347L5.29625 11.1519L3.799 3.799Z"
 							fill="white"
 						/>
@@ -235,7 +234,7 @@ export default function Home() {
 							maxWidth: `14rem`,
 						}}
 					>
-						<Card imgUrl={`/${rng}.png`} />
+						<Card imgUrl={`/3.png`} />
 					</div>
 					<div className="w-full md:w-2/3 mt-12 md:mt-24 pl-0 md:pl-12">
 						<h1 className="text-white text-4xl max-w-lg font-bold">
@@ -297,8 +296,8 @@ export default function Home() {
 									className="ml-1"
 								>
 									<path
-										fill-rule="evenodd"
-										clip-rule="evenodd"
+										fillRule="evenodd"
+										clipRule="evenodd"
 										d="M7.70421 9.70711L13.9971 3.41421V7H15.9971V0H8.9971V2H12.5829L6.28999 8.29289L7.70421 9.70711ZM15 14V10H13V14H2V3H6V1H2C0.89543 1 0 1.89543 0 3V14C0 15.1046 0.89543 16 2 16H13C14.1046 16 15 15.1046 15 14Z"
 										fill="white"
 									/>
@@ -330,8 +329,8 @@ export default function Home() {
 									className="ml-1"
 								>
 									<path
-										fill-rule="evenodd"
-										clip-rule="evenodd"
+										fillRule="evenodd"
+										clipRule="evenodd"
 										d="M7.70421 9.70711L13.9971 3.41421V7H15.9971V0H8.9971V2H12.5829L6.28999 8.29289L7.70421 9.70711ZM15 14V10H13V14H2V3H6V1H2C0.89543 1 0 1.89543 0 3V14C0 15.1046 0.89543 16 2 16H13C14.1046 16 15 15.1046 15 14Z"
 										fill="white"
 									/>
