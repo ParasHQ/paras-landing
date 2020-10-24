@@ -123,12 +123,14 @@ export default function Home() {
 		})
 		if (resp.data.success) {
 			setFormBtnText('SUCCESS')
-			setEmail('')
 		} else {
 			setErrMsg('Email already subscribed')
 			setFormBtnText('FAILED')
 		}
 		setTimeout(() => {
+			if (formBtnText === 'SUCCESS') {
+				setEmail('')
+			}
 			setFormBtnText('NOTIFY ME')
 		}, 2500)
 	}
@@ -239,14 +241,12 @@ export default function Home() {
 								<div className="px-2 w-full md:w-4/12">
 									<button
 										disabled={formBtnText == 'SENDING...'}
-										className={
-											`
+										className={`
 											outline-none h-12 w-full mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2
 											text-white  border-white
-											${formBtnText == 'SUCCESS' &&  'text-green-500 border-green-500'}
+											${formBtnText == 'SUCCESS' && 'text-green-500 border-green-500'}
 											${formBtnText == 'FAILED' && ' text-red-500 border-red-500'}
-											`
-										}
+											`}
 									>
 										{formBtnText}
 									</button>
