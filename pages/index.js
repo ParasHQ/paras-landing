@@ -1,6 +1,6 @@
-import jsonp from 'jsonp'
 import { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
+import axios from 'axios'
 
 const Card = ({ imgUrl }) => {
 	const cardRef = useRef()
@@ -114,37 +114,22 @@ export default function Home() {
 		e.preventDefault()
 		const regex = /^([\w_\.\-\+])+\@([\w\-]+\.)+([\w]{2,10})+$/
 		if (!regex.test(email)) {
-			console.log('invalid email')
 			setErrMsg('Invalid email address')
 			return
 		}
 		setFormBtnText('SENDING...')
-		const url = `https://paras.us2.list-manage.com/subscribe/post-json?u=854b437796744eebe854b6243&amp;id=7d9429aae0&EMAIL=${encodeURIComponent(
-			email
-		)}`
-		jsonp(
-			url,
-			{
-				param: 'c',
-			},
-			(err, data) => {
-				if (data.msg.includes('already subscribed')) {
-					setErrMsg('Email already subscribed')
-					setFormBtnText('FAILED')
-				} else if (err) {
-					setErrMsg('Something went wrong, try again later')
-					setFormBtnText('FAILED')
-				} else if (data.result !== 'success') {
-					setErrMsg('Something went wrong, try again later')
-					setFormBtnText('FAILED')
-				} else {
-					setFormBtnText('SUCCESS')
-				}
-				setTimeout(() => {
-					setFormBtnText('NOTIFY ME')
-				}, 2500)
-			}
-		)
+		const resp = await axios.post('/api/notifyMe', {
+			email: email,
+		})
+		if (resp.data.success) {
+			setFormBtnText('SUCCESS')
+		} else {
+			setErrMsg('Email already subscribed')
+			setFormBtnText('FAILED')
+		}
+		setTimeout(() => {
+			setFormBtnText('NOTIFY ME')
+		}, 2500)
 	}
 
 	return (
@@ -156,10 +141,7 @@ export default function Home() {
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
 
-				<meta
-					name="twitter:title"
-					content="Paras — Digital Art Cards Market"
-				/>
+				<meta name="twitter:title" content="Paras — Digital Art Cards Market" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
