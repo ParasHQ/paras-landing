@@ -213,13 +213,6 @@ export default function Home() {
 										placeholder="Email address"
 										className="h-12 w-full mt-4 border-2 px-2 py-2 rounded-md border-white outline-none"
 									/>
-									<p
-										className={`mt-2 text-red-500 ${
-											errMsg != 'empty' ? 'opacity-100' : 'opacity-0'
-										}`}
-									>
-										{errMsg}
-									</p>
 								</div>
 								<div className="px-2 w-full md:w-4/12">
 									<button
@@ -230,6 +223,13 @@ export default function Home() {
 									</button>
 								</div>
 							</div>
+							<p
+								className={`mt-2 text-red-500 ${
+									errMsg != 'empty' ? 'opacity-100' : 'opacity-0'
+								}`}
+							>
+								{errMsg}
+							</p>
 						</form>
 					</div>
 				</div>
@@ -243,7 +243,11 @@ export default function Home() {
 							technology that prevents forgery and provides provable ownership.
 						</p>
 						<div className="mt-8 flex items-center">
-							<a href="https://forms.gle/vqpu66p8y23ZnMjt7" target="_blank" className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer ">
+							<a
+								href="https://forms.gle/vqpu66p8y23ZnMjt7"
+								target="_blank"
+								className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer "
+							>
 								Join the Waitlist
 								<svg
 									width="12"
@@ -272,7 +276,11 @@ export default function Home() {
 							in just a few clicks. Start earning with your digital creation.
 						</p>
 						<div className="mt-8 flex items-center">
-							<a href="https://forms.gle/QsZHqa2MKXpjckj98" target="_blank"  className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer ">
+							<a
+								href="https://forms.gle/QsZHqa2MKXpjckj98"
+								target="_blank"
+								className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer "
+							>
 								Apply as an Artist
 								<svg
 									width="12"
