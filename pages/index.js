@@ -123,6 +123,9 @@ export default function Home() {
 		})
 		if (resp.data.success) {
 			setFormBtnText('SUCCESS')
+			setTimeout(() => {
+				setEmail('')
+			}, 2500)
 		} else {
 			setErrMsg('Email already subscribed')
 			setFormBtnText('FAILED')
