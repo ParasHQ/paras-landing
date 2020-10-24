@@ -123,6 +123,7 @@ export default function Home() {
 		})
 		if (resp.data.success) {
 			setFormBtnText('SUCCESS')
+			setEmail('')
 		} else {
 			setErrMsg('Email already subscribed')
 			setFormBtnText('FAILED')
@@ -230,6 +231,7 @@ export default function Home() {
 								<div className="px-2 w-full md:w-8/12">
 									<input
 										onChange={(e) => setEmail(e.target.value)}
+										value={email}
 										placeholder="Email address"
 										className="h-12 w-full mt-4 border-2 px-2 py-2 rounded-md border-white outline-none"
 									/>
@@ -237,16 +239,22 @@ export default function Home() {
 								<div className="px-2 w-full md:w-4/12">
 									<button
 										disabled={formBtnText == 'SENDING...'}
-										className="outline-none h-12 w-full mt-4 rounded-md bg-transparent text-white text-sm font-semibold border-2 px-4 py-2 border-white"
+										className={
+											`
+											outline-none h-12 w-full mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2
+											text-white  border-white
+											${formBtnText == 'SUCCESS' &&  'text-green-500 border-green-500'}
+											${formBtnText == 'FAILED' && ' text-red-500 border-red-500'}
+											`
+										}
 									>
 										{formBtnText}
 									</button>
 								</div>
 							</div>
 							<p
-								className={`mt-2 text-red-500 ${
-									errMsg != 'empty' ? 'opacity-100' : 'opacity-0'
-								}`}
+								className={`mt-2 text-red-500 
+								${errMsg != 'empty' ? 'opacity-100' : 'opacity-0'}`}
 							>
 								{errMsg}
 							</p>
