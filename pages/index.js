@@ -270,8 +270,9 @@ export default function Home() {
 							For Collectors
 						</h2>
 						<p className="mt-4 text-gray-400">
-							Discover beautiful art card and collect them on a blockchain-based
-							technology that prevents forgery and provides provable ownership.
+							Discover beautiful art cards and collect them on a
+							blockchain-based technology that prevents forgery and provides
+							provable ownership.
 						</p>
 						<div className="mt-8 flex items-center">
 							<a
@@ -303,8 +304,8 @@ export default function Home() {
 							For Artists
 						</h2>
 						<p className="mt-4 text-gray-400">
-							Create your own digital art cards and sell it on the marketplace
-							in just a few clicks. Start earning with your digital creation.
+							Create your digital art cards and sell them on the marketplace in
+							just a few clicks. Start earning with your digital creation.
 						</p>
 						<div className="mt-8 flex items-center">
 							<a
