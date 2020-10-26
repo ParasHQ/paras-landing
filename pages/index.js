@@ -8,6 +8,7 @@ const Card = ({ imgUrl }) => {
 	const [imgLoaded, setImgLoaded] = useState(null)
 	const [dimension, setDimension] = useState({ width: 0, height: 0 })
 	const [rotate, setRotate] = useState({ x: 15, y: 15 })
+	const [isShowFront, setIsShowFront] = useState(true)
 
 	let cardTimeout
 
@@ -56,14 +57,29 @@ const Card = ({ imgUrl }) => {
 		}, 500)
 	}
 
+	const _flipCard = () => {
+		setIsShowFront(!isShowFront)
+		
+	}
+
 	return (
 		<div
 			className="relative"
+			onClick={_flipCard}
 			style={{
 				paddingBottom: `138%`,
+				transition: `.6s .1s`,
+				transform: !isShowFront && `rotateY(180deg)`,
+				transformStyle: `preserve-3d`,
 			}}
 		>
-			<div className="absolute inset-0">
+			<div
+				className="card-front absolute inset-0"
+				style={{
+					transform: `rotateY(0deg)`,
+					backfaceVisibility: `hidden`,
+				}}
+			>
 				<div
 					className={`card-wrap ${!imgLoaded && 'opacity-0'}`}
 					onMouseMove={handleMouseMove}
@@ -83,14 +99,46 @@ const Card = ({ imgUrl }) => {
 							transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)`,
 						}}
 					>
-						<div className="card-bg">
-							<img
-								style={{
-									width: `${dimension.width}px`,
-									height: `${dimension.height}px`,
-								}}
-								src={imgLoaded}
-							/>
+						<div className="card-bg relative">
+							<img src={imgLoaded} />
+						</div>
+					</div>
+				</div>
+			</div>
+			<div
+				className="card-back absolute inset-0 z-10"
+				style={{
+					transform: `rotateY(180deg)`,
+					backfaceVisibility: `hidden`,
+				}}
+			>
+				<div className="absolute inset-0">
+					<div
+						className={`card-wrap ${!imgLoaded && 'opacity-0'}`}
+						onMouseMove={handleMouseMove}
+						onMouseEnter={handleMouseEnter}
+						onMouseLeave={handleMouseLeave}
+						ref={cardRef}
+						style={{
+							opacity: imgLoaded ? `1` : `0`,
+						}}
+					>
+						<img
+							ref={dimensionRef}
+							className="absolute opacity-0"
+							src={imgUrl}
+						/>
+						<div
+							className="card"
+							style={{
+								width: `${dimension.width}px`,
+								height: `${dimension.height}px`,
+								transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)`,
+							}}
+						>
+							<div className="card-bg relative bg-red">
+								<div>BACK</div>
+							</div>
 						</div>
 					</div>
 				</div>
