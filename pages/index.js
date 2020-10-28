@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
 import axios from 'axios'
 
+import { Blurhash } from 'react-blurhash'
+
 const Card = ({ imgUrl }) => {
 	const cardRef = useRef()
 	const dimensionRef = useRef()
@@ -59,7 +61,6 @@ const Card = ({ imgUrl }) => {
 
 	const _flipCard = () => {
 		setIsShowFront(!isShowFront)
-		
 	}
 
 	return (
@@ -137,7 +138,15 @@ const Card = ({ imgUrl }) => {
 							}}
 						>
 							<div className="card-bg relative bg-red">
-								<div>BACK</div>
+								{/* <div>BACK</div> */}
+								<Blurhash
+									hash="UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh"
+									width={dimension.width}
+									height={dimension.height}
+									resolutionX={32}
+									resolutionY={32}
+									punch={1}
+								/>
 							</div>
 						</div>
 					</div>
