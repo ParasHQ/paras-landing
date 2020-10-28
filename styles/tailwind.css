@@ -15,8 +15,6 @@ button:disabled {
 }
 
 .card-wrap {
-	-webkit-transform: perspective(800px);
-	transform: perspective(800px);
 	-webkit-transform-style: preserve-3d;
 	transform-style: preserve-3d;
 	cursor: pointer;
@@ -42,7 +40,6 @@ button:disabled {
 
 .card {
 	position: relative;
-	background-color: #333;
 	overflow: hidden;
 	border-radius: 10px;
 	box-shadow: rgba(0, 0, 0, 0.66) 0 30px 60px 0, inset #333 0 0 0 5px,
