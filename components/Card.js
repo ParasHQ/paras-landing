@@ -165,42 +165,122 @@ const Card = ({ imgUrl, imgWidth, imgHeight }) => {
 										opacity: imgLoaded ? 0 : 1,
 									}}
 								/>
-								<div className="absolute inset-0 py-4">
-									<h4 className="text-sm truncate px-4">Lorum Ipsum</h4>
-									<h4
-										className="px-4 pb-2 truncate"
-										style={{
-											fontSize: `0.5rem`,
-										}}
-									>
-										Royal Army
-									</h4>
-									<hr className="border-gray-700 border-2" />
-									<div className="flex">
-										<div className="w-1/2 py-2 border-gray-700 border-r-2">
-											<h4
-												className="px-4 truncate"
-												style={{
-													fontSize: `0.5rem`,
-												}}
-											>
-												Artist
-											</h4>
-											<h4 className="text-sm truncate px-4">Lorum Ipsum</h4>
+								<div
+									className="absolute inset-0 p-2 rounded-md"
+									style={{
+										fontSize: `${dimension.width / 14}px`,
+									}}
+								>
+									<div className="h-full border-gray-900 border-2">
+										<div
+											className="border-b-2 border-gray-900 flex items-center"
+											style={{
+												height: `15%`,
+											}}
+										>
+											<div className="px-2">
+												<h4 className="text-sm truncate">Lorum Ipsum</h4>
+												<h4
+													className="truncate"
+													style={{
+														fontSize: `0.5em`,
+													}}
+												>
+													Royal Army
+												</h4>
+											</div>
 										</div>
-										<div className="w-1/2 py-2 border-gray-700 border-l-2">
+										<div
+											className="border-b-2 border-gray-900"
+											style={{
+												height: `15%`,
+											}}
+										>
+											<div className="flex h-full">
+												<div className="w-1/2 flex items-center">
+													<div>
+														<h4
+															className="px-2 truncate"
+															style={{
+																fontSize: `0.5em`,
+															}}
+														>
+															Artist
+														</h4>
+														<h4
+															style={{
+																fontSize: `0.75em`,
+															}}
+															className="truncate px-2"
+														>
+															Riqi
+														</h4>
+													</div>
+												</div>
+												<div className="w-1/2 flex items-center border-l-2 border-gray-900 h-full">
+													<div>
+														<h4
+															className="px-2 truncate"
+															style={{
+																fontSize: `0.5em`,
+															}}
+														>
+															Year
+														</h4>
+														<h4 className="text-sm truncate px-2">2020</h4>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div
+											className="py-2 overflow-hidden"
+											style={{
+												height: '65%',
+											}}
+										>
 											<h4
-												className="px-4 truncate"
+												className="px-2"
 												style={{
-													fontSize: `0.5rem`,
+													fontSize: `0.5em`,
 												}}
 											>
-												Artist
+												Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+												sed do eiusmod tempor incididunt ut labore et dolore
+												magna aliqua.
 											</h4>
-											<h4 className="text-sm truncate px-4">Lorum Ipsum</h4>
+										</div>
+										<div
+											style={{
+												height: '5%',
+											}}
+										>
+											<div className="flex items-center h-full justify-between">
+												<div>
+													<h4
+														className="px-2"
+														style={{
+															fontSize: `0.5em`,
+														}}
+													>
+														Edition of 20
+													</h4>
+												</div>
+												<div>
+													<h4
+														className="px-2"
+														style={{
+															fontSize: `0.5em`,
+														}}
+													>
+														{'QmSnbaci7xNtKE2gSP8wjb9BL7Bvz8RE9W7NhNks2qzRtu'.slice(
+															0,
+															8
+														)}
+													</h4>
+												</div>
+											</div>
 										</div>
 									</div>
-									<hr className="border-gray-700 border-2" />
 								</div>
 							</div>
 						</div>
