@@ -126,7 +126,15 @@ export default function Home() {
 							maxWidth: `14rem`,
 						}}
 					>
-						<Card imgUrl={`/3.png`} imgWidth={640} imgHeight={890} />
+						<Card imgUrl={`/3.png`} imgWidth={640} imgHeight={890} token={{
+							name: 'Art Card',
+							collection: 'Genesis',
+							description: 'Display purpose only',
+							creatorId: 'paras',
+							supply: 1,
+							tokenId: 'Qmsadsds',
+							createdAt: new Date().getTime()
+						}} />
 					</div>
 					<div className="w-full md:w-2/3 mt-12 md:mt-24 pl-0 md:pl-12">
 						<h1 className="text-white text-4xl max-w-lg font-bold">

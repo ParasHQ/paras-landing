@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Blurhash } from 'react-blurhash'
 
-const Card = ({ imgUrl, imgWidth, imgHeight }) => {
+const Card = ({ imgUrl, imgWidth, imgHeight, token }) => {
 	const containerRef = useRef()
 	const cardRef = useRef()
 	const dimensionRef = useRef()
@@ -174,14 +174,14 @@ const Card = ({ imgUrl, imgWidth, imgHeight }) => {
 											}}
 										>
 											<div className="px-2 overflow-hidden">
-												<h4 className="text-sm truncate">Lorum Ipsum</h4>
+												<h4 className="text-sm truncate">{token.name}</h4>
 												<h4
 													className="truncate"
 													style={{
 														fontSize: `0.5em`,
 													}}
 												>
-													Royal Army
+													{token.collection}
 												</h4>
 											</div>
 										</div>
@@ -208,7 +208,7 @@ const Card = ({ imgUrl, imgWidth, imgHeight }) => {
 															}}
 															className="truncate px-2"
 														>
-															Rahmat Albariqi 123
+															{token.creatorId}
 														</h4>
 													</div>
 												</div>
@@ -222,7 +222,7 @@ const Card = ({ imgUrl, imgWidth, imgHeight }) => {
 														>
 															Year
 														</h4>
-														<h4 className="text-sm truncate px-2">2020</h4>
+														<h4 className="text-sm truncate px-2">{new Date(token.createdAt).getFullYear()}</h4>
 													</div>
 												</div>
 											</div>
@@ -239,9 +239,7 @@ const Card = ({ imgUrl, imgWidth, imgHeight }) => {
 													fontSize: `0.5em`,
 												}}
 											>
-												Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-												sed do eiusmod tempor incididunt ut labore et dolore
-												magna aliqua.
+												{token.description}
 											</h4>
 										</div>
 										<div
@@ -257,7 +255,7 @@ const Card = ({ imgUrl, imgWidth, imgHeight }) => {
 															fontSize: `0.5em`,
 														}}
 													>
-														Edition of 1
+														Edition of {token.supply}
 													</h4>
 												</div>
 												<div>
@@ -267,10 +265,7 @@ const Card = ({ imgUrl, imgWidth, imgHeight }) => {
 															fontSize: `0.5em`,
 														}}
 													>
-														{'QmSnbaci7xNtKE2gSP8wjb9BL7Bvz8RE9W7NhNks2qzRtu'.slice(
-															0,
-															8
-														)}
+														{token.tokenId.slice(0, 8)}
 													</h4>
 												</div>
 											</div>
