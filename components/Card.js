@@ -77,6 +77,7 @@ const Card = ({ imgUrl, imgWidth, imgHeight }) => {
 			}}
 			ref={containerRef}
 		>
+			<img ref={dimensionRef} className="absolute opacity-0" src={imgUrl} />
 			<div
 				className="card-front absolute inset-0"
 				style={{
@@ -94,7 +95,6 @@ const Card = ({ imgUrl, imgWidth, imgHeight }) => {
 						transform: `perspective(${dimension.width * 4}px)`,
 					}}
 				>
-					<img ref={dimensionRef} className="absolute opacity-0" src={imgUrl} />
 					<div
 						className="card  bg-gray-800"
 						style={{
@@ -139,11 +139,6 @@ const Card = ({ imgUrl, imgWidth, imgHeight }) => {
 							transform: `perspective(${dimension.width * 4}px)`,
 						}}
 					>
-						<img
-							ref={dimensionRef}
-							className="absolute opacity-0"
-							src={imgUrl}
-						/>
 						<div
 							className="card bg-gray-100"
 							style={{
@@ -178,7 +173,7 @@ const Card = ({ imgUrl, imgWidth, imgHeight }) => {
 												height: `15%`,
 											}}
 										>
-											<div className="px-2">
+											<div className="px-2 overflow-hidden">
 												<h4 className="text-sm truncate">Lorum Ipsum</h4>
 												<h4
 													className="truncate"
@@ -198,7 +193,7 @@ const Card = ({ imgUrl, imgWidth, imgHeight }) => {
 										>
 											<div className="flex h-full">
 												<div className="w-1/2 flex items-center">
-													<div>
+													<div className="overflow-hidden">
 														<h4
 															className="px-2 truncate"
 															style={{
@@ -213,12 +208,12 @@ const Card = ({ imgUrl, imgWidth, imgHeight }) => {
 															}}
 															className="truncate px-2"
 														>
-															Riqi
+															Rahmat Albariqi 123
 														</h4>
 													</div>
 												</div>
 												<div className="w-1/2 flex items-center border-l-2 border-gray-900 h-full">
-													<div>
+													<div className="overflow-hidden">
 														<h4
 															className="px-2 truncate"
 															style={{
@@ -262,7 +257,7 @@ const Card = ({ imgUrl, imgWidth, imgHeight }) => {
 															fontSize: `0.5em`,
 														}}
 													>
-														Edition of 20
+														Edition of 1
 													</h4>
 												</div>
 												<div>
