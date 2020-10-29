@@ -1,10 +1,44 @@
 import Link from 'next/link'
+import { useEffect, useRef, useState } from 'react'
+import near from '../lib/near'
+import useStore from '../store'
 
 const Nav = () => {
+	const store = useStore()
+	const accModalRef = useRef()
+
+	const [showAccountModal, setShowAccountModal] = useState(false)
+
+	useEffect(() => {
+		const onClickEv = (e) => {
+			if (!accModalRef.current.contains(e.target)) {
+				setShowAccountModal(false)
+			}
+		}
+
+		if (showAccountModal) {
+			document.body.addEventListener('click', onClickEv)
+		}
+
+		return () => {
+			document.body.removeEventListener('click', onClickEv)
+		}
+	}, [showAccountModal])
+
+	const toggleAccountModal = () => {
+		setShowAccountModal(!showAccountModal)
+	}
+
+	const _signOut = () => {
+		near.wallet.signOut()
+
+		window.location.replace(window.location.origin + window.location.pathname)
+	}
+
 	return (
 		<div className="h-16">
 			<div className="fixed z-50 bg-black top-0 left-0 right-0">
-				<div className="flex items-center justify-between max-w-6xl m-auto p-4 overflow-hidden">
+				<div className="flex items-center justify-between max-w-6xl m-auto p-4">
 					<div>
 						<Link href="/">
 							<svg
@@ -47,9 +81,51 @@ const Nav = () => {
 							</Link>
 						</div>
 						<div className="px-8">
-							<Link href="/login">
-								<a>Login</a>
-							</Link>
+							{store.currentUser ? (
+								<div ref={accModalRef} className="relative">
+									<div
+										className="cursor-pointer select-none flex items-center"
+										onClick={toggleAccountModal}
+									>
+										<p>{store.currentUser}</p>
+										<div className="ml-1">
+											<svg
+												width="10"
+												height="10"
+												viewBox="0 0 21 19"
+												fill="none"
+												xmlns="http://www.w3.org/2000/svg"
+											>
+												<path
+													d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z"
+													fill="white"
+												/>
+											</svg>
+										</div>
+									</div>
+									{showAccountModal && (
+										<div className="absolute right-0 w-32 pt-4 z-10">
+											<div className="px-2 pb-2 border-2 bg-white">
+												<Link onClick={toggleAccountModal} href="/me/edit">
+													<p className="cursor-pointer pt-2 text-gray-800 hover:text-black">
+														Edit Profile
+													</p>
+												</Link>
+												<p
+													onClick={_signOut}
+													className="cursor-pointer pt-2 text-gray-800 hover:text-black"
+												>
+													Logout
+												</p>
+											</div>
+										</div>
+									)}
+								</div>
+							) : (
+								<Link href="/login">
+									<a>Login</a>
+								</Link>
+							)}
 						</div>
 					</div>
 				</div>

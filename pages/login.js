@@ -2,15 +2,17 @@ import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import near from '../lib/near'
 import Nav from '../components/Nav'
+import useStore from '../store'
 
 const LoginPage = () => {
+	const store = useStore()
 	const router = useRouter()
 
-	// useEffect(() => {
-	// 	if (near.wallet.isSignedIn()) {
-	//     router.replace('/')
-	//   }
-	// }, [])
+	useEffect(() => {
+		if (store.currentUser) {
+			router.replace('/')
+		}
+	}, [store.currentUser])
 
 	const _logout = async () => {
 		near.wallet.signOut()
@@ -32,8 +34,12 @@ const LoginPage = () => {
 			<div className="max-w-lg m-auto flex items-center justify-center h-full px-4 mt-12">
 				<div className="w-full">
 					<div className="mt-4">
-						<h3 className="text-4xl text-white font-bold">Create and Collect</h3>
-            <h3 className="text-2xl text-gray-300 font-semibold">Start your journey with digital art cards on blockchain</h3>
+						<h3 className="text-4xl text-white font-bold">
+							Create and Collect
+						</h3>
+						<h3 className="text-2xl text-gray-300 font-semibold">
+							Start your journey with digital art cards on blockchain
+						</h3>
 					</div>
 					<div className="mt-4">
 						<button
