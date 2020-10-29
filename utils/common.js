@@ -11,3 +11,14 @@ export const prettyBalance = (balance, decimals = 18, len = 8) => {
 	const formattedHead = head.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 	return `${formattedHead}.${tail}`
 }
+
+export const readFileAsUrl = (file) => {
+	const temporaryFileReader = new FileReader()
+
+	return new Promise((resolve, reject) => {
+		temporaryFileReader.onload = () => {
+			resolve(temporaryFileReader.result)
+		}
+		temporaryFileReader.readAsDataURL(file)
+	})
+}

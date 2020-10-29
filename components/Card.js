@@ -18,6 +18,7 @@ const Card = ({
 		x: 15,
 		y: 15,
 	},
+	disableFlip = false
 }) => {
 	const containerRef = useRef()
 	const cardRef = useRef()
@@ -35,7 +36,7 @@ const Card = ({
 			setImgLoaded(parseImgUrl(imgUrl))
 		}
 		img.src = parseImgUrl(imgUrl)
-	}, [])
+	}, [imgUrl])
 
 	useEffect(() => {
 		if (imgWidth && imgHeight) {
@@ -74,12 +75,15 @@ const Card = ({
 	}
 
 	const _flipCard = () => {
+		if (disableFlip) {
+			return
+		}
 		setIsShowFront(!isShowFront)
 	}
 
 	return (
 		<div
-			className="relative"
+			className="relative select-none"
 			onClick={_flipCard}
 			style={{
 				paddingBottom: `138%`,
