@@ -1,58 +1,103 @@
 import axios from 'axios'
-import {
-	CarouselProvider,
-	Slider,
-	Slide,
-	ButtonBack,
-	ButtonNext,
-	CarouselContext,
-} from 'pure-react-carousel'
-
-import { useContext, useEffect, useState } from 'react'
+import { useSpring, animated } from 'react-spring'
+import { useContext, useEffect, useRef, useState } from 'react'
 import Card from '../components/Card'
+import Nav from '../components/Nav'
 import { prettyBalance } from '../utils/common'
 
-export function MyComponentUsingContext({ setCurrentSlide }) {
-	const carouselContext = useContext(CarouselContext)
+const CardContainer = ({ tokens, fetchData }) => {
+	const containerRef = useRef()
+	const [animValues, setAnimValues] = useState(1)
+	const [mouseDown, setMouseDown] = useState(null)
+	const [touchStart, setTouchStart] = useState(null)
+	const animValuesRef = useRef(animValues)
+
+	const props = useSpring({ transform: `translate3d(${animValues}px, 0,0)` })
 
 	useEffect(() => {
-		function onChange() {
-			setCurrentSlide(carouselContext.state.currentSlide)
-		}
-		carouselContext.subscribe(onChange)
-		return () => carouselContext.unsubscribe(onChange)
-	}, [carouselContext])
-	return null
-}
-
-export default function MarketPage({ data }) {
-	const [tokens, setTokens] = useState(data.results)
-	const [page, setPage] = useState(1)
-	const [currentSlide, setCurrentSlide] = useState(0)
-	const [isFetching, setIsFetching] = useState(false)
+		animValuesRef.current = animValues
+	}, [animValues])
 
 	useEffect(() => {
-		if (currentSlide > tokens.length - 2) {
-			_fetchData()
+		if (containerRef) {
+			containerRef.current.addEventListener('wheel', handleScroll, {
+				passive: false,
+			})
 		}
-	}, [currentSlide])
+	}, [containerRef])
 
-	const _fetchData = async () => {
-		if (isFetching) {
-			return
+	const handleScroll = (e) => {
+		e.preventDefault()
+
+		var rawData = e.deltaY ? e.deltaY : e.deltaX
+		var mouseY = Math.floor(rawData)
+
+		var animationValue = animValuesRef.current
+		var newAnimationValue = animationValue - mouseY
+
+		animateScroll(newAnimationValue)
+	}
+
+	const animateScroll = (newAnimationValue) => {
+		let max = containerRef.current.lastElementChild.scrollWidth
+		let win = containerRef.current.offsetWidth
+
+		var bounds = -(max - win)
+
+		if (newAnimationValue > 0) {
+			setAnimValues(0)
+		} else if (newAnimationValue < bounds) {
+			fetchData()
+			setAnimValues(bounds)
+		} else {
+			setAnimValues(newAnimationValue)
 		}
-		setIsFetching(true)
-		const res = await axios(
-			`http://localhost:9090/tokens?__skip=${page * 10}&__limit=10`
-		)
-		const data = await res.data.data
+	}
 
-		console.log(data.results)
+	const handleMouseDown = (e) => {
+		setMouseDown({
+			x: e.pageX,
+			y: e.pageY,
+		})
+	}
 
-		const newTokens = [...tokens, ...data.results]
-		setIsFetching(false)
-		setTokens(newTokens)
-		setPage(page + 1)
+	const handleMouseMove = (e) => {
+		if (mouseDown) {
+			const diffX = mouseDown.x - e.pageX
+
+			animateScroll(animValues - diffX)
+			setMouseDown({
+				x: e.pageX,
+				y: e.pageY
+			})
+		}
+	}
+
+	const handleMouseUp = (e) => {
+		setMouseDown(null)
+	}
+
+	const handleTouchStart = (e) => {
+		setTouchStart({
+			x: e.touches[0].pageX,
+			y: e.touches[0].pageY,
+		})
+	}
+
+	const handleTouchMove = (e) => {
+		if (touchStart) {
+			const diffX = touchStart.x - e.touches[0].pageX
+
+			animateScroll(animValues - diffX)
+			setTouchStart({
+				x: e.touches[0].pageX,
+				y: e.touches[0].pageY
+			})
+		}
+	}
+
+	const handleTouchEnd = () => {
+		setTouchStart(null)
 	}
 
 	const _getLowestPrice = (ownerships) => {
@@ -66,108 +111,105 @@ export default function MarketPage({ data }) {
 
 	return (
 		<div
-			className="min-h-screen"
+			ref={containerRef}
+			onMouseDown={handleMouseDown}
+			onMouseUp={handleMouseUp}
+			onMouseMove={handleMouseMove}
+			onTouchStart={handleTouchStart}
+			onTouchEnd={handleTouchEnd}
+			onTouchMove={handleTouchMove}
+			className="overflow-hidden"
+		>
+			<animated.div className="flex -mx-8" style={props}>
+				{tokens.map((token, idx) => {
+					return (
+						<div key={idx} className="p-8 relative">
+							<div
+								className="max-w-full lg:max-w-sm m-auto"
+								style={{
+									width: `30vh`,
+								}}
+							>
+								<Card
+									imgUrl={token.metadata.image}
+									token={{
+										name: token.metadata.name,
+										collection: token.metadata.collection,
+										description: token.metadata.description,
+										creatorId: token.creatorId,
+										supply: token.supply,
+										tokenId: token.tokenId,
+										createdAt: token.createdAt,
+									}}
+									initialRotate={{
+										x: 0,
+										y: 0,
+									}}
+								/>
+							</div>
+							<div className="text-center p-4">
+								<h4 className="text-gray-400 ">{token.metadata.collection}</h4>
+								<h2 className="text-3xl text-white">{token.metadata.name}</h2>
+
+								<p className="mt-8 text-gray-400 ">Start From</p>
+								<div className="text-white text-3xl">
+									{_getLowestPrice(token.ownerships) ? (
+										<div>
+											{prettyBalance(_getLowestPrice(token.ownerships), 24, 4)}{' '}
+											Ⓝ
+										</div>
+									) : (
+										<div className="line-through text-red-600">
+											<span className="text-white">SALE</span>
+										</div>
+									)}
+								</div>
+								<p className="text-white mt-8 cursor-pointer">See Details</p>
+							</div>
+						</div>
+					)
+				})}
+			</animated.div>
+		</div>
+	)
+}
+
+export default function MarketPage({ data }) {
+	const [tokens, setTokens] = useState(data.results)
+	const [page, setPage] = useState(1)
+	const [isFetching, setIsFetching] = useState(false)
+	const [hasMore, setHasMore] = useState(true)
+
+	const _fetchData = async () => {
+		if (isFetching && !hasMore) {
+			return
+		}
+
+		setIsFetching(true)
+		const res = await axios(
+			`http://localhost:9090/tokens?__skip=${page * 10}&__limit=10`
+		)
+		const data = await res.data.data
+
+		const newTokens = [...tokens, ...data.results]
+		setIsFetching(false)
+		setTokens(newTokens)
+		setPage(page + 1)
+		setHasMore(data.results.length === 0 ? true : false)
+	}
+
+	return (
+		<div
+			className="min-h-screen bg-dark-primary-1 select-none"
 			style={{
-				backgroundColor: `rgb(5 0 50)`,
+				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
 			}}
 		>
-			<div>Market</div>
+			<Nav />
 			<div className="max-w-6xl relative m-auto mt-12">
-				<div
-					className="pointer-events-none absolute z-10 inset-0"
-					style={{
-						background: `linear-gradient(
-              to right, 
-              rgb(5 0 50) 0%, 
-              rgb(5 0 50 / 30%) 10%,
-              rgb(5 0 50 / 0%) 15%,
-              rgb(5 0 50 / 0%) 85%,
-              rgb(5 0 50 / 30%) 90%,
-              rgb(5 0 50) 100%
-            )
-            `,
-					}}
-				></div>
-				<CarouselProvider
-					naturalSlideWidth={100}
-					naturalSlideHeight={100}
-					visibleSlides={1}
-					totalSlides={tokens.length}
-					isIntrinsicHeight={true}
-				>
-					<Slider
-						className="outline-none"
-						style={{
-							paddingLeft: `25%`,
-							paddingRight: `25%`,
-						}}
-					>
-						{tokens.map((token, idx) => {
-							return (
-								<Slide index={idx}>
-									<div>
-										<div className="p-8 relative">
-											<div
-												className="max-w-full lg:max-w-sm m-auto"
-												style={{
-													width: `40vh`,
-												}}
-											>
-												<Card
-													imgUrl={token.metadata.image}
-													token={{
-														name: token.metadata.name,
-														collection: token.metadata.collection,
-														description: token.metadata.description,
-														creatorId: token.creatorId,
-														supply: token.supply,
-														tokenId: token.tokenId,
-														createdAt: token.createdAt,
-													}}
-													initialRotate={{
-														x: 0,
-														y: 0,
-													}}
-												/>
-											</div>
-										</div>
-										<div className="text-center p-4">
-											<h4 className="text-gray-400 ">
-												{token.metadata.collection}
-											</h4>
-											<h2 className="text-3xl text-white">
-												{token.metadata.name}
-											</h2>
-
-											<p className="mt-8 text-gray-400 ">Start From</p>
-											<div className="text-white text-3xl">
-												{_getLowestPrice(token.ownerships) ? (
-													<div>
-														{prettyBalance(
-															_getLowestPrice(token.ownerships),
-															24,
-															4
-														)}{' '}
-														Ⓝ
-													</div>
-												) : (
-													<div className="line-through text-red-600">
-                            <span className="text-white">SALE</span>
-                          </div>
-												)}
-											</div>
-											<p className="text-white mt-8">See Details</p>
-										</div>
-									</div>
-								</Slide>
-							)
-						})}
-					</Slider>
-					<MyComponentUsingContext
-						currentSlide={currentSlide}
-						setCurrentSlide={setCurrentSlide}
-					/>
-				</CarouselProvider>
+				<div className="p-4">
+					<CardContainer tokens={tokens} fetchData={_fetchData} />
+				</div>
 			</div>
 		</div>
 	)
