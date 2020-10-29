@@ -25,7 +25,11 @@ const CardContainer = ({ tokens, fetchData }) => {
 				passive: false,
 			})
 		}
-	}, [containerRef])
+
+		return () => {
+			containerRef.current.removeEventListener('wheel', handleScroll)
+		}
+	}, [containerRef, animValues])
 
 	const handleScroll = (e) => {
 		e.preventDefault()
@@ -69,7 +73,7 @@ const CardContainer = ({ tokens, fetchData }) => {
 			animateScroll(animValues - diffX)
 			setMouseDown({
 				x: e.pageX,
-				y: e.pageY
+				y: e.pageY,
 			})
 		}
 	}
@@ -92,7 +96,7 @@ const CardContainer = ({ tokens, fetchData }) => {
 			animateScroll(animValues - diffX)
 			setTouchStart({
 				x: e.touches[0].pageX,
-				y: e.touches[0].pageY
+				y: e.touches[0].pageY,
 			})
 		}
 	}
@@ -166,7 +170,7 @@ const CardContainer = ({ tokens, fetchData }) => {
 									)}
 								</div>
 								<Link href={`/token/${token.tokenId}`}>
-								<p className="text-white mt-8 cursor-pointer">See Details</p>
+									<p className="text-white mt-8 cursor-pointer">See Details</p>
 								</Link>
 							</div>
 						</div>
@@ -184,7 +188,7 @@ export default function MarketPage({ data }) {
 	const [hasMore, setHasMore] = useState(true)
 
 	const _fetchData = async () => {
-		if (isFetching && !hasMore) {
+		if (!hasMore || isFetching) {
 			return
 		}
 
@@ -192,13 +196,18 @@ export default function MarketPage({ data }) {
 		const res = await axios(
 			`http://localhost:9090/tokens?__skip=${page * 10}&__limit=10`
 		)
-		const data = await res.data.data
+		const newData = await res.data.data
 
-		const newTokens = [...tokens, ...data.results]
-		setIsFetching(false)
+		const newTokens = [...tokens, ...newData.results]
 		setTokens(newTokens)
 		setPage(page + 1)
-		setHasMore(data.results.length === 0 ? true : false)
+		if (newData.results.length === 0) {
+			console.log(`setHasMore to false`)
+			setHasMore(false)
+		} else {
+			setHasMore(true)
+		}
+		setIsFetching(false)
 	}
 
 	return (
@@ -210,6 +219,9 @@ export default function MarketPage({ data }) {
 		>
 			<Nav />
 			<div className="max-w-6xl relative m-auto mt-12">
+				<div className="text-white" onClick={_fetchData}>
+					Fetch
+				</div>
 				<div className="p-4">
 					<CardContainer tokens={tokens} fetchData={_fetchData} />
 				</div>
