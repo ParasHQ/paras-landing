@@ -5,6 +5,8 @@ const useStore = create((set) => ({
 	setCurrentUser: (user) => set((state) => ({ currentUser: user })),
 	initialized: false,
 	setInitialized: (val) => set(() => ({ initialized: val })),
+	marketScrollPersist: 0,
+	setMarketScrollPersist: (val) => set(() => ({ marketScrollPersist: val })),
 }))
 
 export default useStore

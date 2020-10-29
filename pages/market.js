@@ -5,10 +5,12 @@ import Card from '../components/Card'
 import Nav from '../components/Nav'
 import { prettyBalance } from '../utils/common'
 import Link from 'next/link'
+import useStore from '../store'
 
 const CardContainer = ({ tokens, fetchData }) => {
+	const store = useStore()
 	const containerRef = useRef()
-	const [animValues, setAnimValues] = useState(1)
+	const [animValues, setAnimValues] = useState(store.marketScrollPersist)
 	const [mouseDown, setMouseDown] = useState(null)
 	const [touchStart, setTouchStart] = useState(null)
 	const animValuesRef = useRef(animValues)
@@ -27,7 +29,10 @@ const CardContainer = ({ tokens, fetchData }) => {
 		}
 
 		return () => {
-			containerRef.current.removeEventListener('wheel', handleScroll)
+			store.setMarketScrollPersist(animValues)
+			if (containerRef.current) {
+				containerRef.current.removeEventListener('wheel', handleScroll)
+			}
 		}
 	}, [containerRef, animValues])
 
@@ -202,7 +207,6 @@ export default function MarketPage({ data }) {
 		setTokens(newTokens)
 		setPage(page + 1)
 		if (newData.results.length === 0) {
-			console.log(`setHasMore to false`)
 			setHasMore(false)
 		} else {
 			setHasMore(true)
@@ -219,9 +223,6 @@ export default function MarketPage({ data }) {
 		>
 			<Nav />
 			<div className="max-w-6xl relative m-auto mt-12">
-				<div className="text-white" onClick={_fetchData}>
-					Fetch
-				</div>
 				<div className="p-4">
 					<CardContainer tokens={tokens} fetchData={_fetchData} />
 				</div>
