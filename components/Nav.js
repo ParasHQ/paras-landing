@@ -1,10 +1,12 @@
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/router'
 import near from '../lib/near'
 import useStore from '../store'
 
 const Nav = () => {
 	const store = useStore()
+	const router = useRouter()
 	const accModalRef = useRef()
 
 	const [showAccountModal, setShowAccountModal] = useState(false)
@@ -76,9 +78,13 @@ const Nav = () => {
 					</div>
 					<div className="flex items-center text-white -mx-8">
 						<div className="px-8">
-							<Link href="/market">
-								<a>Market</a>
-							</Link>
+							{router.pathname === '/market' ? (
+								<a className="cursor-pointer" onClick={_ => store.setMarketScrollPersist(0)}>Market</a>
+							) : (
+								<Link href="/market">
+									<a>Market</a>
+								</Link>
+							)}
 						</div>
 						<div className="px-8">
 							{store.currentUser ? (

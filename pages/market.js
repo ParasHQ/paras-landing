@@ -10,16 +10,18 @@ import useStore from '../store'
 const CardContainer = ({ tokens, fetchData }) => {
 	const store = useStore()
 	const containerRef = useRef()
-	const [animValues, setAnimValues] = useState(store.marketScrollPersist)
+	// const [animValues, setAnimValues] = useState(store.marketScrollPersist)
 	const [mouseDown, setMouseDown] = useState(null)
 	const [touchStart, setTouchStart] = useState(null)
-	const animValuesRef = useRef(animValues)
+	const animValuesRef = useRef(store.marketScrollPersist)
 
-	const props = useSpring({ transform: `translate3d(${animValues}px, 0,0)` })
+	const props = useSpring({
+		transform: `translate3d(${store.marketScrollPersist}px, 0,0)`,
+	})
 
 	useEffect(() => {
-		animValuesRef.current = animValues
-	}, [animValues])
+		animValuesRef.current = store.marketScrollPersist
+	}, [store.marketScrollPersist])
 
 	useEffect(() => {
 		if (containerRef) {
@@ -29,12 +31,11 @@ const CardContainer = ({ tokens, fetchData }) => {
 		}
 
 		return () => {
-			store.setMarketScrollPersist(animValues)
 			if (containerRef.current) {
 				containerRef.current.removeEventListener('wheel', handleScroll)
 			}
 		}
-	}, [containerRef, animValues])
+	}, [containerRef, store.marketScrollPersist])
 
 	const handleScroll = (e) => {
 		e.preventDefault()
@@ -55,12 +56,12 @@ const CardContainer = ({ tokens, fetchData }) => {
 		var bounds = -(max - win)
 
 		if (newAnimationValue > 0) {
-			setAnimValues(0)
+			store.setMarketScrollPersist(0)
 		} else if (newAnimationValue < bounds) {
 			fetchData()
-			setAnimValues(bounds)
+			store.setMarketScrollPersist(bounds)
 		} else {
-			setAnimValues(newAnimationValue)
+			store.setMarketScrollPersist(newAnimationValue)
 		}
 	}
 
@@ -75,7 +76,7 @@ const CardContainer = ({ tokens, fetchData }) => {
 		if (mouseDown) {
 			const diffX = mouseDown.x - e.pageX
 
-			animateScroll(animValues - diffX)
+			animateScroll(store.marketScrollPersist - diffX)
 			setMouseDown({
 				x: e.pageX,
 				y: e.pageY,
@@ -98,7 +99,7 @@ const CardContainer = ({ tokens, fetchData }) => {
 		if (touchStart) {
 			const diffX = touchStart.x - e.touches[0].pageX
 
-			animateScroll(animValues - diffX)
+			animateScroll(store.marketScrollPersist - diffX)
 			setTouchStart({
 				x: e.touches[0].pageX,
 				y: e.touches[0].pageY,
@@ -133,11 +134,14 @@ const CardContainer = ({ tokens, fetchData }) => {
 			<animated.div className="flex -mx-8" style={props}>
 				{tokens.map((token, idx) => {
 					return (
-						<div key={idx} className="p-8 relative">
+						<div
+							key={idx}
+							className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8 relative"
+						>
 							<div
-								className="max-w-full lg:max-w-sm m-auto"
+								className="max-w-full m-auto"
 								style={{
-									width: `30vh`,
+									maxWidth: `320px`
 								}}
 							>
 								<Card
@@ -158,11 +162,11 @@ const CardContainer = ({ tokens, fetchData }) => {
 								/>
 							</div>
 							<div className="text-center p-4">
-								<h4 className="text-gray-400 ">{token.metadata.collection}</h4>
-								<h2 className="text-3xl text-white">{token.metadata.name}</h2>
+								<h4 className="text-gray-400 text-sm">{token.metadata.collection}</h4>
+								<h2 className="text-xl text-white">{token.metadata.name}</h2>
 
-								<p className="mt-8 text-gray-400 ">Start From</p>
-								<div className="text-white text-3xl">
+								<p className="mt-4 text-gray-400 text-sm">Start From</p>
+								<div className="text-white text-xl">
 									{_getLowestPrice(token.ownerships) ? (
 										<div>
 											{prettyBalance(_getLowestPrice(token.ownerships), 24, 4)}{' '}
@@ -175,7 +179,7 @@ const CardContainer = ({ tokens, fetchData }) => {
 									)}
 								</div>
 								<Link href={`/token/${token.tokenId}`}>
-									<p className="text-white mt-8 cursor-pointer">See Details</p>
+									<p className="text-white mt-4 cursor-pointer">See Details</p>
 								</Link>
 							</div>
 						</div>
@@ -222,7 +226,7 @@ export default function MarketPage({ data }) {
 			}}
 		>
 			<Nav />
-			<div className="max-w-6xl relative m-auto mt-12">
+			<div className="max-w-6xl relative m-auto">
 				<div className="p-4">
 					<CardContainer tokens={tokens} fetchData={_fetchData} />
 				</div>
