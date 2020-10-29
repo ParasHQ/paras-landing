@@ -4,6 +4,7 @@ import { useContext, useEffect, useRef, useState } from 'react'
 import Card from '../components/Card'
 import Nav from '../components/Nav'
 import { prettyBalance } from '../utils/common'
+import Link from 'next/link'
 
 const CardContainer = ({ tokens, fetchData }) => {
 	const containerRef = useRef()
@@ -164,7 +165,9 @@ const CardContainer = ({ tokens, fetchData }) => {
 										</div>
 									)}
 								</div>
+								<Link href={`/token/${token.tokenId}`}>
 								<p className="text-white mt-8 cursor-pointer">See Details</p>
+								</Link>
 							</div>
 						</div>
 					)
