@@ -191,7 +191,7 @@ const Card = ({
 													fontSize: `0.75em`,
 												}}
 											>
-												{token.name}
+												{token.name.length > 0 ? token.name : 'Card Name'}
 											</h4>
 											<h4
 												className="truncate"
@@ -199,7 +199,7 @@ const Card = ({
 													fontSize: `0.5em`,
 												}}
 											>
-												{token.collection}
+												{token.collection && token.collection.length > 0 ? token.collection : 'Collection'}
 											</h4>
 										</div>
 									</div>
@@ -264,7 +264,7 @@ const Card = ({
 												fontSize: `0.5em`,
 											}}
 										>
-											{token.description}
+											{token.description.length > 0 ? token.description : 'Your card description'}
 										</h4>
 									</div>
 									<div
@@ -280,7 +280,7 @@ const Card = ({
 														fontSize: `0.5em`,
 													}}
 												>
-													Edition of {token.supply}
+													Edition of {token.supply || 0}
 												</h4>
 											</div>
 											<div>

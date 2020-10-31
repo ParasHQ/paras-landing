@@ -14,8 +14,25 @@ button:disabled {
 	@apply opacity-75;
 }
 
-input:focus, textarea:focus {
+input:focus,
+textarea:focus {
 	@apply outline-none;
+}
+
+input, textarea {
+	@apply bg-gray-300 p-2 rounded-md border-2 border-transparent w-full;
+}
+
+input:focus, textarea:focus {
+	@apply bg-gray-100 border-dark-primary-1;
+}
+
+input.error, textarea.error, .error {
+	@apply border-red-500;
+}
+
+input.clear {
+	@apply bg-transparent p-0 border-0;
 }
 
 .slide.selected {
