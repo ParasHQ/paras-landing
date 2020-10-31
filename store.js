@@ -1,12 +1,32 @@
 import create from 'zustand'
 
-const useStore = create((set) => ({
+const useStore = create((set, get) => ({
 	currentUser: null,
-	setCurrentUser: (user) => set((state) => ({ currentUser: user })),
+	setCurrentUser: (user) => set(() => ({ currentUser: user })),
 	initialized: false,
 	setInitialized: (val) => set(() => ({ initialized: val })),
-	marketScrollPersist: 0,
-	setMarketScrollPersist: (val) => set(() => ({ marketScrollPersist: val })),
+	marketScrollPersist: {},
+	marketDataPersist: {},
+	setMarketScrollPersist: (key, val) =>
+		set(() => {
+			const newMarket = {
+				...get().marketScrollPersist,
+				...{ [key]: val },
+			}
+			return {
+				marketScrollPersist: newMarket,
+			}
+		}),
+	setMarketDataPersist: (key, val) =>
+		set(() => {
+			const newMarket = {
+				...get().marketDataPersist,
+				...{ [key]: val },
+			}
+			return {
+				marketDataPersist: newMarket,
+			}
+		}),
 	nearUsdPrice: 0,
 	setNearUsdPrice: (val) => set(() => ({ nearUsdPrice: val })),
 }))

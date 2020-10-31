@@ -8,6 +8,7 @@ import Modal from '../../components/Modal'
 import near from '../../lib/near'
 import useStore from '../../store'
 import { prettyBalance } from '../../utils/common'
+import Link from 'next/link'
 
 const TokenDetail = ({ token }) => {
 	const store = useStore()
@@ -226,7 +227,11 @@ const TokenDetail = ({ token }) => {
 								return (
 									<div className="mt-4">
 										<div>
-											{ownership.ownerId} have {ownership.quantity}
+											<Link href={`/${ownership.ownerId}`}>
+												{ownership.ownerId}
+											</Link>
+											have
+											{ownership.quantity}
 										</div>
 										{ownership.marketData && (
 											<div>

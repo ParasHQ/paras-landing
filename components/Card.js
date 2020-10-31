@@ -58,10 +58,13 @@ const Card = ({
 
 	const handleMouseMove = (e) => {
 		const bbox = cardRef.current.getBoundingClientRect()
-		const mouseX = e.pageX - bbox.left - dimension.width / 2
-		const mouseY = e.pageY - bbox.top - dimension.height / 2
+
+		const mouseX = e.pageX - (bbox.left + window.scrollX) - dimension.width / 2
+		const mouseY = e.pageY - (bbox.top + window.scrollY) - dimension.height / 2
+
 		const mousePX = mouseX / dimension.width
 		const mousePY = mouseY / dimension.height
+
 		setRotate({
 			x: mousePX * 30,
 			y: mousePY * -30,
