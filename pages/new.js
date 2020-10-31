@@ -6,9 +6,12 @@ import ImgCrop from '../components/ImgCrop'
 import Nav from '../components/Nav'
 import useStore from '../store'
 import { useForm } from 'react-hook-form'
+import Modal from '../components/Modal'
+import { useRouter } from 'next/router'
 
 const NewPage = () => {
 	const store = useStore()
+	const router = useRouter()
 	const [formInput, setFormInput] = useState({})
 	const {
 		errors,
@@ -24,6 +27,7 @@ const NewPage = () => {
 	const [imgUrl, setImgUrl] = useState('')
 	const [step, setStep] = useState(0)
 	const [isSubmitting, setIsSubmitting] = useState(false)
+	const [showConfirmModal, setShowConfirmModal] = useState(false)
 
 	const _submit = async () => {
 		setIsSubmitting(true)
@@ -44,11 +48,12 @@ const NewPage = () => {
 					'Content-Type': 'multipart/form-data',
 				},
 			})
+			router.push('/market')
 		} catch (err) {
 			console.log(err)
 		}
 
-		setIsSubmitting(true)
+		setIsSubmitting(false)
 	}
 
 	useEffect(() => {
@@ -91,7 +96,7 @@ const NewPage = () => {
 			...data,
 		}
 		setFormInput(newFormInput)
-		_submit()
+		setShowConfirmModal(true)
 	}
 
 	const _setImg = async (e) => {
@@ -109,6 +114,30 @@ const NewPage = () => {
 			}}
 		>
 			<Nav />
+			{showConfirmModal && (
+				<Modal close={(_) => setShowConfirmModal(false)}>
+					<div className="w-full max-w-xs p-4 m-auto bg-white rounded-md">
+						<div>
+							<p>Confirm card creation?</p>
+						</div>
+						<div className="">
+							<button
+								disabled={isSubmitting}
+								className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-white"
+								onClick={_submit}
+							>
+								{!isSubmitting ? 'Create' : 'Creating...'}
+							</button>
+							<button
+								className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
+								onClick={(_) => setShowConfirmModal(false)}
+							>
+								Cancel
+							</button>
+						</div>
+					</div>
+				</Modal>
+			)}
 			{showImgCrop && (
 				<ImgCrop
 					input={imgFile}
