@@ -47,7 +47,7 @@ const ProfileDetail = ({ creatorTokens, ownerTokens }) => {
 				oPage * 5
 			}&__limit=5`
 		)
-		const newData = await res.data.data
+    const newData = await res.data.data
 
 		const newTokens = [...oTokens, ...newData.results]
     store.setMarketDataPersist(scrollCollection, newTokens)
@@ -173,8 +173,6 @@ export async function getServerSideProps({ params }) {
 	)
 	const creatorTokens = await creatorRes.data.data.results
 	const ownerTokens = await ownerRes.data.data.results
-
-	console.log(creatorTokens)
 
 	return { props: { creatorTokens, ownerTokens } }
 }
