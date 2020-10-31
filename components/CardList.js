@@ -129,9 +129,16 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 			onTouchStart={handleTouchStart}
 			onTouchEnd={handleTouchEnd}
 			onTouchMove={handleTouchMove}
-			className="overflow-x-hidden select-none border border-dashed border-gray-900 rounded-md"
+			className="overflow-x-hidden border border-dashed border-gray-900 rounded-md"
 		>
-			<animated.div className="flex" style={props}>
+			{tokens.length === 0 && (
+				<div className="w-full">
+					<div className="m-auto text-white py-24 text-center">
+						No Cards
+					</div>
+				</div>
+			)}
+			<animated.div className="flex select-none " style={props}>
 				{tokens.map((token, idx) => {
 					return (
 						<div
