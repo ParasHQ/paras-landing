@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import near from '../lib/near'
 import useStore from '../store'
+import Modal from './Modal'
+import ProfileEdit from './ProfileEdit'
 
 const Nav = () => {
 	const store = useStore()
@@ -10,6 +12,7 @@ const Nav = () => {
 	const accModalRef = useRef()
 
 	const [showAccountModal, setShowAccountModal] = useState(false)
+	const [showEditAccountModal, setShowEditAccountModal] = useState(false)
 
 	useEffect(() => {
 		const onClickEv = (e) => {
@@ -39,6 +42,13 @@ const Nav = () => {
 
 	return (
 		<div className="h-16">
+			{showEditAccountModal && (
+				<Modal close={(_) => setShowEditAccountModal(false)}>
+					<div className="w-full max-w-sm p-4 m-auto bg-white rounded-md">
+						<ProfileEdit close={(_) => setShowEditAccountModal(false)} />
+					</div>
+				</Modal>
+			)}
 			<div className="fixed z-50 bg-black top-0 left-0 right-0">
 				<div className="flex items-center justify-between max-w-6xl m-auto p-4">
 					<div>
@@ -92,11 +102,13 @@ const Nav = () => {
 							)}
 						</div>
 
-						<div className="px-8">
-							<Link href="/new">
-								<a>Create</a>
-							</Link>
-						</div>
+						{store.currentUser && (
+							<div className="px-8">
+								<Link href="/new">
+									<a>Create</a>
+								</Link>
+							</div>
+						)}
 						<div className="px-8">
 							{store.currentUser ? (
 								<div ref={accModalRef} className="relative">
@@ -123,11 +135,16 @@ const Nav = () => {
 									{showAccountModal && (
 										<div className="absolute right-0 w-32 pt-4 z-10">
 											<div className="px-2 pb-2 border-2 bg-white">
-												<Link onClick={toggleAccountModal} href="/me/edit">
+												<button
+													onClick={(_) => {
+														setShowEditAccountModal(true)
+														toggleAccountModal()
+													}}
+												>
 													<p className="cursor-pointer pt-2 text-gray-800 hover:text-black">
 														Edit Profile
 													</p>
-												</Link>
+												</button>
 												<p
 													onClick={_signOut}
 													className="cursor-pointer pt-2 text-gray-800 hover:text-black"
