@@ -39,9 +39,20 @@ const Card = ({
 	}, [imgUrl])
 
 	useEffect(() => {
+		let w = containerRef.current.parentNode.offsetWidth
+		let h = containerRef.current.parentNode.offsetWidth * (imgHeight / imgWidth)
+
+		if (
+			containerRef.current.parentNode.offsetHeight !== 0 &&
+			h > containerRef.current.parentNode.offsetHeight
+		) {
+			w = (imgWidth * containerRef.current.parentNode.offsetHeight) / imgHeight
+			h = containerRef.current.parentNode.offsetHeight
+		}
+
 		setDimension({
-			width: containerRef.current.offsetWidth,
-			height: containerRef.current.offsetWidth * (imgHeight / imgWidth),
+			width: w,
+			height: h,
 		})
 	}, [])
 
@@ -76,13 +87,14 @@ const Card = ({
 
 	return (
 		<div
-			className="relative select-none"
+			className="relative select-none m-auto"
 			onClick={_flipCard}
 			style={{
-				paddingBottom: `138%`,
-				transition: `.6s .1s`,
+				transition: `transform .6s .1s`,
 				transform: !isShowFront && `rotateY(180deg)`,
 				transformStyle: `preserve-3d`,
+				width: dimension.width,
+				height: dimension.height,
 			}}
 			ref={containerRef}
 		>
@@ -100,7 +112,7 @@ const Card = ({
 					onMouseLeave={handleMouseLeave}
 					ref={cardRef}
 					style={{
-						transform: `perspective(${dimension.width * 4}px)`,
+						transform: `perspective(${dimension.height * 5}px)`,
 					}}
 				>
 					<div
@@ -147,7 +159,7 @@ const Card = ({
 					onMouseLeave={handleMouseLeave}
 					ref={cardRef}
 					style={{
-						transform: `perspective(${dimension.width * 4}px)`,
+						transform: `perspective(${dimension.height * 5}px)`,
 					}}
 				>
 					<div

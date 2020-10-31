@@ -131,19 +131,14 @@ const CardContainer = ({ tokens, fetchData }) => {
 			onTouchMove={handleTouchMove}
 			className="overflow-hidden"
 		>
-			<animated.div className="flex -mx-8" style={props}>
+			<animated.div className="flex" style={props}>
 				{tokens.map((token, idx) => {
 					return (
 						<div
 							key={idx}
-							className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8 relative"
+							className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8 lg:p-12 relative"
 						>
-							<div
-								className="max-w-full m-auto"
-								style={{
-									maxWidth: `280px`,
-								}}
-							>
+							<div className="w-full m-auto">
 								<Card
 									imgUrl={token.metadata.image}
 									imgBlur={token.metadata.blurhash}
@@ -162,29 +157,6 @@ const CardContainer = ({ tokens, fetchData }) => {
 									}}
 								/>
 							</div>
-							{/* <div className="text-center absolute top-0 right-0 pointer-events-none">
-								<div className="">
-									<div className="p-2 bg-primary inline-block rounded-md">
-										<p className="text-gray-400 text-xs">Start From</p>
-										<div className="text-white text-lg">
-											{_getLowestPrice(token.ownerships) ? (
-												<div>
-													{prettyBalance(
-														_getLowestPrice(token.ownerships),
-														24,
-														4
-													)}{' '}
-													Ⓝ
-												</div>
-											) : (
-												<div className="line-through text-red-600">
-													<span className="text-white">SALE</span>
-												</div>
-											)}
-										</div>
-									</div>
-								</div>
-							</div> */}
 							<div className="text-center">
 								<div className="mt-8">
 									<div className="p-2">
@@ -210,7 +182,9 @@ const CardContainer = ({ tokens, fetchData }) => {
 							</div>
 							<div className="text-center mt-2 text-sm">
 								<Link href={`/token/${token.tokenId}`}>
-									<p className="inline-block text-white cursor-pointer">See Details</p>
+									<p className="inline-block text-white cursor-pointer">
+										See Details
+									</p>
 								</Link>
 							</div>
 						</div>
