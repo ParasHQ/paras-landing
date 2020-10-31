@@ -5,6 +5,7 @@ import near from '../lib/near'
 import useStore from '../store'
 import Modal from './Modal'
 import ProfileEdit from './ProfileEdit'
+import { prettyBalance } from '../utils/common'
 
 const Nav = () => {
 	const store = useStore()
@@ -133,8 +134,28 @@ const Nav = () => {
 										</div>
 									</div>
 									{showAccountModal && (
-										<div className="absolute right-0 w-32 pt-4 z-10">
-											<div className="px-2 pb-2 border-2 bg-white">
+										<div className="absolute right-0 w-56 pt-4 z-10">
+											<div className="px-2 pb-2 border-2 bg-white rounded-md overflow-hidden">
+												<div className="pt-2 text-gray-800 hover:text-black">
+													<p className="text-xs text-gray-800">Balance</p>
+													<p className="text-lg">
+														{prettyBalance(store.userBalance.available, 24, 4)}{' '}
+														Ⓝ
+													</p>
+													<a
+														className="text-sm text-gray-800 hover:text-black"
+														href="https://wallet.near.org/"
+														target="_blank"
+													>
+														View on NEAR Wallet
+													</a>
+												</div>
+												<hr className="mt-2" />
+												<Link href={`/${store.currentUser}`}>
+													<p className="cursor-pointer pt-2 text-gray-800 hover:text-black">
+														My Profile
+													</p>
+												</Link>
 												<button
 													onClick={(_) => {
 														setShowEditAccountModal(true)

@@ -1,4 +1,5 @@
 import create from 'zustand'
+import near from './lib/near'
 
 const useStore = create((set, get) => ({
 	currentUser: null,
@@ -29,6 +30,8 @@ const useStore = create((set, get) => ({
 		}),
 	nearUsdPrice: 0,
 	setNearUsdPrice: (val) => set(() => ({ nearUsdPrice: val })),
+	userBalance: {},
+	setUserBalance: (val) => set(() => ({ userBalance: val })),
 }))
 
 export default useStore

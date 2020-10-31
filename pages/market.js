@@ -33,13 +33,14 @@ export default function MarketPage({ data }) {
 
 	return (
 		<div
-			className="min-h-screen bg-dark-primary-1 select-none"
+			className="min-h-screen bg-dark-primary-1"
 			style={{
 				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
 			}}
 		>
 			<Nav />
-			<div className="max-w-6xl relative m-auto">
+			<div className="max-w-6xl relative m-auto mt-12">
+				<h1 className="text-3xl text-gray-100 text-center">Market</h1>
 				<div className="p-4">
 					<CardList name="market" tokens={tokens} fetchData={_fetchData} />
 				</div>

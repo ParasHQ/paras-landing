@@ -129,7 +129,7 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 			onTouchStart={handleTouchStart}
 			onTouchEnd={handleTouchEnd}
 			onTouchMove={handleTouchMove}
-			className="overflow-x-hidden border border-dashed border-gray-900 rounded-md"
+			className="overflow-x-hidden border-2 border-dashed border-gray-900 rounded-md"
 		>
 			{tokens.length === 0 && (
 				<div className="w-full">

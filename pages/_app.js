@@ -18,13 +18,13 @@ function MyApp({ Component, pageProps }) {
 	const _init = async () => {
 		console.log('near init')
 		await near.init()
-		const currentUser = await near.wallet.getAccountId()
+		const currentUser = await near.currentUser
 		const nearUsdPrice = await axios.get(
 			'https://api.coingecko.com/api/v3/simple/price?ids=NEAR&vs_currencies=USD'
 		)
 		if (currentUser) {
-			console.log(currentUser)
-			store.setCurrentUser(currentUser)
+			store.setCurrentUser(currentUser.accountId)
+			store.setUserBalance(currentUser.balance)
 		}
 		store.setNearUsdPrice(nearUsdPrice.data.near.usd)
 		store.setInitialized(true)
