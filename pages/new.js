@@ -367,7 +367,7 @@ const NewPage = () => {
 									ref={register({
 										required: true,
 										min: 0,
-										max: watch('supply'),
+										max: formInput.supply,
 									})}
 									className={`${errors.quantity && 'error'}`}
 									placeholder="Number of card on sale"

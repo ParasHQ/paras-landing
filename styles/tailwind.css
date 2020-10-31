@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-	@apply font-body font-medium;
+	@apply font-body font-medium tracking-wide;
 }
 
 button:focus {

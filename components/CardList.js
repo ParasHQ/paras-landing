@@ -133,9 +133,7 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 		>
 			{tokens.length === 0 && (
 				<div className="w-full">
-					<div className="m-auto text-white py-24 text-center">
-						No Cards
-					</div>
+					<div className="m-auto text-white py-24 text-center">No Cards</div>
 				</div>
 			)}
 			<animated.div className="flex select-none " style={props}>
@@ -170,14 +168,26 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 										<p className="text-gray-400 text-xs">Start From</p>
 										<div className="text-white text-2xl">
 											{_getLowestPrice(token.ownerships) ? (
-												<span>
-													{prettyBalance(
-														_getLowestPrice(token.ownerships),
-														24,
-														4
-													)}{' '}
-													Ⓝ
-												</span>
+												<div>
+													<div>
+														{prettyBalance(
+															_getLowestPrice(token.ownerships),
+															24,
+															4
+														)}{' '}
+														Ⓝ
+													</div>
+													<div className="text-sm text-gray-400">
+														~ $
+														{(
+															prettyBalance(
+																_getLowestPrice(token.ownerships),
+																24,
+																4
+															) * store.nearUsdPrice
+														).toPrecision(4)}
+													</div>
+												</div>
 											) : (
 												<div className="line-through text-red-600">
 													<span className="text-white">SALE</span>

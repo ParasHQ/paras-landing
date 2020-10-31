@@ -40,7 +40,7 @@ export default function MarketPage({ data }) {
 		>
 			<Nav />
 			<div className="max-w-6xl relative m-auto mt-12">
-				<h1 className="text-3xl text-gray-100 text-center">Market</h1>
+				<h1 className="text-4xl font-bold text-gray-100 text-center">Market</h1>
 				<div className="p-4">
 					<CardList name="market" tokens={tokens} fetchData={_fetchData} />
 				</div>
