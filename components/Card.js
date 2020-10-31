@@ -18,6 +18,7 @@ const Card = ({
 		x: 15,
 		y: 15,
 	},
+	imgBlur,
 	disableFlip = false,
 }) => {
 	const containerRef = useRef()
@@ -120,7 +121,7 @@ const Card = ({
 								}}
 							>
 								<Blurhash
-									hash="UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh"
+									hash={imgBlur || 'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'}
 									width={`100%`}
 									height={`100%`}
 									resolutionX={32}
@@ -156,14 +157,18 @@ const Card = ({
 						}}
 					>
 						<div className="card-bg relative">
+							<img
+								className="object-cover w-full h-full relative z-10 opacity-25"
+								src={imgLoaded}
+							/>
 							<div
-								className="absolute inset-0 z-20 transition-opacity duration-500 ease-in"
+								className="absolute inset-0 z-30 transition-opacity duration-500 ease-in"
 								style={{
 									opacity: imgLoaded ? 0 : 1,
 								}}
 							>
 								<Blurhash
-									hash="UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh"
+									hash={imgBlur || 'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'}
 									width={`100%`}
 									height={`100%`}
 									resolutionX={32}
@@ -172,7 +177,7 @@ const Card = ({
 								/>
 							</div>
 							<div
-								className="absolute inset-0 p-2 rounded-md"
+								className="absolute inset-0 p-2 rounded-md z-20"
 								style={{
 									fontSize: `${dimension.width / 14}px`,
 								}}
@@ -199,7 +204,9 @@ const Card = ({
 													fontSize: `0.5em`,
 												}}
 											>
-												{token.collection && token.collection.length > 0 ? token.collection : 'Collection'}
+												{token.collection && token.collection.length > 0
+													? token.collection
+													: 'Collection'}
 											</h4>
 										</div>
 									</div>
@@ -264,7 +271,9 @@ const Card = ({
 												fontSize: `0.5em`,
 											}}
 										>
-											{token.description.length > 0 ? token.description : 'Your card description'}
+											{token.description.length > 0
+												? token.description
+												: 'Your card description'}
 										</h4>
 									</div>
 									<div

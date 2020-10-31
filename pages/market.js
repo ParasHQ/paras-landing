@@ -146,6 +146,7 @@ const CardContainer = ({ tokens, fetchData }) => {
 							>
 								<Card
 									imgUrl={token.metadata.image}
+									imgBlur={token.metadata.blurhash}
 									token={{
 										name: token.metadata.name,
 										collection: token.metadata.collection,
@@ -161,13 +162,11 @@ const CardContainer = ({ tokens, fetchData }) => {
 									}}
 								/>
 							</div>
-							<div className="text-center absolute top-0 right-0 pointer-events-none">
+							{/* <div className="text-center absolute top-0 right-0 pointer-events-none">
 								<div className="">
 									<div className="p-2 bg-primary inline-block rounded-md">
 										<p className="text-gray-400 text-xs">Start From</p>
-										<div
-											className="text-white text-lg"
-										>
+										<div className="text-white text-lg">
 											{_getLowestPrice(token.ownerships) ? (
 												<div>
 													{prettyBalance(
@@ -185,10 +184,33 @@ const CardContainer = ({ tokens, fetchData }) => {
 										</div>
 									</div>
 								</div>
+							</div> */}
+							<div className="text-center">
+								<div className="mt-8">
+									<div className="p-2">
+										<p className="text-gray-400 text-xs">Start From</p>
+										<div className="text-white text-2xl">
+											{_getLowestPrice(token.ownerships) ? (
+												<span>
+													{prettyBalance(
+														_getLowestPrice(token.ownerships),
+														24,
+														4
+													)}{' '}
+													Ⓝ
+												</span>
+											) : (
+												<div className="line-through text-red-600">
+													<span className="text-white">SALE</span>
+												</div>
+											)}
+										</div>
+									</div>
+								</div>
 							</div>
-							<div className="text-center mt-8">
+							<div className="text-center mt-2 text-sm">
 								<Link href={`/token/${token.tokenId}`}>
-									<p className="text-white mt-4 cursor-pointer">See Details</p>
+									<p className="inline-block text-white cursor-pointer">See Details</p>
 								</Link>
 							</div>
 						</div>
@@ -212,7 +234,7 @@ export default function MarketPage({ data }) {
 
 		setIsFetching(true)
 		const res = await axios(
-			`http://localhost:9090/tokens?__skip=${page * 10}&__limit=10`
+			`http://localhost:9090/tokens?__skip=${page * 5}&__limit=5`
 		)
 		const newData = await res.data.data
 
@@ -245,7 +267,7 @@ export default function MarketPage({ data }) {
 }
 
 export async function getServerSideProps() {
-	const res = await axios(`http://localhost:9090/tokens?__limit=10`)
+	const res = await axios(`http://localhost:9090/tokens?__limit=5`)
 	const data = await res.data.data
 
 	return { props: { data } }
