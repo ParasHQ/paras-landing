@@ -79,12 +79,23 @@ const Nav = () => {
 					<div className="flex items-center text-white -mx-8">
 						<div className="px-8">
 							{router.pathname === '/market' ? (
-								<a className="cursor-pointer" onClick={_ => store.setMarketScrollPersist(0)}>Market</a>
+								<a
+									className="cursor-pointer"
+									onClick={(_) => store.setMarketScrollPersist(0)}
+								>
+									Market
+								</a>
 							) : (
 								<Link href="/market">
 									<a>Market</a>
 								</Link>
 							)}
+						</div>
+
+						<div className="px-8">
+							<Link href="/new">
+								<a>Create</a>
+							</Link>
 						</div>
 						<div className="px-8">
 							{store.currentUser ? (

@@ -141,7 +141,7 @@ const CardContainer = ({ tokens, fetchData }) => {
 							<div
 								className="max-w-full m-auto"
 								style={{
-									maxWidth: `320px`
+									maxWidth: `280px`,
 								}}
 							>
 								<Card
@@ -161,23 +161,32 @@ const CardContainer = ({ tokens, fetchData }) => {
 									}}
 								/>
 							</div>
-							<div className="text-center p-4">
-								<h4 className="text-gray-400 text-sm">{token.metadata.collection}</h4>
-								<h2 className="text-xl text-white">{token.metadata.name}</h2>
-
-								<p className="mt-4 text-gray-400 text-sm">Start From</p>
-								<div className="text-white text-xl">
-									{_getLowestPrice(token.ownerships) ? (
-										<div>
-											{prettyBalance(_getLowestPrice(token.ownerships), 24, 4)}{' '}
-											Ⓝ
+							<div className="text-center absolute top-0 right-0 pointer-events-none">
+								<div className="">
+									<div className="p-2 bg-primary inline-block rounded-md">
+										<p className="text-gray-400 text-xs">Start From</p>
+										<div
+											className="text-white text-lg"
+										>
+											{_getLowestPrice(token.ownerships) ? (
+												<div>
+													{prettyBalance(
+														_getLowestPrice(token.ownerships),
+														24,
+														4
+													)}{' '}
+													Ⓝ
+												</div>
+											) : (
+												<div className="line-through text-red-600">
+													<span className="text-white">SALE</span>
+												</div>
+											)}
 										</div>
-									) : (
-										<div className="line-through text-red-600">
-											<span className="text-white">SALE</span>
-										</div>
-									)}
+									</div>
 								</div>
+							</div>
+							<div className="text-center mt-8">
 								<Link href={`/token/${token.tokenId}`}>
 									<p className="text-white mt-4 cursor-pointer">See Details</p>
 								</Link>

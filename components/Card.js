@@ -11,18 +11,17 @@ const parseImgUrl = (url) => {
 
 const Card = ({
 	imgUrl,
-	imgWidth,
-	imgHeight,
+	imgWidth = 640,
+	imgHeight = 890,
 	token,
 	initialRotate = {
 		x: 15,
 		y: 15,
 	},
-	disableFlip = false
+	disableFlip = false,
 }) => {
 	const containerRef = useRef()
 	const cardRef = useRef()
-	const dimensionRef = useRef()
 	const [imgLoaded, setImgLoaded] = useState(null)
 	const [dimension, setDimension] = useState({ width: 0, height: 0 })
 	const [rotate, setRotate] = useState(initialRotate)
@@ -39,18 +38,11 @@ const Card = ({
 	}, [imgUrl])
 
 	useEffect(() => {
-		if (imgWidth && imgHeight) {
-			setDimension({
-				width: containerRef.current.offsetWidth,
-				height: containerRef.current.offsetWidth * (imgHeight / imgWidth),
-			})
-		} else if (imgLoaded) {
-			setDimension({
-				width: dimensionRef.current.offsetWidth,
-				height: dimensionRef.current.offsetHeight,
-			})
-		}
-	}, [imgLoaded])
+		setDimension({
+			width: containerRef.current.offsetWidth,
+			height: containerRef.current.offsetWidth * (imgHeight / imgWidth),
+		})
+	}, [])
 
 	const handleMouseMove = (e) => {
 		const bbox = cardRef.current.getBoundingClientRect()
@@ -93,15 +85,6 @@ const Card = ({
 			}}
 			ref={containerRef}
 		>
-			<img
-				ref={dimensionRef}
-				className="fixed opacity-0"
-				style={{
-					zIndex: -1,
-					top: -1000,
-				}}
-				src={parseImgUrl(imgUrl)}
-			/>
 			<div
 				className="card-front absolute inset-0"
 				style={{
@@ -126,7 +109,10 @@ const Card = ({
 						}}
 					>
 						<div className="card-bg relative">
-							<img className="w-full h-full relative z-10" src={imgLoaded} />
+							<img
+								className="object-cover w-full h-full relative z-10"
+								src={imgLoaded}
+							/>
 							<div
 								className="absolute inset-0 z-20 transition-opacity duration-500 ease-in"
 								style={{

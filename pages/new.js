@@ -2,12 +2,14 @@ import axios from 'axios'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useState } from 'react'
 import Card from '../components/Card'
+import ImgCrop from '../components/ImgCrop'
 import Nav from '../components/Nav'
 import useStore from '../store'
 import { readFileAsUrl } from '../utils/common'
 
 const NewPage = () => {
 	const store = useStore()
+	const [showImgCrop, setShowImgCrop] = useState(false)
 	const [imgFile, setImgFile] = useState('')
 	const [imgUrl, setImgUrl] = useState('')
 	const [supply, setSupply] = useState(1)
@@ -17,15 +19,6 @@ const NewPage = () => {
 	const [collection, setCollection] = useState('')
 	const [description, setDescription] = useState('')
 	const [step, setStep] = useState(0)
-
-	// file,
-	// 	ownerId,
-	// 	supply,
-	// 	quantity,
-	// 	amount,
-	// 	name,
-	// 	description,
-	// 	collection,
 
 	const _submit = async (e) => {
 		e.preventDefault()
@@ -52,11 +45,12 @@ const NewPage = () => {
 	}
 
 	const _setImg = async (e) => {
-		const url = await readFileAsUrl(e.target.files[0])
-		setImgFile(e.target.files[0])
-		setImgUrl(url)
-		// setNewAvatarFile(e.target.files[0])
-		// setShowImgCrop(true)
+		if (e.target.files[0]) {
+			// const url = await readFileAsUrl(e.target.files[0])
+			// setImgUrl(url)
+			setImgFile(e.target.files[0])
+			setShowImgCrop(true)
+		}
 	}
 
 	return (
@@ -67,6 +61,21 @@ const NewPage = () => {
 			}}
 		>
 			<Nav />
+			{showImgCrop && (
+				<ImgCrop
+					input={imgFile}
+					size={{
+						width: 640,
+						height: 890,
+					}}
+					left={(_) => setShowImgCrop(false)}
+					right={(res) => {
+						setImgUrl(res.payload.imgUrl)
+						setImgFile(res.payload.imgFile)
+						setShowImgCrop(false)
+					}}
+				/>
+			)}
 			<div className="max-w-6xl flex m-auto bg-dark-primary-2">
 				<div className="w-2/3 py-16 flex justify-center items-center">
 					<div className="w-56">
@@ -91,49 +100,67 @@ const NewPage = () => {
 						/>
 					</div>
 				</div>
-				<div className="w-1/3 bg-white">
-					<input type="file" onChange={_setImg} />
-					<label>Name</label>
-					<input
-						type="text"
-						value={name}
-						onChange={(e) => setName(e.target.value)}
-					/>
-					<label>Collection</label>
-					<input
-						type="text"
-						value={collection}
-						onChange={(e) => setCollection(e.target.value)}
-					/>
-					<label>Description</label>
-					<textarea
-						type="text"
-						value={description}
-						onChange={(e) => setDescription(e.target.value)}
-					></textarea>
+				<div className="w-1/3 bg-white p-4">
+					<input type="file" accept="image/*" onChange={_setImg} />
 					<div>
-						<label>Supply</label>
+						<label className="block text-sm">Name</label>
+						<input
+							type="text"
+							value={name}
+							onChange={(e) => setName(e.target.value)}
+							className="bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full"
+						/>
+					</div>
+					<div className="mt-4">
+						<label className="block text-sm">Collection</label>
+						<input
+							type="text"
+							value={collection}
+							onChange={(e) => setCollection(e.target.value)}
+							className="bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full"
+						/>
+					</div>
+					<div className="mt-4">
+						<label className="block text-sm">Description</label>
+						<textarea
+							type="text"
+							value={description}
+							onChange={(e) => setDescription(e.target.value)}
+							className="bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 resize-none w-full h-24"
+						></textarea>
+					</div>
+					<div>
+						<label className="block text-sm">Supply</label>
 						<input
 							type="number"
 							value={supply}
 							onChange={(e) => setSupply(e.target.value)}
+							className="bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full"
 						/>
 					</div>
 					<div>
-						<label>Quantity</label>
+						<label className="block text-sm">Quantity</label>
 						<input
 							type="number"
 							value={quantity}
 							onChange={(e) => setQuantity(e.target.value)}
+							className="bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full"
+							min={1}
+							max={100}
 						/>
 					</div>
 					<div>
-						<label>Amount</label>
-						<input
-							type="string"
-							value={amount}
-							onChange={(e) => setAmount(e.target.value)}
-						/>
+						<label className="block text-sm">Amount</label>
+						<div className="flex justify-between bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full">
+							<input
+								type="string"
+								value={amount}
+								onChange={(e) => setAmount(e.target.value)}
+								className="bg-transparent w-full pr-2"
+							/>
+							<div className="inline-block">Ⓝ</div>
+						</div>
+						<p>~${store.nearUsdPrice * amount}</p>
 					</div>
 					<button onClick={_submit}>Add new card</button>
 					<div onClick={(_) => setStep(0)}>step 0</div>
