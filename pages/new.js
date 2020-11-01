@@ -142,8 +142,8 @@ const NewPage = () => {
 				<ImgCrop
 					input={imgFile}
 					size={{
-						width: 640,
-						height: 890,
+						width: 640 * 2,
+						height: 890 * 2,
 					}}
 					left={(_) => setShowImgCrop(false)}
 					right={(res) => {

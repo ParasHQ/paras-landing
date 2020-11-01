@@ -115,7 +115,7 @@ const Card = ({
 					onMouseLeave={handleMouseLeave}
 					ref={cardRef}
 					style={{
-						transform: `perspective(${dimension.height * 5}px)`,
+						transform: `perspective(${dimension.height * 4}px)`,
 					}}
 				>
 					<div
@@ -162,7 +162,7 @@ const Card = ({
 					onMouseLeave={handleMouseLeave}
 					ref={cardRef}
 					style={{
-						transform: `perspective(${dimension.height * 5}px)`,
+						transform: `perspective(${dimension.height * 4}px)`,
 					}}
 				>
 					<div
