@@ -23,8 +23,15 @@ function MyApp({ Component, pageProps }) {
 			'https://api.coingecko.com/api/v3/simple/price?ids=NEAR&vs_currencies=USD'
 		)
 		if (currentUser) {
+			const userProfileResp = await axios.get(
+				`http://localhost:9090/profiles?accountId=${currentUser.accountId}`
+			)
+			const userProfileResults = userProfileResp.data.data.results
+			const userProfile = userProfileResults.length > 0 ? userProfileResults[0] : {}
+
 			store.setCurrentUser(currentUser.accountId)
 			store.setUserBalance(currentUser.balance)
+			store.setUserProfile(userProfile)
 		}
 		store.setNearUsdPrice(nearUsdPrice.data.near.usd)
 		store.setInitialized(true)

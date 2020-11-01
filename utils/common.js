@@ -1,12 +1,11 @@
-import { FinalExecutionStatusBasic } from 'near-api-js/lib/providers'
-
 export const prettyBalance = (balance, decimals = 18, len = 8) => {
+	if (!balance) {
+		return '0'
+	}
 	const diff = balance.toString().length - decimals
 	const fixedPoint = len - Math.max(diff, 0)
 	const fixedBalance = (balance / 10 ** decimals).toFixed(fixedPoint)
-	console.log(fixedBalance)
 	const finalBalance = parseFloat(fixedBalance).toLocaleString()
-	console.log(FinalExecutionStatusBasic)
 	const [head, tail] = finalBalance.split('.')
 	if (head == 0) {
 		return `${head}.${tail.substring(0, len - 1)}`
@@ -24,4 +23,15 @@ export const readFileAsUrl = (file) => {
 		}
 		temporaryFileReader.readAsDataURL(file)
 	})
+}
+
+export const parseImgUrl = (url) => {
+	if (!url) {
+		return ''
+	}
+	const [protocol, path] = url.split('://')
+	if (protocol === 'ipfs') {
+		return `https://ipfs-gateway.paras.id/ipfs/${path}`
+	}
+	return url
 }

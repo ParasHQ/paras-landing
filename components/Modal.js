@@ -1,6 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 
-const Modal = ({ close = () => {}, children }) => {
+const Modal = ({
+	close = () => {},
+	closeOnBgClick = true,
+	closeOnEscape = true,
+	children,
+}) => {
 	const modalRef = useRef(null)
 
 	useEffect(() => {
@@ -9,7 +14,10 @@ const Modal = ({ close = () => {}, children }) => {
 				close()
 			}
 		}
-		document.addEventListener('keydown', onKeydown)
+		
+		if (closeOnEscape) {
+			document.addEventListener('keydown', onKeydown)
+		}
 
 		return () => {
 			document.removeEventListener('keydown', onKeydown)
@@ -17,7 +25,7 @@ const Modal = ({ close = () => {}, children }) => {
 	}, [])
 
 	const _bgClick = (e) => {
-		if (e.target === modalRef.current) {
+		if (e.target === modalRef.current && closeOnBgClick) {
 			close()
 		}
 	}
@@ -26,7 +34,7 @@ const Modal = ({ close = () => {}, children }) => {
 		<div
 			ref={modalRef}
 			onClick={(e) => _bgClick(e)}
-			className="fixed inset-0 z-50 flex items-center"
+			className="fixed inset-0 z-50 flex items-center p-4"
 			style={{
 				backgroundColor: `rgba(0,0,0,0.86)`,
 			}}

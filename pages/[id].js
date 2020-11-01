@@ -2,11 +2,12 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import useStore from '../store'
+import { parseImgUrl } from '../utils/common'
 
 const { default: CardList } = require('../components/CardList')
 const { default: Nav } = require('../components/Nav')
 
-const ProfileDetail = ({ creatorTokens, ownerTokens }) => {
+const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile }) => {
 	const store = useStore()
 	const router = useRouter()
 
@@ -95,12 +96,13 @@ const ProfileDetail = ({ creatorTokens, ownerTokens }) => {
 
 			<div className="max-w-6xl px-4 relative m-auto">
 				<div className="flex mt-12 flex-col items-center justify-center">
-					<div className="w-32 h-32 rounded-full bg-red-100"></div>
+					<div className="w-32 h-32 rounded-full bg-red-100">
+            <img src={parseImgUrl(userProfile.imgUrl)} className="object-cover" />
+          </div>
 					<div className="mt-4 max-w-sm text-center">
 						<h4 className="text-white font-bold">{router.query.id}</h4>
 						<p className="mt-2 text-gray-300">
-							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-							eiusmod tempor incididunt ut labore et dolore magna aliqua.
+							{userProfile.bio}
 						</p>
 					</div>
 				</div>
@@ -170,11 +172,15 @@ export async function getServerSideProps({ params }) {
 	)
 	const ownerRes = await axios(
 		`http://localhost:9090/tokens?ownerId=${params.id}&__limit=5`
+  )
+  const profileRes = await axios(
+		`http://localhost:9090/profiles?accountId=${params.id}`
 	)
 	const creatorTokens = await creatorRes.data.data.results
-	const ownerTokens = await ownerRes.data.data.results
+  const ownerTokens = await ownerRes.data.data.results
+  const userProfile = await profileRes.data.data.results[0] || {}
 
-	return { props: { creatorTokens, ownerTokens } }
+	return { props: { creatorTokens, ownerTokens, userProfile } }
 }
 
 export default ProfileDetail

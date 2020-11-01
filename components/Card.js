@@ -1,13 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Blurhash } from 'react-blurhash'
-
-const parseImgUrl = (url) => {
-	const [protocol, path] = url.split('://')
-	if (protocol === 'ipfs') {
-		return `https://ipfs-gateway.paras.id/ipfs/${path}`
-	}
-	return url
-}
+import { parseImgUrl } from '../utils/common'
 
 const Card = ({
 	imgUrl,

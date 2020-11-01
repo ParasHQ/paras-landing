@@ -44,7 +44,11 @@ const Nav = () => {
 	return (
 		<div className="h-16">
 			{showEditAccountModal && (
-				<Modal close={(_) => setShowEditAccountModal(false)}>
+				<Modal
+					close={(_) => setShowEditAccountModal(false)}
+					closeOnBgClick={false}
+					closeOnEscape={false}
+				>
 					<div className="w-full max-w-sm p-4 m-auto bg-white rounded-md">
 						<ProfileEdit close={(_) => setShowEditAccountModal(false)} />
 					</div>
@@ -166,11 +170,12 @@ const Nav = () => {
 														Edit Profile
 													</p>
 												</button>
+												<hr className="mt-2" />
 												<p
 													onClick={_signOut}
 													className="cursor-pointer pt-2 text-gray-800 hover:text-black"
 												>
-													Logout
+													Log out
 												</p>
 											</div>
 										</div>

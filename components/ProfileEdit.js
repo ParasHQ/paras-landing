@@ -1,14 +1,44 @@
+import axios from 'axios'
 import { useState } from 'react'
+import useStore from '../store'
+import { parseImgUrl } from '../utils/common'
 import ImgCrop from './ImgCrop'
-import Nav from './Nav'
 
 const ProfileEdit = ({ close }) => {
+	const store = useStore()
 	const [showImgCrop, setShowImgCrop] = useState(false)
-	const [imgFile, setImgFile] = useState('')
-	const [imgUrl, setImgUrl] = useState('')
+	const [imgFile, setImgFile] = useState({})
+	const [imgUrl, setImgUrl] = useState(store.userProfile.imgUrl || '')
 
-	const [bio, setBio] = useState('')
+	const [bio, setBio] = useState(store.userProfile.bio || '')
 	const [isSubmitting, setIsSubmitting] = useState(false)
+
+	const _submit = async (e) => {
+		e.preventDefault()
+
+		setIsSubmitting(true)
+
+		const formData = new FormData()
+		if (imgFile) {
+			formData.append('file', imgFile)
+		}
+		formData.append('bio', bio)
+		formData.append('accountId', store.currentUser)
+
+		try {
+			const resp = await axios.put(`http://localhost:9090/profiles`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			})
+			store.setUserProfile(resp.data.data)
+			close()
+		} catch (err) {
+			console.log(err)
+		}
+
+		setIsSubmitting(false)
+	}
 
 	const _setImg = async (e) => {
 		if (e.target.files[0]) {
@@ -36,7 +66,10 @@ const ProfileEdit = ({ close }) => {
 				/>
 			)}
 			<div className="m-auto">
-				<div className="mx-auto relative cursor-pointer w-32 h-32 rounded-full overflow-hidden">
+				<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+					Edit Profile
+				</h1>
+				<div className="mt-4 mx-auto relative cursor-pointer w-32 h-32 rounded-full overflow-hidden">
 					<input
 						className="cursor-pointer w-full opacity-0 absolute inset-0"
 						type="file"
@@ -45,21 +78,10 @@ const ProfileEdit = ({ close }) => {
 					/>
 					<div className="flex items-center justify-center">
 						<div className="w-32 h-32 rounded-full bg-primary">
-							<img src={imgUrl} className="w-full object-cover" />
+							<img src={parseImgUrl(imgUrl)} className="w-full object-cover" />
 						</div>
 					</div>
 				</div>
-				{/* <div className="mt-4">
-					<label className="block text-sm">Name</label>
-					<input
-						type="text"
-						name="name"
-						placeholder="Card name"
-					/>
-					<div className="mt-2 text-sm text-red-500">
-						{errors.name && 'Name is required'}
-					</div>
-				</div> */}
 				<div className="mt-4">
 					<label className="block text-sm">Bio</label>
 					<textarea
@@ -75,7 +97,7 @@ const ProfileEdit = ({ close }) => {
 					<button
 						disabled={isSubmitting}
 						className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-white"
-						// onClick={_submit}
+						onClick={_submit}
 					>
 						{!isSubmitting ? 'Save' : 'Saving...'}
 					</button>

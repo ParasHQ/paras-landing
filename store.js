@@ -32,6 +32,8 @@ const useStore = create((set, get) => ({
 	setNearUsdPrice: (val) => set(() => ({ nearUsdPrice: val })),
 	userBalance: {},
 	setUserBalance: (val) => set(() => ({ userBalance: val })),
+	userProfile: {},
+	setUserProfile: (val) => set(() => ({ userProfile: val })),
 }))
 
 export default useStore
