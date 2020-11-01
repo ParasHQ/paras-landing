@@ -166,7 +166,6 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile }) => {
 }
 
 export async function getServerSideProps({ params }) {
-	axios
 	const creatorRes = await axios(
 		`http://localhost:9090/tokens?creatorId=${params.id}&__limit=5`
 	)
