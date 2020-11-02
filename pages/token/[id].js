@@ -7,10 +7,11 @@ import Nav from '../../components/Nav'
 import Modal from '../../components/Modal'
 import near from '../../lib/near'
 import useStore from '../../store'
-import { prettyBalance } from '../../utils/common'
+import { parseImgUrl, prettyBalance } from '../../utils/common'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import JSBI from 'jsbi'
+import Head from 'next/head'
 
 const TokenDetail = ({ token }) => {
 	const store = useStore()
@@ -130,6 +131,39 @@ const TokenDetail = ({ token }) => {
 				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
 			}}
 		>
+			<Head>
+				<title>{`${token.metadata.name} — Paras`}</title>
+				<meta
+					name="description"
+					content={token.metadata.description}
+				/>
+
+				<meta name="twitter:title" content={`${token.metadata.name} — Paras`} />
+				<meta name="twitter:card" content="summary_large_image" />
+				<meta name="twitter:site" content="@ParasHQ" />
+				<meta
+					name="twitter:description"
+					content={token.metadata.description}
+				/>
+				<meta
+					name="twitter:image"
+					content={parseImgUrl(token.metadata.image)}
+				/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={`${token.metadata.name} - Paras`} />
+				<meta
+					property="og:site_name"
+					content={`${token.metadata.name} — Paras`}
+				/>
+				<meta
+					property="og:description"
+					content={token.metadata.description}
+				/>
+				<meta
+					property="og:image"
+					content={parseImgUrl(token.metadata.image)}
+				/>
+			</Head>
 			<Nav />
 			{isComponentMounted && (
 				<div
@@ -384,7 +418,7 @@ const TokenDetail = ({ token }) => {
 						}}
 					>
 						<Card
-							imgUrl={token.metadata.image}
+							imgUrl={parseImgUrl(token.metadata.image)}
 							imgBlur={token.metadata.blurhash}
 							token={{
 								name: token.metadata.name,
