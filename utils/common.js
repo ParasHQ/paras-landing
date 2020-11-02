@@ -14,6 +14,13 @@ export const prettyBalance = (balance, decimals = 18, len = 8) => {
 	return tail ? `${formattedHead}.${tail}` : formattedHead
 }
 
+export const prettyTruncate = (str = '', len = 8) => {
+	if (str.length > len) {
+		return `${str.slice(0, len)}...`
+	}
+	return str
+}
+
 export const readFileAsUrl = (file) => {
 	const temporaryFileReader = new FileReader()
 

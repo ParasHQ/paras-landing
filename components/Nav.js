@@ -5,7 +5,7 @@ import near from '../lib/near'
 import useStore from '../store'
 import Modal from './Modal'
 import ProfileEdit from './ProfileEdit'
-import { prettyBalance } from '../utils/common'
+import { prettyBalance, prettyTruncate } from '../utils/common'
 
 const Nav = () => {
 	const store = useStore()
@@ -55,7 +55,7 @@ const Nav = () => {
 				</Modal>
 			)}
 			<div className="fixed z-50 bg-black top-0 left-0 right-0">
-				<div className="flex items-center justify-between max-w-6xl m-auto p-4">
+				<div className="flex items-center justify-between max-w-6xl m-auto p-4 h-16">
 					<div>
 						<Link href="/">
 							<svg
@@ -118,23 +118,25 @@ const Nav = () => {
 							{store.currentUser ? (
 								<div ref={accModalRef} className="relative">
 									<div
-										className="cursor-pointer select-none flex items-center"
+										className="cursor-pointer select-none flex items-center justify-end w-32"
 										onClick={toggleAccountModal}
 									>
-										<p>{store.currentUser}</p>
-										<div className="ml-1">
-											<svg
-												width="10"
-												height="10"
-												viewBox="0 0 21 19"
-												fill="none"
-												xmlns="http://www.w3.org/2000/svg"
-											>
-												<path
-													d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z"
-													fill="white"
-												/>
-											</svg>
+										<div className="flex items-center overflow-hidden">
+											<p className="truncate">{store.currentUser}</p>
+											<div className="ml-1">
+												<svg
+													width="10"
+													height="10"
+													viewBox="0 0 21 19"
+													fill="none"
+													xmlns="http://www.w3.org/2000/svg"
+												>
+													<path
+														d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z"
+														fill="white"
+													/>
+												</svg>
+											</div>
 										</div>
 									</div>
 									{showAccountModal && (
