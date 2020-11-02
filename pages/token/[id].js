@@ -10,40 +10,42 @@ import useStore from '../../store'
 import { prettyBalance } from '../../utils/common'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
+import JSBI from 'jsbi'
 
 const TokenDetail = ({ token }) => {
 	const store = useStore()
 	const router = useRouter()
-	const {
-		errors,
-		register,
-		handleSubmit,
-		watch,
-		setValue,
-		getValues,
-	} = useForm()
+	const { errors, register, handleSubmit, watch, getValues } = useForm({
+		defaultValues: {
+			buyQuantity: 1,
+		},
+	})
 
-	const [listingQuantity, setListingQuantity] = useState(0)
-	const [listingPrice, setListingPrice] = useState('')
 	const [activeTab, setActiveTab] = useState('owners')
 	const [showModal, setShowModal] = useState('')
 	const [isSubmitting, setIsSubmitting] = useState(false)
+	const [chosenSeller, setChosenSeller] = useState(null)
 
-	const _buy = async (ownership) => {
+	const _buy = async (data) => {
 		//   ownerId: AccountId,
 		// tokenId: TokenId,
 		// quantity: u128
 		const params = {
-			ownerId: ownership.ownerId,
-			tokenId: ownership.tokenId,
-			quantity: '1',
+			ownerId: chosenSeller.ownerId,
+			tokenId: chosenSeller.tokenId,
+			quantity: data.buyQuantity,
 		}
+
+		const attachedDeposit = JSBI.multiply(
+			JSBI.BigInt(data.buyQuantity),
+			JSBI.BigInt(chosenSeller.marketData.amount)
+		)
 
 		try {
 			await near.contract.buy(
 				params,
 				'30000000000000',
-				ownership.marketData.amount
+				attachedDeposit.toString()
 			)
 		} catch (err) {
 			console.log(err)
@@ -76,7 +78,7 @@ const TokenDetail = ({ token }) => {
 		setIsSubmitting(false)
 	}
 
-	const _removePrice = async (ownership) => {
+	const _removePrice = async () => {
 		// export function updateMarketData(
 		//   ownerId: AccountId,
 		//   tokenId: TokenId,
@@ -118,18 +120,15 @@ const TokenDetail = ({ token }) => {
 						>
 							Copy Link
 						</div>
-						<div
-							className="py-2 cursor-pointer"
-							// onClick={(_) => setShowModal('addUpdateListing')}
-						>
-							Buy
-						</div>
-						<div
-							className="py-2 cursor-pointer"
-							onClick={(_) => setShowModal('addUpdateListing')}
-						>
-							Sell
-						</div>
+						{_getUserOwnership(store.currentUser) &&
+							_getUserOwnership(store.currentUser).quantity > 0 && (
+								<div
+									className="py-2 cursor-pointer"
+									onClick={(_) => setShowModal('addUpdateListing')}
+								>
+									Update My Listing
+								</div>
+							)}
 					</div>
 				</Modal>
 			)}
@@ -235,6 +234,92 @@ const TokenDetail = ({ token }) => {
 					</div>
 				</Modal>
 			)}
+			{showModal === 'confirmBuy' && (
+				<Modal
+					close={(_) => setShowModal('')}
+					closeOnBgClick={false}
+					closeOnEscape={false}
+				>
+					<div className="max-w-sm w-full p-4 bg-white m-auto rounded-md">
+						<div>
+							<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+								Confirm Buy
+							</h1>
+							<form onSubmit={handleSubmit(_buy)}>
+								<div className="mt-4">
+									<label className="block text-sm">
+										Buy quantity (Available: {chosenSeller.marketData.quantity})
+									</label>
+									<input
+										type="number"
+										name="buyQuantity"
+										ref={register({
+											required: true,
+											min: 1,
+											max: chosenSeller.marketData.quantity,
+										})}
+										className={`${errors.buyQuantity && 'error'}`}
+										placeholder="Number of card(s) to buy"
+									/>
+									<div className="mt-2 text-sm text-red-500">
+										{errors.buyQuantity?.type === 'required' &&
+											`Buy quantity is required`}
+										{errors.buyQuantity?.type === 'min' && `Minimum 1`}
+										{errors.buyQuantity?.type === 'max' &&
+											`Must be less than available`}
+									</div>
+								</div>
+								<div className="mt-4 text-center">
+									<p className="text-gray-800 text-xs">Total</p>
+									<div className="text-2xl">
+										<p>
+											{prettyBalance(
+												chosenSeller.marketData.amount *
+													watch('buyQuantity' || 0),
+												24,
+												6
+											)}{' '}
+											Ⓝ
+										</p>
+									</div>
+									<p className="text-sm">
+										~$
+										{prettyBalance(
+											store.nearUsdPrice *
+												chosenSeller.marketData.amount *
+												watch('buyQuantity' || 0),
+											24,
+											6
+										)}
+									</p>
+								</div>
+								<p className="mt-4 text-sm text-center">
+									You will be redirected to NEAR Web Wallet to confirm your
+									transaction
+								</p>
+								<div className="">
+									<button
+										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-white"
+										type="submit"
+									>
+										Buy
+									</button>
+									<button
+										disabled={isSubmitting}
+										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
+										onClick={(_) => {
+											setChosenSeller(null)
+											setShowModal(false)
+										}}
+									>
+										Cancel
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</Modal>
+			)}
 			<div className="flex flex-wrap ">
 				<div className="w-full h-full lg:w-2/3 px-4 bg-dark-primary-1 p-8">
 					<div
@@ -335,7 +420,14 @@ const TokenDetail = ({ token }) => {
 												</p>
 												<p>Available {ownership.marketData.quantity}</p>
 
-												<button onClick={(_) => _buy(ownership)}>Buy</button>
+												<button
+													onClick={(_) => {
+														setChosenSeller(ownership)
+														setShowModal('confirmBuy')
+													}}
+												>
+													Buy
+												</button>
 											</div>
 										)}
 									</div>
