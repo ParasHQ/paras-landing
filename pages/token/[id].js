@@ -116,11 +116,11 @@ const TokenDetail = ({ token }) => {
 		document.execCommand('copy')
 
 		setIsCopied(true)
-		
+
 		setTimeout(() => {
 			setShowModal(false)
 			setIsCopied(false)
-		}, 1500);
+		}, 1500)
 	}
 
 	return (
@@ -150,9 +150,7 @@ const TokenDetail = ({ token }) => {
 				<Modal close={(_) => setShowModal('')}>
 					<div className="max-w-sm w-full px-4 py-2 bg-white m-auto rounded-md">
 						<div className="py-2 cursor-pointer" onClick={(_) => _copyLink()}>
-							{
-								isCopied ? `Copied` : `Copy Link`
-							}
+							{isCopied ? `Copied` : `Copy Link`}
 						</div>
 						{_getUserOwnership(store.currentUser) &&
 							_getUserOwnership(store.currentUser).quantity > 0 && (
@@ -226,11 +224,35 @@ const TokenDetail = ({ token }) => {
 										/>
 										<div className="inline-block">Ⓝ</div>
 									</div>
-									<p>
-										~$
-										{Number(
-											store.nearUsdPrice * (watch('amount') || 0)
-										).toPrecision(6)}
+									<p className="text-sm mt-2">
+										Receive:{' '}
+										{parseFloat(
+											Number(getValues('amount', 0) * 0.95)
+												.toPrecision(4)
+												.toString()
+										)}{' '}
+										N (~$
+										{parseFloat(
+											Number(store.nearUsdPrice * getValues('amount', 0) * 0.95)
+												.toPrecision(4)
+												.toString()
+										)}
+										)
+									</p>
+									<p className="text-sm">
+										Fee:{' '}
+										{parseFloat(
+											Number(getValues('amount', 0) * 0.05)
+												.toPrecision(4)
+												.toString()
+										)}{' '}
+										N (~$
+										{parseFloat(
+											Number(store.nearUsdPrice * getValues('amount', 0) * 0.05)
+												.toPrecision(4)
+												.toString()
+										)}
+										)
 									</p>
 									<div className="mt-2 text-sm text-red-500">
 										{errors.amount?.type === 'required' &&
@@ -383,7 +405,10 @@ const TokenDetail = ({ token }) => {
 				<div className="w-full lg:w-1/3 bg-white p-4">
 					<div className="flex justify-between">
 						<p className="text-xl">{token.metadata.name}</p>
-						<div className="cursor-pointer" onClick={(_) => setShowModal('options')}>
+						<div
+							className="cursor-pointer"
+							onClick={(_) => setShowModal('options')}
+						>
 							<svg
 								width="24"
 								height="24"

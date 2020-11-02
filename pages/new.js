@@ -138,7 +138,7 @@ const NewPage = () => {
 							<div>
 								<button
 									className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-white"
-									onClick={_ => setShowAlertErr(false)}
+									onClick={(_) => setShowAlertErr(false)}
 								>
 									OK
 								</button>
@@ -149,8 +149,8 @@ const NewPage = () => {
 			)}
 			{showConfirmModal && (
 				<Modal close={(_) => setShowConfirmModal(false)}>
-					<div className="w-full max-w-xs p-4 m-auto bg-white rounded-md overflow-y-auto max-h-screen">
-						<div>
+					<div className="w-full flex flex-wrap max-w-lg p-4 m-auto bg-white rounded-md overflow-x-hidden overflow-y-auto max-h-full">
+						<div className="w-full md:w-1/2 px-4">
 							<div className="w-full">
 								<Card
 									imgWidth={640}
@@ -172,34 +172,73 @@ const NewPage = () => {
 								/>
 							</div>
 						</div>
-						<div className="mt-4">
-							<p>Market Data</p>
-							<p className="text-sm">Available: {getValues('quantity')} pcs</p>
-							<p className="text-sm">
-								Price: {Number(getValues('amount', 0)).toPrecision(4)} N (~$
-								{Number(
-									store.nearUsdPrice * getValues('amount', 0)
-								).toPrecision(4)}
-								)
-							</p>
-						</div>
-						<div className="mt-2">
-							<p>Confirm card creation?</p>
-						</div>
-						<div className="">
-							<button
-								disabled={isSubmitting}
-								className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-white"
-								onClick={_submit}
-							>
-								{!isSubmitting ? 'Create' : 'Creating...'}
-							</button>
-							<button
-								className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
-								onClick={(_) => setShowConfirmModal(false)}
-							>
-								Cancel
-							</button>
+						<div className="w-full md:w-1/2 pl-0 md:pl-2 flex items-center">
+							<div className="w-full">
+								<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+									Market Data
+								</h1>
+								<p className="text-sm mt-2">
+									Price:{' '}
+									{parseFloat(
+										Number(getValues('amount', 0)).toPrecision(4).toString()
+									)}{' '}
+									N (~$
+									{parseFloat(
+										Number(store.nearUsdPrice * getValues('amount', 0))
+											.toPrecision(4)
+											.toString()
+									)}
+									)
+								</p>
+								<p className="text-sm">
+									Receive:{' '}
+									{parseFloat(
+										Number(getValues('amount', 0) * 0.95)
+											.toPrecision(4)
+											.toString()
+									)}{' '}
+									N (~$
+									{parseFloat(
+										Number(store.nearUsdPrice * getValues('amount', 0) * 0.95)
+											.toPrecision(4)
+											.toString()
+									)}
+									)
+								</p>
+								<p className="text-sm">
+									Fee:{' '}
+									{parseFloat(
+										Number(getValues('amount', 0) * 0.05)
+											.toPrecision(4)
+											.toString()
+									)}{' '}
+									N (~$
+									{parseFloat(
+										Number(store.nearUsdPrice * getValues('amount', 0) * 0.05)
+											.toPrecision(4)
+											.toString()
+									)}
+									)
+								</p>
+								<div className="mt-2">
+									<p>Confirm card creation?</p>
+								</div>
+								<div className="">
+									<button
+										disabled={isSubmitting}
+										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-white"
+										onClick={_submit}
+									>
+										{!isSubmitting ? 'Create' : 'Creating...'}
+									</button>
+									<button
+										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
+										onClick={(_) => setShowConfirmModal(false)}
+									>
+										Cancel
+									</button>
+								</div>
+							</div>
 						</div>
 					</div>
 				</Modal>
