@@ -182,7 +182,7 @@ const NewPage = () => {
 									{parseFloat(
 										Number(getValues('amount', 0)).toPrecision(4).toString()
 									)}{' '}
-									N (~$
+									Ⓝ (~$
 									{parseFloat(
 										Number(store.nearUsdPrice * getValues('amount', 0))
 											.toPrecision(4)
@@ -197,7 +197,7 @@ const NewPage = () => {
 											.toPrecision(4)
 											.toString()
 									)}{' '}
-									N (~$
+									Ⓝ (~$
 									{parseFloat(
 										Number(store.nearUsdPrice * getValues('amount', 0) * 0.95)
 											.toPrecision(4)
@@ -212,7 +212,7 @@ const NewPage = () => {
 											.toPrecision(4)
 											.toString()
 									)}{' '}
-									N (~$
+									Ⓝ (~$
 									{parseFloat(
 										Number(store.nearUsdPrice * getValues('amount', 0) * 0.05)
 											.toPrecision(4)

@@ -231,7 +231,7 @@ const TokenDetail = ({ token }) => {
 												.toPrecision(4)
 												.toString()
 										)}{' '}
-										N (~$
+										Ⓝ (~$
 										{parseFloat(
 											Number(store.nearUsdPrice * getValues('amount', 0) * 0.95)
 												.toPrecision(4)
@@ -246,7 +246,7 @@ const TokenDetail = ({ token }) => {
 												.toPrecision(4)
 												.toString()
 										)}{' '}
-										N (~$
+										Ⓝ (~$
 										{parseFloat(
 											Number(store.nearUsdPrice * getValues('amount', 0) * 0.05)
 												.toPrecision(4)
