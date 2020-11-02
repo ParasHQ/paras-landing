@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Card from '../../components/Card'
 import Nav from '../../components/Nav'
 import Modal from '../../components/Modal'
@@ -15,6 +15,7 @@ import JSBI from 'jsbi'
 const TokenDetail = ({ token }) => {
 	const store = useStore()
 	const router = useRouter()
+	const copyLinkRef = useRef()
 	const { errors, register, handleSubmit, watch, getValues } = useForm({
 		defaultValues: {
 			buyQuantity: 1,
@@ -23,8 +24,13 @@ const TokenDetail = ({ token }) => {
 
 	const [activeTab, setActiveTab] = useState('owners')
 	const [showModal, setShowModal] = useState('')
+	const [isComponentMounted, setIsComponentMounted] = useState(false)
+
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [chosenSeller, setChosenSeller] = useState(null)
+	const [isCopied, setIsCopied] = useState(false)
+
+	useEffect(() => setIsComponentMounted(true), [])
 
 	const _buy = async (data) => {
 		//   ownerId: AccountId,
@@ -79,7 +85,7 @@ const TokenDetail = ({ token }) => {
 	}
 
 	const _removePrice = async () => {
-		// export function updateMarketData(
+		// 	 export function updateMarketData(
 		//   ownerId: AccountId,
 		//   tokenId: TokenId,
 		//   quantity: u128,
@@ -103,6 +109,20 @@ const TokenDetail = ({ token }) => {
 		return ownership
 	}
 
+	const _copyLink = () => {
+		const copyText = copyLinkRef.current
+		copyText.select()
+		copyText.setSelectionRange(0, 99999)
+		document.execCommand('copy')
+
+		setIsCopied(true)
+		
+		setTimeout(() => {
+			setShowModal(false)
+			setIsCopied(false)
+		}, 1500);
+	}
+
 	return (
 		<div
 			className="min-h-screen bg-dark-primary-1"
@@ -111,14 +131,28 @@ const TokenDetail = ({ token }) => {
 			}}
 		>
 			<Nav />
+			{isComponentMounted && (
+				<div
+					className="absolute z-0 opacity-0"
+					style={{
+						top: `-1000`,
+					}}
+				>
+					<input
+						ref={copyLinkRef}
+						readOnly
+						type="text"
+						value={window.location.href}
+					/>
+				</div>
+			)}
 			{showModal === 'options' && (
 				<Modal close={(_) => setShowModal('')}>
-					<div className="max-w-sm w-full px-4 bg-white m-auto rounded-md">
-						<div
-							className="py-2 cursor-pointer"
-							// onClick={(_) => setShowModal('addUpdateListing')}
-						>
-							Copy Link
+					<div className="max-w-sm w-full px-4 py-2 bg-white m-auto rounded-md">
+						<div className="py-2 cursor-pointer" onClick={(_) => _copyLink()}>
+							{
+								isCopied ? `Copied` : `Copy Link`
+							}
 						</div>
 						{_getUserOwnership(store.currentUser) &&
 							_getUserOwnership(store.currentUser).quantity > 0 && (
@@ -349,7 +383,7 @@ const TokenDetail = ({ token }) => {
 				<div className="w-full lg:w-1/3 bg-white p-4">
 					<div className="flex justify-between">
 						<p className="text-xl">{token.metadata.name}</p>
-						<div onClick={(_) => setShowModal('options')}>
+						<div className="cursor-pointer" onClick={(_) => setShowModal('options')}>
 							<svg
 								width="24"
 								height="24"
@@ -359,15 +393,15 @@ const TokenDetail = ({ token }) => {
 							>
 								<path
 									d="M20 12C20 13.1046 19.1046 14 18 14C16.8954 14 16 13.1046 16 12C16 10.8954 16.8954 10 18 10C19.1046 10 20 10.8954 20 12Z"
-									fill="rbg(0,0,0)"
+									fill="black"
 								/>
 								<path
 									d="M14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12Z"
-									fill="rbg(0,0,0)"
+									fill="black"
 								/>
 								<path
 									d="M8 12C8 13.1046 7.10457 14 6 14C4.89543 14 4 13.1046 4 12C4 10.8954 4.89543 10 6 10C7.10457 10 8 10.8954 8 12Z"
-									fill="rbg(0,0,0)"
+									fill="black"
 								/>
 							</svg>
 						</div>
