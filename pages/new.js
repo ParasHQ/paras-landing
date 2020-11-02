@@ -29,6 +29,7 @@ const NewPage = () => {
 	const [step, setStep] = useState(0)
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
+	const [showFront, setShowFront] = useState(true)
 
 	const _submit = async () => {
 		setIsSubmitting(true)
@@ -47,7 +48,7 @@ const NewPage = () => {
 			await axios.post(`http://localhost:9090/tokens`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
-					'authorization': await near.authToken()
+					authorization: await near.authToken(),
 				},
 			})
 			router.push('/market')
@@ -65,6 +66,14 @@ const NewPage = () => {
 		setValue('supply', formInput.supply)
 		setValue('quantity', formInput.quantity)
 		setValue('amount', formInput.amount)
+
+		if (step === 0 || step === 2) {
+			setShowFront(true)
+		}
+
+		if (step === 1) {
+			setShowFront(false)
+		}
 	}, [step])
 
 	const _updateValues = () => {
@@ -117,7 +126,9 @@ const NewPage = () => {
 		>
 			<Nav />
 			{showConfirmModal && (
-				<Modal close={(_) => setShowConfirmModal(false)}>
+				<Modal
+					close={(_) => setShowConfirmModal(false)}
+				>
 					<div className="w-full max-w-xs p-4 m-auto bg-white rounded-md">
 						<div>
 							<p>Confirm card creation?</p>
@@ -147,7 +158,10 @@ const NewPage = () => {
 						width: 640 * 2,
 						height: 890 * 2,
 					}}
-					left={(_) => setShowImgCrop(false)}
+					left={(_) => {
+						setImgFile(null)
+						setShowImgCrop(false)
+					}}
 					right={(res) => {
 						setImgUrl(res.payload.imgUrl)
 						setImgFile(res.payload.imgFile)
@@ -175,6 +189,8 @@ const NewPage = () => {
 								x: 0,
 								y: 0,
 							}}
+							isShowFront={showFront}
+							setIsShowFront={setShowFront}
 						/>
 					</div>
 				</div>
@@ -213,16 +229,19 @@ const NewPage = () => {
 									)}
 								</div>
 							</div>
-							<div className="mt-4 relative border-2 h-56 border-dashed rounded-md cursor-pointer">
+							<div className="mt-4 relative border-2 h-56 border-dashed rounded-md cursor-pointer overflow-hidden">
 								<input
 									className="cursor-pointer w-full opacity-0 absolute inset-0"
 									type="file"
 									accept="image/*"
+									onClick={(e) => {
+										e.target.value = null
+									}}
 									onChange={_setImg}
 								/>
 								<div className="flex items-center justify-center h-full">
 									{imgFile ? (
-										<div>
+										<div className="w-32">
 											<svg
 												className="m-auto"
 												width="48"
@@ -232,13 +251,15 @@ const NewPage = () => {
 												xmlns="http://www.w3.org/2000/svg"
 											>
 												<path
-													fill-rule="evenodd"
-													clip-rule="evenodd"
+													fillRule="evenodd"
+													clipRule="evenodd"
 													d="M4 2H20C21.1046 2 22 2.89543 22 4V20C22 21.1046 21.1046 22 20 22H4C2.89543 22 2 21.1046 2 20V4C2 2.89543 2.89543 2 4 2ZM4 4V15.5858L8 11.5858L11.5 15.0858L18 8.58579L20 10.5858V4H4ZM4 20V18.4142L8 14.4142L13.5858 20H4ZM20 20H16.4142L12.9142 16.5L18 11.4142L20 13.4142V20ZM14 8C14 6.34315 12.6569 5 11 5C9.34315 5 8 6.34315 8 8C8 9.65685 9.34315 11 11 11C12.6569 11 14 9.65685 14 8ZM10 8C10 7.44772 10.4477 7 11 7C11.5523 7 12 7.44772 12 8C12 8.55228 11.5523 9 11 9C10.4477 9 10 8.55228 10 8Z"
 													fill="black"
 												/>
 											</svg>
-											<p className="text-gray-700 mt-4">{imgFile.name}</p>
+											<p className="text-gray-700 mt-4 truncate">
+												{imgFile.name}
+											</p>
 										</div>
 									) : (
 										<div>
@@ -251,8 +272,8 @@ const NewPage = () => {
 												xmlns="http://www.w3.org/2000/svg"
 											>
 												<path
-													fill-rule="evenodd"
-													clip-rule="evenodd"
+													fillRule="evenodd"
+													clipRule="evenodd"
 													d="M4 2H20C21.1046 2 22 2.89543 22 4V20C22 21.1046 21.1046 22 20 22H4C2.89543 22 2 21.1046 2 20V4C2 2.89543 2.89543 2 4 2ZM4 4V15.5858L8 11.5858L11.5 15.0858L18 8.58579L20 10.5858V4H4ZM4 20V18.4142L8 14.4142L13.5858 20H4ZM20 20H16.4142L12.9142 16.5L18 11.4142L20 13.4142V20ZM14 8C14 6.34315 12.6569 5 11 5C9.34315 5 8 6.34315 8 8C8 9.65685 9.34315 11 11 11C12.6569 11 14 9.65685 14 8ZM10 8C10 7.44772 10.4477 7 11 7C11.5523 7 12 7.44772 12 8C12 8.55228 11.5523 9 11 9C10.4477 9 10 8.55228 10 8Z"
 													fill="black"
 												/>

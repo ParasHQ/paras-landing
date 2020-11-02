@@ -13,13 +13,17 @@ const Card = ({
 	},
 	imgBlur,
 	disableFlip = false,
+	isShowFront = null,
+	setIsShowFront = null,
 }) => {
 	const containerRef = useRef()
 	const cardRef = useRef()
 	const [imgLoaded, setImgLoaded] = useState(null)
 	const [dimension, setDimension] = useState({ width: 0, height: 0 })
 	const [rotate, setRotate] = useState(initialRotate)
-	const [isShowFront, setIsShowFront] = useState(true)
+	if (!setIsShowFront) {
+		[isShowFront, setIsShowFront] = useState(true)
+	}
 
 	let cardTimeout
 

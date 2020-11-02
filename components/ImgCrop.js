@@ -47,19 +47,6 @@ const ImgCrop = ({
 		}
 	}, [imgUrl])
 
-	useEffect(() => {
-		const onKeydown = (e) => {
-			if (e.key === 'Escape') {
-				_left()
-			}
-		}
-		document.addEventListener('keydown', onKeydown)
-
-		return () => {
-			document.removeEventListener('keydown', onKeydown)
-		}
-	}, [])
-
 	const _right = async (e) => {
 		e.preventDefault()
 
@@ -69,7 +56,7 @@ const ImgCrop = ({
 			format: 'jpeg',
 		})
 		newFile.lastModifiedDate = new Date()
-		newFile.name = `${Math.random().toString(36).substr(2, 9)}.png`
+		newFile.name = input.name
 		const newImg = await readFileAsUrl(newFile)
 
 		right({
@@ -86,16 +73,9 @@ const ImgCrop = ({
 		left()
 	}
 
-	const _bgClick = (e) => {
-		if (e.target.id === 'new-modal-bg') {
-			_left()
-		}
-	}
-
 	return (
 		<div
 			id="new-modal-bg"
-			onClick={(e) => _bgClick(e)}
 			className={`${!firstLoad ? `visible` : `invisible`}
       fixed inset-0 z-50 flex items-center
       `}
@@ -103,17 +83,6 @@ const ImgCrop = ({
 				backgroundColor: `rgba(0,0,0,0.86)`,
 			}}
 		>
-			{/* <Confirm
-				show={showConfirm}
-				onClose={(_) => setShowConfirm(false)}
-				onComplete={(_) => {
-					setShowConfirm(false)
-					left()
-				}}
-				mainText="Discard current image?"
-				leftText="Cancel"
-				rightText="Discard"
-			/> */}
 			<div className="max-w-sm m-auto p-4 w-full">
 				<div className="bg-gray-100 w-full rounded-md overflow-hidden">
 					<div className="flex justify-between items-center w-full h-12 bg-dark-12 px-2">
