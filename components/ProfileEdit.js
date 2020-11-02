@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useState } from 'react'
+import near from '../lib/near'
 import useStore from '../store'
 import { parseImgUrl } from '../utils/common'
 import ImgCrop from './ImgCrop'
@@ -29,6 +30,7 @@ const ProfileEdit = ({ close }) => {
 			const resp = await axios.put(`http://localhost:9090/profiles`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
+					'authorization': await near.authToken()
 				},
 			})
 			store.setUserProfile(resp.data.data)

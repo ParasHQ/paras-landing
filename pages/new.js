@@ -8,6 +8,7 @@ import useStore from '../store'
 import { useForm } from 'react-hook-form'
 import Modal from '../components/Modal'
 import { useRouter } from 'next/router'
+import near from '../lib/near'
 
 const NewPage = () => {
 	const store = useStore()
@@ -46,6 +47,7 @@ const NewPage = () => {
 			await axios.post(`http://localhost:9090/tokens`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
+					'authorization': await near.authToken()
 				},
 			})
 			router.push('/market')
