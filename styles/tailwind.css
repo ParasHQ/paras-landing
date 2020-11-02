@@ -35,6 +35,18 @@ textarea.error,
 	@apply border-red-500;
 }
 
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 input.clear {
 	@apply bg-transparent p-0 border-0;
 }
