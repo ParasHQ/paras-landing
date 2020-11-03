@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-	letter-spacing:  0.01em;
+	letter-spacing: 0.01em;
 	@apply font-body font-medium text-gray-900;
 }
 
@@ -43,13 +43,13 @@ textarea.error,
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 /* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
+input[type='number'] {
+	-moz-appearance: textfield;
 }
 
 input.clear {
@@ -92,6 +92,7 @@ input.clear {
 	border-radius: 10px;
 	-webkit-transition: transform 1s cubic-bezier(0.445, 0.05, 0.55, 0.95);
 	transition: transform 1s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+	box-shadow: rgba(255, 255, 255, 0.3) 0 0 0 1px;
 }
 
 .card-bg {
