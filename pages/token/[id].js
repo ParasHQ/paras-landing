@@ -7,7 +7,12 @@ import Nav from '../../components/Nav'
 import Modal from '../../components/Modal'
 import near from '../../lib/near'
 import useStore from '../../store'
-import { parseDate, parseImgUrl, prettyBalance, timeAgo } from '../../utils/common'
+import {
+	parseDate,
+	parseImgUrl,
+	prettyBalance,
+	timeAgo,
+} from '../../utils/common'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import JSBI from 'jsbi'
@@ -443,22 +448,31 @@ const TokenDetail = ({ token }) => {
 								onClick={(_) => setShowModal('options')}
 							>
 								<svg
-									width="24"
-									height="24"
-									viewBox="0 0 24 24"
+									width="18"
+									height="18"
+									viewBox="0 0 29 7"
 									fill="none"
 									xmlns="http://www.w3.org/2000/svg"
 								>
-									<path
-										d="M20 12C20 13.1046 19.1046 14 18 14C16.8954 14 16 13.1046 16 12C16 10.8954 16.8954 10 18 10C19.1046 10 20 10.8954 20 12Z"
+									<rect
+										width="6.78723"
+										height="6.78723"
+										rx="2"
+										transform="matrix(1 0 0 -1 0 6.78711)"
 										fill="black"
 									/>
-									<path
-										d="M14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12Z"
+									<rect
+										width="6.78723"
+										height="6.78723"
+										rx="2"
+										transform="matrix(1 0 0 -1 11.1064 6.78711)"
 										fill="black"
 									/>
-									<path
-										d="M8 12C8 13.1046 7.10457 14 6 14C4.89543 14 4 13.1046 4 12C4 10.8954 4.89543 10 6 10C7.10457 10 8 10.8954 8 12Z"
+									<rect
+										width="6.78723"
+										height="6.78723"
+										rx="2"
+										transform="matrix(1 0 0 -1 22.2126 6.78711)"
 										fill="black"
 									/>
 								</svg>
@@ -534,9 +548,7 @@ const TokenDetail = ({ token }) => {
 								</div>
 								<div className="border-2 border-dashed mt-4 p-2 rounded-md">
 									<p className="text-sm text-gray-800">Created</p>
-									<p className="text">
-										{parseDate(token.metadata.createdAt)}
-									</p>
+									<p className="text">{parseDate(token.metadata.createdAt)}</p>
 								</div>
 							</div>
 						)}
@@ -553,7 +565,7 @@ const TokenDetail = ({ token }) => {
 												<div className="flex items-center">
 													<Link href={`/${ownership.ownerId}`}>
 														<img
-															className="w-8 h-8 rounded-full overflow-hidden cursor-pointer"
+															className="w-8 h-8 rounded-full overflow-hidden cursor-pointer bg-primary"
 															src={`http://localhost:9090/profiles/${ownership.ownerId}/avatar`}
 														/>
 													</Link>
@@ -618,6 +630,11 @@ const TokenDetail = ({ token }) => {
 
 						{activeTab === 'history' && (
 							<div>
+								{token.transactions.length === 0 && (
+									<div className="border-2 border-dashed mt-4 p-2 rounded-md text-center">
+										<p className="text-gray-300 py-8">No Transactions</p>
+									</div>
+								)}
 								{token.transactions.map((tx, idx) => {
 									return (
 										<div
@@ -635,7 +652,9 @@ const TokenDetail = ({ token }) => {
 												<span> for </span>
 												{prettyBalance(tx.amount, 24, 4)} Ⓝ
 											</p>
-											<p className="mt-1 text-sm">{timeAgo.format(tx.createdAt)}</p>
+											<p className="mt-1 text-sm">
+												{timeAgo.format(tx.createdAt)}
+											</p>
 										</div>
 									)
 								})}
