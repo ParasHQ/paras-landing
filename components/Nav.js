@@ -5,11 +5,10 @@ import near from '../lib/near'
 import useStore from '../store'
 import Modal from './Modal'
 import ProfileEdit from './ProfileEdit'
-import { prettyBalance, prettyTruncate } from '../utils/common'
+import { parseImgUrl, prettyBalance } from '../utils/common'
 
-const Nav = () => {
+const User = () => {
 	const store = useStore()
-	const router = useRouter()
 	const accModalRef = useRef()
 
 	const [showAccountModal, setShowAccountModal] = useState(false)
@@ -42,7 +41,7 @@ const Nav = () => {
 	}
 
 	return (
-		<div className="h-16">
+		<div ref={accModalRef} className="relative">
 			{showEditAccountModal && (
 				<Modal
 					close={(_) => setShowEditAccountModal(false)}
@@ -54,6 +53,89 @@ const Nav = () => {
 					</div>
 				</Modal>
 			)}
+			<div
+				className="cursor-pointer select-none flex items-center justify-end text-gray-100"
+				onClick={toggleAccountModal}
+			>
+				<div className="flex items-center overflow-hidden">
+					<div className="w-8 h-8 rounded-full bg-primary">
+						<img src={parseImgUrl(store.userProfile.imgUrl)} />
+					</div>
+					<div className="ml-1">
+						<svg
+							width="10"
+							height="10"
+							viewBox="0 0 21 19"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z"
+								fill="white"
+							/>
+						</svg>
+					</div>
+				</div>
+			</div>
+			{showAccountModal && (
+				<div className="absolute right-0 w-56 pt-4 z-10">
+					<div className="px-2 pb-2 border-2 bg-gray-100 rounded-md overflow-hidden">
+						<div className="pt-2 text-gray-800 hover:text-black">
+							<p className="truncate">{store.currentUser}</p>
+							<p className="text-xs text-gray-800">Balance</p>
+							<p className="text-lg">
+								{prettyBalance(store.userBalance.available, 24, 4)} Ⓝ
+							</p>
+							<a
+								className="text-sm text-gray-800 hover:text-black"
+								href="https://wallet.near.org/"
+								target="_blank"
+							>
+								View on NEAR Wallet
+							</a>
+						</div>
+						<hr className="mt-2" />
+						<Link href="/new">
+							<a className="cursor-pointer pt-2 block text-gray-800 hover:text-black">
+								Create Card
+							</a>
+						</Link>
+						<hr className="mt-2" />
+						<Link href={`/${store.currentUser}`}>
+							<a className="cursor-pointer pt-2 block text-gray-800 hover:text-black">
+								My Profile
+							</a>
+						</Link>
+						<button
+							onClick={(_) => {
+								setShowEditAccountModal(true)
+								toggleAccountModal()
+							}}
+						>
+							<a className="cursor-pointer pt-2 block text-gray-800 hover:text-black">
+								Edit Profile
+							</a>
+						</button>
+						<hr className="mt-2" />
+						<p
+							onClick={_signOut}
+							className="cursor-pointer pt-2 text-gray-800 hover:text-black"
+						>
+							Log out
+						</p>
+					</div>
+				</div>
+			)}
+		</div>
+	)
+}
+
+const Nav = () => {
+	const store = useStore()
+	const router = useRouter()
+
+	return (
+		<div className="h-16">
 			<div className="fixed z-40 bg-black top-0 left-0 right-0">
 				<div className="flex items-center justify-between max-w-6xl m-auto p-4 h-16">
 					<div>
@@ -91,105 +173,60 @@ const Nav = () => {
 							</svg>
 						</Link>
 					</div>
-					<div className="flex items-center text-gray-100 -mx-8">
-						<div className="px-8">
-							{router.pathname === '/market' ? (
-								<a
-									className="cursor-pointer"
-									onClick={(_) => store.setMarketScrollPersist(0)}
-								>
-									Market
-								</a>
-							) : (
-								<Link href="/market">
-									<a>Market</a>
-								</Link>
-							)}
-						</div>
-
-						{store.currentUser && (
-							<div className="px-8">
-								<Link href="/new">
-									<a>Create</a>
-								</Link>
-							</div>
-						)}
-						<div className="px-8">
-							{store.currentUser ? (
-								<div ref={accModalRef} className="relative">
-									<div
-										className="cursor-pointer select-none flex items-center justify-end w-32"
-										onClick={toggleAccountModal}
+					{store.initialized && (
+						<div className="hidden lg:flex items-center -mx-8">
+							<div className="px-8 text-gray-100 ">
+								{router.pathname === '/market' ? (
+									<a
+										className="cursor-pointer"
+										onClick={(_) => store.setMarketScrollPersist(0)}
 									>
-										<div className="flex items-center overflow-hidden">
-											<p className="truncate">{store.currentUser}</p>
-											<div className="ml-1">
-												<svg
-													width="10"
-													height="10"
-													viewBox="0 0 21 19"
-													fill="none"
-													xmlns="http://www.w3.org/2000/svg"
-												>
-													<path
-														d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z"
-														fill="white"
-													/>
-												</svg>
-											</div>
-										</div>
-									</div>
-									{showAccountModal && (
-										<div className="absolute right-0 w-56 pt-4 z-10">
-											<div className="px-2 pb-2 border-2 bg-gray-100 rounded-md overflow-hidden">
-												<div className="pt-2 text-gray-800 hover:text-black">
-													<p className="text-xs text-gray-800">Balance</p>
-													<p className="text-lg">
-														{prettyBalance(store.userBalance.available, 24, 4)}{' '}
-														Ⓝ
-													</p>
-													<a
-														className="text-sm text-gray-800 hover:text-black"
-														href="https://wallet.near.org/"
-														target="_blank"
-													>
-														View on NEAR Wallet
-													</a>
-												</div>
-												<hr className="mt-2" />
-												<Link href={`/${store.currentUser}`}>
-													<p className="cursor-pointer pt-2 text-gray-800 hover:text-black">
-														My Profile
-													</p>
-												</Link>
-												<button
-													onClick={(_) => {
-														setShowEditAccountModal(true)
-														toggleAccountModal()
-													}}
-												>
-													<p className="cursor-pointer pt-2 text-gray-800 hover:text-black">
-														Edit Profile
-													</p>
-												</button>
-												<hr className="mt-2" />
-												<p
-													onClick={_signOut}
-													className="cursor-pointer pt-2 text-gray-800 hover:text-black"
-												>
-													Log out
-												</p>
-											</div>
-										</div>
-									)}
-								</div>
-							) : (
-								<Link href="/login">
-									<a>Login</a>
-								</Link>
-							)}
+										Market
+									</a>
+								) : (
+									<Link href="/market">
+										<a>Market</a>
+									</Link>
+								)}
+							</div>
+							<div className="px-8">
+								{store.currentUser ? (
+									<User />
+								) : (
+									<Link href="/login">
+										<a className="text-gray-100 ">Login</a>
+									</Link>
+								)}
+							</div>
 						</div>
-					</div>
+					)}
+					{store.initialized && (
+						<div className="flex lg:hidden items-center -mx-4">
+							<div className="px-4 text-gray-100 ">
+								{router.pathname === '/market' ? (
+									<a
+										className="cursor-pointer"
+										onClick={(_) => store.setMarketScrollPersist(0)}
+									>
+										Market
+									</a>
+								) : (
+									<Link href="/market">
+										<a>Market</a>
+									</Link>
+								)}
+							</div>
+							<div className="px-4">
+								{store.currentUser ? (
+									<User />
+								) : (
+									<Link href="/login">
+										<a className="text-gray-100 ">Login</a>
+									</Link>
+								)}
+							</div>
+						</div>
+					)}
 				</div>
 			</div>
 		</div>

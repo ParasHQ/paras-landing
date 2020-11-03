@@ -21,21 +21,27 @@ const LoginPage = () => {
 
 	return (
 		<div
-			className="min-h-screen bg-dark-primary-1"
+			className="h-screen bg-dark-primary-1"
 			style={{
 				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
 			}}
 		>
-			<Nav />
-			<div className="max-w-lg m-auto flex items-center justify-center h-full px-4 mt-12">
-				<div className="w-full">
-					<div className="mt-4">
-						<h3 className="text-4xl text-gray-100 font-bold">
-							Create and Collect
-						</h3>
-						<h3 className="text-2xl text-gray-300 font-semibold">
-							Start your journey with digital art cards on blockchain
-						</h3>
+			<div className="fixed">
+				<Nav />
+			</div>
+			<div className="max-w-lg m-auto flex items-center justify-center h-full px-4">
+				<div className=" w-full">
+					<div className="flex items-center">
+						<div>
+							<div>
+								<h3 className="text-4xl text-gray-100 font-bold">
+									Create and Collect
+								</h3>
+								<h3 className="text-xl text-gray-300 font-semibold">
+									Start your journey with digital art cards on blockchain
+								</h3>
+							</div>
+						</div>
 					</div>
 					<div className="mt-4">
 						<button
