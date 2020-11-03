@@ -108,3 +108,11 @@ input.clear {
 		opacity 5s 1s cubic-bezier(0.445, 0.05, 0.55, 0.95);
 	pointer-events: none;
 }
+
+@layer utilities {
+	@responsive {
+		.h-1\/2 {
+			height: 50%;
+		}
+	}
+}

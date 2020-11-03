@@ -370,12 +370,12 @@ const CardDetail = ({ token }) => {
 			)}
 			<div>
 				<div
-					className="flex flex-wrap rounded-md overflow-hidden"
+					className="flex flex-wrap h-full rounded-md overflow-hidden"
 					style={{
 						height: `90vh`,
 					}}
 				>
-					<div className="w-full h-full lg:w-2/3 bg-dark-primary-1 p-8 lg:p-12">
+					<div className="w-full h-1/2 lg:h-full lg:w-2/3 bg-dark-primary-1 p-8 lg:p-12">
 						<div className="h-full">
 							<Card
 								imgUrl={parseImgUrl(token.metadata.image)}
@@ -396,7 +396,7 @@ const CardDetail = ({ token }) => {
 							/>
 						</div>
 					</div>
-					<div className="w-full h-full lg:w-1/3 bg-gray-100 p-4 overflow-y-auto">
+					<div className="w-full h-1/2 lg:h-full lg:w-1/3 bg-gray-100 p-4 overflow-y-auto">
 						<div className="flex justify-between">
 							<div>
 								<h1 className="text-2xl font-bold text-gray-900 tracking-tight pr-2">
