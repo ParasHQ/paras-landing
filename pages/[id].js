@@ -3,11 +3,12 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import useStore from '../store'
 import { parseImgUrl } from '../utils/common'
+import Head from 'next/head'
 
 const { default: CardList } = require('../components/CardList')
 const { default: Nav } = require('../components/Nav')
 
-const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile }) => {
+const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile, accountId }) => {
 	const store = useStore()
 	const router = useRouter()
 
@@ -30,7 +31,7 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile }) => {
 	useEffect(() => {
 		store.setMarketDataPersist(scrollCollection, ownerTokens)
 		store.setMarketDataPersist(scrollCreation, creatorTokens)
-		
+
 		return () => {
 			store.setMarketScrollPersist(scrollCollection, 0)
 			store.setMarketScrollPersist(scrollCreation, 0)
@@ -92,6 +93,47 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile }) => {
 				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
 			}}
 		>
+			<Head>
+				<title>{`${accountId} — Paras`}</title>
+				<meta
+					name="description"
+					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+				/>
+
+				<meta
+					name="twitter:title"
+					content={`${accountId} — Paras`}
+				/>
+				<meta name="twitter:card" content="summary_large_image" />
+				<meta name="twitter:site" content="@ParasHQ" />
+				<meta name="twitter:url" content="https://paras.id" />
+				<meta
+					name="twitter:description"
+					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+				/>
+				<meta
+					name="twitter:image"
+					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
+				/>
+				<meta property="og:type" content="website" />
+				<meta
+					property="og:title"
+					content={`${accountId} — Paras`}
+				/>
+				<meta
+					property="og:site_name"
+					content={`${accountId} — Paras`}
+				/>
+				<meta
+					property="og:description"
+					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+				/>
+				<meta property="og:url" content="https://paras.id" />
+				<meta
+					property="og:image"
+					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
+				/>
+			</Head>
 			<Nav />
 
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
@@ -182,7 +224,7 @@ export async function getServerSideProps({ params }) {
 	const ownerTokens = await ownerRes.data.data.results
 	const userProfile = (await profileRes.data.data.results[0]) || {}
 
-	return { props: { creatorTokens, ownerTokens, userProfile } }
+	return { props: { creatorTokens, ownerTokens, userProfile, accountId: params.id } }
 }
 
 export default ProfileDetail

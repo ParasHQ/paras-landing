@@ -2,6 +2,7 @@ import axios from 'axios'
 import { useState } from 'react'
 import Nav from '../components/Nav'
 import CardList from '../components/CardList'
+import Head from 'next/head'
 
 export default function MarketPage({ data }) {
 	const [tokens, setTokens] = useState(data.results)
@@ -38,6 +39,38 @@ export default function MarketPage({ data }) {
 				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
 			}}
 		>
+			<Head>
+				<title>Market — Paras</title>
+				<meta
+					name="description"
+					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+				/>
+
+				<meta name="twitter:title" content="Market — Paras" />
+				<meta name="twitter:card" content="summary_large_image" />
+				<meta name="twitter:site" content="@ParasHQ" />
+				<meta name="twitter:url" content="https://paras.id" />
+				<meta
+					name="twitter:description"
+					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+				/>
+				<meta
+					name="twitter:image"
+					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
+				/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content="Market — Paras" />
+				<meta property="og:site_name" content="Market — Paras" />
+				<meta
+					property="og:description"
+					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+				/>
+				<meta property="og:url" content="https://paras.id" />
+				<meta
+					property="og:image"
+					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
+				/>
+			</Head>
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<h1 className="text-4xl font-bold text-gray-100 text-center">Market</h1>
