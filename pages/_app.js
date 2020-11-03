@@ -27,11 +27,35 @@ function MyApp({ Component, pageProps }) {
 				`http://localhost:9090/profiles?accountId=${currentUser.accountId}`
 			)
 			const userProfileResults = userProfileResp.data.data.results
-			const userProfile = userProfileResults.length > 0 ? userProfileResults[0] : {}
+
+			if (userProfileResults.length === 0) {
+				const formData = new FormData()
+				formData.append('bio', 'Citizen of Paras')
+				formData.append('accountId', currentUser.accountId)
+
+				try {
+					const resp = await axios.put(
+						`http://localhost:9090/profiles`,
+						formData,
+						{
+							headers: {
+								'Content-Type': 'multipart/form-data',
+								authorization: await near.authToken(),
+							},
+						}
+					)
+					store.setUserProfile(resp.data.data)
+				} catch (err) {
+					console.log(err)
+					store.setUserProfile({})
+				}
+			} else {
+				const userProfile = userProfileResults[0]
+				store.setUserProfile(userProfile)
+			}
 
 			store.setCurrentUser(currentUser.accountId)
 			store.setUserBalance(currentUser.balance)
-			store.setUserProfile(userProfile)
 		}
 		store.setNearUsdPrice(nearUsdPrice.data.near.usd)
 		store.setInitialized(true)
