@@ -28,14 +28,14 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile }) => {
 	const [isFetching, setIsFetching] = useState(false)
 
 	useEffect(() => {
-    store.setMarketDataPersist(scrollCollection, ownerTokens)
+		store.setMarketDataPersist(scrollCollection, ownerTokens)
     store.setMarketDataPersist(scrollCreation, creatorTokens)
 
 		return () => {
 			store.setMarketScrollPersist(scrollCollection, 0)
 			store.setMarketScrollPersist(scrollCreation, 0)
 		}
-	}, [])
+	}, [userProfile])
 
 	const fetchOwnerTokens = async () => {
 		if (!oHasMore || isFetching) {

@@ -39,24 +39,21 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 		}
 	}, [containerRef, store.marketScrollPersist[name]])
 
-	const pushCardDetail = (token) => {
-		router.push(`${window.location.href}`, `/token/${token.tokenId}`, {
-			shallow: true,
-		})
-		setActiveToken(token)
+	const closeCardDetail = () => {
+		router.push(router.query.prevAs)
 	}
 
 	useEffect(() => {
-		if (!activeToken) {
-			router.replace('/market')
+		if (router.query.tokenId) {
+			const token = tokens.find(
+				(token) => token.tokenId === router.query.tokenId
+			)
+			setActiveToken(token)
 		}
-	}, [activeToken])
-
-	useEffect(() => {
-		if (router.asPath === '/market') {
+		else {
 			setActiveToken(null)
 		}
-	}, [router])
+	}, [router.query])
 
 	const handleScroll = (e) => {
 		e.preventDefault()
@@ -156,12 +153,12 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 			className="overflow-x-hidden border-2 border-dashed border-gray-800 rounded-md"
 		>
 			{activeToken && (
-				<Modal close={(_) => setActiveToken(null)}>
+				<Modal close={(_) => closeCardDetail(null)}>
 					<div className="max-w-5xl m-auto w-full relative">
 						<div className="absolute top-0 left-0 p-4 z-50">
 							<div
 								className="cursor-pointer flex items-center"
-								onClick={(_) => setActiveToken(null)}
+								onClick={(_) => closeCardDetail(null)}
 							>
 								<svg
 									width="16"
@@ -253,16 +250,28 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 								</div>
 							</div>
 							<div className="text-center mt-2 text-sm">
-								<div onClick={(_) => pushCardDetail(token)}>
+								{/* <div onClick={(_) => pushCardDetail(token)}>
 									<p className="inline-block text-gray-100 cursor-pointer">
 										See Details
 									</p>
-								</div>
-								{/* <Link href={`/token/${token.tokenId}`}>
+								</div> */}
+								<Link
+									href={{
+										pathname: router.pathname,
+										query: {
+											...router.query,
+											...{ tokenId: token.tokenId },
+											...{ prevAs: router.asPath },
+										},
+									}}
+									as={`/token/${token.tokenId}`}
+									scroll={false}
+									shallow
+								>
 									<p className="inline-block text-gray-100 cursor-pointer">
 										See Details
 									</p>
-								</Link> */}
+								</Link>
 							</div>
 						</div>
 					)

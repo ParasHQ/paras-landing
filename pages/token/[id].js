@@ -1,6 +1,4 @@
 import axios from 'axios'
-import { parseNearAmount } from 'near-api-js/lib/utils/format'
-import { useRouter } from 'next/router'
 import Nav from '../../components/Nav'
 import { parseImgUrl } from '../../utils/common'
 import Head from 'next/head'

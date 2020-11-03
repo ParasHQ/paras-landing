@@ -67,7 +67,7 @@ const CardDetail = ({ token }) => {
 
 		const params = {
 			ownerId: store.currentUser,
-			tokenId: router.query.id,
+			tokenId: router.query.tokenId,
 			quantity: getValues('quantity'),
 			amount: parseNearAmount(getValues('amount')),
 		}
@@ -90,7 +90,7 @@ const CardDetail = ({ token }) => {
 		//   amount: u128
 		const params = {
 			ownerId: store.currentUser,
-			tokenId: router.query.id,
+			tokenId: router.query.tokenId,
 		}
 
 		try {
@@ -375,7 +375,7 @@ const CardDetail = ({ token }) => {
 						height: `90vh`,
 					}}
 				>
-					<div className="w-full h-full lg:w-2/3 px-4 bg-dark-primary-1 p-8">
+					<div className="w-full h-full lg:w-2/3 bg-dark-primary-1 p-8 lg:p-12">
 						<div className="h-full">
 							<Card
 								imgUrl={parseImgUrl(token.metadata.image)}
