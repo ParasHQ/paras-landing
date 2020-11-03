@@ -166,7 +166,7 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 								<div className="mt-8">
 									<div className="p-2">
 										<p className="text-gray-400 text-xs">Start From</p>
-										<div className="text-white text-2xl">
+										<div className="text-gray-100 text-2xl">
 											{_getLowestPrice(token.ownerships) ? (
 												<div>
 													<div>
@@ -190,7 +190,7 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 												</div>
 											) : (
 												<div className="line-through text-red-600">
-													<span className="text-white">SALE</span>
+													<span className="text-gray-100">SALE</span>
 												</div>
 											)}
 										</div>
@@ -199,7 +199,7 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 							</div>
 							<div className="text-center mt-2 text-sm">
 								<Link href={`/token/${token.tokenId}`}>
-									<p className="inline-block text-white cursor-pointer">
+									<p className="inline-block text-gray-100 cursor-pointer">
 										See Details
 									</p>
 								</Link>

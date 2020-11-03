@@ -110,7 +110,7 @@ export default function Home() {
 						/>
 					</div>
 					<div className="w-full md:w-2/3 mt-12 md:mt-24 pl-0 md:pl-12">
-						<h1 className="text-white text-4xl max-w-lg font-bold">
+						<h1 className="text-gray-100 text-4xl max-w-lg font-bold">
 							Create, Trade and Collect Digital Art Cards (DACs).
 						</h1>
 						<p className="text-gray-400 text-2xl mt-4">
@@ -131,7 +131,7 @@ export default function Home() {
 										disabled={formBtnText == 'SENDING...'}
 										className={`
 											outline-none h-12 w-full mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2
-											text-white  border-white
+											text-gray-100  border-white
 											${formBtnText == 'SUCCESS' && 'text-green-500 border-green-500'}
 											${formBtnText == 'FAILED' && ' text-red-500 border-red-500'}
 											`}
@@ -151,7 +151,7 @@ export default function Home() {
 				</div>
 				<div className="flex flex-wrap -mx-4">
 					<div className="w-full md:w-1/2 mt-24 px-4">
-						<h2 className="text-white font-bold text-2xl text-gradient">
+						<h2 className="text-gray-100 font-bold text-2xl text-gradient">
 							For Collectors
 						</h2>
 						<p className="mt-4 text-gray-400">
@@ -163,7 +163,7 @@ export default function Home() {
 							<a
 								href="https://forms.gle/vqpu66p8y23ZnMjt7"
 								target="_blank"
-								className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer "
+								className="flex text-gray-200 hover:text-gray-100 font-semibold border-b-2 cursor-pointer "
 							>
 								Join the Waitlist
 								<svg
@@ -185,7 +185,7 @@ export default function Home() {
 						</div>
 					</div>
 					<div className="w-full md:w-1/2 mt-24 px-4">
-						<h2 className="text-white font-bold text-2xl text-gradient">
+						<h2 className="text-gray-100 font-bold text-2xl text-gradient">
 							For Artists
 						</h2>
 						<p className="mt-4 text-gray-400">
@@ -196,7 +196,7 @@ export default function Home() {
 							<a
 								href="https://forms.gle/QsZHqa2MKXpjckj98"
 								target="_blank"
-								className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer "
+								className="flex text-gray-200 hover:text-gray-100 font-semibold border-b-2 cursor-pointer "
 							>
 								Apply as an Artist
 								<svg

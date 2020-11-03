@@ -175,7 +175,7 @@ const TokenDetail = ({ token }) => {
 			)}
 			{showModal === 'options' && (
 				<Modal close={(_) => setShowModal('')}>
-					<div className="max-w-sm w-full px-4 py-2 bg-white m-auto rounded-md">
+					<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
 						<div className="py-2 cursor-pointer" onClick={(_) => _copyLink()}>
 							{isCopied ? `Copied` : `Copy Link`}
 						</div>
@@ -197,7 +197,7 @@ const TokenDetail = ({ token }) => {
 					closeOnBgClick={false}
 					closeOnEscape={false}
 				>
-					<div className="max-w-sm w-full p-4 bg-white m-auto rounded-md">
+					<div className="max-w-sm w-full p-4 bg-gray-100 m-auto rounded-md">
 						<div>
 							<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
 								Card Listing
@@ -290,7 +290,7 @@ const TokenDetail = ({ token }) => {
 								<div className="">
 									<button
 										disabled={isSubmitting}
-										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-white"
+										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 										type="submit"
 									>
 										{!isSubmitting ? 'Create' : 'Creating...'}
@@ -310,7 +310,7 @@ const TokenDetail = ({ token }) => {
 			)}
 			{showModal === 'removeListing' && (
 				<Modal close={(_) => setShowModal('')}>
-					<div className="max-w-sm w-full px-4 bg-white m-auto rounded-md">
+					<div className="max-w-sm w-full px-4 bg-gray-100 m-auto rounded-md">
 						<div>
 							<button onClick={_removePrice}>Remove Listing</button>
 						</div>
@@ -323,7 +323,7 @@ const TokenDetail = ({ token }) => {
 					closeOnBgClick={false}
 					closeOnEscape={false}
 				>
-					<div className="max-w-sm w-full p-4 bg-white m-auto rounded-md">
+					<div className="max-w-sm w-full p-4 bg-gray-100 m-auto rounded-md">
 						<div>
 							<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
 								Confirm Buy
@@ -382,7 +382,7 @@ const TokenDetail = ({ token }) => {
 								</p>
 								<div className="">
 									<button
-										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-white"
+										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 										type="submit"
 									>
 										Buy
@@ -430,7 +430,7 @@ const TokenDetail = ({ token }) => {
 							/>
 						</div>
 					</div>
-					<div className="w-full lg:w-1/3 bg-white p-4">
+					<div className="w-full lg:w-1/3 bg-gray-100 p-4">
 						<div className="flex justify-between">
 							<div>
 								<h1 className="text-2xl font-bold text-gray-900 tracking-tight pr-2">
@@ -604,7 +604,7 @@ const TokenDetail = ({ token }) => {
 													</div>
 													<div>
 														<button
-															// className="w-full outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-2 py-1 border-primary bg-primary text-white"
+															// className="w-full outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-2 py-1 border-primary bg-primary text-gray-100"
 															className="text-primary font-bold"
 															onClick={(_) => {
 																setChosenSeller(ownership)

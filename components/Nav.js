@@ -49,7 +49,7 @@ const Nav = () => {
 					closeOnBgClick={false}
 					closeOnEscape={false}
 				>
-					<div className="w-full max-w-sm p-4 m-auto bg-white rounded-md overflow-hidden">
+					<div className="w-full max-w-sm p-4 m-auto bg-gray-100 rounded-md overflow-hidden">
 						<ProfileEdit close={(_) => setShowEditAccountModal(false)} />
 					</div>
 				</Modal>
@@ -91,7 +91,7 @@ const Nav = () => {
 							</svg>
 						</Link>
 					</div>
-					<div className="flex items-center text-white -mx-8">
+					<div className="flex items-center text-gray-100 -mx-8">
 						<div className="px-8">
 							{router.pathname === '/market' ? (
 								<a
@@ -141,7 +141,7 @@ const Nav = () => {
 									</div>
 									{showAccountModal && (
 										<div className="absolute right-0 w-56 pt-4 z-10">
-											<div className="px-2 pb-2 border-2 bg-white rounded-md overflow-hidden">
+											<div className="px-2 pb-2 border-2 bg-gray-100 rounded-md overflow-hidden">
 												<div className="pt-2 text-gray-800 hover:text-black">
 													<p className="text-xs text-gray-800">Balance</p>
 													<p className="text-lg">

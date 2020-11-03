@@ -100,7 +100,7 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile }) => {
             <img src={parseImgUrl(userProfile.imgUrl)} className="object-cover" />
           </div>
 					<div className="mt-4 max-w-sm text-center">
-						<h4 className="text-white font-bold">{router.query.id}</h4>
+						<h4 className="text-gray-100 font-bold">{router.query.id}</h4>
 						<p className="mt-2 text-gray-300">
 							{userProfile.bio}
 						</p>
@@ -112,7 +112,7 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile }) => {
 							className="px-4 relative"
 							onClick={(_) => setActiveTab('collection')}
 						>
-							<h4 className="text-white font-bold cursor-pointer">
+							<h4 className="text-gray-100 font-bold cursor-pointer">
 								Collection
 							</h4>
 							{activeTab === 'collection' && (
@@ -130,7 +130,7 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile }) => {
 							className="px-4 relative"
 							onClick={(_) => setActiveTab('creation')}
 						>
-							<h4 className="text-white font-bold cursor-pointer">Creation</h4>
+							<h4 className="text-gray-100 font-bold cursor-pointer">Creation</h4>
 							{activeTab === 'creation' && (
 								<div
 									className="absolute left-0 right-0"

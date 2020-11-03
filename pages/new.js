@@ -132,12 +132,12 @@ const NewPage = () => {
 			<Nav />
 			{showAlertErr && (
 				<Modal close={(_) => setShowAlertErr(false)}>
-					<div className="w-full max-w-xs p-4 m-auto bg-white rounded-md overflow-y-auto max-h-screen">
+					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
 						<div>
 							<div className="w-full">{showAlertErr}</div>
 							<div>
 								<button
-									className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-white"
+									className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 									onClick={(_) => setShowAlertErr(false)}
 								>
 									OK
@@ -149,7 +149,7 @@ const NewPage = () => {
 			)}
 			{showConfirmModal && (
 				<Modal close={(_) => setShowConfirmModal(false)}>
-					<div className="w-full flex flex-wrap max-w-lg p-4 m-auto bg-white rounded-md overflow-x-hidden overflow-y-auto max-h-full">
+					<div className="w-full flex flex-wrap max-w-lg p-4 m-auto bg-gray-100 rounded-md overflow-x-hidden overflow-y-auto max-h-full">
 						<div className="w-full md:w-1/2 px-4">
 							<div className="w-full">
 								<Card
@@ -226,7 +226,7 @@ const NewPage = () => {
 								<div className="">
 									<button
 										disabled={isSubmitting}
-										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-white"
+										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 										onClick={_submit}
 									>
 										{!isSubmitting ? 'Create' : 'Creating...'}
@@ -292,7 +292,7 @@ const NewPage = () => {
 							/>
 						</div>
 					</div>
-					<div className="w-full lg:w-1/3 bg-white p-4">
+					<div className="w-full lg:w-1/3 bg-gray-100 p-4">
 						<div>
 							<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
 								Card Creation
