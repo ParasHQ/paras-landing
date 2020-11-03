@@ -49,12 +49,12 @@ const Nav = () => {
 					closeOnBgClick={false}
 					closeOnEscape={false}
 				>
-					<div className="w-full max-w-sm p-4 m-auto bg-white rounded-md">
+					<div className="w-full max-w-sm p-4 m-auto bg-white rounded-md overflow-hidden">
 						<ProfileEdit close={(_) => setShowEditAccountModal(false)} />
 					</div>
 				</Modal>
 			)}
-			<div className="fixed z-50 bg-black top-0 left-0 right-0">
+			<div className="fixed z-40 bg-black top-0 left-0 right-0">
 				<div className="flex items-center justify-between max-w-6xl m-auto p-4 h-16">
 					<div>
 						<Link href="/">
