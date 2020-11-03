@@ -1,3 +1,32 @@
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en'
+
+TimeAgo.addLocale(en)
+export const timeAgo = new TimeAgo('en-US')
+
+const monthNames = [
+	'January',
+	'February',
+	'March',
+	'April',
+	'May',
+	'June',
+	'July',
+	'August',
+	'September',
+	'October',
+	'November',
+	'December',
+]
+
+export const parseDate = (ts) => {
+	let dateObj = new Date(ts)
+	let month = monthNames[dateObj.getMonth()]
+	let day = String(dateObj.getDate()).padStart(2, '0')
+	let year = dateObj.getFullYear()
+	return `${day} ${month} ${year}`
+}
+
 export const prettyBalance = (balance, decimals = 18, len = 8) => {
 	if (!balance) {
 		return '0'

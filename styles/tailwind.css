@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 body {
-	@apply font-body font-medium tracking-wide;
+	letter-spacing:  0.01em;
+	@apply font-body font-medium;
 }
 
 button:focus {
@@ -12,6 +13,10 @@ button:focus {
 
 button:disabled {
 	@apply opacity-75;
+}
+
+.font-semibold {
+	@apply tracking-tight;
 }
 
 input:focus,

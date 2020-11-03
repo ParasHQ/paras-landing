@@ -7,7 +7,7 @@ import Nav from '../../components/Nav'
 import Modal from '../../components/Modal'
 import near from '../../lib/near'
 import useStore from '../../store'
-import { parseImgUrl, prettyBalance } from '../../utils/common'
+import { parseDate, parseImgUrl, prettyBalance, timeAgo } from '../../utils/common'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import JSBI from 'jsbi'
@@ -23,7 +23,7 @@ const TokenDetail = ({ token }) => {
 		},
 	})
 
-	const [activeTab, setActiveTab] = useState('owners')
+	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('')
 	const [isComponentMounted, setIsComponentMounted] = useState(false)
 
@@ -133,18 +133,12 @@ const TokenDetail = ({ token }) => {
 		>
 			<Head>
 				<title>{`${token.metadata.name} — Paras`}</title>
-				<meta
-					name="description"
-					content={token.metadata.description}
-				/>
+				<meta name="description" content={token.metadata.description} />
 
 				<meta name="twitter:title" content={`${token.metadata.name} — Paras`} />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
-				<meta
-					name="twitter:description"
-					content={token.metadata.description}
-				/>
+				<meta name="twitter:description" content={token.metadata.description} />
 				<meta
 					name="twitter:image"
 					content={parseImgUrl(token.metadata.image)}
@@ -155,14 +149,8 @@ const TokenDetail = ({ token }) => {
 					property="og:site_name"
 					content={`${token.metadata.name} — Paras`}
 				/>
-				<meta
-					property="og:description"
-					content={token.metadata.description}
-				/>
-				<meta
-					property="og:image"
-					content={parseImgUrl(token.metadata.image)}
-				/>
+				<meta property="og:description" content={token.metadata.description} />
+				<meta property="og:image" content={parseImgUrl(token.metadata.image)} />
 			</Head>
 			<Nav />
 			{isComponentMounted && (
@@ -261,13 +249,13 @@ const TokenDetail = ({ token }) => {
 									<p className="text-sm mt-2">
 										Receive:{' '}
 										{parseFloat(
-											Number(getValues('amount', 0) * 0.95)
+											Number(watch('amount', 0) * 0.95)
 												.toPrecision(4)
 												.toString()
 										)}{' '}
 										Ⓝ (~$
 										{parseFloat(
-											Number(store.nearUsdPrice * getValues('amount', 0) * 0.95)
+											Number(store.nearUsdPrice * watch('amount', 0) * 0.95)
 												.toPrecision(4)
 												.toString()
 										)}
@@ -276,13 +264,13 @@ const TokenDetail = ({ token }) => {
 									<p className="text-sm">
 										Fee:{' '}
 										{parseFloat(
-											Number(getValues('amount', 0) * 0.05)
+											Number(watch('amount', 0) * 0.05)
 												.toPrecision(4)
 												.toString()
 										)}{' '}
 										Ⓝ (~$
 										{parseFloat(
-											Number(store.nearUsdPrice * getValues('amount', 0) * 0.05)
+											Number(store.nearUsdPrice * watch('amount', 0) * 0.05)
 												.toPrecision(4)
 												.toString()
 										)}
@@ -410,138 +398,250 @@ const TokenDetail = ({ token }) => {
 					</div>
 				</Modal>
 			)}
-			<div className="flex flex-wrap ">
-				<div className="w-full h-full lg:w-2/3 px-4 bg-dark-primary-1 p-8">
-					<div
-						style={{
-							height: `80vh`,
-						}}
-					>
-						<Card
-							imgUrl={parseImgUrl(token.metadata.image)}
-							imgBlur={token.metadata.blurhash}
-							token={{
-								name: token.metadata.name,
-								collection: token.metadata.collection,
-								description: token.metadata.description,
-								creatorId: token.creatorId,
-								supply: token.supply,
-								tokenId: token.tokenId,
-								createdAt: token.createdAt,
-							}}
-							initialRotate={{
-								x: 15,
-								y: 15,
-							}}
-						/>
-					</div>
-				</div>
-				<div className="w-full lg:w-1/3 bg-white p-4">
-					<div className="flex justify-between">
-						<p className="text-xl">{token.metadata.name}</p>
+			<div className="max-w-6xl m-auto py-12 px-4">
+				<div className="flex flex-wrap rounded-md overflow-hidden">
+					<div className="w-full h-full lg:w-2/3 px-4 bg-dark-primary-1 p-8">
 						<div
-							className="cursor-pointer"
-							onClick={(_) => setShowModal('options')}
+							style={{
+								height: `80vh`,
+							}}
 						>
-							<svg
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									d="M20 12C20 13.1046 19.1046 14 18 14C16.8954 14 16 13.1046 16 12C16 10.8954 16.8954 10 18 10C19.1046 10 20 10.8954 20 12Z"
-									fill="black"
-								/>
-								<path
-									d="M14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12Z"
-									fill="black"
-								/>
-								<path
-									d="M8 12C8 13.1046 7.10457 14 6 14C4.89543 14 4 13.1046 4 12C4 10.8954 4.89543 10 6 10C7.10457 10 8 10.8954 8 12Z"
-									fill="black"
-								/>
-							</svg>
+							<Card
+								imgUrl={parseImgUrl(token.metadata.image)}
+								imgBlur={token.metadata.blurhash}
+								token={{
+									name: token.metadata.name,
+									collection: token.metadata.collection,
+									description: token.metadata.description,
+									creatorId: token.creatorId,
+									supply: token.supply,
+									tokenId: token.tokenId,
+									createdAt: token.createdAt,
+								}}
+								initialRotate={{
+									x: 15,
+									y: 15,
+								}}
+							/>
 						</div>
 					</div>
-
-					<div className="flex -mx-4">
-						<div className="px-4">
-							<p
+					<div className="w-full lg:w-1/3 bg-white p-4">
+						<div className="flex justify-between">
+							<div>
+								<h1 className="text-2xl font-bold text-gray-900 tracking-tight pr-2">
+									{token.metadata.name}
+								</h1>
+								<p className="text-sm">
+									by{' '}
+									<span className="font-semibold">
+										<Link href={`/${token.creatorId}`}>{token.creatorId}</Link>
+									</span>
+								</p>
+							</div>
+							<div
 								className="cursor-pointer"
-								onClick={(_) => setActiveTab('info')}
+								onClick={(_) => setShowModal('options')}
 							>
-								Info
-							</p>
+								<svg
+									width="24"
+									height="24"
+									viewBox="0 0 24 24"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										d="M20 12C20 13.1046 19.1046 14 18 14C16.8954 14 16 13.1046 16 12C16 10.8954 16.8954 10 18 10C19.1046 10 20 10.8954 20 12Z"
+										fill="black"
+									/>
+									<path
+										d="M14 12C14 13.1046 13.1046 14 12 14C10.8954 14 10 13.1046 10 12C10 10.8954 10.8954 10 12 10C13.1046 10 14 10.8954 14 12Z"
+										fill="black"
+									/>
+									<path
+										d="M8 12C8 13.1046 7.10457 14 6 14C4.89543 14 4 13.1046 4 12C4 10.8954 4.89543 10 6 10C7.10457 10 8 10.8954 8 12Z"
+										fill="black"
+									/>
+								</svg>
+							</div>
 						</div>
-						<div className="px-4">
-							<p onClick={(_) => setActiveTab('owners')}>Owners</p>
-						</div>
-						<div className="px-4">
-							<p onClick={(_) => setActiveTab('history')}>History</p>
-						</div>
-					</div>
 
-					{activeTab === 'info' && (
-						<div>
-							<p className="text-sm">Collection</p>
-							<p className="text">{token.metadata.collection}</p>
-
-							<p className="text-sm">Description</p>
-							<p className="text">{token.metadata.description}</p>
-						</div>
-					)}
-
-					{activeTab === 'owners' && (
-						<div>
-							{token.ownerships.map((ownership, idx) => {
-								return (
-									<div className="mt-4">
-										<div>
-											<Link href={`/${ownership.ownerId}`}>
-												{ownership.ownerId}
-											</Link>
-											have
-											{ownership.quantity}
+						<div className="flex mt-2 -mx-4">
+							<div className="px-4">
+								<div
+									className="cursor-pointer relative font-semibold"
+									onClick={(_) => setActiveTab('info')}
+								>
+									Info
+									{activeTab === 'info' && (
+										<div
+											className="absolute left-0 right-0"
+											style={{
+												bottom: `0`,
+											}}
+										>
+											<div className="mx-auto w-4 h-1 bg-gray-900"></div>
 										</div>
-										{ownership.marketData && (
-											<div>
-												<p>
-													is selling for{' '}
-													{prettyBalance(ownership.marketData.amount, 24, 4)}
-												</p>
-												<p>Available {ownership.marketData.quantity}</p>
+									)}
+								</div>
+							</div>
+							<div className="px-4">
+								<div
+									className="cursor-pointer relative font-semibold"
+									onClick={(_) => setActiveTab('owners')}
+								>
+									Owners
+									{activeTab === 'owners' && (
+										<div
+											className="absolute left-0 right-0"
+											style={{
+												bottom: `0`,
+											}}
+										>
+											<div className="mx-auto w-4 h-1 bg-gray-900"></div>
+										</div>
+									)}
+								</div>
+							</div>
+							<div className="px-4">
+								<div
+									className="cursor-pointer relative font-semibold"
+									onClick={(_) => setActiveTab('history')}
+								>
+									History
+									{activeTab === 'history' && (
+										<div
+											className="absolute left-0 right-0"
+											style={{
+												bottom: `0`,
+											}}
+										>
+											<div className="mx-auto w-4 h-1 bg-gray-900"></div>
+										</div>
+									)}
+								</div>
+							</div>
+						</div>
 
-												<button
-													onClick={(_) => {
-														setChosenSeller(ownership)
-														setShowModal('confirmBuy')
-													}}
-												>
-													Buy
-												</button>
+						{activeTab === 'info' && (
+							<div>
+								<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+									<p className="text-sm text-gray-800">Collection</p>
+									<p className="text">{token.metadata.collection}</p>
+								</div>
+								<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+									<p className="text-sm text-gray-800">Description</p>
+									<p className="text">{token.metadata.description}</p>
+								</div>
+								<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+									<p className="text-sm text-gray-800">Created</p>
+									<p className="text">
+										{parseDate(token.metadata.createdAt)}
+									</p>
+								</div>
+							</div>
+						)}
+
+						{activeTab === 'owners' && (
+							<div>
+								{token.ownerships.map((ownership, idx) => {
+									return (
+										<div
+											key={idx}
+											className="border-2 border-dashed mt-4 p-2 rounded-md"
+										>
+											<div className="flex items-center justify-between">
+												<div className="flex items-center">
+													<Link href={`/${ownership.ownerId}`}>
+														<img
+															className="w-8 h-8 rounded-full overflow-hidden cursor-pointer"
+															src={`http://localhost:9090/profiles/${ownership.ownerId}/avatar`}
+														/>
+													</Link>
+													<div className="pl-2">
+														<Link href={`/${ownership.ownerId}`}>
+															<a className="flex text-gray-900 font-semibold cursor-pointer">
+																{ownership.ownerId}
+															</a>
+														</Link>
+													</div>
+												</div>
+												<div>
+													<span className="text-sm text-gray-800">owns </span>
+													{ownership.quantity}
+												</div>
 											</div>
-										)}
-									</div>
-								)
-							})}
-						</div>
-					)}
+											{ownership.marketData ? (
+												<div className="flex justify-between mt-2 items-center">
+													<div>
+														<p className="flex items-center">
+															On sale{' '}
+															{prettyBalance(
+																ownership.marketData.amount,
+																24,
+																4
+															)}{' '}
+															Ⓝ (
+															<span>
+																<span className="text-sm text-gray-800">
+																	Available
+																</span>{' '}
+																{ownership.marketData.quantity}
+															</span>
+															)
+														</p>
+													</div>
+													<div>
+														<button
+															// className="w-full outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-2 py-1 border-primary bg-primary text-white"
+															className="text-primary font-bold"
+															onClick={(_) => {
+																setChosenSeller(ownership)
+																setShowModal('confirmBuy')
+															}}
+														>
+															Buy
+														</button>
+													</div>
+												</div>
+											) : (
+												<div className="flex justify-between mt-2 items-center">
+													<div>
+														<p className="flex items-center">Not for sale</p>
+													</div>
+												</div>
+											)}
+										</div>
+									)
+								})}
+							</div>
+						)}
 
-					{activeTab === 'history' && (
-						<div>
-							{token.transactions.map((tx) => {
-								console.log(tx)
-								return (
-									<div>
-										{tx.buyer} bought {tx.quantity} from {tx.owner} for{' '}
-										{prettyBalance(tx.amount, 24, 4)}
-									</div>
-								)
-							})}
-						</div>
-					)}
+						{activeTab === 'history' && (
+							<div>
+								{token.transactions.map((tx, idx) => {
+									return (
+										<div
+											key={idx}
+											className="border-2 border-dashed mt-4 p-2 rounded-md"
+										>
+											<p>
+												<Link href={`/${tx.buyer}`}>
+													<a className="font-semibold">{tx.buyer}</a>
+												</Link>
+												<span> bought {tx.quantity} from </span>
+												<Link href={`/${tx.owner}`}>
+													<a className="font-semibold">{tx.owner}</a>
+												</Link>
+												<span> for </span>
+												{prettyBalance(tx.amount, 24, 4)} Ⓝ
+											</p>
+											<p className="mt-1 text-sm">{timeAgo.format(tx.createdAt)}</p>
+										</div>
+									)
+								})}
+							</div>
+						)}
+					</div>
 				</div>
 			</div>
 		</div>
