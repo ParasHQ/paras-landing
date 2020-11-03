@@ -250,11 +250,6 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 								</div>
 							</div>
 							<div className="text-center mt-2 text-sm">
-								{/* <div onClick={(_) => pushCardDetail(token)}>
-									<p className="inline-block text-gray-100 cursor-pointer">
-										See Details
-									</p>
-								</div> */}
 								<Link
 									href={{
 										pathname: router.pathname,

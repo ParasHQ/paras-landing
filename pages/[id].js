@@ -12,10 +12,10 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile }) => {
 	const router = useRouter()
 
 	const scrollCollection = `${router.query.id}::collection`
-  const scrollCreation = `${router.query.id}::creation`
-  
-  const oTokens = store.marketDataPersist[scrollCollection]
-  const cTokens = store.marketDataPersist[scrollCreation]
+	const scrollCreation = `${router.query.id}::creation`
+
+	const oTokens = store.marketDataPersist[scrollCollection]
+	const cTokens = store.marketDataPersist[scrollCreation]
 
 	const [cPage, setCPage] = useState(1)
 	const [oPage, setOPage] = useState(1)
@@ -29,13 +29,13 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile }) => {
 
 	useEffect(() => {
 		store.setMarketDataPersist(scrollCollection, ownerTokens)
-    store.setMarketDataPersist(scrollCreation, creatorTokens)
-
+		store.setMarketDataPersist(scrollCreation, creatorTokens)
+		
 		return () => {
 			store.setMarketScrollPersist(scrollCollection, 0)
 			store.setMarketScrollPersist(scrollCreation, 0)
 		}
-	}, [userProfile])
+	}, [router.query.id])
 
 	const fetchOwnerTokens = async () => {
 		if (!oHasMore || isFetching) {
@@ -48,10 +48,10 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile }) => {
 				oPage * 5
 			}&__limit=5`
 		)
-    const newData = await res.data.data
+		const newData = await res.data.data
 
 		const newTokens = [...oTokens, ...newData.results]
-    store.setMarketDataPersist(scrollCollection, newTokens)
+		store.setMarketDataPersist(scrollCollection, newTokens)
 		setOPage(cPage + 1)
 		if (newData.results.length === 0) {
 			setOHasMore(false)
@@ -97,13 +97,14 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile }) => {
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<div className="flex flex-col items-center justify-center">
 					<div className="w-32 h-32 rounded-full bg-red-100">
-            <img src={parseImgUrl(userProfile.imgUrl)} className="object-cover" />
-          </div>
+						<img
+							src={parseImgUrl(userProfile.imgUrl)}
+							className="object-cover"
+						/>
+					</div>
 					<div className="mt-4 max-w-sm text-center">
 						<h4 className="text-gray-100 font-bold">{router.query.id}</h4>
-						<p className="mt-2 text-gray-300">
-							{userProfile.bio}
-						</p>
+						<p className="mt-2 text-gray-300">{userProfile.bio}</p>
 					</div>
 				</div>
 				<div className="flex justify-center mt-4">
@@ -130,7 +131,9 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile }) => {
 							className="px-4 relative"
 							onClick={(_) => setActiveTab('creation')}
 						>
-							<h4 className="text-gray-100 font-bold cursor-pointer">Creation</h4>
+							<h4 className="text-gray-100 font-bold cursor-pointer">
+								Creation
+							</h4>
 							{activeTab === 'creation' && (
 								<div
 									className="absolute left-0 right-0"
@@ -171,13 +174,13 @@ export async function getServerSideProps({ params }) {
 	)
 	const ownerRes = await axios(
 		`http://localhost:9090/tokens?ownerId=${params.id}&__limit=5`
-  )
-  const profileRes = await axios(
+	)
+	const profileRes = await axios(
 		`http://localhost:9090/profiles?accountId=${params.id}`
 	)
 	const creatorTokens = await creatorRes.data.data.results
-  const ownerTokens = await ownerRes.data.data.results
-  const userProfile = await profileRes.data.data.results[0] || {}
+	const ownerTokens = await ownerRes.data.data.results
+	const userProfile = (await profileRes.data.data.results[0]) || {}
 
 	return { props: { creatorTokens, ownerTokens, userProfile } }
 }
