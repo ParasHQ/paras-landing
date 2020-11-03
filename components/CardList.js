@@ -4,13 +4,18 @@ import Card from '../components/Card'
 import { prettyBalance } from '../utils/common'
 import Link from 'next/link'
 import useStore from '../store'
+import { useRouter } from 'next/router'
+import Modal from './Modal'
+import CardDetail from './CardDetail'
 
 const CardList = ({ name = 'default', tokens, fetchData }) => {
 	const store = useStore()
+	const router = useRouter()
 	const containerRef = useRef()
 	const [mouseDown, setMouseDown] = useState(null)
 	const [touchStart, setTouchStart] = useState(null)
 	const animValuesRef = useRef(store.marketScrollPersist[name])
+	const [activeToken, setActiveToken] = useState(null)
 
 	const props = useSpring({
 		transform: `translate3d(${store.marketScrollPersist[name] || 0}px, 0,0)`,
@@ -33,6 +38,25 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 			}
 		}
 	}, [containerRef, store.marketScrollPersist[name]])
+
+	const pushCardDetail = (token) => {
+		router.push(`${window.location.href}`, `/token/${token.tokenId}`, {
+			shallow: true,
+		})
+		setActiveToken(token)
+	}
+
+	useEffect(() => {
+		if (!activeToken) {
+			router.replace('/market')
+		}
+	}, [activeToken])
+
+	useEffect(() => {
+		if (router.asPath === '/market') {
+			setActiveToken(null)
+		}
+	}, [router])
 
 	const handleScroll = (e) => {
 		e.preventDefault()
@@ -131,9 +155,40 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 			onTouchMove={handleTouchMove}
 			className="overflow-x-hidden border-2 border-dashed border-gray-800 rounded-md"
 		>
+			{activeToken && (
+				<Modal close={(_) => setActiveToken(null)}>
+					<div className="max-w-5xl m-auto w-full relative">
+						<div className="absolute top-0 left-0 p-4 z-50">
+							<div
+								className="cursor-pointer flex items-center"
+								onClick={(_) => setActiveToken(null)}
+							>
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 16 16"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										fillRule="evenodd"
+										clipRule="evenodd"
+										d="M5.41412 7.00001H13.9999V9.00001H5.41412L8.70701 12.2929L7.2928 13.7071L1.58569 8.00001L7.2928 2.29291L8.70701 3.70712L5.41412 7.00001Z"
+										fill="white"
+									/>
+								</svg>
+								<p className="pl-2 text-gray-100 cursor-pointer">Back</p>
+							</div>
+						</div>
+						<CardDetail token={activeToken} />
+					</div>
+				</Modal>
+			)}
 			{tokens.length === 0 && (
 				<div className="w-full">
-					<div className="m-auto text-lg text-gray-800 font-semibold py-24 text-center">No Cards</div>
+					<div className="m-auto text-lg text-gray-800 font-semibold py-24 text-center">
+						No Cards
+					</div>
 				</div>
 			)}
 			<animated.div className="flex select-none " style={props}>
@@ -198,11 +253,16 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 								</div>
 							</div>
 							<div className="text-center mt-2 text-sm">
-								<Link href={`/token/${token.tokenId}`}>
+								<div onClick={(_) => pushCardDetail(token)}>
 									<p className="inline-block text-gray-100 cursor-pointer">
 										See Details
 									</p>
-								</Link>
+								</div>
+								{/* <Link href={`/token/${token.tokenId}`}>
+									<p className="inline-block text-gray-100 cursor-pointer">
+										See Details
+									</p>
+								</Link> */}
 							</div>
 						</div>
 					)
