@@ -129,11 +129,11 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 			onTouchStart={handleTouchStart}
 			onTouchEnd={handleTouchEnd}
 			onTouchMove={handleTouchMove}
-			className="overflow-x-hidden border-2 border-dashed border-gray-900 rounded-md"
+			className="overflow-x-hidden border-2 border-dashed border-gray-800 rounded-md"
 		>
 			{tokens.length === 0 && (
 				<div className="w-full">
-					<div className="m-auto text-white py-24 text-center">No Cards</div>
+					<div className="m-auto text-lg text-gray-800 font-semibold py-24 text-center">No Cards</div>
 				</div>
 			)}
 			<animated.div className="flex select-none " style={props}>

@@ -39,9 +39,9 @@ export default function MarketPage({ data }) {
 			}}
 		>
 			<Nav />
-			<div className="max-w-6xl relative m-auto mt-12">
+			<div className="max-w-6xl relative m-auto py-12">
 				<h1 className="text-4xl font-bold text-gray-100 text-center">Market</h1>
-				<div className="p-4">
+				<div className="mt-4 px-4">
 					<CardList name="market" tokens={tokens} fetchData={_fetchData} />
 				</div>
 			</div>

@@ -4,7 +4,7 @@
 
 body {
 	letter-spacing:  0.01em;
-	@apply font-body font-medium;
+	@apply font-body font-medium text-gray-900;
 }
 
 button:focus {
