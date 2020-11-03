@@ -96,7 +96,7 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile }) => {
 
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<div className="flex flex-col items-center justify-center">
-					<div className="w-32 h-32 rounded-full bg-red-100">
+					<div className="w-32 h-32 rounded-full bg-primary">
 						<img
 							src={parseImgUrl(userProfile.imgUrl)}
 							className="object-cover"

@@ -9,6 +9,81 @@ import { parseDate, parseImgUrl, prettyBalance, timeAgo } from '../utils/common'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import JSBI from 'jsbi'
+import axios from 'axios'
+
+const Ownership = ({ ownership }) => {
+	const [profile, setProfile] = useState({})
+
+	useEffect(() => {
+		fetchData()
+	}, [])
+
+	const fetchData = async () => {
+		const resp = await axios.get(
+			`http://localhost:9090/profiles?accountId=${ownership.ownerId}`
+		)
+		if (resp.data.data.results.length > 0) {
+			setProfile(resp.data.data.results[0])
+		}
+	}
+
+	return (
+		<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+			<div className="flex items-center justify-between">
+				<div className="flex items-center">
+					<Link href={`/${ownership.ownerId}`}>
+						<div className="w-8 h-8 rounded-full overflow-hidden cursor-pointer bg-primary">
+							<img className="object-cover" src={parseImgUrl(profile.imgUrl)} />
+						</div>
+					</Link>
+					<div className="pl-2">
+						<Link href={`/${ownership.ownerId}`}>
+							<a className="flex text-gray-900 font-semibold cursor-pointer">
+								{ownership.ownerId}
+							</a>
+						</Link>
+					</div>
+				</div>
+				<div>
+					<span className="text-sm text-gray-800">owns </span>
+					{ownership.quantity}
+				</div>
+			</div>
+			{ownership.marketData ? (
+				<div className="flex justify-between mt-2 items-center">
+					<div>
+						<p className="flex items-center">
+							On sale {prettyBalance(ownership.marketData.amount, 24, 4)} Ⓝ (
+							<span>
+								<span className="text-sm text-gray-800">Available</span>{' '}
+								{ownership.marketData.quantity}
+							</span>
+							)
+						</p>
+					</div>
+					<div>
+						<button
+							// className="w-full outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-2 py-1 border-primary bg-primary text-gray-100"
+							className="text-primary font-bold"
+							onClick={(_) => {
+								setChosenSeller(ownership)
+								setShowModal('confirmBuy')
+							}}
+						>
+							Buy
+						</button>
+					</div>
+				</div>
+			) : (
+				<div className="flex justify-between mt-2 items-center">
+					<div>
+						<p className="flex items-center">Not for sale</p>
+					</div>
+				</div>
+			)}
+		</div>
+	)
+}
 
 const CardDetail = ({ token }) => {
 	const store = useStore()
@@ -522,74 +597,7 @@ const CardDetail = ({ token }) => {
 						{activeTab === 'owners' && (
 							<div>
 								{token.ownerships.map((ownership, idx) => {
-									return (
-										<div
-											key={idx}
-											className="border-2 border-dashed mt-4 p-2 rounded-md"
-										>
-											<div className="flex items-center justify-between">
-												<div className="flex items-center">
-													<Link href={`/${ownership.ownerId}`}>
-														<img
-															className="w-8 h-8 rounded-full overflow-hidden cursor-pointer bg-primary"
-															src={`http://localhost:9090/profiles/${ownership.ownerId}/avatar`}
-														/>
-													</Link>
-													<div className="pl-2">
-														<Link href={`/${ownership.ownerId}`}>
-															<a className="flex text-gray-900 font-semibold cursor-pointer">
-																{ownership.ownerId}
-															</a>
-														</Link>
-													</div>
-												</div>
-												<div>
-													<span className="text-sm text-gray-800">owns </span>
-													{ownership.quantity}
-												</div>
-											</div>
-											{ownership.marketData ? (
-												<div className="flex justify-between mt-2 items-center">
-													<div>
-														<p className="flex items-center">
-															On sale{' '}
-															{prettyBalance(
-																ownership.marketData.amount,
-																24,
-																4
-															)}{' '}
-															Ⓝ (
-															<span>
-																<span className="text-sm text-gray-800">
-																	Available
-																</span>{' '}
-																{ownership.marketData.quantity}
-															</span>
-															)
-														</p>
-													</div>
-													<div>
-														<button
-															// className="w-full outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-2 py-1 border-primary bg-primary text-gray-100"
-															className="text-primary font-bold"
-															onClick={(_) => {
-																setChosenSeller(ownership)
-																setShowModal('confirmBuy')
-															}}
-														>
-															Buy
-														</button>
-													</div>
-												</div>
-											) : (
-												<div className="flex justify-between mt-2 items-center">
-													<div>
-														<p className="flex items-center">Not for sale</p>
-													</div>
-												</div>
-											)}
-										</div>
-									)
+									return <Ownership ownership={ownership} key={idx} />
 								})}
 							</div>
 						)}
