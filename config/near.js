@@ -1,9 +1,6 @@
 const CONTRACT_NAME = process.env.CONTRACT_NAME
 
 function getConfig(env) {
-	if (process.env && process.env.NODE_ENV) {
-		env = process.env.NODE_ENV
-	}
 	switch (env) {
 		case 'production':
 		case 'mainnet':
