@@ -17,7 +17,7 @@ export default function MarketPage({ data }) {
 
 		setIsFetching(true)
 		const res = await axios(
-			`http://localhost:9090/tokens?__skip=${page * 5}&__limit=5`
+			`${process.env.API_URL}/tokens?__skip=${page * 5}&__limit=5`
 		)
 		const newData = await res.data.data
 
@@ -83,7 +83,7 @@ export default function MarketPage({ data }) {
 }
 
 export async function getServerSideProps() {
-	const res = await axios(`http://localhost:9090/tokens?__limit=5`)
+	const res = await axios(`${process.env.API_URL}/tokens?__limit=5`)
 	const data = await res.data.data
 
 	return { props: { data } }

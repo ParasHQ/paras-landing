@@ -47,7 +47,7 @@ const NewPage = () => {
 		formData.append('collection', formInput.collection)
 
 		try {
-			await axios.post(`http://localhost:9090/tokens`, formData, {
+			await axios.post(`${process.env.API_URL}/tokens`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 					authorization: await near.authToken(),

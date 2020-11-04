@@ -20,7 +20,7 @@ const Ownership = ({ ownership }) => {
 
 	const fetchData = async () => {
 		const resp = await axios.get(
-			`http://localhost:9090/profiles?accountId=${ownership.ownerId}`
+			`${process.env.API_URL}/profiles?accountId=${ownership.ownerId}`
 		)
 		if (resp.data.data.results.length > 0) {
 			setProfile(resp.data.data.results[0])

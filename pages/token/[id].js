@@ -42,7 +42,7 @@ const TokenDetail = ({ token }) => {
 }
 
 export async function getServerSideProps({ params }) {
-	const res = await axios(`http://localhost:9090/tokens?tokenId=${params.id}`)
+	const res = await axios(`${process.env.API_URL}/tokens?tokenId=${params.id}`)
 	const token = await res.data.data.results[0]
 
 	return { props: { token } }

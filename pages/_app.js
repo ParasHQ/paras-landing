@@ -24,7 +24,7 @@ function MyApp({ Component, pageProps }) {
 		)
 		if (currentUser) {
 			const userProfileResp = await axios.get(
-				`http://localhost:9090/profiles?accountId=${currentUser.accountId}`
+				`${process.env.API_URL}/profiles?accountId=${currentUser.accountId}`
 			)
 			const userProfileResults = userProfileResp.data.data.results
 
@@ -35,7 +35,7 @@ function MyApp({ Component, pageProps }) {
 
 				try {
 					const resp = await axios.put(
-						`http://localhost:9090/profiles`,
+						`${process.env.API_URL}/profiles`,
 						formData,
 						{
 							headers: {

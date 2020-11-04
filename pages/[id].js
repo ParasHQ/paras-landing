@@ -45,7 +45,7 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile, accountId }) =
 
 		setIsFetching(true)
 		const res = await axios(
-			`http://localhost:9090/tokens?ownerId=${router.query.id}&__skip=${
+			`${process.env.API_URL}/tokens?ownerId=${router.query.id}&__skip=${
 				oPage * 5
 			}&__limit=5`
 		)
@@ -69,7 +69,7 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile, accountId }) =
 
 		setIsFetching(true)
 		const res = await axios(
-			`http://localhost:9090/tokens?creatorId=${router.query.id}&__skip=${
+			`${process.env.API_URL}/tokens?creatorId=${router.query.id}&__skip=${
 				cPage * 5
 			}&__limit=5`
 		)
@@ -212,13 +212,13 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile, accountId }) =
 
 export async function getServerSideProps({ params }) {
 	const creatorRes = await axios(
-		`http://localhost:9090/tokens?creatorId=${params.id}&__limit=5`
+		`${process.env.API_URL}/tokens?creatorId=${params.id}&__limit=5`
 	)
 	const ownerRes = await axios(
-		`http://localhost:9090/tokens?ownerId=${params.id}&__limit=5`
+		`${process.env.API_URL}/tokens?ownerId=${params.id}&__limit=5`
 	)
 	const profileRes = await axios(
-		`http://localhost:9090/profiles?accountId=${params.id}`
+		`${process.env.API_URL}/profiles?accountId=${params.id}`
 	)
 	const creatorTokens = await creatorRes.data.data.results
 	const ownerTokens = await ownerRes.data.data.results

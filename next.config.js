@@ -10,6 +10,7 @@ module.exports = {
 		return config
 	},
 	env: {
-		CONTRACT_NAME: 'contract-beta-dev.paras.testnet',
+		CONTRACT_NAME: process.env.CONTRACT_NAME,
+		API_URL: process.env.API_URL
 	},
 }

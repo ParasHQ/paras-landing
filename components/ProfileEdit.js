@@ -27,7 +27,7 @@ const ProfileEdit = ({ close }) => {
 		formData.append('accountId', store.currentUser)
 
 		try {
-			const resp = await axios.put(`http://localhost:9090/profiles`, formData, {
+			const resp = await axios.put(`${process.env.API_URL}/profiles`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 					'authorization': await near.authToken()
