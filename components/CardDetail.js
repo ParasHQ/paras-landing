@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form'
 import JSBI from 'jsbi'
 import axios from 'axios'
 
-const Ownership = ({ ownership, onBuy }) => {
+const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 	const store = useStore()
 	const [profile, setProfile] = useState({})
 
@@ -63,13 +63,24 @@ const Ownership = ({ ownership, onBuy }) => {
 						</p>
 					</div>
 					<div>
-						<button
-							disabled={store.currentUser === ownership.ownerId || !store.currentUser}
-							className="text-primary font-bold"
-							onClick={onBuy}
-						>
-							Buy
-						</button>
+						{store.currentUser && store.currentUser === ownership.ownerId ? (
+							<button
+								className="text-primary font-semibold"
+								onClick={onUpdateListing}
+							>
+								Update
+							</button>
+						) : (
+							<button
+								disabled={
+									store.currentUser === ownership.ownerId || !store.currentUser
+								}
+								className="text-primary font-semibold"
+								onClick={onBuy}
+							>
+								Buy
+							</button>
+						)}
 					</div>
 				</div>
 			) : (
@@ -598,6 +609,9 @@ const CardDetail = ({ token }) => {
 								{token.ownerships.map((ownership, idx) => {
 									return (
 										<Ownership
+											onUpdateListing={(_) => {
+												setShowModal('addUpdateListing')
+											}}
 											onBuy={(_) => {
 												setChosenSeller(ownership)
 												setShowModal('confirmBuy')
