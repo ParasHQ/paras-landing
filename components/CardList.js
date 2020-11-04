@@ -120,7 +120,7 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 			const diffX = touchStart.x - e.touches[0].pageX
 
 			const animationValue = animValuesRef.current || 0
-			animateScroll(animationValue - (diffX * 3))
+			animateScroll(animationValue - (diffX * 2))
 			setTouchStart({
 				x: e.touches[0].pageX,
 				y: e.touches[0].pageY,

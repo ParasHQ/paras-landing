@@ -64,7 +64,7 @@ const Ownership = ({ ownership, onBuy }) => {
 					</div>
 					<div>
 						<button
-							disabled={store.currentUser === ownership.ownerId}
+							disabled={store.currentUser === ownership.ownerId || !store.currentUser}
 							className="text-primary font-bold"
 							onClick={onBuy}
 						>
