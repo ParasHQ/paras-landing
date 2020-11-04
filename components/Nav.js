@@ -80,9 +80,8 @@ const User = () => {
 			{showAccountModal && (
 				<div className="absolute right-0 w-56 pt-4 z-10">
 					<div className="px-2 pb-2 border-2 bg-gray-100 rounded-md overflow-hidden">
-						<div className="pt-2 text-gray-800 hover:text-black">
+						<div className="pt-2 text-gray-800">
 							<p className="truncate">{store.currentUser}</p>
-							<p className="text-xs text-gray-800">Balance</p>
 							<p className="text-lg">
 								{prettyBalance(store.userBalance.available, 24, 4)} Ⓝ
 							</p>
