@@ -53,12 +53,13 @@ const NewPage = () => {
 					authorization: await near.authToken(),
 				},
 			})
-			router.push('/market')
+			setTimeout(() => {
+				router.push('/market')
+			}, 1000)
 		} catch (err) {
 			console.log(err)
+			setIsSubmitting(false)
 		}
-
-		setIsSubmitting(false)
 	}
 
 	useEffect(() => {
