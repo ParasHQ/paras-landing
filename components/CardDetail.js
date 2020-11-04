@@ -12,6 +12,7 @@ import JSBI from 'jsbi'
 import axios from 'axios'
 
 const Ownership = ({ ownership, onBuy }) => {
+	const store = useStore()
 	const [profile, setProfile] = useState({})
 
 	useEffect(() => {
@@ -63,7 +64,7 @@ const Ownership = ({ ownership, onBuy }) => {
 					</div>
 					<div>
 						<button
-							// className="w-full outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-2 py-1 border-primary bg-primary text-gray-100"
+							disabled={store.currentUser === ownership.ownerId}
 							className="text-primary font-bold"
 							onClick={onBuy}
 						>
