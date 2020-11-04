@@ -140,7 +140,7 @@ const CardDetail = ({ token }) => {
 
 		const params = {
 			ownerId: store.currentUser,
-			tokenId: router.query.tokenId,
+			tokenId: router.query.id,
 			quantity: getValues('quantity'),
 			amount: parseNearAmount(getValues('amount')),
 		}
@@ -163,7 +163,7 @@ const CardDetail = ({ token }) => {
 		//   amount: u128
 		const params = {
 			ownerId: store.currentUser,
-			tokenId: router.query.tokenId,
+			tokenId: router.query.id,
 		}
 
 		try {
@@ -280,6 +280,7 @@ const CardDetail = ({ token }) => {
 										<input
 											type="number"
 											name="amount"
+											step="any"
 											ref={register({
 												required: true,
 												min: 0,
