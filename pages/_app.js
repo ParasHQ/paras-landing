@@ -8,6 +8,8 @@ import '../styles/tailwind.css'
 import 'pure-react-carousel/dist/react-carousel.es.css'
 import 'croppie/croppie.css'
 
+import ToastProvider from '../hooks/useToast'
+
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
 
@@ -61,7 +63,13 @@ function MyApp({ Component, pageProps }) {
 		store.setInitialized(true)
 	}
 
-	return <Component {...pageProps} />
+	return (
+		<div>
+			<ToastProvider>
+				<Component {...pageProps} />
+			</ToastProvider>
+		</div>
+	)
 }
 
 export default MyApp

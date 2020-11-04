@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useState } from 'react'
+import { useToast } from '../hooks/useToast'
 import near from '../lib/near'
 import useStore from '../store'
 import { parseImgUrl } from '../utils/common'
@@ -7,6 +8,7 @@ import ImgCrop from './ImgCrop'
 
 const ProfileEdit = ({ close }) => {
 	const store = useStore()
+	const toast = useToast()
 	const [showImgCrop, setShowImgCrop] = useState(false)
 	const [imgFile, setImgFile] = useState({})
 	const [imgUrl, setImgUrl] = useState(store.userProfile.imgUrl || '')
@@ -27,16 +29,29 @@ const ProfileEdit = ({ close }) => {
 		formData.append('accountId', store.currentUser)
 
 		try {
-			const resp = await axios.put(`${process.env.API_URL}/profiles`, formData, {
-				headers: {
-					'Content-Type': 'multipart/form-data',
-					'authorization': await near.authToken()
-				},
-			})
+			const resp = await axios.put(
+				`${process.env.API_URL}/profiles`,
+				formData,
+				{
+					headers: {
+						'Content-Type': 'multipart/form-data',
+						authorization: await near.authToken(),
+					},
+				}
+			)
 			store.setUserProfile(resp.data.data)
 			close()
 		} catch (err) {
 			console.log(err)
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						Something went wrong, try again later
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 		}
 
 		setIsSubmitting(false)

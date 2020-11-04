@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import JSBI from 'jsbi'
 import axios from 'axios'
+import { useToast } from '../hooks/useToast'
 
 const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 	const store = useStore()
@@ -20,11 +21,15 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 	}, [])
 
 	const fetchData = async () => {
-		const resp = await axios.get(
-			`${process.env.API_URL}/profiles?accountId=${ownership.ownerId}`
-		)
-		if (resp.data.data.results.length > 0) {
-			setProfile(resp.data.data.results[0])
+		try {
+			const resp = await axios.get(
+				`${process.env.API_URL}/profiles?accountId=${ownership.ownerId}`
+			)
+			if (resp.data.data.results.length > 0) {
+				setProfile(resp.data.data.results[0])
+			}
+		} catch (err) {
+			console.log(err)
 		}
 	}
 
@@ -97,7 +102,9 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 const CardDetail = ({ token }) => {
 	const store = useStore()
 	const router = useRouter()
+	const toast = useToast()
 	const copyLinkRef = useRef()
+
 	const { errors, register, handleSubmit, watch, getValues } = useForm({
 		defaultValues: {
 			buyQuantity: 1,
@@ -137,6 +144,15 @@ const CardDetail = ({ token }) => {
 			)
 		} catch (err) {
 			console.log(err)
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						Something went wrong, try again later
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 		}
 	}
 
@@ -159,6 +175,15 @@ const CardDetail = ({ token }) => {
 			setShowModal(false)
 		} catch (err) {
 			console.log(err)
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						Something went wrong, try again later
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 		}
 
 		setIsSubmitting(false)
@@ -185,6 +210,15 @@ const CardDetail = ({ token }) => {
 			setShowModal(false)
 		} catch (err) {
 			console.log(err)
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						Something went wrong, try again later
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 		}
 
 		setIsSubmitting(false)
@@ -205,6 +239,15 @@ const CardDetail = ({ token }) => {
 			await near.contract.deleteMarketData(params)
 		} catch (err) {
 			console.log(err)
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						Something went wrong, try again later
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 		}
 	}
 

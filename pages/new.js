@@ -10,10 +10,12 @@ import Modal from '../components/Modal'
 import { useRouter } from 'next/router'
 import near from '../lib/near'
 import Head from 'next/head'
+import { useToast } from '../hooks/useToast'
 
 const NewPage = () => {
 	const store = useStore()
 	const router = useRouter()
+	const toast = useToast()
 	const [formInput, setFormInput] = useState({})
 	const {
 		errors,
@@ -58,6 +60,15 @@ const NewPage = () => {
 			}, 1000)
 		} catch (err) {
 			console.log(err)
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						Something went wrong, try again later
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 			setIsSubmitting(false)
 		}
 	}

@@ -5,6 +5,7 @@ const Modal = ({
 	closeOnBgClick = true,
 	closeOnEscape = true,
 	children,
+	style = {},
 }) => {
 	const modalRef = useRef(null)
 
@@ -14,7 +15,7 @@ const Modal = ({
 				close()
 			}
 		}
-		
+
 		if (closeOnEscape) {
 			document.addEventListener('keydown', onKeydown)
 		}
@@ -37,6 +38,7 @@ const Modal = ({
 			className="fixed inset-0 z-50 flex items-center p-4"
 			style={{
 				backgroundColor: `rgba(0,0,0,0.86)`,
+				...style,
 			}}
 		>
 			{children}
