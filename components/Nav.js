@@ -172,60 +172,31 @@ const Nav = () => {
 							</svg>
 						</Link>
 					</div>
-					{store.initialized && (
-						<div className="hidden lg:flex items-center -mx-8">
-							<div className="px-8 text-gray-100 ">
-								{router.pathname === '/market' ? (
-									<a
-										className="cursor-pointer"
-										onClick={(_) => store.setMarketScrollPersist(0)}
-									>
-										Market
-									</a>
-								) : (
-									<Link href="/market">
-										<a>Market</a>
-									</Link>
-								)}
-							</div>
-							<div className="px-8">
-								{store.currentUser ? (
-									<User />
-								) : (
-									<Link href="/login">
-										<a className="text-gray-100 ">Login</a>
-									</Link>
-								)}
-							</div>
+					<div className="flex items-center -mx-4">
+						<div className="px-4 text-gray-100 ">
+							{router.pathname === '/market' ? (
+								<a
+									className="cursor-pointer"
+									onClick={(_) => store.setMarketScrollPersist(0)}
+								>
+									Market
+								</a>
+							) : (
+								<Link href="/market">
+									<a>Market</a>
+								</Link>
+							)}
 						</div>
-					)}
-					{store.initialized && (
-						<div className="flex lg:hidden items-center -mx-4">
-							<div className="px-4 text-gray-100 ">
-								{router.pathname === '/market' ? (
-									<a
-										className="cursor-pointer"
-										onClick={(_) => store.setMarketScrollPersist(0)}
-									>
-										Market
-									</a>
-								) : (
-									<Link href="/market">
-										<a>Market</a>
-									</Link>
-								)}
-							</div>
-							<div className="px-4">
-								{store.currentUser ? (
-									<User />
-								) : (
-									<Link href="/login">
-										<a className="text-gray-100 ">Login</a>
-									</Link>
-								)}
-							</div>
+						<div className="px-4">
+							{store.currentUser ? (
+								<User />
+							) : (
+								<Link href="/login">
+									<a className="text-gray-100 ">Login</a>
+								</Link>
+							)}
 						</div>
-					)}
+					</div>
 				</div>
 			</div>
 		</div>
