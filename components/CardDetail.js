@@ -11,7 +11,7 @@ import { useForm } from 'react-hook-form'
 import JSBI from 'jsbi'
 import axios from 'axios'
 
-const Ownership = ({ ownership }) => {
+const Ownership = ({ ownership, onBuy }) => {
 	const [profile, setProfile] = useState({})
 
 	useEffect(() => {
@@ -65,10 +65,7 @@ const Ownership = ({ ownership }) => {
 						<button
 							// className="w-full outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-2 py-1 border-primary bg-primary text-gray-100"
 							className="text-primary font-bold"
-							onClick={(_) => {
-								setChosenSeller(ownership)
-								setShowModal('confirmBuy')
-							}}
+							onClick={onBuy}
 						>
 							Buy
 						</button>
@@ -597,7 +594,16 @@ const CardDetail = ({ token }) => {
 						{activeTab === 'owners' && (
 							<div>
 								{token.ownerships.map((ownership, idx) => {
-									return <Ownership ownership={ownership} key={idx} />
+									return (
+										<Ownership
+											onBuy={(_) => {
+												setChosenSeller(ownership)
+												setShowModal('confirmBuy')
+											}}
+											ownership={ownership}
+											key={idx}
+										/>
+									)
 								})}
 							</div>
 						)}
