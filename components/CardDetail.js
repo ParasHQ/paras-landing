@@ -156,6 +156,7 @@ const CardDetail = ({ token }) => {
 
 		try {
 			await near.contract.transferFrom(params)
+			setShowModal(false)
 		} catch (err) {
 			console.log(err)
 		}
