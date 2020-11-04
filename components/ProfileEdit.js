@@ -94,7 +94,7 @@ const ProfileEdit = ({ close }) => {
 						onChange={_setImg}
 					/>
 					<div className="flex items-center justify-center">
-						<div className="w-32 h-32 rounded-full bg-primary">
+						<div className="w-32 h-32 rounded-full overflow-hidden bg-primary">
 							<img src={parseImgUrl(imgUrl)} className="w-full object-cover" />
 						</div>
 					</div>

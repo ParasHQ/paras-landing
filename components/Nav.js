@@ -58,7 +58,7 @@ const User = () => {
 				onClick={toggleAccountModal}
 			>
 				<div className="flex items-center overflow-hidden">
-					<div className="w-8 h-8 rounded-full bg-primary">
+					<div className="w-8 h-8 rounded-full overflow-hidden bg-primary">
 						<img src={parseImgUrl(store.userProfile.imgUrl)} />
 					</div>
 					<div className="ml-1">
