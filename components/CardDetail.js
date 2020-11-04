@@ -56,7 +56,7 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 						<p className="flex items-center">
 							On sale {prettyBalance(ownership.marketData.amount, 24, 4)} Ⓝ (
 							<span>
-								<span className="text-sm text-gray-800">Available</span>{' '}
+								<span className="text-sm text-gray-800">Qty.</span>{' '}
 								{ownership.marketData.quantity}
 							</span>
 							)
@@ -138,6 +138,29 @@ const CardDetail = ({ token }) => {
 		} catch (err) {
 			console.log(err)
 		}
+	}
+
+	const _transfer = async (data) => {
+		// ownerId: AccountId,
+		// newOwnerId: AccountId,
+		// tokenId: TokenId,
+		// quantity: u128
+
+		setIsSubmitting(true)
+		const params = {
+			ownerId: store.currentUser,
+			newOwnerId: data.newOwnerId,
+			tokenId: router.query.id,
+			quantity: data.transferQuantity,
+		}
+
+		try {
+			await near.contract.transferFrom(params)
+		} catch (err) {
+			console.log(err)
+		}
+
+		setIsSubmitting(false)
 	}
 
 	const _updatePrice = async () => {
@@ -228,6 +251,15 @@ const CardDetail = ({ token }) => {
 						<div className="py-2 cursor-pointer" onClick={(_) => _copyLink()}>
 							{isCopied ? `Copied` : `Copy Link`}
 						</div>
+						{_getUserOwnership(store.currentUser) &&
+							_getUserOwnership(store.currentUser).quantity > 0 && (
+								<div
+									className="py-2 cursor-pointer"
+									onClick={(_) => setShowModal('confirmTransfer')}
+								>
+									Transfer
+								</div>
+							)}
 						{_getUserOwnership(store.currentUser) &&
 							_getUserOwnership(store.currentUser).quantity > 0 && (
 								<div
@@ -436,6 +468,91 @@ const CardDetail = ({ token }) => {
 										type="submit"
 									>
 										Buy
+									</button>
+									<button
+										disabled={isSubmitting}
+										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
+										onClick={(_) => {
+											setChosenSeller(null)
+											setShowModal(false)
+										}}
+									>
+										Cancel
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</Modal>
+			)}
+			{showModal === 'confirmTransfer' && (
+				<Modal
+					close={(_) => setShowModal('')}
+					closeOnBgClick={false}
+					closeOnEscape={false}
+				>
+					<div className="max-w-sm w-full p-4 bg-gray-100 m-auto rounded-md">
+						<div>
+							<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+								Confirm Transfer
+							</h1>
+							<form onSubmit={handleSubmit(_transfer)}>
+								<div className="mt-4">
+									<label className="block text-sm">Address (Account ID)</label>
+									<input
+										type="text"
+										name="newOwnerId"
+										ref={register({
+											required: true,
+										})}
+										className={`${errors.newOwnerId && 'error'}`}
+										placeholder="New Owner Address"
+									/>
+									<div className="mt-2 text-sm text-red-500">
+										{errors.newOwnerId?.type === 'required' &&
+											`Address is required`}
+									</div>
+								</div>
+								<div className="mt-4">
+									<label className="block text-sm">
+										Quantity (Available:{' '}
+										{_getUserOwnership(store.currentUser).quantity -
+											_getUserOwnership(store.currentUser).marketData?.quantity}
+										)
+									</label>
+									<input
+										type="number"
+										name="transferQuantity"
+										ref={register({
+											required: true,
+											min: 1,
+											max:
+												_getUserOwnership(store.currentUser).quantity -
+												_getUserOwnership(store.currentUser).marketData
+													?.quantity,
+										})}
+										className={`${errors.transferQuantity && 'error'}`}
+										placeholder="Number of card(s) to transfer"
+									/>
+									<div className="mt-2 text-sm text-red-500">
+										{errors.transferQuantity?.type === 'required' &&
+											`Quantity is required`}
+										{errors.transferQuantity?.type === 'min' && `Minimum 1`}
+										{errors.transferQuantity?.type === 'max' &&
+											`Must be less than available`}
+									</div>
+								</div>
+								<p className="mt-4 text-sm text-center">
+									You will be transfering {watch('transferQuantity') || '-'}{' '}
+									card(s) to {watch('newOwnerId') || '-'}
+								</p>
+								<div className="">
+									<button
+										disabled={isSubmitting}
+										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+										type="submit"
+									>
+										Transfer
 									</button>
 									<button
 										disabled={isSubmitting}
