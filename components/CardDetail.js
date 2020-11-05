@@ -93,6 +93,14 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 					<div>
 						<p className="flex items-center">Not for sale</p>
 					</div>
+					{store.currentUser && store.currentUser === ownership.ownerId && (
+						<button
+							className="text-primary font-semibold"
+							onClick={onUpdateListing}
+						>
+							Update
+						</button>
+					)}
 				</div>
 			)}
 		</div>
@@ -104,6 +112,7 @@ const CardDetail = ({ token }) => {
 	const router = useRouter()
 	const toast = useToast()
 	const copyLinkRef = useRef()
+	const [localToken, setLocalToken] = useState(token)
 
 	const { errors, register, handleSubmit, watch, getValues } = useForm({
 		defaultValues: {
@@ -144,15 +153,6 @@ const CardDetail = ({ token }) => {
 			)
 		} catch (err) {
 			console.log(err)
-			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						Something went wrong, try again later
-					</div>
-				),
-				type: 'error',
-				duration: 2500,
-			})
 		}
 	}
 
@@ -172,6 +172,57 @@ const CardDetail = ({ token }) => {
 
 		try {
 			await near.contract.transferFrom(params)
+
+			// update local state
+			const ownerIdx = localToken.ownerships.findIndex(
+				(ownership) => ownership.ownerId === params.ownerId
+			)
+			const newOwnerIdx = localToken.ownerships.findIndex(
+				(ownership) => ownership.ownerId === params.newOwnerId
+			)
+			const newLocalToken = { ...localToken }
+
+			const ownerQuantity = parseInt(
+				newLocalToken.ownerships[ownerIdx].quantity
+			)
+
+			newLocalToken.ownerships[ownerIdx].quantity =
+				ownerQuantity - parseInt(params.quantity)
+
+			// if owns 0, delete ownership
+			if (newLocalToken.ownerships[ownerIdx].quantity === 0) {
+				newLocalToken.ownerships.splice(ownerIdx, 1)
+			}
+
+			// if new owner already own some
+			if (newOwnerIdx > -1) {
+				const newOwnerQuantity = parseInt(
+					newLocalToken.ownerships[newOwnerIdx].quantity
+				)
+				newLocalToken.ownerships[newOwnerIdx].quantity =
+					newOwnerQuantity + parseInt(params.quantity)
+			} else {
+				newLocalToken.ownerships.push({
+					createdAt: new Date().getTime(),
+					updatedAt: new Date().getTime(),
+					id: `${params.tokenId}::${params.newOwnerId}`,
+					ownerId: params.newOwnerId,
+					quantity: params.quantity,
+					tokenId: params.tokenId,
+				})
+			}
+
+			setLocalToken(newLocalToken)
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						Transfer success
+					</div>
+				),
+				type: 'success',
+				duration: 2500,
+			})
+
 			setShowModal(false)
 		} catch (err) {
 			console.log(err)
@@ -207,6 +258,33 @@ const CardDetail = ({ token }) => {
 
 		try {
 			await near.contract.updateMarketData(params)
+
+			// update local state
+			const idx = localToken.ownerships.findIndex(
+				(ownership) => ownership.ownerId === store.currentUser
+			)
+			const newLocalToken = { ...localToken }
+
+			if (params.quantity > 0) {
+				newLocalToken.ownerships[idx].marketData = {
+					quantity: params.quantity,
+					amount: params.amount,
+				}
+			} else {
+				delete newLocalToken.ownerships[idx].marketData
+			}
+
+			setLocalToken(newLocalToken)
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						Listing update success
+					</div>
+				),
+				type: 'success',
+				duration: 2500,
+			})
+
 			setShowModal(false)
 		} catch (err) {
 			console.log(err)
@@ -252,7 +330,7 @@ const CardDetail = ({ token }) => {
 	}
 
 	const _getUserOwnership = (userId) => {
-		const ownership = token.ownerships.find(
+		const ownership = localToken.ownerships.find(
 			(ownership) => ownership.ownerId === userId
 		)
 		return ownership
@@ -560,8 +638,11 @@ const CardDetail = ({ token }) => {
 								<div className="mt-4">
 									<label className="block text-sm">
 										Quantity (Available:{' '}
-										{_getUserOwnership(store.currentUser).quantity -
-											_getUserOwnership(store.currentUser).marketData?.quantity}
+										{_getUserOwnership(store.currentUser)
+											? _getUserOwnership(store.currentUser).quantity -
+											  (_getUserOwnership(store.currentUser).marketData
+													?.quantity || 0)
+											: 0}
 										)
 									</label>
 									<input
@@ -570,10 +651,11 @@ const CardDetail = ({ token }) => {
 										ref={register({
 											required: true,
 											min: 1,
-											max:
-												_getUserOwnership(store.currentUser).quantity -
-												_getUserOwnership(store.currentUser).marketData
-													?.quantity,
+											max: _getUserOwnership(store.currentUser)
+												? _getUserOwnership(store.currentUser).quantity -
+												  (_getUserOwnership(store.currentUser).marketData
+														?.quantity || 0)
+												: 0,
 										})}
 										className={`${errors.transferQuantity && 'error'}`}
 										placeholder="Number of card(s) to transfer"
@@ -624,16 +706,16 @@ const CardDetail = ({ token }) => {
 					<div className="w-full h-1/2 lg:h-full lg:w-2/3 bg-dark-primary-1 p-8 lg:p-12">
 						<div className="h-full">
 							<Card
-								imgUrl={parseImgUrl(token.metadata.image)}
-								imgBlur={token.metadata.blurhash}
+								imgUrl={parseImgUrl(localToken.metadata.image)}
+								imgBlur={localToken.metadata.blurhash}
 								token={{
-									name: token.metadata.name,
-									collection: token.metadata.collection,
-									description: token.metadata.description,
-									creatorId: token.creatorId,
-									supply: token.supply,
-									tokenId: token.tokenId,
-									createdAt: token.createdAt,
+									name: localToken.metadata.name,
+									collection: localToken.metadata.collection,
+									description: localToken.metadata.description,
+									creatorId: localToken.creatorId,
+									supply: localToken.supply,
+									tokenId: localToken.tokenId,
+									createdAt: localToken.createdAt,
 								}}
 								initialRotate={{
 									x: 15,
@@ -646,12 +728,14 @@ const CardDetail = ({ token }) => {
 						<div className="flex justify-between">
 							<div>
 								<h1 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight pr-4 break-all">
-									{token.metadata.name}
+									{localToken.metadata.name}
 								</h1>
 								<p className="text-sm">
 									by{' '}
 									<span className="font-semibold">
-										<Link href={`/${token.creatorId}`}>{token.creatorId}</Link>
+										<Link href={`/${localToken.creatorId}`}>
+											{localToken.creatorId}
+										</Link>
 									</span>
 								</p>
 							</div>
@@ -751,22 +835,24 @@ const CardDetail = ({ token }) => {
 							<div>
 								<div className="border-2 border-dashed mt-4 p-2 rounded-md">
 									<p className="text-sm text-gray-800">Collection</p>
-									<p className="text">{token.metadata.collection}</p>
+									<p className="text">{localToken.metadata.collection}</p>
 								</div>
 								<div className="border-2 border-dashed mt-4 p-2 rounded-md">
 									<p className="text-sm text-gray-800">Description</p>
-									<p className="text">{token.metadata.description}</p>
+									<p className="text">{localToken.metadata.description}</p>
 								</div>
 								<div className="border-2 border-dashed mt-4 p-2 rounded-md">
 									<p className="text-sm text-gray-800">Created</p>
-									<p className="text">{parseDate(token.metadata.createdAt)}</p>
+									<p className="text">
+										{parseDate(localToken.metadata.createdAt)}
+									</p>
 								</div>
 							</div>
 						)}
 
 						{activeTab === 'owners' && (
 							<div>
-								{token.ownerships.map((ownership, idx) => {
+								{localToken.ownerships.map((ownership, idx) => {
 									return (
 										<Ownership
 											onUpdateListing={(_) => {
@@ -786,12 +872,12 @@ const CardDetail = ({ token }) => {
 
 						{activeTab === 'history' && (
 							<div>
-								{token.transactions.length === 0 && (
+								{localToken.transactions.length === 0 && (
 									<div className="border-2 border-dashed mt-4 p-2 rounded-md text-center">
 										<p className="text-gray-300 py-8">No Transactions</p>
 									</div>
 								)}
-								{token.transactions.map((tx, idx) => {
+								{localToken.transactions.map((tx, idx) => {
 									return (
 										<div
 											key={idx}

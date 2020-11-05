@@ -32,7 +32,11 @@ const ToastProvider = ({ children }) => {
 	const _backgroundStyle = () => {
 		if (config.type === 'error') {
 			return `text-red-600 bg-red-300 border border-red-500 rounded-md`
-		} else {
+		}
+		else if (config.type === 'success') {
+			return `text-green-600 bg-green-300 border border-green-500 rounded-md`
+		}
+		else {
 			return `bg-gray-100 rounded-md`
 		}
 	}

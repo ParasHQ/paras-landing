@@ -9,7 +9,12 @@ import Footer from '../components/Footer'
 const { default: CardList } = require('../components/CardList')
 const { default: Nav } = require('../components/Nav')
 
-const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile, accountId }) => {
+const ProfileDetail = ({
+	creatorTokens,
+	ownerTokens,
+	userProfile,
+	accountId,
+}) => {
 	const store = useStore()
 	const router = useRouter()
 
@@ -36,6 +41,8 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile, accountId }) =
 		return () => {
 			store.setMarketScrollPersist(scrollCollection, 0)
 			store.setMarketScrollPersist(scrollCreation, 0)
+			store.setMarketDataPersist(scrollCollection, [])
+			store.setMarketDataPersist(scrollCreation, [])
 		}
 	}, [router.query.id])
 
@@ -101,10 +108,7 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile, accountId }) =
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
 
-				<meta
-					name="twitter:title"
-					content={`${accountId} — Paras`}
-				/>
+				<meta name="twitter:title" content={`${accountId} — Paras`} />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -117,14 +121,8 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile, accountId }) =
 					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 				/>
 				<meta property="og:type" content="website" />
-				<meta
-					property="og:title"
-					content={`${accountId} — Paras`}
-				/>
-				<meta
-					property="og:site_name"
-					content={`${accountId} — Paras`}
-				/>
+				<meta property="og:title" content={`${accountId} — Paras`} />
+				<meta property="og:site_name" content={`${accountId} — Paras`} />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -226,7 +224,9 @@ export async function getServerSideProps({ params }) {
 	const ownerTokens = await ownerRes.data.data.results
 	const userProfile = (await profileRes.data.data.results[0]) || {}
 
-	return { props: { creatorTokens, ownerTokens, userProfile, accountId: params.id } }
+	return {
+		props: { creatorTokens, ownerTokens, userProfile, accountId: params.id },
+	}
 }
 
 export default ProfileDetail
