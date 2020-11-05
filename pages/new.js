@@ -219,7 +219,7 @@ const NewPage = () => {
 						</div>
 						<div className="w-full md:w-1/2 pl-0 md:pl-2 flex items-center">
 							<div className="w-full">
-								<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+								<h1 className="mt-4 text-2xl font-bold text-gray-900 tracking-tight">
 									Market Data
 								</h1>
 								<p className="text-sm mt-2">
