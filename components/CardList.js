@@ -26,6 +26,16 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 	}, [store.marketScrollPersist[name]])
 
 	useEffect(() => {
+		document.body.addEventListener('mouseup', handleMouseUp)
+		document.body.addEventListener('touchend', handleTouchEnd)
+
+		return () => {
+			document.body.removeEventListener('mouseup', handleMouseUp)
+			document.body.removeEventListener('touchend', handleTouchEnd)
+		}
+	}, [])
+
+	useEffect(() => {
 		if (containerRef) {
 			// containerRef.current.addEventListener('wheel', handleScroll, {
 			// 	passive: false,
@@ -49,8 +59,7 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 				(token) => token.tokenId === router.query.tokenId
 			)
 			setActiveToken(token)
-		}
-		else {
+		} else {
 			setActiveToken(null)
 		}
 	}, [router.query])
@@ -120,7 +129,7 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 			const diffX = touchStart.x - e.touches[0].pageX
 
 			const animationValue = animValuesRef.current || 0
-			animateScroll(animationValue - (diffX * 2))
+			animateScroll(animationValue - diffX * 2)
 			setTouchStart({
 				x: e.touches[0].pageX,
 				y: e.touches[0].pageY,
