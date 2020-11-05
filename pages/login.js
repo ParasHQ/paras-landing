@@ -11,7 +11,7 @@ const LoginPage = () => {
 
 	useEffect(() => {
 		if (store.currentUser) {
-			router.replace('/')
+			router.replace('/market')
 		}
 	}, [store.currentUser])
 
