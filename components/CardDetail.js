@@ -645,7 +645,7 @@ const CardDetail = ({ token }) => {
 					<div className="w-full h-1/2 lg:h-full lg:w-1/3 bg-gray-100 p-4 overflow-y-auto">
 						<div className="flex justify-between">
 							<div>
-								<h1 className="text-2xl font-bold text-gray-900 tracking-tight pr-2">
+								<h1 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight pr-4 break-all">
 									{token.metadata.name}
 								</h1>
 								<p className="text-sm">
@@ -655,11 +655,10 @@ const CardDetail = ({ token }) => {
 									</span>
 								</p>
 							</div>
-							<div
-								className="cursor-pointer"
-								onClick={(_) => setShowModal('options')}
-							>
+							<div>
 								<svg
+									className="cursor-pointer"
+									onClick={(_) => setShowModal('options')}
 									width="18"
 									height="18"
 									viewBox="0 0 29 7"
