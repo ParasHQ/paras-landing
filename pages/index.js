@@ -3,6 +3,7 @@ import Head from 'next/head'
 import axios from 'axios'
 import Card from '../components/Card'
 import Nav from '../components/Nav'
+import Footer from '../components/Footer'
 
 export default function Home() {
 	const [email, setEmail] = useState('')
@@ -219,6 +220,7 @@ export default function Home() {
 					</div>
 				</div>
 			</div>
+			<Footer />
 		</div>
 	)
 }

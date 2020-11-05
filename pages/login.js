@@ -4,6 +4,7 @@ import Head from 'next/head'
 import near from '../lib/near'
 import Nav from '../components/Nav'
 import useStore from '../store'
+import Footer from '../components/Footer'
 
 const LoginPage = () => {
 	const store = useStore()
@@ -88,6 +89,9 @@ const LoginPage = () => {
 						</button>
 					</div>
 				</div>
+			</div>
+			<div className="fixed bottom-0 left-0 right-0">
+				<Footer />
 			</div>
 		</div>
 	)

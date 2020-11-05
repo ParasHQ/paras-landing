@@ -11,6 +11,7 @@ import { useRouter } from 'next/router'
 import near from '../lib/near'
 import Head from 'next/head'
 import { useToast } from '../hooks/useToast'
+import Footer from '../components/Footer'
 
 const NewPage = () => {
 	const store = useStore()
@@ -588,6 +589,7 @@ const NewPage = () => {
 					</div>
 				</div>
 			</div>
+			<Footer />
 		</div>
 	)
 }

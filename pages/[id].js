@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import useStore from '../store'
 import { parseImgUrl } from '../utils/common'
 import Head from 'next/head'
+import Footer from '../components/Footer'
 
 const { default: CardList } = require('../components/CardList')
 const { default: Nav } = require('../components/Nav')
@@ -206,6 +207,7 @@ const ProfileDetail = ({ creatorTokens, ownerTokens, userProfile, accountId }) =
 					)}
 				</div>
 			</div>
+			<Footer />
 		</div>
 	)
 }

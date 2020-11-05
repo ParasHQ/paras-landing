@@ -3,6 +3,7 @@ import Nav from '../../components/Nav'
 import { parseImgUrl } from '../../utils/common'
 import Head from 'next/head'
 import CardDetail from '../../components/CardDetail'
+import Footer from '../../components/Footer'
 
 const TokenDetail = ({ token }) => {
 	return (
@@ -37,6 +38,7 @@ const TokenDetail = ({ token }) => {
 			<div className="max-w-6xl w-full m-auto py-12 px-4">
 				<CardDetail token={token} />
 			</div>
+			<Footer />
 		</div>
 	)
 }

@@ -3,6 +3,7 @@ import { useState } from 'react'
 import Nav from '../components/Nav'
 import CardList from '../components/CardList'
 import Head from 'next/head'
+import Footer from '../components/Footer'
 
 export default function MarketPage({ data }) {
 	const [tokens, setTokens] = useState(data.results)
@@ -78,6 +79,7 @@ export default function MarketPage({ data }) {
 					<CardList name="market" tokens={tokens} fetchData={_fetchData} />
 				</div>
 			</div>
+			<Footer />
 		</div>
 	)
 }
