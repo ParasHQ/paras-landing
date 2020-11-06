@@ -32,11 +32,9 @@ const ToastProvider = ({ children }) => {
 	const _backgroundStyle = () => {
 		if (config.type === 'error') {
 			return `text-red-600 bg-red-300 border border-red-500 rounded-md`
-		}
-		else if (config.type === 'success') {
+		} else if (config.type === 'success') {
 			return `text-green-600 bg-green-300 border border-green-500 rounded-md`
-		}
-		else {
+		} else {
 			return `bg-gray-100 rounded-md`
 		}
 	}
@@ -52,6 +50,9 @@ const ToastProvider = ({ children }) => {
 						zIndex: 100,
 					}}
 				>
+					<div className="hidden text-red-600 bg-red-300 border border-red-500"></div>
+					<div className="hidden text-green-600 bg-green-300 border border-green-500"></div>
+					<div className="hidden bg-gray-100 rounded-md"></div>
 					<div className="w-full max-w-xs m-auto overflow-y-auto max-h-screen">
 						<div className={_backgroundStyle()}>
 							<div className="p-4">{config.text}</div>
