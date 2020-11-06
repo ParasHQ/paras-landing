@@ -4,8 +4,13 @@ import { parseImgUrl } from '../../utils/common'
 import Head from 'next/head'
 import CardDetail from '../../components/CardDetail'
 import Footer from '../../components/Footer'
+import Error from '../404'
 
-const TokenDetail = ({ token }) => {
+const TokenDetail = ({ errorCode, token }) => {
+	if (errorCode) {
+		return <Error />
+	}
+
 	return (
 		<div
 			className="min-h-screen bg-dark-primary-1"
@@ -45,9 +50,11 @@ const TokenDetail = ({ token }) => {
 
 export async function getServerSideProps({ params }) {
 	const res = await axios(`${process.env.API_URL}/tokens?tokenId=${params.id}`)
-	const token = await res.data.data.results[0]
+	const token = (await res.data.data.results[0]) || null
 
-	return { props: { token } }
+	const errorCode = token ? false : 404
+
+	return { props: { errorCode, token } }
 }
 
 export default TokenDetail

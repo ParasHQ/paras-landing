@@ -192,8 +192,11 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 			)}
 			{tokens.length === 0 && (
 				<div className="w-full">
-					<div className="m-auto text-lg text-gray-800 font-semibold py-24 text-center">
-						No Cards
+					<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">
+						<div className="w-40 m-auto">
+							<img src="/cardstack.png" className="opacity-75" />
+						</div>
+						<p className="mt-4">No Cards</p>
 					</div>
 				</div>
 			)}
