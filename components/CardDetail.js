@@ -166,7 +166,7 @@ const CardDetail = ({ token }) => {
 		const params = {
 			ownerId: store.currentUser,
 			newOwnerId: data.newOwnerId,
-			tokenId: router.query.id,
+			tokenId: token.tokenId,
 			quantity: data.transferQuantity,
 		}
 
@@ -251,7 +251,7 @@ const CardDetail = ({ token }) => {
 
 		const params = {
 			ownerId: store.currentUser,
-			tokenId: router.query.id,
+			tokenId: token.tokenId,
 			quantity: getValues('quantity'),
 			amount: parseNearAmount(getValues('amount')),
 		}
@@ -310,7 +310,7 @@ const CardDetail = ({ token }) => {
 		//   amount: u128
 		const params = {
 			ownerId: store.currentUser,
-			tokenId: router.query.id,
+			tokenId: token.tokenId,
 		}
 
 		try {
