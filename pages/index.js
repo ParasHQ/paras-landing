@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
 import axios from 'axios'
+import Footer from '../components/Footer'
 
 const Card = ({ imgUrl }) => {
 	const cardRef = useRef()
@@ -139,7 +140,12 @@ export default function Home() {
 	}
 
 	return (
-		<div className="min-h-screen relative bg-primary-color">
+		<div
+			className="min-h-screen relative bg-dark-primary-1"
+			style={{
+				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
+			}}
+		>
 			<Head>
 				<title>Paras — Digital Art Cards Market</title>
 				<meta
@@ -175,12 +181,6 @@ export default function Home() {
 					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 				/>
 			</Head>
-			<div
-				className="h-screen w-full absolute"
-				style={{
-					background: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-				}}
-			></div>
 			<div className="relative max-w-5xl m-auto px-4 pb-24 md:px-12">
 				<div className="py-4">
 					<svg
@@ -334,6 +334,7 @@ export default function Home() {
 					</div>
 				</div>
 			</div>
+			<Footer />
 		</div>
 	)
 }
