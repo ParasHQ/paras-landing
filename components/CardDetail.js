@@ -437,6 +437,7 @@ const CardDetail = ({ token }) => {
 										name="quantity"
 										ref={register({
 											required: true,
+											validate: (value) => Number.isInteger(Number(value)),
 											min: 0,
 											max: _getUserOwnership(store.currentUser)
 												? _getUserOwnership(store.currentUser).quantity
@@ -451,6 +452,8 @@ const CardDetail = ({ token }) => {
 										{errors.quantity?.type === 'min' && `Minimum 0`}
 										{errors.quantity?.type === 'max' &&
 											`Must be less than owned`}
+										{errors.quantity?.type === 'validate' &&
+											'Only use rounded number'}
 									</div>
 								</div>
 								<div className="mt-4">

@@ -567,6 +567,7 @@ const NewPage = () => {
 											required: true,
 											min: 0,
 											max: formInput.supply,
+											validate: (value) => Number.isInteger(Number(value)),
 										})}
 										className={`${errors.quantity && 'error'}`}
 										placeholder="Number of card on sale"
@@ -577,6 +578,8 @@ const NewPage = () => {
 										{errors.quantity?.type === 'min' && `Minimum 0`}
 										{errors.quantity?.type === 'max' &&
 											`Must be less than number of copies`}
+										{errors.quantity?.type === 'validate' &&
+											'Only use rounded number'}
 									</div>
 								</div>
 								<div className="mt-4">
