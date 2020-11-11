@@ -43,10 +43,25 @@ const User = () => {
 		} else {
 			toast.show({
 				text: (
-					<div className="font-semibold text-center text-sm">Only creator</div>
+					<div className="font-semibold text-center text-sm">
+						<p>
+							Currently we only allow whitelisted Artist to create their digital
+							art card on Paras.
+						</p>
+						<p className="mt-2">Apply now using the link below:</p>
+						<div className="mt-2">
+							<a
+								href="https://forms.gle/QsZHqa2MKXpjckj98"
+								target="_blank"
+								className="cursor-pointer border-b-2 border-gray-900"
+							>
+								Apply as an Artist
+							</a>
+						</div>
+					</div>
 				),
 				type: 'info',
-				duration: 2500,
+				duration: null,
 			})
 		}
 	}
