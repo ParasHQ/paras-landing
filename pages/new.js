@@ -60,19 +60,23 @@ const NewPage = () => {
 				router.push('/market')
 			}, 1000)
 		} catch (err) {
-			console.log(err)
+			console.log(err.response)
+			const msg =
+				err.response?.data?.message || `Something went wrong, try again later`
 			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						Something went wrong, try again later
-					</div>
-				),
+				text: <div className="font-semibold text-center text-sm">{msg}</div>,
 				type: 'error',
 				duration: 2500,
 			})
 			setIsSubmitting(false)
 		}
 	}
+
+	useEffect(() => {
+		if (store.initialized && !store.userProfile.isCreator) {
+			router.push('/market')
+		}
+	}, [store.initialized])
 
 	useEffect(() => {
 		setValue('name', formInput.name)

@@ -6,10 +6,13 @@ import useStore from '../store'
 import Modal from './Modal'
 import ProfileEdit from './ProfileEdit'
 import { parseImgUrl, prettyBalance } from '../utils/common'
+import { useToast } from '../hooks/useToast'
 
 const User = () => {
 	const store = useStore()
+	const toast = useToast()
 	const accModalRef = useRef()
+	const router = useRouter()
 
 	const [showAccountModal, setShowAccountModal] = useState(false)
 	const [showEditAccountModal, setShowEditAccountModal] = useState(false)
@@ -32,6 +35,20 @@ const User = () => {
 
 	const toggleAccountModal = () => {
 		setShowAccountModal(!showAccountModal)
+	}
+
+	const _createCard = () => {
+		if (store.userProfile.isCreator) {
+			router.push('/new')
+		} else {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">Only creator</div>
+				),
+				type: 'info',
+				duration: 2500,
+			})
+		}
 	}
 
 	const _signOut = () => {
@@ -94,11 +111,13 @@ const User = () => {
 							</a>
 						</div>
 						<hr className="mt-2" />
-						<Link href="/new">
+						<div onClick={_createCard}>
 							<a className="cursor-pointer pt-2 block text-gray-800 hover:text-black">
 								Create Card
 							</a>
-						</Link>
+						</div>
+						{/* <Link href="/new">
+						</Link> */}
 						<hr className="mt-2" />
 						<Link href={`/${store.currentUser}`}>
 							<a className="cursor-pointer pt-2 block text-gray-800 hover:text-black">
