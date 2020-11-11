@@ -298,6 +298,9 @@ export default function Home() {
 								</svg>
 							</a>
 						</div>
+						<p className="mt-2 text-gray-500 text-xs italic">
+							Get Genesis NFT on Launch
+						</p>
 					</div>
 					<div className="w-full md:w-1/2 mt-24 px-4">
 						<h2 className="text-white font-bold text-2xl text-gradient">
@@ -331,6 +334,9 @@ export default function Home() {
 								</svg>
 							</a>
 						</div>
+						<p className="mt-2 text-gray-500 text-xs italic">
+							Get Free Ⓝ When You Start
+						</p>
 					</div>
 				</div>
 			</div>
