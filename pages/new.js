@@ -43,8 +43,8 @@ const NewPage = () => {
 		const formData = new FormData()
 		formData.append('file', imgFile)
 		formData.append('ownerId', store.currentUser)
-		formData.append('supply', parseInt(formInput.supply))
-		formData.append('quantity', parseInt(formInput.quantity))
+		formData.append('supply', formInput.supply)
+		formData.append('quantity', formInput.quantity)
 		formData.append('amount', parseNearAmount(formInput.amount))
 		formData.append('name', formInput.name)
 		formData.append('description', formInput.description)
@@ -567,7 +567,7 @@ const NewPage = () => {
 											required: true,
 											min: 0,
 											max: formInput.supply,
-											validate: (value) => Number.isInteger(Number(value)),
+												
 										})}
 										className={`${errors.quantity && 'error'}`}
 										placeholder="Number of card on sale"
