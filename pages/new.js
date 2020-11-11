@@ -12,6 +12,7 @@ import near from '../lib/near'
 import Head from 'next/head'
 import { useToast } from '../hooks/useToast'
 import Footer from '../components/Footer'
+import { prettyBalance } from '../utils/common'
 
 const NewPage = () => {
 	const store = useStore()
@@ -42,8 +43,8 @@ const NewPage = () => {
 		const formData = new FormData()
 		formData.append('file', imgFile)
 		formData.append('ownerId', store.currentUser)
-		formData.append('supply', formInput.supply)
-		formData.append('quantity', formInput.quantity)
+		formData.append('supply', parseInt(formInput.supply))
+		formData.append('quantity', parseInt(formInput.quantity))
 		formData.append('amount', parseNearAmount(formInput.amount))
 		formData.append('name', formInput.name)
 		formData.append('description', formInput.description)
@@ -229,44 +230,56 @@ const NewPage = () => {
 								</h1>
 								<p className="text-sm mt-2">
 									Price:{' '}
-									{parseFloat(
-										Number(getValues('amount', 0)).toPrecision(4).toString()
+									{prettyBalance(
+										Number(getValues('amount', 0)).toPrecision(4).toString(),
+										0,
+										6
 									)}{' '}
 									Ⓝ (~$
-									{parseFloat(
+									{prettyBalance(
 										Number(store.nearUsdPrice * getValues('amount', 0))
 											.toPrecision(4)
-											.toString()
+											.toString(),
+										0,
+										6
 									)}
 									)
 								</p>
 								<p className="text-sm">
 									Receive:{' '}
-									{parseFloat(
+									{prettyBalance(
 										Number(getValues('amount', 0) * 0.95)
 											.toPrecision(4)
-											.toString()
+											.toString(),
+										0,
+										6
 									)}{' '}
 									Ⓝ (~$
-									{parseFloat(
+									{prettyBalance(
 										Number(store.nearUsdPrice * getValues('amount', 0) * 0.95)
 											.toPrecision(4)
-											.toString()
+											.toString(),
+										0,
+										6
 									)}
 									)
 								</p>
 								<p className="text-sm">
 									Fee:{' '}
-									{parseFloat(
+									{prettyBalance(
 										Number(getValues('amount', 0) * 0.05)
 											.toPrecision(4)
-											.toString()
+											.toString(),
+										0,
+										6
 									)}{' '}
 									Ⓝ (~$
-									{parseFloat(
+									{prettyBalance(
 										Number(store.nearUsdPrice * getValues('amount', 0) * 0.05)
 											.toPrecision(4)
-											.toString()
+											.toString(),
+										0,
+										6
 									)}
 									)
 								</p>
@@ -511,12 +524,21 @@ const NewPage = () => {
 											ref={register({
 												required: true,
 												min: 1,
+												validate: (value) => Number.isInteger(Number(value)),
 											})}
 											className={`${errors.supply && 'error'}`}
 											placeholder="Number of copies"
 										/>
 										<div className="mt-2 text-sm text-red-500">
-											{errors.supply && 'Minimum 1 copy'}
+											{errors.supply?.type === 'required' &&
+												'Number of copies is required'}
+										</div>
+										<div className="mt-2 text-sm text-red-500">
+											{errors.supply?.type === 'min' && 'Minimum 1 copy'}
+										</div>
+										<div className="mt-2 text-sm text-red-500">
+											{errors.supply?.type === 'validate' &&
+												'Only use rounded number'}
 										</div>
 									</div>
 								</div>
@@ -578,9 +600,7 @@ const NewPage = () => {
 									</div>
 									<p>
 										~$
-										{Number(store.nearUsdPrice * watch('amount')).toPrecision(
-											6
-										)}
+										{prettyBalance(store.nearUsdPrice * watch('amount'), 0, 6)}
 									</p>
 									<div className="mt-2 text-sm text-red-500">
 										{errors.amount?.type === 'required' &&

@@ -7,6 +7,7 @@ import useStore from '../store'
 import { useRouter } from 'next/router'
 import Modal from './Modal'
 import CardDetail from './CardDetail'
+import JSBI from 'jsbi'
 
 const CardList = ({ name = 'default', tokens, fetchData }) => {
 	const store = useStore()
@@ -243,13 +244,14 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 													</div>
 													<div className="text-sm text-gray-400">
 														~ $
-														{(
-															prettyBalance(
-																_getLowestPrice(token.ownerships),
-																24,
-																4
-															) * store.nearUsdPrice
-														).toPrecision(4)}
+														{prettyBalance(
+															JSBI.BigInt(
+																_getLowestPrice(token.ownerships) *
+																	store.nearUsdPrice
+															),
+															24,
+															4
+														)}
 													</div>
 												</div>
 											) : (

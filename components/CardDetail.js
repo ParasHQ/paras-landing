@@ -145,6 +145,24 @@ const CardDetail = ({ token }) => {
 			JSBI.BigInt(chosenSeller.marketData.amount)
 		)
 
+		if (
+			JSBI.lessThan(JSBI.BigInt(store.userBalance.available), attachedDeposit)
+		) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						Insufficient Balance
+						<p className="mt-2">
+							Available {prettyBalance(store.userBalance.available, 24, 6)} Ⓝ
+						</p>
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			return
+		}
+
 		try {
 			await near.contract.buy(
 				params,
@@ -457,31 +475,39 @@ const CardDetail = ({ token }) => {
 									</div>
 									<p className="text-sm mt-2">
 										Receive:{' '}
-										{parseFloat(
+										{prettyBalance(
 											Number(watch('amount', 0) * 0.95)
 												.toPrecision(4)
-												.toString()
+												.toString(),
+											0,
+											4
 										)}{' '}
 										Ⓝ (~$
-										{parseFloat(
+										{prettyBalance(
 											Number(store.nearUsdPrice * watch('amount', 0) * 0.95)
 												.toPrecision(4)
-												.toString()
+												.toString(),
+											0,
+											4
 										)}
 										)
 									</p>
 									<p className="text-sm">
 										Fee:{' '}
-										{parseFloat(
+										{prettyBalance(
 											Number(watch('amount', 0) * 0.05)
 												.toPrecision(4)
-												.toString()
+												.toString(),
+											0,
+											4
 										)}{' '}
 										Ⓝ (~$
-										{parseFloat(
+										{prettyBalance(
 											Number(store.nearUsdPrice * watch('amount', 0) * 0.05)
 												.toPrecision(4)
-												.toString()
+												.toString(),
+											0,
+											4
 										)}
 										)
 									</p>
@@ -572,9 +598,11 @@ const CardDetail = ({ token }) => {
 									<p className="text-sm">
 										~$
 										{prettyBalance(
-											store.nearUsdPrice *
-												chosenSeller.marketData.amount *
-												watch('buyQuantity' || 0),
+											JSBI.BigInt(
+												store.nearUsdPrice *
+													chosenSeller.marketData.amount *
+													watch('buyQuantity' || 0)
+											),
 											24,
 											6
 										)}
@@ -586,6 +614,7 @@ const CardDetail = ({ token }) => {
 								</p>
 								<div className="">
 									<button
+										disabled={isSubmitting}
 										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 										type="submit"
 									>

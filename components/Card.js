@@ -22,7 +22,7 @@ const Card = ({
 	const [dimension, setDimension] = useState({ width: 0, height: 0 })
 	const [rotate, setRotate] = useState(initialRotate)
 	if (!setIsShowFront) {
-		[isShowFront, setIsShowFront] = useState(true)
+		;[isShowFront, setIsShowFront] = useState(true)
 	}
 
 	let cardTimeout
@@ -301,7 +301,7 @@ const Card = ({
 														fontSize: `0.5em`,
 													}}
 												>
-													Edition of {token.supply || 0}
+													Edition of {parseInt(token.supply || 0)}
 												</h4>
 											</div>
 											<div>

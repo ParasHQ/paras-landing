@@ -8,6 +8,8 @@ export const useToast = () => useContext(toastContext)
 
 const { Provider } = toastContext
 
+let timeout
+
 const ToastProvider = ({ children }) => {
 	const [reveal, setReveal] = useState(false)
 	// const [text, setText] = useState('')
@@ -18,12 +20,13 @@ const ToastProvider = ({ children }) => {
 	})
 
 	const show = (newConfig) => {
+		clearTimeout(timeout)
 		const updateConfig = { ...config, ...newConfig }
 		setConfig(updateConfig)
 		setReveal(true)
 
 		if (updateConfig.duration) {
-			setTimeout(() => {
+			timeout = setTimeout(() => {
 				setReveal(false)
 			}, config.duration)
 		}
