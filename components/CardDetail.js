@@ -11,6 +11,12 @@ import { useForm } from 'react-hook-form'
 import JSBI from 'jsbi'
 import axios from 'axios'
 import { useToast } from '../hooks/useToast'
+import {
+	FacebookIcon,
+	FacebookShareButton,
+	TwitterIcon,
+	TwitterShareButton,
+} from 'react-share'
 
 const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 	const store = useStore()
@@ -391,6 +397,14 @@ const CardDetail = ({ token }) => {
 						<div className="py-2 cursor-pointer" onClick={(_) => _copyLink()}>
 							{isCopied ? `Copied` : `Copy Link`}
 						</div>
+						<div
+							className="py-2 cursor-pointer"
+							onClick={(_) => {
+								setShowModal('shareTo')
+							}}
+						>
+							Share to...
+						</div>
 						{_getUserOwnership(store.currentUser) &&
 							_getUserOwnership(store.currentUser).quantity > 0 && (
 								<div
@@ -409,6 +423,44 @@ const CardDetail = ({ token }) => {
 									Update My Listing
 								</div>
 							)}
+					</div>
+				</Modal>
+			)}
+			{showModal === 'shareTo' && (
+				<Modal close={(_) => setShowModal('')}>
+					<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
+						<div className="py-2 cursor-pointer">
+							<TwitterShareButton
+								title={`I found ${localToken.metadata.name}!\n`}
+								url={window.location.href}
+								via={[`ParasHQ`]}
+								className="flex items-center w-full"
+							>
+								<TwitterIcon
+									size={24}
+									className="rounded-md"
+									bgStyle={{
+										fill: '#11111F',
+									}}
+								></TwitterIcon>
+								<p className="pl-2">Twitter</p>
+							</TwitterShareButton>
+						</div>
+						<div className="py-2 cursor-pointer">
+							<FacebookShareButton
+								url={window.location.href}
+								className="flex items-center w-full"
+							>
+								<FacebookIcon
+									size={24}
+									className="rounded-md"
+									bgStyle={{
+										fill: '#11111F',
+									}}
+								></FacebookIcon>
+								<p className="pl-2">Facebook</p>
+							</FacebookShareButton>
+						</div>
 					</div>
 				</Modal>
 			)}
