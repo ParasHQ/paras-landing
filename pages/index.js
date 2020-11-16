@@ -181,7 +181,7 @@ export default function Home() {
 					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 				/>
 			</Head>
-			<div className="relative max-w-5xl m-auto px-4 pb-24 md:px-12">
+			<div className="relative max-w-6xl m-auto px-4 pb-24 md:px-12">
 				<div className="py-4">
 					<svg
 						className="mx-auto"
@@ -215,24 +215,26 @@ export default function Home() {
 						/>
 					</svg>
 				</div>
-				<div className="flex flex-wrap">
-					<div
-						className="w-full md:w-1/3 mt-12 md:mt-24"
-						style={{
-							maxWidth: `14rem`,
-						}}
-					>
-						<Card imgUrl={`/3.png`} />
-					</div>
-					<div className="w-full md:w-2/3 mt-12 md:mt-24 pl-0 md:pl-12">
-						<h1 className="text-white text-4xl max-w-lg font-bold">
+				<div className="flex flex-wrap relative">
+					{/* <div className="absolute inset-0">
+						<div
+							className="m-auto w-40 h-40"
+							style={{
+								maxWidth: `14rem`,
+							}}
+						>
+							<Card imgUrl={`/3.png`} />
+						</div>
+					</div> */}
+					<div className="w-full mt-12 text-center relative z-10">
+						<h1 className="text-white text-5xl max-w-2xl m-auto font-bold">
 							Create, Trade and Collect Digital Art Cards (DACs).
 						</h1>
 						<p className="text-gray-400 text-2xl mt-4">
 							All-in-one social DACs marketplace for creators and collectors.
 						</p>
-						<form onSubmit={_notifyMeSubmit}>
-							<div className="flex flex-wrap max-w-lg -mx-2 mt-8">
+						<form className="max-w-lg m-auto" onSubmit={_notifyMeSubmit}>
+							<div className="flex flex-wrap -mx-2 mt-8">
 								<div className="px-2 w-full md:w-8/12">
 									<input
 										onChange={(e) => setEmail(e.target.value)}
@@ -264,79 +266,87 @@ export default function Home() {
 						</form>
 					</div>
 				</div>
-				<div className="flex flex-wrap -mx-4">
-					<div className="w-full md:w-1/2 mt-24 px-4">
-						<h2 className="text-white font-bold text-2xl text-gradient">
-							For Collectors
-						</h2>
-						<p className="mt-4 text-gray-400">
-							Discover beautiful art cards and collect them on a
-							blockchain-based technology that prevents forgery and provides
-							provable ownership.
-						</p>
-						<div className="mt-8 flex items-center">
-							<a
-								href="https://forms.gle/vqpu66p8y23ZnMjt7"
-								target="_blank"
-								className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer "
-							>
-								Join the Waitlist
-								<svg
-									width="12"
-									height="12"
-									viewBox="0 0 16 16"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-									className="ml-1"
+				<div className="mt-16">
+					<img
+						className="border-gray-100 border rounded-md overflow-hidden"
+						src="/video.png"
+					/>
+				</div>
+				<div className="max-w-4xl m-auto">
+					<div className="flex flex-wrap -mx-4">
+						<div className="w-full md:w-1/2 mt-16 px-4">
+							<h2 className="text-white font-bold text-2xl text-gradient">
+								For Collectors
+							</h2>
+							<p className="mt-4 text-gray-400">
+								Discover beautiful art cards and collect them on a
+								blockchain-based technology that prevents forgery and provides
+								provable ownership.
+							</p>
+							<div className="mt-8 flex items-center">
+								<a
+									href="https://forms.gle/vqpu66p8y23ZnMjt7"
+									target="_blank"
+									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer "
 								>
-									<path
-										fillRule="evenodd"
-										clipRule="evenodd"
-										d="M7.70421 9.70711L13.9971 3.41421V7H15.9971V0H8.9971V2H12.5829L6.28999 8.29289L7.70421 9.70711ZM15 14V10H13V14H2V3H6V1H2C0.89543 1 0 1.89543 0 3V14C0 15.1046 0.89543 16 2 16H13C14.1046 16 15 15.1046 15 14Z"
-										fill="white"
-									/>
-								</svg>
-							</a>
+									Join the Waitlist
+									<svg
+										width="12"
+										height="12"
+										viewBox="0 0 16 16"
+										fill="none"
+										xmlns="http://www.w3.org/2000/svg"
+										className="ml-1"
+									>
+										<path
+											fillRule="evenodd"
+											clipRule="evenodd"
+											d="M7.70421 9.70711L13.9971 3.41421V7H15.9971V0H8.9971V2H12.5829L6.28999 8.29289L7.70421 9.70711ZM15 14V10H13V14H2V3H6V1H2C0.89543 1 0 1.89543 0 3V14C0 15.1046 0.89543 16 2 16H13C14.1046 16 15 15.1046 15 14Z"
+											fill="white"
+										/>
+									</svg>
+								</a>
+							</div>
+							<p className="mt-2 text-gray-500 text-xs italic">
+								Get Genesis NFT on Launch
+							</p>
 						</div>
-						<p className="mt-2 text-gray-500 text-xs italic">
-							Get Genesis NFT on Launch
-						</p>
-					</div>
-					<div className="w-full md:w-1/2 mt-24 px-4">
-						<h2 className="text-white font-bold text-2xl text-gradient">
-							For Artists
-						</h2>
-						<p className="mt-4 text-gray-400">
-							Create your digital art cards and sell them on the marketplace in
-							just a few clicks. Start earning with your digital creation.
-						</p>
-						<div className="mt-8 flex items-center">
-							<a
-								href="https://forms.gle/QsZHqa2MKXpjckj98"
-								target="_blank"
-								className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer "
-							>
-								Apply as an Artist
-								<svg
-									width="12"
-									height="12"
-									viewBox="0 0 16 16"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-									className="ml-1"
+						<div className="w-full md:w-1/2 mt-16 px-4">
+							<h2 className="text-white font-bold text-2xl text-gradient">
+								For Artists
+							</h2>
+							<p className="mt-4 text-gray-400">
+								Create your digital art cards and sell them on the marketplace
+								in just a few clicks. Start earning with your digital creation.
+							</p>
+							<div className="mt-8 flex items-center">
+								<a
+									href="https://forms.gle/QsZHqa2MKXpjckj98"
+									target="_blank"
+									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer "
 								>
-									<path
-										fillRule="evenodd"
-										clipRule="evenodd"
-										d="M7.70421 9.70711L13.9971 3.41421V7H15.9971V0H8.9971V2H12.5829L6.28999 8.29289L7.70421 9.70711ZM15 14V10H13V14H2V3H6V1H2C0.89543 1 0 1.89543 0 3V14C0 15.1046 0.89543 16 2 16H13C14.1046 16 15 15.1046 15 14Z"
-										fill="white"
-									/>
-								</svg>
-							</a>
+									Apply as an Artist
+									<svg
+										width="12"
+										height="12"
+										viewBox="0 0 16 16"
+										fill="none"
+										xmlns="http://www.w3.org/2000/svg"
+										className="ml-1"
+									>
+										<path
+											fillRule="evenodd"
+											clipRule="evenodd"
+											d="M7.70421 9.70711L13.9971 3.41421V7H15.9971V0H8.9971V2H12.5829L6.28999 8.29289L7.70421 9.70711ZM15 14V10H13V14H2V3H6V1H2C0.89543 1 0 1.89543 0 3V14C0 15.1046 0.89543 16 2 16H13C14.1046 16 15 15.1046 15 14Z"
+											fill="white"
+										/>
+									</svg>
+								</a>
+							</div>
+							<p className="mt-2 text-gray-500 text-xs italic">
+								Get Free Ⓝ When You Start
+							</p>
 						</div>
-						<p className="mt-2 text-gray-500 text-xs italic">
-							Get Free Ⓝ When You Start
-						</p>
 					</div>
 				</div>
 			</div>
