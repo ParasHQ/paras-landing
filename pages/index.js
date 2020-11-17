@@ -2,108 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
 import axios from 'axios'
 import Footer from '../components/Footer'
-
-const Card = ({ imgUrl }) => {
-	const cardRef = useRef()
-	const dimensionRef = useRef()
-	const [imgLoaded, setImgLoaded] = useState(null)
-	const [dimension, setDimension] = useState({ width: 0, height: 0 })
-	const [rotate, setRotate] = useState({ x: 15, y: 15 })
-
-	let cardTimeout
-
-	useEffect(() => {
-		var img = new Image()
-
-		img.onload = function () {
-			setTimeout(() => {
-				setImgLoaded(imgUrl)
-			}, 1000)
-		}
-		img.src = imgUrl
-	}, [])
-
-	useEffect(() => {
-		if (imgLoaded) {
-			setDimension({
-				width: dimensionRef.current.offsetWidth,
-				height: dimensionRef.current.offsetHeight,
-			})
-		}
-	}, [imgLoaded])
-
-	const handleMouseMove = (e) => {
-		const bbox = cardRef.current.getBoundingClientRect()
-		const mouseX = e.pageX - bbox.left - dimension.width / 2
-		const mouseY = e.pageY - bbox.top - dimension.height / 2
-		const mousePX = mouseX / dimension.width
-		const mousePY = mouseY / dimension.height
-		setRotate({
-			x: mousePX * 30,
-			y: mousePY * -30,
-		})
-	}
-
-	const handleMouseEnter = () => {
-		clearTimeout(cardTimeout)
-	}
-
-	const handleMouseLeave = () => {
-		cardTimeout = setTimeout(() => {
-			setRotate({
-				x: 15,
-				y: 15,
-			})
-		}, 500)
-	}
-
-	return (
-		<div
-			className="relative"
-			style={{
-				paddingBottom: `138%`,
-			}}
-		>
-			<div className="absolute inset-0">
-				<div
-					className={`card-wrap ${!imgLoaded && 'opacity-0'}`}
-					onMouseMove={handleMouseMove}
-					onMouseEnter={handleMouseEnter}
-					onMouseLeave={handleMouseLeave}
-					ref={cardRef}
-					style={{
-						opacity: imgLoaded ? `1` : `0`,
-					}}
-				>
-					<img ref={dimensionRef} className="absolute opacity-0" src={imgUrl} />
-					<div
-						className="card"
-						style={{
-							width: `${dimension.width}px`,
-							height: `${dimension.height}px`,
-							transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)`,
-						}}
-					>
-						<div className="card-bg">
-							<img
-								style={{
-									width: `${dimension.width}px`,
-									height: `${dimension.height}px`,
-								}}
-								src={imgLoaded}
-							/>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	)
-}
-
+import Modal from '../components/Modal'
+import YouTube from 'react-youtube'
 export default function Home() {
 	const [email, setEmail] = useState('')
 	const [formBtnText, setFormBtnText] = useState('NOTIFY ME')
 	const [errMsg, setErrMsg] = useState('empty')
+	const [showVideoModal, setShowVideoModal] = useState(false)
 
 	useEffect(() => {
 		if (errMsg != 'empty') {
@@ -181,6 +86,43 @@ export default function Home() {
 					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 				/>
 			</Head>
+			{showVideoModal && (
+				<Modal close={(_) => setShowVideoModal(false)}>
+					<div className="max-w-3xl w-full mx-auto p-4 relative">
+						<div className="absolute z-10 top-0 right-0">
+							<div
+								className="bg-gray-300 p-2 rounded-full cursor-pointer"
+								onClick={(_) => setShowVideoModal(false)}
+							>
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 16 16"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										fill-rule="evenodd"
+										clip-rule="evenodd"
+										d="M8.00008 9.41423L3.70718 13.7071L2.29297 12.2929L6.58586 8.00001L2.29297 3.70712L3.70718 2.29291L8.00008 6.5858L12.293 2.29291L13.7072 3.70712L9.41429 8.00001L13.7072 12.2929L12.293 13.7071L8.00008 9.41423Z"
+										fill="black"
+									/>
+								</svg>
+							</div>
+						</div>
+						<YouTube
+							containerClassName="youtube-container"
+							className="rounded-lg"
+							videoId="keW4k5pF4MA"
+							opts={{
+								playerVars: {
+									autoplay: 1,
+								},
+							}}
+						/>
+					</div>
+				</Modal>
+			)}
 			<div className="relative max-w-6xl m-auto px-4 pb-24 md:px-12">
 				<div className="py-4">
 					<svg
@@ -216,18 +158,8 @@ export default function Home() {
 					</svg>
 				</div>
 				<div className="flex flex-wrap relative">
-					{/* <div className="absolute inset-0">
-						<div
-							className="m-auto w-40 h-40"
-							style={{
-								maxWidth: `14rem`,
-							}}
-						>
-							<Card imgUrl={`/3.png`} />
-						</div>
-					</div> */}
 					<div className="w-full mt-12 text-center relative z-10">
-						<h1 className="text-white text-5xl max-w-2xl m-auto font-bold">
+						<h1 className="text-white text-3xl md:text-5xl max-w-2xl m-auto font-bold">
 							Create, Trade and Collect Digital Art Cards (DACs).
 						</h1>
 						<p className="text-gray-400 text-2xl mt-4">
@@ -266,11 +198,33 @@ export default function Home() {
 						</form>
 					</div>
 				</div>
-				<div className="mt-16">
-					<img
-						className="border-gray-100 border rounded-md overflow-hidden"
-						src="/video.png"
-					/>
+				<div className="mt-8 max-w-xl mx-auto">
+					<div className="relative">
+						<div className="absolute inset-0 flex items-center justify-center">
+							<div
+								className="p-2 rounded-full overflow-hidden cursor-pointer relative"
+								onClick={(_) => setShowVideoModal(true)}
+							>
+								<div className="absolute z-0 inset-0 bg-gray-100 opacity-75"></div>
+								<svg
+									className="relative z-10"
+									width="32"
+									height="32"
+									viewBox="0 0 24 24"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										fill-rule="evenodd"
+										clip-rule="evenodd"
+										d="M5 20.9999V2.99993C5 2.20876 5.87525 1.73092 6.54076 2.15875L20.5408 11.1587C21.1531 11.5524 21.1531 12.4475 20.5408 12.8411L6.54076 21.8411C5.87525 22.2689 5 21.7911 5 20.9999Z"
+										fill="rgba(0,0,0,0.8)"
+									/>
+								</svg>
+							</div>
+						</div>
+						<img className="rounded-md overflow-hidden" src="/thumbnail.jpg" />
+					</div>
 				</div>
 				<div className="max-w-4xl m-auto">
 					<div className="flex flex-wrap -mx-4">

@@ -24,11 +24,11 @@ const Footer = () => {
 				</div>
 				<div className="flex items-center pt-2 px-2">
 					<a
-						href="https://t.me/joinchat/FWeuRxMmzouPTLbe1ggQpw"
+						href="https://discord.gg/9gpBq8Hbwy"
 						target="_blank"
 						className="flex cursor-pointer "
 					>
-						Telegram
+						Discord
 					</a>
 				</div>
 				<div className="flex items-center pt-2 px-2">
