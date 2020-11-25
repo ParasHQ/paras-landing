@@ -17,6 +17,115 @@ import {
 	TwitterIcon,
 	TwitterShareButton,
 } from 'react-share'
+import InfiniteScroll from 'react-infinite-scroll-component'
+
+const Activity = ({ activity }) => {
+	const [token, setToken] = useState({})
+
+	useEffect(() => {
+		if (!token.tokenId && activity) {
+			_getTokenData()
+		}
+	}, [token, activity])
+
+	const _getTokenData = async () => {
+		const resp = await axios.get(
+			`${process.env.API_URL}/tokens?tokenId=${activity.tokenId}`
+		)
+		if (resp.data.data.results.length > 0) {
+			setToken(resp.data.data.results[0])
+		}
+	}
+
+	if (activity.type === 'marketUpdate') {
+		return (
+			<div className="border-2 border-dashed p-2 rounded-md">
+				<p>
+					<Link href={`/${activity.from}`}>
+						<a className="font-semibold">{activity.from}</a>
+					</Link>
+					<span>
+						{' '}
+						put {token.metadata?.name} on sale for{' '}
+						{prettyBalance(activity.amount, 24, 4)} Ⓝ
+					</span>
+				</p>
+				<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
+			</div>
+		)
+	}
+
+	if (activity.type === 'marketDelete') {
+		return (
+			<div className="border-2 border-dashed p-2 rounded-md">
+				<p>
+					<Link href={`/${activity.from}`}>
+						<a className="font-semibold">{activity.from}</a>
+					</Link>
+					<span> remove {token.metadata?.name} from sale</span>
+				</p>
+				<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
+			</div>
+		)
+	}
+
+	if (activity.type === 'marketBuy') {
+		return (
+			<div className="border-2 border-dashed p-2 rounded-md">
+				<p>
+					<Link href={`/${activity.from}`}>
+						<a className="font-semibold">{activity.from}</a>
+					</Link>
+					<span>
+						{' '}
+						bought {activity.quantity}pcs {token.metadata?.name} from{' '}
+					</span>
+					<Link href={`/${activity.to}`}>
+						<a className="font-semibold">{activity.to}</a>
+					</Link>
+					<span> for </span>
+					{prettyBalance(activity.amount, 24, 4)} Ⓝ
+				</p>
+				<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
+			</div>
+		)
+	}
+
+	if (activity.type === 'transfer' && !activity.from) {
+		return (
+			<div className="border-2 border-dashed p-2 rounded-md">
+				<p>
+					<Link href={`/${activity.to}`}>
+						<a className="font-semibold">{activity.to}</a>
+					</Link>
+					<span>
+						{' '}
+						create {activity.quantity}pcs of {token.metadata?.name}
+					</span>
+				</p>
+				<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
+			</div>
+		)
+	}
+
+	return (
+		<div className="border-2 border-dashed p-2 rounded-md">
+			<p>
+				<Link href={`/${activity.from}`}>
+					<a className="font-semibold">{activity.from}</a>
+				</Link>
+				<span>
+					{' '}
+					transfer {activity.quantity}pcs {token.metadata?.name} to{' '}
+				</span>
+				<Link href={`/${activity.to}`}>
+					<a className="font-semibold">{activity.to}</a>
+				</Link>
+			</p>
+			<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
+		</div>
+	)
+}
 
 const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 	const store = useStore()
@@ -113,9 +222,70 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 	)
 }
 
+const ActivityList = ({ token }) => {
+	const [activityList, setActivityList] = useState([])
+	const [page, setPage] = useState(0)
+	const [isFetching, setIsFetching] = useState(false)
+	const [hasMore, setHasMore] = useState(true)
+
+	useEffect(() => {
+		if (activityList.length === 0 && hasMore) {
+			_fetchData()
+		}
+	}, [])
+
+	const _fetchData = async () => {
+		if (!hasMore || isFetching) {
+			return
+		}
+
+		// `${process.env.API_URL}/activities?tokenId=${token.tokenId}`
+		setIsFetching(true)
+		const res = await axios(
+			`${process.env.API_URL}/activities?tokenId=${token.tokenId}&__skip=${
+				page * 5
+			}&__limit=5`
+		)
+		const newData = await res.data.data
+
+		const newActivityList = [...activityList, ...newData.results]
+		setActivityList(newActivityList)
+		setPage(page + 1)
+		if (newData.results.length === 0) {
+			setHasMore(false)
+		} else {
+			setHasMore(true)
+		}
+		setIsFetching(false)
+	}
+
+	return (
+		<div>
+			{activityList.length === 0 && (
+				<div className="border-2 border-dashed mt-4 p-2 rounded-md text-center">
+					<p className="text-gray-300 py-8">No Transactions</p>
+				</div>
+			)}
+			<InfiniteScroll
+				dataLength={activityList.length}
+				next={_fetchData}
+				hasMore={hasMore}
+				loader={<h4>Loading...</h4>}
+			>
+				{activityList.map((act, idx) => {
+					return (
+						<div key={idx} className="mt-4">
+							<Activity activity={act} />
+						</div>
+					)
+				})}
+			</InfiniteScroll>
+		</div>
+	)
+}
+
 const CardDetail = ({ token }) => {
 	const store = useStore()
-	const router = useRouter()
 	const toast = useToast()
 	const copyLinkRef = useRef()
 	const [localToken, setLocalToken] = useState(token)
@@ -170,7 +340,7 @@ const CardDetail = ({ token }) => {
 		}
 
 		try {
-			await near.contract.buy(
+			await near.contractivity.buy(
 				params,
 				'30000000000000',
 				attachedDeposit.toString()
@@ -195,7 +365,7 @@ const CardDetail = ({ token }) => {
 		}
 
 		try {
-			await near.contract.transferFrom(params)
+			await near.contractivity.transferFrom(params)
 
 			// update local state
 			const ownerIdx = localToken.ownerships.findIndex(
@@ -281,7 +451,7 @@ const CardDetail = ({ token }) => {
 		}
 
 		try {
-			await near.contract.updateMarketData(params)
+			await near.contractivity.updateMarketData(params)
 
 			// update local state
 			const idx = localToken.ownerships.findIndex(
@@ -338,7 +508,7 @@ const CardDetail = ({ token }) => {
 		}
 
 		try {
-			await near.contract.deleteMarketData(params)
+			await near.contractivity.deleteMarketData(params)
 		} catch (err) {
 			console.log(err)
 			toast.show({
@@ -956,34 +1126,7 @@ const CardDetail = ({ token }) => {
 
 						{activeTab === 'history' && (
 							<div>
-								{localToken.transactions.length === 0 && (
-									<div className="border-2 border-dashed mt-4 p-2 rounded-md text-center">
-										<p className="text-gray-300 py-8">No Transactions</p>
-									</div>
-								)}
-								{localToken.transactions.map((tx, idx) => {
-									return (
-										<div
-											key={idx}
-											className="border-2 border-dashed mt-4 p-2 rounded-md"
-										>
-											<p>
-												<Link href={`/${tx.buyer}`}>
-													<a className="font-semibold">{tx.buyer}</a>
-												</Link>
-												<span> bought {tx.quantity} from </span>
-												<Link href={`/${tx.owner}`}>
-													<a className="font-semibold">{tx.owner}</a>
-												</Link>
-												<span> for </span>
-												{prettyBalance(tx.amount, 24, 4)} Ⓝ
-											</p>
-											<p className="mt-1 text-sm">
-												{timeAgo.format(tx.createdAt)}
-											</p>
-										</div>
-									)
-								})}
+								<ActivityList token={token} />
 							</div>
 						)}
 					</div>
