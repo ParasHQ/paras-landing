@@ -1,5 +1,4 @@
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
-import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import Card from './Card'
 import Modal from './Modal'
@@ -92,20 +91,11 @@ const Activity = ({ activity }) => {
 	}
 
 	if (activity.type === 'transfer' && !activity.from) {
-		return (
-			<div className="border-2 border-dashed p-2 rounded-md">
-				<p>
-					<Link href={`/${activity.to}`}>
-						<a className="font-semibold">{activity.to}</a>
-					</Link>
-					<span>
-						{' '}
-						create {activity.quantity}pcs of {token.metadata?.name}
-					</span>
-				</p>
-				<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
-			</div>
-		)
+		return null
+	}
+
+	if (activity.type === 'transfer' && !activity.to) {
+		return null
 	}
 
 	return (
