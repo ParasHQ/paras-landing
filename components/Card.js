@@ -208,7 +208,7 @@ const Card = ({
 													fontSize: `0.75em`,
 												}}
 											>
-												{token.name.length > 0 ? token.name : 'Card Name'}
+												{token.name?.length > 0 ? token.name : 'Card Name'}
 											</h4>
 											<h4
 												className="truncate"
@@ -216,7 +216,7 @@ const Card = ({
 													fontSize: `0.5em`,
 												}}
 											>
-												{token.collection && token.collection.length > 0
+												{token.collection && token.collection?.length > 0
 													? token.collection
 													: 'Collection'}
 											</h4>
@@ -283,7 +283,7 @@ const Card = ({
 												fontSize: `0.5em`,
 											}}
 										>
-											{token.description.length > 0
+											{token.description?.length > 0
 												? token.description
 												: 'Your card description'}
 										</h4>
@@ -311,7 +311,7 @@ const Card = ({
 														fontSize: `0.5em`,
 													}}
 												>
-													{token.tokenId.slice(0, 8)}
+													{token.tokenId?.slice(0, 8)}
 												</h4>
 											</div>
 										</div>

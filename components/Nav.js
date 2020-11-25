@@ -221,6 +221,9 @@ const Nav = () => {
 								</Link>
 							)}
 						</div>
+						<Link href="/activity">
+							<a className="px-4 text-gray-100">Activity</a>
+						</Link>
 						<div className="px-4">
 							{store.currentUser ? (
 								<User />

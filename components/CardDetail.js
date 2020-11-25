@@ -330,7 +330,7 @@ const CardDetail = ({ token }) => {
 		}
 
 		try {
-			await near.contractivity.buy(
+			await near.contract.buy(
 				params,
 				'30000000000000',
 				attachedDeposit.toString()
@@ -355,7 +355,7 @@ const CardDetail = ({ token }) => {
 		}
 
 		try {
-			await near.contractivity.transferFrom(params)
+			await near.contract.transferFrom(params)
 
 			// update local state
 			const ownerIdx = localToken.ownerships.findIndex(
@@ -441,7 +441,7 @@ const CardDetail = ({ token }) => {
 		}
 
 		try {
-			await near.contractivity.updateMarketData(params)
+			await near.contract.updateMarketData(params)
 
 			// update local state
 			const idx = localToken.ownerships.findIndex(
@@ -498,7 +498,7 @@ const CardDetail = ({ token }) => {
 		}
 
 		try {
-			await near.contractivity.deleteMarketData(params)
+			await near.contract.deleteMarketData(params)
 		} catch (err) {
 			console.log(err)
 			toast.show({

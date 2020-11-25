@@ -34,6 +34,12 @@ const useStore = create((set, get) => ({
 	setUserBalance: (val) => set(() => ({ userBalance: val })),
 	userProfile: {},
 	setUserProfile: (val) => set(() => ({ userProfile: val })),
+	activityList: [],
+	setActivityList: (val) => set(() => ({ activityList: val })),
+	activityListPage: 0,
+	setActivityListPage: (val) => set(() => ({ activityListPage: val })),
+	activityListHasMore: true,
+	setActivityListHasMore: (val) => set(() => ({ activityListHasMore: val })),
 }))
 
 export default useStore
