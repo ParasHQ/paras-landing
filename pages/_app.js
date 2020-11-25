@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import near from '../lib/near'
 import useStore from '../store'
 import axios from 'axios'
+import { useRouter } from 'next/router'
+import * as gtag from '../lib/gtag'
 
 import '../styles/font.css'
 import '../styles/tailwind.css'
@@ -12,6 +14,19 @@ import ToastProvider from '../hooks/useToast'
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
+
+	const router = useRouter()
+
+	useEffect(() => {
+		const handleRouteChange = (url) => {
+			gtag.pageview(url)
+		}
+		router.events.on('routeChangeComplete', handleRouteChange)
+
+		return () => {
+			router.events.off('routeChangeComplete', handleRouteChange)
+		}
+	}, [router.events])
 
 	useEffect(() => {
 		_init()
