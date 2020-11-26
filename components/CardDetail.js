@@ -938,7 +938,7 @@ const CardDetail = ({ token }) => {
 					}}
 				>
 					<div className="w-full h-1/2 lg:h-full lg:w-2/3 bg-dark-primary-1 p-12 relative">
-						<div className="absolute inset-0 opacity-50">
+						<div className="absolute inset-0 opacity-75">
 							<Blurhash
 								hash={
 									localToken.metadata.blurhash ||
@@ -1084,22 +1084,42 @@ const CardDetail = ({ token }) => {
 								{activeTab === 'info' && (
 									<div>
 										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
-											<p className="text-sm text-gray-800">Collection</p>
+											<p className="text-sm text-black font-medium">
+												Collection
+											</p>
 											<p className="text-gray-900">
 												{localToken.metadata.collection}
 											</p>
 										</div>
 										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
-											<p className="text-sm text-gray-800">Description</p>
+											<p className="text-sm text-black font-medium">
+												Description
+											</p>
 											<p className="text-gray-900">
 												{localToken.metadata.description}
 											</p>
 										</div>
-										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
-											<p className="text-sm text-gray-800">Created</p>
-											<p className="text-gray-900">
-												{parseDate(localToken.metadata.createdAt)}
-											</p>
+										<div className="flex items-center -mx-2">
+											<div className="w-1/2 px-2">
+												<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+													<p className="text-sm text-black font-medium">
+														Created
+													</p>
+													<p className="text-gray-900">
+														{parseDate(localToken.metadata.createdAt)}
+													</p>
+												</div>
+											</div>
+											<div className="w-1/2 px-2">
+												<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+													<p className="text-sm text-black font-medium">
+														Supply
+													</p>
+													<p className="text-gray-900">
+														{localToken.supply}pcs
+													</p>
+												</div>
+											</div>
 										</div>
 									</div>
 								)}

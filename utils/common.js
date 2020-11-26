@@ -21,7 +21,7 @@ const monthNames = [
 
 export const parseDate = (ts) => {
 	let dateObj = new Date(ts)
-	let month = monthNames[dateObj.getMonth()]
+	let month = monthNames[dateObj.getMonth()].slice(0,3)
 	let day = String(dateObj.getDate()).padStart(2, '0')
 	let year = dateObj.getFullYear()
 	return `${day} ${month} ${year}`
