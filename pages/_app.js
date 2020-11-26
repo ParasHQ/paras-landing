@@ -83,7 +83,7 @@ function MyApp({ Component, pageProps }) {
 
 	return (
 		<div>
-			<SWRConfig>
+			<SWRConfig value={{}}>
 				<ToastProvider>
 					<Component {...pageProps} />
 				</ToastProvider>

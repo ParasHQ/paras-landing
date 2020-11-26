@@ -266,7 +266,7 @@ const Card = ({
 															fontSize: `0.65em`,
 														}}
 													>
-														{new Date(token.createdAt).getFullYear()}
+														{new Date(token.createdAt).getFullYear() || new Date().getFullYear()}
 													</h4>
 												</div>
 											</div>
