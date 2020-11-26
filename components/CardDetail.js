@@ -18,36 +18,21 @@ import {
 } from 'react-share'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Blurhash } from 'react-blurhash'
+import Scrollbars from 'react-custom-scrollbars'
 
 const Activity = ({ activity }) => {
-	const [token, setToken] = useState({})
-
-	useEffect(() => {
-		if (!token.tokenId && activity) {
-			_getTokenData()
-		}
-	}, [token, activity])
-
-	const _getTokenData = async () => {
-		const resp = await axios.get(
-			`${process.env.API_URL}/tokens?tokenId=${activity.tokenId}`
-		)
-		if (resp.data.data.results.length > 0) {
-			setToken(resp.data.data.results[0])
-		}
-	}
-
 	if (activity.type === 'marketUpdate') {
 		return (
 			<div className="border-2 border-dashed p-2 rounded-md">
 				<p>
 					<Link href={`/${activity.from}`}>
-						<a className="font-semibold">{activity.from}</a>
+						<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
+							{activity.from}
+						</a>
 					</Link>
 					<span>
 						{' '}
-						put {token.metadata?.name} on sale for{' '}
-						{prettyBalance(activity.amount, 24, 4)} Ⓝ
+						put on sale for {prettyBalance(activity.amount, 24, 4)} Ⓝ
 					</span>
 				</p>
 				<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
@@ -60,9 +45,11 @@ const Activity = ({ activity }) => {
 			<div className="border-2 border-dashed p-2 rounded-md">
 				<p>
 					<Link href={`/${activity.from}`}>
-						<a className="font-semibold">{activity.from}</a>
+						<a className="text-black font-semibold border-b-2 border-transparent hover:border-gray-900">
+							{activity.from}
+						</a>
 					</Link>
-					<span> remove {token.metadata?.name} from sale</span>
+					<span> remove from sale</span>
 				</p>
 				<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
 			</div>
@@ -74,14 +61,15 @@ const Activity = ({ activity }) => {
 			<div className="border-2 border-dashed p-2 rounded-md">
 				<p>
 					<Link href={`/${activity.from}`}>
-						<a className="font-semibold">{activity.from}</a>
+						<a className="text-black font-semibold border-b-2 border-transparent hover:border-gray-900">
+							{activity.from}
+						</a>
 					</Link>
-					<span>
-						{' '}
-						bought {activity.quantity}pcs {token.metadata?.name} from{' '}
-					</span>
+					<span> bought {activity.quantity}pcs from </span>
 					<Link href={`/${activity.to}`}>
-						<a className="font-semibold">{activity.to}</a>
+						<a className="text-black font-semibold border-b-2 border-transparent hover:border-gray-900">
+							{activity.to}
+						</a>
 					</Link>
 					<span> for </span>
 					{prettyBalance(activity.amount, 24, 4)} Ⓝ
@@ -103,14 +91,15 @@ const Activity = ({ activity }) => {
 		<div className="border-2 border-dashed p-2 rounded-md">
 			<p>
 				<Link href={`/${activity.from}`}>
-					<a className="font-semibold">{activity.from}</a>
+					<a className="text-black font-semibold border-b-2 border-transparent hover:border-gray-900">
+						{activity.from}
+					</a>
 				</Link>
-				<span>
-					{' '}
-					transfer {activity.quantity}pcs {token.metadata?.name} to{' '}
-				</span>
+				<span> transfer {activity.quantity}pcs to </span>
 				<Link href={`/${activity.to}`}>
-					<a className="font-semibold">{activity.to}</a>
+					<a className="text-black font-semibold border-b-2 border-transparent hover:border-gray-900">
+						{activity.to}
+					</a>
 				</Link>
 			</p>
 			<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
@@ -150,7 +139,7 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 					</Link>
 					<div className="pl-2">
 						<Link href={`/${ownership.ownerId}`}>
-							<a className="flex text-gray-900 font-semibold cursor-pointer">
+							<a className="text-gray-900 font-semibold cursor-pointer border-b-2 border-transparent hover:border-gray-900">
 								{ownership.ownerId}
 							</a>
 						</Link>
@@ -162,7 +151,7 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 				</div>
 			</div>
 			{ownership.marketData ? (
-				<div className="flex justify-between mt-2 items-center">
+				<div className="flex justify-between mt-2 items-center text-gray-900">
 					<div>
 						<p className="flex items-center">
 							On sale {prettyBalance(ownership.marketData.amount, 24, 4)} Ⓝ (
@@ -176,7 +165,7 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 					<div>
 						{store.currentUser && store.currentUser === ownership.ownerId ? (
 							<button
-								className="text-primary font-semibold"
+								className="font-semibold w-24 rounded-md bg-primary text-white"
 								onClick={onUpdateListing}
 							>
 								Update
@@ -186,7 +175,7 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 								disabled={
 									store.currentUser === ownership.ownerId || !store.currentUser
 								}
-								className="text-primary font-semibold"
+								className="font-semibold w-24 rounded-md bg-primary text-white"
 								onClick={onBuy}
 							>
 								Buy
@@ -201,7 +190,7 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 					</div>
 					{store.currentUser && store.currentUser === ownership.ownerId && (
 						<button
-							className="text-primary font-semibold"
+							className="font-semibold w-24 rounded-md bg-primary text-white"
 							onClick={onUpdateListing}
 						>
 							Update
@@ -230,12 +219,11 @@ const ActivityList = ({ token }) => {
 			return
 		}
 
-		// `${process.env.API_URL}/activities?tokenId=${token.tokenId}`
 		setIsFetching(true)
 		const res = await axios(
 			`${process.env.API_URL}/activities?tokenId=${token.tokenId}&__skip=${
-				page * 5
-			}&__limit=5`
+				page * 10
+			}&__limit=10`
 		)
 		const newData = await res.data.data
 
@@ -262,10 +250,11 @@ const ActivityList = ({ token }) => {
 				next={_fetchData}
 				hasMore={hasMore}
 				loader={<h4>Loading...</h4>}
+				scrollableTarget="activityListScroll"
 			>
 				{activityList.map((act, idx) => {
 					return (
-						<div key={idx} className="mt-4">
+						<div key={idx} className="mt-4 text-gray-900">
 							<Activity activity={act} />
 						</div>
 					)
@@ -945,13 +934,16 @@ const CardDetail = ({ token }) => {
 				<div
 					className="flex flex-wrap h-full rounded-md overflow-hidden"
 					style={{
-						height: `90vh`,
+						height: `85vh`,
 					}}
 				>
 					<div className="w-full h-1/2 lg:h-full lg:w-2/3 bg-dark-primary-1 p-12 relative">
 						<div className="absolute inset-0 opacity-50">
 							<Blurhash
-								hash={localToken.metadata.blurhash || 'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'}
+								hash={
+									localToken.metadata.blurhash ||
+									'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'
+								}
 								width={`100%`}
 								height={`100%`}
 								resolutionX={32}
@@ -979,157 +971,162 @@ const CardDetail = ({ token }) => {
 							/>
 						</div>
 					</div>
-					<div className="w-full h-1/2 lg:h-full lg:w-1/3 bg-gray-100 p-4 overflow-y-auto">
-						<div className="flex justify-between">
+					<div className="flex w-full h-1/2 lg:h-full lg:w-1/3 bg-gray-100">
+						<Scrollbars
+							style={{
+								height: `100%`,
+							}}
+							universal={true}
+							renderView={(props) => (
+								<div {...props} id="activityListScroll" className="p-4" />
+							)}
+						>
 							<div>
-								<h1 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight pr-4 break-all">
-									{localToken.metadata.name}
-								</h1>
-								<p className="text-sm">
-									by{' '}
-									<span className="font-semibold">
-										<Link href={`/${localToken.creatorId}`}>
-											{localToken.creatorId}
-										</Link>
-									</span>
-								</p>
-							</div>
-							<div>
-								<svg
-									className="cursor-pointer"
-									onClick={(_) => setShowModal('options')}
-									width="18"
-									height="18"
-									viewBox="0 0 29 7"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<rect
-										width="6.78723"
-										height="6.78723"
-										rx="2"
-										transform="matrix(1 0 0 -1 0 6.78711)"
-										fill="black"
-									/>
-									<rect
-										width="6.78723"
-										height="6.78723"
-										rx="2"
-										transform="matrix(1 0 0 -1 11.1064 6.78711)"
-										fill="black"
-									/>
-									<rect
-										width="6.78723"
-										height="6.78723"
-										rx="2"
-										transform="matrix(1 0 0 -1 22.2126 6.78711)"
-										fill="black"
-									/>
-								</svg>
-							</div>
-						</div>
-
-						<div className="flex mt-2 -mx-4">
-							<div className="px-4">
-								<div
-									className="cursor-pointer relative font-semibold"
-									onClick={(_) => setActiveTab('info')}
-								>
-									Info
-									{activeTab === 'info' && (
-										<div
-											className="absolute left-0 right-0"
-											style={{
-												bottom: `0`,
-											}}
+								<div className="flex justify-between">
+									<div>
+										<h1 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight pr-4 break-all">
+											{localToken.metadata.name}
+										</h1>
+										<p>
+											by{' '}
+											<span className="font-semibold">
+												<Link href={`/${localToken.creatorId}`}>
+													<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
+														{localToken.creatorId}
+													</a>
+												</Link>
+											</span>
+										</p>
+									</div>
+									<div>
+										<svg
+											className="cursor-pointer"
+											onClick={(_) => setShowModal('options')}
+											width="18"
+											height="18"
+											viewBox="0 0 29 7"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
 										>
-											<div className="mx-auto w-4 h-1 bg-gray-900"></div>
-										</div>
-									)}
+											<rect
+												width="6.78723"
+												height="6.78723"
+												rx="2"
+												transform="matrix(1 0 0 -1 0 6.78711)"
+												fill="black"
+											/>
+											<rect
+												width="6.78723"
+												height="6.78723"
+												rx="2"
+												transform="matrix(1 0 0 -1 11.1064 6.78711)"
+												fill="black"
+											/>
+											<rect
+												width="6.78723"
+												height="6.78723"
+												rx="2"
+												transform="matrix(1 0 0 -1 22.2126 6.78711)"
+												fill="black"
+											/>
+										</svg>
+									</div>
 								</div>
-							</div>
-							<div className="px-4">
-								<div
-									className="cursor-pointer relative font-semibold"
-									onClick={(_) => setActiveTab('owners')}
-								>
-									Owners
-									{activeTab === 'owners' && (
+
+								<div className="flex mt-2">
+									<div className="w-1/3">
 										<div
-											className="absolute left-0 right-0"
-											style={{
-												bottom: `0`,
-											}}
+											className="cursor-pointer relative text-center font-semibold overflow-hidden rounded-md hover:bg-opacity-15 hover:bg-dark-primary-1"
+											onClick={(_) => setActiveTab('info')}
 										>
-											<div className="mx-auto w-4 h-1 bg-gray-900"></div>
+											<div
+												className={`${
+													activeTab === 'info' &&
+													'text-gray-100 bg-dark-primary-1'
+												}`}
+											>
+												Info
+											</div>
 										</div>
-									)}
-								</div>
-							</div>
-							<div className="px-4">
-								<div
-									className="cursor-pointer relative font-semibold"
-									onClick={(_) => setActiveTab('history')}
-								>
-									History
-									{activeTab === 'history' && (
+									</div>
+									<div className="w-1/3">
 										<div
-											className="absolute left-0 right-0"
-											style={{
-												bottom: `0`,
-											}}
+											className="cursor-pointer relative text-center font-semibold overflow-hidden rounded-md hover:bg-opacity-15 hover:bg-dark-primary-1"
+											onClick={(_) => setActiveTab('owners')}
 										>
-											<div className="mx-auto w-4 h-1 bg-gray-900"></div>
+											<div
+												className={`${
+													activeTab === 'owners' &&
+													'text-gray-100 bg-dark-primary-1 rounded-md'
+												}`}
+											>
+												Owners
+											</div>
 										</div>
-									)}
+									</div>
+									<div className="w-1/3">
+										<div
+											className="cursor-pointer relative text-center font-semibold overflow-hidden rounded-md hover:bg-opacity-15 hover:bg-dark-primary-1"
+											onClick={(_) => setActiveTab('history')}
+										>
+											<div
+												className={`${
+													activeTab === 'history' &&
+													'text-gray-100 bg-dark-primary-1 rounded-md'
+												}`}
+											>
+												History
+											</div>
+										</div>
+									</div>
 								</div>
-							</div>
-						</div>
 
-						{activeTab === 'info' && (
-							<div>
-								<div className="border-2 border-dashed mt-4 p-2 rounded-md">
-									<p className="text-sm text-gray-800">Collection</p>
-									<p className="text-gray-900">{localToken.metadata.collection}</p>
-								</div>
-								<div className="border-2 border-dashed mt-4 p-2 rounded-md">
-									<p className="text-sm text-gray-800">Description</p>
-									<p className="text-gray-900">{localToken.metadata.description}</p>
-								</div>
-								<div className="border-2 border-dashed mt-4 p-2 rounded-md">
-									<p className="text-sm text-gray-800">Created</p>
-									<p className="text-gray-900">
-										{parseDate(localToken.metadata.createdAt)}
-									</p>
-								</div>
-							</div>
-						)}
+								{activeTab === 'info' && (
+									<div>
+										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+											<p className="text-sm text-gray-800">Collection</p>
+											<p className="text-gray-900">
+												{localToken.metadata.collection}
+											</p>
+										</div>
+										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+											<p className="text-sm text-gray-800">Description</p>
+											<p className="text-gray-900">
+												{localToken.metadata.description}
+											</p>
+										</div>
+										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+											<p className="text-sm text-gray-800">Created</p>
+											<p className="text-gray-900">
+												{parseDate(localToken.metadata.createdAt)}
+											</p>
+										</div>
+									</div>
+								)}
 
-						{activeTab === 'owners' && (
-							<div>
-								{localToken.ownerships.map((ownership, idx) => {
-									return (
-										<Ownership
-											onUpdateListing={(_) => {
-												setShowModal('addUpdateListing')
-											}}
-											onBuy={(_) => {
-												setChosenSeller(ownership)
-												setShowModal('confirmBuy')
-											}}
-											ownership={ownership}
-											key={idx}
-										/>
-									)
-								})}
-							</div>
-						)}
+								{activeTab === 'owners' && (
+									<div className="text-gray-900">
+										{localToken.ownerships.map((ownership, idx) => {
+											return (
+												<Ownership
+													onUpdateListing={(_) => {
+														setShowModal('addUpdateListing')
+													}}
+													onBuy={(_) => {
+														setChosenSeller(ownership)
+														setShowModal('confirmBuy')
+													}}
+													ownership={ownership}
+													key={idx}
+												/>
+											)
+										})}
+									</div>
+								)}
 
-						{activeTab === 'history' && (
-							<div>
-								<ActivityList token={token} />
+								{activeTab === 'history' && <ActivityList token={token} />}
 							</div>
-						)}
+						</Scrollbars>
 					</div>
 				</div>
 			</div>
