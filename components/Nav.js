@@ -272,7 +272,6 @@ const NotificationList = () => {
 
 		if (showAccountModal) {
 			document.body.addEventListener('click', onClickEv)
-			_readNotificationList()
 		}
 
 		return () => {
@@ -280,27 +279,31 @@ const NotificationList = () => {
 		}
 	}, [showAccountModal])
 
+	useEffect(() => {
+		if (showAccountModal && notificationUnreadList.length > 0) {
+			_readNotificationList()
+		}
+	}, [showAccountModal, notificationUnreadList])
+
 	const toggleAccountModal = () => {
 		setShowAccountModal(!showAccountModal)
 	}
 
 	const _readNotificationList = async () => {
 		try {
-			if (notificationUnreadList.length > 0) {
-				await axios.put(
-					`${process.env.API_URL}/notifications/read`,
-					{
-						accountId: currentUser,
-						notificationIds: notificationUnreadList.map((n) => n._id),
+			await axios.put(
+				`${process.env.API_URL}/notifications/read`,
+				{
+					accountId: currentUser,
+					notificationIds: notificationUnreadList.map((n) => n._id),
+				},
+				{
+					headers: {
+						authorization: await near.authToken(),
 					},
-					{
-						headers: {
-							authorization: await near.authToken(),
-						},
-					}
-				)
-				setNotificationUnreadList([])
-			}
+				}
+			)
+			setNotificationUnreadList([])
 		} catch (err) {
 			console.log(err)
 		}
@@ -395,7 +398,11 @@ const NotificationList = () => {
 					>
 						<div className="p-2 shadow-inner bg-dark-primary-2 text-gray-100 rounded-md">
 							<h4 className="font-bold text-2xl px-2">Notifications</h4>
-							<Scrollbars id="scrollableDiv" autoHeight autoHeightMax={`24rem`}>
+							<Scrollbars
+								autoHeight
+								autoHeightMax={`24rem`}
+								renderView={(props) => <div {...props} id="scrollableDiv" />}
+							>
 								<InfiniteScroll
 									dataLength={notificationList.length}
 									next={_fetchData}
