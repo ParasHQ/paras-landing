@@ -567,7 +567,7 @@ const NewPage = () => {
 											required: true,
 											min: 0,
 											max: formInput.supply,
-												
+											validate: (value) => Number.isInteger(Number(value)),
 										})}
 										className={`${errors.quantity && 'error'}`}
 										placeholder="Number of card on sale"
