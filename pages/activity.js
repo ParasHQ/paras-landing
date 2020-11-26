@@ -58,16 +58,15 @@ const ActivityWrapper = ({ activity }) => {
 							x: 15,
 							y: 15,
 						}}
+						disableFlip={true}
 					/>
 				</div>
 			</div>
 			<div className="w-full md:w-2/3 text-gray-100 pt-4 pl-0 md:pt-0 md:pl-4">
 				<div className="overflow-hidden">
 					<Link href={`/token/${token.tokenId}`}>
-						<a>
-							<p className="text-2xl font-bold truncate">
-								{token.metadata?.name}
-							</p>
+						<a className="text-2xl font-bold truncate border-b-2 border-transparent hover:border-gray-100">
+							{token.metadata?.name}
 						</a>
 					</Link>
 					<p className="opacity-75 truncate">{token.metadata?.collection}</p>
@@ -91,11 +90,16 @@ const Activity = ({ activity }) => {
 			<div className="text-gray-300">
 				<p>
 					<Link href={`/${activity.from}`}>
-						<a className="text-gray-100 font-semibold">{activity.from}</a>
+						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">{activity.from}</a>
 					</Link>
 					<span>
 						{' '}
 						put on sale for {prettyBalance(activity.amount, 24, 4)} Ⓝ
+					</span>
+					<span>
+						{' '}
+						($
+						{prettyBalance(JSBI.BigInt(activity.amount * nearUsdPrice), 24, 4)})
 					</span>
 				</p>
 			</div>
@@ -107,7 +111,7 @@ const Activity = ({ activity }) => {
 			<div className="text-gray-300">
 				<p>
 					<Link href={`/${activity.from}`}>
-						<a className="text-gray-100 font-semibold">{activity.from}</a>
+						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">{activity.from}</a>
 					</Link>
 					<span> remove from sale</span>
 				</p>
@@ -120,23 +124,18 @@ const Activity = ({ activity }) => {
 			<div className="text-gray-300">
 				<p>
 					<Link href={`/${activity.from}`}>
-						<a className="text-gray-100 font-semibold">{activity.from}</a>
+						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">{activity.from}</a>
 					</Link>
 					<span> bought {activity.quantity}pcs from </span>
 					<Link href={`/${activity.to}`}>
-						<a className="text-gray-100 font-semibold">{activity.to}</a>
+						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">{activity.to}</a>
 					</Link>
 					<span> for </span>
 					{prettyBalance(activity.amount, 24, 4)} Ⓝ
 					<span>
 						{' '}
-						( $
-						{prettyBalance(
-							JSBI.BigInt(activity.amount * nearUsdPrice),
-							24,
-							4
-						)}{' '}
-						)
+						($
+						{prettyBalance(JSBI.BigInt(activity.amount * nearUsdPrice), 24, 4)})
 					</span>
 				</p>
 			</div>
@@ -147,11 +146,11 @@ const Activity = ({ activity }) => {
 		<div className="text-gray-300">
 			<p>
 				<Link href={`/${activity.from}`}>
-					<a className="text-gray-100 font-semibold">{activity.from}</a>
+					<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">{activity.from}</a>
 				</Link>
 				<span> transfer {activity.quantity}pcs to </span>
 				<Link href={`/${activity.to}`}>
-					<a className="text-gray-100 font-semibold">{activity.to}</a>
+					<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">{activity.to}</a>
 				</Link>
 			</p>
 		</div>
@@ -187,8 +186,8 @@ const ActivityLog = () => {
 					activityListPage * LIMIT
 				}&__limit=${LIMIT}`
 			)
-      const newData = await res.data.data
-      
+			const newData = await res.data.data
+
 			const newActivityList = [...activityList, ...newData.results]
 			setActivityList(newActivityList)
 			setActivityListPage(activityListPage + 1)
