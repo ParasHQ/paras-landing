@@ -11,6 +11,7 @@ import 'pure-react-carousel/dist/react-carousel.es.css'
 import 'croppie/croppie.css'
 
 import ToastProvider from '../hooks/useToast'
+import { SWRConfig } from 'swr'
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
@@ -82,9 +83,15 @@ function MyApp({ Component, pageProps }) {
 
 	return (
 		<div>
-			<ToastProvider>
-				<Component {...pageProps} />
-			</ToastProvider>
+			<SWRConfig
+				value={{
+					refreshInterval: 3000,
+				}}
+			>
+				<ToastProvider>
+					<Component {...pageProps} />
+				</ToastProvider>
+			</SWRConfig>
 		</div>
 	)
 }

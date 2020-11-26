@@ -12,6 +12,7 @@ import { useToast } from '../hooks/useToast'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Scrollbars from 'react-custom-scrollbars'
+import useSWR from 'swr'
 
 const LIMIT = 10
 
@@ -172,22 +173,19 @@ const User = () => {
 }
 
 const Notification = ({ notif }) => {
-	const [token, setToken] = useState({})
-
-	useEffect(() => {
-		if (!token.tokenId && notif) {
-			_getTokenData()
-		}
-	}, [token, notif])
-
-	const _getTokenData = async () => {
-		const resp = await axios.get(
-			`${process.env.API_URL}/tokens?tokenId=${notif.payload.tokenId}`
-		)
+	const fetcher = async (key) => {
+		const resp = await axios.get(`${process.env.API_URL}/${key}`)
 		if (resp.data.data.results.length > 0) {
-			setToken(resp.data.data.results[0])
+			return resp.data.data.results[0]
+		} else {
+			return {}
 		}
 	}
+
+	const { data: token } = useSWR(
+		`tokens?tokenId=${notif.payload.tokenId}`,
+		fetcher
+	)
 
 	if (notif.type === 'onBuy') {
 		return (
@@ -195,7 +193,7 @@ const Notification = ({ notif }) => {
 				<Link href={`/token/${notif.payload.tokenId}`}>
 					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
 						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-							<img src={parseImgUrl(token.metadata?.image)} />
+							<img src={parseImgUrl(token?.metadata?.image)} />
 						</div>
 						<div className="pl-2 text-gray-300">
 							<span className="font-medium text-gray-100">
@@ -203,7 +201,7 @@ const Notification = ({ notif }) => {
 							</span>{' '}
 							bought {notif.payload.quantity}pcs of{' '}
 							<span className="font-medium text-gray-100">
-								{token.metadata?.name}
+								{token?.metadata?.name}
 							</span>{' '}
 							for {prettyBalance(notif.payload.amount, 24, 4)} Ⓝ
 						</div>
@@ -217,7 +215,7 @@ const Notification = ({ notif }) => {
 			<Link href={`/token/${notif.payload.tokenId}`}>
 				<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
 					<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-						<img src={parseImgUrl(token.metadata?.image)} />
+						<img src={parseImgUrl(token?.metadata?.image)} />
 					</div>
 					<div className="pl-2 text-gray-300">
 						<span className="font-medium text-gray-100">
@@ -225,7 +223,7 @@ const Notification = ({ notif }) => {
 						</span>{' '}
 						send you {notif.payload.quantity}pcs of{' '}
 						<span className="font-medium text-gray-100">
-							{token.metadata?.name}
+							{token?.metadata?.name}
 						</span>
 					</div>
 				</div>

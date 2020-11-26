@@ -19,6 +19,7 @@ import {
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Blurhash } from 'react-blurhash'
 import Scrollbars from 'react-custom-scrollbars'
+import useSWR from 'swr'
 
 const Activity = ({ activity }) => {
 	if (activity.type === 'marketUpdate') {
@@ -109,24 +110,21 @@ const Activity = ({ activity }) => {
 
 const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 	const store = useStore()
-	const [profile, setProfile] = useState({})
 
-	useEffect(() => {
-		fetchData()
-	}, [])
-
-	const fetchData = async () => {
-		try {
-			const resp = await axios.get(
-				`${process.env.API_URL}/profiles?accountId=${ownership.ownerId}`
-			)
-			if (resp.data.data.results.length > 0) {
-				setProfile(resp.data.data.results[0])
-			}
-		} catch (err) {
-			console.log(err)
+	const fetcher = async (key) => {
+		const resp = await axios.get(`${process.env.API_URL}/${key}`)
+		if (resp.data.data.results.length > 0) {
+			return resp.data.data.results[0]
+		} else {
+			return {}
 		}
 	}
+	
+	const { data: profile } = useSWR(
+		`profiles?accountId=${ownership.ownerId}`,
+		fetcher
+	)
+
 
 	return (
 		<div className="border-2 border-dashed mt-4 p-2 rounded-md">
@@ -134,7 +132,12 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 				<div className="flex items-center">
 					<Link href={`/${ownership.ownerId}`}>
 						<div className="w-8 h-8 rounded-full overflow-hidden cursor-pointer bg-primary">
-							<img className="object-cover" src={parseImgUrl(profile.imgUrl)} />
+							{profile && (
+								<img
+									className="object-cover"
+									src={parseImgUrl(profile.imgUrl)}
+								/>
+							)}
 						</div>
 					</Link>
 					<div className="pl-2">
