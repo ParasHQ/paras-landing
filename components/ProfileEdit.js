@@ -83,7 +83,7 @@ const ProfileEdit = ({ close }) => {
 				/>
 			)}
 			<div className="m-auto">
-				<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+				<h1 className="text-2xl font-bold text-gray-100 tracking-tight">
 					Edit Profile
 				</h1>
 				<div className="mt-4 mx-auto relative cursor-pointer w-32 h-32 rounded-full overflow-hidden">
@@ -94,19 +94,19 @@ const ProfileEdit = ({ close }) => {
 						onChange={_setImg}
 					/>
 					<div className="flex items-center justify-center">
-						<div className="w-32 h-32 rounded-full overflow-hidden bg-primary">
+						<div className="w-32 h-32 rounded-full overflow-hidden bg-primary shadow-inner">
 							<img src={parseImgUrl(imgUrl)} className="w-full object-cover" />
 						</div>
 					</div>
 				</div>
 				<div className="mt-4">
-					<label className="block text-sm">Bio</label>
+					<label className="block text-sm text-gray-100">Bio</label>
 					<textarea
 						type="text"
 						name="description"
 						value={bio}
 						onChange={(e) => setBio(e.target.value)}
-						className={`resize-none h-24`}
+						className={`resize-none h-24 focus:border-gray-100`}
 						placeholder="Tell us about yourself"
 					></textarea>
 				</div>
@@ -119,7 +119,7 @@ const ProfileEdit = ({ close }) => {
 						{!isSubmitting ? 'Save' : 'Saving...'}
 					</button>
 					<button
-						className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
+						className="w-full outline-none h-12 mt-4 rounded-md bg-gray-100 text-sm font-semibold border-2 px-4 py-2 text-primary"
 						onClick={close}
 					>
 						Cancel
