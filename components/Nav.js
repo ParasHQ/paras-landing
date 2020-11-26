@@ -11,6 +11,7 @@ import { parseImgUrl, prettyBalance } from '../utils/common'
 import { useToast } from '../hooks/useToast'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import Scrollbars from 'react-custom-scrollbars'
 
 const LIMIT = 10
 
@@ -193,7 +194,7 @@ const Notification = ({ notif }) => {
 			<div>
 				<Link href={`/token/${notif.payload.tokenId}`}>
 					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
-						<div className="w-20 rounded-md overflow-hidden bg-primary shadow-inner">
+						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
 							<img src={parseImgUrl(token.metadata?.image)} />
 						</div>
 						<div className="pl-2 text-gray-300">
@@ -204,7 +205,7 @@ const Notification = ({ notif }) => {
 							<span className="font-medium text-gray-100">
 								{token.metadata?.name}
 							</span>{' '}
-							for {prettyBalance(notif.payload.amount, 24, 4)}
+							for {prettyBalance(notif.payload.amount, 24, 4)} Ⓝ
 						</div>
 					</div>
 				</Link>
@@ -215,7 +216,7 @@ const Notification = ({ notif }) => {
 		<div>
 			<Link href={`/token/${notif.payload.tokenId}`}>
 				<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
-					<div className="w-20 rounded-md overflow-hidden bg-primary shadow-inner">
+					<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
 						<img src={parseImgUrl(token.metadata?.image)} />
 					</div>
 					<div className="pl-2 text-gray-300">
@@ -258,7 +259,6 @@ const NotificationList = () => {
 			notificationList.length === 0 &&
 			notificationListHasMore
 		) {
-			console.log(currentUser, notificationList, notificationListHasMore)
 			_fetchData()
 		}
 	}, [currentUser, notificationList, notificationListHasMore])
@@ -395,13 +395,7 @@ const NotificationList = () => {
 					>
 						<div className="p-2 shadow-inner bg-dark-primary-2 text-gray-100 rounded-md">
 							<h4 className="font-bold text-2xl px-2">Notifications</h4>
-							<div
-								id="scrollableDiv"
-								style={{
-									maxHeight: '24rem',
-									overflow: 'auto',
-								}}
-							>
+							<Scrollbars id="scrollableDiv" autoHeight autoHeightMax={`24rem`}>
 								<InfiniteScroll
 									dataLength={notificationList.length}
 									next={_fetchData}
@@ -417,7 +411,7 @@ const NotificationList = () => {
 										)
 									})}
 								</InfiniteScroll>
-							</div>
+							</Scrollbars>
 						</div>
 					</div>
 				</Fragment>
