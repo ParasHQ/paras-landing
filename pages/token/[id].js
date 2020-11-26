@@ -40,7 +40,7 @@ const TokenDetail = ({ errorCode, token }) => {
 				<meta property="og:image" content={parseImgUrl(token.metadata.image)} />
 			</Head>
 			<Nav />
-			<div className="max-w-6xl w-full m-auto py-12 px-4">
+			<div className="max-w-6xl w-full m-auto pt-4 px-4">
 				<CardDetail token={token} />
 			</div>
 			<Footer />

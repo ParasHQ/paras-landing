@@ -189,9 +189,10 @@ const Card = ({
 								/>
 							</div>
 							<div
-								className="absolute inset-0 p-2 rounded-md z-20"
+								className="absolute inset-0 rounded-md z-20"
 								style={{
 									fontSize: `${dimension.width / 14}px`,
+									padding: `.3em`
 								}}
 							>
 								<div className="h-full border-gray-900 border-2">

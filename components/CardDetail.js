@@ -17,6 +17,7 @@ import {
 	TwitterShareButton,
 } from 'react-share'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { Blurhash } from 'react-blurhash'
 
 const Activity = ({ activity }) => {
 	const [token, setToken] = useState({})
@@ -947,7 +948,17 @@ const CardDetail = ({ token }) => {
 						height: `90vh`,
 					}}
 				>
-					<div className="w-full h-1/2 lg:h-full lg:w-2/3 bg-dark-primary-1 p-8 lg:p-12">
+					<div className="w-full h-1/2 lg:h-full lg:w-2/3 bg-dark-primary-1 p-12 relative">
+						<div className="absolute inset-0 opacity-50">
+							<Blurhash
+								hash={localToken.metadata.blurhash || 'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'}
+								width={`100%`}
+								height={`100%`}
+								resolutionX={32}
+								resolutionY={32}
+								punch={1}
+							/>
+						</div>
 						<div className="h-full">
 							<Card
 								imgUrl={parseImgUrl(localToken.metadata.image)}
@@ -1079,15 +1090,15 @@ const CardDetail = ({ token }) => {
 							<div>
 								<div className="border-2 border-dashed mt-4 p-2 rounded-md">
 									<p className="text-sm text-gray-800">Collection</p>
-									<p className="text">{localToken.metadata.collection}</p>
+									<p className="text-gray-900">{localToken.metadata.collection}</p>
 								</div>
 								<div className="border-2 border-dashed mt-4 p-2 rounded-md">
 									<p className="text-sm text-gray-800">Description</p>
-									<p className="text">{localToken.metadata.description}</p>
+									<p className="text-gray-900">{localToken.metadata.description}</p>
 								</div>
 								<div className="border-2 border-dashed mt-4 p-2 rounded-md">
 									<p className="text-sm text-gray-800">Created</p>
-									<p className="text">
+									<p className="text-gray-900">
 										{parseDate(localToken.metadata.createdAt)}
 									</p>
 								</div>
