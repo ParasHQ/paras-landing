@@ -83,11 +83,7 @@ function MyApp({ Component, pageProps }) {
 
 	return (
 		<div>
-			<SWRConfig
-				value={{
-					refreshInterval: 3000,
-				}}
-			>
+			<SWRConfig>
 				<ToastProvider>
 					<Component {...pageProps} />
 				</ToastProvider>
