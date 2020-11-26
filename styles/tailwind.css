@@ -1,14 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
-	letter-spacing: 0.01em;
-	@apply font-body text-gray-900;
+	font-family: 'Epilogue', sans-serif;
 }
 
 hr {
 	@apply border-gray-400;
+}
+
+a {
+	@apply font-medium;
 }
 
 button:focus {
@@ -58,6 +63,10 @@ input[type='number'] {
 
 input.clear {
 	@apply bg-transparent p-0 border-0;
+}
+
+.button-wrapper:hover {
+	@apply  bg-gray-100 bg-opacity-15;
 }
 
 .slide.selected {

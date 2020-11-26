@@ -9,6 +9,10 @@ import Modal from './Modal'
 import ProfileEdit from './ProfileEdit'
 import { parseImgUrl, prettyBalance } from '../utils/common'
 import { useToast } from '../hooks/useToast'
+import axios from 'axios'
+import InfiniteScroll from 'react-infinite-scroll-component'
+
+const LIMIT = 10
 
 const User = () => {
 	const store = useStore()
@@ -91,23 +95,25 @@ const User = () => {
 				className="cursor-pointer select-none flex items-center justify-end text-gray-100"
 				onClick={toggleAccountModal}
 			>
-				<div className="flex items-center overflow-hidden">
-					<div className="w-8 h-8 rounded-full overflow-hidden bg-primary">
-						<img src={parseImgUrl(store.userProfile.imgUrl)} />
-					</div>
-					<div className="ml-1">
-						<svg
-							width="10"
-							height="10"
-							viewBox="0 0 21 19"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z"
-								fill="white"
-							/>
-						</svg>
+				<div className="overflow-hidden rounded-md bg-dark-primary-2">
+					<div className="flex items-center w-full h-full button-wrapper p-1">
+						<div className="w-8 h-8 rounded-full overflow-hidden bg-primary shadow-inner">
+							<img src={parseImgUrl(store.userProfile.imgUrl)} />
+						</div>
+						<div className="ml-1">
+							<svg
+								width="10"
+								height="10"
+								viewBox="0 0 21 19"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z"
+									fill="white"
+								/>
+							</svg>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -133,8 +139,6 @@ const User = () => {
 								Create Card
 							</a>
 						</div>
-						{/* <Link href="/new">
-						</Link> */}
 						<hr className="mt-2" />
 						<Link href={`/${store.currentUser}`}>
 							<a className="cursor-pointer pt-2 block text-gray-800 hover:text-black">
@@ -160,6 +164,262 @@ const User = () => {
 						</p>
 					</div>
 				</div>
+			)}
+		</div>
+	)
+}
+
+const Notification = ({ notif }) => {
+	const [token, setToken] = useState({})
+
+	useEffect(() => {
+		if (!token.tokenId && notif) {
+			_getTokenData()
+		}
+	}, [token, notif])
+
+	const _getTokenData = async () => {
+		const resp = await axios.get(
+			`${process.env.API_URL}/tokens?tokenId=${notif.payload.tokenId}`
+		)
+		if (resp.data.data.results.length > 0) {
+			setToken(resp.data.data.results[0])
+		}
+	}
+
+	if (notif.type === 'onBuy') {
+		return (
+			<div>
+				<Link href={`/token/${notif.payload.tokenId}`}>
+					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div className="w-20 rounded-md overflow-hidden bg-primary shadow-inner">
+							<img src={parseImgUrl(token.metadata?.image)} />
+						</div>
+						<div className="pl-2 text-gray-300">
+							<span className="font-medium text-gray-100">
+								{notif.payload.buyer}
+							</span>{' '}
+							bought {notif.payload.quantity}pcs of{' '}
+							<span className="font-medium text-gray-100">
+								{token.metadata?.name}
+							</span>{' '}
+							for {prettyBalance(notif.payload.amount, 24, 4)}
+						</div>
+					</div>
+				</Link>
+			</div>
+		)
+	}
+	return (
+		<div>
+			<Link href={`/token/${notif.payload.tokenId}`}>
+				<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+					<div className="w-20 rounded-md overflow-hidden bg-primary shadow-inner">
+						<img src={parseImgUrl(token.metadata?.image)} />
+					</div>
+					<div className="pl-2 text-gray-300">
+						<span className="font-medium text-gray-100">
+							{notif.payload.from}
+						</span>{' '}
+						send you {notif.payload.quantity}pcs of{' '}
+						<span className="font-medium text-gray-100">
+							{token.metadata?.name}
+						</span>
+					</div>
+				</div>
+			</Link>
+		</div>
+	)
+}
+
+const NotificationList = () => {
+	const {
+		currentUser,
+		notificationList,
+		setNotificationList,
+		notificationUnreadList,
+		setNotificationUnreadList,
+		notificationListPage,
+		setNotificationListPage,
+		notificationListHasMore,
+		setNotificationListHasMore,
+	} = useStore()
+
+	const accModalRef = useRef()
+
+	const [isFetching, setIsFetching] = useState(false)
+	const [showAccountModal, setShowAccountModal] = useState(false)
+	const [showEditAccountModal, setShowEditAccountModal] = useState(false)
+
+	useEffect(() => {
+		if (
+			currentUser &&
+			notificationList.length === 0 &&
+			notificationListHasMore
+		) {
+			console.log(currentUser, notificationList, notificationListHasMore)
+			_fetchData()
+		}
+	}, [currentUser, notificationList, notificationListHasMore])
+
+	useEffect(() => {
+		const onClickEv = (e) => {
+			if (!accModalRef.current.contains(e.target)) {
+				setShowAccountModal(false)
+			}
+		}
+
+		if (showAccountModal) {
+			document.body.addEventListener('click', onClickEv)
+			_readNotificationList()
+		}
+
+		return () => {
+			document.body.removeEventListener('click', onClickEv)
+		}
+	}, [showAccountModal])
+
+	const toggleAccountModal = () => {
+		setShowAccountModal(!showAccountModal)
+	}
+
+	const _readNotificationList = async () => {
+		try {
+			if (notificationUnreadList.length > 0) {
+				await axios.put(
+					`${process.env.API_URL}/notifications/read`,
+					{
+						accountId: currentUser,
+						notificationIds: notificationUnreadList.map((n) => n._id),
+					},
+					{
+						headers: {
+							authorization: await near.authToken(),
+						},
+					}
+				)
+				setNotificationUnreadList([])
+			}
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
+	const _fetchData = async () => {
+		if (!notificationListHasMore || isFetching) {
+			return
+		}
+
+		setIsFetching(true)
+		try {
+			const res = await axios.get(
+				`${process.env.API_URL}/notifications?accountId=${currentUser}&__skip=${
+					notificationListPage * LIMIT
+				}&__limit=${LIMIT}`,
+				{
+					headers: {
+						authorization: await near.authToken(),
+					},
+				}
+			)
+			const newData = await res.data.data
+
+			const newNotificationList = [...notificationList, ...newData.results]
+			const unreadList = res.data.data.results.filter((notif) => !notif.isRead)
+			setNotificationUnreadList(unreadList)
+			setNotificationList(newNotificationList)
+
+			setNotificationListPage(notificationListPage + 1)
+			if (newData.results.length === 0) {
+				setNotificationListHasMore(false)
+			} else {
+				setNotificationListHasMore(true)
+			}
+		} catch (err) {
+			console.log(err)
+		}
+		setIsFetching(false)
+	}
+
+	return (
+		<div ref={accModalRef} className="md:relative">
+			{showEditAccountModal && (
+				<Modal
+					close={(_) => setShowEditAccountModal(false)}
+					closeOnBgClick={false}
+					closeOnEscape={false}
+				>
+					<div className="w-full max-w-sm p-4 m-auto bg-gray-100 rounded-md overflow-hidden">
+						<ProfileEdit close={(_) => setShowEditAccountModal(false)} />
+					</div>
+				</Modal>
+			)}
+			<div
+				className="cursor-pointer select-none flex items-center justify-end text-gray-100"
+				onClick={toggleAccountModal}
+			>
+				<div className="flex items-center overflow-hidden rounded-full">
+					<div className="bg-dark-primary-2">
+						<div className="relative w-full h-full button-wrapper p-2">
+							{notificationUnreadList.length > 0 && (
+								<div className="absolute right-0 top-0 p-2">
+									<div className="rounded-full bg-primary w-2 h-2"></div>
+								</div>
+							)}
+							<svg
+								width="24"
+								height="24"
+								viewBox="0 0 24 24"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									fill-rule="evenodd"
+									clip-rule="evenodd"
+									d="M19 10C19 5.94082 16.7616 3.1235 13.8654 2.27771C13.7605 2.00636 13.5948 1.7541 13.3695 1.54243C12.5997 0.81919 11.4003 0.81919 10.6305 1.54243C10.4057 1.75364 10.2402 2.00525 10.1353 2.27592C7.23535 3.11803 5 5.92919 5 10C5 12.6339 4.46898 14.1098 3.48596 15.1793C3.32161 15.3582 2.87632 15.7678 2.57468 16.0453L2.57465 16.0453L2.57465 16.0453L2.5745 16.0454C2.43187 16.1766 2.32138 16.2783 2.28796 16.3119L2 16.604V20.0141H8.08798C8.29384 21.0761 8.87009 21.7867 9.9122 22.4226C11.1941 23.2049 12.8059 23.2049 14.0878 22.4226C15.0075 21.8614 15.6241 20.9989 15.8743 20.0141H22V16.604L21.712 16.3119C21.6817 16.2812 21.5757 16.1834 21.437 16.0555C21.1363 15.7781 20.6823 15.3592 20.5154 15.1769C19.5317 14.1024 19 12.6246 19 10ZM13.7367 20.0141H10.1786C10.3199 20.2769 10.5607 20.4754 10.954 20.7154C11.5963 21.1073 12.4037 21.1073 13.046 20.7154C13.3434 20.5339 13.5758 20.2937 13.7367 20.0141ZM19.0402 16.5274C19.2506 16.7573 19.7016 17.1774 20 17.4519V18.0141H4V17.4524C4.29607 17.1811 4.74843 16.7613 4.95849 16.5327C6.29422 15.0794 7 13.1178 7 10C7 6.21989 9.33277 4.01238 12 4.01238C14.6597 4.01238 17 6.23129 17 10C17 13.1078 17.706 15.07 19.0402 16.5274Z"
+									fill="#e2e8f0"
+								/>
+							</svg>
+						</div>
+					</div>
+				</div>
+			</div>
+			{showAccountModal && (
+				<Fragment>
+					<div
+						className="absolute right-0 p-4 z-10 max-w-full md:max-w-none"
+						style={{
+							width: `24rem`,
+						}}
+					>
+						<div className="p-2 shadow-inner bg-dark-primary-2 text-gray-100 rounded-md">
+							<h4 className="font-bold text-2xl px-2">Notifications</h4>
+							<div
+								id="scrollableDiv"
+								style={{
+									maxHeight: '24rem',
+									overflow: 'auto',
+								}}
+							>
+								<InfiniteScroll
+									dataLength={notificationList.length}
+									next={_fetchData}
+									hasMore={notificationListHasMore}
+									loader={<h4 className="text-center p-2">Loading...</h4>}
+									scrollableTarget="scrollableDiv"
+								>
+									{notificationList.map((notif) => {
+										return (
+											<div key={notif._id}>
+												<Notification notif={notif} />
+											</div>
+										)
+									})}
+								</InfiniteScroll>
+							</div>
+						</div>
+					</div>
+				</Fragment>
 			)}
 		</div>
 	)
@@ -258,7 +518,14 @@ const Nav = () => {
 							</div>
 							<div className="px-4">
 								{store.currentUser ? (
-									<User />
+									<div className="flex items-center -mx-2">
+										<div className="px-2">
+											<NotificationList />
+										</div>
+										<div className="px-2">
+											<User />
+										</div>
+									</div>
 								) : (
 									<Link href="/login">
 										<a className="text-gray-100 ">Login</a>
