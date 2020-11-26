@@ -738,7 +738,7 @@ const CardDetail = ({ token }) => {
 										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 										type="submit"
 									>
-										{!isSubmitting ? 'Create' : 'Creating...'}
+										{!isSubmitting ? 'Update' : 'Updating...'}
 									</button>
 									<button
 										disabled={isSubmitting}
