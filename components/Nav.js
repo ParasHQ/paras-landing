@@ -403,21 +403,29 @@ const NotificationList = () => {
 								autoHeightMax={`24rem`}
 								renderView={(props) => <div {...props} id="scrollableDiv" />}
 							>
-								<InfiniteScroll
-									dataLength={notificationList.length}
-									next={_fetchData}
-									hasMore={notificationListHasMore}
-									loader={<h4 className="text-center p-2">Loading...</h4>}
-									scrollableTarget="scrollableDiv"
-								>
-									{notificationList.map((notif) => {
-										return (
-											<div key={notif._id}>
-												<Notification notif={notif} />
-											</div>
-										)
-									})}
-								</InfiniteScroll>
+								{notificationList.length === 0 && !notificationListHasMore ? (
+									<div className="p-2 opacity-75">
+										<div className="border-2 border-dashed rounded-md text-center">
+											<p className="text-gray-300 py-4">No Notifications</p>
+										</div>
+									</div>
+								) : (
+									<InfiniteScroll
+										dataLength={notificationList.length}
+										next={_fetchData}
+										hasMore={notificationListHasMore}
+										loader={<h4 className="text-center p-2">Loading...</h4>}
+										scrollableTarget="scrollableDiv"
+									>
+										{notificationList.map((notif) => {
+											return (
+												<div key={notif._id}>
+													<Notification notif={notif} />
+												</div>
+											)
+										})}
+									</InfiniteScroll>
+								)}
 							</Scrollbars>
 						</div>
 					</div>
