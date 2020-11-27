@@ -80,8 +80,20 @@ const Activity = ({ activity }) => {
 		)
 	}
 
-	if (activity.type === 'transfer' && !activity.from) {
-		return null
+	if (activity.type === 'transfer' && activity.from === '') {
+		return (
+			<div className="border-2 border-dashed p-2 rounded-md">
+				<p>
+					<Link href={`/${activity.to}`}>
+						<a className="text-black font-semibold border-b-2 border-transparent hover:border-gray-900">
+							{activity.to}
+						</a>
+					</Link>
+					<span> create with supply of {activity.quantity}pcs</span>
+				</p>
+				<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
+			</div>
+		)
 	}
 
 	if (activity.type === 'transfer' && !activity.to) {
@@ -119,12 +131,11 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 			return {}
 		}
 	}
-	
+
 	const { data: profile } = useSWR(
 		`profiles?accountId=${ownership.ownerId}`,
 		fetcher
 	)
-
 
 	return (
 		<div className="border-2 border-dashed mt-4 p-2 rounded-md">

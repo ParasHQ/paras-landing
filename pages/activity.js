@@ -13,7 +13,6 @@ import useSWR from 'swr'
 
 const LIMIT = 20
 
-
 const ActivityWrapper = ({ activity }) => {
 	const fetcher = async (key) => {
 		const resp = await axios.get(`${process.env.API_URL}/${key}`)
@@ -24,18 +23,7 @@ const ActivityWrapper = ({ activity }) => {
 		}
 	}
 
-	const { data: token } = useSWR(
-		`tokens?tokenId=${activity.tokenId}`,
-		fetcher
-	)
-
-	if (activity.type === 'transfer' && !activity.from) {
-		return null
-	}
-
-	if (activity.type === 'transfer' && !activity.to) {
-		return null
-	}
+	const { data: token } = useSWR(`tokens?tokenId=${activity.tokenId}`, fetcher)
 
 	return (
 		<div className="flex flex-wrap border-2 border-dashed border-gray-800 p-4 rounded-md max-w-2xl mx-auto">
@@ -89,7 +77,9 @@ const Activity = ({ activity }) => {
 			<div className="text-gray-300">
 				<p>
 					<Link href={`/${activity.from}`}>
-						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">{activity.from}</a>
+						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">
+							{activity.from}
+						</a>
 					</Link>
 					<span>
 						{' '}
@@ -109,10 +99,12 @@ const Activity = ({ activity }) => {
 		return (
 			<div className="text-gray-300">
 				<p>
+					<span>removed from sale by </span>
 					<Link href={`/${activity.from}`}>
-						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">{activity.from}</a>
+						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">
+							{activity.from}
+						</a>
 					</Link>
-					<span> remove from sale</span>
 				</p>
 			</div>
 		)
@@ -123,11 +115,15 @@ const Activity = ({ activity }) => {
 			<div className="text-gray-300">
 				<p>
 					<Link href={`/${activity.from}`}>
-						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">{activity.from}</a>
+						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">
+							{activity.from}
+						</a>
 					</Link>
 					<span> bought {activity.quantity}pcs from </span>
 					<Link href={`/${activity.to}`}>
-						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">{activity.to}</a>
+						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">
+							{activity.to}
+						</a>
 					</Link>
 					<span> for </span>
 					{prettyBalance(activity.amount, 24, 4)} Ⓝ
@@ -141,15 +137,35 @@ const Activity = ({ activity }) => {
 		)
 	}
 
+	if (activity.type === 'transfer' && activity.from === '') {
+		return (
+			<div className="text-gray-300">
+				<span>created by </span>
+				<span>
+					<Link href={`/${activity.from}`}>
+						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">
+							{activity.to}
+						</a>
+					</Link>
+				</span>
+				<span> with supply of {activity.quantity}pcs</span>
+			</div>
+		)
+	}
+
 	return (
 		<div className="text-gray-300">
 			<p>
 				<Link href={`/${activity.from}`}>
-					<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">{activity.from}</a>
+					<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">
+						{activity.from}
+					</a>
 				</Link>
 				<span> transfer {activity.quantity}pcs to </span>
 				<Link href={`/${activity.to}`}>
-					<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">{activity.to}</a>
+					<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">
+						{activity.to}
+					</a>
 				</Link>
 			</p>
 		</div>
