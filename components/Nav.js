@@ -94,10 +94,10 @@ const User = () => {
 				</Modal>
 			)}
 			<div
-				className="cursor-pointer select-none flex items-center justify-end text-gray-100"
+				className="relative flex items-center justify-end text-gray-100"
 				onClick={toggleAccountModal}
 			>
-				<div className="overflow-hidden rounded-md bg-dark-primary-2">
+				<div className="cursor-pointer select-none overflow-hidden rounded-md bg-dark-primary-2">
 					<div className="flex items-center w-full h-full button-wrapper p-1">
 						<div className="w-8 h-8 rounded-full overflow-hidden bg-primary shadow-inner">
 							<img src={parseImgUrl(store.userProfile.imgUrl)} />
@@ -118,6 +118,29 @@ const User = () => {
 						</div>
 					</div>
 				</div>
+				{showAccountModal && (
+					<div
+						className="absolute bottom-0 right-0 z-20"
+						style={{
+							bottom: `-20px`,
+							left: `0px`,
+						}}
+					>
+						<svg
+							width="33"
+							height="16"
+							viewBox="0 0 33 16"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							className="mx-auto"
+						>
+							<path
+								d="M16.1436 0L32.1436 16H0.143593L16.1436 0Z"
+								fill="#26222C"
+							/>
+						</svg>
+					</div>
+				)}
 			</div>
 			{showAccountModal && (
 				<div className="absolute right-0 w-56 pt-4 z-10">
@@ -344,7 +367,7 @@ const NotificationList = () => {
 	}
 
 	return (
-		<div ref={accModalRef} className="md:relative">
+		<div ref={accModalRef}>
 			{showEditAccountModal && (
 				<Modal
 					close={(_) => setShowEditAccountModal(false)}
@@ -356,11 +379,11 @@ const NotificationList = () => {
 					</div>
 				</Modal>
 			)}
-			<div
-				className="cursor-pointer select-none flex items-center justify-end text-gray-100"
-				onClick={toggleAccountModal}
-			>
-				<div className="flex items-center overflow-hidden rounded-full">
+			<div className="relative flex items-center justify-end text-gray-100">
+				<div
+					onClick={toggleAccountModal}
+					className="cursor-pointer select-none flex items-center overflow-hidden rounded-full"
+				>
 					<div className="bg-dark-primary-2">
 						<div className="relative w-full h-full button-wrapper p-2">
 							{notificationUnreadList.length > 0 && (
@@ -385,11 +408,34 @@ const NotificationList = () => {
 						</div>
 					</div>
 				</div>
+				{showAccountModal && (
+					<div
+						className="absolute bottom-0 right-0 z-20"
+						style={{
+							bottom: `-20px`,
+							left: `0px`
+						}}
+					>
+						<svg
+							width="33"
+							height="16"
+							viewBox="0 0 33 16"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+							className="mx-auto"
+						>
+							<path
+								d="M16.1436 0L32.1436 16H0.143593L16.1436 0Z"
+								fill="#26222C"
+							/>
+						</svg>
+					</div>
+				)}
 			</div>
 			{showAccountModal && (
 				<Fragment>
 					<div
-						className="absolute right-0 p-4 md:p-0 md:pt-4 z-10 max-w-full md:max-w-none"
+						className="absolute right-0 p-4 z-10 max-w-full md:max-w-none"
 						style={{
 							width: `24rem`,
 						}}
