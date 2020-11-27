@@ -132,8 +132,8 @@ const NewPage = () => {
 
 	const _setImg = async (e) => {
 		if (e.target.files[0]) {
-			if (e.target.files[0].size > 5 * 1024 * 1024) {
-				setShowAlertErr('Maximum file size is 5 Mb')
+			if (e.target.files[0].size > 8 * 1024 * 1024) {
+				setShowAlertErr('Maximum file size is 8 Mb')
 				return
 			}
 			setImgFile(e.target.files[0])
@@ -447,7 +447,7 @@ const NewPage = () => {
 												<p className="text-gray-700 mt-4">
 													Recommended ratio 64 : 89
 												</p>
-												<p className="text-gray-700 mt-2">Maximum size 5mb</p>
+												<p className="text-gray-700 mt-2">Maximum size 8mb</p>
 											</div>
 										)}
 									</div>
