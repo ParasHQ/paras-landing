@@ -20,6 +20,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { Blurhash } from 'react-blurhash'
 import Scrollbars from 'react-custom-scrollbars'
 import useSWR from 'swr'
+import getConfig from '../config/near'
 
 const Activity = ({ activity }) => {
 	if (activity.type === 'marketUpdate') {
@@ -359,6 +360,24 @@ const CardDetail = ({ token }) => {
 		}
 
 		try {
+			if (params.ownerId === params.newOwnerId) {
+				throw new Error(`Cannot transfer to self`)
+			}
+			const nearConfig = getConfig(process.env.APP_ENV || 'development')
+			const resp = await axios.post(nearConfig.nodeUrl, {
+				jsonrpc: '2.0',
+				id: 'dontcare',
+				method: 'query',
+				params: {
+					request_type: 'view_account',
+					finality: 'final',
+					account_id: data.newOwnerId,
+				},
+			})
+
+			if (resp.data.error) {
+				throw new Error(`Account ${data.newOwnerId} not exist`)
+			}
 			await near.contract.transferFrom(params)
 
 			// update local state
@@ -414,10 +433,11 @@ const CardDetail = ({ token }) => {
 			setShowModal(false)
 		} catch (err) {
 			console.log(err)
+			const message = err.message || 'Something went wrong, try again later'
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						Something went wrong, try again later
+						{message}
 					</div>
 				),
 				type: 'error',
