@@ -305,6 +305,7 @@ const CardDetail = ({ token }) => {
 		//   ownerId: AccountId,
 		// tokenId: TokenId,
 		// quantity: u128
+		setIsSubmitting(true)
 		const params = {
 			ownerId: chosenSeller.ownerId,
 			tokenId: chosenSeller.tokenId,
@@ -857,7 +858,9 @@ const CardDetail = ({ token }) => {
 										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 										type="submit"
 									>
-										Buy
+										{
+											isSubmitting ? 'Redirecting...' : 'Buy'
+										}
 									</button>
 									<button
 										disabled={isSubmitting}
