@@ -74,8 +74,12 @@ const NewPage = () => {
 	}
 
 	useEffect(() => {
-		if (store.initialized && !store.userProfile.isCreator) {
-			router.push('/market')
+		if (store.initialized) {
+			if (process.env.APP_ENV !== 'production') {
+				router.push('/market')
+			} else if (!store.userProfile.isCreator) {
+				router.push('/market')
+			}
 		}
 	}, [store.initialized])
 

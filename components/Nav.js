@@ -46,7 +46,9 @@ const User = () => {
 	}
 
 	const _createCard = () => {
-		if (store.userProfile.isCreator) {
+		if (process.env.APP_ENV !== 'production') {
+			router.push('/new')
+		} else if (store.userProfile.isCreator) {
 			router.push('/new')
 		} else {
 			toast.show({
@@ -413,7 +415,7 @@ const NotificationList = () => {
 						className="absolute bottom-0 right-0 z-20"
 						style={{
 							bottom: `-20px`,
-							left: `0px`
+							left: `0px`,
 						}}
 					>
 						<svg
@@ -485,6 +487,8 @@ const Nav = () => {
 	const store = useStore()
 	const router = useRouter()
 	const mobileNavRef = useRef()
+	const testnetBannerRef = useRef()
+	const toast = useToast()
 
 	useEffect(() => {
 		const onClickEv = (e) => {
@@ -502,10 +506,62 @@ const Nav = () => {
 		}
 	}, [showMobileNav])
 
+	const _showTestnetInfo = () => {
+		toast.show({
+			text: (
+				<div className="text-sm text-gray-900">
+					<p>
+						Testnet is used for creators and collectors to try and experience
+						Paras without the need to spend real value cryptocurrency.
+					</p>
+					<p className="mt-2">
+						Creators can use Testnet to prevent any mistakes before publishing
+						on Mainnet.
+					</p>
+				</div>
+			),
+			type: 'info',
+			duration: null,
+		})
+	}
+
 	return (
 		<Fragment>
 			<div className="h-16">
 				<div className="fixed z-40 top-0 left-0 right-0">
+					{process.env.APP_ENV !== 'production' && (
+						<div
+							ref={testnetBannerRef}
+							className="bg-primary relative z-50 text-white text-sm text-center p-1 px-2"
+						>
+							<p>
+								You are using Testnet. Everything here has no value. To use
+								Paras, please switch to{' '}
+								<a
+									className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100"
+									href="https://mainnet.paras.id"
+								>
+									Mainnet
+								</a>
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 16 16"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+									className="inline	ml-2 cursor-pointer opacity-75"
+									onClick={_showTestnetInfo}
+								>
+									<path
+										fillRule="evenodd"
+										clipRule="evenodd"
+										d="M0 8C0 12.4183 3.58172 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8ZM14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8ZM7 10V9.5C7 8.28237 7.42356 7.68233 8.4 6.95C8.92356 6.55733 9 6.44904 9 6C9 5.44772 8.55229 5 8 5C7.44772 5 7 5.44772 7 6H5C5 4.34315 6.34315 3 8 3C9.65685 3 11 4.34315 11 6C11 7.21763 10.5764 7.81767 9.6 8.55C9.07644 8.94267 9 9.05096 9 9.5V10H7ZM9.00066 11.9983C9.00066 12.5506 8.55279 12.9983 8.00033 12.9983C7.44786 12.9983 7 12.5506 7 11.9983C7 11.4461 7.44786 10.9983 8.00033 10.9983C8.55279 10.9983 9.00066 11.4461 9.00066 11.9983Z"
+										fill="white"
+									/>
+								</svg>
+							</p>
+						</div>
+					)}
 					<div className="relative bg-black z-40 flex items-center justify-between max-w-6xl m-auto p-4 h-16">
 						<div className="flex items-center">
 							<div className="block md:hidden pr-4">
@@ -593,6 +649,9 @@ const Nav = () => {
 						className={`absolute bg-black top-0 left-0 right-0 z-30 transform transition-transform duration-200
 					${!showMobileNav && '-translate-y-64'}`}
 					>
+						{testnetBannerRef.current && <div style={{
+							height: `${testnetBannerRef.current.offsetHeight}px`
+						}}></div>}
 						<div className="h-16"></div>
 						<div className="text-center border-b-2 border-dashed border-gray-800">
 							<div className="text-gray-100 ">
