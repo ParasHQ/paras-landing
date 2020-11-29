@@ -75,10 +75,8 @@ const NewPage = () => {
 
 	useEffect(() => {
 		if (store.initialized) {
-			if (process.env.APP_ENV !== 'production') {
-				router.push('/market')
-			} else if (!store.userProfile.isCreator) {
-				router.push('/market')
+			if (process.env.APP_ENV === 'production' && !store.userProfile.isCreator) {
+				router.push('/new')
 			}
 		}
 	}, [store.initialized])
