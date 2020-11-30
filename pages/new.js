@@ -584,6 +584,9 @@ const NewPage = () => {
 											'Only use rounded number'}
 									</div>
 								</div>
+								<div className="mt-2">
+									<p className="text-gray-600 text-sm">Set sale quantity to <b>0</b> if you only want to create card without selling</p>
+								</div>
 								<div className="mt-4">
 									<label className="block text-sm">Sale price</label>
 									<div
