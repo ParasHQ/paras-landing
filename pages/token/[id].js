@@ -28,7 +28,7 @@ const TokenDetail = ({ errorCode, token }) => {
 				<meta name="twitter:description" content={token.metadata.description} />
 				<meta
 					name="twitter:image"
-					content={parseImgUrl(token.metadata.image)}
+					content={`${process.env.API_URL}/socialCard/${token.tokenId}`}
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`${token.metadata.name} - Paras`} />
@@ -37,7 +37,10 @@ const TokenDetail = ({ errorCode, token }) => {
 					content={`${token.metadata.name} — Paras`}
 				/>
 				<meta property="og:description" content={token.metadata.description} />
-				<meta property="og:image" content={parseImgUrl(token.metadata.image)} />
+				<meta
+					property="og:image"
+					content={`${process.env.API_URL}/socialCard/${token.tokenId}`}
+				/>
 			</Head>
 			<Nav />
 			<div className="max-w-6xl w-full m-auto pt-4 px-4">
