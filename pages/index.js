@@ -5,6 +5,7 @@ import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import Modal from '../components/Modal'
 import YouTube from 'react-youtube'
+import Link from 'next/link'
 
 export default function Home() {
 	const [email, setEmail] = useState('')
@@ -130,42 +131,11 @@ export default function Home() {
 				<div className="flex flex-wrap relative">
 					<div className="w-full mt-12 text-center relative z-10">
 						<h1 className="text-white text-3xl md:text-5xl max-w-2xl m-auto font-bold">
-							Create, Trade and Collect Digital Art Cards (DACs).
+							Create, Trade and Collect Digital Art Cards (DACs)
 						</h1>
 						<p className="text-gray-400 text-2xl mt-4">
-							All-in-one social DACs marketplace for creators and collectors.
+							All-in-one social DAC marketplace for creators and collectors.
 						</p>
-						<form className="max-w-lg m-auto" onSubmit={_notifyMeSubmit}>
-							<div className="flex flex-wrap -mx-2 mt-8">
-								<div className="px-2 w-full md:w-8/12">
-									<input
-										onChange={(e) => setEmail(e.target.value)}
-										value={email}
-										placeholder="Email address"
-										className="h-12 w-full mt-4 border-2 px-2 py-2 rounded-md border-white outline-none"
-									/>
-								</div>
-								<div className="px-2 w-full md:w-4/12">
-									<button
-										disabled={formBtnText == 'SENDING...'}
-										className={`
-											outline-none h-12 w-full mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2
-											text-gray-100  border-white
-											${formBtnText == 'SUCCESS' && 'text-green-500 border-green-500'}
-											${formBtnText == 'FAILED' && ' text-red-500 border-red-500'}
-											`}
-									>
-										{formBtnText}
-									</button>
-								</div>
-							</div>
-							<p
-								className={`mt-2 text-red-500 
-								${errMsg != 'empty' ? 'opacity-100' : 'opacity-0'}`}
-							>
-								{errMsg}
-							</p>
-						</form>
 					</div>
 				</div>
 				<div className="mt-8 max-w-xl mx-auto">
@@ -208,32 +178,12 @@ export default function Home() {
 								provable ownership.
 							</p>
 							<div className="mt-8 flex items-center">
-								<a
-									href="https://forms.gle/vqpu66p8y23ZnMjt7"
-									target="_blank"
-									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer "
-								>
-									Join the Waitlist
-									<svg
-										width="12"
-										height="12"
-										viewBox="0 0 16 16"
-										fill="none"
-										xmlns="http://www.w3.org/2000/svg"
-										className="ml-1"
-									>
-										<path
-											fillRule="evenodd"
-											clipRule="evenodd"
-											d="M7.70421 9.70711L13.9971 3.41421V7H15.9971V0H8.9971V2H12.5829L6.28999 8.29289L7.70421 9.70711ZM15 14V10H13V14H2V3H6V1H2C0.89543 1 0 1.89543 0 3V14C0 15.1046 0.89543 16 2 16H13C14.1046 16 15 15.1046 15 14Z"
-											fill="white"
-										/>
-									</svg>
-								</a>
+								<Link href="/market">
+									<a className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer ">
+										Explore Paras
+									</a>
+								</Link>
 							</div>
-							<p className="mt-2 text-gray-500 text-xs italic">
-								Get Genesis NFT on Launch
-							</p>
 						</div>
 						<div className="w-full md:w-1/2 mt-16 px-4">
 							<h2 className="text-white font-bold text-2xl text-gradient">
@@ -267,9 +217,6 @@ export default function Home() {
 									</svg>
 								</a>
 							</div>
-							<p className="mt-2 text-gray-500 text-xs italic">
-								Get Free Ⓝ When You Start
-							</p>
 						</div>
 					</div>
 				</div>
