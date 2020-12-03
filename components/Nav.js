@@ -527,6 +527,13 @@ const Nav = () => {
 
 	return (
 		<Fragment>
+			{testnetBannerRef.current && (
+				<div
+					style={{
+						height: `${testnetBannerRef.current.offsetHeight}px`,
+					}}
+				></div>
+			)}
 			<div className="h-16">
 				<div className="fixed z-40 top-0 left-0 right-0">
 					{process.env.APP_ENV !== 'production' && (
@@ -649,9 +656,13 @@ const Nav = () => {
 						className={`absolute bg-black top-0 left-0 right-0 z-30 transform transition-transform duration-200
 					${!showMobileNav && '-translate-y-64'}`}
 					>
-						{testnetBannerRef.current && <div style={{
-							height: `${testnetBannerRef.current.offsetHeight}px`
-						}}></div>}
+						{testnetBannerRef.current && (
+							<div
+								style={{
+									height: `${testnetBannerRef.current.offsetHeight}px`,
+								}}
+							></div>
+						)}
 						<div className="h-16"></div>
 						<div className="text-center border-b-2 border-dashed border-gray-800">
 							<div className="text-gray-100 ">
