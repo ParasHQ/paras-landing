@@ -26,7 +26,7 @@ const TokenDetail = ({ errorCode, token }) => {
 				/>
 
 				<meta name="twitter:title" content={`${token.metadata.name} — Paras`} />
-				<meta name="twitter:card" content="summary" />
+				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta
 					name="twitter:description"
