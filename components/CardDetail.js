@@ -437,9 +437,7 @@ const CardDetail = ({ token }) => {
 			const message = err.message || 'Something went wrong, try again later'
 			toast.show({
 				text: (
-					<div className="font-semibold text-center text-sm">
-						{message}
-					</div>
+					<div className="font-semibold text-center text-sm">{message}</div>
 				),
 				type: 'error',
 				duration: 2500,
@@ -616,9 +614,8 @@ const CardDetail = ({ token }) => {
 					<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
 						<div className="py-2 cursor-pointer">
 							<TwitterShareButton
-								title={`I found ${localToken.metadata.name}!\n`}
+								title={`Checkout ${localToken.metadata.name} from collection ${localToken.metadata.collection} on @ParasHQ\n`}
 								url={window.location.href}
-								via={[`ParasHQ`]}
 								className="flex items-center w-full"
 							>
 								<TwitterIcon
@@ -858,9 +855,7 @@ const CardDetail = ({ token }) => {
 										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 										type="submit"
 									>
-										{
-											isSubmitting ? 'Redirecting...' : 'Buy'
-										}
+										{isSubmitting ? 'Redirecting...' : 'Buy'}
 									</button>
 									<button
 										disabled={isSubmitting}
