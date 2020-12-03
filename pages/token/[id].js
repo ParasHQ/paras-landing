@@ -20,12 +20,18 @@ const TokenDetail = ({ errorCode, token }) => {
 		>
 			<Head>
 				<title>{`${token.metadata.name} — Paras`}</title>
-				<meta name="description" content={token.metadata.description} />
+				<meta
+					name="description"
+					content={`${token.metadata.name} from collection ${token.metadata.collection} by ${token.creatorId}. ${token.metadata.description}`}
+				/>
 
 				<meta name="twitter:title" content={`${token.metadata.name} — Paras`} />
 				<meta name="twitter:card" content="summary" />
 				<meta name="twitter:site" content="@ParasHQ" />
-				<meta name="twitter:description" content={token.metadata.description} />
+				<meta
+					name="twitter:description"
+					content={`${token.metadata.name} from collection ${token.metadata.collection} by ${token.creatorId}. ${token.metadata.description}`}
+				/>
 				<meta
 					name="twitter:image"
 					content={`${process.env.API_URL}/socialCard/${token.tokenId}`}
@@ -36,7 +42,10 @@ const TokenDetail = ({ errorCode, token }) => {
 					property="og:site_name"
 					content={`${token.metadata.name} — Paras`}
 				/>
-				<meta property="og:description" content={token.metadata.description} />
+				<meta
+					property="og:description"
+					content={`${token.metadata.name} from collection ${token.metadata.collection} by ${token.creatorId}. ${token.metadata.description}`}
+				/>
 				<meta
 					property="og:image"
 					content={`${process.env.API_URL}/socialCard/${token.tokenId}`}
