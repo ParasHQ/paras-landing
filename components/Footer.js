@@ -31,7 +31,7 @@ const Footer = () => {
 				</div>
 				<div className="flex items-center pt-2 px-2">
 					<a
-						href="https://discord.gg/9gpBq8Hbwy"
+						href="https://discord.gg/vWR2XBNupg"
 						target="_blank"
 						className="flex cursor-pointer "
 					>
