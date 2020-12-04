@@ -279,7 +279,7 @@ const Card = ({
 										}}
 									>
 										<h4
-											className="px-2"
+											className="px-2 whitespace-pre-line"
 											style={{
 												fontSize: `0.5em`,
 											}}

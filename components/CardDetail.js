@@ -1127,7 +1127,7 @@ const CardDetail = ({ token }) => {
 											<p className="text-sm text-black font-medium">
 												Description
 											</p>
-											<p className="text-gray-900">
+											<p className="text-gray-900 whitespace-pre-line">
 												{localToken.metadata.description}
 											</p>
 										</div>
