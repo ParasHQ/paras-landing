@@ -1128,7 +1128,10 @@ const CardDetail = ({ token }) => {
 												Description
 											</p>
 											<p className="text-gray-900 whitespace-pre-line">
-												{localToken.metadata.description}
+												{localToken.metadata.description.replace(
+													/\n\s*\n\s*\n/g,
+													'\n\n'
+												)}
 											</p>
 										</div>
 										<div className="flex items-center -mx-2">

@@ -192,7 +192,7 @@ const Card = ({
 								className="absolute inset-0 rounded-md z-20"
 								style={{
 									fontSize: `${dimension.width / 14}px`,
-									padding: `.3em`
+									padding: `.3em`,
 								}}
 							>
 								<div className="h-full border-gray-900 border-2">
@@ -266,7 +266,8 @@ const Card = ({
 															fontSize: `0.65em`,
 														}}
 													>
-														{new Date(token.createdAt).getFullYear() || new Date().getFullYear()}
+														{new Date(token.createdAt).getFullYear() ||
+															new Date().getFullYear()}
 													</h4>
 												</div>
 											</div>
@@ -285,7 +286,7 @@ const Card = ({
 											}}
 										>
 											{token.description?.length > 0
-												? token.description
+												? token.description.replace(/\n\s*\n\s*\n/g, '\n\n')
 												: 'Your card description'}
 										</h4>
 									</div>

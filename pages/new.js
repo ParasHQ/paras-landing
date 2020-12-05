@@ -75,7 +75,10 @@ const NewPage = () => {
 
 	useEffect(() => {
 		if (store.initialized) {
-			if (process.env.APP_ENV === 'production' && !store.userProfile.isCreator) {
+			if (
+				process.env.APP_ENV === 'production' &&
+				!store.userProfile.isCreator
+			) {
 				router.push('/new')
 			}
 		}
@@ -502,12 +505,24 @@ const NewPage = () => {
 										</div>
 									</div>
 									<div className="mt-4">
-										<label className="block text-sm">Description</label>
+										<div className="flex items-center justify-between">
+											<label className="block text-sm">Description</label>
+											<div
+												className={`${
+													watch('description')?.length >= 500 && 'text-red-500'
+												}`}
+											>
+												<p className="text-sm">
+													{watch('description')?.length || 0}/500
+												</p>
+											</div>
+										</div>
 										<textarea
 											type="text"
 											name="description"
 											ref={register({
 												required: true,
+												maxLength: 500,
 											})}
 											className={`${
 												errors.description && 'error'
@@ -515,7 +530,12 @@ const NewPage = () => {
 											placeholder="Card description"
 										></textarea>
 										<div className="text-sm text-red-500">
-											{errors.description && 'Description is required'}
+											{errors.description?.type === 'required' &&
+												'Description is required'}
+										</div>
+										<div className="text-sm text-red-500">
+											{errors.description?.type === 'maxLength' &&
+												'Description must be less than 500 characters'}
 										</div>
 									</div>
 									<div className="mt-4">
@@ -585,7 +605,10 @@ const NewPage = () => {
 									</div>
 								</div>
 								<div className="mt-2">
-									<p className="text-gray-600 text-sm">Set sale quantity to <b>0</b> if you only want to create card without selling</p>
+									<p className="text-gray-600 text-sm">
+										Set sale quantity to <b>0</b> if you only want to create
+										card without selling
+									</p>
 								</div>
 								<div className="mt-4">
 									<label className="block text-sm">Sale price</label>
