@@ -169,11 +169,12 @@ const LicenseDetail = () => {
 				property from a celebrity, athlete, or other public figures), you
 				understand and agree as follows:
 			</p>
-			<ul
+			<ol
 				className="pl-8 opacity-75"
 				style={{
 					listStyleType: `lower-alpha`,
 				}}
+				start="23"
 			>
 				<li>
 					that you will not have the right to use such Third Party IP in any way
@@ -196,7 +197,7 @@ const LicenseDetail = () => {
 					a breach of this license. The restriction in Section 4 will survive
 					the expiration or termination of this License.
 				</li>
-			</ul>
+			</ol>
 
 			<p className="font-medium mt-4">5. Terms of License.</p>
 			<p className="mt-2 opacity-75">
