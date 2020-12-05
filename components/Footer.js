@@ -12,6 +12,20 @@ const Footer = () => {
 					</Link>
 				</div>
 				<div className="flex items-center pt-2 px-2">
+					<Link href="/activity">
+						<a className="flex cursor-pointer ">
+							Activity
+						</a>
+					</Link>
+				</div>
+				<div className="flex items-center pt-2 px-2">
+					<Link href="/license">
+						<a className="flex cursor-pointer ">
+							License
+						</a>
+					</Link>
+				</div>
+				<div className="flex items-center pt-2 px-2">
 					<a
 						href="https://medium.com/paras-media"
 						target="_blank"
