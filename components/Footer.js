@@ -3,63 +3,66 @@ import Link from 'next/link'
 const Footer = () => {
 	return (
 		<div className="max-w-6xl m-auto px-4 flex flex-wrap justify-center md:justify-between mt-20 text-sm text-gray-400">
-			<div className="mt-2 flex flex-wrap justify-center -mx-2">
-				<div className="flex items-center pt-2 px-2">
-					<Link href="/market">
-						<a className="flex cursor-pointer ">
-							Market
+			<div className="py-2">
+				<div className="flex flex-wrap justify-center md:justify-start -mx-2">
+					<div className="flex items-center pt-2 px-2">
+						<Link href="/market">
+							<a className="flex cursor-pointer ">Market</a>
+						</Link>
+					</div>
+					<div className="flex items-center pt-2 px-2">
+						<Link href="/activity">
+							<a className="flex cursor-pointer ">Activity</a>
+						</Link>
+					</div>
+					<div className="flex items-center pt-2 px-2">
+						<Link href="/license">
+							<a className="flex cursor-pointer ">License</a>
+						</Link>
+					</div>
+					<div className="flex items-center pt-2 px-2">
+						<Link href="/faq">
+							<a className="flex cursor-pointer ">FAQ</a>
+						</Link>
+					</div>
+				</div>
+				<div className="flex flex-wrap justify-center -mx-2">
+					<div className="flex items-center pt-2 px-2">
+						<a
+							href="https://medium.com/paras-media"
+							target="_blank"
+							className="flex cursor-pointer "
+						>
+							Blog
 						</a>
-					</Link>
-				</div>
-				<div className="flex items-center pt-2 px-2">
-					<Link href="/activity">
-						<a className="flex cursor-pointer ">
-							Activity
+					</div>
+					<div className="flex items-center pt-2 px-2">
+						<a
+							href="https://twitter.com/ParasHQ"
+							target="_blank"
+							className="flex cursor-pointer "
+						>
+							Twitter
 						</a>
-					</Link>
-				</div>
-				<div className="flex items-center pt-2 px-2">
-					<Link href="/license">
-						<a className="flex cursor-pointer ">
-							License
+					</div>
+					<div className="flex items-center pt-2 px-2">
+						<a
+							href="https://discord.gg/vWR2XBNupg"
+							target="_blank"
+							className="flex cursor-pointer "
+						>
+							Discord
 						</a>
-					</Link>
-				</div>
-				<div className="flex items-center pt-2 px-2">
-					<a
-						href="https://medium.com/paras-media"
-						target="_blank"
-						className="flex cursor-pointer "
-					>
-						Blog
-					</a>
-				</div>
-				<div className="flex items-center pt-2 px-2">
-					<a
-						href="https://twitter.com/ParasHQ"
-						target="_blank"
-						className="flex cursor-pointer "
-					>
-						Twitter
-					</a>
-				</div>
-				<div className="flex items-center pt-2 px-2">
-					<a
-						href="https://discord.gg/vWR2XBNupg"
-						target="_blank"
-						className="flex cursor-pointer "
-					>
-						Discord
-					</a>
-				</div>
-				<div className="flex items-center pt-2 px-2">
-					<a
-						href="https://forms.gle/QsZHqa2MKXpjckj98"
-						target="_blank"
-						className="flex cursor-pointer "
-					>
-						Apply as an Artist
-					</a>
+					</div>
+					<div className="flex items-center pt-2 px-2">
+						<a
+							href="https://forms.gle/QsZHqa2MKXpjckj98"
+							target="_blank"
+							className="flex cursor-pointer "
+						>
+							Apply as an Artist
+						</a>
+					</div>
 				</div>
 			</div>
 			<div className="mt-2 flex items-center">

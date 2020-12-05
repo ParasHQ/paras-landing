@@ -66,7 +66,19 @@ input.clear {
 }
 
 .button-wrapper:hover {
-	@apply  bg-gray-100 bg-opacity-15;
+	@apply bg-gray-100 bg-opacity-15;
+}
+
+.faq a {
+	@apply border-b-2 border-transparent border-gray-100;
+}
+
+.faq span {
+	@apply opacity-75;
+}
+
+.faq span a:hover {
+	@apply opacity-100;
 }
 
 .slide.selected {

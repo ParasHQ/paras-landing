@@ -535,7 +535,7 @@ const Nav = () => {
 				></div>
 			)}
 			<div className="h-16">
-				<div className="fixed z-40 top-0 left-0 right-0">
+				<div className="fixed z-40 top-0 left-0 right-0 bg-black">
 					{process.env.APP_ENV !== 'production' && (
 						<div
 							ref={testnetBannerRef}
@@ -569,7 +569,7 @@ const Nav = () => {
 							</p>
 						</div>
 					)}
-					<div className="relative bg-black z-40 flex items-center justify-between max-w-6xl m-auto p-4 h-16">
+					<div className="relative z-40 flex items-center justify-between max-w-6xl m-auto p-4 h-16">
 						<div className="flex items-center">
 							<div className="block md:hidden pr-4">
 								<Hamburger

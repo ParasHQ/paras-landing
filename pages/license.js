@@ -13,7 +13,7 @@ const LicenseOverview = () => {
 					of the non-fungible tokens (NFTs) as well as artists working with
 					NFTs. The NFT License is designed to balance two concerns:
 				</p>
-				<ul className="list-disc mt-2">
+				<ul className="list-disc mt-2 pl-4">
 					<li>Protecting the hard work and ingenuity of creators</li>
 					<li>
 						Granting owners or collectors the freedom and flexibility to fully
@@ -29,7 +29,7 @@ const LicenseOverview = () => {
 				You have broad rights to use the art associated with your NFT. In the
 				case of a Digital Art Card (DAC), you can do any of the following:
 			</p>
-			<ul className="list-disc mt-2 opacity-75">
+			<ul className="list-disc mt-2 opacity-75 pl-4">
 				<li>Use the DAC for your own personal, non-commercial use;</li>
 				<li>
 					Use the DAC when you’re on a marketplace that allows the purchase and
@@ -51,7 +51,7 @@ const LicenseOverview = () => {
 				There are a few things that aren’t appropriate uses for your NFT art.
 				They include:
 			</p>
-			<ul className="list-disc mt-2 opacity-75">
+			<ul className="list-disc mt-2 opacity-75 pl-4">
 				<li>Modifying the art;</li>
 				<li>Using the art to market or sell third-party products;</li>
 				<li>
@@ -223,7 +223,7 @@ const License = () => {
 			}}
 		>
 			<Head>
-				<title>Paras — Digital Art Cards Market</title>
+				<title>License — Paras</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -259,13 +259,13 @@ const License = () => {
 			</Head>
 			<div>
 				<Nav />
-				<div className="py-16 max-w-4xl m-auto text-gray-100 px-4">
-					<h2 className="font-bold text-5xl text-center">NFT License</h2>
+				<div className="py-16 max-w-4xl mx-auto text-gray-100 px-4">
+					<h2 className="font-bold text-4xl text-center">NFT License</h2>
 					<div className="flex mt-6 justify-between items-center">
 						<div className="w-1/2 text-center">
 							<h3
 								onClick={(_) => setActiveTab('overview')}
-								className={`cursor-pointer font-bold text-4xl ${
+								className={`cursor-pointer font-bold text-2xl ${
 									activeTab !== 'overview' && 'opacity-75'
 								}`}
 							>
@@ -275,7 +275,7 @@ const License = () => {
 						<div className="w-1/2 text-center">
 							<h3
 								onClick={(_) => setActiveTab('detail')}
-								className={`cursor-pointer font-bold text-4xl ${
+								className={`cursor-pointer font-bold text-2xl ${
 									activeTab !== 'detail' && 'opacity-75'
 								}`}
 							>
