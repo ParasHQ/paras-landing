@@ -5,7 +5,7 @@ import Card from '../components/Card'
 import ImgCrop from '../components/ImgCrop'
 import Nav from '../components/Nav'
 import useStore from '../store'
-import { useForm } from 'react-hook-form'
+import { Controller, useForm } from 'react-hook-form'
 import Modal from '../components/Modal'
 import { useRouter } from 'next/router'
 import near from '../lib/near'
@@ -13,6 +13,7 @@ import Head from 'next/head'
 import { useToast } from '../hooks/useToast'
 import Footer from '../components/Footer'
 import { prettyBalance } from '../utils/common'
+import Autocomplete from '../components/Autocomplete'
 
 const NewPage = () => {
 	const store = useStore()
@@ -20,6 +21,7 @@ const NewPage = () => {
 	const toast = useToast()
 	const [formInput, setFormInput] = useState({})
 	const {
+		control,
 		errors,
 		register,
 		handleSubmit,
@@ -31,7 +33,7 @@ const NewPage = () => {
 	const [showImgCrop, setShowImgCrop] = useState(false)
 	const [imgFile, setImgFile] = useState('')
 	const [imgUrl, setImgUrl] = useState('')
-	const [step, setStep] = useState(0)
+	const [step, setStep] = useState(1)
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
 	const [showFront, setShowFront] = useState(true)
@@ -81,6 +83,7 @@ const NewPage = () => {
 			) {
 				router.push('/new')
 			}
+			getNewCollectionList('')
 		}
 	}, [store.initialized])
 
@@ -146,6 +149,17 @@ const NewPage = () => {
 		}
 	}
 
+	const [collectionList, setCollectionList] = useState([])
+
+	const getNewCollectionList = async (val) => {
+		const resp = await axios.get(
+			`${process.env.API_URL}/collections?creatorId=${store.currentUser}&collection=${val}`
+		)
+		if (resp.data.data) {
+			setCollectionList(resp.data.data.results.map(res => res.collection))
+		}
+	}
+
 	return (
 		<div
 			className="min-h-screen bg-dark-primary-1"
@@ -154,7 +168,7 @@ const NewPage = () => {
 			}}
 		>
 			<Head>
-				<title>Market — Paras</title>
+				<title>Create New Card — Paras</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -477,6 +491,7 @@ const NewPage = () => {
 									<div>
 										<label className="block text-sm">Name</label>
 										<input
+											autoComplete="off"
 											type="text"
 											name="name"
 											ref={register({
@@ -491,14 +506,16 @@ const NewPage = () => {
 									</div>
 									<div className="mt-4">
 										<label className="block text-sm">Collection</label>
-										<input
-											type="text"
+										<Controller
+											as={Autocomplete}
+											placeholder="Card Collection"
+											suggestions={collectionList}
+											getNewSuggestions={getNewCollectionList}
 											name="collection"
-											ref={register({
-												required: true,
-											})}
-											className={`${errors.collection && 'error'}`}
-											placeholder="Card collection"
+											control={control}
+											rules={{ required: true }}
+											errors={errors}
+											inputClassName={`${errors.collection && 'error'}`}
 										/>
 										<div className="mt-2 text-sm text-red-500">
 											{errors.collection && 'Collection is required'}
