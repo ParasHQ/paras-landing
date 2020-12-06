@@ -33,7 +33,7 @@ const NewPage = () => {
 	const [showImgCrop, setShowImgCrop] = useState(false)
 	const [imgFile, setImgFile] = useState('')
 	const [imgUrl, setImgUrl] = useState('')
-	const [step, setStep] = useState(1)
+	const [step, setStep] = useState(0)
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
 	const [showFront, setShowFront] = useState(true)
@@ -156,7 +156,7 @@ const NewPage = () => {
 			`${process.env.API_URL}/collections?creatorId=${store.currentUser}&collection=${val}`
 		)
 		if (resp.data.data) {
-			setCollectionList(resp.data.data.results.map(res => res.collection))
+			setCollectionList(resp.data.data.results.map((res) => res.collection))
 		}
 	}
 
@@ -218,7 +218,7 @@ const NewPage = () => {
 				</Modal>
 			)}
 			{showConfirmModal && (
-				<Modal close={(_) => setShowConfirmModal(false)}>
+				<Modal close={(_) => setShowConfirmModal(false)} closeOnEscape={false} closeOnBgClick={false}>
 					<div className="w-full flex flex-wrap max-w-lg p-4 m-auto bg-gray-100 rounded-md overflow-x-hidden overflow-y-auto max-h-full">
 						<div className="w-full md:w-1/2 px-4">
 							<div className="w-full">
@@ -507,15 +507,22 @@ const NewPage = () => {
 									<div className="mt-4">
 										<label className="block text-sm">Collection</label>
 										<Controller
-											as={Autocomplete}
-											placeholder="Card Collection"
-											suggestions={collectionList}
-											getNewSuggestions={getNewCollectionList}
+											render={({ onChange, onBlur, value, ref }) => (
+												<Autocomplete
+													onBlur={onBlur}
+													onChange={onChange}
+													value={value}
+													inputRef={ref}
+													placeholder="Card Collection"
+													suggestions={collectionList}
+													getNewSuggestions={getNewCollectionList}
+													inputClassName={`${errors.collection && 'error'}`}
+													errors={errors}
+												/>
+											)}
 											name="collection"
 											control={control}
 											rules={{ required: true }}
-											errors={errors}
-											inputClassName={`${errors.collection && 'error'}`}
 										/>
 										<div className="mt-2 text-sm text-red-500">
 											{errors.collection && 'Collection is required'}

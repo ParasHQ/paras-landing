@@ -11,6 +11,7 @@ const Autocomplete = ({
 	placeholder,
 	inputClassName,
 	getNewSuggestions,
+	inputRef,
 	suggestions = [],
 }) => {
 	const [showSuggestions, setShowSuggestions] = useState(false)
@@ -20,7 +21,14 @@ const Autocomplete = ({
 		onBlur()
 	}
 
+	const _onFocus = () => {
+		setShowSuggestions(true)
+	}
+
 	const _onChange = async (val) => {
+		if (!showSuggestions) {
+			setShowSuggestions(true)
+		}
 		if (typeof getNewSuggestions === 'function') {
 			clearTimeout(fetchTimeout)
 
@@ -31,26 +39,28 @@ const Autocomplete = ({
 		onChange(val)
 	}
 
-	const filteredSuggestions = value?.length > 0 ? suggestions.filter(
-		(s) => value && s.toLowerCase().includes(value.toLowerCase())
-	) : suggestions
+	const filteredSuggestions =
+		value?.length > 0
+			? suggestions.filter(
+					(s) => value && s.toLowerCase().includes(value.toLowerCase())
+			  )
+			: suggestions
 
 	return (
 		<div className={`relative`}>
-			<div
-				onClick={(_) => setShowSuggestions(!showSuggestions)}
-				className="flex items-center w-full rounded-md outline-none"
-			>
+			<div className="flex items-center w-full rounded-md outline-none">
 				<div className="w-full relative">
 					<input
 						className={inputClassName}
 						autoComplete="off"
 						type="text"
 						name={name}
-						value={value}
+						value={value || ''}
 						onChange={(e) => _onChange(e.target.value)}
 						onBlur={_onBlur}
+						onFocus={_onFocus}
 						placeholder={placeholder}
+						ref={inputRef}
 					/>
 				</div>
 			</div>
@@ -61,7 +71,7 @@ const Autocomplete = ({
 			>
 				<div className="absolute w-full pt-2 z-30">
 					<div className="border bg-gray-100 rounded-md overflow-hidden">
-						<Scrollbars autoHeight autoHeightMin={0} autoHeightMax={200}>
+						<Scrollbars universal={true} autoHeight autoHeightMin={0} autoHeightMax={200}>
 							{filteredSuggestions.map((s, idx) => {
 								return (
 									<div
