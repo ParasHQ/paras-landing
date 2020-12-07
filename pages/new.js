@@ -218,7 +218,11 @@ const NewPage = () => {
 				</Modal>
 			)}
 			{showConfirmModal && (
-				<Modal close={(_) => setShowConfirmModal(false)} closeOnEscape={false} closeOnBgClick={false}>
+				<Modal
+					close={(_) => setShowConfirmModal(false)}
+					closeOnEscape={false}
+					closeOnBgClick={false}
+				>
 					<div className="w-full flex flex-wrap max-w-lg p-4 m-auto bg-gray-100 rounded-md overflow-x-hidden overflow-y-auto max-h-full">
 						<div className="w-full md:w-1/2 px-4">
 							<div className="w-full">
@@ -357,11 +361,11 @@ const NewPage = () => {
 								imgHeight={890}
 								imgUrl={imgUrl}
 								token={{
-									name: watch('name', ''),
-									collection: watch('collection', ''),
-									description: watch('description', ''),
+									name: watch('name', formInput.name),
+									collection: watch('collection', formInput.collection),
+									description: watch('description', formInput.description),
 									creatorId: store.currentUser,
-									supply: watch('supply', ''),
+									supply: watch('supply', formInput.supply),
 									tokenId: 'ID',
 									createdAt: new Date().getTime(),
 								}}
