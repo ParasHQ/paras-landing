@@ -1,15 +1,23 @@
 import axios from 'axios'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Nav from '../components/Nav'
 import CardList from '../components/CardList'
 import Head from 'next/head'
 import Footer from '../components/Footer'
+import useStore from '../store'
 
 export default function MarketPage({ data }) {
+	const store = useStore()
 	const [tokens, setTokens] = useState(data.results)
 	const [page, setPage] = useState(1)
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
+
+	useEffect(() => {
+		return () => {
+			store.setMarketScrollPersist('market', 0)
+		}
+	}, [])
 
 	const _fetchData = async () => {
 		if (!hasMore || isFetching) {
