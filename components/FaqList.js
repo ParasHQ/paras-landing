@@ -19,6 +19,10 @@ const faqsData = [
   {
 		question: 'How do I start collecting digital cards?',
 		answer: 'You need NEAR account & some NEAR coin to start collecting the digital cards. You can start exploring the marketplace and find the card collectibles that you like and see if it is still available for sale. You can buy the digital card from other collectors or straight from the creators. When you bought one, that card will truly be yours and you can hold it, sell it or trade it in the future.',
+	},
+	{
+		question: 'Where can I get some NEAR?',
+		answer: 'You can get NEAR from some crypto-exchange such as <a href="https://binance.com" target="_blank">Binance</a>. When you got some NEAR from exchange, you can transfer it to your <a target="_blank" href="https://wallet.near.org">NEAR wallet</a> and you are good to go.',
   },
   {
 		question: 'How do I become a Paras Artist?',
