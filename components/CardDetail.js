@@ -689,6 +689,11 @@ const CardDetail = ({ token }) => {
 										{errors.quantity?.type === 'validate' &&
 											'Only use rounded number'}
 									</div>
+									<div className="mt-2">
+										<p className="text-gray-600 text-sm">
+											Set sale quantity to <b>0</b> if you only want to remove this card from listing
+										</p>
+									</div>
 								</div>
 								<div className="mt-4">
 									<label className="block text-sm">Sale price</label>
