@@ -10,6 +10,7 @@ import Footer from '../components/Footer'
 import useStore from '../store'
 import JSBI from 'jsbi'
 import useSWR from 'swr'
+import LinkToProfile from '../components/LinkToProfile'
 
 const LIMIT = 20
 
@@ -76,11 +77,10 @@ const Activity = ({ activity }) => {
 		return (
 			<div className="text-gray-300">
 				<p>
-					<Link href={`/${activity.from}`}>
-						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">
-							{activity.from}
-						</a>
-					</Link>
+					<LinkToProfile
+						accountId={activity.from}
+						className="text-gray-100 hover:border-gray-100"
+					/>
 					<span>
 						{' '}
 						put on sale for {prettyBalance(activity.amount, 24, 4)} Ⓝ
@@ -100,11 +100,10 @@ const Activity = ({ activity }) => {
 			<div className="text-gray-300">
 				<p>
 					<span>removed from sale by </span>
-					<Link href={`/${activity.from}`}>
-						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">
-							{activity.from}
-						</a>
-					</Link>
+					<LinkToProfile
+						accountId={activity.from}
+						className="text-gray-100 hover:border-gray-100"
+					/>
 				</p>
 			</div>
 		)
@@ -114,17 +113,15 @@ const Activity = ({ activity }) => {
 		return (
 			<div className="text-gray-300">
 				<p>
-					<Link href={`/${activity.from}`}>
-						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">
-							{activity.from}
-						</a>
-					</Link>
+					<LinkToProfile
+						accountId={activity.from}
+						className="text-gray-100 hover:border-gray-100"
+					/>
 					<span> bought {activity.quantity}pcs from </span>
-					<Link href={`/${activity.to}`}>
-						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">
-							{activity.to}
-						</a>
-					</Link>
+					<LinkToProfile
+						accountId={activity.to}
+						className="text-gray-100 hover:border-gray-100"
+					/>
 					<span> for </span>
 					{prettyBalance(activity.amount, 24, 4)} Ⓝ
 					<span>
@@ -142,11 +139,10 @@ const Activity = ({ activity }) => {
 			<div className="text-gray-300">
 				<span>created by </span>
 				<span>
-					<Link href={`/${activity.from}`}>
-						<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">
-							{activity.to}
-						</a>
-					</Link>
+					<LinkToProfile
+						accountId={activity.from}
+						className="text-gray-100 hover:border-gray-100"
+					/>
 				</span>
 				<span> with supply of {activity.quantity}pcs</span>
 			</div>
@@ -156,17 +152,15 @@ const Activity = ({ activity }) => {
 	return (
 		<div className="text-gray-300">
 			<p>
-				<Link href={`/${activity.from}`}>
-					<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">
-						{activity.from}
-					</a>
-				</Link>
+				<LinkToProfile
+					accountId={activity.from}
+					className="text-gray-100 hover:border-gray-100"
+				/>
 				<span> transfer {activity.quantity}pcs to </span>
-				<Link href={`/${activity.to}`}>
-					<a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">
-						{activity.to}
-					</a>
-				</Link>
+				<LinkToProfile
+					accountId={activity.to}
+					className="text-gray-100 hover:border-gray-100"
+				/>
 			</p>
 		</div>
 	)
