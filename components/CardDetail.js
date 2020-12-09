@@ -21,17 +21,14 @@ import { Blurhash } from 'react-blurhash'
 import Scrollbars from 'react-custom-scrollbars'
 import useSWR from 'swr'
 import getConfig from '../config/near'
+import LinkToProfile from './LinkToProfile'
 
 const Activity = ({ activity }) => {
 	if (activity.type === 'marketUpdate') {
 		return (
 			<div className="border-2 border-dashed p-2 rounded-md">
 				<p>
-					<Link href={`/${activity.from}`}>
-						<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
-							{activity.from}
-						</a>
-					</Link>
+					<LinkToProfile accountId={activity.from} />
 					<span>
 						{' '}
 						put on sale for {prettyBalance(activity.amount, 24, 4)} Ⓝ
@@ -46,11 +43,7 @@ const Activity = ({ activity }) => {
 		return (
 			<div className="border-2 border-dashed p-2 rounded-md">
 				<p>
-					<Link href={`/${activity.from}`}>
-						<a className="text-black font-semibold border-b-2 border-transparent hover:border-gray-900">
-							{activity.from}
-						</a>
-					</Link>
+					<LinkToProfile accountId={activity.from} />
 					<span> remove from sale</span>
 				</p>
 				<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
@@ -62,17 +55,9 @@ const Activity = ({ activity }) => {
 		return (
 			<div className="border-2 border-dashed p-2 rounded-md">
 				<p>
-					<Link href={`/${activity.from}`}>
-						<a className="text-black font-semibold border-b-2 border-transparent hover:border-gray-900">
-							{activity.from}
-						</a>
-					</Link>
+					<LinkToProfile accountId={activity.from} />
 					<span> bought {activity.quantity}pcs from </span>
-					<Link href={`/${activity.to}`}>
-						<a className="text-black font-semibold border-b-2 border-transparent hover:border-gray-900">
-							{activity.to}
-						</a>
-					</Link>
+					<LinkToProfile accountId={activity.to} />
 					<span> for </span>
 					{prettyBalance(activity.amount, 24, 4)} Ⓝ
 				</p>
@@ -85,11 +70,7 @@ const Activity = ({ activity }) => {
 		return (
 			<div className="border-2 border-dashed p-2 rounded-md">
 				<p>
-					<Link href={`/${activity.to}`}>
-						<a className="text-black font-semibold border-b-2 border-transparent hover:border-gray-900">
-							{activity.to}
-						</a>
-					</Link>
+					<LinkToProfile accountId={activity.to} />
 					<span> create with supply of {activity.quantity}pcs</span>
 				</p>
 				<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
@@ -104,17 +85,9 @@ const Activity = ({ activity }) => {
 	return (
 		<div className="border-2 border-dashed p-2 rounded-md">
 			<p>
-				<Link href={`/${activity.from}`}>
-					<a className="text-black font-semibold border-b-2 border-transparent hover:border-gray-900">
-						{activity.from}
-					</a>
-				</Link>
+				<LinkToProfile accountId={activity.from} />
 				<span> transfer {activity.quantity}pcs to </span>
-				<Link href={`/${activity.to}`}>
-					<a className="text-black font-semibold border-b-2 border-transparent hover:border-gray-900">
-						{activity.to}
-					</a>
-				</Link>
+				<LinkToProfile accountId={activity.to} />
 			</p>
 			<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
 		</div>
@@ -139,11 +112,11 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 	)
 
 	return (
-		<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+		<div className="border-2 border-dashed my-4 p-2 rounded-md">
 			<div className="flex items-center justify-between">
-				<div className="flex items-center">
+				<div className="flex items-center overflow-hidden">
 					<Link href={`/${ownership.ownerId}`}>
-						<div className="w-8 h-8 rounded-full overflow-hidden cursor-pointer bg-primary">
+						<div className="w-8 h-8 flex-shrink-0 rounded-full overflow-hidden cursor-pointer bg-primary">
 							{profile && (
 								<img
 									className="object-cover"
@@ -152,12 +125,8 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 							)}
 						</div>
 					</Link>
-					<div className="pl-2">
-						<Link href={`/${ownership.ownerId}`}>
-							<a className="text-gray-900 font-semibold cursor-pointer border-b-2 border-transparent hover:border-gray-900">
-								{ownership.ownerId}
-							</a>
-						</Link>
+					<div className="px-2">
+						<LinkToProfile accountId={ownership.ownerId} len={20} />
 					</div>
 				</div>
 				<div>
@@ -168,14 +137,19 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 			{ownership.marketData ? (
 				<div className="flex justify-between mt-2 items-center text-gray-900">
 					<div>
-						<p className="flex items-center">
-							On sale {prettyBalance(ownership.marketData.amount, 24, 4)} Ⓝ (
-							<span>
-								<span className="text-sm text-gray-800">Qty.</span>{' '}
-								{ownership.marketData.quantity}
+						<p>
+							On sale {prettyBalance(ownership.marketData.amount, 24, 4)} Ⓝ{' '}
+							<span className="text-gray-800">
+								($
+								{prettyBalance(
+									JSBI.BigInt(ownership.marketData.amount * store.nearUsdPrice),
+									24,
+									4
+								)}
+								)
 							</span>
-							)
 						</p>
+						<p className="text-sm"></p>
 					</div>
 					<div>
 						{store.currentUser && store.currentUser === ownership.ownerId ? (
@@ -256,7 +230,7 @@ const ActivityList = ({ token }) => {
 	return (
 		<div>
 			{activityList.length === 0 && (
-				<div className="border-2 border-dashed mt-4 p-2 rounded-md text-center">
+				<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
 					<p className="text-gray-300 py-8">No Transactions</p>
 				</div>
 			)}
@@ -691,7 +665,8 @@ const CardDetail = ({ token }) => {
 									</div>
 									<div className="mt-2">
 										<p className="text-gray-600 text-sm">
-											Set sale quantity to <b>0</b> if you only want to remove this card from listing
+											Set sale quantity to <b>0</b> if you only want to remove
+											this card from listing
 										</p>
 									</div>
 								</div>
