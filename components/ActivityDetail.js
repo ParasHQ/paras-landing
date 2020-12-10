@@ -41,7 +41,7 @@ export const descriptionMaker = (activity, token) => {
 	return `${activity.from} transferred ${activity.quantity}pcs of ${token?.metadata.name} to ${activity.to}`
 }
 
-const CopyLink = ({ children, afterCopy }) => {
+const CopyLink = ({ children, link, afterCopy }) => {
 	const [isComponentMounted, setIsComponentMounted] = useState(false)
 	const copyLinkRef = useRef()
 
@@ -67,12 +67,7 @@ const CopyLink = ({ children, afterCopy }) => {
 						top: `-1000`,
 					}}
 				>
-					<input
-						ref={copyLinkRef}
-						readOnly
-						type="text"
-						value={window.location.href}
-					/>
+					<input ref={copyLinkRef} readOnly type="text" value={link} />
 				</div>
 			)}
 			<div className="relative z-10">{children}</div>
@@ -178,7 +173,9 @@ const Activity = ({ activity }) => {
 
 const ActivityDetail = ({ activity, token }) => {
 	const [showModal, setShowModal] = useState(null)
-	const [isCopied, setIsCopied] = useState(false)
+  const [isCopied, setIsCopied] = useState(false)
+  
+  const shareLink = `${process.env.BASE_URL}/activity/${activity._id}`
 
 	const fetcher = async (key) => {
 		const resp = await axios.get(`${process.env.API_URL}/${key}`)
@@ -211,7 +208,10 @@ const ActivityDetail = ({ activity, token }) => {
 			{showModal === 'options' && (
 				<Modal close={(_) => setShowModal('')}>
 					<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
-						<CopyLink afterCopy={handleAfterCopy}>
+						<CopyLink
+							link={shareLink}
+							afterCopy={handleAfterCopy}
+						>
 							<div className="py-2 cursor-pointer flex items-center">
 								<svg
 									className="rounded-md"
@@ -223,8 +223,8 @@ const ActivityDetail = ({ activity, token }) => {
 								>
 									<rect width="24" height="24" fill="#11111F" />
 									<path
-										fill-rule="evenodd"
-										clip-rule="evenodd"
+										fillRule="evenodd"
+										clipRule="evenodd"
 										d="M12.7147 14.4874L13.7399 15.5126L11.6894 17.5631C10.2738 18.9787 7.97871 18.9787 6.56313 17.5631C5.14755 16.1476 5.14755 13.8524 6.56313 12.4369L8.61364 10.3864L9.63889 11.4116L7.58839 13.4621C6.73904 14.3115 6.73904 15.6885 7.58839 16.5379C8.43773 17.3872 9.8148 17.3872 10.6641 16.5379L12.7147 14.4874ZM11.6894 9.36136L10.6641 8.3361L12.7146 6.2856C14.1302 4.87002 16.4253 4.87002 17.8409 6.2856C19.2565 7.70118 19.2565 9.99628 17.8409 11.4119L15.7904 13.4624L14.7651 12.4371L16.8156 10.3866C17.665 9.53726 17.665 8.1602 16.8156 7.31085C15.9663 6.4615 14.5892 6.4615 13.7399 7.31085L11.6894 9.36136ZM9.12499 13.9751L10.1502 15.0004L15.2765 9.87409L14.2513 8.84883L9.12499 13.9751Z"
 										fill="white"
 									/>
@@ -238,7 +238,7 @@ const ActivityDetail = ({ activity, token }) => {
 									activity,
 									localToken
 								)} via @ParasHQ\n\n#cryptoart #digitalart #tradingcards`}
-								url={window.location.href}
+								url={shareLink}
 								className="flex items-center w-full"
 							>
 								<TwitterIcon
@@ -253,7 +253,7 @@ const ActivityDetail = ({ activity, token }) => {
 						</div>
 						<div className="py-2 cursor-pointer">
 							<FacebookShareButton
-								url={window.location.href}
+								url={shareLink}
 								className="flex items-center w-full"
 							>
 								<FacebookIcon
@@ -318,8 +318,8 @@ const ActivityDetail = ({ activity, token }) => {
 										xmlns="http://www.w3.org/2000/svg"
 									>
 										<path
-											fill-rule="evenodd"
-											clip-rule="evenodd"
+											fillRule="evenodd"
+											clipRule="evenodd"
 											d="M12 2.79623V8.02302C5.45134 8.33141 2 11.7345 2 18V20.4142L3.70711 18.7071C5.95393 16.4603 8.69021 15.5189 12 15.8718V21.2038L22.5186 12L12 2.79623ZM14 10V7.20377L19.4814 12L14 16.7962V14.1529L13.1644 14.0136C9.74982 13.4445 6.74443 14.0145 4.20125 15.7165C4.94953 11.851 7.79936 10 13 10H14Z"
 											fill="white"
 										/>
