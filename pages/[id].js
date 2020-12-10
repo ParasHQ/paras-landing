@@ -96,11 +96,12 @@ const ProfileDetail = ({
 
 	const headMeta = {
 		title: `${accountId} — Paras`,
-		description: `See digital card collectibles and creations from ${accountId}. ${userProfile.bio || ''}`,
-		image: parseImgUrl(
-			userProfile.imgUrl,
-			`https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png`
-		),
+		description: `See digital card collectibles and creations from ${accountId}. ${
+			userProfile.bio || ''
+		}`,
+		image: userProfile.imgUrl
+			? `${process.env.API_URL}/socialCard/avatar/${userProfile.imgUrl.split('://')[1]}`
+			: `https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png`,
 	}
 	return (
 		<div
