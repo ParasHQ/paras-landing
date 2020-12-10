@@ -1,170 +1,13 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import Link from 'next/link'
-import { parseImgUrl, prettyBalance, timeAgo } from '../utils/common'
-import Card from '../components/Card'
 import Head from 'next/head'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import useStore from '../store'
-import JSBI from 'jsbi'
-import useSWR from 'swr'
-import LinkToProfile from '../components/LinkToProfile'
+import ActivityDetail from '../components/ActivityDetail'
 
 const LIMIT = 20
-
-const ActivityWrapper = ({ activity }) => {
-	const fetcher = async (key) => {
-		const resp = await axios.get(`${process.env.API_URL}/${key}`)
-		if (resp.data.data.results.length > 0) {
-			return resp.data.data.results[0]
-		} else {
-			return {}
-		}
-	}
-
-	const { data: token } = useSWR(`tokens?tokenId=${activity.tokenId}`, fetcher)
-
-	return (
-		<div className="flex flex-wrap border-2 border-dashed border-gray-800 p-4 rounded-md max-w-2xl mx-auto">
-			<div className="w-full md:w-1/3">
-				<div className="w-40 mx-auto">
-					<Card
-						imgUrl={parseImgUrl(token?.metadata?.image)}
-						imgBlur={token?.metadata?.blurhash}
-						token={{
-							name: token?.metadata?.name,
-							collection: token?.metadata?.collection,
-							description: token?.metadata?.description,
-							creatorId: token?.creatorId,
-							supply: token?.supply,
-							tokenId: token?.tokenId,
-							createdAt: token?.createdAt,
-						}}
-						initialRotate={{
-							x: 15,
-							y: 15,
-						}}
-						disableFlip={true}
-					/>
-				</div>
-			</div>
-			<div className="w-full md:w-2/3 text-gray-100 pt-4 pl-0 md:pt-0 md:pl-4">
-				<div className="overflow-hidden">
-					<Link href={`/token/${token?.tokenId}`}>
-						<a className="text-2xl font-bold truncate border-b-2 border-transparent hover:border-gray-100">
-							{token?.metadata?.name}
-						</a>
-					</Link>
-					<p className="opacity-75 truncate">{token?.metadata?.collection}</p>
-					<div className="mt-4">
-						<Activity activity={activity} />
-						<p className="mt-2 text-sm opacity-50">
-							{timeAgo.format(activity.createdAt)}
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	)
-}
-
-const Activity = ({ activity }) => {
-	const { nearUsdPrice } = useStore()
-
-	if (activity.type === 'marketUpdate') {
-		return (
-			<div className="text-gray-300">
-				<p>
-					<LinkToProfile
-						accountId={activity.from}
-						className="text-gray-100 hover:border-gray-100"
-					/>
-					<span>
-						{' '}
-						put on sale for {prettyBalance(activity.amount, 24, 4)} Ⓝ
-					</span>
-					<span>
-						{' '}
-						($
-						{prettyBalance(JSBI.BigInt(activity.amount * nearUsdPrice), 24, 4)})
-					</span>
-				</p>
-			</div>
-		)
-	}
-
-	if (activity.type === 'marketDelete') {
-		return (
-			<div className="text-gray-300">
-				<p>
-					<span>removed from sale by </span>
-					<LinkToProfile
-						accountId={activity.from}
-						className="text-gray-100 hover:border-gray-100"
-					/>
-				</p>
-			</div>
-		)
-	}
-
-	if (activity.type === 'marketBuy') {
-		return (
-			<div className="text-gray-300">
-				<p>
-					<LinkToProfile
-						accountId={activity.from}
-						className="text-gray-100 hover:border-gray-100"
-					/>
-					<span> bought {activity.quantity}pcs from </span>
-					<LinkToProfile
-						accountId={activity.to}
-						className="text-gray-100 hover:border-gray-100"
-					/>
-					<span> for </span>
-					{prettyBalance(activity.amount, 24, 4)} Ⓝ
-					<span>
-						{' '}
-						($
-						{prettyBalance(JSBI.BigInt(activity.amount * nearUsdPrice), 24, 4)})
-					</span>
-				</p>
-			</div>
-		)
-	}
-
-	if (activity.type === 'transfer' && activity.from === '') {
-		return (
-			<div className="text-gray-300">
-				<span>created by </span>
-				<span>
-					<LinkToProfile
-						accountId={activity.from}
-						className="text-gray-100 hover:border-gray-100"
-					/>
-				</span>
-				<span> with supply of {activity.quantity}pcs</span>
-			</div>
-		)
-	}
-
-	return (
-		<div className="text-gray-300">
-			<p>
-				<LinkToProfile
-					accountId={activity.from}
-					className="text-gray-100 hover:border-gray-100"
-				/>
-				<span> transfer {activity.quantity}pcs to </span>
-				<LinkToProfile
-					accountId={activity.to}
-					className="text-gray-100 hover:border-gray-100"
-				/>
-			</p>
-		</div>
-	)
-}
 
 const ActivityLog = () => {
 	const {
@@ -284,7 +127,7 @@ const ActivityLog = () => {
 							{activityList.map((act, idx) => {
 								return (
 									<div key={idx} className="mt-6">
-										<ActivityWrapper activity={act} />
+										<ActivityDetail activity={act} />
 									</div>
 								)
 							})}
