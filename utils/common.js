@@ -64,9 +64,9 @@ export const readFileAsUrl = (file) => {
 	})
 }
 
-export const parseImgUrl = (url) => {
+export const parseImgUrl = (url, defaultValue = '') => {
 	if (!url) {
-		return ''
+		return defaultValue
 	}
 	const [protocol, path] = url.split('://')
 	if (protocol === 'ipfs') {

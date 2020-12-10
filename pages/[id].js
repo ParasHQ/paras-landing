@@ -94,6 +94,14 @@ const ProfileDetail = ({
 		setIsFetching(false)
 	}
 
+	const headMeta = {
+		title: `${accountId} — Paras`,
+		description: `See digital card collectibles and creations from ${accountId}. ${userProfile.bio || ''}`,
+		image: parseImgUrl(
+			userProfile.imgUrl,
+			`https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png`
+		),
+	}
 	return (
 		<div
 			className="min-h-screen bg-dark-primary-1"
@@ -102,36 +110,21 @@ const ProfileDetail = ({
 			}}
 		>
 			<Head>
-				<title>{`${accountId} — Paras`}</title>
-				<meta
-					name="description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
-				/>
+				<title>{headMeta.title}</title>
+				<meta name="description" content={headMeta.description} />
 
-				<meta name="twitter:title" content={`${accountId} — Paras`} />
+				<meta name="twitter:title" content={headMeta.title} />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
-				<meta
-					name="twitter:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
-				/>
-				<meta
-					name="twitter:image"
-					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
-				/>
+				<meta name="twitter:description" content={headMeta.description} />
+				<meta name="twitter:image" content={headMeta.image} />
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content={`${accountId} — Paras`} />
-				<meta property="og:site_name" content={`${accountId} — Paras`} />
-				<meta
-					property="og:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
-				/>
+				<meta property="og:title" content={headMeta.title} />
+				<meta property="og:site_name" content={headMeta.title} />
+				<meta property="og:description" content={headMeta.description} />
 				<meta property="og:url" content="https://paras.id" />
-				<meta
-					property="og:image"
-					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
-				/>
+				<meta property="og:image" content={headMeta.image} />
 			</Head>
 			<Nav />
 
@@ -145,7 +138,9 @@ const ProfileDetail = ({
 					</div>
 					<div className="mt-4 max-w-sm text-center">
 						<h4 className="text-gray-100 font-bold">{router.query.id}</h4>
-						<p className="mt-2 text-gray-300 whitespace-pre-line">{userProfile.bio?.replace(/\n\s*\n\s*\n/g, '\n\n')}</p>
+						<p className="mt-2 text-gray-300 whitespace-pre-line">
+							{userProfile.bio?.replace(/\n\s*\n\s*\n/g, '\n\n')}
+						</p>
 					</div>
 				</div>
 				<div className="flex justify-center mt-4">
