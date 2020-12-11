@@ -1,6 +1,5 @@
 import axios from 'axios'
 import Nav from '../../components/Nav'
-import { parseImgUrl } from '../../utils/common'
 import Head from 'next/head'
 import CardDetail from '../../components/CardDetail'
 import Footer from '../../components/Footer'
