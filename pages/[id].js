@@ -137,8 +137,8 @@ const ProfileDetail = ({
 							className="object-cover"
 						/>
 					</div>
-					<div className="mt-4 max-w-sm text-center">
-						<h4 className="text-gray-100 font-bold">{router.query.id}</h4>
+					<div className="mt-4 max-w-sm text-center overflow-hidden">
+						<h4 className="text-gray-100 font-bold truncate" title={router.query.id}>{router.query.id}</h4>
 						<p className="mt-2 text-gray-300 whitespace-pre-line">
 							{userProfile.bio?.replace(/\n\s*\n\s*\n/g, '\n\n')}
 						</p>
