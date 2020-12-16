@@ -8,7 +8,7 @@ import useStore from '../store'
 import ActivityDetail from '../components/ActivityDetail'
 import { useRouter } from 'next/router'
 
-const LIMIT = 20
+const LIMIT = 10
 
 const ActivityLog = ({ query }) => {
 	const {
