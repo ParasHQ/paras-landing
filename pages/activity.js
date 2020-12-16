@@ -6,10 +6,11 @@ import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import useStore from '../store'
 import ActivityDetail from '../components/ActivityDetail'
+import { useRouter } from 'next/router'
 
 const LIMIT = 20
 
-const ActivityLog = () => {
+const ActivityLog = ({ query }) => {
 	const {
 		activityList,
 		setActivityList,
@@ -18,31 +19,66 @@ const ActivityLog = () => {
 		activityListHasMore,
 		setActivityListHasMore,
 	} = useStore()
+	const router = useRouter()
 	const [isFetching, setIsFetching] = useState(false)
 
 	useEffect(() => {
 		if (activityList.length === 0 && activityListHasMore) {
-			_fetchData()
+			if (query) {
+				_fetchData(query, true)
+			} else {
+				_fetchData({}, true)
+			}
 		}
 	}, [])
 
-	const _fetchData = async () => {
-		if (!activityListHasMore || isFetching) {
+	useEffect(() => {
+		if (router.query) {
+			_fetchData(router.query, true)
+		} else {
+			_fetchData()
+		}
+	}, [router.query])
+
+	const _changeFilter = (e) => {
+		router.push({
+			query: { filter: encodeURI(e.target.value) },
+		})
+	}
+
+	const _filterQuery = (filter) => {
+		if (!filter || filter === 'showAll') {
+			return ``
+		}
+		if (filter === 'mint') {
+			return `type=transfer&from=root&`
+		}
+		return `type=${filter}&`
+	}
+
+	const _fetchData = async (fetchQuery, initial = false) => {
+		const _activityList = initial ? [] : activityList
+		const _activityListPage = initial ? 0 : activityListPage
+		const _activityListHasMore = initial ? true : activityListHasMore
+
+		if (!_activityListHasMore || isFetching) {
 			return
 		}
 
 		setIsFetching(true)
+
 		try {
+			const _filter = _filterQuery(fetchQuery.filter)
 			const res = await axios.get(
-				`${process.env.API_URL}/activities?__skip=${
-					activityListPage * LIMIT
+				`${process.env.API_URL}/activities?${_filter}__skip=${
+					_activityListPage * LIMIT
 				}&__limit=${LIMIT}`
 			)
 			const newData = await res.data.data
 
-			const newActivityList = [...activityList, ...newData.results]
+			const newActivityList = [..._activityList, ...newData.results]
 			setActivityList(newActivityList)
-			setActivityListPage(activityListPage + 1)
+			setActivityListPage(_activityListPage + 1)
 			if (newData.results.length === 0) {
 				setActivityListHasMore(false)
 			} else {
@@ -104,10 +140,25 @@ const ActivityLog = () => {
 					/>
 				</Head>
 				<Nav />
-				<div className="max-w-6xl relative m-auto py-12">
-					<h1 className="text-4xl font-bold text-gray-100 text-center">
-						Activity
-					</h1>
+				<div className="max-w-2xl relative m-auto py-12">
+					<div className="px-4 flex items-center justify-between">
+						<h1 className="text-4xl font-bold text-gray-100 text-center">
+							Activity
+						</h1>
+						<div>
+							<select
+								className="p-2 bg-dark-primary-4 text-gray-100 rounded-md"
+								onChange={(e) => _changeFilter(e)}
+								value={router.query.filter}
+							>
+								<option value="showAll">Show All</option>
+								<option value="marketBuy">Market Sales</option>
+								<option value="marketUpdate">Market Update</option>
+								<option value="mint">Card Creation</option>
+								<option value="transfer">Card Transfer</option>
+							</select>
+						</div>
+					</div>
 					<div className="px-4 max-w-2xl mx-auto">
 						{activityList.length === 0 && activityListHasMore && (
 							<div className="border-2 border-gray-800 border-dashed mt-4 p-2 rounded-md text-center">
@@ -138,6 +189,10 @@ const ActivityLog = () => {
 			</div>
 		</div>
 	)
+}
+
+export async function getServerSideProps({ query }) {
+	return { props: { query } }
 }
 
 export default ActivityLog
