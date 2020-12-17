@@ -18,6 +18,7 @@ import useStore from '../store'
 import { parseImgUrl, prettyBalance, timeAgo } from '../utils/common'
 
 export const descriptionMaker = (activity, token) => {
+	console.log(activity)
 	if (activity.type === 'marketUpdate') {
 		return `${activity.from} put ${
 			token?.metadata.name
@@ -145,7 +146,7 @@ const Activity = ({ activity }) => {
 				<span>created by </span>
 				<span>
 					<LinkToProfile
-						accountId={activity.from}
+						accountId={activity.to}
 						className="text-gray-100 hover:border-gray-100"
 					/>
 				</span>
