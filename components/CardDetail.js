@@ -1029,7 +1029,9 @@ const CardDetail = ({ token }) => {
 							<div>
 								<div className="flex justify-between">
 									<div>
-										<h1 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight pr-4 break-all">
+										<h1 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight pr-4" style={{
+											wordBreak: 'break-word'
+										}}>
 											{localToken.metadata.name}
 										</h1>
 										<p>

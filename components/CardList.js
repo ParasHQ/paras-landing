@@ -8,8 +8,9 @@ import { useRouter } from 'next/router'
 import Modal from './Modal'
 import CardDetail from './CardDetail'
 import JSBI from 'jsbi'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
-const CardList = ({ name = 'default', tokens, fetchData }) => {
+const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 	const store = useStore()
 	const router = useRouter()
 	const containerRef = useRef()
@@ -37,7 +38,7 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 	}, [])
 
 	useEffect(() => {
-		if (containerRef) {
+		if (containerRef && !activeToken) {
 			// containerRef.current.addEventListener('wheel', handleScroll, {
 			// 	passive: false,
 			// })
@@ -48,7 +49,7 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 				containerRef.current.removeEventListener('wheel', handleScroll)
 			}
 		}
-	}, [containerRef, store.marketScrollPersist[name]])
+	}, [containerRef, activeToken, store.marketScrollPersist[name]])
 
 	const closeCardDetail = () => {
 		router.push(router.query.prevAs)
@@ -83,12 +84,16 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 
 		var bounds = -(max - win)
 
+		// console.log(containerRef)
 		if (newAnimationValue > 0) {
+			// containerRef.current.scrollLeft = 0
 			store.setMarketScrollPersist(name, 0)
 		} else if (newAnimationValue < bounds) {
 			fetchData()
+			// containerRef.current.scrollLeft = bounds
 			store.setMarketScrollPersist(name, bounds)
 		} else {
+			// containerRef.current.scrollLeft = -1 * newAnimationValue
 			store.setMarketScrollPersist(name, newAnimationValue)
 		}
 	}
@@ -154,12 +159,12 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 	return (
 		<div
 			ref={containerRef}
-			onMouseDown={handleMouseDown}
-			onMouseUp={handleMouseUp}
-			onMouseMove={handleMouseMove}
-			onTouchStart={handleTouchStart}
-			onTouchEnd={handleTouchEnd}
-			onTouchMove={handleTouchMove}
+			// onMouseDown={handleMouseDown}
+			// onMouseUp={handleMouseUp}
+			// onMouseMove={handleMouseMove}
+			// onTouchStart={handleTouchStart}
+			// onTouchEnd={handleTouchEnd}
+			// onTouchMove={handleTouchMove}
 			className="overflow-x-hidden border-2 border-dashed border-gray-800 rounded-md"
 		>
 			{activeToken && (
@@ -167,7 +172,7 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 					<div className="max-w-5xl m-auto w-full relative">
 						<div className="absolute top-0 left-0 p-4 z-50">
 							<div
-								className="cursor-pointer flex items-center"
+								className="cursor-pointer flex items-center select-none"
 								onClick={(_) => closeCardDetail(null)}
 							>
 								<svg
@@ -201,91 +206,100 @@ const CardList = ({ name = 'default', tokens, fetchData }) => {
 					</div>
 				</div>
 			)}
-			<animated.div className="flex select-none " style={props}>
-				{tokens.map((token, idx) => {
-					return (
-						<div
-							key={idx}
-							className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8 lg:p-12 relative"
-						>
-							<div className="w-full m-auto">
-								<Card
-									imgUrl={token.metadata.image}
-									imgBlur={token.metadata.blurhash}
-									token={{
-										name: token.metadata.name,
-										collection: token.metadata.collection,
-										description: token.metadata.description,
-										creatorId: token.creatorId,
-										supply: token.supply,
-										tokenId: token.tokenId,
-										createdAt: token.createdAt,
-									}}
-									initialRotate={{
-										x: 0,
-										y: 0,
-									}}
-								/>
-							</div>
-							<div className="text-center">
-								<div className="mt-8">
-									<div className="p-2">
-										<p className="text-gray-400 text-xs">Start From</p>
-										<div className="text-gray-100 text-2xl">
-											{_getLowestPrice(token.ownerships) ? (
-												<div>
+			<InfiniteScroll
+				dataLength={tokens.length}
+				next={fetchData}
+				hasMore={hasMore}
+			>
+				<animated.div
+					className="flex flex-wrap select-none "
+					// style={props}
+				>
+					{tokens.map((token, idx) => {
+						return (
+							<div
+								key={idx}
+								className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8 lg:p-12 relative"
+							>
+								<div className="w-full m-auto">
+									<Card
+										imgUrl={token.metadata.image}
+										imgBlur={token.metadata.blurhash}
+										token={{
+											name: token.metadata.name,
+											collection: token.metadata.collection,
+											description: token.metadata.description,
+											creatorId: token.creatorId,
+											supply: token.supply,
+											tokenId: token.tokenId,
+											createdAt: token.createdAt,
+										}}
+										initialRotate={{
+											x: 0,
+											y: 0,
+										}}
+									/>
+								</div>
+								<div className="text-center">
+									<div className="mt-8">
+										<div className="p-2">
+											<p className="text-gray-400 text-xs">Start From</p>
+											<div className="text-gray-100 text-2xl">
+												{_getLowestPrice(token.ownerships) ? (
 													<div>
-														{prettyBalance(
-															_getLowestPrice(token.ownerships),
-															24,
-															4
-														)}{' '}
-														Ⓝ
+														<div>
+															{prettyBalance(
+																_getLowestPrice(token.ownerships),
+																24,
+																4
+															)}{' '}
+															Ⓝ
+														</div>
+														<div className="text-sm text-gray-400">
+															~ $
+															{prettyBalance(
+																JSBI.BigInt(
+																	_getLowestPrice(token.ownerships) *
+																		store.nearUsdPrice
+																),
+																24,
+																4
+															)}
+														</div>
 													</div>
-													<div className="text-sm text-gray-400">
-														~ $
-														{prettyBalance(
-															JSBI.BigInt(
-																_getLowestPrice(token.ownerships) *
-																	store.nearUsdPrice
-															),
-															24,
-															4
-														)}
+												) : (
+													<div className="line-through text-red-600">
+														<span className="text-gray-100">SALE</span>
 													</div>
-												</div>
-											) : (
-												<div className="line-through text-red-600">
-													<span className="text-gray-100">SALE</span>
-												</div>
-											)}
+												)}
+											</div>
 										</div>
 									</div>
 								</div>
+								<div className="text-center mt-2 text-sm">
+									<Link
+										href={{
+											pathname: router.pathname,
+											query: {
+												...router.query,
+												...{ tokenId: token.tokenId },
+												...{ prevAs: router.asPath },
+											},
+										}}
+										as={`/token/${token.tokenId}`}
+										scroll={false}
+										shallow
+									>
+										<p className="inline-block text-gray-100 cursor-pointer font-semibold border-b-2 border-gray-100">
+											See Details
+										</p>
+									</Link>
+								</div>
 							</div>
-							<div className="text-center mt-2 text-sm">
-								<Link
-									href={{
-										pathname: router.pathname,
-										query: {
-											...router.query,
-											...{ tokenId: token.tokenId },
-											...{ prevAs: router.asPath },
-										},
-									}}
-									as={`/token/${token.tokenId}`}
-									scroll={false}
-									shallow
-								>
-									<p className="inline-block text-gray-100 cursor-pointer">
-										See Details
-									</p>
-								</Link>
-							</div>
-						</div>
-					)
-				})}
-			</animated.div>
+						)
+					})}
+				</animated.div>
+			</InfiniteScroll>
 		</div>
 	)
 }
