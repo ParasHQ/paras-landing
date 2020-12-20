@@ -6,6 +6,8 @@ import Head from 'next/head'
 import Footer from '../components/Footer'
 import useStore from '../store'
 
+const LIMIT = 6
+
 export default function MarketPage({ data }) {
 	const store = useStore()
 	const [tokens, setTokens] = useState(data.results)
@@ -26,7 +28,7 @@ export default function MarketPage({ data }) {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/tokens?__skip=${page * 5}&__limit=5`
+			`${process.env.API_URL}/tokens?__skip=${page * LIMIT}&__limit=${LIMIT}`
 		)
 		const newData = await res.data.data
 
@@ -84,7 +86,12 @@ export default function MarketPage({ data }) {
 			<div className="max-w-6xl relative m-auto py-12">
 				<h1 className="text-4xl font-bold text-gray-100 text-center">Market</h1>
 				<div className="mt-4 px-4">
-					<CardList name="market" tokens={tokens} fetchData={_fetchData} />
+					<CardList
+						name="market"
+						tokens={tokens}
+						fetchData={_fetchData}
+						hasMore={hasMore}
+					/>
 				</div>
 			</div>
 			<Footer />
@@ -93,7 +100,7 @@ export default function MarketPage({ data }) {
 }
 
 export async function getServerSideProps() {
-	const res = await axios(`${process.env.API_URL}/tokens?__limit=5`)
+	const res = await axios(`${process.env.API_URL}/tokens?__limit=${LIMIT}`)
 	const data = await res.data.data
 
 	return { props: { data } }

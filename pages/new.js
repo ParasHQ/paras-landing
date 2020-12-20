@@ -537,11 +537,11 @@ const NewPage = () => {
 											<label className="block text-sm">Description</label>
 											<div
 												className={`${
-													watch('description')?.length >= 500 && 'text-red-500'
+													watch('description')?.length >= 600 && 'text-red-500'
 												}`}
 											>
 												<p className="text-sm">
-													{watch('description')?.length || 0}/500
+													{watch('description')?.length || 0}/600
 												</p>
 											</div>
 										</div>
@@ -550,7 +550,7 @@ const NewPage = () => {
 											name="description"
 											ref={register({
 												required: true,
-												maxLength: 500,
+												maxLength: 600,
 											})}
 											className={`${
 												errors.description && 'error'
@@ -563,7 +563,7 @@ const NewPage = () => {
 										</div>
 										<div className="text-sm text-red-500">
 											{errors.description?.type === 'maxLength' &&
-												'Description must be less than 500 characters'}
+												'Description must be less than 600 characters'}
 										</div>
 									</div>
 									<div className="mt-4">

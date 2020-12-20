@@ -46,8 +46,13 @@ export const prettyBalance = (balance, decimals = 18, len = 8) => {
 	return tail ? `${formattedHead}.${tail}` : formattedHead
 }
 
-export const prettyTruncate = (str = '', len = 8) => {
+export const prettyTruncate = (str = '', len = 8, type) => {
 	if (str.length > len) {
+		if (type === 'address') {
+			const front = Math.ceil(len / 2)
+			const back = str.length - (len - front)
+			return `${str.slice(0, front)}...${str.slice(back)}`
+		}
 		return `${str.slice(0, len)}...`
 	}
 	return str

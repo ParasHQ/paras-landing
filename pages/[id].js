@@ -1,13 +1,49 @@
 import axios from 'axios'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import useStore from '../store'
-import { parseImgUrl } from '../utils/common'
+import { parseImgUrl, prettyTruncate } from '../utils/common'
 import Head from 'next/head'
 import Footer from '../components/Footer'
 
 const { default: CardList } = require('../components/CardList')
 const { default: Nav } = require('../components/Nav')
+
+const CopyLink = ({ children, link, afterCopy }) => {
+	const [isComponentMounted, setIsComponentMounted] = useState(false)
+	const copyLinkRef = useRef()
+
+	useEffect(() => {
+		setIsComponentMounted(true)
+	}, [])
+
+	const _copyLink = () => {
+		const copyText = copyLinkRef.current
+		copyText.select()
+		copyText.setSelectionRange(0, 99999)
+		document.execCommand('copy')
+
+		if (typeof afterCopy === 'function') {
+			afterCopy()
+		}
+	}
+
+	return (
+		<div onClick={(_) => _copyLink()}>
+			{isComponentMounted && (
+				<div
+					className="absolute z-0 opacity-0"
+					style={{
+						top: `-1000`,
+					}}
+				>
+					<input ref={copyLinkRef} readOnly type="text" value={link} />
+				</div>
+			)}
+			<div className="relative z-10">{children}</div>
+		</div>
+	)
+}
 
 const ProfileDetail = ({
 	creatorTokens,
@@ -23,6 +59,8 @@ const ProfileDetail = ({
 
 	const oTokens = store.marketDataPersist[scrollCollection]
 	const cTokens = store.marketDataPersist[scrollCreation]
+
+	const [isCopied, setIsCopied] = useState(false)
 
 	const [cPage, setCPage] = useState(1)
 	const [oPage, setOPage] = useState(1)
@@ -100,7 +138,9 @@ const ProfileDetail = ({
 			userProfile.bio || ''
 		}`,
 		image: userProfile.imgUrl
-			? `${process.env.API_URL}/socialCard/avatar/${userProfile.imgUrl.split('://')[1]}`
+			? `${process.env.API_URL}/socialCard/avatar/${
+					userProfile.imgUrl.split('://')[1]
+			  }`
 			: `https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png`,
 	}
 	return (
@@ -138,7 +178,58 @@ const ProfileDetail = ({
 						/>
 					</div>
 					<div className="mt-4 max-w-sm text-center overflow-hidden">
-						<h4 className="text-gray-100 font-bold truncate" title={router.query.id}>{router.query.id}</h4>
+						<div className="flex items-center justify-center">
+							<h4
+								className="text-gray-100 font-bold truncate"
+								title={router.query.id}
+							>
+								{' '}
+								{prettyTruncate(router.query.id, 12, 'address')}
+							</h4>
+							<div title="Copy Account ID" className="relative cursor-pointer pl-4 flex-grow-0">
+								<CopyLink
+									link={`${router.query.id}`}
+									afterCopy={() => {
+										setIsCopied(true)
+										setTimeout(() => {
+											setIsCopied(false)
+										}, 2500)
+									}}
+								>
+									{isCopied ? (
+										<svg
+											width="24"
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<path
+												fillRule="evenodd"
+												clipRule="evenodd"
+												d="M9.70711 14.2929L19 5L20.4142 6.41421L9.70711 17.1213L4 11.4142L5.41421 10L9.70711 14.2929Z"
+												fill="white"
+											/>
+										</svg>
+									) : (
+										<svg
+											width="24"
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<path
+												fillRule="evenodd"
+												clipRule="evenodd"
+												d="M10 2H20C21.1523 2 22 2.84772 22 4V14C22 15.1523 21.1523 16 20 16H16V20C16 21.1523 15.1523 22 14 22H4C2.84772 22 2 21.1523 2 20V10C2 8.84772 2.84772 8 4 8H8V4C8 2.84772 8.84772 2 10 2ZM8 10H4V20H14V16H10C8.84772 16 8 15.1523 8 14V10ZM10 4V14H20V4H10Z"
+												fill="white"
+											/>
+										</svg>
+									)}
+								</CopyLink>
+							</div>
+						</div>
 						<p className="mt-2 text-gray-300 whitespace-pre-line">
 							{userProfile.bio?.replace(/\n\s*\n\s*\n/g, '\n\n')}
 						</p>
