@@ -281,6 +281,7 @@ const ProfileDetail = ({
 							name={scrollCollection}
 							tokens={oTokens}
 							fetchData={fetchOwnerTokens}
+							hasMore={oHasMore}
 						/>
 					)}
 					{activeTab === 'creation' && cTokens && (
@@ -288,6 +289,7 @@ const ProfileDetail = ({
 							name={scrollCreation}
 							tokens={cTokens}
 							fetchData={fetchCreatorTokens}
+							hasMore={cHasMore}
 						/>
 					)}
 				</div>
