@@ -99,7 +99,7 @@ const ProfileDetail = ({
 
 		const newTokens = [...oTokens, ...newData.results]
 		store.setMarketDataPersist(scrollCollection, newTokens)
-		setOPage(cPage + 1)
+		setOPage(oPage + 1)
 		if (newData.results.length === 0) {
 			setOHasMore(false)
 		} else {
