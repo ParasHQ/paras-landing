@@ -103,6 +103,7 @@ const Card = ({
 				style={{
 					transform: `rotateY(0deg)`,
 					backfaceVisibility: `hidden`,
+					'-webkit-backface-visibility': 'hidden'
 				}}
 			>
 				<div
@@ -150,6 +151,7 @@ const Card = ({
 				style={{
 					transform: `rotateY(180deg)`,
 					backfaceVisibility: `hidden`,
+					'-webkit-backface-visibility': 'hidden'
 				}}
 			>
 				<div
