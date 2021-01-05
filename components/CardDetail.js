@@ -514,6 +514,13 @@ const CardDetail = ({ token }) => {
 		return ownership
 	}
 
+	const _getLowestPrice = (ownerships) => {
+		const marketDataList = ownerships
+			.filter((ownership) => ownership.marketData)
+			.sort((a, b) => a.marketData.amount - b.marketData.amount)
+		return marketDataList[0]
+	}
+
 	const _copyLink = () => {
 		const copyText = copyLinkRef.current
 		copyText.select()
@@ -1016,7 +1023,7 @@ const CardDetail = ({ token }) => {
 							/>
 						</div>
 					</div>
-					<div className="flex w-full h-1/2 lg:h-full lg:w-1/3 bg-gray-100">
+					<div className="flex flex-col w-full h-1/2 lg:h-full lg:w-1/3 bg-gray-100">
 						<Scrollbars
 							style={{
 								height: `100%`,
@@ -1212,6 +1219,33 @@ const CardDetail = ({ token }) => {
 								{activeTab === 'history' && <ActivityList token={token} />}
 							</div>
 						</Scrollbars>
+						<div className="flex m-4">
+							{_getLowestPrice(token.ownerships)?(
+								<button
+									className="font-semibold m-auto py-3 w-full rounded-md bg-primary text-white"
+									onClick={() => {
+										if (!store.currentUser ){
+											setShowModal('redirectLogin')
+										} else if (store.currentUser && store.currentUser === _getLowestPrice(token.ownerships).ownerId) {
+											setShowModal('addUpdateListing')
+										} else {
+											setChosenSeller(_getLowestPrice(token.ownerships))
+											setShowModal('confirmBuy')
+										}
+									}}
+								>
+									{store.currentUser && _getUserOwnership(store.currentUser) ? "Update Listing" : "Buy"}
+								</button>
+									
+							):(
+								<button
+									className="font-semibold m-auto py-3 w-full rounded-md bg-primary text-white"
+									disabled
+								>
+									Not for Sale
+								</button>
+							)}
+						</div>
 					</div>
 				</div>
 			</div>
