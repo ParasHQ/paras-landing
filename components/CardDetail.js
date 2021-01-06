@@ -1220,29 +1220,40 @@ const CardDetail = ({ token }) => {
 								{activeTab === 'history' && <ActivityList token={token} />}
 							</div>
 						</Scrollbars>
-							{_getLowestPrice(token.ownerships)?(
+						{_getLowestPrice(token.ownerships)?(
+							<button
+								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white inline-block"
+								onClick={() => {
+									if (!store.currentUser ){
+										setShowModal('redirectLogin')
+									} else {
+										setChosenSeller(_getLowestPrice(token.ownerships))
+										setShowModal('confirmBuy')
+									}
+								}}
+							>
+								{`Buy for ${prettyBalance(_getLowestPrice(token.ownerships).marketData.amount,24,4)} Ⓝ`}
+								{` ~ $${prettyBalance(_getLowestPrice(token.ownerships).marketData.amount*store.nearUsdPrice,24,4)}`}
+							</button>
+								
+						) : (
+							store.currentUser && _getUserOwnership(store.currentUser) ? (
 								<button
 									className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
-									onClick={() => {
-										if (!store.currentUser ){
-											setShowModal('redirectLogin')
-										} else {
-											setChosenSeller(_getLowestPrice(token.ownerships))
-											setShowModal('confirmBuy')
-										}
-									}}
+									onClick={() => setShowModal('addUpdateListing')}
 								>
-									Buy
+									Update Listing
 								</button>
-									
-							):(
+							) : (
 								<button
 									className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
 									disabled
 								>
 									Not for Sale
 								</button>
-							)}
+							)
+						)
+						}
 					</div>
 				</div>
 			</div>
