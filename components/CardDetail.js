@@ -517,6 +517,7 @@ const CardDetail = ({ token }) => {
 	const _getLowestPrice = (ownerships) => {
 		const marketDataList = ownerships
 			.filter((ownership) => ownership.marketData)
+			.filter((ownership) => ownership.ownerId !== store.currentUser)
 			.sort((a, b) => a.marketData.amount - b.marketData.amount)
 		return marketDataList[0]
 	}
@@ -1226,15 +1227,13 @@ const CardDetail = ({ token }) => {
 									onClick={() => {
 										if (!store.currentUser ){
 											setShowModal('redirectLogin')
-										} else if (store.currentUser && store.currentUser === _getLowestPrice(token.ownerships).ownerId) {
-											setShowModal('addUpdateListing')
 										} else {
 											setChosenSeller(_getLowestPrice(token.ownerships))
 											setShowModal('confirmBuy')
 										}
 									}}
 								>
-									{store.currentUser && _getUserOwnership(store.currentUser) ? "Update Listing" : "Buy"}
+									Buy
 								</button>
 									
 							):(
