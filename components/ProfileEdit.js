@@ -14,12 +14,27 @@ const ProfileEdit = ({ close }) => {
 	const [imgUrl, setImgUrl] = useState(store.userProfile.imgUrl || '')
 
 	const [bio, setBio] = useState(store.userProfile.bio || '')
+	const [link, setLink] = useState(store.userProfile.link || '')
 	const [isSubmitting, setIsSubmitting] = useState(false)
 
 	const _submit = async (e) => {
 		e.preventDefault()
 
 		setIsSubmitting(true)
+
+		if (!checkUrl(link)) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						Please enter invalid link
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsSubmitting(false)
+			return
+		}
 
 		const formData = new FormData()
 		if (imgFile) {
@@ -55,6 +70,16 @@ const ProfileEdit = ({ close }) => {
 		}
 
 		setIsSubmitting(false)
+	}
+
+	const checkUrl = (str) => {
+		var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+			'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+			'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+			'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+			'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+			'(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+		return !!pattern.test(str);
 	}
 
 	const _setImg = async (e) => {
@@ -108,6 +133,17 @@ const ProfileEdit = ({ close }) => {
 						onChange={(e) => setBio(e.target.value)}
 						className={`resize-none h-24 focus:border-gray-100`}
 						placeholder="Tell us about yourself"
+					></textarea>
+				</div>
+				<div className="mt-2">
+					<label className="block text-sm text-gray-100">Link</label>
+					<textarea
+						type="text"
+						name="link"
+						value={link}
+						onChange={(e) => setLink(e.target.value)}
+						className={`resize-none h-auto focus:border-gray-100`}
+						placeholder="Link"
 					></textarea>
 				</div>
 				<div className="">
