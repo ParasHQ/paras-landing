@@ -517,6 +517,7 @@ const CardDetail = ({ token }) => {
 	const _getLowestPrice = (ownerships) => {
 		const marketDataList = ownerships
 			.filter((ownership) => ownership.marketData)
+			.filter((ownership) => ownership.ownerId !== store.currentUser)
 			.sort((a, b) => a.marketData.amount - b.marketData.amount)
 		return marketDataList[0]
 	}
@@ -1219,33 +1220,29 @@ const CardDetail = ({ token }) => {
 								{activeTab === 'history' && <ActivityList token={token} />}
 							</div>
 						</Scrollbars>
-						<div className="flex m-4">
 							{_getLowestPrice(token.ownerships)?(
 								<button
-									className="font-semibold m-auto py-3 w-full rounded-md bg-primary text-white"
+									className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
 									onClick={() => {
 										if (!store.currentUser ){
 											setShowModal('redirectLogin')
-										} else if (store.currentUser && store.currentUser === _getLowestPrice(token.ownerships).ownerId) {
-											setShowModal('addUpdateListing')
 										} else {
 											setChosenSeller(_getLowestPrice(token.ownerships))
 											setShowModal('confirmBuy')
 										}
 									}}
 								>
-									{store.currentUser && _getUserOwnership(store.currentUser) ? "Update Listing" : "Buy"}
+									Buy
 								</button>
 									
 							):(
 								<button
-									className="font-semibold m-auto py-3 w-full rounded-md bg-primary text-white"
+									className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
 									disabled
 								>
 									Not for Sale
 								</button>
 							)}
-						</div>
 					</div>
 				</div>
 			</div>
