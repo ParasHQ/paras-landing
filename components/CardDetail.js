@@ -514,6 +514,14 @@ const CardDetail = ({ token }) => {
 		return ownership
 	}
 
+	const _getLowestPrice = (ownerships) => {
+		const marketDataList = ownerships
+			.filter((ownership) => ownership.marketData)
+			.filter((ownership) => ownership.ownerId !== store.currentUser)
+			.sort((a, b) => a.marketData.amount - b.marketData.amount)
+		return marketDataList[0]
+	}
+
 	const _copyLink = () => {
 		const copyText = copyLinkRef.current
 		copyText.select()
@@ -1016,7 +1024,7 @@ const CardDetail = ({ token }) => {
 							/>
 						</div>
 					</div>
-					<div className="flex w-full h-1/2 lg:h-full lg:w-1/3 bg-gray-100">
+					<div className="flex flex-col w-full h-1/2 lg:h-full lg:w-1/3 bg-gray-100">
 						<Scrollbars
 							style={{
 								height: `100%`,
@@ -1212,6 +1220,40 @@ const CardDetail = ({ token }) => {
 								{activeTab === 'history' && <ActivityList token={token} />}
 							</div>
 						</Scrollbars>
+						{_getLowestPrice(token.ownerships)?(
+							<button
+								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white inline-block"
+								onClick={() => {
+									if (!store.currentUser ){
+										setShowModal('redirectLogin')
+									} else {
+										setChosenSeller(_getLowestPrice(token.ownerships))
+										setShowModal('confirmBuy')
+									}
+								}}
+							>
+								{`Buy for ${prettyBalance(_getLowestPrice(token.ownerships).marketData.amount,24,4)} Ⓝ`}
+								{` ~ $${prettyBalance(_getLowestPrice(token.ownerships).marketData.amount*store.nearUsdPrice,24,4)}`}
+							</button>
+								
+						) : (
+							store.currentUser && _getUserOwnership(store.currentUser) ? (
+								<button
+									className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
+									onClick={() => setShowModal('addUpdateListing')}
+								>
+									Update Listing
+								</button>
+							) : (
+								<button
+									className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
+									disabled
+								>
+									Not for Sale
+								</button>
+							)
+						)
+						}
 					</div>
 				</div>
 			</div>
