@@ -14,7 +14,7 @@ const ProfileEdit = ({ close }) => {
 	const [imgUrl, setImgUrl] = useState(store.userProfile.imgUrl || '')
 
 	const [bio, setBio] = useState(store.userProfile.bio || '')
-	const [link, setLink] = useState(store.userProfile.link || '')
+	const [website, setWebsite] = useState(store.userProfile.website || '')
 	const [isSubmitting, setIsSubmitting] = useState(false)
 
 	const _submit = async (e) => {
@@ -22,11 +22,11 @@ const ProfileEdit = ({ close }) => {
 
 		setIsSubmitting(true)
 
-		if (!checkUrl(link)) {
+		if (!checkUrl(website)) {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						Please enter invalid link
+						Please enter invalid website
 					</div>
 				),
 				type: 'error',
@@ -41,6 +41,7 @@ const ProfileEdit = ({ close }) => {
 			formData.append('file', imgFile)
 		}
 		formData.append('bio', bio)
+		formData.append('website', website)
 		formData.append('accountId', store.currentUser)
 
 		try {
@@ -136,14 +137,14 @@ const ProfileEdit = ({ close }) => {
 					></textarea>
 				</div>
 				<div className="mt-2">
-					<label className="block text-sm text-gray-100">Link</label>
+					<label className="block text-sm text-gray-100">Website</label>
 					<textarea
 						type="text"
-						name="link"
-						value={link}
-						onChange={(e) => setLink(e.target.value)}
+						name="website"
+						value={website}
+						onChange={(e) => setWebsite(e.target.value)}
 						className={`resize-none h-auto focus:border-gray-100`}
-						placeholder="Link"
+						placeholder="Website"
 					></textarea>
 				</div>
 				<div className="">
