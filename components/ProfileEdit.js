@@ -138,14 +138,14 @@ const ProfileEdit = ({ close }) => {
 				</div>
 				<div className="mt-2">
 					<label className="block text-sm text-gray-100">Website</label>
-					<textarea
+					<input
 						type="text"
 						name="website"
 						value={website}
 						onChange={(e) => setWebsite(e.target.value)}
 						className={`resize-none h-auto focus:border-gray-100`}
 						placeholder="Website"
-					></textarea>
+					/>
 				</div>
 				<div className="">
 					<button
