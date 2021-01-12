@@ -233,6 +233,17 @@ const ProfileDetail = ({
 						<p className="mt-2 text-gray-300 whitespace-pre-line">
 							{userProfile.bio?.replace(/\n\s*\n\s*\n/g, '\n\n')}
 						</p>
+						{userProfile.website && (
+							<a
+								href={(!/^https?:\/\//i.test(userProfile.website))? 'http://' + userProfile.website : userProfile.website}
+								target="_blank"
+								className="cursor-pointer italic"
+							>
+								<p className="mt-1 text-gray-400 text-sm whitespace-pre-line">
+									{userProfile.website}
+								</p>
+							</a>
+						)}
 					</div>
 				</div>
 				<div className="flex justify-center mt-4">
