@@ -26,7 +26,7 @@ const ProfileEdit = ({ close }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						Please enter invalid website
+						Please enter valid website
 					</div>
 				),
 				type: 'error',
