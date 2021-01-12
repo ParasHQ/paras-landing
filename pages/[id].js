@@ -235,7 +235,7 @@ const ProfileDetail = ({
 						</p>
 						{userProfile.website && (
 							<a
-								href="https://www.github.com/ahnafalfariza"
+								href={(!/^https?:\/\//i.test(userProfile.website))? 'http://' + userProfile.website : userProfile.website}
 								target="_blank"
 								className="cursor-pointer italic"
 							>
