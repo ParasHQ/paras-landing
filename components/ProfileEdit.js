@@ -22,7 +22,7 @@ const ProfileEdit = ({ close }) => {
 
 		setIsSubmitting(true)
 
-		if (!checkUrl(website)) {
+		if (website && !checkUrl(website)) {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
