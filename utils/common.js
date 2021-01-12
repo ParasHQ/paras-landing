@@ -69,6 +69,26 @@ export const readFileAsUrl = (file) => {
 	})
 }
 
+export const readFileDimension = (file) => {
+	const temporaryFileReader = new FileReader()
+
+	return new Promise((resolve, reject) => {
+		temporaryFileReader.onload = () => {
+			const img = new Image()
+			
+			img.onload = () => {
+				resolve({
+					width: img.width,
+					height: img.height,
+				})
+			}
+
+			img.src = temporaryFileReader.result
+		}
+		temporaryFileReader.readAsDataURL(file)
+	})
+}
+
 export const parseImgUrl = (url, defaultValue = '') => {
 	if (!url) {
 		return defaultValue
