@@ -1211,13 +1211,16 @@ const CardDetail = ({ token }) => {
 
 								{activeTab === 'owners' && (
 									<div className="text-gray-900">
-										<div className="margin-auto border-2 border-dashed mt-4 p-2 rounded-md text-right">
+										<div className="margin-auto border-2 border-dashed mt-4 p-2 rounded-md">
+											<p className="text-sm text-black font-medium">
+												Sort By
+											</p>
 											<select
 												className="p-1 rounded-md bg-transparent"
 												onChange={(e) => _changeSortBy(e.target.value)}
 												defaultValue=""
 											>
-												<option value="" disabled hidden>Sort by</option>
+												<option value="" disabled hidden>-</option>
 												<option value="nameasc">Name A-Z</option>
 												<option value="namedesc">Name Z-A</option>
 												<option value="priceasc">Price low-high</option>
