@@ -1216,7 +1216,7 @@ const CardDetail = ({ token }) => {
 												Sort By
 											</p>
 											<select
-												className="p-1 rounded-md bg-transparent"
+												className="py-1 rounded-md bg-transparent"
 												onChange={(e) => _changeSortBy(e.target.value)}
 												defaultValue=""
 											>
