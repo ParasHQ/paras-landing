@@ -536,6 +536,25 @@ const CardDetail = ({ token }) => {
 		}, 1500)
 	}
 
+	const _changeSortBy = (sortby) => {
+		let _localToken = Object.assign({}, localToken)
+		let saleOwner = _localToken.ownerships.filter((ownership) => ownership.marketData)
+		let nonSaleOwner = _localToken.ownerships.filter((ownership) => !ownership.marketData)
+
+		if(sortby==="nameasc"){
+			_localToken.ownerships.sort((a, b) => a.ownerId.localeCompare(b.ownerId))
+		} else if(sortby==="namedesc"){
+			_localToken.ownerships.sort((a, b) => b.ownerId.localeCompare(a.ownerId))
+		} else if(sortby==="priceasc"){
+			saleOwner = saleOwner.sort((a, b) => a.marketData.amount - b.marketData.amount)
+			_localToken.ownerships = [...saleOwner, ...nonSaleOwner]
+		} else if(sortby==="pricedesc"){
+			saleOwner = saleOwner.sort((a, b) => b.marketData.amount - a.marketData.amount)
+			_localToken.ownerships = [...saleOwner, ...nonSaleOwner]
+		}
+		setLocalToken(_localToken)
+	}
+
 	return (
 		<div className="w-full">
 			{isComponentMounted && (
@@ -1192,6 +1211,19 @@ const CardDetail = ({ token }) => {
 
 								{activeTab === 'owners' && (
 									<div className="text-gray-900">
+										<div className="margin-auto border-2 border-dashed mt-4 p-2 rounded-md text-right">
+											<select
+												className="p-1 rounded-md bg-transparent"
+												onChange={(e) => _changeSortBy(e.target.value)}
+												defaultValue=""
+											>
+												<option value="" disabled hidden>Sort by</option>
+												<option value="nameasc">Name A-Z</option>
+												<option value="namedesc">Name Z-A</option>
+												<option value="priceasc">Price low-high</option>
+												<option value="pricedesc">Price high-low</option>
+											</select>
+										</div>
 										{localToken.ownerships.map((ownership, idx) => {
 											return (
 												<Ownership
