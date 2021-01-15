@@ -272,7 +272,7 @@ const CardDetail = ({ token }) => {
 
 	useEffect(() => {
 		setIsComponentMounted(true)
-		_changeSortBy("priceasc")
+		_changeSortBy('priceasc')
 	}, [])
 
 	const _buy = async (data) => {
@@ -541,18 +541,26 @@ const CardDetail = ({ token }) => {
 
 	const _changeSortBy = (sortby) => {
 		let _localToken = Object.assign({}, localToken)
-		let saleOwner = _localToken.ownerships.filter((ownership) => ownership.marketData)
-		let nonSaleOwner = _localToken.ownerships.filter((ownership) => !ownership.marketData)
+		let saleOwner = _localToken.ownerships.filter(
+			(ownership) => ownership.marketData
+		)
+		let nonSaleOwner = _localToken.ownerships.filter(
+			(ownership) => !ownership.marketData
+		)
 
-		if(sortby==="nameasc"){
+		if (sortby === 'nameasc') {
 			_localToken.ownerships.sort((a, b) => a.ownerId.localeCompare(b.ownerId))
-		} else if(sortby==="namedesc"){
+		} else if (sortby === 'namedesc') {
 			_localToken.ownerships.sort((a, b) => b.ownerId.localeCompare(a.ownerId))
-		} else if(sortby==="priceasc"){
-			saleOwner = saleOwner.sort((a, b) => a.marketData.amount - b.marketData.amount)
+		} else if (sortby === 'priceasc') {
+			saleOwner = saleOwner.sort(
+				(a, b) => a.marketData.amount - b.marketData.amount
+			)
 			_localToken.ownerships = [...saleOwner, ...nonSaleOwner]
-		} else if(sortby==="pricedesc"){
-			saleOwner = saleOwner.sort((a, b) => b.marketData.amount - a.marketData.amount)
+		} else if (sortby === 'pricedesc') {
+			saleOwner = saleOwner.sort(
+				(a, b) => b.marketData.amount - a.marketData.amount
+			)
 			_localToken.ownerships = [...saleOwner, ...nonSaleOwner]
 		}
 		setLocalToken(_localToken)
@@ -838,6 +846,10 @@ const CardDetail = ({ token }) => {
 							<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
 								Confirm Buy
 							</h1>
+							<p className="text-gray-900 mt-2">
+								You are about to purchase <b>{localToken.metadata.name}</b> from{' '}
+								<b>{chosenSeller.ownerId}</b>.
+							</p>
 							<form onSubmit={handleSubmit(_buy)}>
 								<div className="mt-4">
 									<label className="block text-sm">
@@ -888,7 +900,7 @@ const CardDetail = ({ token }) => {
 										)}
 									</p>
 								</div>
-								<p className="mt-4 text-sm text-center">
+								<p className="text-gray-900 mt-4 text-sm text-center">
 									You will be redirected to NEAR Web Wallet to confirm your
 									transaction
 								</p>
@@ -1257,11 +1269,11 @@ const CardDetail = ({ token }) => {
 								{activeTab === 'history' && <ActivityList token={token} />}
 							</div>
 						</Scrollbars>
-						{_getLowestPrice(token.ownerships)?(
+						{_getLowestPrice(token.ownerships) ? (
 							<button
 								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white inline-block"
 								onClick={() => {
-									if (!store.currentUser ){
+									if (!store.currentUser) {
 										setShowModal('redirectLogin')
 									} else {
 										setChosenSeller(_getLowestPrice(token.ownerships))
@@ -1269,28 +1281,33 @@ const CardDetail = ({ token }) => {
 									}
 								}}
 							>
-								{`Buy for ${prettyBalance(_getLowestPrice(token.ownerships).marketData.amount,24,4)} Ⓝ`}
-								{` ~ $${prettyBalance(_getLowestPrice(token.ownerships).marketData.amount*store.nearUsdPrice,24,4)}`}
+								{`Buy for ${prettyBalance(
+									_getLowestPrice(token.ownerships).marketData.amount,
+									24,
+									4
+								)} Ⓝ`}
+								{` ~ $${prettyBalance(
+									_getLowestPrice(token.ownerships).marketData.amount *
+										store.nearUsdPrice,
+									24,
+									4
+								)}`}
 							</button>
-								
+						) : store.currentUser && _getUserOwnership(store.currentUser) ? (
+							<button
+								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
+								onClick={() => setShowModal('addUpdateListing')}
+							>
+								Update Listing
+							</button>
 						) : (
-							store.currentUser && _getUserOwnership(store.currentUser) ? (
-								<button
-									className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
-									onClick={() => setShowModal('addUpdateListing')}
-								>
-									Update Listing
-								</button>
-							) : (
-								<button
-									className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
-									disabled
-								>
-									Not for Sale
-								</button>
-							)
-						)
-						}
+							<button
+								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
+								disabled
+							>
+								Not for Sale
+							</button>
+						)}
 					</div>
 				</div>
 			</div>
