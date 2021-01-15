@@ -270,7 +270,10 @@ const CardDetail = ({ token }) => {
 	const [chosenSeller, setChosenSeller] = useState(null)
 	const [isCopied, setIsCopied] = useState(false)
 
-	useEffect(() => setIsComponentMounted(true), [])
+	useEffect(() => {
+		setIsComponentMounted(true)
+		_changeSortBy("priceasc")
+	}, [])
 
 	const _buy = async (data) => {
 		//   ownerId: AccountId,
@@ -1211,20 +1214,19 @@ const CardDetail = ({ token }) => {
 
 								{activeTab === 'owners' && (
 									<div className="text-gray-900">
-										<div className="margin-auto border-2 border-dashed mt-4 p-2 rounded-md">
-											<p className="text-sm text-black font-medium">
+										<div className="flex border-2 justify-between border-dashed mt-4 p-2 rounded-md">
+											<p className="text-sm my-auto text-black font-medium">
 												Sort By
 											</p>
 											<select
-												className="py-1 rounded-md bg-transparent"
+												className="py-1 rounded-md"
 												onChange={(e) => _changeSortBy(e.target.value)}
-												defaultValue=""
+												defaultValue="priceasc"
 											>
-												<option value="" disabled hidden>-</option>
 												<option value="nameasc">Name A-Z</option>
 												<option value="namedesc">Name Z-A</option>
-												<option value="priceasc">Price low-high</option>
-												<option value="pricedesc">Price high-low</option>
+												<option value="priceasc">Price Low-High</option>
+												<option value="pricedesc">Price High-Low</option>
 											</select>
 										</div>
 										{localToken.ownerships.map((ownership, idx) => {
