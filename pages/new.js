@@ -12,7 +12,11 @@ import near from '../lib/near'
 import Head from 'next/head'
 import { useToast } from '../hooks/useToast'
 import Footer from '../components/Footer'
-import { prettyBalance } from '../utils/common'
+import {
+	prettyBalance,
+	readFileAsUrl,
+	readFileDimension,
+} from '../utils/common'
 import Autocomplete from '../components/Autocomplete'
 
 const NewPage = () => {
@@ -144,8 +148,27 @@ const NewPage = () => {
 				setShowAlertErr('Maximum file size is 8 Mb')
 				return
 			}
-			setImgFile(e.target.files[0])
-			setShowImgCrop(true)
+			if (e.target.files[0].type === 'image/gif') {
+				const dimension = await readFileDimension(e.target.files[0])
+
+				if (dimension.width / dimension.height === 64 / 89) {
+					const imgUrl = await readFileAsUrl(e.target.files[0])
+					setImgFile(e.target.files[0])
+					setImgUrl(imgUrl)
+				} else {
+					const msg = `The submitted gif is not in ratio of 64 : 89 (Found gif with dimension ${dimension.width} x ${dimension.height})`
+					toast.show({
+						text: (
+							<div className="font-semibold text-center text-sm">{msg}</div>
+						),
+						type: 'error',
+						duration: null,
+					})
+				}
+			} else {
+				setImgFile(e.target.files[0])
+				setShowImgCrop(true)
+			}
 		}
 	}
 

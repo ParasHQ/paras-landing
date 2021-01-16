@@ -91,7 +91,7 @@ const ActivityLog = ({ query }) => {
 	}
 
 	const _fetchDataWrapper = async () => {
-		_fetchData()
+		_fetchData(router.query)
 	}
 
 	return (

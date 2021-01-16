@@ -270,7 +270,10 @@ const CardDetail = ({ token }) => {
 	const [chosenSeller, setChosenSeller] = useState(null)
 	const [isCopied, setIsCopied] = useState(false)
 
-	useEffect(() => setIsComponentMounted(true), [])
+	useEffect(() => {
+		setIsComponentMounted(true)
+		_changeSortBy('priceasc')
+	}, [])
 
 	const _buy = async (data) => {
 		//   ownerId: AccountId,
@@ -514,6 +517,14 @@ const CardDetail = ({ token }) => {
 		return ownership
 	}
 
+	const _getLowestPrice = (ownerships) => {
+		const marketDataList = ownerships
+			.filter((ownership) => ownership.marketData)
+			.filter((ownership) => ownership.ownerId !== store.currentUser)
+			.sort((a, b) => a.marketData.amount - b.marketData.amount)
+		return marketDataList[0]
+	}
+
 	const _copyLink = () => {
 		const copyText = copyLinkRef.current
 		copyText.select()
@@ -526,6 +537,33 @@ const CardDetail = ({ token }) => {
 			setShowModal(false)
 			setIsCopied(false)
 		}, 1500)
+	}
+
+	const _changeSortBy = (sortby) => {
+		let _localToken = Object.assign({}, localToken)
+		let saleOwner = _localToken.ownerships.filter(
+			(ownership) => ownership.marketData
+		)
+		let nonSaleOwner = _localToken.ownerships.filter(
+			(ownership) => !ownership.marketData
+		)
+
+		if (sortby === 'nameasc') {
+			_localToken.ownerships.sort((a, b) => a.ownerId.localeCompare(b.ownerId))
+		} else if (sortby === 'namedesc') {
+			_localToken.ownerships.sort((a, b) => b.ownerId.localeCompare(a.ownerId))
+		} else if (sortby === 'priceasc') {
+			saleOwner = saleOwner.sort(
+				(a, b) => a.marketData.amount - b.marketData.amount
+			)
+			_localToken.ownerships = [...saleOwner, ...nonSaleOwner]
+		} else if (sortby === 'pricedesc') {
+			saleOwner = saleOwner.sort(
+				(a, b) => b.marketData.amount - a.marketData.amount
+			)
+			_localToken.ownerships = [...saleOwner, ...nonSaleOwner]
+		}
+		setLocalToken(_localToken)
 	}
 
 	return (
@@ -808,6 +846,10 @@ const CardDetail = ({ token }) => {
 							<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
 								Confirm Buy
 							</h1>
+							<p className="text-gray-900 mt-2">
+								You are about to purchase <b>{localToken.metadata.name}</b> from{' '}
+								<b>{chosenSeller.ownerId}</b>.
+							</p>
 							<form onSubmit={handleSubmit(_buy)}>
 								<div className="mt-4">
 									<label className="block text-sm">
@@ -858,7 +900,7 @@ const CardDetail = ({ token }) => {
 										)}
 									</p>
 								</div>
-								<p className="mt-4 text-sm text-center">
+								<p className="text-gray-900 mt-4 text-sm text-center">
 									You will be redirected to NEAR Web Wallet to confirm your
 									transaction
 								</p>
@@ -1016,7 +1058,7 @@ const CardDetail = ({ token }) => {
 							/>
 						</div>
 					</div>
-					<div className="flex w-full h-1/2 lg:h-full lg:w-1/3 bg-gray-100">
+					<div className="flex flex-col w-full h-1/2 lg:h-full lg:w-1/3 bg-gray-100">
 						<Scrollbars
 							style={{
 								height: `100%`,
@@ -1184,6 +1226,21 @@ const CardDetail = ({ token }) => {
 
 								{activeTab === 'owners' && (
 									<div className="text-gray-900">
+										<div className="flex border-2 justify-between border-dashed mt-4 p-2 rounded-md">
+											<p className="text-sm my-auto text-black font-medium">
+												Sort By
+											</p>
+											<select
+												className="py-1 rounded-md"
+												onChange={(e) => _changeSortBy(e.target.value)}
+												defaultValue="priceasc"
+											>
+												<option value="nameasc">Name A-Z</option>
+												<option value="namedesc">Name Z-A</option>
+												<option value="priceasc">Price Low-High</option>
+												<option value="pricedesc">Price High-Low</option>
+											</select>
+										</div>
 										{localToken.ownerships.map((ownership, idx) => {
 											return (
 												<Ownership
@@ -1212,6 +1269,45 @@ const CardDetail = ({ token }) => {
 								{activeTab === 'history' && <ActivityList token={token} />}
 							</div>
 						</Scrollbars>
+						{_getLowestPrice(token.ownerships) ? (
+							<button
+								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white inline-block"
+								onClick={() => {
+									if (!store.currentUser) {
+										setShowModal('redirectLogin')
+									} else {
+										setChosenSeller(_getLowestPrice(token.ownerships))
+										setShowModal('confirmBuy')
+									}
+								}}
+							>
+								{`Buy for ${prettyBalance(
+									_getLowestPrice(token.ownerships).marketData.amount,
+									24,
+									4
+								)} Ⓝ`}
+								{` ~ $${prettyBalance(
+									_getLowestPrice(token.ownerships).marketData.amount *
+										store.nearUsdPrice,
+									24,
+									4
+								)}`}
+							</button>
+						) : store.currentUser && _getUserOwnership(store.currentUser) ? (
+							<button
+								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
+								onClick={() => setShowModal('addUpdateListing')}
+							>
+								Update Listing
+							</button>
+						) : (
+							<button
+								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
+								disabled
+							>
+								Not for Sale
+							</button>
+						)}
 					</div>
 				</div>
 			</div>
