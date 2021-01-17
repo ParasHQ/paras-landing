@@ -30,7 +30,7 @@ const faqsData = [
   },
   {
 		question: 'How do I make a digital art card?',
-		answer: 'A digital art card on Paras follows the format of real world trading cards which are in portrait with ratio 64 : 89. The maximum file size is 8MB. Currently Paras only static image format such as png, jpg, jpeg, etc. Gifs and videos are not supported.',
+		answer: 'A digital art card on Paras follows the format of real world trading cards which are in portrait with ratio 64 : 89. The maximum file size is 16MB. Currently Paras only static image format such as png, jpg, jpeg, etc. Gifs and videos are not supported.',
   },
 ]
 
