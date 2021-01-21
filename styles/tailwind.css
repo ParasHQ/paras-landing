@@ -262,7 +262,7 @@ input.clear {
 	}
 }
 
-.titlePublication{
+.titlePublication .titlePublication:focus{
 	background: transparent;
 	color: white;
 	border: none;
