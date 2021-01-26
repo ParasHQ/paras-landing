@@ -32,7 +32,7 @@ const Publication = () => {
                 type: 'error',
                 duration: 1500,
             })
-            setSearchToken(null)
+            setSearchToken("")
             return
         }
 
@@ -42,7 +42,7 @@ const Publication = () => {
         if (token) {
             setEmbeddedCards([...embeddedCards, token])
             setShowModal(null)
-            setSearchToken(null)
+            setSearchToken("")
         } else {
             toast.show({
                 text: (
@@ -54,6 +54,15 @@ const Publication = () => {
                 duration: 2500,
             })
         }
+    }
+
+    const postPublication = () => {
+        const test = {
+            blocks: convertToRaw(content.getCurrentContent()).blocks,
+            entity: convertToRaw(content.getCurrentContent()).entityMap,
+            title: title
+        }
+        console.log("post", test)
     }
 
     return (
@@ -156,7 +165,7 @@ const Publication = () => {
                             />
                             <button
                                 className="font-semibold mt-4 py-3 w-40 rounded-md bg-primary text-white"
-                                onClick={getDataFromTokenId}
+                                onClick={postPublication}
                             >
                                 Publish Now
                             </button>
@@ -165,10 +174,7 @@ const Publication = () => {
                 )}
                 <TextEditor
                     content={content}
-                    setContent={(content) => {
-                        console.log("currentcontent", convertToRaw(content.getCurrentContent()))
-                        setContent(content)
-                    }}
+                    setContent={setContent}
                     title={title}
                     setTitle={setTitle}
                     onPressAddCard={getDataFromTokenId}

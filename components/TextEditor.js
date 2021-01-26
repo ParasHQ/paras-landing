@@ -21,14 +21,14 @@ import createImagePlugin from '@draft-js-plugins/image'
 import 'draft-js/dist/Draft.css'
 import toolbarStyles from '../styles/toolbar.module.css'
 import buttonStyles from '../styles/button.module.css'
-import { readFileAsUrl } from '../utils/common'
+import { parseImgUrl, readFileAsUrl } from '../utils/common'
 
 
 const toolbarPlugin = createToolbarPlugin({ theme: { buttonStyles, toolbarStyles } })
 const imagePlugin = createImagePlugin()
 
 const { Toolbar } = toolbarPlugin
-const plugins = [toolbarPlugin, imagePlugin]
+const plugins = [toolbarPlugin]
 
 class HeadlinesPicker extends React.Component {
     componentDidMount() {
@@ -137,6 +137,7 @@ class TextEditor extends React.Component {
                     <div className={className} onClick={this.focus}>
                         <Editor
                             blockStyleFn={getBlockStyle}
+                            blockRendererFn={imageBlockRenderer}
                             customStyleMap={styleMap}
                             editorState={content}
                             handleKeyCommand={this.handleKeyCommand}
@@ -163,12 +164,10 @@ class TextEditor extends React.Component {
                                     <OrderedListButton {...externalProps} />
                                     <BlockquoteButton {...externalProps} />
                                     <CodeBlockButton {...externalProps} />
-                                    <div className="styleButton pr-3 relative overflow-hidden cursor-pointer">
+                                    <div className="styleButton px-3 py-1 relative overflow-hidden cursor-pointer">
                                         Image
                                         <input
                                             className="cursor-pointer w-full opacity-0 absolute inset-0"
-
-                                            // className="cursor-pointer w-full absolute inset-0"
                                             type="file"
                                             accept="image/*"
                                             onChange={this.onAddLocalImage}
@@ -182,10 +181,28 @@ class TextEditor extends React.Component {
                         }
                     </Toolbar>
                 </div>
-                {/* <div className="text-lg text-black" onClick={this.onChangeReadOnly}>ReadOnly</div> */}
             </div>
         )
     }
+}
+
+const imageBlockRenderer = (block) => {
+    if (block.getType() === 'atomic') {
+        return {
+            component: Image,
+            editable: false,
+        }
+    }
+    return null
+}
+
+const Image = (props) => {
+    const entity = props.contentState.getEntity(
+        props.block.getEntityAt(0)
+    )
+    const { src } = entity.getData()
+
+    return <img src={parseImgUrl(src)} className="w-full" />
 }
 
 const styleMap = {
