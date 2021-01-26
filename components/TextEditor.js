@@ -1,8 +1,8 @@
 import React from 'react'
 import Editor from '@draft-js-plugins/editor'
-import { EditorState, RichUtils, getDefaultKeyBinding, convertFromRaw, convertToRaw } from 'draft-js'
+import { RichUtils, getDefaultKeyBinding, convertToRaw } from 'draft-js'
 
-import createToolbarPlugin, { Separator, composeDecorators } from '@draft-js-plugins/static-toolbar'
+import createToolbarPlugin, { Separator } from '@draft-js-plugins/static-toolbar'
 import {
     ItalicButton,
     BoldButton,
@@ -59,41 +59,20 @@ class HeadlinesPicker extends React.Component {
 class TextEditor extends React.Component {
     constructor(props) {
         super(props)
-        this.state = {
-            editorState: EditorState.createWithContent(emptyContentState),
-            readOnly: false
-        }
         this.focus = () => this.editor.focus()
     }
 
-    onChange = (editorState) => {
-        console.log("currentcontent", convertToRaw(editorState.getCurrentContent()))
-        this.setState({ editorState })
-    }
-
-    onChangeReadOnly = () => {
-        this.setState(prevState => ({ readOnly: !prevState.readOnly }))
-    }
-
-    onAddImage = (e) => {
-        e.preventDefault()
-        const editorState = this.state.editorState
-        const urlValue = window.prompt("Paste Image Link")
-
-        this.onChange(imagePlugin.addImage(editorState, urlValue))
-    };
-
     onAddLocalImage = async (e) => {
-        const editorState = this.state.editorState
+        const { content } = this.props
         const imgUrl = await readFileAsUrl(e.target.files[0])
 
-        this.onChange(imagePlugin.addImage(editorState, imgUrl))
+        this.props.setContent(imagePlugin.addImage(content, imgUrl))
     }
 
     handleKeyCommand = (command, editorState) => {
         const newState = RichUtils.handleKeyCommand(editorState, command)
         if (newState) {
-            this.onChange(newState)
+            this.props.setContent(newState)
             return true
         }
         return false
@@ -103,11 +82,11 @@ class TextEditor extends React.Component {
         if (e.keyCode === 9 /* TAB */) {
             const newEditorState = RichUtils.onTab(
                 e,
-                this.state.editorState,
+                this.props.content,
                 4, /* maxDepth */
             )
-            if (newEditorState !== this.state.editorState) {
-                this.onChange(newEditorState)
+            if (newEditorState !== this.props.content) {
+                this.props.setContent(newEditorState)
             }
             return
         }
@@ -115,28 +94,28 @@ class TextEditor extends React.Component {
     }
 
     toggleBlockType = (blockType) => {
-        this.onChange(
+        this.props.setContent(
             RichUtils.toggleBlockType(
-                this.state.editorState,
+                this.props.content,
                 blockType
             )
         )
     }
 
     toggleInlineStyle = (inlineStyle) => {
-        this.onChange(
+        this.props.setContent(
             RichUtils.toggleInlineStyle(
-                this.state.editorState,
+                this.props.content,
                 inlineStyle
             )
         )
     }
 
     render() {
-        const { editorState } = this.state
+        const { content } = this.props
 
         let className = 'RichEditor-editor text-lg'
-        var contentState = editorState.getCurrentContent()
+        var contentState = content.getCurrentContent()
         if (!contentState.hasText()) {
             if (contentState.getBlockMap().first().getType() !== 'unstyled') {
                 className += ' RichEditor-hidePlaceholder'
@@ -149,9 +128,9 @@ class TextEditor extends React.Component {
                     type="text"
                     name="website"
                     className="titlePublication text-4xl font-bold p-4 pb-0"
-                    autocomplete="off"
-                    // value={website}
-                    // onChange={(e) => setWebsite(e.target.value)}
+                    autoComplete="off"
+                    value={this.props.title}
+                    onChange={(e) => this.props.setTitle(e.target.value)}
                     placeholder="Title"
                 />
                 <div className="RichEditor-root text-white p-4">
@@ -159,13 +138,12 @@ class TextEditor extends React.Component {
                         <Editor
                             blockStyleFn={getBlockStyle}
                             customStyleMap={styleMap}
-                            editorState={editorState}
+                            editorState={content}
                             handleKeyCommand={this.handleKeyCommand}
                             keyBindingFn={this.mapKeyToEditorCommand}
-                            onChange={this.onChange}
+                            onChange={this.props.setContent}
                             placeholder="Tell a story..."
                             plugins={plugins}
-                            readOnly={this.state.readOnly}
                             ref={(element) => {
                                 this.editor = element
                             }}
@@ -185,55 +163,30 @@ class TextEditor extends React.Component {
                                     <OrderedListButton {...externalProps} />
                                     <BlockquoteButton {...externalProps} />
                                     <CodeBlockButton {...externalProps} />
-                                    <button className="inline styleButton pr-3" onClick={this.onAddImage}>
-                                        <i
-                                            className="material-icons"
-                                            style={{
-                                                fontSize: "16px",
-                                                textAlign: "center",
-                                                padding: "0px",
-                                                margin: "0px"
-                                            }}
-                                        >
-                                            image
-                                        </i>
+                                    <div className="styleButton pr-3 relative overflow-hidden cursor-pointer">
+                                        Image
+                                        <input
+                                            className="cursor-pointer w-full opacity-0 absolute inset-0"
+
+                                            // className="cursor-pointer w-full absolute inset-0"
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={this.onAddLocalImage}
+                                        />
+                                    </div>
+                                    <button className="inline styleButton pr-3" onClick={this.props.showCardModal}>
+                                        Card
                                     </button>
-                                    {/* <input
-                                        // className="cursor-pointer w-full absolute inset-0"
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={this.onAddLocalImage}
-                                    /> */}
                                 </div>
                             )
                         }
                     </Toolbar>
                 </div>
                 {/* <div className="text-lg text-black" onClick={this.onChangeReadOnly}>ReadOnly</div> */}
-                <div>
-                    <button
-                        className="font-semibold m-4 py-3 w-32 rounded-md bg-primary text-white"
-                        onClick={() => { }}
-                    >
-                        Continue
-                    </button>
-                </div>
             </div>
         )
     }
 }
-
-const emptyContentState = convertFromRaw({
-    entityMap: {},
-    blocks: [
-        {
-            text: '',
-            key: 'foo',
-            type: 'unstyled',
-            entityRanges: [],
-        },
-    ],
-})
 
 const styleMap = {
     CODE: {
