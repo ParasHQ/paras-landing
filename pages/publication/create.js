@@ -3,13 +3,13 @@ import { useState } from 'react'
 import Axios from 'axios'
 import { convertFromRaw, convertToRaw, EditorState } from 'draft-js'
 
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
-import TextEditor from '../components/TextEditor'
-import Modal from '../components/Modal'
-import Card from '../components/Card'
-import { parseImgUrl } from '../utils/common'
-import { useToast } from '../hooks/useToast'
+import Nav from '../../components/Nav'
+import Footer from '../../components/Footer'
+import TextEditor from '../../components/TextEditor'
+import Modal from '../../components/Modal'
+import Card from '../../components/Card'
+import { parseImgUrl } from '../../utils/common'
+import { useToast } from '../../hooks/useToast'
 
 const Publication = () => {
     const toast = useToast()
