@@ -10,6 +10,7 @@
 	"dependencies": {
 		"@draft-js-plugins/buttons": "^4.0.0",
 		"@draft-js-plugins/editor": "^4.0.0",
+		"@draft-js-plugins/focus": "^4.1.0",
 		"@draft-js-plugins/image": "^4.0.0",
 		"@draft-js-plugins/static-toolbar": "^4.0.0",
 		"axios": "^0.21.0",
