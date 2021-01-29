@@ -76,6 +76,37 @@ const User = () => {
 		}
 	}
 
+	const _createPublication = () => {
+		if (process.env.APP_ENV !== 'production') {
+			router.push('/publication/create')
+		} else if (store.userProfile.isCreator) {
+			router.push('/publication/create')
+		} else {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						<p>
+							Currently we only allow whitelisted Writer to create their digital
+							art card on Paras.
+						</p>
+						<p className="mt-2">Apply now using the link below:</p>
+						<div className="mt-2">
+							<a
+								href="https://forms.gle/QsZHqa2MKXpjckj98"
+								target="_blank"
+								className="cursor-pointer border-b-2 border-gray-900"
+							>
+								Apply as an Writer
+							</a>
+						</div>
+					</div>
+				),
+				type: 'info',
+				duration: null,
+			})
+		}
+	}
+
 	const _signOut = () => {
 		near.wallet.signOut()
 
@@ -166,6 +197,11 @@ const User = () => {
 						<div onClick={_createCard}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
 								Create Card
+							</a>
+						</div>
+						<div onClick={_createPublication}>
+							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
+								Create Publication
 							</a>
 						</div>
 						<hr className="my-2" />
@@ -627,6 +663,11 @@ const Nav = () => {
 										<a>Market</a>
 									</Link>
 								)}
+							</div>
+							<div className="px-4 text-gray-100 hidden md:block">
+								<Link href="/publication" s>
+									<a>Publication</a>
+								</Link>
 							</div>
 							<div className="px-4 text-gray-100 hidden md:block">
 								<Link href="/activity">
