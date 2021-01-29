@@ -665,7 +665,7 @@ const Nav = () => {
 								)}
 							</div>
 							<div className="px-4 text-gray-100 hidden md:block">
-								<Link href="/publication" s>
+								<Link href="/publication/editorial" s>
 									<a>Publication</a>
 								</Link>
 							</div>
