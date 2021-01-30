@@ -10,17 +10,17 @@ import Footer from '../../components/Footer'
 import TextEditor from '../../components/TextEditor'
 import Modal from '../../components/Modal'
 import Card from '../../components/Card'
-import { parseImgUrl } from '../../utils/common'
+import { dataURLtoFile, parseImgUrl } from '../../utils/common'
 import { useToast } from '../../hooks/useToast'
 
 const Publication = () => {
 	const toast = useToast()
 	const router = useRouter()
 
-	const [title, setTitle] = useState('')
+	const [title, setTitle] = useState(defaultValueEditor)
 	const [subTitle, setSubTitle] = useState('')
 	const [thumbnail, setThumbnail] = useState('test')
-	const [content, setContent] = useState(defaultValueContent)
+	const [content, setContent] = useState(defaultValueEditor)
 	const [embeddedCards, setEmbeddedCards] = useState([])
 
 	const [showModal, setShowModal] = useState(null)
@@ -67,46 +67,49 @@ const Publication = () => {
 	const postPublication = async () => {
 		setIsSubmitting(true)
 
+		const entityMap = await uploadImage()
+
 		const data = {
-			title: title,
-			thumbnail: 'thub',
+			title: title.getCurrentContent().getPlainText(),
+			thumbnail: entityMap[0]?.data.src || null,
 			description: subTitle,
-			content: convertToRaw(content.getCurrentContent()),
+			content: {
+				blocks: convertToRaw(content.getCurrentContent()).blocks,
+				entityMap: entityMap,
+			},
 			tokenIds: embeddedCards.map((card) => card.tokenId),
 		}
 
-		try {
-			await axios.post(`${process.env.API_URL}/publications`, data, {
-				headers: {
-					authorization: await near.authToken(),
-				},
-			})
-			setTimeout(() => {
-				router.push('/publication')
-			}, 1000)
-		} catch (err) {
-			console.log(err.response)
-			const msg =
-				err.response?.data?.message || `Something went wrong, try again later`
-			toast.show({
-				text: <div className="font-semibold text-center text-sm">{msg}</div>,
-				type: 'error',
-				duration: 2500,
-			})
-			setIsSubmitting(false)
-		}
+		console.log('data', data)
+
+		// try {
+		// 	await axios.post(`${process.env.API_URL}/publications`, data, {
+		// 		headers: {
+		// 			authorization: await near.authToken(),
+		// 		},
+		// 	})
+		// 	setTimeout(() => {
+		// 		router.push('/publication')
+		// 	}, 1000)
+		// } catch (err) {
+		// 	console.log(err.response)
+		// 	const msg =
+		// 		err.response?.data?.message || `Something went wrong, try again later`
+		// 	toast.show({
+		// 		text: <div className="font-semibold text-center text-sm">{msg}</div>,
+		// 		type: 'error',
+		// 		duration: 2500,
+		// 	})
+		// 	setIsSubmitting(false)
+		// }
 	}
 
 	const uploadImage = async () => {
-		let { entityMap, blocks } = convertToRaw(content.getCurrentContent())
-
-		console.log(blocks, entityMap)
+		let { entityMap } = convertToRaw(content.getCurrentContent())
 
 		const formData = new FormData()
 		for (let key in entityMap) {
-			const file = new File([entityMap[key].data.src], key)
-			console.log('blob', entityMap[key].data.src)
-			console.log('type of', typeof file, file)
+			const file = dataURLtoFile(entityMap[key].data.src, key)
 			formData.append('files', file, key)
 		}
 
@@ -117,7 +120,11 @@ const Publication = () => {
 			},
 		})
 
-		console.log('resp', resp.data)
+		for (let key in entityMap) {
+			entityMap[key].data.src = resp.data.data[key]
+		}
+
+		return entityMap
 	}
 
 	return (
@@ -163,7 +170,7 @@ const Publication = () => {
 				<meta charSet="utf-8" />
 			</Head>
 			<Nav />
-			<div className="y-16 mx-auto max-w-4xl">
+			<div className="y-16 mx-auto max-w-3xl">
 				{showModal === 'card' && (
 					<Modal
 						close={() => setShowModal(null)}
@@ -214,8 +221,8 @@ const Publication = () => {
 							<input
 								type="text"
 								name="Title"
-								onChange={(e) => setTitle(e.target.value)}
-								value={title}
+								disabled={true}
+								value={title.getCurrentContent().getPlainText()}
 								className={`resize-none h-auto focus:border-gray-100 mb-4`}
 								placeholder="Preview Title"
 							/>
@@ -229,7 +236,7 @@ const Publication = () => {
 							/>
 							<button
 								className="font-semibold mt-4 py-3 w-40 rounded-md bg-primary text-white"
-								onClick={uploadImage}
+								onClick={postPublication}
 							>
 								{isSubmitting ? 'Publishing...' : 'Publish now'}
 							</button>
@@ -280,7 +287,7 @@ const Publication = () => {
 	)
 }
 
-const defaultValueContent = EditorState.createWithContent(
+const defaultValueEditor = EditorState.createWithContent(
 	convertFromRaw({
 		entityMap: {},
 		blocks: [
