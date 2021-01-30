@@ -75,7 +75,7 @@ export const readFileDimension = (file) => {
 	return new Promise((resolve, reject) => {
 		temporaryFileReader.onload = () => {
 			const img = new Image()
-			
+
 			img.onload = () => {
 				resolve({
 					width: img.width,
@@ -98,4 +98,18 @@ export const parseImgUrl = (url, defaultValue = '') => {
 		return `https://ipfs-gateway.paras.id/ipfs/${path}`
 	}
 	return url
+}
+
+export const dataURLtoFile = (dataurl, filename) => {
+	let arr = dataurl.split(','),
+		mime = arr[0].match(/:(.*?);/)[1],
+		bstr = atob(arr[1]),
+		n = bstr.length,
+		u8arr = new Uint8Array(n)
+
+	while (n--) {
+		u8arr[n] = bstr.charCodeAt(n)
+	}
+
+	return new File([u8arr], filename, { type: mime })
 }

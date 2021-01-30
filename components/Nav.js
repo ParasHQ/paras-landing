@@ -665,7 +665,7 @@ const Nav = () => {
 								)}
 							</div>
 							<div className="px-4 text-gray-100 hidden md:block">
-								<Link href="/publication/editorial" s>
+								<Link href="/publication/editorial">
 									<a>Publication</a>
 								</Link>
 							</div>
@@ -719,6 +719,11 @@ const Nav = () => {
 										<a className="p-4 block w-full">Market</a>
 									</Link>
 								)}
+							</div>
+							<div className="text-gray-100 ">
+								<Link href="/publication/editorial">
+									<a>Publication</a>
+								</Link>
 							</div>
 							<div className="text-gray-100 ">
 								<Link href="/activity">

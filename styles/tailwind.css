@@ -268,64 +268,64 @@ input.clear {
 	border: none;
 }
 
-.titlePublication:focus{
+.titlePublication:focus {
 	background: transparent;
 	color: white;
 	border: none;
 }
 
 .titlePublication::-webkit-input-placeholder {
-    color: #9197a3;
+	color: #9197a3;
 }
 .titlePublication:focus::-webkit-input-placeholder {
-    color: #bdc1c9;
+	color: #bdc1c9;
 }
 
 .RichEditor-root {
 	font-size: 14px;
 	padding-top: 0;
 }
-  
+
 .RichEditor-editor {
 	cursor: text;
 	margin-bottom: 10px;
 }
-  
+
 .RichEditor-editor .public-DraftEditorPlaceholder-root,
 .RichEditor-editor .public-DraftEditor-content {
-	margin: 0 -15px 0;
-	padding: 15px;
+	margin: 0 -1rem 0;
+	padding: 1rem;
 }
-  
+
 .RichEditor-editor .public-DraftEditor-content {
 	min-height: 100px;
 }
-  
+
 .RichEditor-hidePlaceholder .public-DraftEditorPlaceholder-root {
 	display: none;
 }
-  
+
 .RichEditor-editor .RichEditor-blockquote {
 	border-left: 5px solid #ddd;
 	color: #ddd;
 	font-family: 'Hoefler Text', 'Georgia', serif;
 	font-style: italic;
-	margin: 16px 0;
-	padding: 10px 20px;
+	margin: 1rem 0;
+	padding: 0.75rem 1.5rem;
 }
-  
+
 .RichEditor-editor .public-DraftStyleDefault-pre {
 	background-color: #1a202c;
 	font-size: 16px;
 	padding: 20px;
 }
-  
+
 .RichEditor-controls {
 	font-size: 14px;
 	margin-top: 5px;
 	user-select: none;
 }
-  
+
 .RichEditor-styleButton {
 	color: #999;
 	cursor: pointer;
@@ -333,7 +333,7 @@ input.clear {
 	padding: 2px 0;
 	display: inline-block;
 }
-  
+
 .RichEditor-activeButton {
 	color: #5890ff;
 }

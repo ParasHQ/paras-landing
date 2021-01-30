@@ -1,6 +1,6 @@
 import React from 'react'
 import Editor, { composeDecorators } from '@draft-js-plugins/editor'
-import { RichUtils, getDefaultKeyBinding, convertToRaw } from 'draft-js'
+import { RichUtils, getDefaultKeyBinding } from 'draft-js'
 import createToolbarPlugin, {
 	Separator,
 } from '@draft-js-plugins/static-toolbar'
@@ -32,8 +32,8 @@ const toolbarPlugin = createToolbarPlugin({
 
 const focusPlugin = createFocusPlugin({
 	theme: {
-		focused: 'border-gray-700 rounded-md border-4',
-		unfocused: 'border-transparent rounded-md border-4',
+		focused: 'border-gray-700 rounded-md border-4 -m-0.5',
+		unfocused: 'border-transparent rounded-md border-4 -m-0.5',
 	},
 })
 
@@ -105,7 +105,15 @@ class TextEditor extends React.Component {
 	}
 
 	render() {
-		const { content, readOnly = false } = this.props
+		const {
+			content,
+			readOnly = false,
+			title,
+			hideTitle = false,
+			setTitle,
+			showCardModal,
+			setContent,
+		} = this.props
 
 		let className = 'RichEditor-editor text-lg'
 		var contentState = content.getCurrentContent()
@@ -117,15 +125,17 @@ class TextEditor extends React.Component {
 
 		return (
 			<div>
-				<input
-					type="text"
-					name="website"
-					className="titlePublication text-4xl font-bold p-4 pb-0"
-					autoComplete="off"
-					value={this.props.title}
-					onChange={(e) => this.props.setTitle(e.target.value)}
-					placeholder="Title"
-				/>
+				{!hideTitle && (
+					<div className="titlePublication text-4xl font-bold p-4 pb-0 text-white">
+						<Editor
+							placeholder="Title"
+							editorState={title}
+							onChange={setTitle}
+							handleReturn={() => 'handled'}
+							readOnly={readOnly}
+						/>
+					</div>
+				)}
 				<div className="RichEditor-root text-white p-4">
 					<div className={className} onClick={this.focus}>
 						<Editor
@@ -134,7 +144,7 @@ class TextEditor extends React.Component {
 							editorState={content}
 							handleKeyCommand={this.handleKeyCommand}
 							keyBindingFn={this.mapKeyToEditorCommand}
-							onChange={this.props.setContent}
+							onChange={setContent}
 							placeholder="Tell a story..."
 							plugins={plugins}
 							readOnly={readOnly}
@@ -160,7 +170,7 @@ class TextEditor extends React.Component {
 									<BlockquoteButton {...externalProps} />
 									<CodeBlockButton {...externalProps} />
 									<ImageButton onChange={this.onAddLocalImage} />
-									<CardButton onClick={this.props.showCardModal} />
+									<CardButton onClick={showCardModal} />
 								</div>
 							)}
 						</Toolbar>
@@ -207,17 +217,17 @@ const getBlockStyle = (block) => {
 		case 'blockquote':
 			return 'RichEditor-blockquote'
 		case 'header-one':
-			return 'text-3xl font-semibold my-5'
+			return 'text-3xl font-bold my-6'
 		case 'header-two':
-			return 'text-2xl font-semibold my-4'
+			return 'text-2xl font-semibold my-5'
 		case 'header-three':
-			return 'text-xl font-semibold my-3'
-		case 'header-four':
-			return 'text-lg font-medium my-2'
-		case 'header-five':
-			return 'text-lg font-normal my-1'
+			return 'text-xl font-semibold my-4'
+		case 'unstyled':
+			return 'mb-4'
 		case 'code-block':
-			return 'bg-gray-900'
+			return 'bg-gray-900 my-4'
+		case 'atomic':
+			return 'my-4'
 		default:
 			return null
 	}

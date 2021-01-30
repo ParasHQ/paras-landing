@@ -109,7 +109,7 @@ const PublicationList = ({ data }) => {
 			</div>
 			<div className="md:w-3/4 m-auto">
 				<Link href={`/publication/${data.type}/${data.slug}-${data._id}`}>
-					<h1 className="text-white text-2xl font-bold border-b-2 border-transparent hover:border-white cursor-pointer">
+					<h1 className="text-white text-2xl font-bold border-b-2 border-transparent cursor-pointer">
 						{data.title}
 					</h1>
 				</Link>
