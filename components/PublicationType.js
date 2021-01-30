@@ -12,7 +12,7 @@ export const PublicationType = ({ path }) => {
 					Editorial
 				</h1>
 			</Link>
-			<Link href="publication/community">
+			<Link href="/publication/community">
 				<h1
 					className={`text-4xl text-gray-100 cursor-pointer ${
 						path === '/publication/community' ? 'font-bold' : null
