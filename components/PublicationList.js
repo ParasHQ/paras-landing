@@ -6,7 +6,7 @@ const PublicationList = ({ data }) => {
 	return (
 		<div className="md:flex max-w-4xl m-auto mt-8">
 			<div className="md:w-1/4 md:mr-8">
-				<div className="md:w-56 md:h-48 w-full h-auto flex">
+				<div className="md:w-56 md:h-48 w-full h-auto flex overflow-hidden">
 					<Link href={`/publication/${data.type}/${data.slug}-${data._id}`}>
 						<div className="m-auto cursor-pointer">
 							<img className="w-full" src={parseImgUrl(data.thumbnail)} />

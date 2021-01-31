@@ -109,14 +109,14 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							>
 								Share to...
 							</div>
-							{store.currentUser === pubDetail.authorId && (
+							{/* {store.currentUser === pubDetail.authorId && (
 								<div
 									className="py-2 cursor-pointer"
 									onClick={(_) => setShowModal('confirmTransfer')}
 								>
 									Update my publication
 								</div>
-							)}
+							)} */}
 						</div>
 					</Modal>
 				)}
@@ -226,8 +226,8 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 						/>
 					</div>
 					<div className="md:flex">
-						{pubDetail.tokenIds.map((tokenId) => (
-							<EmbeddedCard tokenId={tokenId} />
+						{pubDetail.tokenIds?.map((tokenId) => (
+							<EmbeddedCard key={tokenId} tokenId={tokenId} />
 						))}
 					</div>
 				</div>
@@ -272,7 +272,7 @@ const EmbeddedCard = ({ tokenId }) => {
 				/>
 			</div>
 			<div className="text-gray-100 pt-4 text-center">
-				<div className>
+				<div>
 					<Link href={`/token/${localToken?.tokenId}`}>
 						<a
 							title={localToken?.metadata?.name}

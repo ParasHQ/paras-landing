@@ -63,8 +63,10 @@ class TextEditor extends React.Component {
 
 	onAddLocalImage = async (e) => {
 		const { content } = this.props
-		const imgUrl = await readFileAsUrl(e.target.files[0])
-
+		let imgUrl
+		if (e.target.files[0]) {
+			imgUrl = await readFileAsUrl(e.target.files[0])
+		}
 		this.props.setContent(imagePlugin.addImage(content, imgUrl))
 	}
 

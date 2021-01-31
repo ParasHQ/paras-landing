@@ -58,11 +58,9 @@ const Publication = () => {
 	}
 
 	const showCardModal = () => {
-		if (embeddedCards.length === 3) {
-			showToast('Maximum 3 cards')
-			return
-		}
-		setShowModal('card')
+		embeddedCards.length === 3
+			? showToast('Maximum 3 cards')
+			: setShowModal('card')
 	}
 
 	const postPublication = async () => {
@@ -90,8 +88,6 @@ const Publication = () => {
 			},
 			tokenIds: embeddedCards.map((card) => card.tokenId),
 		}
-
-		console.log('data', data)
 
 		try {
 			await axios.post(`${process.env.API_URL}/publications`, data, {
@@ -250,7 +246,10 @@ const Publication = () => {
 						closeOnEscape={true}
 					>
 						<div className="max-w-lg p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
-							<h1 className="mb-2 block text-white text-xl font-semibold">
+							<h1 className="mb-4 block text-white text-2xl font-bold">
+								Publication preview
+							</h1>
+							<h1 className="mb-2 block text-white text-md font-medium">
 								Thumbnail
 							</h1>
 							<div className="bg-black h-64 mb-4 overflow-hidden relative">
@@ -262,8 +261,8 @@ const Publication = () => {
 								/>
 								<img className="w-full object-cover m-auto" src={thumbnail} />
 							</div>
-							<h1 className="mb-2 block text-white text-xl font-semibold">
-								Details
+							<h1 className="mb-2 block text-white text-md font-medium">
+								Title
 							</h1>
 							<input
 								type="text"
@@ -273,6 +272,9 @@ const Publication = () => {
 								className={`resize-none h-auto focus:border-gray-100 mb-4`}
 								placeholder="Preview Title"
 							/>
+							<h1 className="mb-2 block text-white text-md font-medium">
+								Description
+							</h1>
 							<textarea
 								type="text"
 								name="SubTitle"
