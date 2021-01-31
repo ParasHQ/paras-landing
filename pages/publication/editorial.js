@@ -1,16 +1,48 @@
 import Head from 'next/head'
-import Link from 'next/link'
+import { useState } from 'react'
+import axios from 'axios'
+import { useRouter } from 'next/router'
+import InfiniteScroll from 'react-infinite-scroll-component'
+
 import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
-import axios from 'axios'
-import LinkToProfile from '../../components/LinkToProfile'
-import { useRouter } from 'next/router'
 import { PublicationType } from '../../components/PublicationType'
+import PublicationList from '../../components/PublicationList'
 
 const LIMIT = 5
 
-const Publication = ({ pubList }) => {
+const Editorial = ({ pubList }) => {
 	const router = useRouter()
+
+	const [pubData, setPubData] = useState(pubList)
+	const [page, setPage] = useState(1)
+	const [isFetching, setIsFetching] = useState(false)
+	const [hasMore, setHasMore] = useState(true)
+
+	const _fetchData = async () => {
+		if (!hasMore || isFetching) {
+			return
+		}
+
+		setIsFetching(true)
+		const res = await axios(
+			`${process.env.API_URL}/publications?type=editorial&__skip=${
+				page * LIMIT
+			}&__limit=${LIMIT}`
+		)
+		const newData = await res.data.data
+
+		const newPubData = [...pubData, ...newData.results]
+		setPubData(newPubData)
+		setPage(page + 1)
+
+		if (newData.results.length === 0) {
+			setHasMore(false)
+		} else {
+			setHasMore(true)
+		}
+		setIsFetching(false)
+	}
 
 	return (
 		<div
@@ -55,15 +87,18 @@ const Publication = ({ pubList }) => {
 				/>
 			</Head>
 			<Nav />
-			<div className="max-w-4xl relative m-auto py-12 md:p-0 p-4">
+			<div className="max-w-4xl relative m-auto py-12 p-4">
 				<PublicationType path={router.pathname} />
-				<div className="mt-8">
-					{pubList.map((pub) => (
-						<PublicationList data={pub} />
-					))}
-					{/* <PublicationList />
-					<PublicationList />
-					<PublicationList /> */}
+				<div>
+					<InfiniteScroll
+						dataLength={pubData.length}
+						next={_fetchData}
+						hasMore={hasMore}
+					>
+						{pubData.map((pub) => (
+							<PublicationList key={pub._id} data={pub} />
+						))}
+					</InfiniteScroll>
 				</div>
 			</div>
 			<Footer />
@@ -71,66 +106,11 @@ const Publication = ({ pubList }) => {
 	)
 }
 
-export default Publication
-
-const PublicationList = ({ data }) => {
-	const data3 = {
-		_id: '6013878728cb354ea2346321',
-		slug: 'sadfdsaf',
-		title: 'Ini sebuah cerita yang mana mengisahkan sebuah',
-		thumbnail: 'thub',
-		description:
-			'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam id arcu tempus nisl laoreet lobortis. Nulla convallis in justo consectetur pulvinar. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.',
-		authorId: 'lalalalala.testnet',
-		content: {
-			blocks: [
-				{
-					key: 'foo',
-					text: 'sdf',
-					type: 'unstyled',
-					depth: 0,
-					inlineStyleRanges: [],
-					entityRanges: [],
-					data: {},
-				},
-			],
-			entityMap: {},
-		},
-		tokenIds: null,
-		type: 'community',
-		createdAt: 1611892615445,
-		updatedAt: 1611892615445,
-	}
-
-	return (
-		<div className="md:flex max-w-4xl m-auto mt-8">
-			<div className="md:w-1/4 md:mr-8">
-				<div className="md:w-56 md:h-48 w-full h-64 bg-gray-700"></div>
-			</div>
-			<div className="md:w-3/4 m-auto">
-				<Link href={`/publication/${data.type}/${data.slug}-${data._id}`}>
-					<h1 className="text-white text-2xl font-bold border-b-2 border-transparent cursor-pointer">
-						{data.title}
-					</h1>
-				</Link>
-				<p className="text-white mt-2">{data.description}</p>
-				<div className="mt-2 flex m-auto">
-					<p className="text-white">
-						<span> Community | </span>
-						<LinkToProfile
-							accountId={data.authorId}
-							className="text-white font-bold hover:border-white"
-						/>
-					</p>
-				</div>
-			</div>
-		</div>
-	)
-}
+export default Editorial
 
 export async function getServerSideProps() {
 	const res = await axios(
-		`${process.env.API_URL}/publications?type=community&__limit=${LIMIT}`
+		`${process.env.API_URL}/publications?type=editorial&__limit=${LIMIT}`
 	)
 	const pubList = await res.data.data.results
 

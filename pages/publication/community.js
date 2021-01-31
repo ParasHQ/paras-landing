@@ -1,11 +1,48 @@
 import Head from 'next/head'
+import { useState } from 'react'
+import axios from 'axios'
+import { useRouter } from 'next/router'
+import InfiniteScroll from 'react-infinite-scroll-component'
+
 import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
 import { PublicationType } from '../../components/PublicationType'
-import { useRouter } from 'next/router'
+import PublicationList from '../../components/PublicationList'
 
-const community = () => {
+const LIMIT = 5
+
+const Community = ({ pubList }) => {
 	const router = useRouter()
+
+	const [pubData, setPubData] = useState(pubList)
+	const [page, setPage] = useState(1)
+	const [isFetching, setIsFetching] = useState(false)
+	const [hasMore, setHasMore] = useState(true)
+
+	const _fetchData = async () => {
+		if (!hasMore || isFetching) {
+			return
+		}
+
+		setIsFetching(true)
+		const res = await axios(
+			`${process.env.API_URL}/publications?type=community&__skip=${
+				page * LIMIT
+			}&__limit=${LIMIT}`
+		)
+		const newData = await res.data.data
+
+		const newPubData = [...pubData, ...newData.results]
+		setPubData(newPubData)
+		setPage(page + 1)
+
+		if (newData.results.length === 0) {
+			setHasMore(false)
+		} else {
+			setHasMore(true)
+		}
+		setIsFetching(false)
+	}
 
 	return (
 		<div
@@ -50,13 +87,32 @@ const community = () => {
 				/>
 			</Head>
 			<Nav />
-			<div className="max-w-4xl relative m-auto py-12">
+			<div className="max-w-4xl relative m-auto py-12 p-4">
 				<PublicationType path={router.pathname} />
-				<div className="mt-8"></div>
+				<div>
+					<InfiniteScroll
+						dataLength={pubData.length}
+						next={_fetchData}
+						hasMore={hasMore}
+					>
+						{pubData.map((pub) => (
+							<PublicationList key={pub._id} data={pub} />
+						))}
+					</InfiniteScroll>
+				</div>
 			</div>
 			<Footer />
 		</div>
 	)
 }
 
-export default community
+export default Community
+
+export async function getServerSideProps() {
+	const res = await axios(
+		`${process.env.API_URL}/publications?type=community&__limit=${LIMIT}`
+	)
+	const pubList = await res.data.data.results
+
+	return { props: { pubList } }
+}

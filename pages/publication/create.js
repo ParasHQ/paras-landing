@@ -10,7 +10,7 @@ import Footer from '../../components/Footer'
 import TextEditor from '../../components/TextEditor'
 import Modal from '../../components/Modal'
 import Card from '../../components/Card'
-import { dataURLtoFile, parseImgUrl } from '../../utils/common'
+import { dataURLtoFile, parseImgUrl, readFileAsUrl } from '../../utils/common'
 import { useToast } from '../../hooks/useToast'
 
 const Publication = () => {
@@ -19,8 +19,9 @@ const Publication = () => {
 
 	const [title, setTitle] = useState(defaultValueEditor)
 	const [subTitle, setSubTitle] = useState('')
-	const [thumbnail, setThumbnail] = useState('test')
+	const [thumbnail, setThumbnail] = useState(null)
 	const [content, setContent] = useState(defaultValueEditor)
+	const [showAlertErr, setShowAlertErr] = useState(false)
 	const [embeddedCards, setEmbeddedCards] = useState([])
 
 	const [showModal, setShowModal] = useState(null)
@@ -29,15 +30,7 @@ const Publication = () => {
 
 	const getDataFromTokenId = async () => {
 		if (embeddedCards.some((card) => card.tokenId === searchToken)) {
-			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						You have embedded this card
-					</div>
-				),
-				type: 'error',
-				duration: 1500,
-			})
+			showToast('You have embedded this card')
 			setSearchToken('')
 			return
 		}
@@ -52,26 +45,44 @@ const Publication = () => {
 			setShowModal(null)
 			setSearchToken('')
 		} else {
-			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						Please enter correct token id
-					</div>
-				),
-				type: 'error',
-				duration: 2500,
-			})
+			showToast('Please enter correct token id')
 		}
 	}
 
+	const showToast = (msg, type = 'error') => {
+		toast.show({
+			text: <div className="font-semibold text-center text-sm">{msg}</div>,
+			type: type,
+			duration: 1500,
+		})
+	}
+
+	const showCardModal = () => {
+		if (embeddedCards.length === 3) {
+			showToast('Maximum 3 cards')
+			return
+		}
+		setShowModal('card')
+	}
+
 	const postPublication = async () => {
+		if (!thumbnail) {
+			setShowAlertErr('Thumbnail must not empty')
+			return
+		}
+		if (!subTitle) {
+			setShowAlertErr('Description must not empty')
+			return
+		}
+
 		setIsSubmitting(true)
 
 		const entityMap = await uploadImage()
+		const _thumbnail = await uploadThumbnail()
 
 		const data = {
 			title: title.getCurrentContent().getPlainText(),
-			thumbnail: entityMap[0]?.data.src || null,
+			thumbnail: _thumbnail,
 			description: subTitle,
 			content: {
 				blocks: convertToRaw(content.getCurrentContent()).blocks,
@@ -82,26 +93,21 @@ const Publication = () => {
 
 		console.log('data', data)
 
-		// try {
-		// 	await axios.post(`${process.env.API_URL}/publications`, data, {
-		// 		headers: {
-		// 			authorization: await near.authToken(),
-		// 		},
-		// 	})
-		// 	setTimeout(() => {
-		// 		router.push('/publication')
-		// 	}, 1000)
-		// } catch (err) {
-		// 	console.log(err.response)
-		// 	const msg =
-		// 		err.response?.data?.message || `Something went wrong, try again later`
-		// 	toast.show({
-		// 		text: <div className="font-semibold text-center text-sm">{msg}</div>,
-		// 		type: 'error',
-		// 		duration: 2500,
-		// 	})
-		// 	setIsSubmitting(false)
-		// }
+		try {
+			await axios.post(`${process.env.API_URL}/publications`, data, {
+				headers: {
+					authorization: await near.authToken(),
+				},
+			})
+			setTimeout(() => {
+				router.push('/publication/community')
+			}, 1000)
+		} catch (err) {
+			const msg =
+				err.response?.data?.message || `Something went wrong, try again later`
+			showToast(msg)
+			setIsSubmitting(false)
+		}
 	}
 
 	const uploadImage = async () => {
@@ -125,6 +131,39 @@ const Publication = () => {
 		}
 
 		return entityMap
+	}
+
+	const uploadThumbnail = async () => {
+		const [protocol, path] = thumbnail.split('://')
+		if (protocol === 'ipfs') {
+			return
+		}
+
+		const formData = new FormData()
+		formData.append('files', dataURLtoFile(thumbnail), 'thumbnail')
+
+		const resp = await axios.post(`${process.env.API_URL}/uploads`, formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				authorization: await near.authToken(),
+			},
+		})
+
+		return resp.data.data[0]
+	}
+
+	const updateThumbnail = async (e) => {
+		if (e.target.files[0]) {
+			setThumbnail(await readFileAsUrl(e.target.files[0]))
+		}
+	}
+
+	const onPressContinue = () => {
+		const { entityMap } = convertToRaw(content.getCurrentContent())
+		if (!thumbnail) {
+			setThumbnail(entityMap[0]?.data.src || thumbnail)
+		}
+		setShowModal('final')
 	}
 
 	return (
@@ -210,11 +249,19 @@ const Publication = () => {
 						closeOnBgClick={true}
 						closeOnEscape={true}
 					>
-						<div className="max-w-xl p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
+						<div className="max-w-lg p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
 							<h1 className="mb-2 block text-white text-xl font-semibold">
 								Thumbnail
 							</h1>
-							<div className="bg-black h-64 mb-4"></div>
+							<div className="bg-black h-64 mb-4 overflow-hidden relative">
+								<input
+									className="cursor-pointer w-full opacity-0 absolute inset-0"
+									type="file"
+									accept="image/*"
+									onChange={updateThumbnail}
+								/>
+								<img className="w-full object-cover m-auto" src={thumbnail} />
+							</div>
 							<h1 className="mb-2 block text-white text-xl font-semibold">
 								Details
 							</h1>
@@ -231,7 +278,7 @@ const Publication = () => {
 								name="SubTitle"
 								onChange={(e) => setSubTitle(e.target.value)}
 								value={subTitle}
-								className={`resize-none h-auto focus:border-gray-100 mb-4`}
+								className={`resize-none focus:border-gray-100 mb-4 h-24`}
 								placeholder="Preview SubTitle"
 							/>
 							<button
@@ -243,13 +290,30 @@ const Publication = () => {
 						</div>
 					</Modal>
 				)}
+				{showAlertErr && (
+					<Modal close={(_) => setShowAlertErr(false)}>
+						<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
+							<div>
+								<div className="w-full">{showAlertErr}</div>
+								<div>
+									<button
+										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+										onClick={(_) => setShowAlertErr(false)}
+									>
+										OK
+									</button>
+								</div>
+							</div>
+						</div>
+					</Modal>
+				)}
 				<TextEditor
 					content={content}
 					setContent={setContent}
 					title={title}
 					setTitle={setTitle}
 					onPressAddCard={getDataFromTokenId}
-					showCardModal={() => setShowModal('card')}
+					showCardModal={showCardModal}
 				/>
 				{embeddedCards.length !== 0 && (
 					<div className="border-2 border-dashed border-gray-800 p-4 rounded-md my-4 pd-4">
@@ -275,7 +339,7 @@ const Publication = () => {
 				<div>
 					<button
 						className="font-semibold m-4 py-3 w-32 rounded-md bg-primary text-white"
-						onClick={() => setShowModal('final')}
+						onClick={onPressContinue}
 						disabled={title === '' || !content.getCurrentContent().hasText()}
 					>
 						Continue

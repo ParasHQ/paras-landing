@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export const PublicationType = ({ path }) => {
 	return (
-		<div className="flex space-x-8">
+		<div className="inline-block md:flex md:space-x-8">
 			<Link href="/publication/editorial">
 				<h1
 					className={`text-4xl text-gray-100 cursor-pointer ${

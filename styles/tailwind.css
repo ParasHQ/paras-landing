@@ -318,6 +318,7 @@ input.clear {
 	background-color: #1a202c;
 	font-size: 16px;
 	padding: 20px;
+	margin: 1rem 0;
 }
 
 .RichEditor-controls {

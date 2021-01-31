@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { EditorState, convertFromRaw } from 'draft-js'
@@ -19,13 +19,18 @@ import LinkToProfile from '../../components/LinkToProfile'
 import { parseDate, parseImgUrl } from '../../utils/common'
 import Modal from '../../components/Modal'
 import useStore from '../../store'
+import Card from '../../components/Card'
 
 const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const store = useStore()
+	const textAreaRef = useRef(null)
 	const [showModal, setShowModal] = useState('')
 	const [isCopied, setIsCopied] = useState(false)
+	const [isComponentMounted, setIsComponentMounted] = useState(false)
 
-	console.log(userProfile, 'sd')
+	useEffect(() => {
+		setIsComponentMounted(true)
+	}, [])
 
 	if (errorCode) {
 		return <Error />
@@ -35,6 +40,18 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 		title: `${pubDetail.title} — Paras`,
 		description: pubDetail.description,
 		// image: `${process.env.API_URL}/socialCard/${token.tokenId}`,
+	}
+
+	const _copyLink = () => {
+		textAreaRef.current.select()
+		document.execCommand('copy')
+
+		setIsCopied(true)
+
+		setTimeout(() => {
+			setShowModal(false)
+			setIsCopied(false)
+		}, 1500)
 	}
 
 	return (
@@ -63,6 +80,21 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 					<meta property="og:image" content={headMeta.image} />
 				</Head>
 				<Nav />
+				{isComponentMounted && (
+					<div
+						className="absolute z-0 opacity-0"
+						style={{
+							top: `-1000`,
+						}}
+					>
+						<input
+							ref={textAreaRef}
+							readOnly
+							type="text"
+							value={window.location.href}
+						/>
+					</div>
+				)}
 				{showModal === 'options' && (
 					<Modal close={(_) => setShowModal('')}>
 						<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
@@ -193,8 +225,66 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							readOnly={true}
 						/>
 					</div>
+					<div className="md:flex">
+						{pubDetail.tokenIds.map((tokenId) => (
+							<EmbeddedCard tokenId={tokenId} />
+						))}
+					</div>
 				</div>
 				<Footer />
+			</div>
+		</div>
+	)
+}
+
+const EmbeddedCard = ({ tokenId }) => {
+	const [localToken, setLocalToken] = useState(null)
+
+	useEffect(() => {
+		fetchToken()
+	}, [])
+
+	const fetchToken = async () => {
+		const res = await axios(`${process.env.API_URL}/tokens?tokenId=${tokenId}`)
+		const token = (await res.data.data.results[0]) || null
+		setLocalToken(token)
+	}
+
+	return (
+		<div className="inline-block p-4 rounded-md w-full md:max-w-lg">
+			<div className="w-64 mx-auto">
+				<Card
+					imgUrl={parseImgUrl(localToken?.metadata?.image)}
+					imgBlur={localToken?.metadata?.blurhash}
+					token={{
+						name: localToken?.metadata?.name,
+						collection: localToken?.metadata?.collection,
+						description: localToken?.metadata?.description,
+						creatorId: localToken?.creatorId,
+						supply: localToken?.supply,
+						tokenId: localToken?.tokenId,
+						createdAt: localToken?.createdAt,
+					}}
+					initialRotate={{
+						x: 15,
+						y: 15,
+					}}
+				/>
+			</div>
+			<div className="text-gray-100 pt-4 text-center">
+				<div className>
+					<Link href={`/token/${localToken?.tokenId}`}>
+						<a
+							title={localToken?.metadata?.name}
+							className="text-2xl font-bold border-b-2 border-transparent"
+						>
+							{localToken?.metadata?.name}
+						</a>
+					</Link>
+				</div>
+				<p className="opacity-75 truncate">
+					{localToken?.metadata?.collection}
+				</p>
 			</div>
 		</div>
 	)

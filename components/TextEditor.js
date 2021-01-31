@@ -110,9 +110,9 @@ class TextEditor extends React.Component {
 			readOnly = false,
 			title,
 			hideTitle = false,
-			setTitle,
+			setTitle = () => {},
 			showCardModal,
-			setContent,
+			setContent = () => {},
 		} = this.props
 
 		let className = 'RichEditor-editor text-lg'
@@ -225,7 +225,7 @@ const getBlockStyle = (block) => {
 		case 'unstyled':
 			return 'mb-4'
 		case 'code-block':
-			return 'bg-gray-900 my-4'
+			return 'bg-gray-900'
 		case 'atomic':
 			return 'my-4'
 		default:
