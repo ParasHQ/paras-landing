@@ -10,6 +10,7 @@ import {
 	TwitterIcon,
 	TwitterShareButton,
 } from 'react-share'
+import { useRouter } from 'next/router'
 
 import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
@@ -20,12 +21,15 @@ import { parseDate, parseImgUrl } from '../../utils/common'
 import Modal from '../../components/Modal'
 import useStore from '../../store'
 import Card from '../../components/Card'
+import near from '../../lib/near'
 
 const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const store = useStore()
+	const router = useRouter()
 	const textAreaRef = useRef(null)
 	const [showModal, setShowModal] = useState('')
 	const [isCopied, setIsCopied] = useState(false)
+	const [isDeleting, setIsDeleting] = useState(false)
 	const [isComponentMounted, setIsComponentMounted] = useState(false)
 
 	useEffect(() => {
@@ -52,6 +56,27 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 			setShowModal(false)
 			setIsCopied(false)
 		}, 1500)
+	}
+
+	const _deletePublication = async () => {
+		setIsDeleting(true)
+		try {
+			await axios.delete(
+				`${process.env.API_URL}/publications/${pubDetail._id}`,
+				{
+					headers: {
+						authorization: await near.authToken(),
+					},
+				}
+			)
+			setTimeout(() => {
+				router.push('/publication/community')
+			}, 1000)
+		} catch (err) {
+			const msg =
+				err.response?.data?.message || `Something went wrong, try again later`
+			setIsDeleting(false)
+		}
 	}
 
 	return (
@@ -117,6 +142,37 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 									Update my publication
 								</div>
 							)} */}
+							{store.currentUser === pubDetail.authorId && (
+								<div
+									className="py-2 cursor-pointer"
+									onClick={(_) => setShowModal('confirmDelete')}
+								>
+									Delete my publication
+								</div>
+							)}
+						</div>
+					</Modal>
+				)}
+				{showModal === 'confirmDelete' && (
+					<Modal
+						close={(_) => setShowModal('')}
+						closeOnBgClick={true}
+						closeOnEscape={true}
+					>
+						<div className="max-w-sm w-full p-4 bg-gray-100 m-auto rounded-md">
+							<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+								Confirm Delete
+							</h1>
+							<p className="text-gray-900 mt-2">
+								You are about to delete <b>{pubDetail.title}</b>
+							</p>
+							<button
+								className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+								type="submit"
+								onClick={_deletePublication}
+							>
+								{isDeleting ? 'Deleting...' : 'Delete my publication'}
+							</button>
 						</div>
 					</Modal>
 				)}
@@ -266,8 +322,8 @@ const EmbeddedCard = ({ tokenId }) => {
 						createdAt: localToken?.createdAt,
 					}}
 					initialRotate={{
-						x: 15,
-						y: 15,
+						x: 0,
+						y: 0,
 					}}
 				/>
 			</div>
@@ -293,6 +349,7 @@ const EmbeddedCard = ({ tokenId }) => {
 export async function getServerSideProps({ params }) {
 	const { slug } = params
 	const id = slug[1].split('-')
+	const slugName = id.slice(0, id.length - 1).join('-')
 
 	const resp = await axios(
 		`${process.env.API_URL}/publications?type=${slug[0]}&_id=${
@@ -300,14 +357,14 @@ export async function getServerSideProps({ params }) {
 		}`
 	)
 	const pubDetail = (await resp.data?.data?.results[0]) || null
-	const errorCode = pubDetail ? false : 404
+	const errorCode = pubDetail && slugName === pubDetail.slug ? false : 404
 
 	const profileRes = await axios(
 		`${process.env.API_URL}/profiles?accountId=${pubDetail?.authorId}`
 	)
 	const userProfile = (await profileRes.data.data.results[0]) || null
 
-	return { props: { pubDetail, errorCode, userProfile } }
+	return { props: { pubDetail, errorCode, userProfile, slugName } }
 }
 
 export default PublicationDetailPage

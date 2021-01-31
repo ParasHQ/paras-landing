@@ -295,17 +295,13 @@ const Publication = () => {
 				{showAlertErr && (
 					<Modal close={(_) => setShowAlertErr(false)}>
 						<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
-							<div>
-								<div className="w-full">{showAlertErr}</div>
-								<div>
-									<button
-										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
-										onClick={(_) => setShowAlertErr(false)}
-									>
-										OK
-									</button>
-								</div>
-							</div>
+							<div className="w-full">{showAlertErr}</div>
+							<button
+								className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+								onClick={(_) => setShowAlertErr(false)}
+							>
+								OK
+							</button>
 						</div>
 					</Modal>
 				)}
