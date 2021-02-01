@@ -205,7 +205,7 @@ const Publication = () => {
 				<meta charSet="utf-8" />
 			</Head>
 			<Nav />
-			<div className="y-16 mx-auto max-w-3xl">
+			<div className="y-16 mx-auto max-w-3xl min-h-screen">
 				{showModal === 'card' && (
 					<Modal
 						close={() => setShowModal(null)}
@@ -363,7 +363,7 @@ const defaultValueEditor = EditorState.createWithContent(
 	})
 )
 
-const CardPublication = ({ localToken, deleteCard }) => {
+export const CardPublication = ({ localToken, deleteCard }) => {
 	return (
 		<div className="inline-block p-4 rounded-md max-w-sm">
 			<div className="w-40 mx-auto">

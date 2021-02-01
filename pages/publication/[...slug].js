@@ -22,6 +22,7 @@ import Modal from '../../components/Modal'
 import useStore from '../../store'
 import Card from '../../components/Card'
 import near from '../../lib/near'
+import EmbeddedCard from '../../components/EmbeddedCard'
 
 const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const store = useStore()
@@ -288,59 +289,6 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 					</div>
 				</div>
 				<Footer />
-			</div>
-		</div>
-	)
-}
-
-const EmbeddedCard = ({ tokenId }) => {
-	const [localToken, setLocalToken] = useState(null)
-
-	useEffect(() => {
-		fetchToken()
-	}, [])
-
-	const fetchToken = async () => {
-		const res = await axios(`${process.env.API_URL}/tokens?tokenId=${tokenId}`)
-		const token = (await res.data.data.results[0]) || null
-		setLocalToken(token)
-	}
-
-	return (
-		<div className="inline-block p-4 rounded-md w-full md:max-w-lg">
-			<div className="w-64 mx-auto">
-				<Card
-					imgUrl={parseImgUrl(localToken?.metadata?.image)}
-					imgBlur={localToken?.metadata?.blurhash}
-					token={{
-						name: localToken?.metadata?.name,
-						collection: localToken?.metadata?.collection,
-						description: localToken?.metadata?.description,
-						creatorId: localToken?.creatorId,
-						supply: localToken?.supply,
-						tokenId: localToken?.tokenId,
-						createdAt: localToken?.createdAt,
-					}}
-					initialRotate={{
-						x: 0,
-						y: 0,
-					}}
-				/>
-			</div>
-			<div className="text-gray-100 pt-4 text-center">
-				<div>
-					<Link href={`/token/${localToken?.tokenId}`}>
-						<a
-							title={localToken?.metadata?.name}
-							className="text-2xl font-bold border-b-2 border-transparent"
-						>
-							{localToken?.metadata?.name}
-						</a>
-					</Link>
-				</div>
-				<p className="opacity-75 truncate">
-					{localToken?.metadata?.collection}
-				</p>
 			</div>
 		</div>
 	)
