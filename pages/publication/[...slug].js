@@ -20,7 +20,6 @@ import LinkToProfile from '../../components/LinkToProfile'
 import { parseDate, parseImgUrl } from '../../utils/common'
 import Modal from '../../components/Modal'
 import useStore from '../../store'
-import Card from '../../components/Card'
 import near from '../../lib/near'
 import EmbeddedCard from '../../components/EmbeddedCard'
 
@@ -135,20 +134,22 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							>
 								Share to...
 							</div>
-							{/* {store.currentUser === pubDetail.authorId && (
-								<div
-									className="py-2 cursor-pointer"
-									onClick={(_) => setShowModal('confirmTransfer')}
-								>
-									Update my publication
-								</div>
-							)} */}
+							{store.currentUser === pubDetail.authorId && (
+								<Link href={`/publication/edit/${pubDetail._id}`}>
+									<div
+										className="py-2 cursor-pointer"
+										onClick={(_) => setShowModal('confirmTransfer')}
+									>
+										Update publication
+									</div>
+								</Link>
+							)}
 							{store.currentUser === pubDetail.authorId && (
 								<div
 									className="py-2 cursor-pointer"
 									onClick={(_) => setShowModal('confirmDelete')}
 								>
-									Delete my publication
+									Delete
 								</div>
 							)}
 						</div>

@@ -1,23 +1,25 @@
+import axios from 'axios'
 import Head from 'next/head'
 
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import PublicationEditor from '../../components/PublicationEditor'
+import Nav from '../../../components/Nav'
+import Footer from '../../../components/Footer'
+import PublicationEditor from '../../../components/PublicationEditor'
 
-const CreatePublication = () => {
+const Edit = ({ pubDetail }) => {
 	return (
 		<div
-			className="min-h-screen bg-dark-primary-1"
+			className="min-h-screen relative bg-dark-primary-1"
 			style={{
 				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
 			}}
 		>
 			<Head>
-				<title>Publication — Paras</title>
+				<title>Edit Publication — Paras</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
+
 				<meta name="twitter:title" content="Paras — Digital Art Cards Market" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
@@ -45,13 +47,20 @@ const CreatePublication = () => {
 					property="og:image"
 					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 				/>
-				<meta charSet="utf-8" />
 			</Head>
 			<Nav />
-			<PublicationEditor />
+			<PublicationEditor isEdit={true} pubDetail={pubDetail} />
 			<Footer />
 		</div>
 	)
 }
 
-export default CreatePublication
+export async function getServerSideProps({ params }) {
+	const { pubId } = params
+	const resp = await axios(`${process.env.API_URL}/publications?_id=${pubId}`)
+	const pubDetail = (await resp.data?.data?.results[0]) || null
+
+	return { props: { pubDetail } }
+}
+
+export default Edit
