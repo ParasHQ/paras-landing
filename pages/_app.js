@@ -26,7 +26,9 @@ function MyApp({ Component, pageProps }) {
 		// create cookie uid if not exist
 		if (!uid) {
 			uid = uuidv4()
-			cookie.set('uid', uid)
+			cookie.set('uid', uid, {
+				expires: 30
+			})
 		}
 		await axios.post(
 			`${process.env.API_URL}/analytics`,
