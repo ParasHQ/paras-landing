@@ -120,6 +120,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 		}
 
 		setIsSubmitting(true)
+		setPreventLeaving(false)
 
 		const entityMap = await uploadImage()
 		const _thumbnail = await uploadThumbnail()
@@ -155,6 +156,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				err.response?.data?.message || `Something went wrong, try again later`
 			showToast(msg)
 			setIsSubmitting(false)
+			setPreventLeaving(true)
 		}
 	}
 
