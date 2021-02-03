@@ -4,8 +4,11 @@ import Link from 'next/link'
 
 import { parseImgUrl } from '../utils/common'
 import Card from './Card'
+import { useRouter } from 'next/router'
+import CardDetailModal from './CardDetailModal'
 
 const EmbeddedCard = ({ tokenId }) => {
+	const router = useRouter()
 	const [localToken, setLocalToken] = useState(null)
 
 	useEffect(() => {
@@ -20,6 +23,7 @@ const EmbeddedCard = ({ tokenId }) => {
 
 	return (
 		<div className="inline-block p-4 rounded-md w-full md:max-w-lg">
+			<CardDetailModal tokens={[localToken]} />
 			<div className="w-64 mx-auto">
 				<Card
 					imgUrl={parseImgUrl(localToken?.metadata?.image)}
@@ -41,7 +45,19 @@ const EmbeddedCard = ({ tokenId }) => {
 			</div>
 			<div className="text-gray-100 pt-4 text-center">
 				<div>
-					<Link href={`/token/${localToken?.tokenId}`}>
+					<Link
+						href={{
+							pathname: router.pathname,
+							query: {
+								...router.query,
+								...{ tokenId: localToken?.tokenId },
+								...{ prevAs: router.asPath },
+							},
+						}}
+						as={`/token/${localToken?.tokenId}`}
+						scroll={false}
+						shallow
+					>
 						<a
 							title={localToken?.metadata?.name}
 							className="text-2xl font-bold border-b-2 border-transparent"
