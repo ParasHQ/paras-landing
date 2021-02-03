@@ -54,7 +54,10 @@ function MyApp({ Component, pageProps }) {
 				counter(url)
 			}
 		}
-		router.events.on('routeChangeComplete', handleRouteChange)
+
+		if (process.env.APP_ENV === 'production') {
+			router.events.on('routeChangeComplete', handleRouteChange)
+		}
 
 		return () => {
 			router.events.off('routeChangeComplete', handleRouteChange)
@@ -109,14 +112,16 @@ function MyApp({ Component, pageProps }) {
 		store.setNearUsdPrice(nearUsdPrice.data.near.usd)
 		store.setInitialized(true)
 
-		// initial route analytics
-		const url = router.asPath
+		if (process.env.APP_ENV === 'production') {
+			// initial route analytics
+			const url = router.asPath
 
-		if (window && window.gtag) {
-			gtag.pageview(url)
-		}
-		if (window) {
-			counter(url)
+			if (window && window.gtag) {
+				gtag.pageview(url)
+			}
+			if (window) {
+				counter(url)
+			}
 		}
 	}
 

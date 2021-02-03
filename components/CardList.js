@@ -215,10 +215,10 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 					className="flex flex-wrap select-none "
 					// style={props}
 				>
-					{tokens.map((token, idx) => {
+					{tokens.map((token) => {
 						return (
 							<div
-								key={idx}
+								key={token.tokenId}
 								className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8 lg:p-12 relative"
 							>
 								<div className="w-full m-auto">
