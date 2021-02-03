@@ -74,13 +74,16 @@ const ProfileEdit = ({ close }) => {
 	}
 
 	const checkUrl = (str) => {
-		var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
-			'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-			'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-			'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-			'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-			'(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
-		return !!pattern.test(str);
+		var pattern = new RegExp(
+			'^(https?:\\/\\/)?' + // protocol
+				'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+				'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+				'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+				'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+				'(\\#[-a-z\\d_]*)?$',
+			'i'
+		) // fragment locator
+		return !!pattern.test(str)
 	}
 
 	const _setImg = async (e) => {
@@ -118,6 +121,9 @@ const ProfileEdit = ({ close }) => {
 						type="file"
 						accept="image/*"
 						onChange={_setImg}
+						onClick={(e) => {
+							e.target.value = null
+						}}
 					/>
 					<div className="flex items-center justify-center">
 						<div className="w-32 h-32 rounded-full overflow-hidden bg-primary shadow-inner">
