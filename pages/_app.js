@@ -27,9 +27,10 @@ function MyApp({ Component, pageProps }) {
 		if (!uid) {
 			uid = uuidv4()
 			cookie.set('uid', uid, {
-				expires: 30
+				expires: 30,
 			})
 		}
+		const authHeader = await near.authToken()
 		await axios.post(
 			`${process.env.API_URL}/analytics`,
 			{
@@ -38,8 +39,7 @@ function MyApp({ Component, pageProps }) {
 			},
 			{
 				headers: {
-					'Content-Type': 'multipart/form-data',
-					authorization: await near.authToken(),
+					authorization: authHeader,
 				},
 			}
 		)
@@ -47,7 +47,6 @@ function MyApp({ Component, pageProps }) {
 
 	useEffect(() => {
 		const handleRouteChange = (url) => {
-			console.log(url)
 			if (window && window.gtag) {
 				gtag.pageview(url)
 			}
@@ -67,7 +66,6 @@ function MyApp({ Component, pageProps }) {
 	}, [])
 
 	const _init = async () => {
-		console.log('near init')
 		await near.init()
 		const currentUser = await near.currentUser
 		const nearUsdPrice = await axios.get(
@@ -110,6 +108,16 @@ function MyApp({ Component, pageProps }) {
 		}
 		store.setNearUsdPrice(nearUsdPrice.data.near.usd)
 		store.setInitialized(true)
+
+		// initial route analytics
+		const url = router.asPath
+
+		if (window && window.gtag) {
+			gtag.pageview(url)
+		}
+		if (window) {
+			counter(url)
+		}
 	}
 
 	return (
