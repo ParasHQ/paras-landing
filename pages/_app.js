@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import near from '../lib/near'
 import useStore from '../store'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import * as gtag from '../lib/gtag'
+import cookie from '../lib/cookie'
 
 import '../styles/font.css'
 import '../styles/tailwind.css'
@@ -18,10 +20,38 @@ function MyApp({ Component, pageProps }) {
 
 	const router = useRouter()
 
+	const counter = async (url) => {
+		// check cookie uid
+		let uid = cookie.get('uid')
+		// create cookie uid if not exist
+		if (!uid) {
+			uid = uuidv4()
+			cookie.set('uid', uid, {
+				expires: 30,
+			})
+		}
+		const authHeader = await near.authToken()
+		await axios.post(
+			`${process.env.API_URL}/analytics`,
+			{
+				uid: uid,
+				page: url,
+			},
+			{
+				headers: {
+					authorization: authHeader,
+				},
+			}
+		)
+	}
+
 	useEffect(() => {
 		const handleRouteChange = (url) => {
 			if (window && window.gtag) {
 				gtag.pageview(url)
+			}
+			if (window) {
+				counter(url)
 			}
 		}
 		router.events.on('routeChangeComplete', handleRouteChange)
@@ -36,7 +66,6 @@ function MyApp({ Component, pageProps }) {
 	}, [])
 
 	const _init = async () => {
-		console.log('near init')
 		await near.init()
 		const currentUser = await near.currentUser
 		const nearUsdPrice = await axios.get(
@@ -79,6 +108,16 @@ function MyApp({ Component, pageProps }) {
 		}
 		store.setNearUsdPrice(nearUsdPrice.data.near.usd)
 		store.setInitialized(true)
+
+		// initial route analytics
+		const url = router.asPath
+
+		if (window && window.gtag) {
+			gtag.pageview(url)
+		}
+		if (window) {
+			counter(url)
+		}
 	}
 
 	return (
