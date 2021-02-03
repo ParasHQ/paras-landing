@@ -24,7 +24,8 @@ import 'draft-js/dist/Draft.css'
 import toolbarStyles from '../styles/toolbar.module.css'
 import buttonStyles from '../styles/button.module.css'
 
-import { parseImgUrl, readFileAsUrl } from '../utils/common'
+import { compressImg, parseImgUrl, readFileAsUrl } from '../utils/common'
+import { useToast } from '../hooks/useToast'
 
 const toolbarPlugin = createToolbarPlugin({
 	theme: { buttonStyles, toolbarStyles },
@@ -62,10 +63,26 @@ class TextEditor extends React.Component {
 	}
 
 	onAddLocalImage = async (e) => {
-		const { content } = this.props
+		const { content, toast } = this.props
 		let imgUrl
 		if (e.target.files[0]) {
-			imgUrl = await readFileAsUrl(e.target.files[0])
+			if (e.target.files[0].size > 3 * 1024 * 1024) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							Maximum file size 3MB
+						</div>
+					),
+					type: 'error',
+					duration: null,
+				})
+				return
+			}
+			const compressedImg =
+				e.target.files[0].type === 'image/gif'
+					? e.target.files[0]
+					: await compressImg(e.target.files[0])
+			imgUrl = await readFileAsUrl(compressedImg)
 		}
 		this.props.setContent(imagePlugin.addImage(content, imgUrl))
 	}
@@ -192,6 +209,9 @@ const ImageButton = ({ onChange }) => {
 				type="file"
 				accept="image/*"
 				onChange={onChange}
+				onClick={(e) => {
+					e.target.value = null
+				}}
 			/>
 		</div>
 	)
@@ -235,4 +255,10 @@ const getBlockStyle = (block) => {
 	}
 }
 
-export default TextEditor
+const TextEditorWrapper = (props) => {
+	const toast = useToast()
+
+	return <TextEditor toast={toast} {...props} />
+}
+
+export default TextEditorWrapper

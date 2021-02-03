@@ -1,3 +1,4 @@
+import Compressor from 'compressorjs'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 
@@ -112,4 +113,19 @@ export const dataURLtoFile = (dataurl, filename) => {
 	}
 
 	return new File([u8arr], filename, { type: mime })
+}
+
+export const compressImg = (file) => {
+  return new Promise(async (resolve, reject) => {
+    let _file = file
+		const quality = 0.8
+    new Compressor(_file, {
+      quality: quality,
+      maxWidth: 1080,
+      maxHeight: 1080,
+      convertSize: Infinity,
+      success: resolve,
+      error: reject,
+    })
+  })
 }
