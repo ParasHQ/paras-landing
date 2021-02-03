@@ -11,6 +11,8 @@ import Modal from './Modal'
 import Card from './Card'
 import usePreventRouteChangeIf from '../hooks/usePreventRouteChange'
 
+let redirectUrl = null
+
 const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	const toast = useToast()
 	const router = useRouter()
@@ -18,9 +20,10 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	const [preventLeaving, setPreventLeaving] = useState(true)
 	const [showLeavingConfirmation, setShowLeavingConfirmation] = useState(false)
 
-	usePreventRouteChangeIf(preventLeaving, () =>
+	usePreventRouteChangeIf(preventLeaving, (url) => {
+		redirectUrl = url
 		setShowLeavingConfirmation(true)
-	)
+	})
 
 	const [title, setTitle] = useState(defaultValueEditor)
 	const [subTitle, setSubTitle] = useState('')
@@ -284,7 +287,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 							</h1>
 							<div onClick={() => setShowModal(null)}>
 								<svg
-								className="cursor-pointer"
+									className="cursor-pointer"
 									width="16"
 									height="16"
 									viewBox="0 0 16 16"
@@ -386,14 +389,17 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				>
 					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
 						<div className="w-full">
-							Are you sure to leave this page? you will lose your publication
+							Are you sure to leave this page? You will lose any unpublished changes
 						</div>
 						<div className="flex space-x-4">
 							<button
 								className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 								onClick={() => {
-									setShowLeavingConfirmation(false)
 									setPreventLeaving(false)
+									setTimeout(() => {
+										setShowLeavingConfirmation(false)
+										router.push(redirectUrl)
+									}, 100)
 								}}
 							>
 								OK
@@ -421,7 +427,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 					</div>
 				</Modal>
 			)}
-			<TextEditor			
+			<TextEditor
 				content={content}
 				setContent={setContent}
 				title={title}
