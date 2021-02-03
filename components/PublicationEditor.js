@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 
 import near from '../lib/near'
 import { useToast } from '../hooks/useToast'
-import { dataURLtoFile, parseImgUrl, readFileAsUrl } from '../utils/common'
+import { compressImg, dataURLtoFile, parseImgUrl, readFileAsUrl } from '../utils/common'
 import TextEditor from './TextEditor'
 import Modal from './Modal'
 import Card from './Card'
