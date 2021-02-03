@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 import near from '../lib/near'
 import useStore from '../store'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import * as gtag from '../lib/gtag'
+import cookie from '../lib/cookie'
 
 import '../styles/font.css'
 import '../styles/tailwind.css'
@@ -18,10 +20,37 @@ function MyApp({ Component, pageProps }) {
 
 	const router = useRouter()
 
+	const counter = async (url) => {
+		// check cookie uid
+		let uid = cookie.get('uid')
+		// create cookie uid if not exist
+		if (!uid) {
+			uid = uuidv4()
+			cookie.set('uid', uid)
+		}
+		await axios.post(
+			`${process.env.API_URL}/analytics`,
+			{
+				uid: uid,
+				page: url,
+			},
+			{
+				headers: {
+					'Content-Type': 'multipart/form-data',
+					authorization: await near.authToken(),
+				},
+			}
+		)
+	}
+
 	useEffect(() => {
 		const handleRouteChange = (url) => {
+			console.log(url)
 			if (window && window.gtag) {
 				gtag.pageview(url)
+			}
+			if (window) {
+				counter(url)
 			}
 		}
 		router.events.on('routeChangeComplete', handleRouteChange)
