@@ -288,7 +288,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							<h4 className="text-white font-semibold text-3xl mb-4 text-center">
 								Card Collectibles
 							</h4>
-							<div className="md:flex justify-around -m-4 lg:-m-8">
+							<div className="md:flex justify-center -m-4 lg:-m-8">
 								{pubDetail.tokenIds?.map((tokenId) => (
 									<div
 										key={tokenId}

@@ -245,9 +245,9 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 										scroll={false}
 										shallow
 									>
-										<p className="inline-block text-gray-100 cursor-pointer font-semibold border-b-2 border-gray-100">
+										<a className="inline-block text-gray-100 cursor-pointer font-semibold border-b-2 border-gray-100">
 											See Details
-										</p>
+										</a>
 									</Link>
 								</div>
 							</div>

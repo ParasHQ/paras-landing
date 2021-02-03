@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import axios from 'axios'
 import { convertFromRaw, convertToRaw, EditorState } from 'draft-js'
 import { useRouter } from 'next/router'
@@ -240,7 +240,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	}
 
 	return (
-		<div className="py-16 px-4 mx-auto max-w-3xl min-h-screen">
+		<div className="py-16 min-h-screen">
 			{showModal === 'card' && (
 				<Modal
 					close={() => setShowModal(null)}
@@ -389,7 +389,8 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				>
 					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
 						<div className="w-full">
-							Are you sure to leave this page? You will lose any unpublished changes
+							Are you sure to leave this page? You will lose any unpublished
+							changes
 						</div>
 						<div className="flex space-x-4">
 							<button
@@ -427,38 +428,46 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 					</div>
 				</Modal>
 			)}
-			<TextEditor
-				content={content}
-				setContent={setContent}
-				title={title}
-				setTitle={setTitle}
-				onPressAddCard={getDataFromTokenId}
-				showCardModal={showCardModal}
-			/>
+			<div className="mx-auto max-w-3xl px-4">
+				<TextEditor
+					content={content}
+					setContent={setContent}
+					title={title}
+					setTitle={setTitle}
+					onPressAddCard={getDataFromTokenId}
+					showCardModal={showCardModal}
+				/>
+			</div>
 			{embeddedCards.length !== 0 && (
-				<div className="border-2 border-dashed border-gray-800 p-4 rounded-md my-4 pd-4">
-					<h1 className="p-4 pb-0 block text-white text-2xl font-bold">
-						Embedded Card
-					</h1>
-					<div className="inline-block">
-						{embeddedCards.map((card) => (
-							<CardPublication
-								key={card.tokenId}
-								localToken={card}
-								deleteCard={() => {
-									const temp = embeddedCards.filter(
-										(x) => x.tokenId != card.tokenId
-									)
-									setEmbeddedCards(temp)
-								}}
-							/>
-						))}
+				<div className="max-w-4xl mx-auto px-4 pt-16">
+					<div className=" border-2 border-dashed border-gray-800 rounded-md p-4">
+						<h4 className="text-white font-semibold text-3xl mb-4 text-center">
+							Card Collectibles
+						</h4>
+						<div className="md:flex justify-center -m-4 lg:-m-8">
+							{embeddedCards.map((card) => (
+								<div
+									key={card.tokenId}
+									className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-4 lg:p-8"
+								>
+									<CardPublication
+										localToken={card}
+										deleteCard={() => {
+											const temp = embeddedCards.filter(
+												(x) => x.tokenId != card.tokenId
+											)
+											setEmbeddedCards(temp)
+										}}
+									/>
+								</div>
+							))}
+						</div>
 					</div>
 				</div>
 			)}
-			<div>
+			<div className="max-w-3xl mx-auto px-4 pt-8">
 				<button
-					className="font-semibold mt-4 py-3 w-32 rounded-md bg-primary text-white"
+					className="font-semibold py-3 w-32 rounded-md bg-primary text-white"
 					onClick={onPressContinue}
 					disabled={title === '' || !content.getCurrentContent().hasText()}
 				>
@@ -500,8 +509,8 @@ const convertTextToEditorState = (text) =>
 
 export const CardPublication = ({ localToken, deleteCard }) => {
 	return (
-		<div className="inline-block p-4 rounded-md max-w-sm">
-			<div className="w-40 mx-auto">
+		<Fragment>
+			<div className="w-full m-auto">
 				<Card
 					imgUrl={parseImgUrl(localToken?.metadata?.image)}
 					imgBlur={localToken?.metadata?.blurhash}
@@ -515,20 +524,20 @@ export const CardPublication = ({ localToken, deleteCard }) => {
 						createdAt: localToken?.createdAt,
 					}}
 					initialRotate={{
-						x: 15,
-						y: 15,
+						x: 0,
+						y: 0,
 					}}
 					disableFlip={true}
 				/>
 			</div>
 			<div className="text-gray-100 pt-4">
-				<div>
-					<a
+				<div className=" overflow-hidden">
+					<p
 						title={localToken?.metadata?.name}
-						className="text-2xl font-bold border-b-2 border-transparent"
+						className="text-2xl font-bold border-b-2 border-transparent truncate"
 					>
 						{localToken?.metadata?.name}
-					</a>
+					</p>
 				</div>
 				<p className="opacity-75 truncate">
 					{localToken?.metadata?.collection}
@@ -537,7 +546,7 @@ export const CardPublication = ({ localToken, deleteCard }) => {
 			<div className="text-red-600 text-sm cursor-pointer" onClick={deleteCard}>
 				Delete
 			</div>
-		</div>
+		</Fragment>
 	)
 }
 
