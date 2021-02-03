@@ -280,7 +280,23 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 							<h1 className="mb-4 block text-white text-2xl font-bold">
 								{isEdit ? 'Edit Publication' : 'Preview Publication'}
 							</h1>
-							<div onClick={() => setShowModal(null)}>close</div>
+							<div onClick={() => setShowModal(null)}>
+								<svg
+								className="cursor-pointer"
+									width="16"
+									height="16"
+									viewBox="0 0 16 16"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										fillRule="evenodd"
+										clipRule="evenodd"
+										d="M8.00008 9.41423L3.70718 13.7071L2.29297 12.2929L6.58586 8.00001L2.29297 3.70712L3.70718 2.29291L8.00008 6.5858L12.293 2.29291L13.7072 3.70712L9.41429 8.00001L13.7072 12.2929L12.293 13.7071L8.00008 9.41423Z"
+										fill="white"
+									/>
+								</svg>
+							</div>
 						</div>
 						<div className="flex flex-col md:flex-row -mx-2">
 							<div className="w-full md:w-1/2 px-2">
