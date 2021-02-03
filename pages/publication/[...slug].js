@@ -41,9 +41,9 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	}
 
 	const headMeta = {
-		title: `${pubDetail.title} — Paras`,
+		title: `${pubDetail.title} — Paras Publication`,
 		description: pubDetail.description,
-		// image: `${process.env.API_URL}/socialCard/${token.tokenId}`,
+		image: parseImgUrl(pubDetail.thumbnail),
 	}
 
 	const _copyLink = () => {
@@ -96,7 +96,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 					<meta name="twitter:site" content="@ParasHQ" />
 					<meta name="twitter:url" content="https://paras.id" />
 					<meta name="twitter:description" content={headMeta.description} />
-					{/* <meta name="twitter:image" content={headMeta.image} /> */}
+					<meta name="twitter:image" content={headMeta.image} />
 					<meta property="og:type" content="website" />
 					<meta property="og:title" content={headMeta.title} />
 					<meta property="og:site_name" content={headMeta.title} />
@@ -219,8 +219,8 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 					<h1 className="titlePublication text-4xl font-bold pb-0 text-center px-4 md:px-0">
 						{pubDetail.title}
 					</h1>
-					<div className="m-auto max-w-3xl">
-						<div className="p-4 pt-8 flex justify-between">
+					<div className="m-auto max-w-3xl px-4 pt-8">
+						<div className="flex justify-between">
 							<div className="flex space-x-4">
 								<Link href={`/${pubDetail.authorId}`}>
 									<div className="w-16 h-16 rounded-full overflow-hidden bg-primary cursor-pointer">
@@ -283,10 +283,22 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							readOnly={true}
 						/>
 					</div>
-					<div className="md:flex">
-						{pubDetail.tokenIds?.map((tokenId) => (
-							<EmbeddedCard key={tokenId} tokenId={tokenId} />
-						))}
+					<div className="max-w-4xl mx-auto px-4 pt-16">
+						<div className=" border-2 border-dashed border-gray-800 rounded-md p-4">
+							<h4 className="text-white font-semibold text-3xl mb-4 text-center">
+								Card Collectibles
+							</h4>
+							<div className="md:flex justify-around -m-4 lg:-m-8">
+								{pubDetail.tokenIds?.map((tokenId) => (
+									<div
+										key={tokenId}
+										className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-4 lg:p-8"
+									>
+										<EmbeddedCard key={tokenId} tokenId={tokenId} />
+									</div>
+								))}
+							</div>
+						</div>
 					</div>
 				</div>
 				<Footer />

@@ -5,8 +5,6 @@ import { prettyBalance } from '../utils/common'
 import Link from 'next/link'
 import useStore from '../store'
 import { useRouter } from 'next/router'
-import Modal from './Modal'
-import CardDetail from './CardDetail'
 import JSBI from 'jsbi'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import CardDetailModal from './CardDetailModal'
@@ -141,7 +139,6 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 		return marketDataList[0]
 	}
 
-	console.log(tokens)
 	return (
 		<div
 			ref={containerRef}

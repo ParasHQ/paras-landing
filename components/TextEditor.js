@@ -145,8 +145,9 @@ class TextEditor extends React.Component {
 		return (
 			<div>
 				{!hideTitle && (
-					<div className="titlePublication text-4xl font-bold p-4 pb-0 text-white">
+					<div className="titlePublication text-4xl font-bold pb-0 text-white">
 						<Editor
+							editorKey={'title'}
 							placeholder="Title"
 							editorState={title}
 							onChange={setTitle}
@@ -155,9 +156,10 @@ class TextEditor extends React.Component {
 						/>
 					</div>
 				)}
-				<div className="RichEditor-root text-white p-4">
+				<div className="RichEditor-root text-white">
 					<div className={className} onClick={this.focus}>
 						<Editor
+							editorKey={'content'}
 							blockStyleFn={getBlockStyle}
 							customStyleMap={styleMap}
 							editorState={content}

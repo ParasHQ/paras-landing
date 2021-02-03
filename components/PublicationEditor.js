@@ -237,7 +237,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	}
 
 	return (
-		<div className="y-16 mx-auto max-w-3xl min-h-screen">
+		<div className="py-16 px-4 mx-auto max-w-3xl min-h-screen">
 			{showModal === 'card' && (
 				<Modal
 					close={() => setShowModal(null)}
@@ -421,7 +421,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 					</div>
 				</Modal>
 			)}
-			<TextEditor
+			<TextEditor			
 				content={content}
 				setContent={setContent}
 				title={title}
@@ -452,7 +452,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			)}
 			<div>
 				<button
-					className="font-semibold m-4 py-3 w-32 rounded-md bg-primary text-white"
+					className="font-semibold mt-4 py-3 w-32 rounded-md bg-primary text-white"
 					onClick={onPressContinue}
 					disabled={title === '' || !content.getCurrentContent().hasText()}
 				>

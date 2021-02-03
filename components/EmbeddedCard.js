@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
 
-import { parseImgUrl } from '../utils/common'
+import { parseImgUrl, prettyBalance } from '../utils/common'
 import Card from './Card'
 import { useRouter } from 'next/router'
 import CardDetailModal from './CardDetailModal'
+import useStore from '../store'
+import JSBI from 'jsbi'
 
 const EmbeddedCard = ({ tokenId }) => {
+	const store = useStore()
 	const router = useRouter()
 	const [localToken, setLocalToken] = useState(null)
 
@@ -21,10 +24,19 @@ const EmbeddedCard = ({ tokenId }) => {
 		setLocalToken(token)
 	}
 
+	const _getLowestPrice = (ownerships = []) => {
+		const marketDataList = ownerships
+			.filter((ownership) => ownership.marketData)
+			.map((ownership) => ownership.marketData.amount)
+			.sort((a, b) => a - b)
+
+		return marketDataList[0]
+	}
+
 	return (
-		<div className="inline-block p-4 rounded-md w-full md:max-w-lg">
+		<Fragment>
 			<CardDetailModal tokens={[localToken]} />
-			<div className="w-64 mx-auto">
+			<div className="w-full m-auto">
 				<Card
 					imgUrl={parseImgUrl(localToken?.metadata?.image)}
 					imgBlur={localToken?.metadata?.blurhash}
@@ -43,34 +55,62 @@ const EmbeddedCard = ({ tokenId }) => {
 					}}
 				/>
 			</div>
-			<div className="text-gray-100 pt-4 text-center">
-				<div>
-					<Link
-						href={{
-							pathname: router.pathname,
-							query: {
-								...router.query,
-								...{ tokenId: localToken?.tokenId },
-								...{ prevAs: router.asPath },
-							},
-						}}
-						as={`/token/${localToken?.tokenId}`}
-						scroll={false}
-						shallow
-					>
-						<a
-							title={localToken?.metadata?.name}
-							className="text-2xl font-bold border-b-2 border-transparent"
-						>
-							{localToken?.metadata?.name}
-						</a>
-					</Link>
+			<div className="text-center">
+				<div className="mt-8">
+					<div className="p-2">
+						<p className="text-gray-400 text-xs">Start From</p>
+						<div className="text-gray-100 text-2xl">
+							{_getLowestPrice(localToken?.ownerships) ? (
+								<div>
+									<div>
+										{prettyBalance(
+											_getLowestPrice(localToken?.ownerships),
+											24,
+											4
+										)}{' '}
+										Ⓝ
+									</div>
+									<div className="text-sm text-gray-400">
+										~ $
+										{prettyBalance(
+											JSBI.BigInt(
+												_getLowestPrice(localToken?.ownerships) *
+													store.nearUsdPrice
+											),
+											24,
+											4
+										)}
+									</div>
+								</div>
+							) : (
+								<div className="line-through text-red-600">
+									<span className="text-gray-100">SALE</span>
+								</div>
+							)}
+						</div>
+					</div>
 				</div>
-				<p className="opacity-75 truncate">
-					{localToken?.metadata?.collection}
-				</p>
 			</div>
-		</div>
+			<div className="text-center mt-2 text-sm">
+				<Link
+					href={{
+						pathname: router.pathname,
+						query: {
+							...router.query,
+							...{ tokenId: localToken?.tokenId },
+							...{ prevAs: router.asPath },
+						},
+					}}
+					as={`/token/${localToken?.tokenId}`}
+					scroll={false}
+					shallow
+				>
+					<p className="inline-block text-gray-100 cursor-pointer font-semibold border-b-2 border-gray-100">
+						See Details
+					</p>
+				</Link>
+			</div>
+		</Fragment>
 	)
 }
 

@@ -10,7 +10,7 @@ function CardDetailModal({ tokens = [] }) {
 	const [activeToken, setActiveToken] = useState(null)
 
 	const closeCardDetail = () => {
-		router.push(router.query.prevAs)
+		router.back()
 	}
 
 	useEffect(() => {
