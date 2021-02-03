@@ -1,3 +1,4 @@
+import CID from 'cids'
 import Compressor from 'compressorjs'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
@@ -96,7 +97,12 @@ export const parseImgUrl = (url, defaultValue = '') => {
 	}
 	const [protocol, path] = url.split('://')
 	if (protocol === 'ipfs') {
-		return `https://ipfs-gateway.paras.id/ipfs/${path}`
+		const cid = new CID(path)
+		if (cid.version === 0) {
+			return `https://ipfs-gateway.paras.id/ipfs/${path}`
+		} else {
+			return `https://ipfs.fleek.co/ipfs/${path}`
+		}
 	}
 	return url
 }
@@ -116,16 +122,16 @@ export const dataURLtoFile = (dataurl, filename) => {
 }
 
 export const compressImg = (file) => {
-  return new Promise(async (resolve, reject) => {
-    let _file = file
+	return new Promise(async (resolve, reject) => {
+		let _file = file
 		const quality = 0.8
-    new Compressor(_file, {
-      quality: quality,
-      maxWidth: 1080,
-      maxHeight: 1080,
-      convertSize: Infinity,
-      success: resolve,
-      error: reject,
-    })
-  })
+		new Compressor(_file, {
+			quality: quality,
+			maxWidth: 1080,
+			maxHeight: 1080,
+			convertSize: Infinity,
+			success: resolve,
+			error: reject,
+		})
+	})
 }
