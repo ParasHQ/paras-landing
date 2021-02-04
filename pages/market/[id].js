@@ -29,7 +29,9 @@ export default function EventMarketPage({ data }) {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/tokens?__skip=${page * LIMIT}&__limit=${LIMIT}`
+			`${process.env.API_URL}/tokens?collectionSearch=punk&__skip=${
+				page * LIMIT
+			}&__limit=${LIMIT}`
 		)
 		const newData = await res.data.data
 
@@ -85,16 +87,9 @@ export default function EventMarketPage({ data }) {
 			</Head>
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
-				<h1 className="text-4xl font-bold text-gray-100 ml-4">
+				<h1 className="text-4xl font-bold text-gray-100 ml-4 text-center">
 					Lunar New Year Event
 				</h1>
-				<p className="m-4 mt-2 max-w-xl text-white">
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut
-					condimentum sollicitudin gravida. Vestibulum sed enim sem. In id
-					lectus maximus, facilisis lorem at, consequat dui. Vivamus eget
-					tincidunt felis, id dictum urna.
-				</p>
-				{/* See Chinese Lunar year */}
 				<div className="mt-4 px-4">
 					<CardList
 						name="market"
