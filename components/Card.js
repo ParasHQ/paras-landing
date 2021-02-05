@@ -180,7 +180,7 @@ const Card = ({
 					}}
 				>
 					<div
-						className={`card bg-gray-800 w-full h-full ${customCardClass}`}
+						className={`card bg-gray-100 w-full h-full ${customCardClass}`}
 						style={{
 							transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)`,
 						}}
