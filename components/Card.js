@@ -30,7 +30,7 @@ const Card = ({
 	let cardTimeout
 
 	useEffect(() => {
-		if (token?.collection.includes('Lunar 21')) {
+		if (token?.collection?.includes('Lunar 21')) {
 			setCustomCardClass('lunar bg-red-300')
 		}
 	}, [token])
