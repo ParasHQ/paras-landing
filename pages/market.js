@@ -106,7 +106,7 @@ export async function getServerSideProps() {
 	const data = await res.data.data
 
 	const resEvent = await axios(
-		`${process.env.API_URL}/tokens?collectionSearch=Lunar 21&_limit=${3}`
+		`${process.env.API_URL}/tokens?collectionSearch=Lunar 21&__limit=${3}`
 	)
 	const event = await resEvent.data.data
 
