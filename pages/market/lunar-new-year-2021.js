@@ -29,7 +29,7 @@ export default function EventMarketPage({ data }) {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/tokens?collectionSearch=punk&__skip=${
+			`${process.env.API_URL}/tokens?collectionSearch=Lunar 21&__skip=${
 				page * LIMIT
 			}&__limit=${LIMIT}`
 		)
@@ -106,7 +106,7 @@ export default function EventMarketPage({ data }) {
 
 export async function getServerSideProps() {
 	const res = await axios(
-		`${process.env.API_URL}/tokens?collectionSearch=punk&_limit=${LIMIT}`
+		`${process.env.API_URL}/tokens?collectionSearch=Lunar 21&_limit=${LIMIT}`
 	)
 	const data = await res.data.data
 

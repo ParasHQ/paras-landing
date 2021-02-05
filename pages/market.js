@@ -87,7 +87,7 @@ export default function MarketPage({ data, event }) {
 			<div className="max-w-6xl relative m-auto py-12">
 				<h1 className="text-4xl font-bold text-gray-100 text-center">Market</h1>
 				<EventMarket data={event} />
-				<div className="mt-4 px-4">
+				<div className="mt-8 px-4">
 					<CardList
 						name="market"
 						tokens={tokens}
@@ -106,7 +106,7 @@ export async function getServerSideProps() {
 	const data = await res.data.data
 
 	const resEvent = await axios(
-		`${process.env.API_URL}/tokens?collectionSearch=punk&_limit=${3}`
+		`${process.env.API_URL}/tokens?collectionSearch=Lunar 21&_limit=${3}`
 	)
 	const event = await resEvent.data.data
 

@@ -21,11 +21,19 @@ const Card = ({
 	const [imgLoaded, setImgLoaded] = useState(null)
 	const [dimension, setDimension] = useState({ width: 0, height: 0 })
 	const [rotate, setRotate] = useState(initialRotate)
+	const [customCardClass, setCustomCardClass] = useState('')
+
 	if (!setIsShowFront) {
 		;[isShowFront, setIsShowFront] = useState(true)
 	}
 
 	let cardTimeout
+
+	useEffect(() => {
+		if (token?.collection.includes('Lunar 21')) {
+			setCustomCardClass('lunar bg-red-300')
+		}
+	}, [token])
 
 	useEffect(() => {
 		var img = new Image()
@@ -124,7 +132,7 @@ const Card = ({
 					}}
 				>
 					<div
-						className="card  bg-gray-800 w-full h-full"
+						className={`card bg-gray-800 w-full h-full ${customCardClass}`}
 						style={{
 							transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)`,
 						}}
@@ -172,7 +180,7 @@ const Card = ({
 					}}
 				>
 					<div
-						className="card bg-gray-100 w-full h-full"
+						className={`card bg-gray-800 w-full h-full ${customCardClass}`}
 						style={{
 							transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)`,
 						}}
