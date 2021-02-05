@@ -54,10 +54,10 @@ export default function EventMarketPage({ data }) {
 			}}
 		>
 			<Head>
-				<title>Market — Paras</title>
+				<title>Lunar Market — Paras</title>
 				<meta
 					name="description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Explore card from Lunar 21-themed collection. Start from 5th of Feb 2021 until 19th of Feb 2021. Only at Paras."
 				/>
 
 				<meta name="twitter:title" content="Market — Paras" />
@@ -66,7 +66,7 @@ export default function EventMarketPage({ data }) {
 				<meta name="twitter:url" content="https://paras.id" />
 				<meta
 					name="twitter:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Explore card from Lunar 21-themed collection. Start from 5th of Feb 2021 until 19th of Feb 2021. Only at Paras."
 				/>
 				<meta
 					name="twitter:image"
@@ -77,7 +77,7 @@ export default function EventMarketPage({ data }) {
 				<meta property="og:site_name" content="Market — Paras" />
 				<meta
 					property="og:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Explore card from Lunar 21-themed collection. Start from 5th of Feb 2021 until 19th of Feb 2021. Only at Paras."
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta

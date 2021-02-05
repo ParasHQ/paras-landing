@@ -11,8 +11,8 @@ const EventMarket = ({ data }) => {
 					Lunar New Year
 				</h1>
 				<p className="m-4 mt-2 text-white text-xl">
-					Explore card from Lunar new year. Lorem ipsum dolor sit amet,
-					consectetur adipiscing elit. Ut condimentum sollicitudin gravida.
+					Year of the Ox. Explore card from Lunar 21-themed collection. Start
+					from 5th of Feb 2021 until 19th of Feb 2021. Only at Paras.
 				</p>
 				<div className="space-x-2 m-4">
 					<button
@@ -23,7 +23,11 @@ const EventMarket = ({ data }) => {
 					</button>
 					<button
 						className="outline-none h-10 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-0 text-primary bg-white"
-						onClick={() => window.open('https://www.google.com/')}
+						onClick={() =>
+							window.open(
+								'https://medium.com/paras-media/paras-lunar-new-year-ab1197074abd'
+							)
+						}
 					>
 						See More
 					</button>

@@ -88,9 +88,7 @@ export default function MarketPage({ data, event }) {
 			</Head>
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
-				<h1 className="mt-8 text-4xl font-bold text-gray-100 ml-4 text-center">
-					Market
-				</h1>
+				<h1 className="text-4xl font-bold text-gray-100 text-center">Market</h1>
 				<EventMarket data={event} />
 				<div className="mt-4 px-4">
 					<CardList
