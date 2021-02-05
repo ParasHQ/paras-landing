@@ -5,15 +5,12 @@ import CardList from '../components/CardList'
 import Head from 'next/head'
 import Footer from '../components/Footer'
 import useStore from '../store'
-import { useRouter } from 'next/router'
-import Card from '../components/Card'
 import EventMarket from '../components/EventMarket'
 
 const LIMIT = 6
 
 export default function MarketPage({ data, event }) {
 	const store = useStore()
-	const router = useRouter()
 	const [tokens, setTokens] = useState(data.results)
 	const [page, setPage] = useState(1)
 	const [isFetching, setIsFetching] = useState(false)
