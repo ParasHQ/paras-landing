@@ -36,6 +36,8 @@ export default function EventMarketPage({ data }) {
 		const newData = await res.data.data
 
 		const newTokens = [...tokens, ...newData.results]
+		console.log(newData.results)
+		console.log(newTokens)
 		setTokens(newTokens)
 		setPage(page + 1)
 		if (newData.results.length === 0) {
@@ -106,7 +108,7 @@ export default function EventMarketPage({ data }) {
 
 export async function getServerSideProps() {
 	const res = await axios(
-		`${process.env.API_URL}/tokens?collectionSearch=Lunar 21&_limit=${LIMIT}`
+		`${process.env.API_URL}/tokens?collectionSearch=Lunar 21&__limit=${LIMIT}`
 	)
 	const data = await res.data.data
 
