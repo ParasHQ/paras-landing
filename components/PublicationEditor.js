@@ -280,7 +280,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 					closeOnBgClick={true}
 					closeOnEscape={true}
 				>
-					<div className="w-full max-w-3xl p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
+					<div className="w-full max-w-3xl p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden h-full max-h-screen overflow-y-auto">
 						<div className="flex justify-between">
 							<h1 className="mb-4 block text-white text-2xl font-bold">
 								{isEdit ? 'Edit Publication' : 'Preview Publication'}
