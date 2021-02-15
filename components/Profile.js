@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { parseImgUrl, prettyTruncate } from '../utils/common'
 import CopyLink from './CopyLink'
 
@@ -9,7 +9,7 @@ const Profile = ({ userProfile, activeTab }) => {
 	const [isCopied, setIsCopied] = useState(false)
 
 	return (
-		<div className="max-w-6xl py-12 px-4 relative m-auto">
+		<Fragment>
 			<div className="flex flex-col items-center justify-center">
 				<div className="w-32 h-32 rounded-full overflow-hidden bg-primary">
 					<img src={parseImgUrl(userProfile.imgUrl)} className="object-cover" />
@@ -128,7 +128,7 @@ const Profile = ({ userProfile, activeTab }) => {
 					</div>
 				</div>
 			</div>
-		</div>
+		</Fragment>
 	)
 }
 
