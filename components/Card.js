@@ -58,7 +58,7 @@ const Card = ({
 		window.addEventListener('resize', updateSize)
 		updateSize()
 		return () => window.removeEventListener('resize', updateSize)
-	}, [])
+	}, [containerRef])
 
 	const handleMouseMove = (e) => {
 		const bbox = cardRef.current.getBoundingClientRect()
