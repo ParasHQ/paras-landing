@@ -12,7 +12,11 @@ import near from '../lib/near'
 import Head from 'next/head'
 import { useToast } from '../hooks/useToast'
 import Footer from '../components/Footer'
-import { prettyBalance } from '../utils/common'
+import {
+	prettyBalance,
+	readFileAsUrl,
+	readFileDimension,
+} from '../utils/common'
 import Autocomplete from '../components/Autocomplete'
 
 const NewPage = () => {
@@ -140,12 +144,31 @@ const NewPage = () => {
 
 	const _setImg = async (e) => {
 		if (e.target.files[0]) {
-			if (e.target.files[0].size > 8 * 1024 * 1024) {
-				setShowAlertErr('Maximum file size is 8 Mb')
+			if (e.target.files[0].size > 20 * 1024 * 1024) {
+				setShowAlertErr('Maximum file size is 20 Mb')
 				return
 			}
-			setImgFile(e.target.files[0])
-			setShowImgCrop(true)
+			if (e.target.files[0].type === 'image/gif') {
+				const dimension = await readFileDimension(e.target.files[0])
+
+				if (dimension.width / dimension.height === 64 / 89) {
+					const imgUrl = await readFileAsUrl(e.target.files[0])
+					setImgFile(e.target.files[0])
+					setImgUrl(imgUrl)
+				} else {
+					const msg = `The submitted gif is not in ratio of 64 : 89 (Found gif with dimension ${dimension.width} x ${dimension.height})`
+					toast.show({
+						text: (
+							<div className="font-semibold text-center text-sm">{msg}</div>
+						),
+						type: 'error',
+						duration: null,
+					})
+				}
+			} else {
+				setImgFile(e.target.files[0])
+				setShowImgCrop(true)
+			}
 		}
 	}
 
@@ -470,7 +493,7 @@ const NewPage = () => {
 												<p className="text-gray-700 mt-4">
 													Recommended ratio 64 : 89
 												</p>
-												<p className="text-gray-700 mt-2">Maximum size 8mb</p>
+												<p className="text-gray-700 mt-2">Maximum size 16mb</p>
 											</div>
 										)}
 									</div>
@@ -537,11 +560,11 @@ const NewPage = () => {
 											<label className="block text-sm">Description</label>
 											<div
 												className={`${
-													watch('description')?.length >= 500 && 'text-red-500'
+													watch('description')?.length >= 600 && 'text-red-500'
 												}`}
 											>
 												<p className="text-sm">
-													{watch('description')?.length || 0}/500
+													{watch('description')?.length || 0}/600
 												</p>
 											</div>
 										</div>
@@ -550,7 +573,7 @@ const NewPage = () => {
 											name="description"
 											ref={register({
 												required: true,
-												maxLength: 500,
+												maxLength: 600,
 											})}
 											className={`${
 												errors.description && 'error'
@@ -563,7 +586,7 @@ const NewPage = () => {
 										</div>
 										<div className="text-sm text-red-500">
 											{errors.description?.type === 'maxLength' &&
-												'Description must be less than 500 characters'}
+												'Description must be less than 600 characters'}
 										</div>
 									</div>
 									<div className="mt-4">

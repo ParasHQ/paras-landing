@@ -10,7 +10,7 @@ const LinkToProfile = ({ className, accountId, len = 24 }) => {
 					className || 'text-black hover:border-gray-900'
 				}`}
 			>
-				{prettyTruncate(accountId, len)}
+				{prettyTruncate(accountId, len, 'address')}
 			</a>
 		</Link>
 	)

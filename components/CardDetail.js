@@ -270,7 +270,10 @@ const CardDetail = ({ token }) => {
 	const [chosenSeller, setChosenSeller] = useState(null)
 	const [isCopied, setIsCopied] = useState(false)
 
-	useEffect(() => setIsComponentMounted(true), [])
+	useEffect(() => {
+		setIsComponentMounted(true)
+		_changeSortBy('priceasc')
+	}, [])
 
 	const _buy = async (data) => {
 		//   ownerId: AccountId,
@@ -514,6 +517,14 @@ const CardDetail = ({ token }) => {
 		return ownership
 	}
 
+	const _getLowestPrice = (ownerships) => {
+		const marketDataList = ownerships
+			.filter((ownership) => ownership.marketData)
+			.filter((ownership) => ownership.ownerId !== store.currentUser)
+			.sort((a, b) => a.marketData.amount - b.marketData.amount)
+		return marketDataList[0]
+	}
+
 	const _copyLink = () => {
 		const copyText = copyLinkRef.current
 		copyText.select()
@@ -526,6 +537,33 @@ const CardDetail = ({ token }) => {
 			setShowModal(false)
 			setIsCopied(false)
 		}, 1500)
+	}
+
+	const _changeSortBy = (sortby) => {
+		let _localToken = Object.assign({}, localToken)
+		let saleOwner = _localToken.ownerships.filter(
+			(ownership) => ownership.marketData
+		)
+		let nonSaleOwner = _localToken.ownerships.filter(
+			(ownership) => !ownership.marketData
+		)
+
+		if (sortby === 'nameasc') {
+			_localToken.ownerships.sort((a, b) => a.ownerId.localeCompare(b.ownerId))
+		} else if (sortby === 'namedesc') {
+			_localToken.ownerships.sort((a, b) => b.ownerId.localeCompare(a.ownerId))
+		} else if (sortby === 'priceasc') {
+			saleOwner = saleOwner.sort(
+				(a, b) => a.marketData.amount - b.marketData.amount
+			)
+			_localToken.ownerships = [...saleOwner, ...nonSaleOwner]
+		} else if (sortby === 'pricedesc') {
+			saleOwner = saleOwner.sort(
+				(a, b) => b.marketData.amount - a.marketData.amount
+			)
+			_localToken.ownerships = [...saleOwner, ...nonSaleOwner]
+		}
+		setLocalToken(_localToken)
 	}
 
 	return (
@@ -774,8 +812,8 @@ const CardDetail = ({ token }) => {
 							>
 								<rect width="256" height="256" rx="10" fill="#0000BA" />
 								<path
-									fill-rule="evenodd"
-									clip-rule="evenodd"
+									fillRule="evenodd"
+									clipRule="evenodd"
 									d="M80.9048 210L59 46L151.548 62.4C155.482 63.4335 159.124 64.2644 162.478 65.0295C175.091 67.9065 183.624 69.8529 188.238 78.144C194.079 88.5671 197 101.396 197 116.629C197 131.936 194.079 144.801 188.238 155.224C182.397 165.647 170.167 170.859 151.548 170.859H111.462L119.129 210H80.9048ZM92.9524 79.8933L142.899 88.6534C145.022 89.2055 146.988 89.6493 148.798 90.0579C155.605 91.5947 160.21 92.6343 162.7 97.0631C165.852 102.631 167.429 109.483 167.429 117.62C167.429 125.796 165.852 132.668 162.7 138.235C159.547 143.803 152.947 146.587 142.899 146.587H120.083L106.334 145.493L92.9524 79.8933Z"
 									fill="white"
 								/>
@@ -808,6 +846,10 @@ const CardDetail = ({ token }) => {
 							<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
 								Confirm Buy
 							</h1>
+							<p className="text-gray-900 mt-2">
+								You are about to purchase <b>{localToken.metadata.name}</b> from{' '}
+								<b>{chosenSeller.ownerId}</b>.
+							</p>
 							<form onSubmit={handleSubmit(_buy)}>
 								<div className="mt-4">
 									<label className="block text-sm">
@@ -858,7 +900,7 @@ const CardDetail = ({ token }) => {
 										)}
 									</p>
 								</div>
-								<p className="mt-4 text-sm text-center">
+								<p className="text-gray-900 mt-4 text-sm text-center">
 									You will be redirected to NEAR Web Wallet to confirm your
 									transaction
 								</p>
@@ -1016,7 +1058,7 @@ const CardDetail = ({ token }) => {
 							/>
 						</div>
 					</div>
-					<div className="flex w-full h-1/2 lg:h-full lg:w-1/3 bg-gray-100">
+					<div className="flex flex-col w-full h-1/2 lg:h-full lg:w-1/3 bg-gray-100">
 						<Scrollbars
 							style={{
 								height: `100%`,
@@ -1029,7 +1071,12 @@ const CardDetail = ({ token }) => {
 							<div>
 								<div className="flex justify-between">
 									<div>
-										<h1 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight pr-4 break-all">
+										<h1
+											className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight pr-4"
+											style={{
+												wordBreak: 'break-word',
+											}}
+										>
 											{localToken.metadata.name}
 										</h1>
 										<p>
@@ -1140,7 +1187,12 @@ const CardDetail = ({ token }) => {
 											<p className="text-sm text-black font-medium">
 												Description
 											</p>
-											<p className="text-gray-900 whitespace-pre-line">
+											<p
+												className="text-gray-900 whitespace-pre-line"
+												style={{
+													wordBreak: 'break-word',
+												}}
+											>
 												{localToken.metadata.description.replace(
 													/\n\s*\n\s*\n/g,
 													'\n\n'
@@ -1174,6 +1226,21 @@ const CardDetail = ({ token }) => {
 
 								{activeTab === 'owners' && (
 									<div className="text-gray-900">
+										<div className="flex border-2 justify-between border-dashed mt-4 p-2 rounded-md">
+											<p className="text-sm my-auto text-black font-medium">
+												Sort By
+											</p>
+											<select
+												className="py-1 rounded-md"
+												onChange={(e) => _changeSortBy(e.target.value)}
+												defaultValue="priceasc"
+											>
+												<option value="nameasc">Name A-Z</option>
+												<option value="namedesc">Name Z-A</option>
+												<option value="priceasc">Price Low-High</option>
+												<option value="pricedesc">Price High-Low</option>
+											</select>
+										</div>
 										{localToken.ownerships.map((ownership, idx) => {
 											return (
 												<Ownership
@@ -1202,6 +1269,45 @@ const CardDetail = ({ token }) => {
 								{activeTab === 'history' && <ActivityList token={token} />}
 							</div>
 						</Scrollbars>
+						{_getLowestPrice(token.ownerships) ? (
+							<button
+								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white inline-block"
+								onClick={() => {
+									if (!store.currentUser) {
+										setShowModal('redirectLogin')
+									} else {
+										setChosenSeller(_getLowestPrice(token.ownerships))
+										setShowModal('confirmBuy')
+									}
+								}}
+							>
+								{`Buy for ${prettyBalance(
+									_getLowestPrice(token.ownerships).marketData.amount,
+									24,
+									4
+								)} Ⓝ`}
+								{` ~ $${prettyBalance(
+									_getLowestPrice(token.ownerships).marketData.amount *
+										store.nearUsdPrice,
+									24,
+									4
+								)}`}
+							</button>
+						) : store.currentUser && _getUserOwnership(store.currentUser) ? (
+							<button
+								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
+								onClick={() => setShowModal('addUpdateListing')}
+							>
+								Update Listing
+							</button>
+						) : (
+							<button
+								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
+								disabled
+							>
+								Not for Sale
+							</button>
+						)}
 					</div>
 				</div>
 			</div>

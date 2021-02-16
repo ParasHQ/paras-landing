@@ -22,6 +22,19 @@ const LicenseOverview = () => {
 				</ul>
 				<p className="mt-2">Any NFT project can use this license.</p>
 			</div>
+			<p className="font-medium mt-4">The Content is Yours</p>
+			<p className="mt-2 opacity-75">
+				Artists own all the rights to the content they create and post on Paras.
+				Of course, if the content wasn’t yours to begin with, putting it on
+				Paras doesn’t make it yours. Don’t submit content you don’t hold the
+				copyright for (unless you have permission).
+			</p>
+			<p className="mt-2 opacity-75">
+				Artists are responsible for the content they post. This means all risks
+				related to its publication and display, including someone else’s
+				reliance on its accuracy and any claims relating to intellectual
+				property or other legal rights.
+			</p>
 			<p className="font-medium mt-4">
 				What am I allowed to do with the art associated with my NFT?
 			</p>

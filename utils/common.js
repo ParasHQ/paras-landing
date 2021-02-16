@@ -46,8 +46,13 @@ export const prettyBalance = (balance, decimals = 18, len = 8) => {
 	return tail ? `${formattedHead}.${tail}` : formattedHead
 }
 
-export const prettyTruncate = (str = '', len = 8) => {
+export const prettyTruncate = (str = '', len = 8, type) => {
 	if (str.length > len) {
+		if (type === 'address') {
+			const front = Math.ceil(len / 2)
+			const back = str.length - (len - front)
+			return `${str.slice(0, front)}...${str.slice(back)}`
+		}
 		return `${str.slice(0, len)}...`
 	}
 	return str
@@ -59,6 +64,26 @@ export const readFileAsUrl = (file) => {
 	return new Promise((resolve, reject) => {
 		temporaryFileReader.onload = () => {
 			resolve(temporaryFileReader.result)
+		}
+		temporaryFileReader.readAsDataURL(file)
+	})
+}
+
+export const readFileDimension = (file) => {
+	const temporaryFileReader = new FileReader()
+
+	return new Promise((resolve, reject) => {
+		temporaryFileReader.onload = () => {
+			const img = new Image()
+			
+			img.onload = () => {
+				resolve({
+					width: img.width,
+					height: img.height,
+				})
+			}
+
+			img.src = temporaryFileReader.result
 		}
 		temporaryFileReader.readAsDataURL(file)
 	})

@@ -14,6 +14,7 @@ const ProfileEdit = ({ close }) => {
 	const [imgUrl, setImgUrl] = useState(store.userProfile.imgUrl || '')
 
 	const [bio, setBio] = useState(store.userProfile.bio || '')
+	const [website, setWebsite] = useState(store.userProfile.website || '')
 	const [isSubmitting, setIsSubmitting] = useState(false)
 
 	const _submit = async (e) => {
@@ -21,11 +22,26 @@ const ProfileEdit = ({ close }) => {
 
 		setIsSubmitting(true)
 
+		if (website && !checkUrl(website)) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						Please enter valid website
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsSubmitting(false)
+			return
+		}
+
 		const formData = new FormData()
 		if (imgFile) {
 			formData.append('file', imgFile)
 		}
 		formData.append('bio', bio)
+		formData.append('website', website)
 		formData.append('accountId', store.currentUser)
 
 		try {
@@ -55,6 +71,19 @@ const ProfileEdit = ({ close }) => {
 		}
 
 		setIsSubmitting(false)
+	}
+
+	const checkUrl = (str) => {
+		var pattern = new RegExp(
+			'^(https?:\\/\\/)?' + // protocol
+				'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+				'((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+				'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+				'(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+				'(\\#[-a-z\\d_]*)?$',
+			'i'
+		) // fragment locator
+		return !!pattern.test(str)
 	}
 
 	const _setImg = async (e) => {
@@ -92,6 +121,9 @@ const ProfileEdit = ({ close }) => {
 						type="file"
 						accept="image/*"
 						onChange={_setImg}
+						onClick={(e) => {
+							e.target.value = null
+						}}
 					/>
 					<div className="flex items-center justify-center">
 						<div className="w-32 h-32 rounded-full overflow-hidden bg-primary shadow-inner">
@@ -109,6 +141,17 @@ const ProfileEdit = ({ close }) => {
 						className={`resize-none h-24 focus:border-gray-100`}
 						placeholder="Tell us about yourself"
 					></textarea>
+				</div>
+				<div className="mt-2">
+					<label className="block text-sm text-gray-100">Website</label>
+					<input
+						type="text"
+						name="website"
+						value={website}
+						onChange={(e) => setWebsite(e.target.value)}
+						className={`resize-none h-auto focus:border-gray-100`}
+						placeholder="Website"
+					/>
 				</div>
 				<div className="">
 					<button

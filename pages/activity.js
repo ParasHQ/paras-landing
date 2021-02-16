@@ -68,7 +68,7 @@ const ActivityLog = ({ query }) => {
 		setIsFetching(true)
 
 		try {
-			const _filter = _filterQuery(fetchQuery.filter)
+			const _filter = _filterQuery(fetchQuery?.filter)
 			const res = await axios.get(
 				`${process.env.API_URL}/activities?${_filter}__skip=${
 					_activityListPage * LIMIT
@@ -88,6 +88,10 @@ const ActivityLog = ({ query }) => {
 			console.log(err)
 		}
 		setIsFetching(false)
+	}
+
+	const _fetchDataWrapper = async () => {
+		_fetchData(router.query)
 	}
 
 	return (
@@ -172,7 +176,7 @@ const ActivityLog = ({ query }) => {
 						)}
 						<InfiniteScroll
 							dataLength={activityList.length}
-							next={_fetchData}
+							next={_fetchDataWrapper}
 							hasMore={activityListHasMore}
 						>
 							{activityList.map((act, idx) => {

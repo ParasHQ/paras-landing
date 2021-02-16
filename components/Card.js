@@ -36,21 +36,28 @@ const Card = ({
 	}, [imgUrl])
 
 	useEffect(() => {
-		let w = containerRef.current.parentNode.offsetWidth
-		let h = containerRef.current.parentNode.offsetWidth * (imgHeight / imgWidth)
+		function updateSize() {
+			let w = containerRef.current.parentNode.offsetWidth
+			let h =
+				containerRef.current.parentNode.offsetWidth * (imgHeight / imgWidth)
 
-		if (
-			containerRef.current.parentNode.offsetHeight !== 0 &&
-			h > containerRef.current.parentNode.offsetHeight
-		) {
-			w = (imgWidth * containerRef.current.parentNode.offsetHeight) / imgHeight
-			h = containerRef.current.parentNode.offsetHeight
+			if (
+				containerRef.current.parentNode.offsetHeight !== 0 &&
+				h > containerRef.current.parentNode.offsetHeight
+			) {
+				w =
+					(imgWidth * containerRef.current.parentNode.offsetHeight) / imgHeight
+				h = containerRef.current.parentNode.offsetHeight
+			}
+
+			setDimension({
+				width: w,
+				height: h,
+			})
 		}
-
-		setDimension({
-			width: w,
-			height: h,
-		})
+		window.addEventListener('resize', updateSize)
+		updateSize()
+		return () => window.removeEventListener('resize', updateSize)
 	}, [])
 
 	const handleMouseMove = (e) => {
@@ -103,6 +110,7 @@ const Card = ({
 				style={{
 					transform: `rotateY(0deg)`,
 					backfaceVisibility: `hidden`,
+					WebkitBackfaceVisibility: 'hidden',
 				}}
 			>
 				<div
@@ -150,6 +158,7 @@ const Card = ({
 				style={{
 					transform: `rotateY(180deg)`,
 					backfaceVisibility: `hidden`,
+					WebkitBackfaceVisibility: 'hidden',
 				}}
 			>
 				<div

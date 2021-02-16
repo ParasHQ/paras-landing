@@ -145,7 +145,7 @@ const Activity = ({ activity }) => {
 				<span>created by </span>
 				<span>
 					<LinkToProfile
-						accountId={activity.from}
+						accountId={activity.to}
 						className="text-gray-100 hover:border-gray-100"
 					/>
 				</span>
