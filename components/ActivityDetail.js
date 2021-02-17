@@ -16,6 +16,7 @@ import Modal from './Modal'
 
 import useStore from '../store'
 import { parseImgUrl, prettyBalance, timeAgo } from '../utils/common'
+import CopyLink from './CopyLink'
 
 export const descriptionMaker = (activity, token) => {
 	if (activity.type === 'marketUpdate') {
@@ -39,40 +40,6 @@ export const descriptionMaker = (activity, token) => {
 	}
 
 	return `${activity.from} transferred ${activity.quantity}pcs of ${token?.metadata.name} to ${activity.to}`
-}
-
-const CopyLink = ({ children, link, afterCopy }) => {
-	const [isComponentMounted, setIsComponentMounted] = useState(false)
-	const copyLinkRef = useRef()
-
-	useEffect(() => {
-		setIsComponentMounted(true)
-	}, [])
-
-	const _copyLink = () => {
-		const copyText = copyLinkRef.current
-		copyText.select()
-		copyText.setSelectionRange(0, 99999)
-		document.execCommand('copy')
-
-		afterCopy()
-	}
-
-	return (
-		<div onClick={(_) => _copyLink()}>
-			{isComponentMounted && (
-				<div
-					className="absolute z-0 opacity-0"
-					style={{
-						top: `-1000`,
-					}}
-				>
-					<input ref={copyLinkRef} readOnly type="text" value={link} />
-				</div>
-			)}
-			<div className="relative z-10">{children}</div>
-		</div>
-	)
 }
 
 const Activity = ({ activity }) => {
