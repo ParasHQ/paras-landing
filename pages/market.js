@@ -28,7 +28,7 @@ export default function MarketPage({ data }) {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/tokens?__skip=${page * LIMIT}&__limit=${LIMIT}`
+			`${process.env.API_URL}/tokens?excludeTotalBurn=true&__skip=${page * LIMIT}&__limit=${LIMIT}`
 		)
 		const newData = await res.data.data
 
@@ -100,7 +100,7 @@ export default function MarketPage({ data }) {
 }
 
 export async function getServerSideProps() {
-	const res = await axios(`${process.env.API_URL}/tokens?__limit=${LIMIT}`)
+	const res = await axios(`${process.env.API_URL}/tokens?excludeTotalBurn=true&__limit=${LIMIT}`)
 	const data = await res.data.data
 
 	return { props: { data } }
