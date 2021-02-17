@@ -40,7 +40,7 @@ const creation = ({ creatorTokens, userProfile, accountId }) => {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/tokens?creatorId=${router.query.id}&__skip=${
+			`${process.env.API_URL}/tokens?excludeTotalBurn=true&creatorId=${router.query.id}&__skip=${
 				page * 5
 			}&__limit=5`
 		)
@@ -116,7 +116,7 @@ export default creation
 
 export async function getServerSideProps({ params }) {
 	const creatorRes = await axios(
-		`${process.env.API_URL}/tokens?creatorId=${params.id}&__limit=5`
+		`${process.env.API_URL}/tokens?excludeTotalBurn=true&creatorId=${params.id}&__limit=5`
 	)
 	const profileRes = await axios(
 		`${process.env.API_URL}/profiles?accountId=${params.id}`
