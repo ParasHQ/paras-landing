@@ -78,6 +78,18 @@ const Activity = ({ activity }) => {
 		)
 	}
 
+	if (activity.type === 'transfer' && activity.to === '') {
+		return (
+			<div className="border-2 border-dashed p-2 rounded-md">
+				<p>
+					<LinkToProfile accountId={activity.from} />
+					<span> burned {activity.quantity}pcs</span>
+				</p>
+				<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
+			</div>
+		)
+	}
+
 	if (activity.type === 'transfer' && !activity.to) {
 		return null
 	}
