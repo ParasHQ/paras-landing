@@ -5,10 +5,9 @@ import { prettyBalance } from '../utils/common'
 import Link from 'next/link'
 import useStore from '../store'
 import { useRouter } from 'next/router'
-import Modal from './Modal'
-import CardDetail from './CardDetail'
 import JSBI from 'jsbi'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import CardDetailModal from './CardDetailModal'
 
 const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 	const store = useStore()
@@ -17,7 +16,6 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 	const [mouseDown, setMouseDown] = useState(null)
 	const [touchStart, setTouchStart] = useState(null)
 	const animValuesRef = useRef(store.marketScrollPersist[name])
-	const [activeToken, setActiveToken] = useState(null)
 
 	const props = useSpring({
 		transform: `translate3d(${store.marketScrollPersist[name] || 0}px, 0,0)`,
@@ -38,7 +36,7 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 	}, [])
 
 	useEffect(() => {
-		if (containerRef && !activeToken) {
+		if (containerRef) {
 			// containerRef.current.addEventListener('wheel', handleScroll, {
 			// 	passive: false,
 			// })
@@ -49,22 +47,7 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 				containerRef.current.removeEventListener('wheel', handleScroll)
 			}
 		}
-	}, [containerRef, activeToken, store.marketScrollPersist[name]])
-
-	const closeCardDetail = () => {
-		router.push(router.query.prevAs)
-	}
-
-	useEffect(() => {
-		if (router.query.tokenId) {
-			const token = tokens.find(
-				(token) => token.tokenId === router.query.tokenId
-			)
-			setActiveToken(token)
-		} else {
-			setActiveToken(null)
-		}
-	}, [router.query])
+	}, [containerRef, store.marketScrollPersist[name]])
 
 	const handleScroll = (e) => {
 		e.preventDefault()
@@ -167,35 +150,7 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 			// onTouchMove={handleTouchMove}
 			className="overflow-x-hidden border-2 border-dashed border-gray-800 rounded-md"
 		>
-			{activeToken && (
-				<Modal close={(_) => closeCardDetail(null)}>
-					<div className="max-w-5xl m-auto w-full relative">
-						<div className="absolute top-0 left-0 p-4 z-50">
-							<div
-								className="cursor-pointer flex items-center select-none"
-								onClick={(_) => closeCardDetail(null)}
-							>
-								<svg
-									width="16"
-									height="16"
-									viewBox="0 0 16 16"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path
-										fillRule="evenodd"
-										clipRule="evenodd"
-										d="M5.41412 7.00001H13.9999V9.00001H5.41412L8.70701 12.2929L7.2928 13.7071L1.58569 8.00001L7.2928 2.29291L8.70701 3.70712L5.41412 7.00001Z"
-										fill="white"
-									/>
-								</svg>
-								<p className="pl-2 text-gray-100 cursor-pointer">Back</p>
-							</div>
-						</div>
-						<CardDetail token={activeToken} />
-					</div>
-				</Modal>
-			)}
+			<CardDetailModal tokens={tokens} />
 			{tokens.length === 0 && (
 				<div className="w-full">
 					<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">
@@ -290,9 +245,9 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 										scroll={false}
 										shallow
 									>
-										<p className="inline-block text-gray-100 cursor-pointer font-semibold border-b-2 border-gray-100">
+										<a className="inline-block text-gray-100 cursor-pointer font-semibold border-b-2 border-gray-100">
 											See Details
-										</p>
+										</a>
 									</Link>
 								</div>
 							</div>

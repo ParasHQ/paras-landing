@@ -179,9 +179,9 @@ const ActivityLog = ({ query }) => {
 							next={_fetchDataWrapper}
 							hasMore={activityListHasMore}
 						>
-							{activityList.map((act, idx) => {
+							{activityList.map((act) => {
 								return (
-									<div key={idx} className="mt-6">
+									<div key={act._id} className="mt-6">
 										<ActivityDetail activity={act} />
 									</div>
 								)
