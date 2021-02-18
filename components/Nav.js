@@ -490,6 +490,8 @@ const Nav = () => {
 	const testnetBannerRef = useRef()
 	const toast = useToast()
 
+	const [searchQuery, setSearchQuery] = useState(router.query.q)
+
 	useEffect(() => {
 		const onClickEv = (e) => {
 			if (!mobileNavRef.current.contains(e.target)) {
@@ -522,6 +524,16 @@ const Nav = () => {
 			),
 			type: 'info',
 			duration: null,
+		})
+	}
+
+	const _handleSubmit = (event) => {
+		event.preventDefault()
+		router.push({
+			pathname: '/search',
+			query: {
+				q: searchQuery,
+			},
 		})
 	}
 
@@ -570,8 +582,8 @@ const Nav = () => {
 						</div>
 					)}
 					<div className="relative z-40 flex items-center justify-between max-w-6xl m-auto p-4 h-16">
-						<div className="flex items-center">
-							<div className="block md:hidden pr-4">
+						<div className="flex items-center pr-4">
+							<div className="block md:hidden">
 								<Hamburger
 									active={showMobileNav}
 									type="squeeze"
@@ -580,7 +592,7 @@ const Nav = () => {
 							</div>
 							<Link href="/">
 								<svg
-									className="cursor-pointer"
+									className="cursor-pointer hidden md:block"
 									width="80"
 									height="19"
 									viewBox="0 0 80 19"
@@ -612,7 +624,36 @@ const Nav = () => {
 								</svg>
 							</Link>
 						</div>
-
+						<div className="flex-1 pr-4">
+							<div className="max-w-md mr-auto">
+								<form action="/search" method="get" onSubmit={_handleSubmit}>
+									<div className="flex border-dark-primary-1 border-2 rounded-lg bg-dark-primary-1">
+										<svg
+											width="36"
+											height="36"
+											viewBox="0 0 32 32"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<path
+												fillRule="evenodd"
+												clipRule="evenodd"
+												d="M10.6667 15.1667C10.6667 12.6814 12.6814 10.6667 15.1667 10.6667C17.6519 10.6667 19.6667 12.6814 19.6667 15.1667C19.6667 17.6519 17.6519 19.6667 15.1667 19.6667C12.6814 19.6667 10.6667 17.6519 10.6667 15.1667ZM15.1667 8C11.2086 8 8 11.2086 8 15.1667C8 19.1247 11.2086 22.3333 15.1667 22.3333C16.6639 22.3333 18.0538 21.8742 19.2035 21.0891L21.7239 23.6095C22.2446 24.1302 23.0888 24.1302 23.6095 23.6095C24.1302 23.0888 24.1302 22.2446 23.6095 21.7239L21.0891 19.2035C21.8742 18.0538 22.3333 16.6639 22.3333 15.1667C22.3333 11.2086 19.1247 8 15.1667 8Z"
+												fill="white"
+											></path>
+										</svg>
+										<input
+											name="q"
+											type="search"
+											value={searchQuery}
+											onChange={(event) => setSearchQuery(event.target.value)}
+											placeholder="Search by title, collection or artist"
+											className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-sm font-medium"
+										/>
+									</div>
+								</form>
+							</div>
+						</div>
 						<div className="flex items-center -mx-4">
 							<div className="px-4 text-gray-100 hidden md:block">
 								{router.pathname === '/market' ? (
