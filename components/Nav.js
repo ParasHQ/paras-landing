@@ -592,7 +592,7 @@ const Nav = () => {
 							</div>
 							<Link href="/">
 								<svg
-									className="cursor-pointer"
+									className="cursor-pointer hidden md:block"
 									width="80"
 									height="19"
 									viewBox="0 0 80 19"
@@ -624,7 +624,7 @@ const Nav = () => {
 								</svg>
 							</Link>
 						</div>
-						<div className="flex-1 m-4">
+						<div className="flex-1 md:m-4 mr-4">
 							<form action="/search" method="get" onSubmit={_handleSubmit}>
 								<input
 									name="q"
@@ -632,7 +632,7 @@ const Nav = () => {
 									value={searchQuery}
 									onChange={(event) => setSearchQuery(event.target.value)}
 									placeholder="Search by title, collection or artist"
-									className="px-2 py-1 m-auto"
+									className="px-2 py-2 m-auto border-none"
 								/>
 							</form>
 						</div>
