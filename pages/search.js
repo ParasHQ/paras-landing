@@ -15,8 +15,6 @@ export default function SearchPage({ data, searchQuery }) {
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
 
-	console.log(searchQuery)
-
 	useEffect(async () => {
 		const res = await axios(
 			`${process.env.API_URL}/tokens?search=${searchQuery}&__excludeTotalBurn=true&__limit=${LIMIT}`
