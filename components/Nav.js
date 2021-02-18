@@ -490,6 +490,8 @@ const Nav = () => {
 	const testnetBannerRef = useRef()
 	const toast = useToast()
 
+	const [searchQuery, setSearchQuery] = useState(router.query.q)
+
 	useEffect(() => {
 		const onClickEv = (e) => {
 			if (!mobileNavRef.current.contains(e.target)) {
@@ -522,6 +524,16 @@ const Nav = () => {
 			),
 			type: 'info',
 			duration: null,
+		})
+	}
+
+	const _handleSubmit = (event) => {
+		event.preventDefault()
+		router.push({
+			pathname: '/search',
+			query: {
+				q: searchQuery,
+			},
 		})
 	}
 
@@ -612,7 +624,18 @@ const Nav = () => {
 								</svg>
 							</Link>
 						</div>
-
+						<div className="flex-1 m-4">
+							<form action="/search" method="get" onSubmit={_handleSubmit}>
+								<input
+									name="q"
+									type="search"
+									value={searchQuery}
+									onChange={(event) => setSearchQuery(event.target.value)}
+									placeholder="Search by title, collection or artist"
+									className="px-2 py-1 m-auto"
+								/>
+							</form>
+						</div>
 						<div className="flex items-center -mx-4">
 							<div className="px-4 text-gray-100 hidden md:block">
 								{router.pathname === '/market' ? (
