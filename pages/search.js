@@ -17,7 +17,7 @@ export default function SearchPage({ data, searchQuery }) {
 
 	useEffect(async () => {
 		const res = await axios(
-			`${process.env.API_URL}/tokens?search=${searchQuery}&__excludeTotalBurn=true&__limit=${LIMIT}`
+			`${process.env.API_URL}/tokens?search=${searchQuery}&excludeTotalBurn=true&__limit=${LIMIT}`
 		)
 		setPage(1)
 		setTokens(res.data.data.results)
@@ -40,7 +40,7 @@ export default function SearchPage({ data, searchQuery }) {
 		const res = await axios(
 			`${
 				process.env.API_URL
-			}/tokens?search=${searchQuery}&__excludeTotalBurn=true&__skip=${
+			}/tokens?search=${searchQuery}&excludeTotalBurn=true&__skip=${
 				page * LIMIT
 			}&__limit=${LIMIT}`
 		)
@@ -57,6 +57,11 @@ export default function SearchPage({ data, searchQuery }) {
 		setIsFetching(false)
 	}
 
+	const headMeta = {
+		title: `Search ${searchQuery} — Paras`,
+		description: `Explore and collect ${searchQuery} digital art cards on Paras. All-in-one social digital art card marketplace for creators and collectors.`,
+	}
+
 	return (
 		<div
 			className="min-h-screen bg-dark-primary-1"
@@ -65,19 +70,19 @@ export default function SearchPage({ data, searchQuery }) {
 			}}
 		>
 			<Head>
-				<title>Search Result — Paras</title>
+				<title>{headMeta.title}</title>
 				<meta
 					name="description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content={headMeta.description}
 				/>
 
-				<meta name="twitter:title" content="Search Result — Paras" />
+				<meta name="twitter:title" content={headMeta.title} />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
 				<meta
 					name="twitter:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content={headMeta.description}
 				/>
 				<meta
 					name="twitter:image"
@@ -88,7 +93,7 @@ export default function SearchPage({ data, searchQuery }) {
 				<meta property="og:site_name" content="Search Result — Paras" />
 				<meta
 					property="og:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content={headMeta.description}
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta
@@ -98,9 +103,12 @@ export default function SearchPage({ data, searchQuery }) {
 			</Head>
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
-				<h1 className="text-4xl font-bold text-gray-100 text-center">
-					Search Result
-				</h1>
+				<div className="text-center">
+					<h1 className="text-3xl font-bold text-gray-100">Search Result</h1>
+					<h4 className="text-xl font-semibold text-gray-300">
+						<span className="opacity-75">for</span> <span className="border-b-2 border-gray-100">{searchQuery}</span>
+					</h4>
+				</div>
 				<div className="mt-4 px-4">
 					<CardList
 						name="Search Result"
@@ -118,7 +126,7 @@ export default function SearchPage({ data, searchQuery }) {
 export async function getServerSideProps({ query }) {
 	const searchQuery = query.q
 	const res = await axios(
-		`${process.env.API_URL}/tokens?search=${searchQuery}&__excludeTotalBurn=true&__limit=${LIMIT}`
+		`${process.env.API_URL}/tokens?search=${searchQuery}&excludeTotalBurn=true&__limit=${LIMIT}`
 	)
 	const data = await res.data.data
 
