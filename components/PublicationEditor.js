@@ -5,7 +5,12 @@ import { useRouter } from 'next/router'
 
 import near from '../lib/near'
 import { useToast } from '../hooks/useToast'
-import { compressImg, dataURLtoFile, parseImgUrl, readFileAsUrl } from '../utils/common'
+import {
+	compressImg,
+	dataURLtoFile,
+	parseImgUrl,
+	readFileAsUrl,
+} from '../utils/common'
 import TextEditor from './TextEditor'
 import Modal from './Modal'
 import Card from './Card'
@@ -266,6 +271,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 							</p>
 							<button
 								className="font-semibold mt-4 py-3 w-full rounded-md bg-primary text-white"
+								disabled={!searchToken}
 								onClick={getDataFromTokenId}
 							>
 								Add Card
@@ -277,8 +283,8 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			{showModal === 'final' && (
 				<Modal
 					close={() => setShowModal(null)}
-					closeOnBgClick={true}
-					closeOnEscape={true}
+					closeOnBgClick={false}
+					closeOnEscape={false}
 				>
 					<div className="w-full max-h-screen max-w-3xl p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden overflow-y-auto">
 						<div className="flex justify-between">
