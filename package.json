@@ -8,10 +8,13 @@
 		"start": "next start"
 	},
 	"dependencies": {
+		"@draft-js-plugins/anchor": "^4.1.1",
 		"@draft-js-plugins/buttons": "^4.0.0",
 		"@draft-js-plugins/editor": "^4.0.0",
 		"@draft-js-plugins/focus": "^4.1.0",
 		"@draft-js-plugins/image": "^4.0.0",
+		"@draft-js-plugins/inline-toolbar": "^4.1.0",
+		"@draft-js-plugins/linkify": "^4.1.0",
 		"@draft-js-plugins/static-toolbar": "^4.0.0",
 		"axios": "^0.21.0",
 		"blurhash": "^1.1.3",
