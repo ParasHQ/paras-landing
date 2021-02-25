@@ -632,18 +632,18 @@ const CardDetail = ({ token }) => {
 							_getUserOwnership(store.currentUser).quantity > 0 && (
 								<div
 									className="py-2 cursor-pointer"
-									onClick={(_) => setShowModal('confirmTransfer')}
+									onClick={(_) => setShowModal('addUpdateListing')}
 								>
-									Transfer
+									Update Listing
 								</div>
 							)}
 						{_getUserOwnership(store.currentUser) &&
 							_getUserOwnership(store.currentUser).quantity > 0 && (
 								<div
 									className="py-2 cursor-pointer"
-									onClick={(_) => setShowModal('addUpdateListing')}
+									onClick={(_) => setShowModal('confirmTransfer')}
 								>
-									Update My Listing
+									Transfer Card
 								</div>
 							)}
 						{_getUserOwnership(store.currentUser) &&
@@ -652,7 +652,7 @@ const CardDetail = ({ token }) => {
 									className="py-2 cursor-pointer"
 									onClick={(_) => setShowModal('confirmBurn')}
 								>
-									Burn
+									Burn Card
 								</div>
 							)}
 					</div>
@@ -1391,7 +1391,7 @@ const CardDetail = ({ token }) => {
 						</Scrollbars>
 						{_getLowestPrice(token.ownerships) ? (
 							<button
-								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white inline-block"
+								className="box-border font-semibold m-4 py-3 w-auto rounded-md border-2 border-primary bg-primary text-white inline-block text-sm"
 								onClick={() => {
 									if (!store.currentUser) {
 										setShowModal('redirectLogin')
@@ -1414,15 +1414,29 @@ const CardDetail = ({ token }) => {
 								)}`}
 							</button>
 						) : store.currentUser && _getUserOwnership(store.currentUser) ? (
-							<button
-								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
-								onClick={() => setShowModal('addUpdateListing')}
-							>
-								Update Listing
-							</button>
+							<div className="w-auto p-4">
+								<div className="flex -mx-2">
+									<div className="w-1/2 px-2">
+										<button
+											className="font-semibold py-3 w-full rounded-md border-2 border-primary text-primary text-sm"
+											onClick={() => setShowModal('addUpdateListing')}
+										>
+											Update Listing
+										</button>
+									</div>
+									<div className="w-1/2 px-2">
+										<button
+											className="font-semibold py-3 w-full rounded-md border-2 border-primary bg-primary text-white text-sm"
+											onClick={() => setShowModal('confirmTransfer')}
+										>
+											Transfer
+										</button>
+									</div>
+								</div>
+							</div>
 						) : (
 							<button
-								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
+								className="font-semibold m-4 py-3 w-auto rounded-md border-2 border-primary bg-primary text-white text-sm"
 								disabled
 							>
 								Not for Sale

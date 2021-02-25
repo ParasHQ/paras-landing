@@ -1,3 +1,5 @@
+import CID from 'cids'
+import Compressor from 'compressorjs'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 
@@ -75,7 +77,7 @@ export const readFileDimension = (file) => {
 	return new Promise((resolve, reject) => {
 		temporaryFileReader.onload = () => {
 			const img = new Image()
-			
+
 			img.onload = () => {
 				resolve({
 					width: img.width,
@@ -95,7 +97,41 @@ export const parseImgUrl = (url, defaultValue = '') => {
 	}
 	const [protocol, path] = url.split('://')
 	if (protocol === 'ipfs') {
-		return `https://ipfs-gateway.paras.id/ipfs/${path}`
+		const cid = new CID(path)
+		if (cid.version === 0) {
+			return `https://ipfs-gateway.paras.id/ipfs/${path}`
+		} else {
+			return `https://ipfs.fleek.co/ipfs/${path}`
+		}
 	}
 	return url
+}
+
+export const dataURLtoFile = (dataurl, filename) => {
+	let arr = dataurl.split(','),
+		mime = arr[0].match(/:(.*?);/)[1],
+		bstr = atob(arr[1]),
+		n = bstr.length,
+		u8arr = new Uint8Array(n)
+
+	while (n--) {
+		u8arr[n] = bstr.charCodeAt(n)
+	}
+
+	return new File([u8arr], filename, { type: mime })
+}
+
+export const compressImg = (file) => {
+	return new Promise(async (resolve, reject) => {
+		let _file = file
+		const quality = 0.8
+		new Compressor(_file, {
+			quality: quality,
+			maxWidth: 1080,
+			maxHeight: 1080,
+			convertSize: Infinity,
+			success: resolve,
+			error: reject,
+		})
+	})
 }

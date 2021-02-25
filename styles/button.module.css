@@ -1,0 +1,42 @@
+.buttonWrapper {
+	display: inherit;
+}
+
+.button {
+	display: inherit;
+	justify-content: center;
+	background: #333;
+	color: #ddd;
+	font-size: 18px;
+	border: 0;
+	padding-top: 5px;
+	vertical-align: bottom;
+	height: 34px;
+	width: 36px;
+	border-radius: 4px;
+	margin: 1px;
+}
+
+.customButton {
+	width: fit-content;
+}
+
+.button svg {
+	fill: #ddd;
+}
+
+.customButton:hover,
+.customButton:focus,
+.button:hover,
+.button:focus {
+	background: #444;
+	outline: 0; /* reset for :focus */
+}
+
+.active {
+	color: #6a9cc9;
+}
+
+.active svg {
+	fill: #6a9cc9;
+}
