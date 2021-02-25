@@ -763,7 +763,7 @@ const Nav = () => {
 							</div>
 							<div className="text-gray-100 ">
 								<Link href="/publication/editorial">
-									<a>Publication</a>
+									<a className="p-4 block w-full">Publication</a>
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
