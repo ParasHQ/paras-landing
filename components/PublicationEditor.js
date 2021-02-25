@@ -30,10 +30,12 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 		setShowLeavingConfirmation(true)
 	})
 
-	const [title, setTitle] = useState(defaultValueEditor)
-	const [subTitle, setSubTitle] = useState('')
-	const [thumbnail, setThumbnail] = useState(null)
-	const [content, setContent] = useState(defaultValueEditor)
+	const [title, setTitle] = useState(convertTextToEditorState(pubDetail?.title))
+	const [subTitle, setSubTitle] = useState(pubDetail?.description || '')
+	const [thumbnail, setThumbnail] = useState(pubDetail?.thumbnail)
+	const [content, setContent] = useState(
+		generateEditorState(pubDetail?.content)
+	)
 	const [showAlertErr, setShowAlertErr] = useState(false)
 	const [embeddedCards, setEmbeddedCards] = useState([])
 
@@ -43,17 +45,9 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 
 	useEffect(() => {
 		if (isEdit) {
-			setInitialData()
 			fetchToken()
 		}
 	}, [])
-
-	const setInitialData = () => {
-		setTitle(convertTextToEditorState(pubDetail.title))
-		setSubTitle(pubDetail.description)
-		setThumbnail(pubDetail.thumbnail)
-		setContent(EditorState.createWithContent(convertFromRaw(pubDetail.content)))
-	}
 
 	const fetchToken = async () => {
 		let token = []
@@ -102,23 +96,15 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	}
 
 	const postPublication = async () => {
-		if (!thumbnail) {
+		if (!thumbnail || !subTitle) {
+			let error = []
+			if (!thumbnail) error.push('Thumbnail')
+			if (!subTitle) error.push('Description')
+
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						Thumbnail is required
-					</div>
-				),
-				type: 'error',
-				duration: null,
-			})
-			return
-		}
-		if (!subTitle) {
-			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						Description is required
+						{error.join(' and ')} is required
 					</div>
 				),
 				type: 'error',
@@ -173,7 +159,11 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 
 		const formData = new FormData()
 		for (let key in entityMap) {
-			if (!entityMap[key].data.src.includes('ipfs://')) {
+			if (
+				entityMap[key].type === 'IMAGE' &&
+				!entityMap[key].data.src?.includes('ipfs://')
+			) {
+				console.log('masuk')
 				const file = dataURLtoFile(entityMap[key].data.src, key)
 				formData.append('files', file, key)
 			}
@@ -186,9 +176,14 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			},
 		})
 
+		let idx = 0
 		for (let key in entityMap) {
-			if (!entityMap[key].data.src.includes('ipfs://')) {
-				entityMap[key].data.src = resp.data.data[key]
+			if (
+				entityMap[key].type === 'IMAGE' &&
+				!entityMap[key].data.src?.includes('ipfs://')
+			) {
+				entityMap[key].data.src = resp.data.data[idx]
+				idx++
 			}
 		}
 
@@ -239,7 +234,12 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	const onPressContinue = () => {
 		const { entityMap } = convertToRaw(content.getCurrentContent())
 		if (!thumbnail) {
-			setThumbnail(entityMap[0]?.data.src || thumbnail)
+			for (let key in entityMap) {
+				if (entityMap[key].type === 'IMAGE') {
+					setThumbnail(entityMap[key].data.src || thumbnail)
+					break
+				}
+			}
 		}
 		setShowModal('final')
 	}
@@ -484,21 +484,24 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	)
 }
 
-const defaultValueEditor = EditorState.createWithContent(
-	convertFromRaw({
-		entityMap: {},
-		blocks: [
-			{
-				text: '',
-				key: 'foo',
-				type: 'unstyled',
-				entityRanges: [],
-			},
-		],
-	})
-)
+const generateEditorState = (content = null) => {
+	if (!content) {
+		content = {
+			entityMap: {},
+			blocks: [
+				{
+					text: '',
+					key: 'foo',
+					type: 'unstyled',
+					entityRanges: [],
+				},
+			],
+		}
+	}
+	return EditorState.createWithContent(convertFromRaw(content))
+}
 
-const convertTextToEditorState = (text) =>
+const convertTextToEditorState = (text = '') =>
 	EditorState.createWithContent(
 		convertFromRaw({
 			entityMap: {},
@@ -513,7 +516,7 @@ const convertTextToEditorState = (text) =>
 		})
 	)
 
-export const CardPublication = ({ localToken, deleteCard }) => {
+const CardPublication = ({ localToken, deleteCard }) => {
 	return (
 		<Fragment>
 			<div className="w-full m-auto">

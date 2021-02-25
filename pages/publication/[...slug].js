@@ -27,6 +27,9 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const store = useStore()
 	const router = useRouter()
 	const textAreaRef = useRef(null)
+	const [content, setContent] = useState(
+		EditorState.createWithContent(convertFromRaw(pubDetail.content))
+	)
 	const [showModal, setShowModal] = useState('')
 	const [isCopied, setIsCopied] = useState(false)
 	const [isDeleting, setIsDeleting] = useState(false)
@@ -277,9 +280,8 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 						<TextEditor
 							title={createEditorStateWithText(pubDetail.title)}
 							hideTitle={true}
-							content={EditorState.createWithContent(
-								convertFromRaw(pubDetail.content)
-							)}
+							content={content}
+							setContent={setContent}
 							readOnly={true}
 						/>
 					</div>
