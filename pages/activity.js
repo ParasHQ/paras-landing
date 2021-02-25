@@ -53,6 +53,9 @@ const ActivityLog = ({ query }) => {
 		if (filter === 'mint') {
 			return `type=transfer&from=root&`
 		}
+		if (filter === 'burn') {
+			return `type=transfer&to=root&`
+		}
 		return `type=${filter}&`
 	}
 
@@ -160,6 +163,7 @@ const ActivityLog = ({ query }) => {
 								<option value="marketUpdate">Market Update</option>
 								<option value="mint">Card Creation</option>
 								<option value="transfer">Card Transfer</option>
+								<option value="burn">Card Burn</option>
 							</select>
 						</div>
 					</div>
