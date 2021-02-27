@@ -16,6 +16,9 @@ import Modal from './Modal'
 
 import useStore from '../store'
 import { parseImgUrl, prettyBalance, timeAgo } from '../utils/common'
+import CardDetailModal from './CardDetailModal'
+import { useRouter } from 'next/router'
+import CopyLink from './CopyLink'
 
 export const descriptionMaker = (activity, token) => {
 	if (activity.type === 'marketUpdate') {
@@ -39,40 +42,6 @@ export const descriptionMaker = (activity, token) => {
 	}
 
 	return `${activity.from} transferred ${activity.quantity}pcs of ${token?.metadata.name} to ${activity.to}`
-}
-
-const CopyLink = ({ children, link, afterCopy }) => {
-	const [isComponentMounted, setIsComponentMounted] = useState(false)
-	const copyLinkRef = useRef()
-
-	useEffect(() => {
-		setIsComponentMounted(true)
-	}, [])
-
-	const _copyLink = () => {
-		const copyText = copyLinkRef.current
-		copyText.select()
-		copyText.setSelectionRange(0, 99999)
-		document.execCommand('copy')
-
-		afterCopy()
-	}
-
-	return (
-		<div onClick={(_) => _copyLink()}>
-			{isComponentMounted && (
-				<div
-					className="absolute z-0 opacity-0"
-					style={{
-						top: `-1000`,
-					}}
-				>
-					<input ref={copyLinkRef} readOnly type="text" value={link} />
-				</div>
-			)}
-			<div className="relative z-10">{children}</div>
-		</div>
-	)
 }
 
 const Activity = ({ activity }) => {
@@ -139,6 +108,7 @@ const Activity = ({ activity }) => {
 		)
 	}
 
+	// mint
 	if (activity.type === 'transfer' && activity.from === '') {
 		return (
 			<div className="text-gray-300">
@@ -150,6 +120,21 @@ const Activity = ({ activity }) => {
 					/>
 				</span>
 				<span> with supply of {activity.quantity}pcs</span>
+			</div>
+		)
+	}
+
+	// burn
+	if (activity.type === 'transfer' && activity.to === '') {
+		return (
+			<div className="text-gray-300">
+				<span>burned {activity.quantity}pcs by </span>
+				<span>
+					<LinkToProfile
+						accountId={activity.from}
+						className="text-gray-100 hover:border-gray-100"
+					/>
+				</span>
 			</div>
 		)
 	}
@@ -172,10 +157,11 @@ const Activity = ({ activity }) => {
 }
 
 const ActivityDetail = ({ activity, token }) => {
+	const router = useRouter()
 	const [showModal, setShowModal] = useState(null)
-  const [isCopied, setIsCopied] = useState(false)
-  
-  const shareLink = `${process.env.BASE_URL}/activity/${activity._id}`
+	const [isCopied, setIsCopied] = useState(false)
+
+	const shareLink = `${process.env.BASE_URL}/activity/${activity._id}`
 
 	const fetcher = async (key) => {
 		const resp = await axios.get(`${process.env.API_URL}/${key}`)
@@ -205,13 +191,11 @@ const ActivityDetail = ({ activity, token }) => {
 
 	return (
 		<Fragment>
+			<CardDetailModal tokens={[localToken]} />
 			{showModal === 'options' && (
 				<Modal close={(_) => setShowModal('')}>
 					<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
-						<CopyLink
-							link={shareLink}
-							afterCopy={handleAfterCopy}
-						>
+						<CopyLink link={shareLink} afterCopy={handleAfterCopy}>
 							<div className="py-2 cursor-pointer flex items-center">
 								<svg
 									className="rounded-md"
@@ -296,7 +280,19 @@ const ActivityDetail = ({ activity, token }) => {
 					<div className="overflow-hidden">
 						<div className="flex items-center justify-between">
 							<div className="w-10/12 overflow-hidden truncate">
-								<Link href={`/token/${localToken?.tokenId}`}>
+								<Link
+									href={{
+										pathname: router.pathname,
+										query: {
+											...router.query,
+											...{ tokenId: localToken?.tokenId },
+											...{ prevAs: router.asPath },
+										},
+									}}
+									as={`/token/${localToken?.tokenId}`}
+									scroll={false}
+									shallow
+								>
 									<a
 										title={localToken?.metadata?.name}
 										className="text-2xl font-bold border-b-2 border-transparent hover:border-gray-100"

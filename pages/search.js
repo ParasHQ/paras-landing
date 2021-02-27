@@ -8,16 +8,26 @@ import useStore from '../store'
 
 const LIMIT = 6
 
-export default function MarketPage({ data }) {
+export default function SearchPage({ data, searchQuery }) {
 	const store = useStore()
 	const [tokens, setTokens] = useState(data.results)
 	const [page, setPage] = useState(1)
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
 
+	useEffect(async () => {
+		const res = await axios(
+			`${process.env.API_URL}/tokens?search=${searchQuery}&excludeTotalBurn=true&__limit=${LIMIT}`
+		)
+		setPage(1)
+		setTokens(res.data.data.results)
+		setHasMore(true)
+		setIsFetching(false)
+	}, [searchQuery])
+
 	useEffect(() => {
 		return () => {
-			store.setMarketScrollPersist('market', 0)
+			store.setMarketScrollPersist('Search Result', 0)
 		}
 	}, [])
 
@@ -28,7 +38,11 @@ export default function MarketPage({ data }) {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/tokens?excludeTotalBurn=true&__skip=${page * LIMIT}&__limit=${LIMIT}`
+			`${
+				process.env.API_URL
+			}/tokens?search=${searchQuery}&excludeTotalBurn=true&__skip=${
+				page * LIMIT
+			}&__limit=${LIMIT}`
 		)
 		const newData = await res.data.data
 
@@ -43,6 +57,11 @@ export default function MarketPage({ data }) {
 		setIsFetching(false)
 	}
 
+	const headMeta = {
+		title: `Search ${searchQuery} — Paras`,
+		description: `Explore and collect ${searchQuery} digital art cards on Paras. All-in-one social digital art card marketplace for creators and collectors.`,
+	}
+
 	return (
 		<div
 			className="min-h-screen bg-dark-primary-1"
@@ -51,30 +70,30 @@ export default function MarketPage({ data }) {
 			}}
 		>
 			<Head>
-				<title>Market — Paras</title>
+				<title>{headMeta.title}</title>
 				<meta
 					name="description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content={headMeta.description}
 				/>
 
-				<meta name="twitter:title" content="Market — Paras" />
+				<meta name="twitter:title" content={headMeta.title} />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
 				<meta
 					name="twitter:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content={headMeta.description}
 				/>
 				<meta
 					name="twitter:image"
 					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Market — Paras" />
-				<meta property="og:site_name" content="Market — Paras" />
+				<meta property="og:title" content="Search Result — Paras" />
+				<meta property="og:site_name" content="Search Result — Paras" />
 				<meta
 					property="og:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content={headMeta.description}
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta
@@ -84,10 +103,15 @@ export default function MarketPage({ data }) {
 			</Head>
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
-				<h1 className="text-4xl font-bold text-gray-100 text-center">Market</h1>
+				<div className="text-center">
+					<h1 className="text-3xl font-bold text-gray-100">Search Result</h1>
+					<h4 className="text-xl font-semibold text-gray-300">
+						<span className="opacity-75">for</span> <span className="border-b-2 border-gray-100">{searchQuery}</span>
+					</h4>
+				</div>
 				<div className="mt-4 px-4">
 					<CardList
-						name="market"
+						name="Search Result"
 						tokens={tokens}
 						fetchData={_fetchData}
 						hasMore={hasMore}
@@ -99,9 +123,12 @@ export default function MarketPage({ data }) {
 	)
 }
 
-export async function getServerSideProps() {
-	const res = await axios(`${process.env.API_URL}/tokens?excludeTotalBurn=true&__limit=${LIMIT}`)
+export async function getServerSideProps({ query }) {
+	const searchQuery = query.q
+	const res = await axios(
+		`${process.env.API_URL}/tokens?search=${searchQuery}&excludeTotalBurn=true&__limit=${LIMIT}`
+	)
 	const data = await res.data.data
 
-	return { props: { data } }
+	return { props: { data, searchQuery } }
 }
