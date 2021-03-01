@@ -1295,13 +1295,19 @@ const CardDetail = ({ token }) => {
 
 								{activeTab === 'info' && (
 									<div>
-										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
-											<p className="text-sm text-black font-medium">
-												Collection
-											</p>
-											<p className="text-gray-900">
-												{localToken.metadata.collection}
-											</p>
+										<div className="flex border-2 border-dashed mt-4 p-2 rounded-md">
+											<div>
+												<p className="text-sm text-black font-medium">
+													Collection
+												</p>
+												<Link
+													href={`/collection/${localToken.metadata.collection}`}
+												>
+													<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
+														{localToken.metadata.collection}
+													</a>
+												</Link>
+											</div>
 										</div>
 										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
 											<p className="text-sm text-black font-medium">
