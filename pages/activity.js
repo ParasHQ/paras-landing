@@ -33,10 +33,8 @@ const ActivityLog = ({ query }) => {
 	}, [])
 
 	useEffect(() => {
-		if (router.query) {
+		if (router.query?.filter) {
 			_fetchData(router.query, true)
-		} else {
-			_fetchData()
 		}
 	}, [router.query])
 
