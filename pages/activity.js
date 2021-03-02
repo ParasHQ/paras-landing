@@ -32,16 +32,16 @@ const ActivityLog = ({ query }) => {
 		}
 	}, [])
 
-	useEffect(() => {
-		if (router.query?.filter) {
-			_fetchData(router.query, true)
-		}
-	}, [router.query])
-
 	const _changeFilter = (e) => {
 		router.push({
 			query: { filter: encodeURI(e.target.value) },
 		})
+		_fetchData(
+			{
+				query: { filter: encodeURI(e.target.value) },
+			},
+			true
+		)
 	}
 
 	const _filterQuery = (filter) => {
