@@ -3,7 +3,7 @@ import { Fragment, useState } from 'react'
 import { parseImgUrl, prettyTruncate } from '../utils/common'
 import CopyLink from './CopyLink'
 
-const Profile = ({ userProfile, activeTab }) => {
+const Profile = ({ userProfile = {}, activeTab }) => {
 	const router = useRouter()
 
 	const [isCopied, setIsCopied] = useState(false)
@@ -12,7 +12,7 @@ const Profile = ({ userProfile, activeTab }) => {
 		<Fragment>
 			<div className="flex flex-col items-center justify-center">
 				<div className="w-32 h-32 rounded-full overflow-hidden bg-primary">
-					<img src={parseImgUrl(userProfile.imgUrl)} className="object-cover" />
+					<img src={parseImgUrl(userProfile?.imgUrl)} className="object-cover" />
 				</div>
 				<div className="mt-4 max-w-sm text-center overflow-hidden">
 					<div className="flex items-center justify-center">
@@ -71,20 +71,20 @@ const Profile = ({ userProfile, activeTab }) => {
 						</div>
 					</div>
 					<p className="mt-2 text-gray-300 whitespace-pre-line">
-						{userProfile.bio?.replace(/\n\s*\n\s*\n/g, '\n\n')}
+						{userProfile?.bio?.replace(/\n\s*\n\s*\n/g, '\n\n')}
 					</p>
-					{userProfile.website && (
+					{userProfile?.website && (
 						<a
 							href={
-								!/^https?:\/\//i.test(userProfile.website)
-									? 'http://' + userProfile.website
-									: userProfile.website
+								!/^https?:\/\//i.test(userProfile?.website)
+									? 'http://' + userProfile?.website
+									: userProfile?.website
 							}
 							target="_blank"
 							className="cursor-pointer italic"
 						>
 							<p className="mt-1 text-gray-400 text-sm whitespace-pre-line">
-								{userProfile.website}
+								{userProfile?.website}
 							</p>
 						</a>
 					)}
