@@ -4,28 +4,21 @@ import { useEffect } from 'react'
 import Head from 'next/head'
 
 import Footer from '../components/Footer'
-import Error from './404'
 import Nav from '../components/Nav'
 
 const ProfileDetail = ({ userProfile, accountId }) => {
 	const router = useRouter()
 
 	useEffect(() => {
-		if (userProfile) {
-			router.replace(`${accountId}/collection`)
-		}
+		router.replace(`${accountId}/collection`)
 	}, [router.query.id])
-
-	if (!userProfile) {
-		return <Error />
-	}
 
 	const headMeta = {
 		title: `${accountId} — Paras`,
 		description: `See digital card collectibles and creations from ${accountId}. ${
-			userProfile.bio || ''
+			userProfile?.bio || ''
 		}`,
-		image: userProfile.imgUrl
+		image: userProfile?.imgUrl
 			? `${process.env.API_URL}/socialCard/avatar/${
 					userProfile.imgUrl.split('://')[1]
 			  }`
@@ -69,7 +62,7 @@ export async function getServerSideProps({ params }) {
 	)
 
 	const userProfile = (await profileRes.data.data.results[0]) || null
-	const accountId = (await profileRes.data.data.results[0]?.accountId) || null
+	const accountId = params.id
 
 	return {
 		props: { userProfile, accountId },
