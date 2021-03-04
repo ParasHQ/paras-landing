@@ -36,12 +36,7 @@ const ActivityLog = ({ query }) => {
 		router.push({
 			query: { filter: encodeURI(e.target.value) },
 		})
-		_fetchData(
-			{
-				query: { filter: encodeURI(e.target.value) },
-			},
-			true
-		)
+		_fetchData({ filter: encodeURI(e.target.value) }, true)
 	}
 
 	const _filterQuery = (filter) => {
