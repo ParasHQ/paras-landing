@@ -23,12 +23,10 @@ const ActivityLog = ({ query }) => {
 	const [isFetching, setIsFetching] = useState(false)
 
 	useEffect(() => {
-		if (activityList.length === 0 && activityListHasMore) {
-			if (query) {
-				_fetchData(query, true)
-			} else {
-				_fetchData({}, true)
-			}
+		if (query) {
+			_fetchData(query, true)
+		} else {
+			_fetchData({}, true)
 		}
 	}, [])
 
