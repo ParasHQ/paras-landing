@@ -1301,7 +1301,13 @@ const CardDetail = ({ token }) => {
 													Collection
 												</p>
 												<Link
-													href={`/collection/${localToken.metadata.collection}`}
+													href={{
+														pathname: '/[id]/collection/[collectionName]',
+														query: {
+															collectionName: localToken.metadata.collection,
+															id: localToken.creatorId,
+														},
+													}}
 												>
 													<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
 														{localToken.metadata.collection}

@@ -1,11 +1,12 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import Nav from '../../components/Nav'
-import CardList from '../../components/CardList'
+import Nav from '../../../components/Nav'
+import CardList from '../../../components/CardList'
 import Head from 'next/head'
-import Footer from '../../components/Footer'
-import useStore from '../../store'
+import Footer from '../../../components/Footer'
+import useStore from '../../../store'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 const LIMIT = 6
 
@@ -17,7 +18,7 @@ export default function MarketPage({ data }) {
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
 
-	const { collectionName } = router.query
+	const { collectionName, filter, id } = router.query
 
 	useEffect(() => {
 		return () => {
@@ -34,7 +35,7 @@ export default function MarketPage({ data }) {
 		const res = await axios(
 			`${
 				process.env.API_URL
-			}/tokens?collection=${collectionName}&__excludeTotalBurn=true&__skip=${
+			}/tokens?collection=${collectionName}&__creatorId=${id}&__excludeTotalBurn=true&__skip=${
 				page * LIMIT
 			}&__limit=${LIMIT}`
 		)
@@ -49,6 +50,12 @@ export default function MarketPage({ data }) {
 			setHasMore(true)
 		}
 		setIsFetching(false)
+	}
+
+	const _changeFilter = (e) => {
+		router.push({
+			query: { filter: encodeURI(e.target.value), collectionName, id },
+		})
 	}
 
 	const headMeta = {
@@ -88,15 +95,40 @@ export default function MarketPage({ data }) {
 			</Head>
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
-				<h1 className="text-4xl font-bold text-gray-100 text-center">
+				<h1 className="text-4xl font-bold text-gray-100 mx-4">
 					{collectionName}
 				</h1>
+				<div className="flex justify-between m-4 mt-0">
+					<h4 className="text-xl text-gray-300 self-center">
+						<span>
+							collection by{' '}
+							<span className="font-semibold">
+								<Link href={`/${id}`}>
+									<a className="font-semibold text-white border-b-2 border-transparent hover:border-white">
+										{id}
+									</a>
+								</Link>
+							</span>
+						</span>
+					</h4>
+					<div className="text-right self-end">
+						<select
+							className="p-2 bg-dark-primary-4 text-gray-100 rounded-md"
+							onChange={(e) => _changeFilter(e)}
+							value={router.query.filter}
+						>
+							<option value="showAll">Show All</option>
+							<option value="owned">Owned Cards</option>
+						</select>
+					</div>
+				</div>
 				<div className="mt-4 px-4">
 					<CardList
 						name="market"
 						tokens={tokens}
 						fetchData={_fetchData}
 						hasMore={hasMore}
+						toggleOwnership={filter === 'owned'}
 					/>
 				</div>
 			</div>
@@ -107,7 +139,7 @@ export default function MarketPage({ data }) {
 
 export async function getServerSideProps({ params }) {
 	const res = await axios(
-		`${process.env.API_URL}/tokens?collection=${params.collectionName}&__excludeTotalBurn=true&__limit=${LIMIT}`
+		`${process.env.API_URL}/tokens?collection=${params.collectionName}&__creatorId=${params.id}&__excludeTotalBurn=true&__limit=${LIMIT}`
 	)
 	const data = await res.data.data
 
