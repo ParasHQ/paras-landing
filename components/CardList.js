@@ -9,7 +9,13 @@ import JSBI from 'jsbi'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import CardDetailModal from './CardDetailModal'
 
-const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
+const CardList = ({
+	name = 'default',
+	tokens,
+	fetchData,
+	hasMore,
+	toggleOwnership = false,
+}) => {
 	const store = useStore()
 	const router = useRouter()
 	const containerRef = useRef()
@@ -139,6 +145,10 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 		return marketDataList[0]
 	}
 
+	const _getUserOwnership = (userId, ownership) => {
+		return ownership.some((ownership) => ownership.ownerId === userId)
+	}
+
 	return (
 		<div
 			ref={containerRef}
@@ -176,7 +186,13 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 								key={token.tokenId}
 								className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8 lg:p-12 relative"
 							>
-								<div className="w-full m-auto">
+								<div
+									className={`w-full m-auto ${
+										toggleOwnership &&
+										!_getUserOwnership(store.currentUser, token.ownerships) &&
+										'opacity-25'
+									}`}
+								>
 									<Card
 										imgUrl={token.metadata.image}
 										imgBlur={token.metadata.blurhash}
@@ -195,7 +211,13 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 										}}
 									/>
 								</div>
-								<div className="text-center">
+								<div
+									className={`text-center ${
+										toggleOwnership &&
+										!_getUserOwnership(store.currentUser, token.ownerships) &&
+										'opacity-25'
+									}`}
+								>
 									<div className="mt-8">
 										<div className="p-2">
 											<p className="text-gray-400 text-xs">Start From</p>
