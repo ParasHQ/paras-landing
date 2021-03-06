@@ -7,7 +7,6 @@ import Footer from '../../components/Footer'
 import Nav from '../../components/Nav'
 import Profile from '../../components/Profile'
 import useStore from '../../store'
-import Error from '../404'
 
 const collection = ({ ownerTokens, userProfile, accountId }) => {
 	const store = useStore()
@@ -28,10 +27,6 @@ const collection = ({ ownerTokens, userProfile, accountId }) => {
 			store.setMarketDataPersist(scrollCollection, [])
 		}
 	}, [router.query.id])
-
-	if (!userProfile) {
-		return <Error />
-	}
 
 	const fetchOwnerTokens = async () => {
 		if (!hasMore || isFetching) {
@@ -60,9 +55,9 @@ const collection = ({ ownerTokens, userProfile, accountId }) => {
 	const headMeta = {
 		title: `${accountId} — Paras`,
 		description: `See digital card collectibles and creations from ${accountId}. ${
-			userProfile.bio || ''
+			userProfile?.bio || ''
 		}`,
-		image: userProfile.imgUrl
+		image: userProfile?.imgUrl
 			? `${process.env.API_URL}/socialCard/avatar/${
 					userProfile.imgUrl.split('://')[1]
 			  }`

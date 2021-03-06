@@ -23,25 +23,18 @@ const ActivityLog = ({ query }) => {
 	const [isFetching, setIsFetching] = useState(false)
 
 	useEffect(() => {
-		if (activityList.length === 0 && activityListHasMore) {
-			if (query) {
-				_fetchData(query, true)
-			} else {
-				_fetchData({}, true)
-			}
+		if (query) {
+			_fetchData(query, true)
+		} else {
+			_fetchData({}, true)
 		}
 	}, [])
-
-	useEffect(() => {
-		if (router.query?.filter) {
-			_fetchData(router.query, true)
-		}
-	}, [router.query])
 
 	const _changeFilter = (e) => {
 		router.push({
 			query: { filter: encodeURI(e.target.value) },
 		})
+		_fetchData({ filter: encodeURI(e.target.value) }, true)
 	}
 
 	const _filterQuery = (filter) => {
