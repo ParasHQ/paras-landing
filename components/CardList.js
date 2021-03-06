@@ -184,15 +184,13 @@ const CardList = ({
 						return (
 							<div
 								key={token.tokenId}
-								className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8 lg:p-12 relative"
+								className={`w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8 lg:p-12 relative ${
+									toggleOwnership &&
+									!_getUserOwnership(store.currentUser, token.ownerships) &&
+									'opacity-25'
+								}`}
 							>
-								<div
-									className={`w-full m-auto ${
-										toggleOwnership &&
-										!_getUserOwnership(store.currentUser, token.ownerships) &&
-										'opacity-25'
-									}`}
-								>
+								<div className="w-full m-auto">
 									<Card
 										imgUrl={token.metadata.image}
 										imgBlur={token.metadata.blurhash}
@@ -211,13 +209,7 @@ const CardList = ({
 										}}
 									/>
 								</div>
-								<div
-									className={`text-center ${
-										toggleOwnership &&
-										!_getUserOwnership(store.currentUser, token.ownerships) &&
-										'opacity-25'
-									}`}
-								>
+								<div className="text-center">
 									<div className="mt-8">
 										<div className="p-2">
 											<p className="text-gray-400 text-xs">Start From</p>
