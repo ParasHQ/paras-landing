@@ -17,7 +17,7 @@ export default function SearchPage({ data, searchQuery }) {
 
 	useEffect(async () => {
 		const res = await axios(
-			`${process.env.API_URL}/tokens?search=${searchQuery}&excludeTotalBurn=true&__limit=${LIMIT}`
+			`${process.env.API_URL}/tokens?search=${encodeURIComponent(searchQuery)}&excludeTotalBurn=true&__limit=${LIMIT}`
 		)
 		setPage(1)
 		setTokens(res.data.data.results)
@@ -40,7 +40,7 @@ export default function SearchPage({ data, searchQuery }) {
 		const res = await axios(
 			`${
 				process.env.API_URL
-			}/tokens?search=${searchQuery}&excludeTotalBurn=true&__skip=${
+			}/tokens?search=${encodeURIComponent(searchQuery)}&excludeTotalBurn=true&__skip=${
 				page * LIMIT
 			}&__limit=${LIMIT}`
 		)
@@ -125,8 +125,9 @@ export default function SearchPage({ data, searchQuery }) {
 
 export async function getServerSideProps({ query }) {
 	const searchQuery = query.q
+
 	const res = await axios(
-		`${process.env.API_URL}/tokens?search=${searchQuery}&excludeTotalBurn=true&__limit=${LIMIT}`
+		`${process.env.API_URL}/tokens?search=${encodeURIComponent(searchQuery)}&excludeTotalBurn=true&__limit=${LIMIT}`
 	)
 	const data = await res.data.data
 
