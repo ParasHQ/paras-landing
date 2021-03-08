@@ -526,7 +526,7 @@ const Nav = () => {
 	const testnetBannerRef = useRef()
 	const toast = useToast()
 
-	const [searchQuery, setSearchQuery] = useState(router.query.q)
+	const [searchQuery, setSearchQuery] = useState(router.query.q || '')
 
 	useEffect(() => {
 		const onClickEv = (e) => {
