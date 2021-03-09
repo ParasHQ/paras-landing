@@ -1401,7 +1401,8 @@ const CardDetail = ({ token }) => {
 								{activeTab === 'history' && <ActivityList token={token} />}
 							</div>
 						</Scrollbars>
-						{_getLowestPrice(token.ownerships) ? (
+						{_getLowestPrice(token.ownerships) &&
+						!_getUserOwnership(store.currentUser) ? (
 							<button
 								className="box-border font-semibold m-4 py-3 w-auto rounded-md border-2 border-primary bg-primary text-white inline-block text-sm"
 								onClick={() => {
