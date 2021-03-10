@@ -5,6 +5,7 @@ import CardList from '../components/CardList'
 import Head from 'next/head'
 import Footer from '../components/Footer'
 import useStore from '../store'
+import FeaturedPost from '../components/FeaturedPost'
 
 const LIMIT = 6
 
@@ -28,7 +29,9 @@ export default function MarketPage({ data }) {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/tokens?excludeTotalBurn=true&__skip=${page * LIMIT}&__limit=${LIMIT}`
+			`${process.env.API_URL}/tokens?excludeTotalBurn=true&__skip=${
+				page * LIMIT
+			}&__limit=${LIMIT}`
 		)
 		const newData = await res.data.data
 
@@ -85,6 +88,7 @@ export default function MarketPage({ data }) {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<h1 className="text-4xl font-bold text-gray-100 text-center">Market</h1>
+				<FeaturedPost />
 				<div className="mt-4 px-4">
 					<CardList
 						name="market"
@@ -100,7 +104,9 @@ export default function MarketPage({ data }) {
 }
 
 export async function getServerSideProps() {
-	const res = await axios(`${process.env.API_URL}/tokens?excludeTotalBurn=true&__limit=${LIMIT}`)
+	const res = await axios(
+		`${process.env.API_URL}/tokens?excludeTotalBurn=true&__limit=${LIMIT}`
+	)
 	const data = await res.data.data
 
 	return { props: { data } }
