@@ -9,7 +9,13 @@ import JSBI from 'jsbi'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import CardDetailModal from './CardDetailModal'
 
-const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
+const CardList = ({
+	name = 'default',
+	tokens,
+	fetchData,
+	hasMore,
+	toggleOwnership = false,
+}) => {
 	const store = useStore()
 	const router = useRouter()
 	const containerRef = useRef()
@@ -139,6 +145,10 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 		return marketDataList[0]
 	}
 
+	const _getUserOwnership = (userId, ownership) => {
+		return ownership.some((ownership) => ownership.ownerId === userId)
+	}
+
 	return (
 		<div
 			ref={containerRef}
@@ -174,7 +184,11 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 						return (
 							<div
 								key={token.tokenId}
-								className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8 lg:p-12 relative"
+								className={`w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8 lg:p-12 relative ${
+									toggleOwnership &&
+									!_getUserOwnership(store.currentUser, token.ownerships) &&
+									'opacity-25'
+								}`}
 							>
 								<div className="w-full m-auto">
 									<Card
