@@ -893,7 +893,8 @@ const CardDetail = ({ token }) => {
 							<form onSubmit={handleSubmit(_buy)}>
 								<div className="mt-4">
 									<label className="block text-sm">
-										Buy quantity (Available: {chosenSeller.marketData.quantity})
+										Buy quantity (Available for buy:{' '}
+										{chosenSeller.marketData.quantity})
 									</label>
 									<input
 										type="number"
@@ -998,13 +999,13 @@ const CardDetail = ({ token }) => {
 								</div>
 								<div className="mt-4">
 									<label className="block text-sm">
-										Quantity (Available:{' '}
+										Quantity (Available for transfer:{' '}
 										{_getUserOwnership(store.currentUser)
 											? _getUserOwnership(store.currentUser).quantity -
 											  (_getUserOwnership(store.currentUser).marketData
 													?.quantity || 0)
 											: 0}
-										)
+										, owns: {_getUserOwnership(store.currentUser).quantity})
 									</label>
 									<input
 										type="number"
@@ -1080,13 +1081,13 @@ const CardDetail = ({ token }) => {
 								</div>
 								<div className="mt-4">
 									<label className="block text-sm">
-										Quantity (Available:{' '}
+										Quantity (Available for Burn:{' '}
 										{_getUserOwnership(store.currentUser)
 											? _getUserOwnership(store.currentUser).quantity -
 											  (_getUserOwnership(store.currentUser).marketData
 													?.quantity || 0)
 											: 0}
-										)
+										, owns: {_getUserOwnership(store.currentUser).quantity})
 									</label>
 									<input
 										type="number"
