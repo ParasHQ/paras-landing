@@ -893,7 +893,8 @@ const CardDetail = ({ token }) => {
 							<form onSubmit={handleSubmit(_buy)}>
 								<div className="mt-4">
 									<label className="block text-sm">
-										Buy quantity (Available: {chosenSeller.marketData.quantity})
+										Buy quantity (Available for buy:{' '}
+										{chosenSeller.marketData.quantity})
 									</label>
 									<input
 										type="number"
@@ -998,13 +999,13 @@ const CardDetail = ({ token }) => {
 								</div>
 								<div className="mt-4">
 									<label className="block text-sm">
-										Quantity (Available:{' '}
+										Quantity (Available for transfer:{' '}
 										{_getUserOwnership(store.currentUser)
 											? _getUserOwnership(store.currentUser).quantity -
 											  (_getUserOwnership(store.currentUser).marketData
 													?.quantity || 0)
 											: 0}
-										)
+										, owns: {_getUserOwnership(store.currentUser).quantity})
 									</label>
 									<input
 										type="number"
@@ -1080,13 +1081,13 @@ const CardDetail = ({ token }) => {
 								</div>
 								<div className="mt-4">
 									<label className="block text-sm">
-										Quantity (Available:{' '}
+										Quantity (Available for Burn:{' '}
 										{_getUserOwnership(store.currentUser)
 											? _getUserOwnership(store.currentUser).quantity -
 											  (_getUserOwnership(store.currentUser).marketData
 													?.quantity || 0)
 											: 0}
-										)
+										, owns: {_getUserOwnership(store.currentUser).quantity})
 									</label>
 									<input
 										type="number"
@@ -1295,13 +1296,25 @@ const CardDetail = ({ token }) => {
 
 								{activeTab === 'info' && (
 									<div>
-										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
-											<p className="text-sm text-black font-medium">
-												Collection
-											</p>
-											<p className="text-gray-900">
-												{localToken.metadata.collection}
-											</p>
+										<div className="flex border-2 border-dashed mt-4 p-2 rounded-md">
+											<div>
+												<p className="text-sm text-black font-medium">
+													Collection
+												</p>
+												<Link
+													href={{
+														pathname: '/[id]/collection/[collectionName]',
+														query: {
+															collectionName: localToken.metadata.collection,
+															id: localToken.creatorId,
+														},
+													}}
+												>
+													<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
+														{localToken.metadata.collection}
+													</a>
+												</Link>
+											</div>
 										</div>
 										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
 											<p className="text-sm text-black font-medium">
@@ -1389,7 +1402,8 @@ const CardDetail = ({ token }) => {
 								{activeTab === 'history' && <ActivityList token={token} />}
 							</div>
 						</Scrollbars>
-						{_getLowestPrice(token.ownerships) ? (
+						{_getLowestPrice(token.ownerships) &&
+						!_getUserOwnership(store.currentUser) ? (
 							<button
 								className="box-border font-semibold m-4 py-3 w-auto rounded-md border-2 border-primary bg-primary text-white inline-block text-sm"
 								onClick={() => {

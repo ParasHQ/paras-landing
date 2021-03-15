@@ -7,7 +7,7 @@ import near from '../lib/near'
 import useStore from '../store'
 import Modal from './Modal'
 import ProfileEdit from './ProfileEdit'
-import { parseImgUrl, prettyBalance } from '../utils/common'
+import { parseImgUrl, prettyBalance, prettyTruncate } from '../utils/common'
 import { useToast } from '../hooks/useToast'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -258,7 +258,7 @@ const Notification = ({ notif }) => {
 						</div>
 						<div className="pl-2 text-gray-300">
 							<span className="font-medium text-gray-100">
-								{notif.payload.buyer}
+								{prettyTruncate(notif.payload.buyer, 12, 'address')}
 							</span>{' '}
 							bought {notif.payload.quantity}pcs of{' '}
 							<span className="font-medium text-gray-100">
@@ -280,7 +280,7 @@ const Notification = ({ notif }) => {
 					</div>
 					<div className="pl-2 text-gray-300">
 						<span className="font-medium text-gray-100">
-							{notif.payload.from}
+							{prettyTruncate(notif.payload.from, 12, 'address')}
 						</span>{' '}
 						send you {notif.payload.quantity}pcs of{' '}
 						<span className="font-medium text-gray-100">
@@ -310,7 +310,6 @@ const NotificationList = () => {
 
 	const [isFetching, setIsFetching] = useState(false)
 	const [showAccountModal, setShowAccountModal] = useState(false)
-	const [showEditAccountModal, setShowEditAccountModal] = useState(false)
 
 	useEffect(() => {
 		if (
@@ -406,17 +405,6 @@ const NotificationList = () => {
 
 	return (
 		<div ref={accModalRef}>
-			{showEditAccountModal && (
-				<Modal
-					close={(_) => setShowEditAccountModal(false)}
-					closeOnBgClick={false}
-					closeOnEscape={false}
-				>
-					<div className="w-full max-w-sm p-4 m-auto bg-gray-100 rounded-md overflow-hidden">
-						<ProfileEdit close={(_) => setShowEditAccountModal(false)} />
-					</div>
-				</Modal>
-			)}
 			<div className="relative flex items-center justify-end text-gray-100">
 				<div
 					onClick={toggleAccountModal}
@@ -526,7 +514,7 @@ const Nav = () => {
 	const testnetBannerRef = useRef()
 	const toast = useToast()
 
-	const [searchQuery, setSearchQuery] = useState(router.query.q)
+	const [searchQuery, setSearchQuery] = useState(router.query.q || '')
 
 	useEffect(() => {
 		const onClickEv = (e) => {
