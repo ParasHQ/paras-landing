@@ -5,65 +5,7 @@ import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 
-const data = [
-	{
-		_id: '6040b4808e4b8108502c8ff6c8',
-		image: 'ipfs://bafybeiaxl6ssrlgqig6ejhhgyhwfd6gr52ioe6gbycv3tjsb3qmvt6ohg4',
-		title: 'test featured',
-		description: 'this is the description',
-		isPinned: true,
-		url: 'https://paras.id/publication/editorial',
-		createdAt: 1614851685048,
-	},
-	{
-		_id: '6040b48b8e4b8108502c8asr6c9',
-		image: 'ipfs://bafybeifuvycrsebpyvbfjovj44bhfyv3u5xevc2nfn4a7ahtkpr2aapjly',
-		title: 'Lunar new year',
-		description:
-			'this is the description yang panjang banget pokoknya lalalallalalalalala iya bener panjang banget',
-		isPinned: false,
-		url: 'https://paras.id/publication/editorial',
-		createdAt: 1614851685048,
-	},
-	{
-		_id: '6040b4808e4b8108502c86csa8',
-		image: 'ipfs://QmQogQo5534TGuRukhechFuiYH2WaXjAYtWTJaRsx3mQEV',
-		title: 'test featured',
-		description: 'this is the description',
-		isPinned: true,
-		url: 'https://paras.id/publication/editorial',
-		createdAt: 1614851685048,
-	},
-	{
-		_id: '6040b48b8e4b8108502c86c9123213',
-		image: 'ipfs://QmQogQo5534TGuRukhechFuiYH2WaXjAYtWTJaRsx3mQEV',
-		title: 'test featured',
-		description: 'this is the description',
-		isPinned: false,
-		url: 'https://paras.id/publication/editorial',
-		createdAt: 1614851685048,
-	},
-	{
-		_id: '6040b4808e4b8108502c86c823',
-		image: 'ipfs://QmQogQo5534TGuRukhechFuiYH2WaXjAYtWTJaRsx3mQEV',
-		title: 'test featured',
-		description: 'this is the description',
-		isPinned: true,
-		url: 'https://paras.id/publication/editorial',
-		createdAt: 1614851685048,
-	},
-	{
-		_id: '6040b48b8e4b8108502c86c92',
-		image: 'ipfs://QmQogQo5534TGuRukhechFuiYH2WaXjAYtWTJaRsx3mQEV',
-		title: 'test featured',
-		description: 'this is the description',
-		isPinned: false,
-		url: 'https://paras.id/publication/editorial',
-		createdAt: 1614851685048,
-	},
-]
-
-const FeaturedPostList = ({ post = data }) => {
+const FeaturedPostList = ({ post }) => {
 	const [showArrow, setShowArrow] = useState(false)
 	const [numSlides, setNumSlides] = useState(null)
 
@@ -78,47 +20,53 @@ const FeaturedPostList = ({ post = data }) => {
 	}, [])
 
 	return (
-		<div
-			className="border-2 border-dashed border-gray-800 rounded-md my-8 m-4 p-6 md:p-8"
-			onMouseEnter={() => setShowArrow(true)}
-			onMouseLeave={() => setShowArrow(false)}
-		>
-			{numSlides !== null && (
-				<Slider
-					dots={false}
-					autoplay={false}
-					infinite={true}
-					slidesToShow={numSlides}
-					slidesToScroll={1}
-					swipe={false}
-					arrows={showArrow}
-					responsive={[
-						{
-							breakpoint: 768,
-							settings: {
-								swipe: true,
-								arrows: false,
+		<>
+			<h1 className="text-4xl font-bold text-gray-100 text-center">
+				Featured Post
+			</h1>
+			<div
+				className="border-2 border-dashed border-gray-800 rounded-md my-8 mt-4 m-4 p-6 md:p-8"
+				onMouseEnter={() => setShowArrow(true)}
+				onMouseLeave={() => setShowArrow(false)}
+			>
+				{numSlides !== null && (
+					<Slider
+						dots={false}
+						autoplay={false}
+						infinite={false}
+						slidesToShow={numSlides}
+						slidesToScroll={1}
+						swipe={false}
+						arrows={showArrow}
+						adaptiveHeight={true}
+						responsive={[
+							{
+								breakpoint: 768,
+								settings: {
+									swipe: true,
+									arrows: false,
+								},
 							},
-						},
-						{
-							breakpoint: 640,
-							settings: {
-								swipe: true,
-								arrows: false,
+							{
+								breakpoint: 640,
+								settings: {
+									swipe: true,
+									arrows: false,
+								},
 							},
-						},
-					]}
-				>
-					{data.map((post) => (
-						<div key={post._id}>
-							<div className="w-11/12 m-auto">
-								<FeaturedPost post={post} />
+						]}
+					>
+						{post.map((post) => (
+							<div key={post._id}>
+								<div className="w-11/12 m-auto">
+									<FeaturedPost post={post} />
+								</div>
 							</div>
-						</div>
-					))}
-				</Slider>
-			)}
-		</div>
+						))}
+					</Slider>
+				)}
+			</div>
+		</>
 	)
 }
 
@@ -164,6 +112,7 @@ const FeaturedPost = ({ post }) => {
 			className="bg-dark-primary-1 rounded-md overflow-hidden relative"
 		>
 			<a href={post.url} target="_blank">
+				<div className="absolute w-full h-full bg-gradient-to-t from-gray-900 via-transparent" />
 				<img
 					src={parseImgUrl(post.image)}
 					className="object-cover h-full w-full"
