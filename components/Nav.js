@@ -310,7 +310,6 @@ const NotificationList = () => {
 
 	const [isFetching, setIsFetching] = useState(false)
 	const [showAccountModal, setShowAccountModal] = useState(false)
-	const [showEditAccountModal, setShowEditAccountModal] = useState(false)
 
 	useEffect(() => {
 		if (
@@ -406,17 +405,6 @@ const NotificationList = () => {
 
 	return (
 		<div ref={accModalRef}>
-			{showEditAccountModal && (
-				<Modal
-					close={(_) => setShowEditAccountModal(false)}
-					closeOnBgClick={false}
-					closeOnEscape={false}
-				>
-					<div className="w-full max-w-sm p-4 m-auto bg-gray-100 rounded-md overflow-hidden">
-						<ProfileEdit close={(_) => setShowEditAccountModal(false)} />
-					</div>
-				</Modal>
-			)}
 			<div className="relative flex items-center justify-end text-gray-100">
 				<div
 					onClick={toggleAccountModal}
