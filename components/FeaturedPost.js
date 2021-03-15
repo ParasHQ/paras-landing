@@ -15,14 +15,14 @@ const FeaturedPostList = ({ post = [] }) => {
 		} else if (window.innerWidth < 768) {
 			setNumSlides(2)
 		} else {
-			setNumSlides(4)
+			setNumSlides(3)
 		}
 	}, [])
 
 	return (
 		<>
 			<h1 className="text-4xl font-bold text-gray-100 text-center">
-				Featured Post
+				Featured
 			</h1>
 			<div
 				className="border-2 border-dashed border-gray-800 rounded-md my-8 mt-4 m-4 p-6 md:p-8"
@@ -66,7 +66,7 @@ const FeaturedPostList = ({ post = [] }) => {
 					</Slider>
 				) : (
 					post.map((post) => (
-						<div className="w-1/4" key={post._id}>
+						<div className="w-1/3" key={post._id}>
 							<div className="w-11/12 m-auto">
 								<FeaturedPost post={post} />
 							</div>
