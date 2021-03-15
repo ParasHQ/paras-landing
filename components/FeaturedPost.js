@@ -73,7 +73,7 @@ const FeaturedPostList = ({ post = data }) => {
 		} else if (window.innerWidth < 768) {
 			setNumSlides(2)
 		} else {
-			setNumSlides(3)
+			setNumSlides(4)
 		}
 	}, [])
 
@@ -170,7 +170,9 @@ const FeaturedPost = ({ post }) => {
 				/>
 				<div className="p-4 absolute bottom-0">
 					<h1 className="text-white font-bold text-2xl">{post.title}</h1>
-					<p className="text-white whitespace-normal">{post.description}</p>
+					<p className="text-white whitespace-normal font-normal text-sm">
+						{post.description}
+					</p>
 				</div>
 			</a>
 		</div>
