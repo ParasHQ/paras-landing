@@ -5,7 +5,7 @@ import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 
-const FeaturedPostList = ({ post }) => {
+const FeaturedPostList = ({ post = [] }) => {
 	const [showArrow, setShowArrow] = useState(false)
 	const [numSlides, setNumSlides] = useState(null)
 
@@ -29,7 +29,7 @@ const FeaturedPostList = ({ post }) => {
 				onMouseEnter={() => setShowArrow(true)}
 				onMouseLeave={() => setShowArrow(false)}
 			>
-				{numSlides !== null && (
+				{numSlides !== null && post.length > 1 ? (
 					<Slider
 						dots={false}
 						autoplay={false}
@@ -64,6 +64,14 @@ const FeaturedPostList = ({ post }) => {
 							</div>
 						))}
 					</Slider>
+				) : (
+					post.map((post) => (
+						<div className="w-1/4" key={post._id}>
+							<div className="w-11/12 m-auto">
+								<FeaturedPost post={post} />
+							</div>
+						</div>
+					))
 				)}
 			</div>
 		</>
