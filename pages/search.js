@@ -19,6 +19,7 @@ export default function SearchPage({ data, searchQuery }) {
 		const res = await axios(
 			`${process.env.API_URL}/tokens?search=${encodeURIComponent(searchQuery)}&excludeTotalBurn=true&__limit=${LIMIT}`
 		)
+		window.scrollTo(0, 0)
 		setPage(1)
 		setTokens(res.data.data.results)
 		setHasMore(true)
