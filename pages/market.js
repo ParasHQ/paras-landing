@@ -19,6 +19,7 @@ export default function MarketPage({ data, featured }) {
 	const [tokens, setTokens] = useState(data.results)
 	const [page, setPage] = useState(1)
 	const [isFetching, setIsFetching] = useState(false)
+	const [isFiltering, setIsFiltering] = useState(true)
 	const [hasMore, setHasMore] = useState(true)
 
 	useEffect(() => {
@@ -32,14 +33,14 @@ export default function MarketPage({ data, featured }) {
 	}, [router.query.sort, router.query.pmin, router.query.pmax])
 
 	const updateFilter = async (query) => {
-		setIsFetching(true)
+		setIsFiltering(true)
 		const res = await axios(`${process.env.API_URL}/tokens`, {
 			params: tokensParams(0, query),
 		})
 		setPage(1)
 		setTokens(res.data.data.results)
 		setHasMore(true)
-		setIsFetching(false)
+		setIsFiltering(false)
 	}
 
 	const _fetchData = async () => {
@@ -115,12 +116,25 @@ export default function MarketPage({ data, featured }) {
 					</div>
 				</div>
 				<div className="mt-4 px-4">
-					<CardList
-						name="market"
-						tokens={tokens}
-						fetchData={_fetchData}
-						hasMore={hasMore}
-					/>
+					{isFiltering ? (
+						<div className="min-h-full border-2 border-dashed border-gray-800 rounded-md">
+							<div className="w-full">
+								<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">
+									<div className="w-40 m-auto">
+										<img src="/cardstack.png" className="opacity-75" />
+									</div>
+									<p className="mt-4">Loading Cards</p>
+								</div>
+							</div>
+						</div>
+					) : (
+						<CardList
+							name="market"
+							tokens={tokens}
+							fetchData={_fetchData}
+							hasMore={hasMore}
+						/>
+					)}
 				</div>
 			</div>
 			<Footer />
