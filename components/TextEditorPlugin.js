@@ -6,6 +6,7 @@ import createFocusPlugin from '@draft-js-plugins/focus'
 import createLinkPlugin from '@draft-js-plugins/anchor'
 import createInlineToolbarPlugin from '@draft-js-plugins/inline-toolbar'
 import createLinkifyPlugin from '@draft-js-plugins/linkify'
+import createVideoPlugin from '@draft-js-plugins/video'
 
 import toolbarStyles from '../styles/toolbar.module.css'
 import inlineToolbarStyles from '../styles/inlinetoolbar.module.css'
@@ -59,6 +60,12 @@ const linkPlugin = createLinkPlugin({
 	placeholder: 'https://',
 })
 
+const videoPlugin = createVideoPlugin({
+	theme: {
+		iframe: 'w-full embedVideo',
+	},
+})
+
 const toolbarPlugin = createToolbarPlugin({
 	theme: { buttonStyles, toolbarStyles },
 })
@@ -77,6 +84,7 @@ const plugins = [
 	linkPlugin,
 	inlineToolbarPlugin,
 	linkifyPlugin,
+	videoPlugin,
 ]
 
-export { plugins, Toolbar, InlineToolbar, linkPlugin, imagePlugin }
+export { plugins, Toolbar, InlineToolbar, linkPlugin, imagePlugin, videoPlugin }
