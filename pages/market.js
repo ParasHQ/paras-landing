@@ -164,9 +164,9 @@ const parseSortQuery = (sort) => {
 	} else if (sort === 'cardcreateasc') {
 		return 'createdAt_1'
 	} else if (sort === 'pricedesc') {
-		return 'minPrice_-1'
+		return 'minPriceDecimal_-1'
 	} else if (sort === 'priceasc') {
-		return 'minPrice_1'
+		return 'minPriceDecimal_1'
 	}
 }
 
