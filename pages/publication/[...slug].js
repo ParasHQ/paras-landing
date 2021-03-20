@@ -35,6 +35,8 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const [isDeleting, setIsDeleting] = useState(false)
 	const [isComponentMounted, setIsComponentMounted] = useState(false)
 
+	const { slug } = router.query
+
 	useEffect(() => {
 		setIsComponentMounted(true)
 	}, [])
@@ -218,7 +220,18 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 						</div>
 					</Modal>
 				)}
-				<div className="max-w-5xl relative m-auto py-12">
+				<div className="max-w-5xl relative m-auto pb-12 pt-4">
+					<p className="mb-8 px-4 max-w-3xl m-auto text-gray-400">
+						<Link href={`/publication/editorial`}>
+							<span className="cursor-pointer">Publication</span>
+						</Link>
+						{' > '}
+						<Link href={`/publication/${slug[0]}`}>
+							<span className="cursor-pointer capitalize">{slug[0]}</span>
+						</Link>
+						{' > '}
+						<span className="font-semibold text-white">{pubDetail.title}</span>
+					</p>
 					<h1 className="titlePublication text-4xl font-bold pb-0 text-center px-4 md:px-0">
 						{pubDetail.title}
 					</h1>
