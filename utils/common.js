@@ -148,3 +148,19 @@ export const checkUrl = (str) => {
 	)
 	return !!pattern.test(str)
 }
+
+export const parseSortQuery = (sort) => {
+	if (!sort || sort === 'marketupdate') {
+		return 'updatedAt_-1'
+	} else if (sort === 'marketupdateasc') {
+		return 'updatedAt_1'
+	} else if (sort === 'cardcreate') {
+		return 'createdAt_-1'
+	} else if (sort === 'cardcreateasc') {
+		return 'createdAt_1'
+	} else if (sort === 'pricedesc') {
+		return 'minPriceDecimal_-1'
+	} else if (sort === 'priceasc') {
+		return 'minPriceDecimal_1'
+	}
+}
