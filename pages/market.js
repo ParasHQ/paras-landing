@@ -9,6 +9,7 @@ import useStore from '../store'
 import FeaturedPostList from '../components/FeaturedPost'
 import FilterMarket from '../components/FilterMarket'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import { parseSortQuery } from '../utils/common'
 
 const LIMIT = 6
 
@@ -152,22 +153,6 @@ const tokensParams = (_page = 0, query) => {
 		...(query.pmax && { maxPrice: parseNearAmount(query.pmax) }),
 	}
 	return params
-}
-
-const parseSortQuery = (sort) => {
-	if (!sort || sort === 'marketupdate') {
-		return 'updatedAt_-1'
-	} else if (sort === 'marketupdateasc') {
-		return 'updatedAt_1'
-	} else if (sort === 'cardcreate') {
-		return 'createdAt_-1'
-	} else if (sort === 'cardcreateasc') {
-		return 'createdAt_1'
-	} else if (sort === 'pricedesc') {
-		return 'minPriceDecimal_-1'
-	} else if (sort === 'priceasc') {
-		return 'minPriceDecimal_1'
-	}
 }
 
 export async function getServerSideProps({ query }) {

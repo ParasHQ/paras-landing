@@ -24,9 +24,18 @@ const FilterMarket = () => {
 		}
 	})
 
+	useEffect(() => {
+		if (router.pathname === '/search') {
+			setSortBy(filter[0].key)
+			setMinPrice('')
+			setMaxPrice('')
+		}
+	}, [router.query.q])
+
 	const onClickApply = async () => {
 		router.push({
 			query: {
+				...router.query,
 				sort: sortBy,
 				...(minPrice && { pmin: minPrice }),
 				...(maxPrice && { pmax: maxPrice }),
@@ -81,7 +90,7 @@ const FilterMarket = () => {
 							))}
 						</div>
 						<h1 className="text-white font-semibold text-xl mt-2">Price</h1>
-						<div className={`flex w-full space-x-2`}>
+						<form onSubmit={onClickApply} className={`flex w-full space-x-2`}>
 							<div className="flex w-1/2 bg-gray-300 p-2 rounded-md focus:bg-gray-100 ">
 								<input
 									type="number"
@@ -102,7 +111,8 @@ const FilterMarket = () => {
 								/>
 								<div className="inline-block">Ⓝ</div>
 							</div>
-						</div>
+							<input type="submit" className="hidden" />
+						</form>
 						<button
 							onClick={onClickApply}
 							className="w-full outline-none mt-4 rounded-md bg-transparent text-sm font-semibold py-2 bg-primary text-gray-100"
