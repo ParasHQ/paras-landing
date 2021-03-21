@@ -19,12 +19,13 @@ export default function SearchPage({ data, searchQuery }) {
 	const [tokens, setTokens] = useState(data.results)
 	const [page, setPage] = useState(1)
 	const [isFetching, setIsFetching] = useState(false)
+	const [isRefreshing, setIsRefreshing] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
 
 	const { query } = router
 
 	useEffect(async () => {
-		setIsFetching(true)
+		setIsRefreshing(true)
 		const res = await axios(`${process.env.API_URL}/tokens`, {
 			params: tokensParams(0, {
 				...query,
@@ -35,7 +36,7 @@ export default function SearchPage({ data, searchQuery }) {
 		setPage(1)
 		setTokens(res.data.data.results)
 		setHasMore(true)
-		setIsFetching(false)
+		setIsRefreshing(false)
 	}, [query.q, query.sort, query.pmin, query.pmax])
 
 	useEffect(() => {
@@ -125,12 +126,25 @@ export default function SearchPage({ data, searchQuery }) {
 					<FilterMarket />
 				</div>
 				<div className="mt-4 px-4">
-					<CardList
-						name="Search Result"
-						tokens={tokens}
-						fetchData={_fetchData}
-						hasMore={hasMore}
-					/>
+					{isRefreshing ? (
+						<div className="min-h-full border-2 border-dashed border-gray-800 rounded-md">
+							<div className="w-full">
+								<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">
+									<div className="w-40 m-auto">
+										<img src="/cardstack.png" className="opacity-75" />
+									</div>
+									<p className="mt-4">Loading Cards</p>
+								</div>
+							</div>
+						</div>
+					) : (
+						<CardList
+							name="Search Result"
+							tokens={tokens}
+							fetchData={_fetchData}
+							hasMore={hasMore}
+						/>
+					)}
 				</div>
 			</div>
 			<Footer />
