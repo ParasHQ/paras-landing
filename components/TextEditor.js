@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import Editor from '@draft-js-plugins/editor'
 import { RichUtils, getDefaultKeyBinding } from 'draft-js'
 import {
@@ -21,9 +21,11 @@ import {
 	linkPlugin,
 	plugins,
 	Toolbar,
+	videoPlugin,
 } from './TextEditorPlugin'
-import { compressImg, readFileAsUrl } from '../utils/common'
+import { checkUrl, compressImg, readFileAsUrl } from '../utils/common'
 import { useToast } from '../hooks/useToast'
+import Modal from './Modal'
 
 import 'draft-js/dist/Draft.css'
 
@@ -69,6 +71,14 @@ const TextEditor = ({
 			imgUrl = await readFileAsUrl(compressedImg)
 		}
 		setContent(imagePlugin.addImage(content, imgUrl))
+	}
+
+	const onAddVideo = async (src) => {
+		setContent(
+			videoPlugin.addVideo(content, {
+				src: src,
+			})
+		)
 	}
 
 	const handleKeyCommand = (command, editorState) => {
@@ -151,6 +161,7 @@ const TextEditor = ({
 									onOverrideContent={() => {}}
 								/>
 								<ImageButton {...externalProps} onChange={onAddLocalImage} />
+								<VideoButton {...externalProps} onAddVideo={onAddVideo} />
 								<CardButton {...externalProps} onClick={showCardModal} />
 							</div>
 						)}
@@ -188,6 +199,59 @@ const CardButton = ({ theme, onClick }) => {
 		>
 			Card
 		</button>
+	)
+}
+
+const VideoButton = ({ theme, onAddVideo }) => {
+	const [url, setUrl] = useState('')
+	const [showVideoModal, setShowVideoModal] = useState(false)
+
+	const triggerModal = () => {
+		setShowVideoModal(!showVideoModal)
+		setUrl('')
+	}
+
+	return (
+		<>
+			<button
+				className={`${theme.customButton} ${theme.button} px-2`}
+				onClick={triggerModal}
+			>
+				Video
+			</button>
+			{showVideoModal && (
+				<Modal close={triggerModal} closeOnBgClick={true} closeOnEscape={true}>
+					<div className="w-full max-w-md p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
+						<div className="m-auto">
+							<label className="mb-4 block text-white text-2xl font-bold">
+								Embedd video
+							</label>
+							<input
+								type="text"
+								name="video"
+								onChange={(e) => setUrl(e.target.value)}
+								value={url}
+								className={`resize-none h-auto focus:border-gray-100 mb-4 text-black`}
+								placeholder="Video url"
+							/>
+							<p className="text-gray-300 text-sm italic">
+								Please enter link of youtube video
+							</p>
+							<button
+								className="font-semibold mt-4 py-3 w-full rounded-md bg-primary text-white"
+								disabled={!checkUrl(url)}
+								onClick={() => {
+									onAddVideo(url)
+									triggerModal()
+								}}
+							>
+								Add Video
+							</button>
+						</div>
+					</div>
+				</Modal>
+			)}
+		</>
 	)
 }
 

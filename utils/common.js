@@ -135,3 +135,32 @@ export const compressImg = (file) => {
 		})
 	})
 }
+
+export const checkUrl = (str) => {
+	var pattern = new RegExp(
+		'^(https?:\\/\\/)?' +
+			'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' +
+			'((\\d{1,3}\\.){3}\\d{1,3}))' +
+			'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' +
+			'(\\?[;&a-z\\d%_.~+=-]*)?' +
+			'(\\#[-a-z\\d_]*)?$',
+		'i'
+	)
+	return !!pattern.test(str)
+}
+
+export const parseSortQuery = (sort) => {
+	if (!sort || sort === 'marketupdate') {
+		return 'updatedAt_-1'
+	} else if (sort === 'marketupdateasc') {
+		return 'updatedAt_1'
+	} else if (sort === 'cardcreate') {
+		return 'createdAt_-1'
+	} else if (sort === 'cardcreateasc') {
+		return 'createdAt_1'
+	} else if (sort === 'pricedesc') {
+		return 'minPriceDecimal_-1'
+	} else if (sort === 'priceasc') {
+		return 'minPriceDecimal_1'
+	}
+}

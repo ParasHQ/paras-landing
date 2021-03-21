@@ -338,3 +338,13 @@ input.clear {
 .RichEditor-activeButton {
 	color: #5890ff;
 }
+
+.embedVideo {
+	height: 480px;
+}
+
+@media (max-width: 768px) {
+	.embedVideo {
+		height: 210px;
+	}
+}
