@@ -334,8 +334,10 @@ export async function getServerSideProps({ params }) {
 			id[id.length - 1]
 		}`
 	)
+
 	const pubDetail = (await resp.data?.data?.results[0]) || null
-	const errorCode = pubDetail && slugName === pubDetail.slug ? false : 404
+
+	const errorCode = pubDetail ? false : 404
 
 	const profileRes = await axios(
 		`${process.env.API_URL}/profiles?accountId=${pubDetail?.authorId}`
