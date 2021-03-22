@@ -1005,7 +1005,7 @@ const CardDetail = ({ token }) => {
 											  (_getUserOwnership(store.currentUser).marketData
 													?.quantity || 0)
 											: 0}
-										, owns: {_getUserOwnership(store.currentUser).quantity})
+										, owns: {_getUserOwnership(store.currentUser)?.quantity})
 									</label>
 									<input
 										type="number"
@@ -1087,7 +1087,7 @@ const CardDetail = ({ token }) => {
 											  (_getUserOwnership(store.currentUser).marketData
 													?.quantity || 0)
 											: 0}
-										, owns: {_getUserOwnership(store.currentUser).quantity})
+										, owns: {_getUserOwnership(store.currentUser)?.quantity})
 									</label>
 									<input
 										type="number"

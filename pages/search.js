@@ -1,30 +1,43 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import Head from 'next/head'
+
 import Nav from '../components/Nav'
 import CardList from '../components/CardList'
-import Head from 'next/head'
 import Footer from '../components/Footer'
 import useStore from '../store'
+import FilterMarket from '../components/FilterMarket'
+import { parseSortQuery } from '../utils/common'
 
 const LIMIT = 6
 
 export default function SearchPage({ data, searchQuery }) {
 	const store = useStore()
+	const router = useRouter()
 	const [tokens, setTokens] = useState(data.results)
 	const [page, setPage] = useState(1)
 	const [isFetching, setIsFetching] = useState(false)
+	const [isRefreshing, setIsRefreshing] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
 
+	const { query } = router
+
 	useEffect(async () => {
-		const res = await axios(
-			`${process.env.API_URL}/tokens?search=${encodeURIComponent(searchQuery)}&excludeTotalBurn=true&__limit=${LIMIT}`
-		)
+		setIsRefreshing(true)
+		const res = await axios(`${process.env.API_URL}/tokens`, {
+			params: tokensParams(0, {
+				...query,
+				search: encodeURIComponent(query.q),
+			}),
+		})
 		window.scrollTo(0, 0)
 		setPage(1)
 		setTokens(res.data.data.results)
 		setHasMore(true)
-		setIsFetching(false)
-	}, [searchQuery])
+		setIsRefreshing(false)
+	}, [query.q, query.sort, query.pmin, query.pmax])
 
 	useEffect(() => {
 		return () => {
@@ -38,13 +51,12 @@ export default function SearchPage({ data, searchQuery }) {
 		}
 
 		setIsFetching(true)
-		const res = await axios(
-			`${
-				process.env.API_URL
-			}/tokens?search=${encodeURIComponent(searchQuery)}&excludeTotalBurn=true&__skip=${
-				page * LIMIT
-			}&__limit=${LIMIT}`
-		)
+		const res = await axios(`${process.env.API_URL}/tokens`, {
+			params: tokensParams(page, {
+				...query,
+				search: encodeURIComponent(query.q),
+			}),
+		})
 		const newData = await res.data.data
 
 		const newTokens = [...tokens, ...newData.results]
@@ -110,13 +122,29 @@ export default function SearchPage({ data, searchQuery }) {
 						<span className="opacity-75">for</span> <span className="border-b-2 border-gray-100">{searchQuery}</span>
 					</h4>
 				</div>
+				<div className="flex justify-end">
+					<FilterMarket />
+				</div>
 				<div className="mt-4 px-4">
-					<CardList
-						name="Search Result"
-						tokens={tokens}
-						fetchData={_fetchData}
-						hasMore={hasMore}
-					/>
+					{isRefreshing ? (
+						<div className="min-h-full border-2 border-dashed border-gray-800 rounded-md">
+							<div className="w-full">
+								<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">
+									<div className="w-40 m-auto">
+										<img src="/cardstack.png" className="opacity-75" />
+									</div>
+									<p className="mt-4">Loading Cards</p>
+								</div>
+							</div>
+						</div>
+					) : (
+						<CardList
+							name="Search Result"
+							tokens={tokens}
+							fetchData={_fetchData}
+							hasMore={hasMore}
+						/>
+					)}
 				</div>
 			</div>
 			<Footer />
@@ -124,12 +152,25 @@ export default function SearchPage({ data, searchQuery }) {
 	)
 }
 
+const tokensParams = (_page = 0, query) => {
+	const params = {
+		search: query.q,
+		excludeTotalBurn: true,
+		__sort: parseSortQuery(query.sort),
+		__skip: _page * LIMIT,
+		__limit: LIMIT,
+		...(query.pmin && { minPrice: parseNearAmount(query.pmin) }),
+		...(query.pmax && { maxPrice: parseNearAmount(query.pmax) }),
+	}
+	return params
+}
+
 export async function getServerSideProps({ query }) {
 	const searchQuery = query.q
 
-	const res = await axios(
-		`${process.env.API_URL}/tokens?search=${encodeURIComponent(searchQuery)}&excludeTotalBurn=true&__limit=${LIMIT}`
-	)
+	const res = await axios(`${process.env.API_URL}/tokens`, {
+		params: tokensParams(0, { q: encodeURIComponent(searchQuery) }),
+	})
 	const data = await res.data.data
 
 	return { props: { data, searchQuery } }
