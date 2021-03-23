@@ -7,10 +7,11 @@ import Footer from '../components/Footer'
 import useStore from '../store'
 import ActivityDetail from '../components/ActivityDetail'
 import { useRouter } from 'next/router'
+import TopUsers from '../components/TopUsers'
 
 const LIMIT = 10
 
-const ActivityLog = ({ query }) => {
+const ActivityLog = ({ query, topUser }) => {
 	const {
 		activityList,
 		setActivityList,
@@ -138,50 +139,55 @@ const ActivityLog = ({ query }) => {
 					/>
 				</Head>
 				<Nav />
-				<div className="max-w-2xl relative m-auto py-12">
-					<div className="px-4 flex items-center justify-between">
-						<h1 className="text-4xl font-bold text-gray-100 text-center">
-							Activity
-						</h1>
-						<div>
-							<select
-								className="p-2 bg-dark-primary-4 text-gray-100 rounded-md"
-								onChange={(e) => _changeFilter(e)}
-								value={router.query.filter}
+				<div className="max-w-5xl m-auto py-12 md:flex md:space-x-8">
+					<div className="md:w-2/3 max-w-2xl relative m-auto">
+						<div className="px-4 flex items-center justify-between">
+							<h1 className="text-4xl font-bold text-gray-100 text-center">
+								Activity
+							</h1>
+							<div>
+								<select
+									className="p-2 bg-dark-primary-4 text-gray-100 rounded-md"
+									onChange={(e) => _changeFilter(e)}
+									value={router.query.filter}
+								>
+									<option value="showAll">Show All</option>
+									<option value="marketBuy">Market Sales</option>
+									<option value="marketUpdate">Market Update</option>
+									<option value="mint">Card Creation</option>
+									<option value="transfer">Card Transfer</option>
+									<option value="burn">Card Burn</option>
+								</select>
+							</div>
+						</div>
+						<div className="px-4 max-w-2xl mx-auto">
+							{activityList.length === 0 && activityListHasMore && (
+								<div className="border-2 border-gray-800 border-dashed mt-4 p-2 rounded-md text-center">
+									<p className="text-gray-300 py-8">Loading</p>
+								</div>
+							)}
+							{activityList.length === 0 && !activityListHasMore && (
+								<div className="border-2 border-gray-800 border-dashed mt-4 p-2 rounded-md text-center">
+									<p className="text-gray-300 py-8">No Transactions</p>
+								</div>
+							)}
+							<InfiniteScroll
+								dataLength={activityList.length}
+								next={_fetchDataWrapper}
+								hasMore={activityListHasMore}
 							>
-								<option value="showAll">Show All</option>
-								<option value="marketBuy">Market Sales</option>
-								<option value="marketUpdate">Market Update</option>
-								<option value="mint">Card Creation</option>
-								<option value="transfer">Card Transfer</option>
-								<option value="burn">Card Burn</option>
-							</select>
+								{activityList.map((act) => {
+									return (
+										<div key={act._id} className="mt-6">
+											<ActivityDetail activity={act} />
+										</div>
+									)
+								})}
+							</InfiniteScroll>
 						</div>
 					</div>
-					<div className="px-4 max-w-2xl mx-auto">
-						{activityList.length === 0 && activityListHasMore && (
-							<div className="border-2 border-gray-800 border-dashed mt-4 p-2 rounded-md text-center">
-								<p className="text-gray-300 py-8">Loading</p>
-							</div>
-						)}
-						{activityList.length === 0 && !activityListHasMore && (
-							<div className="border-2 border-gray-800 border-dashed mt-4 p-2 rounded-md text-center">
-								<p className="text-gray-300 py-8">No Transactions</p>
-							</div>
-						)}
-						<InfiniteScroll
-							dataLength={activityList.length}
-							next={_fetchDataWrapper}
-							hasMore={activityListHasMore}
-						>
-							{activityList.map((act) => {
-								return (
-									<div key={act._id} className="mt-6">
-										<ActivityDetail activity={act} />
-									</div>
-								)
-							})}
-						</InfiniteScroll>
+					<div className="pt-20 hidden md:w-1/3 md:block">
+						<TopUsers data={topUser} />
 					</div>
 				</div>
 				<Footer />
@@ -191,7 +197,12 @@ const ActivityLog = ({ query }) => {
 }
 
 export async function getServerSideProps({ query }) {
-	return { props: { query } }
+	const res = await axios(
+		`${process.env.API_URL}/activities/topUsers?__limit=5`
+	)
+	const topUser = res.data.data
+
+	return { props: { query, topUser } }
 }
 
 export default ActivityLog
