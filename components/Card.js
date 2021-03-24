@@ -15,6 +15,7 @@ const Card = ({
 	disableFlip = false,
 	isShowFront = null,
 	setIsShowFront = null,
+	borderRadius = '10px',
 }) => {
 	const containerRef = useRef()
 	const cardRef = useRef()
@@ -127,6 +128,7 @@ const Card = ({
 						className="card  bg-gray-800 w-full h-full"
 						style={{
 							transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)`,
+							borderRadius: borderRadius,
 						}}
 					>
 						<div className="card-bg relative">
