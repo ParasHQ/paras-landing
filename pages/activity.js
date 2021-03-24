@@ -11,7 +11,7 @@ import TopUsers from '../components/TopUsers'
 
 const LIMIT = 10
 
-const ActivityLog = ({ query, topUser }) => {
+const ActivityLog = ({ query }) => {
 	const {
 		activityList,
 		setActivityList,
@@ -22,13 +22,18 @@ const ActivityLog = ({ query, topUser }) => {
 	} = useStore()
 	const router = useRouter()
 	const [isFetching, setIsFetching] = useState(false)
+	const [topUser, setTopUser] = useState([])
 
-	useEffect(() => {
+	useEffect(async () => {
 		if (query) {
 			_fetchData(query, true)
 		} else {
 			_fetchData({}, true)
 		}
+		const res = await axios(
+			`${process.env.API_URL}/activities/topUsers?__limit=5`
+		)
+		setTopUser(res.data.data)
 	}, [])
 
 	const _changeFilter = (e) => {
@@ -197,12 +202,7 @@ const ActivityLog = ({ query, topUser }) => {
 }
 
 export async function getServerSideProps({ query }) {
-	const res = await axios(
-		`${process.env.API_URL}/activities/topUsers?__limit=5`
-	)
-	const topUser = res.data.data
-
-	return { props: { query, topUser } }
+	return { props: { query } }
 }
 
 export default ActivityLog
