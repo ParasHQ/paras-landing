@@ -76,7 +76,7 @@ const UserTransactionCard = ({ tokenId }) => {
 
 	return (
 		<div
-			className="w-1/3 md:w-1/5 px-2 inline-block m-auto"
+			className="w-1/3 md:w-1/5 px-2 inline-block m-auto whitespace-normal overflow-visible"
 			onClick={() =>
 				router.push(
 					{
