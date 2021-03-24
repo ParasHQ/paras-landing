@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { parseImgUrl, prettyBalance } from '../utils/common'
 import LinkToProfile from './LinkToProfile'
 
-const TopUsers = ({ data }) => {
+const TopUsers = ({ data = [] }) => {
 	const modalRef = useRef()
 	const [showModal, setShowModal] = useState(false)
 	const [userType, setUserType] = useState('buyers')
@@ -30,7 +30,7 @@ const TopUsers = ({ data }) => {
 
 	return (
 		<div>
-			<div className="flex justify-between items-end">
+			<div className="flex justify-between items-baseline">
 				<div className="flex space-x-2">
 					<h1 className="text-2xl font-semibold text-gray-100">Top</h1>
 					<div ref={modalRef}>
@@ -78,13 +78,13 @@ const TopUsers = ({ data }) => {
 						)}
 					</div>
 				</div>
-				<Link href="/activity/topusers">
+				<Link href={`/activity/top${userType}`}>
 					<p className="text-lg text-gray-100 cursor-pointer select-none">
 						More
 					</p>
 				</Link>
 			</div>
-			{data[userType].map((user, idx) => (
+			{data[userType]?.map((user, idx) => (
 				<TopUser key={user._id} user={user} idx={idx} />
 			))}
 		</div>
