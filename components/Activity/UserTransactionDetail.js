@@ -77,9 +77,11 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer' }) => {
 					renderThumbHorizontal={renderThumb}
 				>
 					<div className="py-2">
-						{data.txList.map((tx) => (
-							<UserTransactionCard key={tx._id} tokenId={tx.tokenId} />
-						))}
+						{data.txList
+							.filter((v, i, a) => a.findIndex((t) => t.tokenId === v.tokenId) === i)
+							.map((tx) => (
+								<UserTransactionCard key={tx._id} tokenId={tx.tokenId} />
+							))}
 					</div>
 				</Scrollbars>
 			</div>

@@ -82,7 +82,7 @@ const TopSellersPage = ({ topUser }) => {
 						see top buyers{' '}
 						<span
 							onClick={() => router.push('/activity/top-buyers')}
-							className="hover:text-gray-100 cursor-pointer hover:border-gray-100 border-b-2 border-transparent"
+							className="font-semibold hover:text-gray-100 cursor-pointer hover:border-gray-100 border-b-2 border-transparent"
 						>
 							here
 						</span>
