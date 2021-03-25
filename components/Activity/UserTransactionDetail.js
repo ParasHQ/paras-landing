@@ -11,6 +11,20 @@ import LinkToProfile from '../LinkToProfile'
 import { parseImgUrl, prettyBalance } from '../../utils/common'
 import Scrollbars from 'react-custom-scrollbars'
 
+const renderThumb = ({ style, ...props }) => {
+	return (
+		<div
+			{...props}
+			style={{
+				...style,
+				cursor: 'pointer',
+				borderRadius: 'inherit',
+				backgroundColor: 'rgba(255, 255, 255, 0.2)',
+			}}
+		/>
+	)
+}
+
 const UserTransactionDetail = ({ data, idx, type = 'buyer' }) => {
 	const [profile, setProfile] = useState({})
 
@@ -47,7 +61,8 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer' }) => {
 							{prettyBalance(data.total, 24, 6)} Ⓝ
 						</p>
 						<p className="text-base text-gray-400">
-							Card {type !== 'buyer' ? 'sold' : 'bought'}: {data.txList.length}{' '}
+							Card {type !== 'buyer' ? 'sold' : 'bought'}:{' '}
+							{data.txList.map((tx) => tx.quantity).reduce((a, b) => a + b, 0)}{' '}
 						</p>
 					</div>
 				</div>
@@ -58,10 +73,14 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer' }) => {
 					autoHeightMax={`24rem`}
 					renderView={(props) => <div {...props} id="scrollableDiv" />}
 					className="overflow-auto whitespace-no-wrap"
+					universal={true}
+					renderThumbHorizontal={renderThumb}
 				>
-					{data.txList.map((tx) => (
-						<UserTransactionCard key={tx._id} tokenId={tx.tokenId} />
-					))}
+					<div className="py-2">
+						{data.txList.map((tx) => (
+							<UserTransactionCard key={tx._id} tokenId={tx.tokenId} />
+						))}
+					</div>
 				</Scrollbars>
 			</div>
 		</div>
