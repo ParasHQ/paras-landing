@@ -9,6 +9,7 @@ import CardDetailModal from '../CardDetailModal'
 import LinkToProfile from '../LinkToProfile'
 
 import { parseImgUrl, prettyBalance } from '../../utils/common'
+import Scrollbars from 'react-custom-scrollbars'
 
 const UserTransactionDetail = ({ data, idx, type = 'buyer' }) => {
 	const [profile, setProfile] = useState({})
@@ -51,10 +52,17 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer' }) => {
 					</div>
 				</div>
 			</div>
-			<div className="md:w-3/5 overflow-auto whitespace-no-wrap p-4 px-2">
-				{data.txList.map((tx) => (
-					<UserTransactionCard key={tx._id} tokenId={tx.tokenId} />
-				))}
+			<div className="md:w-3/5 p-4 px-2">
+				<Scrollbars
+					autoHeight
+					autoHeightMax={`24rem`}
+					renderView={(props) => <div {...props} id="scrollableDiv" />}
+					className="overflow-auto whitespace-no-wrap"
+				>
+					{data.txList.map((tx) => (
+						<UserTransactionCard key={tx._id} tokenId={tx.tokenId} />
+					))}
+				</Scrollbars>
 			</div>
 		</div>
 	)
