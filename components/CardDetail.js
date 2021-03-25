@@ -78,6 +78,18 @@ const Activity = ({ activity }) => {
 		)
 	}
 
+	if (activity.type === 'transfer' && activity.to === '') {
+		return (
+			<div className="border-2 border-dashed p-2 rounded-md">
+				<p>
+					<LinkToProfile accountId={activity.from} />
+					<span> burned {activity.quantity}pcs</span>
+				</p>
+				<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
+			</div>
+		)
+	}
+
 	if (activity.type === 'transfer' && !activity.to) {
 		return null
 	}
@@ -339,20 +351,22 @@ const CardDetail = ({ token }) => {
 				throw new Error(`Cannot transfer to self`)
 			}
 			const nearConfig = getConfig(process.env.APP_ENV || 'development')
-			const resp = await axios.post(nearConfig.nodeUrl, {
-				jsonrpc: '2.0',
-				id: 'dontcare',
-				method: 'query',
-				params: {
-					request_type: 'view_account',
-					finality: 'final',
-					account_id: data.newOwnerId,
-				},
-			})
-
-			if (resp.data.error) {
-				throw new Error(`Account ${data.newOwnerId} not exist`)
+			if (showModal === 'confirmTransfer') {
+				const resp = await axios.post(nearConfig.nodeUrl, {
+					jsonrpc: '2.0',
+					id: 'dontcare',
+					method: 'query',
+					params: {
+						request_type: 'view_account',
+						finality: 'final',
+						account_id: data.newOwnerId,
+					},
+				})
+				if (resp.data.error) {
+					throw new Error(`Account ${data.newOwnerId} not exist`)
+				}
 			}
+
 			await near.contract.transferFrom(params)
 
 			// update local state
@@ -377,33 +391,50 @@ const CardDetail = ({ token }) => {
 			}
 
 			// if new owner already own some
-			if (newOwnerIdx > -1) {
-				const newOwnerQuantity = parseInt(
-					newLocalToken.ownerships[newOwnerIdx].quantity
-				)
-				newLocalToken.ownerships[newOwnerIdx].quantity =
-					newOwnerQuantity + parseInt(params.quantity)
-			} else {
-				newLocalToken.ownerships.push({
-					createdAt: new Date().getTime(),
-					updatedAt: new Date().getTime(),
-					id: `${params.tokenId}::${params.newOwnerId}`,
-					ownerId: params.newOwnerId,
-					quantity: params.quantity,
-					tokenId: params.tokenId,
-				})
+			if (showModal === 'confirmTransfer') {
+				if (newOwnerIdx > -1) {
+					const newOwnerQuantity = parseInt(
+						newLocalToken.ownerships[newOwnerIdx].quantity
+					)
+					newLocalToken.ownerships[newOwnerIdx].quantity =
+						newOwnerQuantity + parseInt(params.quantity)
+				} else {
+					newLocalToken.ownerships.push({
+						createdAt: new Date().getTime(),
+						updatedAt: new Date().getTime(),
+						id: `${params.tokenId}::${params.newOwnerId}`,
+						ownerId: params.newOwnerId,
+						quantity: params.quantity,
+						tokenId: params.tokenId,
+					})
+				}
+			}
+			if (showModal === 'confirmBurn') {
+				newLocalToken.supply -= params.quantity
 			}
 
 			setLocalToken(newLocalToken)
-			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						Transfer success
-					</div>
-				),
-				type: 'success',
-				duration: 2500,
-			})
+			if (showModal === 'confirmTransfer') {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							Transfer success
+						</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
+			} else {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							Burn success
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+			}
 
 			setShowModal(false)
 		} catch (err) {
@@ -601,18 +632,27 @@ const CardDetail = ({ token }) => {
 							_getUserOwnership(store.currentUser).quantity > 0 && (
 								<div
 									className="py-2 cursor-pointer"
-									onClick={(_) => setShowModal('confirmTransfer')}
+									onClick={(_) => setShowModal('addUpdateListing')}
 								>
-									Transfer
+									Update Listing
 								</div>
 							)}
 						{_getUserOwnership(store.currentUser) &&
 							_getUserOwnership(store.currentUser).quantity > 0 && (
 								<div
 									className="py-2 cursor-pointer"
-									onClick={(_) => setShowModal('addUpdateListing')}
+									onClick={(_) => setShowModal('confirmTransfer')}
 								>
-									Update My Listing
+									Transfer Card
+								</div>
+							)}
+						{_getUserOwnership(store.currentUser) &&
+							_getUserOwnership(store.currentUser).quantity > 0 && (
+								<div
+									className="py-2 cursor-pointer"
+									onClick={(_) => setShowModal('confirmBurn')}
+								>
+									Burn Card
 								</div>
 							)}
 					</div>
@@ -853,7 +893,8 @@ const CardDetail = ({ token }) => {
 							<form onSubmit={handleSubmit(_buy)}>
 								<div className="mt-4">
 									<label className="block text-sm">
-										Buy quantity (Available: {chosenSeller.marketData.quantity})
+										Buy quantity (Available for buy:{' '}
+										{chosenSeller.marketData.quantity})
 									</label>
 									<input
 										type="number"
@@ -958,13 +999,13 @@ const CardDetail = ({ token }) => {
 								</div>
 								<div className="mt-4">
 									<label className="block text-sm">
-										Quantity (Available:{' '}
+										Quantity (Available for transfer:{' '}
 										{_getUserOwnership(store.currentUser)
 											? _getUserOwnership(store.currentUser).quantity -
 											  (_getUserOwnership(store.currentUser).marketData
 													?.quantity || 0)
 											: 0}
-										)
+										, owns: {_getUserOwnership(store.currentUser)?.quantity})
 									</label>
 									<input
 										type="number"
@@ -1006,6 +1047,86 @@ const CardDetail = ({ token }) => {
 										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
 										onClick={(_) => {
 											setChosenSeller(null)
+											setShowModal(false)
+										}}
+									>
+										Cancel
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</Modal>
+			)}
+			{showModal === 'confirmBurn' && (
+				<Modal
+					close={(_) => setShowModal('')}
+					closeOnBgClick={false}
+					closeOnEscape={false}
+				>
+					<div className="max-w-sm w-full p-4 bg-gray-100 m-auto rounded-md">
+						<div>
+							<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+								Confirm Burn
+							</h1>
+							<form onSubmit={handleSubmit(_transfer)}>
+								<div className="hidden">
+									<input
+										type="text"
+										name="newOwnerId"
+										ref={register()}
+										className={`${errors.newOwnerId && 'error'}`}
+										placeholder="New Owner Address"
+									/>
+								</div>
+								<div className="mt-4">
+									<label className="block text-sm">
+										Quantity (Available for Burn:{' '}
+										{_getUserOwnership(store.currentUser)
+											? _getUserOwnership(store.currentUser).quantity -
+											  (_getUserOwnership(store.currentUser).marketData
+													?.quantity || 0)
+											: 0}
+										, owns: {_getUserOwnership(store.currentUser)?.quantity})
+									</label>
+									<input
+										type="number"
+										name="transferQuantity"
+										ref={register({
+											required: true,
+											min: 1,
+											max: _getUserOwnership(store.currentUser)
+												? _getUserOwnership(store.currentUser).quantity -
+												  (_getUserOwnership(store.currentUser).marketData
+														?.quantity || 0)
+												: 0,
+										})}
+										className={`${errors.transferQuantity && 'error'}`}
+										placeholder="Number of card(s) to transfer"
+									/>
+									<div className="mt-2 text-sm text-red-500">
+										{errors.transferQuantity?.type === 'required' &&
+											`Quantity is required`}
+										{errors.transferQuantity?.type === 'min' && `Minimum 1`}
+										{errors.transferQuantity?.type === 'max' &&
+											`Must be less than available`}
+									</div>
+								</div>
+								<p className="mt-4 text-sm text-center">
+									You will be burning {watch('transferQuantity') || '-'} card(s)
+								</p>
+								<div className="">
+									<button
+										disabled={isSubmitting}
+										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+										type="submit"
+									>
+										Burn
+									</button>
+									<button
+										disabled={isSubmitting}
+										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
+										onClick={(_) => {
 											setShowModal(false)
 										}}
 									>
@@ -1175,13 +1296,25 @@ const CardDetail = ({ token }) => {
 
 								{activeTab === 'info' && (
 									<div>
-										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
-											<p className="text-sm text-black font-medium">
-												Collection
-											</p>
-											<p className="text-gray-900">
-												{localToken.metadata.collection}
-											</p>
+										<div className="flex border-2 border-dashed mt-4 p-2 rounded-md">
+											<div>
+												<p className="text-sm text-black font-medium">
+													Collection
+												</p>
+												<Link
+													href={{
+														pathname: '/[id]/collection/[collectionName]',
+														query: {
+															collectionName: localToken.metadata.collection,
+															id: localToken.creatorId,
+														},
+													}}
+												>
+													<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
+														{localToken.metadata.collection}
+													</a>
+												</Link>
+											</div>
 										</div>
 										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
 											<p className="text-sm text-black font-medium">
@@ -1269,9 +1402,10 @@ const CardDetail = ({ token }) => {
 								{activeTab === 'history' && <ActivityList token={token} />}
 							</div>
 						</Scrollbars>
-						{_getLowestPrice(token.ownerships) ? (
+						{_getLowestPrice(token.ownerships) &&
+						!_getUserOwnership(store.currentUser) ? (
 							<button
-								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white inline-block"
+								className="box-border font-semibold m-4 py-3 w-auto rounded-md border-2 border-primary bg-primary text-white inline-block text-sm"
 								onClick={() => {
 									if (!store.currentUser) {
 										setShowModal('redirectLogin')
@@ -1294,15 +1428,29 @@ const CardDetail = ({ token }) => {
 								)}`}
 							</button>
 						) : store.currentUser && _getUserOwnership(store.currentUser) ? (
-							<button
-								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
-								onClick={() => setShowModal('addUpdateListing')}
-							>
-								Update Listing
-							</button>
+							<div className="w-auto p-4">
+								<div className="flex -mx-2">
+									<div className="w-1/2 px-2">
+										<button
+											className="font-semibold py-3 w-full rounded-md border-2 border-primary text-primary text-sm"
+											onClick={() => setShowModal('addUpdateListing')}
+										>
+											Update Listing
+										</button>
+									</div>
+									<div className="w-1/2 px-2">
+										<button
+											className="font-semibold py-3 w-full rounded-md border-2 border-primary bg-primary text-white text-sm"
+											onClick={() => setShowModal('confirmTransfer')}
+										>
+											Transfer
+										</button>
+									</div>
+								</div>
+							</div>
 						) : (
 							<button
-								className="font-semibold m-4 py-3 w-auto rounded-md bg-primary text-white"
+								className="font-semibold m-4 py-3 w-auto rounded-md border-2 border-primary bg-primary text-white text-sm"
 								disabled
 							>
 								Not for Sale

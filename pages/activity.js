@@ -23,27 +23,18 @@ const ActivityLog = ({ query }) => {
 	const [isFetching, setIsFetching] = useState(false)
 
 	useEffect(() => {
-		if (activityList.length === 0 && activityListHasMore) {
-			if (query) {
-				_fetchData(query, true)
-			} else {
-				_fetchData({}, true)
-			}
+		if (query) {
+			_fetchData(query, true)
+		} else {
+			_fetchData({}, true)
 		}
 	}, [])
-
-	useEffect(() => {
-		if (router.query) {
-			_fetchData(router.query, true)
-		} else {
-			_fetchData()
-		}
-	}, [router.query])
 
 	const _changeFilter = (e) => {
 		router.push({
 			query: { filter: encodeURI(e.target.value) },
 		})
+		_fetchData({ filter: encodeURI(e.target.value) }, true)
 	}
 
 	const _filterQuery = (filter) => {
@@ -52,6 +43,9 @@ const ActivityLog = ({ query }) => {
 		}
 		if (filter === 'mint') {
 			return `type=transfer&from=root&`
+		}
+		if (filter === 'burn') {
+			return `type=transfer&to=root&`
 		}
 		return `type=${filter}&`
 	}
@@ -160,6 +154,7 @@ const ActivityLog = ({ query }) => {
 								<option value="marketUpdate">Market Update</option>
 								<option value="mint">Card Creation</option>
 								<option value="transfer">Card Transfer</option>
+								<option value="burn">Card Burn</option>
 							</select>
 						</div>
 					</div>
@@ -179,9 +174,9 @@ const ActivityLog = ({ query }) => {
 							next={_fetchDataWrapper}
 							hasMore={activityListHasMore}
 						>
-							{activityList.map((act, idx) => {
+							{activityList.map((act) => {
 								return (
-									<div key={idx} className="mt-6">
+									<div key={act._id} className="mt-6">
 										<ActivityDetail activity={act} />
 									</div>
 								)

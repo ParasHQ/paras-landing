@@ -3,6 +3,7 @@
 db.json
 
 .env
+.env.*
 
 # dependencies
 /node_modules
