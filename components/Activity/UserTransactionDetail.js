@@ -53,8 +53,8 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer' }) => {
 					<div className="ml-4">
 						<LinkToProfile
 							accountId={data._id}
-							len={18}
-							className="text-gray-100 hover:border-gray-100 font-bold text-2xl"
+							len={16}
+							className="text-gray-100 hover:border-gray-100 font-bold text-lg md:text-2xl"
 						/>
 						<p className="text-base text-gray-400">
 							Total {type !== 'buyer' ? 'sales' : 'purchase'}:{' '}

@@ -45,7 +45,7 @@ const TopUser = ({ user, idx }) => {
 			<div className="ml-3">
 				<LinkToProfile
 					accountId={user._id}
-					len={18}
+					len={16}
 					className="text-gray-100 hover:border-gray-100 font-semibold text-lg"
 				/>
 				<p className="text-base text-gray-400">
