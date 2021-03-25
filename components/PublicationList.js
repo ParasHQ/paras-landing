@@ -25,7 +25,14 @@ const PublicationList = ({ data }) => {
 				</Link>
 				<div className="mt-2 flex m-auto">
 					<p className="text-white">
-						<span>Community | </span>
+						<span className="capitalize">
+							<Link href={`/publication/${data.type}`}>
+								<a className="text-white font-bold hover:border-white border-b-2 border-transparent">
+									{data.type}
+								</a>
+							</Link>
+						</span>
+						<span className="px-2">|</span>
 						<LinkToProfile
 							accountId={data.authorId}
 							className="text-white font-bold hover:border-white"

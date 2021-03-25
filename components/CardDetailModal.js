@@ -16,7 +16,7 @@ function CardDetailModal({ tokens = [] }) {
 	useEffect(() => {
 		if (router.query.tokenId) {
 			const token = tokens.find(
-				(token) => token.tokenId === router.query.tokenId
+				(token) => token?.tokenId === router.query.tokenId
 			)
 			setActiveToken(token)
 		} else {
