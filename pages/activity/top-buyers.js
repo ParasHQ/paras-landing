@@ -81,7 +81,7 @@ const TopBuyersPage = ({ topUser }) => {
 					<p className="text-gray-400 text-lg mx-4">
 						see top sellers{' '}
 						<span
-							onClick={() => router.push('/activity/topsellers')}
+							onClick={() => router.push('/activity/top-sellers')}
 							className="hover:text-gray-100 cursor-pointer hover:border-gray-100 border-b-2 border-transparent"
 						>
 							here
