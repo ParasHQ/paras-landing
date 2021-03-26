@@ -9,7 +9,10 @@ const PublicationList = ({ data }) => {
 				<div className="md:w-56 md:h-48 w-full h-auto flex overflow-hidden">
 					<Link href={`/publication/${data.type}/${data.slug}-${data._id}`}>
 						<div className="m-auto cursor-pointer">
-							<img className="w-full" src={parseImgUrl(data.thumbnail)} />
+							<img
+								className="md:h-48 object-contain"
+								src={parseImgUrl(data.thumbnail)}
+							/>
 						</div>
 					</Link>
 				</div>
