@@ -22,6 +22,7 @@ import Scrollbars from 'react-custom-scrollbars'
 import useSWR from 'swr'
 import getConfig from '../config/near'
 import LinkToProfile from './LinkToProfile'
+import ReactLinkify from 'react-linkify'
 
 const Activity = ({ activity }) => {
 	if (activity.type === 'marketUpdate') {
@@ -1320,17 +1321,29 @@ const CardDetail = ({ token }) => {
 											<p className="text-sm text-black font-medium">
 												Description
 											</p>
-											<p
-												className="text-gray-900 whitespace-pre-line"
-												style={{
-													wordBreak: 'break-word',
-												}}
-											>
-												{localToken.metadata.description.replace(
-													/\n\s*\n\s*\n/g,
-													'\n\n'
+											<ReactLinkify
+												componentDecorator={(
+													decoratedHref,
+													decoratedText,
+													key
+												) => (
+													<a target="blank" href={decoratedHref} key={key}>
+														{decoratedText}
+													</a>
 												)}
-											</p>
+											>
+												<p
+													className="text-gray-900 whitespace-pre-line"
+													style={{
+														wordBreak: 'break-word',
+													}}
+												>
+													{localToken.metadata.description.replace(
+														/\n\s*\n\s*\n/g,
+														'\n\n'
+													)}
+												</p>
+											</ReactLinkify>
 										</div>
 										<div className="flex items-center -mx-2">
 											<div className="w-1/2 px-2">
