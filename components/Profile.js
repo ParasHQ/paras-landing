@@ -126,6 +126,22 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 							</div>
 						)}
 					</div>
+					<div
+						className="px-4 relative"
+						onClick={(_) => router.push(`/${router.query.id}/publication`)}
+					>
+						<h4 className="text-gray-100 font-bold cursor-pointer">Publication</h4>
+						{activeTab === 'publication' && (
+							<div
+								className="absolute left-0 right-0"
+								style={{
+									bottom: `-.25rem`,
+								}}
+							>
+								<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+							</div>
+						)}
+					</div>
 				</div>
 			</div>
 		</Fragment>
