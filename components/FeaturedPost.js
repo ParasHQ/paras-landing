@@ -118,7 +118,58 @@ const FeaturedPost = ({ post }) => {
 			}}
 			className="bg-dark-primary-1 rounded-md overflow-hidden relative"
 		>
-			{post.url.includes(window.location.origin) ? (
+			{post.urlList ? (
+				<div className="h-full">
+					<div className="absolute w-full h-full bg-gradient-to-t from-gray-900 via-transparent" />
+					<img
+						src={parseImgUrl(post.image)}
+						className="object-cover h-full w-full"
+					/>
+					<div className="p-4 absolute bottom-0">
+						<h1 className="text-white font-bold text-2xl">{post.title}</h1>
+						<p className="text-white whitespace-normal font-normal text-sm">
+							{post.description}
+						</p>
+						<div className="mt-2 relative z-10">
+							{post.urlList.map((url, idx) => {
+								return post.url.includes(process.env.BASE_URL) ? (
+									<Link href={url.url}>
+										{url.type === 'primary' && (
+											<a
+												key={idx}
+												className="outline-none h-10 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-0 text-gray-100 bg-primary border-primary leading-relaxed"
+											>
+												{url.name}
+											</a>
+										)}
+										{url.type === 'secondary' && (
+											<a
+												key={idx}
+												className="text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer"
+											>
+												{url.name}
+											</a>
+										)}
+									</Link>
+								) : (
+									<a key={idx} href={url.url} target="_blank">
+										{url.type === 'primary' && (
+											<span className="mr-2 outline-none rounded-md bg-transparent text-sm font-semibold border-2 p-2 text-gray-100 bg-primary border-primary leading-relaxed">
+												{url.name}
+											</span>
+										)}
+										{url.type === 'secondary' && (
+											<span className="mr-2 text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer text-sm">
+												{url.name}
+											</span>
+										)}
+									</a>
+								)
+							})}
+						</div>
+					</div>
+				</div>
+			) : post.url.includes(process.env.BASE_URL) ? (
 				<Link href={post.url}>
 					<div className="absolute w-full h-full bg-gradient-to-t from-gray-900 via-transparent" />
 					<img
