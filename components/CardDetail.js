@@ -325,7 +325,7 @@ const CardDetail = ({ token }) => {
 		try {
 			await near.contract.buy(
 				params,
-				'30000000000000',
+				'40000000000000',
 				attachedDeposit.toString()
 			)
 		} catch (err) {
