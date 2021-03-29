@@ -271,6 +271,31 @@ const Notification = ({ notif }) => {
 			</div>
 		)
 	}
+	if (notif.type === 'onBuyRoyalty') {
+		return (
+			<div>
+				<Link href={`/token/${notif.payload.tokenId}`}>
+					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
+							<img src={parseImgUrl(token?.metadata?.image)} />
+						</div>
+						<div className="pl-2 text-gray-300">
+							received royalty{' '}
+							{prettyBalance(
+								(notif.payload.amount *
+									notif.payload.quantity *
+									notif.payload.royalty) /
+									100,
+								24,
+								4
+							)}{' '}
+							Ⓝ
+						</div>
+					</div>
+				</Link>
+			</div>
+		)
+	}
 	return (
 		<div>
 			<Link href={`/token/${notif.payload.tokenId}`}>
