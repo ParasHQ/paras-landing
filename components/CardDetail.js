@@ -769,7 +769,10 @@ const CardDetail = ({ token }) => {
 									<p className="text-sm mt-2">
 										Receive:{' '}
 										{prettyBalance(
-											Number(watch('amount', 0) * 0.95)
+											Number(
+												watch('amount', 0) *
+													(0.95 - (localToken.metadata.royalty || 0) / 100)
+											)
 												.toPrecision(4)
 												.toString(),
 											0,
@@ -777,7 +780,36 @@ const CardDetail = ({ token }) => {
 										)}{' '}
 										Ⓝ (~$
 										{prettyBalance(
-											Number(store.nearUsdPrice * watch('amount', 0) * 0.95)
+											Number(
+												store.nearUsdPrice *
+													watch('amount', 0) *
+													(0.95 - (localToken.metadata.royalty || 0) / 100)
+											)
+												.toPrecision(4)
+												.toString(),
+											0,
+											4
+										)}
+										)
+									</p>
+									<p className="text-sm">
+										Royalty:{' '}
+										{prettyBalance(
+											Number(
+												watch('amount', 0) * ((localToken.metadata.royalty || 0) / 100)
+											)
+												.toPrecision(4)
+												.toString(),
+											0,
+											4
+										)}{' '}
+										Ⓝ (~$
+										{prettyBalance(
+											Number(
+												store.nearUsdPrice *
+													watch('amount', 0) *
+													((localToken.metadata.royalty || 0) / 100)
+											)
 												.toPrecision(4)
 												.toString(),
 											0,
@@ -1315,6 +1347,19 @@ const CardDetail = ({ token }) => {
 														{localToken.metadata.collection}
 													</a>
 												</Link>
+											</div>
+										</div>
+										<div className="flex border-2 border-dashed mt-4 p-2 rounded-md">
+											<div>
+												<p className="text-sm text-black font-medium">
+													Royalty
+												</p>
+												<p className="text-gray-900">
+													{localToken.metadata.royalty &&
+													parseInt(localToken.metadata.royalty) > 0
+														? `${localToken.metadata.royalty}%`
+														: `No`}
+												</p>
 											</div>
 										</div>
 										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
