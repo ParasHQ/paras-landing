@@ -138,8 +138,8 @@ const FeaturedPost = ({ post }) => {
 											key={idx}
 											className={
 												url.type === 'primary'
-													? 'outline-none h-10 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-0 text-gray-100 bg-primary border-primary leading-relaxed'
-													: 'text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer'
+													? 'mr-2 outline-none rounded-md bg-transparent text-sm font-semibold border-2 p-2 text-gray-100 bg-primary border-primary leading-relaxed'
+													: 'mr-2 text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer text-sm'
 											}
 										>
 											{url.name}
