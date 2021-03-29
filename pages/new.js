@@ -55,6 +55,7 @@ const NewPage = () => {
 		formData.append('name', formInput.name)
 		formData.append('description', formInput.description)
 		formData.append('collection', formInput.collection)
+		formData.append('royalty', formInput.royalty)
 
 		try {
 			await axios.post(`${process.env.API_URL}/tokens`, formData, {
@@ -98,6 +99,7 @@ const NewPage = () => {
 		setValue('supply', formInput.supply)
 		setValue('quantity', formInput.quantity)
 		setValue('amount', formInput.amount)
+		setValue('royalty', formInput.royalty)
 
 		if (step === 0 || step === 2) {
 			setShowFront(true)
@@ -294,7 +296,9 @@ const NewPage = () => {
 								<p className="text-sm">
 									Receive:{' '}
 									{prettyBalance(
-										Number(getValues('amount', 0) * 0.95)
+										Number(
+											getValues('amount', 0) * (0.95 - formInput.royalty / 100)
+										)
 											.toPrecision(4)
 											.toString(),
 										0,
@@ -302,7 +306,26 @@ const NewPage = () => {
 									)}{' '}
 									Ⓝ (~$
 									{prettyBalance(
-										Number(store.nearUsdPrice * getValues('amount', 0) * 0.95)
+										Number(store.nearUsdPrice * getValues('amount', 0) * (0.95 - formInput.royalty / 100))
+											.toPrecision(4)
+											.toString(),
+										0,
+										6
+									)}
+									)
+								</p>
+								<p className="text-sm">
+									Royalty:{' '}
+									{prettyBalance(
+										Number(getValues('royalty', 0) * (formInput.royalty / 100))
+											.toPrecision(4)
+											.toString(),
+										0,
+										6
+									)}{' '}
+									Ⓝ (~$
+									{prettyBalance(
+										Number(store.nearUsdPrice * getValues('royalty', 0) * (formInput.royalty / 100))
 											.toPrecision(4)
 											.toString(),
 										0,
@@ -632,6 +655,36 @@ const NewPage = () => {
 									</button>
 								</div>
 								<div>
+									<label className="block text-sm">Royalty</label>
+									<div
+										className={`flex justify-between bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full ${
+											errors.royalty && 'error'
+										}`}
+									>
+										<input
+											type="number"
+											name="royalty"
+											ref={register({
+												required: true,
+												min: 0,
+												max: 90,
+												validate: (value) => Number.isInteger(Number(value)),
+											})}
+											className="clear pr-2"
+											placeholder="Royalty"
+										/>
+										<div className="font-bold inline-block">%</div>
+									</div>
+									<div className="mt-2 text-sm text-red-500">
+										{errors.royalty?.type === 'required' &&
+											`Royalty is required`}
+										{errors.royalty?.type === 'min' && `Minimum 0`}
+										{errors.royalty?.type === 'max' && `Maximum 90`}
+										{errors.royalty?.type === 'validate' &&
+											'Only use rounded number'}
+									</div>
+								</div>
+								<div className="mt-4">
 									<label className="block text-sm">Sale quantity</label>
 									<input
 										type="number"
