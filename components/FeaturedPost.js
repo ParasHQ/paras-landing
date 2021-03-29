@@ -169,34 +169,42 @@ const FeaturedPost = ({ post }) => {
 						</div>
 					</div>
 				</div>
-			) : post.url.includes(process.env.BASE_URL) ? (
-				<Link href={post.url}>
-					<div className="absolute w-full h-full bg-gradient-to-t from-gray-900 via-transparent" />
-					<img
-						src={parseImgUrl(post.image)}
-						className="object-cover h-full w-full"
-					/>
-					<div className="p-4 absolute bottom-0">
-						<h1 className="text-white font-bold text-2xl">{post.title}</h1>
-						<p className="text-white whitespace-normal font-normal text-sm">
-							{post.description}
-						</p>
-					</div>
-				</Link>
 			) : (
-				<a href={post.url} target="_blank">
-					<div className="absolute w-full h-full bg-gradient-to-t from-gray-900 via-transparent" />
-					<img
-						src={parseImgUrl(post.image)}
-						className="object-cover h-full w-full"
-					/>
-					<div className="p-4 absolute bottom-0">
-						<h1 className="text-white font-bold text-2xl">{post.title}</h1>
-						<p className="text-white whitespace-normal font-normal text-sm">
-							{post.description}
-						</p>
-					</div>
-				</a>
+				<div className="h-full">
+					{post.url.includes(process.env.BASE_URL) ? (
+						<Link href={post.url}>
+							<div className="h-full">
+								<div className="absolute w-full h-full bg-gradient-to-t from-gray-900 via-transparent" />
+								<img
+									src={parseImgUrl(post.image)}
+									className="object-cover h-full w-full"
+								/>
+								<div className="p-4 absolute bottom-0">
+									<h1 className="text-white font-bold text-2xl">
+										{post.title}
+									</h1>
+									<p className="text-white whitespace-normal font-normal text-sm">
+										{post.description}
+									</p>
+								</div>
+							</div>
+						</Link>
+					) : (
+						<a href={post.url} target="_blank">
+							<div className="absolute w-full h-full bg-gradient-to-t from-gray-900 via-transparent" />
+							<img
+								src={parseImgUrl(post.image)}
+								className="object-cover h-full w-full"
+							/>
+							<div className="p-4 absolute bottom-0">
+								<h1 className="text-white font-bold text-2xl">{post.title}</h1>
+								<p className="text-white whitespace-normal font-normal text-sm">
+									{post.description}
+								</p>
+							</div>
+						</a>
+					)}
+				</div>
 			)}
 		</div>
 	)
