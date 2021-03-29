@@ -90,7 +90,7 @@ const Publication = ({ publications, userProfile, accountId }) => {
 							</div>
 						</div>
 					)}
-					<div className="max-w-4xl mx-auto px-4">
+					<div className="max-w-4xl mx-auto px-4 mb-8">
 						<InfiniteScroll
 							dataLength={pubData.length}
 							next={_fetchData}

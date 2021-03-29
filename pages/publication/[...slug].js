@@ -300,15 +300,15 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 					</div>
 					{pubDetail.tokenIds.length !== 0 && (
 						<div className="max-w-4xl mx-auto px-4 pt-16">
-							<div className=" border-2 border-dashed border-gray-800 rounded-md p-4">
-								<h4 className="text-white font-semibold text-3xl mb-4 text-center">
+							<div className=" border-2 border-dashed border-gray-800 rounded-md p-4 md:p-8">
+								<h4 className="text-white font-semibold text-3xl md:mb-4 text-center">
 									Card Collectibles
 								</h4>
-								<div className="md:flex justify-center -m-4 lg:-m-8">
+								<div className="md:flex justify-center lg:-m-8">
 									{pubDetail.tokenIds?.map((tokenId) => (
 										<div
 											key={tokenId}
-											className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-4 lg:p-8"
+											className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8"
 										>
 											<EmbeddedCard key={tokenId} tokenId={tokenId} />
 										</div>
