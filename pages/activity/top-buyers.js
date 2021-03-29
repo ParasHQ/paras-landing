@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import axios from 'axios'
-import InfiniteScroll from 'react-infinite-scroll-component'
+import router from 'next/router'
 import Head from 'next/head'
 
 import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
-import UserTransactionDetail from '../../components/Activity/UserTransactionDetail'
-import router from 'next/router'
+import UserTransactionList from '../../components/Activity/UserTransactionDetail'
 
 const LIMIT = 5
 
@@ -48,59 +47,54 @@ const TopBuyersPage = ({ topUser }) => {
 	}
 
 	return (
-		<div>
-			<div
-				className="min-h-screen bg-dark-primary-1"
-				style={{
-					backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-				}}
-			>
-				<Head>
-					<title>{headMeta.title}</title>
-					<meta name="description" content={headMeta.description} />
+		<div
+			className="min-h-screen bg-dark-primary-1"
+			style={{
+				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
+			}}
+		>
+			<Head>
+				<title>{headMeta.title}</title>
+				<meta name="description" content={headMeta.description} />
 
-					<meta name="twitter:title" content={headMeta.title} />
-					<meta name="twitter:card" content="summary_large_image" />
-					<meta name="twitter:site" content="@ParasHQ" />
-					<meta name="twitter:url" content="https://paras.id" />
-					<meta name="twitter:description" content={headMeta.description} />
-					<meta name="twitter:image" content={headMeta.image} />
-					<meta property="og:type" content="website" />
-					<meta property="og:title" content={headMeta.title} />
-					<meta property="og:site_name" content={headMeta.title} />
-					<meta property="og:description" content={headMeta.description} />
-					<meta property="og:url" content="https://paras.id" />
-					<meta property="og:image" content={headMeta.image} />
-				</Head>
-				<Nav />
-				<div className="max-w-6xl relative m-auto py-12">
-					<div className="mx-4 flex items-baseline">
-						<h1 className="text-4xl font-bold text-gray-100">Top Buyers</h1>
-						<p className="ml-2 text-gray-400 text-lg">in 7 days</p>
-					</div>
-					<p className="text-gray-400 text-lg mx-4">
-						see top sellers{' '}
-						<span
-							onClick={() => router.push('/activity/top-sellers')}
-							className="font-semibold hover:text-gray-100 cursor-pointer hover:border-gray-100 border-b-2 border-transparent"
-						>
-							here
-						</span>
-					</p>
-					<div className="mt-8 mx-4">
-						<InfiniteScroll
-							dataLength={usersData.length}
-							next={_fetchData}
-							hasMore={hasMore}
-						>
-							{usersData.map((buyer, idx) => (
-								<UserTransactionDetail data={buyer} key={buyer._id} idx={idx} />
-							))}
-						</InfiniteScroll>
-					</div>
+				<meta name="twitter:title" content={headMeta.title} />
+				<meta name="twitter:card" content="summary_large_image" />
+				<meta name="twitter:site" content="@ParasHQ" />
+				<meta name="twitter:url" content="https://paras.id" />
+				<meta name="twitter:description" content={headMeta.description} />
+				<meta name="twitter:image" content={headMeta.image} />
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={headMeta.title} />
+				<meta property="og:site_name" content={headMeta.title} />
+				<meta property="og:description" content={headMeta.description} />
+				<meta property="og:url" content="https://paras.id" />
+				<meta property="og:image" content={headMeta.image} />
+			</Head>
+			<Nav />
+			<div className="max-w-6xl relative m-auto py-12">
+				<div className="mx-4 flex items-baseline">
+					<h1 className="text-4xl font-bold text-gray-100">Top Buyers</h1>
+					<p className="ml-2 text-gray-400 text-lg">in 7 days</p>
 				</div>
-				<Footer />
+				<p className="text-gray-400 text-lg mx-4">
+					see top sellers{' '}
+					<span
+						onClick={() => router.push('/activity/top-sellers')}
+						className="font-semibold hover:text-gray-100 cursor-pointer hover:border-gray-100 border-b-2 border-transparent"
+					>
+						here
+					</span>
+				</p>
+				<div className="mt-8 mx-4">
+					<UserTransactionList
+						usersData={usersData}
+						fetchData={_fetchData}
+						hasMore={hasMore}
+						type={'buyer'}
+					/>
+				</div>
 			</div>
+			<Footer />
 		</div>
 	)
 }

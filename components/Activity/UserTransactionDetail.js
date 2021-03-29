@@ -2,6 +2,7 @@ import axios from 'axios'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import Scrollbars from 'react-custom-scrollbars'
 import useSWR from 'swr'
 
 import Card from '../Card'
@@ -9,7 +10,7 @@ import CardDetailModal from '../CardDetailModal'
 import LinkToProfile from '../LinkToProfile'
 
 import { parseImgUrl, prettyBalance } from '../../utils/common'
-import Scrollbars from 'react-custom-scrollbars'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 const renderThumb = ({ style, ...props }) => {
 	return (
@@ -25,7 +26,36 @@ const renderThumb = ({ style, ...props }) => {
 	)
 }
 
-const UserTransactionDetail = ({ data, idx, type = 'buyer' }) => {
+const UserTransactionList = ({ usersData, fetchData, hasMore, type }) => {
+	const [localToken, setLocalToken] = useState(null)
+	return (
+		<>
+			<CardDetailModal tokens={[localToken]} />
+			<InfiniteScroll
+				dataLength={usersData.length}
+				next={fetchData}
+				hasMore={hasMore}
+			>
+				{usersData.map((user, idx) => (
+					<UserTransactionDetail
+						data={user}
+						key={user._id}
+						idx={idx}
+						type={type}
+						setLocalToken={setLocalToken}
+					/>
+				))}
+			</InfiniteScroll>
+		</>
+	)
+}
+
+const UserTransactionDetail = ({
+	data,
+	idx,
+	type = 'buyer',
+	setLocalToken,
+}) => {
 	const [profile, setProfile] = useState({})
 
 	useEffect(async () => {
@@ -78,9 +108,15 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer' }) => {
 				>
 					<div className="py-2">
 						{data.txList
-							.filter((v, i, a) => a.findIndex((t) => t.tokenId === v.tokenId) === i)
+							.filter(
+								(v, i, a) => a.findIndex((t) => t.tokenId === v.tokenId) === i
+							)
 							.map((tx) => (
-								<UserTransactionCard key={tx._id} tokenId={tx.tokenId} />
+								<UserTransactionCard
+									key={tx._id}
+									tokenId={tx.tokenId}
+									setLocalToken={setLocalToken}
+								/>
 							))}
 					</div>
 				</Scrollbars>
@@ -89,7 +125,7 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer' }) => {
 	)
 }
 
-const UserTransactionCard = ({ tokenId }) => {
+const UserTransactionCard = ({ tokenId, setLocalToken }) => {
 	const router = useRouter()
 
 	const fetcher = async (key) => {
@@ -106,7 +142,8 @@ const UserTransactionCard = ({ tokenId }) => {
 	return (
 		<div
 			className="w-1/3 md:w-1/5 px-2 inline-block m-auto whitespace-normal overflow-visible"
-			onClick={() =>
+			onClick={() => {
+				setLocalToken(localToken)
 				router.push(
 					{
 						pathname: router.pathname,
@@ -119,9 +156,8 @@ const UserTransactionCard = ({ tokenId }) => {
 					`/token/${localToken?.tokenId}`,
 					{ shallow: true }
 				)
-			}
+			}}
 		>
-			<CardDetailModal tokens={[localToken]} />
 			<div className="w-full m-auto">
 				<Card
 					imgUrl={parseImgUrl(localToken?.metadata?.image)}
@@ -147,4 +183,4 @@ const UserTransactionCard = ({ tokenId }) => {
 	)
 }
 
-export default UserTransactionDetail
+export default UserTransactionList
