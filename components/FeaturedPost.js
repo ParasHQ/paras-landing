@@ -134,22 +134,16 @@ const FeaturedPost = ({ post }) => {
 							{post.urlList.map((url, idx) => {
 								return post.url.includes(process.env.BASE_URL) ? (
 									<Link href={url.url}>
-										{url.type === 'primary' && (
-											<a
-												key={idx}
-												className="outline-none h-10 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-0 text-gray-100 bg-primary border-primary leading-relaxed"
-											>
-												{url.name}
-											</a>
-										)}
-										{url.type === 'secondary' && (
-											<a
-												key={idx}
-												className="text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer"
-											>
-												{url.name}
-											</a>
-										)}
+										<a
+											key={idx}
+											className={
+												url.type === 'primary'
+													? 'outline-none h-10 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-0 text-gray-100 bg-primary border-primary leading-relaxed'
+													: 'text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer'
+											}
+										>
+											{url.name}
+										</a>
 									</Link>
 								) : (
 									<a key={idx} href={url.url} target="_blank">
