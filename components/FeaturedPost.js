@@ -4,6 +4,7 @@ import { parseImgUrl } from '../utils/common'
 import Slider from 'react-slick'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
+import Link from 'next/link'
 
 const FeaturedPostList = ({ post = [] }) => {
 	const [showArrow, setShowArrow] = useState(false)
@@ -21,9 +22,7 @@ const FeaturedPostList = ({ post = [] }) => {
 
 	return (
 		<>
-			<h1 className="text-4xl font-bold text-gray-100 text-center">
-				Featured
-			</h1>
+			<h1 className="text-4xl font-bold text-gray-100 text-center">Featured</h1>
 			<div
 				className="border-2 border-dashed border-gray-800 rounded-md my-8 mt-4 m-4 p-6 md:p-8"
 				onMouseEnter={() => setShowArrow(true)}
@@ -119,19 +118,35 @@ const FeaturedPost = ({ post }) => {
 			}}
 			className="bg-dark-primary-1 rounded-md overflow-hidden relative"
 		>
-			<a href={post.url} target="_blank">
-				<div className="absolute w-full h-full bg-gradient-to-t from-gray-900 via-transparent" />
-				<img
-					src={parseImgUrl(post.image)}
-					className="object-cover h-full w-full"
-				/>
-				<div className="p-4 absolute bottom-0">
-					<h1 className="text-white font-bold text-2xl">{post.title}</h1>
-					<p className="text-white whitespace-normal font-normal text-sm">
-						{post.description}
-					</p>
-				</div>
-			</a>
+			{post.url.includes(window.location.origin) ? (
+				<Link href={post.url}>
+					<div className="absolute w-full h-full bg-gradient-to-t from-gray-900 via-transparent" />
+					<img
+						src={parseImgUrl(post.image)}
+						className="object-cover h-full w-full"
+					/>
+					<div className="p-4 absolute bottom-0">
+						<h1 className="text-white font-bold text-2xl">{post.title}</h1>
+						<p className="text-white whitespace-normal font-normal text-sm">
+							{post.description}
+						</p>
+					</div>
+				</Link>
+			) : (
+				<a href={post.url} target="_blank">
+					<div className="absolute w-full h-full bg-gradient-to-t from-gray-900 via-transparent" />
+					<img
+						src={parseImgUrl(post.image)}
+						className="object-cover h-full w-full"
+					/>
+					<div className="p-4 absolute bottom-0">
+						<h1 className="text-white font-bold text-2xl">{post.title}</h1>
+						<p className="text-white whitespace-normal font-normal text-sm">
+							{post.description}
+						</p>
+					</div>
+				</a>
+			)}
 		</div>
 	)
 }
