@@ -55,7 +55,7 @@ const LicenseOverview = () => {
 					the website/app cryptographically verifies that you are the owner, and
 					the DAC doesn’t stay on the website/app after you’ve left; and
 				</li>
-				<li>Use the DAC to commercialize your own merchandise.</li>
+				
 			</ul>
 			<p className="font-medium mt-4">
 				What am I NOT allowed to do with the art associated with my NFT?
@@ -66,6 +66,7 @@ const LicenseOverview = () => {
 			</p>
 			<ul className="list-disc mt-2 opacity-75 pl-4">
 				<li>Modifying the art;</li>
+				<li>Using the art for commercialize purpose without asking from the creator/artist permission</li>
 				<li>Using the art to market or sell third-party products;</li>
 				<li>
 					Using the art in connection with images of hatred, violence, or other
