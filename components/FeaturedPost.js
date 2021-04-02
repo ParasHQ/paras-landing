@@ -134,22 +134,16 @@ const FeaturedPost = ({ post }) => {
 							{post.urlList.map((url, idx) => {
 								return post.url.includes(process.env.BASE_URL) ? (
 									<Link href={url.url}>
-										{url.type === 'primary' && (
-											<a
-												key={idx}
-												className="outline-none h-10 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-0 text-gray-100 bg-primary border-primary leading-relaxed"
-											>
-												{url.name}
-											</a>
-										)}
-										{url.type === 'secondary' && (
-											<a
-												key={idx}
-												className="text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer"
-											>
-												{url.name}
-											</a>
-										)}
+										<a
+											key={idx}
+											className={
+												url.type === 'primary'
+													? 'mr-2 outline-none rounded-md bg-transparent text-sm font-semibold border-2 p-2 text-gray-100 bg-primary border-primary leading-relaxed'
+													: 'mr-2 text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer text-sm'
+											}
+										>
+											{url.name}
+										</a>
 									</Link>
 								) : (
 									<a key={idx} href={url.url} target="_blank">
@@ -169,34 +163,42 @@ const FeaturedPost = ({ post }) => {
 						</div>
 					</div>
 				</div>
-			) : post.url.includes(process.env.BASE_URL) ? (
-				<Link href={post.url}>
-					<div className="absolute w-full h-full bg-gradient-to-t from-gray-900 via-transparent" />
-					<img
-						src={parseImgUrl(post.image)}
-						className="object-cover h-full w-full"
-					/>
-					<div className="p-4 absolute bottom-0">
-						<h1 className="text-white font-bold text-2xl">{post.title}</h1>
-						<p className="text-white whitespace-normal font-normal text-sm">
-							{post.description}
-						</p>
-					</div>
-				</Link>
 			) : (
-				<a href={post.url} target="_blank">
-					<div className="absolute w-full h-full bg-gradient-to-t from-gray-900 via-transparent" />
-					<img
-						src={parseImgUrl(post.image)}
-						className="object-cover h-full w-full"
-					/>
-					<div className="p-4 absolute bottom-0">
-						<h1 className="text-white font-bold text-2xl">{post.title}</h1>
-						<p className="text-white whitespace-normal font-normal text-sm">
-							{post.description}
-						</p>
-					</div>
-				</a>
+				<div className="h-full">
+					{post.url.includes(process.env.BASE_URL) ? (
+						<Link href={post.url}>
+							<div className="h-full">
+								<div className="absolute w-full h-full bg-gradient-to-t from-gray-900 via-transparent" />
+								<img
+									src={parseImgUrl(post.image)}
+									className="object-cover h-full w-full"
+								/>
+								<div className="p-4 absolute bottom-0">
+									<h1 className="text-white font-bold text-2xl">
+										{post.title}
+									</h1>
+									<p className="text-white whitespace-normal font-normal text-sm">
+										{post.description}
+									</p>
+								</div>
+							</div>
+						</Link>
+					) : (
+						<a href={post.url} target="_blank">
+							<div className="absolute w-full h-full bg-gradient-to-t from-gray-900 via-transparent" />
+							<img
+								src={parseImgUrl(post.image)}
+								className="object-cover h-full w-full"
+							/>
+							<div className="p-4 absolute bottom-0">
+								<h1 className="text-white font-bold text-2xl">{post.title}</h1>
+								<p className="text-white whitespace-normal font-normal text-sm">
+									{post.description}
+								</p>
+							</div>
+						</a>
+					)}
+				</div>
 			)}
 		</div>
 	)
