@@ -23,14 +23,14 @@ const TopCardsPage = ({ topCards }) => {
 		const res = await axios(
 			`${process.env.API_URL}/activities/topCards?__skip=${
 				page * LIMIT
-			}__limit=${LIMIT}`
+			}&__limit=${LIMIT}`
 		)
 
 		const newCardsData = [...cardsData, ...res.data.data.results]
 		setCardsData(newCardsData)
 		setPage(page + 1)
 
-		if (page === 5) {
+		if (res.data.data.results < 5) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
