@@ -728,6 +728,12 @@ const Nav = () => {
 									<a>Activity</a>
 								</Link>
 							</div>
+							{/* not fixed yet */}
+							<div className="px-4 text-gray-100 hidden md:block">
+								<Link href="/activity/top-cards">
+									<a>Stats</a>
+								</Link>
+							</div>
 							<div className="px-4">
 								{store.currentUser ? (
 									<div className="flex items-center -mx-2">
