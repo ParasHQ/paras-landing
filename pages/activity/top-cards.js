@@ -1,14 +1,10 @@
 import { useState } from 'react'
 import axios from 'axios'
-import router from 'next/router'
 import Head from 'next/head'
-import InfiniteScroll from 'react-infinite-scroll-component'
 
 import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
-import UserTransactionList from '../../components/Activity/UserTransactionDetail'
-import Card from '../../components/Card'
-import { parseImgUrl, prettyBalance } from '../../utils/common'
+import CardStats from '../../components/Stats/CardStats'
 
 const LIMIT = 5
 
@@ -30,7 +26,6 @@ const TopCardsPage = ({ topCards }) => {
 			}__limit=${LIMIT}`
 		)
 
-		console.log('response', res.data.data.results)
 		const newCardsData = [...cardsData, ...res.data.data.results]
 		setCardsData(newCardsData)
 		setPage(page + 1)
@@ -42,8 +37,6 @@ const TopCardsPage = ({ topCards }) => {
 		}
 		setIsFetching(false)
 	}
-
-	console.log('cardsdata', cardsData)
 
 	const headMeta = {
 		title: 'Top Cards — Paras',
@@ -79,63 +72,15 @@ const TopCardsPage = ({ topCards }) => {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="mx-4 flex items-baseline">
-					<h1 className="text-4xl font-bold text-gray-100">Top Cards</h1>
+					<h1 className="text-4xl font-bold text-gray-100">Card Statistics</h1>
 				</div>
-				<InfiniteScroll
-					dataLength={cardsData.length}
-					next={_fetchData}
-					hasMore={hasMore}
-				>
-					{cardsData.map((card) => {
-						const localToken = card.token
-						const firstPrice = parseFloat(
-							prettyBalance(card.firstSale.amount, 24, 6)
-						)
-						const lastPrice = parseFloat(
-							prettyBalance(card.lastSale.amount, 24, 6)
-						)
-						const change = ((lastPrice - firstPrice) / firstPrice) * 100
-
-						return (
-							<div className="flex">
-								<div className="w-64">
-									<div className="w-full">
-										<Card
-											imgUrl={parseImgUrl(localToken?.metadata?.image)}
-											imgBlur={localToken?.metadata?.blurhash}
-											token={{
-												name: localToken?.metadata?.name,
-												collection: localToken?.metadata?.collection,
-												description: localToken?.metadata?.description,
-												creatorId: localToken?.creatorId,
-												supply: localToken?.supply,
-												tokenId: localToken?.tokenId,
-												createdAt: localToken?.createdAt,
-											}}
-											initialRotate={{
-												x: 0,
-												y: 0,
-											}}
-											borderRadius={'5px'}
-										/>
-									</div>
-								</div>
-								<div className="text-white">
-									<p>{localToken.metadata.name}</p>
-									<p>{localToken.metadata.collection}</p>
-									<p>{localToken.creatorId}</p>
-									<p>{localToken.supply}</p>
-									<p>average {prettyBalance(card.average, 24, 6)} Ⓝ</p>
-									<p>total {prettyBalance(card.volume, 24, 6)} Ⓝ</p>
-									<p>total transaction {card.txLength}</p>
-									<p>first price {firstPrice} Ⓝ</p>
-									<p>last price {lastPrice} Ⓝ</p>
-									<p>change {change.toPrecision(2)}%</p>
-								</div>
-							</div>
-						)
-					})}
-				</InfiniteScroll>
+				<div className="my-8">
+					<CardStats
+						cardsData={cardsData}
+						fetchData={_fetchData}
+						hasMore={hasMore}
+					/>
+				</div>
 			</div>
 			<Footer />
 		</div>
