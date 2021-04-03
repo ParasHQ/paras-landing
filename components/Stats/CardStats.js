@@ -18,7 +18,9 @@ const CardStats = ({ cardsData, fetchData, hasMore }) => {
 						<tr>
 							<th className="md:w-2/12">Card</th>
 							<th className="md:w-3/12 text-left">Detail</th>
-							<th className="md:w-1/12">Supply</th>
+							<th className="md:w-1/12">
+								<p className="mx-4">Supply</p>
+							</th>
 							<th className="md:w-1/12">
 								<p className="mx-4">First price</p>
 							</th>
