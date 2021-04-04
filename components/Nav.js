@@ -271,6 +271,31 @@ const Notification = ({ notif }) => {
 			</div>
 		)
 	}
+	if (notif.type === 'onBuyRoyalty') {
+		return (
+			<div>
+				<Link href={`/token/${notif.payload.tokenId}`}>
+					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
+							<img src={parseImgUrl(token?.metadata?.image)} />
+						</div>
+						<div className="pl-2 text-gray-300">
+							received royalty{' '}
+							{prettyBalance(
+								(notif.payload.amount *
+									notif.payload.quantity *
+									notif.payload.royalty) /
+									100,
+								24,
+								4
+							)}{' '}
+							Ⓝ
+						</div>
+					</div>
+				</Link>
+			</div>
+		)
+	}
 	return (
 		<div>
 			<Link href={`/token/${notif.payload.tokenId}`}>
@@ -703,6 +728,11 @@ const Nav = () => {
 									<a>Activity</a>
 								</Link>
 							</div>
+							<div className="px-4 text-gray-100 hidden md:block">
+								<Link href="/activity/top-cards">
+									<a>Stats</a>
+								</Link>
+							</div>
 							<div className="px-4">
 								{store.currentUser ? (
 									<div className="flex items-center -mx-2">
@@ -723,8 +753,8 @@ const Nav = () => {
 					</div>
 					<div
 						ref={mobileNavRef}
-						className={`absolute bg-black top-0 left-0 right-0 z-30 transform transition-transform duration-200
-					${!showMobileNav && '-translate-y-64'}`}
+						className={`absolute bg-black top-0 left-0 right-0 z-30 transform transition-transform duration-200`}
+						style={{ '--transform-translate-y': !showMobileNav && '-24rem' }}
 					>
 						{testnetBannerRef.current && (
 							<div
@@ -757,6 +787,11 @@ const Nav = () => {
 							<div className="text-gray-100 ">
 								<Link href="/activity">
 									<a className="p-4 block w-full">Activity</a>
+								</Link>
+							</div>
+							<div className="text-gray-100">
+								<Link href="/activity/top-cards">
+									<a className="p-4 block w-full">Stats</a>
 								</Link>
 							</div>
 						</div>

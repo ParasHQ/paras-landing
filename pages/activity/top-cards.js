@@ -1,16 +1,15 @@
 import { useState } from 'react'
 import axios from 'axios'
-import router from 'next/router'
 import Head from 'next/head'
 
 import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
-import UserTransactionList from '../../components/Activity/UserTransactionDetail'
+import CardStats from '../../components/Stats/CardStats'
 
 const LIMIT = 5
 
-const TopBuyersPage = ({ topUser }) => {
-	const [usersData, setUsersData] = useState(topUser.buyers)
+const TopCardsPage = ({ topCards }) => {
+	const [cardsData, setCardsData] = useState(topCards)
 	const [page, setPage] = useState(1)
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
@@ -22,16 +21,16 @@ const TopBuyersPage = ({ topUser }) => {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/activities/topUsers?__skip=${
+			`${process.env.API_URL}/activities/topCards?__skip=${
 				page * LIMIT
-			}__limit=${LIMIT}`
+			}&__limit=${LIMIT}`
 		)
 
-		const newUserData = [...usersData, ...res.data.data.buyers]
-		setUsersData(newUserData)
+		const newCardsData = [...cardsData, ...res.data.data.results]
+		setCardsData(newCardsData)
 		setPage(page + 1)
 
-		if (page === 5) {
+		if (res.data.data.results < 5) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
@@ -40,8 +39,8 @@ const TopBuyersPage = ({ topUser }) => {
 	}
 
 	const headMeta = {
-		title: 'Top User — Paras',
-		description: 'See top users at paras',
+		title: 'Top Cards — Paras',
+		description: 'See top cards at paras',
 		image:
 			'https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png',
 	}
@@ -73,24 +72,13 @@ const TopBuyersPage = ({ topUser }) => {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="mx-4 flex items-baseline">
-					<h1 className="text-4xl font-bold text-gray-100">Top Buyers</h1>
-					<p className="ml-2 text-gray-400 text-lg">in 7 days</p>
+					<h1 className="text-4xl font-bold text-gray-100">Card Statistics</h1>
 				</div>
-				<p className="text-gray-400 text-lg mx-4">
-					see top sellers{' '}
-					<span
-						onClick={() => router.push('/activity/top-sellers')}
-						className="font-semibold hover:text-gray-100 cursor-pointer hover:border-gray-100 border-b-2 border-transparent"
-					>
-						here
-					</span>
-				</p>
-				<div className="mt-8 mx-4">
-					<UserTransactionList
-						usersData={usersData}
+				<div className="my-8">
+					<CardStats
+						cardsData={cardsData}
 						fetchData={_fetchData}
 						hasMore={hasMore}
-						type={'buyer'}
 					/>
 				</div>
 			</div>
@@ -101,11 +89,11 @@ const TopBuyersPage = ({ topUser }) => {
 
 export async function getServerSideProps() {
 	const res = await axios(
-		`${process.env.API_URL}/activities/topUsers?__limit=${LIMIT}`
+		`${process.env.API_URL}/activities/topCards?__limit=${LIMIT}`
 	)
-	const topUser = res.data.data
+	const topCards = res.data.data.results
 
-	return { props: { topUser } }
+	return { props: { topCards } }
 }
 
-export default TopBuyersPage
+export default TopCardsPage
