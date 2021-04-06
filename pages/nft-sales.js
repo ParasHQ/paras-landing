@@ -73,35 +73,44 @@ export default function Home() {
 				<SpecialCard tokenId={tokenId[2]} />
 			</div>
 			<div className="max-w-2xl m-auto pt-16">
-				<h1 className="text-center text-white font-bold text-3xl object-center mt-8">
+				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-8">
 					Benefits
 				</h1>
-				<h1 className="text-center text-white font-bold text-3xl object-center mt-8 mb-4">
+				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-8 mb-2">
 					How to buy
 				</h1>
 				<p className="text-gray-100 mb-2">
 					In order to buy your card(s), please ensure your wallet is connected
 					and funded with enough ETH.
 				</p>
-				<ol className="text-gray-100 ml-2">
-					<li>1. Click the "Buy" button on your desired card series</li>
+				<ol
+					className="text-gray-100 ml-8"
+					style={{ 'list-style-type': 'decimal' }}
+				>
+					<li>Click the "Buy" button on your desired card series</li>
 					<li>
-						2. Agree to the T&Cs Enter the amount of ETH you would like to spend
+						Agree to the T&Cs Enter the amount of ETH you would like to spend
 						purchasing cards of the selected series*
 					</li>
 					<li>
-						3. Click buy & confirm the transaction in your wallet if needed You
+						Click buy & confirm the transaction in your wallet if needed You
 						will be redirected to your wallet page with your purchased cards
 						showing soon
 					</li>
 					<li>
-						4. If you wish to purchase more cards, please go to the sale page
+						If you wish to purchase more cards, please go to the sale page
 						through the top menu
 					</li>
 				</ol>
-				<h1 className="text-center text-white font-bold text-3xl object-center mt-8">
+				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-8">
 					Timeline
 				</h1>
+				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-8">
+					Paras Litepaper
+				</h1>
+				<p className="text-gray-200 text-center">
+					You can read paras litepaper here
+				</p>
 			</div>
 			<Footer />
 		</div>
