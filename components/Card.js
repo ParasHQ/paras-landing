@@ -16,6 +16,7 @@ const Card = ({
 	isShowFront = null,
 	setIsShowFront = null,
 	borderRadius = '10px',
+	special = false,
 }) => {
 	const containerRef = useRef()
 	const cardRef = useRef()
@@ -129,6 +130,9 @@ const Card = ({
 						style={{
 							transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)`,
 							borderRadius: borderRadius,
+							boxShadow:
+								special &&
+								'rgba(255, 255, 255, 0.2) 0 0 40px 5px, white 0 0 0 1px,rgba(0, 0, 0, 0.66) 0 30px 60px 0',
 						}}
 					>
 						<div className="card-bg relative">

@@ -23,6 +23,7 @@ import useSWR from 'swr'
 import getConfig from '../config/near'
 import LinkToProfile from './LinkToProfile'
 import ReactLinkify from 'react-linkify'
+import { specialTokenId } from '../pages/nft-sales'
 
 const Activity = ({ activity }) => {
 	if (activity.type === 'marketUpdate') {
@@ -289,9 +290,27 @@ const CardDetail = ({ token }) => {
 	}, [])
 
 	const _buy = async (data) => {
-		//   ownerId: AccountId,
-		// tokenId: TokenId,
-		// quantity: u128
+		if (specialTokenId.includes(chosenSeller.tokenId)) {
+			const preOwned =
+				(_getUserOwnership(store.currentUser) &&
+					_getUserOwnership(store.currentUser).quantity) ||
+				0
+
+			if (parseInt(data.buyQuantity) + preOwned > 3) {
+				// console.log(parseInt data.buyQuantity, preOwned)
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							You can only have maximum 3 cards
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+				return
+			}
+		}
+
 		setIsSubmitting(true)
 		const params = {
 			ownerId: chosenSeller.ownerId,
@@ -319,6 +338,7 @@ const CardDetail = ({ token }) => {
 				type: 'error',
 				duration: 2500,
 			})
+			setIsSubmitting(false)
 			return
 		}
 
@@ -796,7 +816,8 @@ const CardDetail = ({ token }) => {
 										Royalty:{' '}
 										{prettyBalance(
 											Number(
-												watch('amount', 0) * ((localToken.metadata.royalty || 0) / 100)
+												watch('amount', 0) *
+													((localToken.metadata.royalty || 0) / 100)
 											)
 												.toPrecision(4)
 												.toString(),
