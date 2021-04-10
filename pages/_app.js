@@ -146,7 +146,7 @@ function MyApp({ Component, pageProps }) {
 					<Component {...pageProps} />
 					{!isAgreed && (
 						<Modal>
-							<div className="max-w-sm w-full p-4 bg-gray-100 m-auto rounded-md">
+							<div className="max-w-sm w-full p-4 bg-gray-100 m-auto rounded-md select-none">
 								<p className="font-bold text-2xl mb-2">Terms and Conditions</p>
 								<label>
 									<input
@@ -156,7 +156,14 @@ function MyApp({ Component, pageProps }) {
 										checked={checked}
 										onChange={(event) => setChecked(event.target.checked)}
 									/>
-									I agree to the Paras Terms and Conditions
+									I agree to the Paras{' '}
+									<a
+										href="https://paras.id"
+										target="_blank"
+										className="border-b-2 cursor-pointer border-gray-900"
+									>
+										Terms and Conditions
+									</a>
 								</label>
 								<button
 									disabled={!checked}
