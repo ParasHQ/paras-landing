@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import near from '../lib/near'
 import useStore from '../store'
@@ -6,6 +6,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import * as gtag from '../lib/gtag'
 import cookie from '../lib/cookie'
+import Modal from '../components/Modal'
 
 import '../styles/font.css'
 import '../styles/tailwind.css'
@@ -17,6 +18,8 @@ import { SWRConfig } from 'swr'
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
+	const [isAgreed, setIsAgreed] = useState(true)
+	const [checked, setChecked] = useState(false)
 
 	const router = useRouter()
 
@@ -66,7 +69,18 @@ function MyApp({ Component, pageProps }) {
 
 	useEffect(() => {
 		_init()
+		checkAgreement()
 	}, [])
+
+	const onPressAgree = () => {
+		localStorage.setItem('agree', 'true')
+		setIsAgreed(true)
+	}
+
+	const checkAgreement = () => {
+		const _agree = JSON.parse(localStorage.getItem('agree')) || false
+		setIsAgreed(_agree)
+	}
 
 	const _init = async () => {
 		await near.init()
@@ -130,6 +144,30 @@ function MyApp({ Component, pageProps }) {
 			<SWRConfig value={{}}>
 				<ToastProvider>
 					<Component {...pageProps} />
+					{!isAgreed && (
+						<Modal>
+							<div className="max-w-sm w-full p-4 bg-gray-100 m-auto rounded-md">
+								<p className="font-bold text-2xl mb-2">Terms and Conditions</p>
+								<label>
+									<input
+										name="agree"
+										type="checkbox"
+										className="w-auto mr-2"
+										checked={checked}
+										onChange={(event) => setChecked(event.target.checked)}
+									/>
+									I agree to the Paras Terms and Conditions
+								</label>
+								<button
+									disabled={!checked}
+									onClick={onPressAgree}
+									className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+								>
+									Continue to Website
+								</button>
+							</div>
+						</Modal>
+					)}
 				</ToastProvider>
 			</SWRConfig>
 		</div>

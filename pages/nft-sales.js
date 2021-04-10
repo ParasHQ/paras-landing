@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -18,13 +18,14 @@ export const specialTokenId = [
 	'QmNSZZ8r23P562nFA5JJ1vtZVSiDHKHAXMhkuvPVwHQGHt',
 ]
 
+export const specialAccountId = 'hdriqi'
+
 const timeline = [
 	{
 		date: 'April 15th, 2021 - 00:01 UTC',
 		note: [
 			'The Founders start on sale for 3 days',
-			'The Founders will release 80 cards per day',
-			'The remaining that have not been sold will be burned each day',
+			'The Founders will release 80 cards per day and the remaining card that has not been sold will be burned each day',
 		],
 	},
 	{
@@ -32,6 +33,7 @@ const timeline = [
 		note: [
 			'The Founders sales end and will burn the rest of the card’s supply owned by paras.near.',
 			'The First Men start on sale for 3 days',
+			'The First Men will release 80 cards per day and the remaining card that has not been sold will be burned each day',
 		],
 	},
 	{
@@ -39,6 +41,7 @@ const timeline = [
 		note: [
 			'The First Men sales end and will burn the rest of the card’s supply owned by paras.near.',
 			'The Firstborn start on sale for 3 days',
+			'The Firstborn will release 80 cards per day and the remaining card that has not been sold will be burned each day',
 		],
 	},
 	{
@@ -60,6 +63,38 @@ const timeline = [
 
 export default function NFTSales() {
 	const [token, setToken] = useState(null)
+	const [email, setEmail] = useState('')
+	const [formBtnText, setFormBtnText] = useState('NOTIFY ME')
+	const [errMsg, setErrMsg] = useState('empty')
+	const detail = useRef(null)
+
+	const _notifyMeSubmit = async (e) => {
+		e.preventDefault()
+		const regex = /^([\w_\.\-\+])+\@([\w\-]+\.)+([\w]{2,10})+$/
+		if (!regex.test(email)) {
+			setErrMsg('Invalid email address')
+			return
+		}
+		setFormBtnText('SENDING...')
+		const resp = await axios.post('/api/notifyMe', {
+			email: email,
+		})
+		if (resp.data.success) {
+			setFormBtnText('SUCCESS')
+			setTimeout(() => {
+				setEmail('')
+			}, 2500)
+		} else {
+			setErrMsg('Email already subscribed')
+			setFormBtnText('FAILED')
+		}
+		setTimeout(() => {
+			if (formBtnText === 'SUCCESS') {
+				setEmail('')
+			}
+			setFormBtnText('NOTIFY ME')
+		}, 2500)
+	}
 
 	return (
 		<div
@@ -163,7 +198,15 @@ export default function NFTSales() {
 								Explore and buy exclusive card collection by Paras. Get special
 								benefits and rewards only at Paras.
 							</p>
-							<div className="my-8 flex justify-center">
+							<div
+								className="my-8 flex justify-center"
+								onClick={() =>
+									detail.current.scrollIntoView({
+										behavior: 'smooth',
+										block: 'start',
+									})
+								}
+							>
 								<p className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer mb-8">
 									Find out more
 								</p>
@@ -172,7 +215,10 @@ export default function NFTSales() {
 					</div>
 				</div>
 			</div>
-			<div className="md:flex justify-center md:space-x-8 max-w-6xl m-auto">
+			<div
+				ref={detail}
+				className="md:flex justify-center md:space-x-8 max-w-6xl m-auto"
+			>
 				<SpecialCard
 					tokenId={specialTokenId[0]}
 					onClick={setToken}
@@ -196,7 +242,7 @@ export default function NFTSales() {
 				/>
 			</div>
 			<div className="max-w-2xl m-4 md:m-auto pt-8 text-gray-100 ">
-				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-8 mb-2">
+				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
 					Timeline
 				</h1>
 				<div className="max-w-xl m-auto">
@@ -218,7 +264,7 @@ export default function NFTSales() {
 						</div>
 					))}
 				</div>
-				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-8 mb-2">
+				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
 					How to buy
 				</h1>
 				<p className="mb-2">
@@ -228,21 +274,59 @@ export default function NFTSales() {
 				<ol className="text-gray-100 ml-8" style={{ listStyleType: 'decimal' }}>
 					<li>Click the "Buy" button on your desired card series</li>
 					<li>
-						Agree to the T&Cs Enter the amount of ETH you would like to spend
-						purchasing cards of the selected series*
+						Agree to the T&Cs Enter the quantity of card you would like to buy
 					</li>
 					<li>
-						Click buy & confirm the transaction in your wallet if needed You
-						will be redirected to your wallet page with your purchased cards
-						showing soon
+						Click buy & confirm the transaction in your NEAR Wallet. You will be
+						redirected to your wallet page with your purchased cards showing
+						soon
 					</li>
 					<li>
-						If you wish to purchase more cards, please go to the sale page
+						If you wish to purchase more cards, please go to the market page
 						through the top menu
 					</li>
 				</ol>
 				<div className="text-center">
-					<h1 className="text-center text-gray-100 font-bold text-3xl mt-8">
+					<h1 className="text-center text-gray-100 font-bold text-3xl mt-12">
+						Notify me!
+					</h1>
+					<p className="text-gray-200">
+						Register your email to get notified of the upcoming sales.
+					</p>
+					<form className="max-w-md m-auto" onSubmit={_notifyMeSubmit}>
+						<div className="flex flex-wrap -mx-2 mt-2">
+							<div className="px-2 w-full md:w-8/12">
+								<input
+									onChange={(e) => setEmail(e.target.value)}
+									value={email}
+									placeholder="Email address"
+									className="h-12 w-full text-gray-100border-2 px-2 py-2 rounded-md border-white outline-none"
+								/>
+							</div>
+							<div className="px-2 w-full md:w-4/12">
+								<button
+									disabled={formBtnText == 'SENDING...'}
+									className={`
+											outline-none h-12 w-full rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2
+											text-gray-100  border-white
+											${formBtnText == 'SUCCESS' && 'text-green-500 border-green-500'}
+											${formBtnText == 'FAILED' && ' text-red-500 border-red-500'}
+											`}
+								>
+									{formBtnText}
+								</button>
+							</div>
+						</div>
+						<p
+							className={`mt-2 text-red-500 
+								${errMsg != 'empty' ? 'opacity-100' : 'opacity-0'}`}
+						>
+							{errMsg}
+						</p>
+					</form>
+				</div>
+				<div className="text-center">
+					<h1 className="text-center text-gray-100 font-bold text-3xl mt-12">
 						Paras Litepaper
 					</h1>
 					<p className="text-gray-200">
@@ -293,13 +377,19 @@ const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
 	}
 
 	const getPriceOriginal = (ownerships = []) => {
-		// const _user = 'paras.near'
-		const _user = 'hdriqi'
 		const marketDataList = ownerships
 			.filter((ownership) => ownership.marketData)
-			.filter((ownership) => ownership.ownerId === _user)
+			.filter((ownership) => ownership.ownerId === specialAccountId)
 			.map((ownership) => ownership.marketData.amount)
 		return marketDataList[0]
+	}
+
+	const getCardAvailable = (ownerships = []) => {
+		const marketDataList = ownerships
+			.filter((ownership) => ownership.marketData)
+			.filter((ownership) => ownership.ownerId === specialAccountId)
+			.map((ownership) => ownership.marketData.quantity)
+		return marketDataList[0] || 0
 	}
 
 	return (
@@ -324,7 +414,7 @@ const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
 			<div className="relative py-8 m-auto">
 				<div className="static m-auto">
 					<h1 className="text-white mb-8 text-3xl font-bold text-center">
-						The Founders
+						{localToken?.metadata.name}
 					</h1>
 					<div className="m-8">
 						<div className="w-full m-auto">
@@ -417,7 +507,9 @@ const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
 								/>
 							</svg>
 						</div>
-						<p className="text-gray-100 mb-4 text-lg font-semibold">50/100</p>
+						<p className="text-gray-100 mb-4 text-lg font-semibold">
+							{getCardAvailable(localToken?.ownerships)}/{supply / 3}
+						</p>
 						<div
 							className="flex text-white justify-center"
 							data-tip="Holders of this card will receive exclusive airdrop incentives. Users will able to claim PARAS token via claim.paras.id"
