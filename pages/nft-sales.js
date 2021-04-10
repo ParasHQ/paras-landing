@@ -9,18 +9,23 @@ import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import Card from '../components/Card'
 import CardDetailModal from '../components/CardDetailModal'
-import { parseImgUrl } from '../utils/common'
+import { parseImgUrl, prettyBalance } from '../utils/common'
+import useStore from '../store'
 
 export const specialTokenId = [
-	'bafybeifvlkkihaczyq2qjiqgj7qf7k76kleeauphkjlauw5cbbggvv5ktm',
-	'bafybeifvlkkihaczyq2qjiqgj7qf7k76kleeauphkjlauw5cbbggvv5ktm',
-	'bafybeifvlkkihaczyq2qjiqgj7qf7k76kleeauphkjlauw5cbbggvv5ktm',
+	'QmPEdrFaTX4PUgZ2VqrbcWnJPD1ZAizbG5so3KqhbTN5cj',
+	'QmRmmeRzebGsgjFaX7qGCchCHEaYGiTNMXaQThUrFLDz9Y',
+	'QmNSZZ8r23P562nFA5JJ1vtZVSiDHKHAXMhkuvPVwHQGHt',
 ]
 
 const timeline = [
 	{
 		date: 'April 15th, 2021 - 00:01 UTC',
-		note: ['The Founders start on sale for 3 days'],
+		note: [
+			'The Founders start on sale for 3 days',
+			'The Founders will release 80 cards per day',
+			'The remaining that have not been sold will be burned each day',
+		],
 	},
 	{
 		date: 'April 17th, 2021 - 00:01 UTC',
@@ -220,10 +225,7 @@ export default function NFTSales() {
 					In order to buy your card(s), please ensure you have near account and
 					funded with enough NEAR Coin.
 				</p>
-				<ol
-					className="text-gray-100 ml-8"
-					style={{ 'list-style-type': 'decimal' }}
-				>
+				<ol className="text-gray-100 ml-8" style={{ listStyleType: 'decimal' }}>
 					<li>Click the "Buy" button on your desired card series</li>
 					<li>
 						Agree to the T&Cs Enter the amount of ETH you would like to spend
@@ -290,11 +292,21 @@ const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
 		)
 	}
 
+	const getPriceOriginal = (ownerships = []) => {
+		// const _user = 'paras.near'
+		const _user = 'hdriqi'
+		const marketDataList = ownerships
+			.filter((ownership) => ownership.marketData)
+			.filter((ownership) => ownership.ownerId === _user)
+			.map((ownership) => ownership.marketData.amount)
+		return marketDataList[0]
+	}
+
 	return (
 		<div className="relative m-4 md:m-0 md:w-1/3">
 			<ReactTooltip
 				effect={'solid'}
-				className="bg-dark-primary-1 text-white p-4"
+				className="bg-dark-primary-1 text-white px-2 py-4 w-56"
 			/>
 			<div className="absolute inset-0 m-auto overflow-hidden rounded-xl opacity-50">
 				<Blurhash
@@ -338,7 +350,22 @@ const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
 					</div>
 					<div className="text-center">
 						<p className="text-gray-400">Price</p>
-						<p className="text-gray-100 mb-4 text-4xl font-bold">50 Ⓝ</p>
+						{getPriceOriginal(localToken?.ownerships) ? (
+							<div className="mb-4">
+								<p className="text-gray-100 text-4xl font-bold">
+									{prettyBalance(
+										getPriceOriginal(localToken?.ownerships),
+										24,
+										4
+									)}{' '}
+									Ⓝ
+								</p>
+							</div>
+						) : (
+							<div className="line-through text-red-600 mb-4 text-4xl font-bold">
+								<span className="text-gray-100">SALE</span>
+							</div>
+						)}
 						<div
 							className="flex flex-col"
 							data-tip={`Card supply will be released ${supply / 3}/day`}
@@ -369,7 +396,10 @@ const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
 								{supply} pcs
 							</p>
 						</div>
-						<div className="flex text-white justify-center">
+						<div
+							className="flex text-white justify-center"
+							data-tip={`Card available for purchase today`}
+						>
 							<p className="text-gray-400 mr-1">Card Available</p>
 							<svg
 								width="16"
@@ -388,7 +418,11 @@ const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
 							</svg>
 						</div>
 						<p className="text-gray-100 mb-4 text-lg font-semibold">50/100</p>
-						<div className="flex text-white justify-center">
+						<div
+							className="flex text-white justify-center"
+							data-tip="Holders of this card will receive exclusive airdrop incentives. Users will able to claim PARAS token via claim.paras.id"
+							// data-tip={`Holders of SuperFarm series NFTs receive exclusive airdrop incentives in the form of SUPER. NFT holders will be able to claim SUPER tokens via a decentralized portal by simply holding NFTs in their wallets. Token claims will be tied to each NFT token, not the wallet itself, so once transferred the new holder can claim the remaining tokens.`}
+						>
 							<p className="text-gray-400 mr-1">Chances & Benefits</p>
 							<svg
 								width="16"
@@ -407,7 +441,7 @@ const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
 							</svg>
 						</div>
 						<p className="text-gray-100 text-lg">
-							Emmision/pcs: {emmision}$ paras/week
+							Emmision/pcs: {emmision} paras/week
 						</p>
 						<p className="text-gray-100 mb-12 text-lg">
 							Period: {period}-weeks

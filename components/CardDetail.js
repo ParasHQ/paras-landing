@@ -108,7 +108,7 @@ const Activity = ({ activity }) => {
 	)
 }
 
-const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
+const Ownership = ({ ownership, onBuy, onUpdateListing, localToken }) => {
 	const store = useStore()
 
 	const fetcher = async (key) => {
@@ -169,6 +169,7 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 						{store.currentUser && store.currentUser === ownership.ownerId ? (
 							<button
 								className="font-semibold w-24 rounded-md bg-primary text-white"
+								disabled={specialTokenId.includes(localToken.tokenId)}
 								onClick={onUpdateListing}
 							>
 								Update
@@ -191,6 +192,7 @@ const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 					{store.currentUser && store.currentUser === ownership.ownerId && (
 						<button
 							className="font-semibold w-24 rounded-md bg-primary text-white"
+							disabled={specialTokenId.includes(localToken.tokenId)}
 							onClick={onUpdateListing}
 						>
 							Update
@@ -653,6 +655,7 @@ const CardDetail = ({ token }) => {
 							_getUserOwnership(store.currentUser).quantity > 0 && (
 								<div
 									className="py-2 cursor-pointer"
+									disabled={specialTokenId.includes(localToken.tokenId)}
 									onClick={(_) => setShowModal('addUpdateListing')}
 								>
 									Update Listing
@@ -956,7 +959,13 @@ const CardDetail = ({ token }) => {
 										ref={register({
 											required: true,
 											min: 1,
-											max: chosenSeller.marketData.quantity,
+											max: specialTokenId.includes(localToken.tokenId)
+												? 3 -
+														parseInt(
+															_getUserOwnership(store.currentUser) &&
+																_getUserOwnership(store.currentUser).quantity
+														) || 0
+												: chosenSeller.marketData.quantity,
 										})}
 										className={`${errors.buyQuantity && 'error'}`}
 										placeholder="Number of card(s) to buy"
@@ -965,7 +974,11 @@ const CardDetail = ({ token }) => {
 										{errors.buyQuantity?.type === 'required' &&
 											`Buy quantity is required`}
 										{errors.buyQuantity?.type === 'min' && `Minimum 1`}
-										{errors.buyQuantity?.type === 'max' &&
+										{specialTokenId.includes(localToken.tokenId) &&
+											errors.buyQuantity?.type === 'max' &&
+											`You can only have maximum 3 cards`}
+										{!specialTokenId.includes(localToken.tokenId) &&
+											errors.buyQuantity?.type === 'max' &&
 											`Must be less than available`}
 									</div>
 								</div>
@@ -1472,6 +1485,7 @@ const CardDetail = ({ token }) => {
 													}}
 													ownership={ownership}
 													key={idx}
+													localToken={localToken}
 												/>
 											)
 										})}
@@ -1512,6 +1526,7 @@ const CardDetail = ({ token }) => {
 									<div className="w-1/2 px-2">
 										<button
 											className="font-semibold py-3 w-full rounded-md border-2 border-primary text-primary text-sm"
+											disabled={specialTokenId.includes(localToken.tokenId)}
 											onClick={() => setShowModal('addUpdateListing')}
 										>
 											Update Listing
