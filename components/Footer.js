@@ -47,20 +47,29 @@ const Footer = () => {
 				<div className="flex flex-wrap justify-center -mx-2">
 					<div className="flex items-center pt-2 px-2">
 						<a
-							href="https://medium.com/paras-media"
-							target="_blank"
-							className="flex cursor-pointer "
-						>
-							Blog
-						</a>
-					</div>
-					<div className="flex items-center pt-2 px-2">
-						<a
 							href="https://twitter.com/ParasHQ"
 							target="_blank"
 							className="flex cursor-pointer "
 						>
 							Twitter
+						</a>
+					</div>
+					<div className="flex items-center pt-2 px-2">
+						<a
+							href="https://instagram.com/paras.hq"
+							target="_blank"
+							className="flex cursor-pointer "
+						>
+							Instagram
+						</a>
+					</div>
+					<div className="flex items-center pt-2 px-2">
+						<a
+							href="https://t.me/parashq"
+							target="_blank"
+							className="flex cursor-pointer "
+						>
+							Telegram
 						</a>
 					</div>
 					<div className="flex items-center pt-2 px-2">
