@@ -163,7 +163,7 @@ export default function Drops() {
 								<a
 									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer mb-8"
 									target="_blank"
-									href="https://paras.id/publication/editorial"
+									href="https://paras.id/publication/editorial/nft-drops-pillars-of-paras-60744f63b339123e55d9b027"
 								>
 									Find out more
 								</a>
@@ -266,7 +266,7 @@ export default function Drops() {
 						<a
 							className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer"
 							target="_blank"
-							href="https://paras.id/publication/editorial"
+							href="https://paras.id/publication/editorial/nft-drops-pillars-of-paras-60744f63b339123e55d9b027"
 						>
 							Find out more
 							<svg
