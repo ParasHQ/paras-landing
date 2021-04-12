@@ -10,7 +10,6 @@ import Footer from '../components/Footer'
 import Card from '../components/Card'
 import CardDetailModal from '../components/CardDetailModal'
 import { parseImgUrl, prettyBalance } from '../utils/common'
-import useStore from '../store'
 
 export const specialTokenId = [
 	'QmPEdrFaTX4PUgZ2VqrbcWnJPD1ZAizbG5so3KqhbTN5cj',
@@ -22,46 +21,32 @@ export const specialAccountId = 'hdriqi'
 
 const timeline = [
 	{
-		date: 'April 15th, 2021 - 00:01 UTC',
+		date: 'April 12th',
+		note: ['Open registration for user to get early access to buy NFT'],
+	},
+	{
+		date: 'April 19th',
 		note: [
-			'The Founders start on sale for 3 days',
-			'The Founders will release 80 cards per day and the remaining card that has not been sold will be burned each day',
+			'NFT Drops for whitelisted account',
+			'NFT can only be purchased by whitelisted account that registered via form (2-days)',
+			'Drops will start on April 19th at 00.01 and will end at April 21th at 00.00',
 		],
 	},
 	{
-		date: 'April 17th, 2021 - 00:01 UTC',
+		date: 'April 21th',
 		note: [
-			'The Founders sales end and will burn the rest of the card’s supply owned by paras.near.',
-			'The First Men start on sale for 3 days',
-			'The First Men will release 80 cards per day and the remaining card that has not been sold will be burned each day',
+			'NFT Drops for public',
+			'NFT can be purchased by everyone (5 days)',
+			'The remaining drops will start sale for public on April 21th at 00.01 and will end at April 26th at 00.00',
 		],
 	},
 	{
-		date: 'April 19th, 2021 - 00:01 UTC',
-		note: [
-			'The First Men sales end and will burn the rest of the card’s supply owned by paras.near.',
-			'The Firstborn start on sale for 3 days',
-			'The Firstborn will release 80 cards per day and the remaining card that has not been sold will be burned each day',
-		],
-	},
-	{
-		date: 'April 21th, 2021 - 00:01 UTC',
-		note: [
-			'The Firstborn sales end and will burn the rest of the card’s supply owned by paras.near',
-		],
-	},
-	{
-		date: 'May 1st, 2021 - 00:01 UTC',
-		note: [
-			'First emission for all the NFT holders at that time based on the emission rate.',
-			'The NFT holders snapshot happens every week at 00:01 UTC.',
-			'The emission will be sent out every week from May 1st, 2021 (May 8th, May 15th, etc) until the period ends (each NFT has a different emission period).',
-			'Users can claim their weekly emission via https://claim.paras.id',
-		],
+		date: 'April 26th',
+		note: ['Burn all the remaining NFTs'],
 	},
 ]
 
-export default function NFTSales() {
+export default function NFTDrops() {
 	const [token, setToken] = useState(null)
 	const [email, setEmail] = useState('')
 	const [formBtnText, setFormBtnText] = useState('NOTIFY ME')
@@ -175,11 +160,8 @@ export default function NFTSales() {
 								/>
 							</svg>
 						</div>
-						<h1
-							data-tip="hello world"
-							className="text-white font-bold text-6xl mt-4 mb-2"
-						>
-							NFT Sales
+						<h1 className="text-white font-bold text-6xl mt-4 mb-2">
+							NFT Drops
 						</h1>
 						<img
 							// will change the image source
@@ -189,25 +171,37 @@ export default function NFTSales() {
 						/>
 						<div className="max-w-lg m-auto">
 							<p className="text-gray-400 mb-4">
-								Paras is looking forward to launching our first Paras NFT
-								offering. In this project, we create three tiers of cards in
-								three different price ranges. These cards will represent our
-								early backers based on the number of their donations.
+								Paras is looking forward to launching our Paras special NFT. In
+								this project, we create three tiers of cards in three different
+								price ranges. These cards will represent our early backers based
+								on the number of their donations.
 							</p>
 							<p className="text-gray-400">
 								Explore and buy exclusive card collection by Paras. Get special
-								benefits and rewards only at Paras.
+								benefits and rewards only at Paras. Apply via form to get access
+								2 days early before released publicly.
 							</p>
-							<div
-								className="my-8 flex justify-center"
-								onClick={() =>
-									detail.current.scrollIntoView({
-										behavior: 'smooth',
-										block: 'start',
-									})
-								}
-							>
-								<p className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer mb-8">
+							<div className="my-8 flex justify-center space-x-8 items-center">
+								<p
+									className="outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100 mb-8 cursor-pointer"
+									onClick={() =>
+										window.scrollTo({
+											behavior: 'smooth',
+											top: document.body.scrollHeight,
+										})
+									}
+								>
+									Get early access
+								</p>
+								<p
+									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer mb-8"
+									onClick={() =>
+										window.scrollTo({
+											behavior: 'smooth',
+											top: detail.current?.offsetTop - 106,
+										})
+									}
+								>
 									Find out more
 								</p>
 							</div>
@@ -241,17 +235,17 @@ export default function NFTSales() {
 					period={24}
 				/>
 			</div>
-			<div className="max-w-2xl m-4 md:m-auto pt-8 text-gray-100 ">
+			<div>
 				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
 					Timeline
 				</h1>
-				<div className="max-w-xl m-auto">
+				<div className="max-w-6xl m-auto md:flex">
 					{timeline.map((item, index) => (
 						<div
 							key={index}
-							className="border-2 border-dashed border-gray-800 rounded-md p-4 mb-4"
+							className="border-2 border-dashed border-gray-800 rounded-md p-4 m-4 md:w-1/3"
 						>
-							<p className="font-semibold text-lg text-center mb-2">
+							<p className="font-semibold text-lg text-center mb-2 text-gray-200">
 								{item.date}
 							</p>
 							<ul className="list-disc ml-4">
@@ -264,6 +258,8 @@ export default function NFTSales() {
 						</div>
 					))}
 				</div>
+			</div>
+			<div className="max-w-2xl m-4 md:m-auto pt-8 text-gray-100 ">
 				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
 					How to buy
 				</h1>
@@ -288,42 +284,18 @@ export default function NFTSales() {
 				</ol>
 				<div className="text-center">
 					<h1 className="text-center text-gray-100 font-bold text-3xl mt-12">
-						Notify me!
+						Get early access!
 					</h1>
 					<p className="text-gray-200">
-						Register your email to get notified of the upcoming sales.
+						Register via this form to get access 2 days early for the sales
 					</p>
-					<form className="max-w-md m-auto" onSubmit={_notifyMeSubmit}>
-						<div className="flex flex-wrap -mx-2 mt-2">
-							<div className="px-2 w-full md:w-8/12">
-								<input
-									onChange={(e) => setEmail(e.target.value)}
-									value={email}
-									placeholder="Email address"
-									className="h-12 w-full text-gray-100border-2 px-2 py-2 rounded-md border-white outline-none"
-								/>
-							</div>
-							<div className="px-2 w-full md:w-4/12">
-								<button
-									disabled={formBtnText == 'SENDING...'}
-									className={`
-											outline-none h-12 w-full rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2
-											text-gray-100  border-white
-											${formBtnText == 'SUCCESS' && 'text-green-500 border-green-500'}
-											${formBtnText == 'FAILED' && ' text-red-500 border-red-500'}
-											`}
-								>
-									{formBtnText}
-								</button>
-							</div>
-						</div>
-						<p
-							className={`mt-2 text-red-500 
-								${errMsg != 'empty' ? 'opacity-100' : 'opacity-0'}`}
-						>
-							{errMsg}
-						</p>
-					</form>
+					<div className="flex justify-center">
+						<button>
+							<p className="rounded-md bg-transparent text-sm font-semibold border-2 px-8 py-2 border-primary bg-primary text-gray-100 my-4 cursor-pointer">
+								Apply Now
+							</p>
+						</button>
+					</div>
 				</div>
 				<div className="text-center">
 					<h1 className="text-center text-gray-100 font-bold text-3xl mt-12">
@@ -379,7 +351,6 @@ const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
 	const getPriceOriginal = (ownerships = []) => {
 		const marketDataList = ownerships
 			.filter((ownership) => ownership.marketData)
-			.filter((ownership) => ownership.ownerId === specialAccountId)
 			.map((ownership) => ownership.marketData.amount)
 		return marketDataList[0]
 	}
@@ -387,7 +358,6 @@ const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
 	const getCardAvailable = (ownerships = []) => {
 		const marketDataList = ownerships
 			.filter((ownership) => ownership.marketData)
-			.filter((ownership) => ownership.ownerId === specialAccountId)
 			.map((ownership) => ownership.marketData.quantity)
 		return marketDataList[0] || 0
 	}
@@ -439,112 +409,90 @@ const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
 						</div>
 					</div>
 					<div className="text-center">
-						<p className="text-gray-400">Price</p>
-						{getPriceOriginal(localToken?.ownerships) ? (
-							<div className="mb-4">
-								<p className="text-gray-100 text-4xl font-bold">
-									{prettyBalance(
-										getPriceOriginal(localToken?.ownerships),
-										24,
-										4
-									)}{' '}
-									Ⓝ
-								</p>
-							</div>
-						) : (
-							<div className="line-through text-red-600 mb-4 text-4xl font-bold">
-								<span className="text-gray-100">SALE</span>
-							</div>
-						)}
+						<div>
+							<p className="text-gray-400">Price</p>
+							{getPriceOriginal(localToken?.ownerships) ? (
+								<div className="mb-4">
+									<p className="text-gray-100 text-4xl font-bold">
+										{prettyBalance(
+											getPriceOriginal(localToken?.ownerships),
+											24,
+											4
+										)}{' '}
+										Ⓝ
+									</p>
+								</div>
+							) : (
+								<div className="line-through text-red-600 mb-4 text-4xl font-bold">
+									<span className="text-gray-100">SALE</span>
+								</div>
+							)}
+						</div>
 						<div
-							className="flex flex-col"
-							data-tip={`Card supply will be released ${supply / 3}/day`}
+							className="flex flex-col cursor-default"
+							// data-tip={`Card supply will be released`}
 						>
 							<div className="flex text-white justify-center">
 								<p className="text-gray-400 mr-1">Card Supply</p>
-								<div>
-									<a>
-										<svg
-											width="16"
-											height="16"
-											viewBox="0 0 24 24"
-											fill="#ffffff"
-											xmlns="http://www.w3.org/2000/svg"
-										>
-											<path
-												className="fill-current"
-												fill="#ffffff"
-												fillRule="evenodd"
-												clipRule="evenodd"
-												d="M1 12C1 18.0751 5.92487 23 12 23C18.0751 23 23 18.0751 23 12C23 5.92487 18.0751 1 12 1C5.92487 1 1 5.92487 1 12ZM21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12ZM13.0036 13.9983H14.003V15.9983H10.003V13.9983H11.003V11.9983H10.003V9.99835H13.0036V13.9983ZM13.0007 7.99835C13.0007 8.55063 12.5528 8.99835 12.0003 8.99835C11.4479 8.99835 11 8.55063 11 7.99835C11 7.44606 11.4479 6.99835 12.0003 6.99835C12.5528 6.99835 13.0007 7.44606 13.0007 7.99835Z"
-											/>
-										</svg>
-									</a>
-								</div>
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 24 24"
+									fill="#ffffff"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										className="fill-current"
+										fill="#ffffff"
+										fillRule="evenodd"
+										clipRule="evenodd"
+										d="M1 12C1 18.0751 5.92487 23 12 23C18.0751 23 23 18.0751 23 12C23 5.92487 18.0751 1 12 1C5.92487 1 1 5.92487 1 12ZM21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12ZM13.0036 13.9983H14.003V15.9983H10.003V13.9983H11.003V11.9983H10.003V9.99835H13.0036V13.9983ZM13.0007 7.99835C13.0007 8.55063 12.5528 8.99835 12.0003 8.99835C11.4479 8.99835 11 8.55063 11 7.99835C11 7.44606 11.4479 6.99835 12.0003 6.99835C12.5528 6.99835 13.0007 7.44606 13.0007 7.99835Z"
+									/>
+								</svg>
 							</div>
 							<p className="text-gray-100 mb-4 text-lg font-semibold">
-								{supply} pcs
+								{localToken?.supply} pcs
 							</p>
 						</div>
 						<div
-							className="flex text-white justify-center"
+							className="flex flex-col cursor-default"
 							data-tip={`Card available for purchase today`}
 						>
-							<p className="text-gray-400 mr-1">Card Available</p>
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="#ffffff"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									className="fill-current"
+							<div className="flex text-white justify-center">
+								<p className="text-gray-400 mr-1">Card Available</p>
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 24 24"
 									fill="#ffffff"
-									fillRule="evenodd"
-									clipRule="evenodd"
-									d="M1 12C1 18.0751 5.92487 23 12 23C18.0751 23 23 18.0751 23 12C23 5.92487 18.0751 1 12 1C5.92487 1 1 5.92487 1 12ZM21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12ZM13.0036 13.9983H14.003V15.9983H10.003V13.9983H11.003V11.9983H10.003V9.99835H13.0036V13.9983ZM13.0007 7.99835C13.0007 8.55063 12.5528 8.99835 12.0003 8.99835C11.4479 8.99835 11 8.55063 11 7.99835C11 7.44606 11.4479 6.99835 12.0003 6.99835C12.5528 6.99835 13.0007 7.44606 13.0007 7.99835Z"
-								/>
-							</svg>
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										className="fill-current"
+										fill="#ffffff"
+										fillRule="evenodd"
+										clipRule="evenodd"
+										d="M1 12C1 18.0751 5.92487 23 12 23C18.0751 23 23 18.0751 23 12C23 5.92487 18.0751 1 12 1C5.92487 1 1 5.92487 1 12ZM21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12ZM13.0036 13.9983H14.003V15.9983H10.003V13.9983H11.003V11.9983H10.003V9.99835H13.0036V13.9983ZM13.0007 7.99835C13.0007 8.55063 12.5528 8.99835 12.0003 8.99835C11.4479 8.99835 11 8.55063 11 7.99835C11 7.44606 11.4479 6.99835 12.0003 6.99835C12.5528 6.99835 13.0007 7.44606 13.0007 7.99835Z"
+									/>
+								</svg>
+							</div>
+							<p className="text-gray-100 mb-4 text-lg font-semibold">
+								{getCardAvailable(localToken?.ownerships)}/{localToken?.supply}
+							</p>
 						</div>
-						<p className="text-gray-100 mb-4 text-lg font-semibold">
-							{getCardAvailable(localToken?.ownerships)}/{supply / 3}
-						</p>
-						<div
-							className="flex text-white justify-center"
-							data-tip="Holders of this card will receive exclusive airdrop incentives. Users will able to claim PARAS token via claim.paras.id"
-							// data-tip={`Holders of SuperFarm series NFTs receive exclusive airdrop incentives in the form of SUPER. NFT holders will be able to claim SUPER tokens via a decentralized portal by simply holding NFTs in their wallets. Token claims will be tied to each NFT token, not the wallet itself, so once transferred the new holder can claim the remaining tokens.`}
-						>
-							<p className="text-gray-400 mr-1">Chances & Benefits</p>
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 24 24"
-								fill="#ffffff"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									className="fill-current"
-									fill="#ffffff"
-									fillRule="evenodd"
-									clipRule="evenodd"
-									d="M1 12C1 18.0751 5.92487 23 12 23C18.0751 23 23 18.0751 23 12C23 5.92487 18.0751 1 12 1C5.92487 1 1 5.92487 1 12ZM21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12ZM13.0036 13.9983H14.003V15.9983H10.003V13.9983H11.003V11.9983H10.003V9.99835H13.0036V13.9983ZM13.0007 7.99835C13.0007 8.55063 12.5528 8.99835 12.0003 8.99835C11.4479 8.99835 11 8.55063 11 7.99835C11 7.44606 11.4479 6.99835 12.0003 6.99835C12.5528 6.99835 13.0007 7.44606 13.0007 7.99835Z"
-								/>
-							</svg>
-						</div>
-						<p className="text-gray-100 text-lg">
-							Emmision/pcs: {emmision} paras/week
-						</p>
-						<p className="text-gray-100 mb-12 text-lg">
-							Period: {period}-weeks
-						</p>
-						<div className="mx-8">
+						<div className="mx-8 mt-8">
 							<button
 								// disabled
 								onClick={onPressBuyNow}
-								className="w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 bg-gray-200 text-primary"
+								className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 ${
+									getPriceOriginal(localToken?.ownerships)
+										? 'bg-gray-200 text-primary'
+										: 'bg-transparent text-gray-200'
+								}`}
 							>
-								Buy now
+								{getPriceOriginal(localToken?.ownerships)
+									? 'See details'
+									: 'Not for sale'}
 							</button>
 						</div>
 					</div>

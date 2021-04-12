@@ -23,7 +23,7 @@ import useSWR from 'swr'
 import getConfig from '../config/near'
 import LinkToProfile from './LinkToProfile'
 import ReactLinkify from 'react-linkify'
-import { specialTokenId } from '../pages/nft-sales'
+import { specialTokenId } from '../pages/nft-drops'
 
 const Activity = ({ activity }) => {
 	if (activity.type === 'marketUpdate') {
@@ -292,27 +292,6 @@ const CardDetail = ({ token }) => {
 	}, [])
 
 	const _buy = async (data) => {
-		if (specialTokenId.includes(chosenSeller.tokenId)) {
-			const preOwned =
-				(_getUserOwnership(store.currentUser) &&
-					_getUserOwnership(store.currentUser).quantity) ||
-				0
-
-			if (parseInt(data.buyQuantity) + preOwned > 3) {
-				// console.log(parseInt data.buyQuantity, preOwned)
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							You can only have maximum 3 cards
-						</div>
-					),
-					type: 'error',
-					duration: 2500,
-				})
-				return
-			}
-		}
-
 		setIsSubmitting(true)
 		const params = {
 			ownerId: chosenSeller.ownerId,
@@ -960,11 +939,7 @@ const CardDetail = ({ token }) => {
 											required: true,
 											min: 1,
 											max: specialTokenId.includes(localToken.tokenId)
-												? 3 -
-														parseInt(
-															_getUserOwnership(store.currentUser) &&
-																_getUserOwnership(store.currentUser).quantity
-														) || 0
+												? 3
 												: chosenSeller.marketData.quantity,
 										})}
 										className={`${errors.buyQuantity && 'error'}`}
@@ -976,7 +951,7 @@ const CardDetail = ({ token }) => {
 										{errors.buyQuantity?.type === 'min' && `Minimum 1`}
 										{specialTokenId.includes(localToken.tokenId) &&
 											errors.buyQuantity?.type === 'max' &&
-											`You can only have maximum 3 cards`}
+											`You can only buy maximum 3 cards per purchase`}
 										{!specialTokenId.includes(localToken.tokenId) &&
 											errors.buyQuantity?.type === 'max' &&
 											`Must be less than available`}
