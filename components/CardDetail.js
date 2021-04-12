@@ -23,7 +23,7 @@ import useSWR from 'swr'
 import getConfig from '../config/near'
 import LinkToProfile from './LinkToProfile'
 import ReactLinkify from 'react-linkify'
-import { specialTokenId } from '../pages/nft-drops'
+import { specialTokenId } from '../pages/drops'
 
 const Activity = ({ activity }) => {
 	if (activity.type === 'marketUpdate') {

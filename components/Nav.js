@@ -674,7 +674,7 @@ const Nav = () => {
 							</Link>
 						</div>
 						<div className="flex-1 pr-4">
-							<div className="max-w-md mr-auto">
+							<div className="max-w-sm mr-auto">
 								<form action="/search" method="get" onSubmit={_handleSubmit}>
 									<div className="flex border-dark-primary-1 border-2 rounded-lg bg-dark-primary-1">
 										<svg
@@ -704,7 +704,12 @@ const Nav = () => {
 							</div>
 						</div>
 						<div className="flex items-center -mx-4">
-							<div className="px-4 text-gray-100 hidden md:block">
+							<div className="px-3 text-gray-100 hidden md:block">
+								<Link href="/drops">
+									<a>Drops</a>
+								</Link>
+							</div>
+							<div className="px-3 text-gray-100 hidden md:block">
 								{router.pathname === '/market' ? (
 									<a
 										className="cursor-pointer"
@@ -718,22 +723,22 @@ const Nav = () => {
 									</Link>
 								)}
 							</div>
-							<div className="px-4 text-gray-100 hidden md:block">
+							<div className="px-3 text-gray-100 hidden md:block">
 								<Link href="/publication/editorial">
 									<a>Publication</a>
 								</Link>
 							</div>
-							<div className="px-4 text-gray-100 hidden md:block">
+							<div className="px-3 text-gray-100 hidden md:block">
 								<Link href="/activity">
 									<a>Activity</a>
 								</Link>
 							</div>
-							<div className="px-4 text-gray-100 hidden md:block">
+							<div className="px-3 text-gray-100 hidden md:block">
 								<Link href="/activity/top-cards">
 									<a>Stats</a>
 								</Link>
 							</div>
-							<div className="px-4">
+							<div className="px-3">
 								{store.currentUser ? (
 									<div className="flex items-center -mx-2">
 										<div className="px-2">

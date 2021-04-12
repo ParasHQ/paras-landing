@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import ReactTooltip from 'react-tooltip'
 import { Blurhash } from 'react-blurhash'
+import ReactLinkify from 'react-linkify'
 
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
@@ -12,9 +13,9 @@ import CardDetailModal from '../components/CardDetailModal'
 import { parseImgUrl, prettyBalance } from '../utils/common'
 
 export const specialTokenId = [
-	'QmPEdrFaTX4PUgZ2VqrbcWnJPD1ZAizbG5so3KqhbTN5cj',
-	'QmRmmeRzebGsgjFaX7qGCchCHEaYGiTNMXaQThUrFLDz9Y',
-	'QmNSZZ8r23P562nFA5JJ1vtZVSiDHKHAXMhkuvPVwHQGHt',
+	// 'QmPEdrFaTX4PUgZ2VqrbcWnJPD1ZAizbG5so3KqhbTN5cj',
+	// 'QmRmmeRzebGsgjFaX7qGCchCHEaYGiTNMXaQThUrFLDz9Y',
+	// 'QmNSZZ8r23P562nFA5JJ1vtZVSiDHKHAXMhkuvPVwHQGHt',
 ]
 
 export const specialAccountId = 'hdriqi'
@@ -22,22 +23,22 @@ export const specialAccountId = 'hdriqi'
 const timeline = [
 	{
 		date: 'April 12th',
-		note: ['Open registration for user to get early access to buy NFT'],
+		note: [
+			'Open registration for user to get early access (whitelist) to buy NFT',
+		],
 	},
 	{
 		date: 'April 19th',
 		note: [
 			'NFT Drops for whitelisted account',
-			'NFT can only be purchased by whitelisted account that registered via form (2-days)',
-			'Drops will start on April 19th at 00.01 and will end at April 21th at 00.00',
+			'Drops will start on April 19th at 00.01 and will end at April 21th at 00.00 (2-days)',
 		],
 	},
 	{
 		date: 'April 21th',
 		note: [
-			'NFT Drops for public',
-			'NFT can be purchased by everyone (5 days)',
-			'The remaining drops will start sale for public on April 21th at 00.01 and will end at April 26th at 00.00',
+			'NFT Drops for public (if still available)',
+			'The remaining drops will start sale for public on April 21th at 00.01 and will end at April 26th at 00.00 (5 days)',
 		],
 	},
 	{
@@ -46,40 +47,9 @@ const timeline = [
 	},
 ]
 
-export default function NFTDrops() {
+export default function Drops() {
 	const [token, setToken] = useState(null)
-	const [email, setEmail] = useState('')
-	const [formBtnText, setFormBtnText] = useState('NOTIFY ME')
-	const [errMsg, setErrMsg] = useState('empty')
 	const detail = useRef(null)
-
-	const _notifyMeSubmit = async (e) => {
-		e.preventDefault()
-		const regex = /^([\w_\.\-\+])+\@([\w\-]+\.)+([\w]{2,10})+$/
-		if (!regex.test(email)) {
-			setErrMsg('Invalid email address')
-			return
-		}
-		setFormBtnText('SENDING...')
-		const resp = await axios.post('/api/notifyMe', {
-			email: email,
-		})
-		if (resp.data.success) {
-			setFormBtnText('SUCCESS')
-			setTimeout(() => {
-				setEmail('')
-			}, 2500)
-		} else {
-			setErrMsg('Email already subscribed')
-			setFormBtnText('FAILED')
-		}
-		setTimeout(() => {
-			if (formBtnText === 'SUCCESS') {
-				setEmail('')
-			}
-			setFormBtnText('NOTIFY ME')
-		}, 2500)
-	}
 
 	return (
 		<div
@@ -164,22 +134,19 @@ export default function NFTDrops() {
 							NFT Drops
 						</h1>
 						<img
-							// will change the image source
 							src={parseImgUrl(
-								'ipfs://bafybeih6ceggaik2lpnupr7dxwjwzohbr5mhkx3kgaiqdba5zcu2xgwc5i'
+								'ipfs://bafybeifxf24wvro5b4p6h3kyvx6zqdabgokwlmdvj73enxhxcelyqrqujy'
 							)}
 						/>
 						<div className="max-w-lg m-auto">
 							<p className="text-gray-400 mb-4">
-								Paras is looking forward to launching our Paras special NFT. In
-								this project, we create three tiers of cards in three different
-								price ranges. These cards will represent our early backers based
-								on the number of their donations.
+								Paras first NFT Drops since we started the marketplace. This set
+								of cards will be released in three different tiers signaled by
+								three different generations these characters represent.
 							</p>
 							<p className="text-gray-400">
-								Explore and buy exclusive card collection by Paras. Get special
-								benefits and rewards only at Paras. Apply via form to get access
-								2 days early before released publicly.
+								The Pillars of Paras is a collection of great importance to
+								building the world of Paras; both in lore and reality.
 							</p>
 							<div className="my-8 flex justify-center space-x-8 items-center">
 								<p
@@ -191,19 +158,15 @@ export default function NFTDrops() {
 										})
 									}
 								>
-									Get early access
+									Register now
 								</p>
-								<p
+								<a
 									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer mb-8"
-									onClick={() =>
-										window.scrollTo({
-											behavior: 'smooth',
-											top: detail.current?.offsetTop - 106,
-										})
-									}
+									target="_blank"
+									href="https://paras.id/publication/editorial"
 								>
 									Find out more
-								</p>
+								</a>
 							</div>
 						</div>
 					</div>
@@ -216,23 +179,23 @@ export default function NFTDrops() {
 				<SpecialCard
 					tokenId={specialTokenId[0]}
 					onClick={setToken}
-					supply={240}
-					emmision={166}
-					period={12}
+					titleCard={'The Founder'}
+					imgUrl="ipfs://bafybeift27nlq4ke6eh7vygl6n62riz3rtbrrps3erlc4xezww7lwd5g3y"
+					blurhash="U68qKjkE4-j;?Ht8Io%N?cocMwt9?wWAa0xb"
 				/>
 				<SpecialCard
 					tokenId={specialTokenId[1]}
 					onClick={setToken}
-					supply={300}
-					emmision={98}
-					period={18}
+					titleCard={'The Firstman'}
+					imgUrl="ipfs://bafybeif5eyxsy5nhatlw56zg4t4havgmy6aw6br5uca2vjsa7syy6trf5e"
+					blurhash="UEA9pas*NYoP~DR$NGs?x^NZR%s;pIflsAj="
 				/>
 				<SpecialCard
 					tokenId={specialTokenId[2]}
 					onClick={setToken}
-					supply={420}
-					emmision={52}
-					period={24}
+					titleCard={'The First Born'}
+					imgUrl="ipfs://bafybeibsi2aceq64gsn373jdex6opbjf6mjiekz25p6b5fa7z2blalzaru"
+					blurhash="U7BpU|=x00R$P;wbv#58W59$9c#$^+X1i[$-"
 				/>
 			</div>
 			<div>
@@ -259,58 +222,70 @@ export default function NFTDrops() {
 					))}
 				</div>
 			</div>
-			<div className="max-w-2xl m-4 md:m-auto pt-8 text-gray-100 ">
+			<div className="max-w-xl m-4 md:m-auto text-gray-100 ">
 				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
-					How to buy
+					How to register
 				</h1>
 				<p className="mb-2">
-					In order to buy your card(s), please ensure you have near account and
-					funded with enough NEAR Coin.
+					So let’s get started! In order to get a whitelist for Paras NFT Drops,
+					please complete these tasks.
 				</p>
-				<ol className="text-gray-100 ml-8" style={{ listStyleType: 'decimal' }}>
-					<li>Click the "Buy" button on your desired card series</li>
-					<li>
-						Agree to the T&Cs Enter the quantity of card you would like to buy
-					</li>
-					<li>
-						Click buy & confirm the transaction in your NEAR Wallet. You will be
-						redirected to your wallet page with your purchased cards showing
-						soon
-					</li>
-					<li>
-						If you wish to purchase more cards, please go to the market page
-						through the top menu
-					</li>
-				</ol>
-				<div className="text-center">
-					<h1 className="text-center text-gray-100 font-bold text-3xl mt-12">
-						Get early access!
-					</h1>
-					<p className="text-gray-200">
-						Register via this form to get access 2 days early for the sales
-					</p>
-					<div className="flex justify-center">
-						<button>
-							<p className="rounded-md bg-transparent text-sm font-semibold border-2 px-8 py-2 border-primary bg-primary text-gray-100 my-4 cursor-pointer">
-								Apply Now
-							</p>
-						</button>
-					</div>
-				</div>
-				<div className="text-center">
-					<h1 className="text-center text-gray-100 font-bold text-3xl mt-12">
-						Paras Litepaper
-					</h1>
-					<p className="text-gray-200">
-						You can read paras litepaper{' '}
-						<a
-							href="https://www.dropbox.com/s/ir5nmhdjfi02cay/Paras%20Litepaper.pdf?dl=0"
-							target="_blank"
-							className="hover:text-white border-b-2 cursor-pointer"
-						>
-							here
+				<ReactLinkify
+					componentDecorator={(decoratedHref, decoratedText, key) => (
+						<a target="blank" href={decoratedHref} key={key} className="italic">
+							{decoratedText}
 						</a>
+					)}
+				>
+					<ol
+						className="text-gray-100 ml-8"
+						style={{ listStyleType: 'decimal' }}
+					>
+						<li>Follow Paras on Twitter (https://twitter.com/ParasHQ?s=08)</li>
+						<li>
+							Retweet, like, tag your friends to this pinned tweet about the NFT
+							Drops
+						</li>
+						<li>Join Paras Telegram group. (https://t.me/parashq)</li>
+						<li>
+							Join Paras Discord channel. (https://discord.com/invite/pApguHGf)
+						</li>
+						<li>
+							Fill the whitelist form (https://tripetto.app/run/2SM3PF3KQW)
+						</li>
+					</ol>
+				</ReactLinkify>
+				<div className="text-center">
+					<h1 className="text-center text-gray-100 font-bold text-3xl mt-12 mb-2">
+						Read details
+					</h1>
+					<p className="text-gray-200">
+						You can read full information on Paras publication
 					</p>
+					<div className="flex justify-center my-8">
+						<a
+							className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer"
+							target="_blank"
+							href="https://paras.id/publication/editorial"
+						>
+							Find out more
+							<svg
+								width="12"
+								height="12"
+								viewBox="0 0 16 16"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+								className="ml-1"
+							>
+								<path
+									fillRule="evenodd"
+									clipRule="evenodd"
+									d="M7.70421 9.70711L13.9971 3.41421V7H15.9971V0H8.9971V2H12.5829L6.28999 8.29289L7.70421 9.70711ZM15 14V10H13V14H2V3H6V1H2C0.89543 1 0 1.89543 0 3V14C0 15.1046 0.89543 16 2 16H13C14.1046 16 15 15.1046 15 14Z"
+									fill="white"
+								/>
+							</svg>
+						</a>
+					</div>
 				</div>
 			</div>
 			<Footer />
@@ -318,7 +293,7 @@ export default function NFTDrops() {
 	)
 }
 
-const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
+const SpecialCard = ({ tokenId, onClick, blurhash, imgUrl, titleCard }) => {
 	const [localToken, setLocalToken] = useState(null)
 	const router = useRouter()
 
@@ -366,14 +341,11 @@ const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
 		<div className="relative m-4 md:m-0 md:w-1/3">
 			<ReactTooltip
 				effect={'solid'}
-				className="bg-dark-primary-1 text-white px-2 py-4 w-56"
+				className="bg-dark-primary-1 text-white px-2 py-4 max-w-sm"
 			/>
 			<div className="absolute inset-0 m-auto overflow-hidden rounded-xl opacity-50">
 				<Blurhash
-					hash={
-						localToken?.metadata.blurhash ||
-						'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'
-					}
+					hash={blurhash}
 					width={`100%`}
 					height={`100%`}
 					resolutionX={32}
@@ -384,14 +356,15 @@ const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
 			<div className="relative py-8 m-auto">
 				<div className="static m-auto">
 					<h1 className="text-white mb-8 text-3xl font-bold text-center">
-						{localToken?.metadata.name}
+						{localToken?.metadata.name || titleCard}
 					</h1>
 					<div className="m-8">
 						<div className="w-full m-auto">
 							<Card
 								special
-								imgUrl={parseImgUrl(localToken?.metadata.image)}
-								imgBlur={localToken?.metadata.blurhash}
+								imgUrl={parseImgUrl(imgUrl)}
+								imgBlur={blurhash}
+								disableFlip
 								token={{
 									name: localToken?.metadata.name,
 									collection: localToken?.metadata.collection,
@@ -430,7 +403,7 @@ const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
 						</div>
 						<div
 							className="flex flex-col cursor-default"
-							// data-tip={`Card supply will be released`}
+							data-tip={`Total supply of the card`}
 						>
 							<div className="flex text-white justify-center">
 								<p className="text-gray-400 mr-1">Card Supply</p>
@@ -451,7 +424,7 @@ const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
 								</svg>
 							</div>
 							<p className="text-gray-100 mb-4 text-lg font-semibold">
-								{localToken?.supply} pcs
+								{localToken?.supply || 'xxx'} pcs
 							</p>
 						</div>
 						<div
@@ -477,17 +450,19 @@ const SpecialCard = ({ tokenId, onClick, supply, emmision, period }) => {
 								</svg>
 							</div>
 							<p className="text-gray-100 mb-4 text-lg font-semibold">
-								{getCardAvailable(localToken?.ownerships)}/{localToken?.supply}
+								{getCardAvailable(localToken?.ownerships) || 'xxx '}/
+								{localToken?.supply || ' xxx'}
 							</p>
 						</div>
 						<div className="mx-8 mt-8">
 							<button
-								// disabled
-								onClick={onPressBuyNow}
+								onClick={() =>
+									getPriceOriginal(localToken?.ownerships) && onPressBuyNow()
+								}
 								className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 ${
 									getPriceOriginal(localToken?.ownerships)
 										? 'bg-gray-200 text-primary'
-										: 'bg-transparent text-gray-200'
+										: 'bg-transparent text-gray-200 cursor-not-allowed'
 								}`}
 							>
 								{getPriceOriginal(localToken?.ownerships)
