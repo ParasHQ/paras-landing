@@ -402,7 +402,7 @@ const SpecialCard = ({ tokenId, onClick, blurhash, imgUrl, titleCard }) => {
 							)}
 						</div>
 						<div
-							className="flex flex-col cursor-default"
+							className="flex flex-col cursor-default mb-4"
 							data-tip={`Total supply of the card`}
 						>
 							<div className="flex text-white justify-center">
@@ -423,12 +423,12 @@ const SpecialCard = ({ tokenId, onClick, blurhash, imgUrl, titleCard }) => {
 									/>
 								</svg>
 							</div>
-							<p className="text-gray-100 mb-4 text-lg font-semibold">
-								{localToken?.supply || 'xxx'} pcs
+							<p className="text-gray-100 text-lg font-semibold">
+								{localToken?.supply || '?'} pcs
 							</p>
 						</div>
 						<div
-							className="flex flex-col cursor-default"
+							className="flex flex-col cursor-default mb-4"
 							data-tip={`Card available for purchase today`}
 						>
 							<div className="flex text-white justify-center">
@@ -449,9 +449,9 @@ const SpecialCard = ({ tokenId, onClick, blurhash, imgUrl, titleCard }) => {
 									/>
 								</svg>
 							</div>
-							<p className="text-gray-100 mb-4 text-lg font-semibold">
-								{getCardAvailable(localToken?.ownerships) || 'xxx '}/
-								{localToken?.supply || ' xxx'}
+							<p className="text-gray-100 text-lg font-semibold">
+								{getCardAvailable(localToken?.ownerships) || '? '}/
+								{localToken?.supply || ' ?'}
 							</p>
 						</div>
 						<div className="mx-8 mt-8">

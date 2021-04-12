@@ -704,7 +704,7 @@ const Nav = () => {
 							</div>
 						</div>
 						<div className="flex items-center -mx-4">
-							<div className="px-3 text-gray-100 hidden md:block">
+							<div className="px-3 text-gray-100 hidden md:block fireText">
 								<Link href="/drops">
 									<a>Drops</a>
 								</Link>
@@ -770,6 +770,11 @@ const Nav = () => {
 						)}
 						<div className="h-16"></div>
 						<div className="text-center border-b-2 border-dashed border-gray-800">
+							<div className="text-gray-100 ">
+								<Link href="/drops">
+									<a className="p-4 block w-full fireText">Drops</a>
+								</Link>
+							</div>
 							<div className="text-gray-100 ">
 								{router.pathname === '/market' ? (
 									<a
