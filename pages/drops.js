@@ -238,13 +238,13 @@ export default function Drops() {
 					)}
 				>
 					<ol
-						className="text-gray-100 ml-8"
+						className="text-gray-100 ml-8 break-all"
 						style={{ listStyleType: 'decimal' }}
 					>
-						<li>Follow Paras on Twitter (https://twitter.com/ParasHQ?s=08)</li>
+						<li>Follow Paras on Twitter (https://twitter.com/ParasHQ)</li>
 						<li>
 							Retweet, like, tag your friends to this pinned tweet about the NFT
-							Drops
+							Drops (https://twitter.com/ParasHQ/status/1381610575063478272)
 						</li>
 						<li>Join Paras Telegram group. (https://t.me/parashq)</li>
 						<li>
