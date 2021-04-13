@@ -31,14 +31,14 @@ const timeline = [
 		date: 'April 19th',
 		note: [
 			'NFT Drops for whitelisted account',
-			'Drops will start on April 19th at 00.01 and will end at April 21th at 00.00 (2-days)',
+			'Drops will start on April 19th at 00.01 (UTC) and will end at April 21th at 00.00 (UTC) (2-days)',
 		],
 	},
 	{
 		date: 'April 21th',
 		note: [
 			'NFT Drops for public (if still available)',
-			'The remaining drops will start sale for public on April 21th at 00.01 and will end at April 26th at 00.00 (5 days)',
+			'The remaining drops will start sale for public on April 21th at 00.01 (UTC) and will end at April 26th at 00.00 (UTC) (5 days)',
 		],
 	},
 	{
