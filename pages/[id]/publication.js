@@ -80,7 +80,7 @@ const Publication = ({ publications, userProfile, accountId }) => {
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'publication'} />
 				<div className="mt-8 overflow-x-hidden border-2 border-dashed border-gray-800 rounded-md">
-					{pubData.length === 0 && !isFetching && (
+					{pubData.length === 0 && !isFetching ? (
 						<div className="">
 							<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">
 								<div className="w-40 m-auto">
@@ -89,18 +89,19 @@ const Publication = ({ publications, userProfile, accountId }) => {
 								<p className="mt-4">No Publications</p>
 							</div>
 						</div>
+					) : (
+						<div className="max-w-4xl mx-auto px-4 mb-8">
+							<InfiniteScroll
+								dataLength={pubData.length}
+								next={_fetchData}
+								hasMore={hasMore}
+							>
+								{pubData.map((pub) => (
+									<PublicationList key={pub._id} data={pub} />
+								))}
+							</InfiniteScroll>
+						</div>
 					)}
-					<div className="max-w-4xl mx-auto px-4 mb-8">
-						<InfiniteScroll
-							dataLength={pubData.length}
-							next={_fetchData}
-							hasMore={hasMore}
-						>
-							{pubData.map((pub) => (
-								<PublicationList key={pub._id} data={pub} />
-							))}
-						</InfiniteScroll>
-					</div>
 				</div>
 			</div>
 			<Footer />

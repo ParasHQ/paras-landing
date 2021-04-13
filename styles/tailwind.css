@@ -343,6 +343,13 @@ input.clear {
 	height: 480px;
 }
 
+.fireText {
+	text-shadow: 0 0 20px #c9d1fe, -19px -20px 40px #0011ff,
+		-1px -9px 20px #0c2eec, -20px -60px 60px #06afcd, 1px -19px 70px #1f1697,
+		1px -14px 80px #0e1445, 0px 0 8px rgb(0, 89, 255), 0 0 8px rgb(0, 195, 255),
+		0 0 5px #1300ba;
+}
+
 @media (max-width: 768px) {
 	.embedVideo {
 		height: 210px;
