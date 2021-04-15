@@ -23,7 +23,7 @@ const LoginPage = () => {
 
 	return (
 		<div
-			className="h-screen bg-dark-primary-1"
+			className="min-h-screen relative bg-dark-primary-1"
 			style={{
 				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
 			}}
@@ -66,7 +66,7 @@ const LoginPage = () => {
 			<div className="fixed">
 				<Nav />
 			</div>
-			<div className="max-w-lg m-auto flex items-center justify-center h-full px-4">
+			<div className="max-w-lg m-auto flex items-center justify-center h-full px-4 pt-48 pb-24">
 				<div className=" w-full">
 					<div className="flex items-center">
 						<div>
@@ -88,11 +88,18 @@ const LoginPage = () => {
 							Login with NEAR
 						</button>
 					</div>
+					<div className="mt-8 text-center">
+						<a
+							href="https://faucet.paras.id"
+							target="_blank"
+							className="text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer text-sm"
+						>
+							Create free NEAR account with Metamask
+						</a>
+					</div>
 				</div>
 			</div>
-			<div className="fixed bottom-0 left-0 right-0">
-				<Footer />
-			</div>
+			<Footer />
 		</div>
 	)
 }
