@@ -297,7 +297,7 @@ const NewPage = () => {
 									Receive:{' '}
 									{prettyBalance(
 										Number(
-											getValues('amount', 0) * (0.95 - formInput.royalty / 100)
+											getValues('amount', 0) * ((95 - formInput.royalty) / 100)
 										)
 											.toPrecision(4)
 											.toString(),
@@ -306,7 +306,11 @@ const NewPage = () => {
 									)}{' '}
 									Ⓝ (~$
 									{prettyBalance(
-										Number(store.nearUsdPrice * getValues('amount', 0) * (0.95 - formInput.royalty / 100))
+										Number(
+											store.nearUsdPrice *
+												getValues('amount', 0) *
+												((95 - formInput.royalty) / 100)
+										)
 											.toPrecision(4)
 											.toString(),
 										0,
@@ -317,7 +321,7 @@ const NewPage = () => {
 								<p className="text-sm">
 									Royalty:{' '}
 									{prettyBalance(
-										Number(getValues('royalty', 0) * (formInput.royalty / 100))
+										Number(getValues('amount', 0) * (formInput.royalty / 100))
 											.toPrecision(4)
 											.toString(),
 										0,
@@ -325,7 +329,11 @@ const NewPage = () => {
 									)}{' '}
 									Ⓝ (~$
 									{prettyBalance(
-										Number(store.nearUsdPrice * getValues('royalty', 0) * (formInput.royalty / 100))
+										Number(
+											store.nearUsdPrice *
+												getValues('amount', 0) *
+												(formInput.royalty / 100)
+										)
 											.toPrecision(4)
 											.toString(),
 										0,
