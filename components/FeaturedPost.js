@@ -56,7 +56,7 @@ const FeaturedPostList = ({ post = [] }) => {
 						]}
 					>
 						{post.map((post) => (
-							<div key={post._id}>
+							<div key={post._id} className="outline-none">
 								<div className="w-11/12 m-auto">
 									<FeaturedPost post={post} />
 								</div>
