@@ -23,7 +23,6 @@ import useSWR from 'swr'
 import getConfig from '../config/near'
 import LinkToProfile from './LinkToProfile'
 import ReactLinkify from 'react-linkify'
-import { specialTokenId } from '../pages/drops'
 
 const Activity = ({ activity }) => {
 	if (activity.type === 'marketUpdate') {
@@ -108,7 +107,7 @@ const Activity = ({ activity }) => {
 	)
 }
 
-const Ownership = ({ ownership, onBuy, onUpdateListing, localToken }) => {
+const Ownership = ({ ownership, onBuy, onUpdateListing, whitelist }) => {
 	const store = useStore()
 
 	const fetcher = async (key) => {
@@ -169,7 +168,6 @@ const Ownership = ({ ownership, onBuy, onUpdateListing, localToken }) => {
 						{store.currentUser && store.currentUser === ownership.ownerId ? (
 							<button
 								className="font-semibold w-24 rounded-md bg-primary text-white"
-								disabled={specialTokenId.includes(localToken.tokenId)}
 								onClick={onUpdateListing}
 							>
 								Update
@@ -192,7 +190,6 @@ const Ownership = ({ ownership, onBuy, onUpdateListing, localToken }) => {
 					{store.currentUser && store.currentUser === ownership.ownerId && (
 						<button
 							className="font-semibold w-24 rounded-md bg-primary text-white"
-							disabled={specialTokenId.includes(localToken.tokenId)}
 							onClick={onUpdateListing}
 						>
 							Update
@@ -286,10 +283,30 @@ const CardDetail = ({ token }) => {
 	const [chosenSeller, setChosenSeller] = useState(null)
 	const [isCopied, setIsCopied] = useState(false)
 
+	const [whitelist, setWhitelist] = useState([
+		'token_not_whitelisted',
+		'user_whitelisted',
+	])
+
 	useEffect(() => {
 		setIsComponentMounted(true)
 		_changeSortBy('priceasc')
 	}, [])
+
+	useEffect(async () => {
+		if (store.currentUser) {
+			try {
+				const res = await near.contract.getUserPurchaseWhitelist({
+					tokenId: token.tokenId,
+					buyerId: store.currentUser,
+				})
+				console.log('whitelist', res)
+				// setWhitelist(res.split('::'))
+			} catch (err) {
+				console.log(err)
+			}
+		}
+	}, [store.currentUser])
 
 	const _buy = async (data) => {
 		setIsSubmitting(true)
@@ -326,7 +343,7 @@ const CardDetail = ({ token }) => {
 		try {
 			await near.contract.buy(
 				params,
-				'40000000000000',
+				'50000000000000',
 				attachedDeposit.toString()
 			)
 		} catch (err) {
@@ -634,8 +651,16 @@ const CardDetail = ({ token }) => {
 							_getUserOwnership(store.currentUser).quantity > 0 && (
 								<div
 									className="py-2 cursor-pointer"
-									disabled={specialTokenId.includes(localToken.tokenId)}
-									onClick={(_) => setShowModal('addUpdateListing')}
+									onClick={(_) => {
+										if (
+											whitelist[0] === 'token_whitelisted' &&
+											store.currentUser !== localToken.creatorId
+										) {
+											setShowModal('notAllowedUpdate')
+										} else {
+											setShowModal('addUpdateListing')
+										}
+									}}
 								>
 									Update Listing
 								</div>
@@ -938,9 +963,10 @@ const CardDetail = ({ token }) => {
 										ref={register({
 											required: true,
 											min: 1,
-											max: specialTokenId.includes(localToken.tokenId)
-												? 3
-												: chosenSeller.marketData.quantity,
+											max:
+												whitelist[0] === 'token_whitelisted'
+													? 3
+													: chosenSeller.marketData.quantity,
 										})}
 										className={`${errors.buyQuantity && 'error'}`}
 										placeholder="Number of card(s) to buy"
@@ -949,10 +975,10 @@ const CardDetail = ({ token }) => {
 										{errors.buyQuantity?.type === 'required' &&
 											`Buy quantity is required`}
 										{errors.buyQuantity?.type === 'min' && `Minimum 1`}
-										{specialTokenId.includes(localToken.tokenId) &&
+										{whitelist[0] === 'token_whitelisted' &&
 											errors.buyQuantity?.type === 'max' &&
 											`You can only buy maximum 3 cards per purchase`}
-										{!specialTokenId.includes(localToken.tokenId) &&
+										{whitelist[0] === 'token_not_whitelisted' &&
 											errors.buyQuantity?.type === 'max' &&
 											`Must be less than available`}
 									</div>
@@ -1176,6 +1202,41 @@ const CardDetail = ({ token }) => {
 									</button>
 								</div>
 							</form>
+						</div>
+					</div>
+				</Modal>
+			)}
+			{showModal === 'notAllowedBuy' && (
+				<Modal close={(_) => setShowModal('')}>
+					<div className="max-w-xs text-center w-full p-4 bg-gray-100 m-auto rounded-md">
+						<p className="mt-1 text-gray-900">
+							You are not allowed to buy this card at the moment. Only
+							whitelisted account can buy this card
+						</p>
+						<div className="mt-4">
+							<button
+								onClick={() => setShowModal('')}
+								className="w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+							>
+								Ok
+							</button>
+						</div>
+					</div>
+				</Modal>
+			)}
+			{showModal === 'notAllowedUpdate' && (
+				<Modal close={(_) => setShowModal('')}>
+					<div className="max-w-xs text-center w-full p-4 bg-gray-100 m-auto rounded-md">
+						<p className="mt-1 text-gray-900">
+							You are not allowed to list this card at the moment
+						</p>
+						<div className="mt-4">
+							<button
+								onClick={() => setShowModal('')}
+								className="w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+							>
+								Ok
+							</button>
 						</div>
 					</div>
 				</Modal>
@@ -1445,7 +1506,14 @@ const CardDetail = ({ token }) => {
 											return (
 												<Ownership
 													onUpdateListing={(_) => {
-														setShowModal('addUpdateListing')
+														if (
+															whitelist[0] === 'token_whitelisted' &&
+															store.currentUser !== localToken.creatorId
+														) {
+															setShowModal('notAllowedUpdate')
+														} else {
+															setShowModal('addUpdateListing')
+														}
 													}}
 													onBuy={(_) => {
 														if (
@@ -1454,13 +1522,17 @@ const CardDetail = ({ token }) => {
 														) {
 															setShowModal('redirectLogin')
 														} else {
-															setChosenSeller(ownership)
-															setShowModal('confirmBuy')
+															if (whitelist[1] === 'user_whitelisted') {
+																setChosenSeller(ownership)
+																setShowModal('confirmBuy')
+															} else {
+																setShowModal('notAllowedBuy')
+															}
 														}
 													}}
 													ownership={ownership}
 													key={idx}
-													localToken={localToken}
+													whitelist={whitelist}
 												/>
 											)
 										})}
@@ -1478,8 +1550,12 @@ const CardDetail = ({ token }) => {
 									if (!store.currentUser) {
 										setShowModal('redirectLogin')
 									} else {
-										setChosenSeller(_getLowestPrice(token.ownerships))
-										setShowModal('confirmBuy')
+										if (whitelist[1] === 'user_whitelisted') {
+											setChosenSeller(ownership)
+											setShowModal('confirmBuy')
+										} else {
+											setShowModal('notAllowedBuy')
+										}
 									}
 								}}
 							>
@@ -1501,8 +1577,16 @@ const CardDetail = ({ token }) => {
 									<div className="w-1/2 px-2">
 										<button
 											className="font-semibold py-3 w-full rounded-md border-2 border-primary text-primary text-sm"
-											disabled={specialTokenId.includes(localToken.tokenId)}
-											onClick={() => setShowModal('addUpdateListing')}
+											onClick={() => {
+												if (
+													whitelist[0] === 'token_whitelisted' &&
+													store.currentUser !== localToken.creatorId
+												) {
+													setShowModal('notAllowedUpdate')
+												} else {
+													setShowModal('addUpdateListing')
+												}
+											}}
 										>
 											Update Listing
 										</button>
