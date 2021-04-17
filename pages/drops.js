@@ -13,9 +13,9 @@ import CardDetailModal from '../components/CardDetailModal'
 import { parseImgUrl, prettyBalance } from '../utils/common'
 
 export const specialTokenId = [
-	// 'bafybeihlapne76eyritjdvgsgpbtgbhwvl5mgkzbfgg3o6sqen23ballki',
-	// 'bafybeihlapne76eyritjdvgsgpbtgbhwvl5mgkzbfgg3o6sqen23ballki',
-	// 'bafybeihlapne76eyritjdvgsgpbtgbhwvl5mgkzbfgg3o6sqen23ballki',
+	'bafybeih3zzpfhfz6uebn4lt2rk7z4t3cv7sauox6z34kmd7vrvck4xgrn4',
+	'bafybeicuevebpsk7sewjijiwqwegtwd3mdguzhjfwhjmim6znw3unzeqce',
+	'bafybeicg4ss7qh5odijfn2eogizuxkrdh3zlv4eftcmgnljwu7dm64uwji',
 ]
 
 export const specialAccountId = 'hdriqi'
@@ -454,24 +454,17 @@ const SpecialCard = ({
 								</svg>
 							</div>
 							<p className="text-gray-100 text-lg font-semibold">
-								{getCardAvailable(localToken?.ownerships) || '? '}/
-								{localToken?.supply || ' ?'}
+								{getCardAvailable(localToken?.ownerships) || '0'}
+								{' / '}
+								{localToken?.supply || '?'}
 							</p>
 						</div>
 						<div className="mx-8 mt-8">
 							<button
-								onClick={() =>
-									getPriceOriginal(localToken?.ownerships) && onPressBuyNow()
-								}
-								className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 ${
-									getPriceOriginal(localToken?.ownerships)
-										? 'bg-gray-200 text-primary'
-										: 'bg-transparent text-gray-200 cursor-not-allowed'
-								}`}
+								onClick={onPressBuyNow}
+								className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 bg-gray-200 text-primary`}
 							>
-								{getPriceOriginal(localToken?.ownerships)
-									? 'See details'
-									: 'Not for sale'}
+								See details
 							</button>
 						</div>
 					</div>
