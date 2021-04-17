@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
 import axios from 'axios'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import ReactTooltip from 'react-tooltip'
+// import ReactTooltip from 'react-tooltip'
 import { Blurhash } from 'react-blurhash'
 import ReactLinkify from 'react-linkify'
 
@@ -17,6 +18,8 @@ export const specialTokenId = [
 	'bafybeicuevebpsk7sewjijiwqwegtwd3mdguzhjfwhjmim6znw3unzeqce',
 	'bafybeicg4ss7qh5odijfn2eogizuxkrdh3zlv4eftcmgnljwu7dm64uwji',
 ]
+
+const ReactTooltip = dynamic(() => import('react-tooltip'), { ssr: false })
 
 export const specialAccountId = 'hdriqi'
 
@@ -59,12 +62,12 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>Paras — Digital Art Cards Market</title>
+				<title>Pillars of Paras - NFT Drops</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
-				<meta name="twitter:title" content="Paras — Digital Art Cards Market" />
+				<meta name="twitter:title" content="Pillars of Paras - NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -74,13 +77,13 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
+					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/pillars-of-paras-thumbnail.jpg"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Paras — Digital Art Cards Market" />
+				<meta property="og:title" content="Pillars of Paras - NFT Drops" />
 				<meta
 					property="og:site_name"
-					content="Paras — Digital Art Cards Market"
+					content="Pillars of Paras - NFT Drops"
 				/>
 				<meta
 					property="og:description"
@@ -89,7 +92,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
+					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/pillars-of-paras-thumbnail.jpg"
 				/>
 			</Head>
 			<Nav />
