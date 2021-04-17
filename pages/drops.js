@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
+import dynamic from 'next/dynamic'
 import axios from 'axios'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import ReactTooltip from 'react-tooltip'
+// import ReactTooltip from 'react-tooltip'
 import { Blurhash } from 'react-blurhash'
 import ReactLinkify from 'react-linkify'
 
@@ -13,10 +14,12 @@ import CardDetailModal from '../components/CardDetailModal'
 import { parseImgUrl, prettyBalance } from '../utils/common'
 
 export const specialTokenId = [
-	// 'QmPEdrFaTX4PUgZ2VqrbcWnJPD1ZAizbG5so3KqhbTN5cj',
-	// 'QmRmmeRzebGsgjFaX7qGCchCHEaYGiTNMXaQThUrFLDz9Y',
-	// 'QmNSZZ8r23P562nFA5JJ1vtZVSiDHKHAXMhkuvPVwHQGHt',
+	'bafybeih3zzpfhfz6uebn4lt2rk7z4t3cv7sauox6z34kmd7vrvck4xgrn4',
+	'bafybeicuevebpsk7sewjijiwqwegtwd3mdguzhjfwhjmim6znw3unzeqce',
+	'bafybeicg4ss7qh5odijfn2eogizuxkrdh3zlv4eftcmgnljwu7dm64uwji',
 ]
+
+const ReactTooltip = dynamic(() => import('react-tooltip'), { ssr: false })
 
 export const specialAccountId = 'hdriqi'
 
@@ -31,14 +34,14 @@ const timeline = [
 		date: 'April 19th',
 		note: [
 			'NFT Drops for whitelisted account',
-			'Drops will start on April 19th at 00.01 (UTC) and will end at April 21th at 00.00 (UTC) (2-days)',
+			'Drops will start on April 19th at 00.01 (UTC) and will end at April 20th at 23.59 (UTC) (2-days)',
 		],
 	},
 	{
 		date: 'April 21th',
 		note: [
 			'NFT Drops for public (if still available)',
-			'The remaining drops will start sale for public on April 21th at 00.01 (UTC) and will end at April 26th at 00.00 (UTC) (5 days)',
+			'The remaining drops will start sale for public on April 21th at 00.01 (UTC) and will end at April 25th at 23.59 (UTC) (5 days)',
 		],
 	},
 	{
@@ -59,12 +62,12 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>Paras — Digital Art Cards Market</title>
+				<title>Pillars of Paras - NFT Drops</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
-				<meta name="twitter:title" content="Paras — Digital Art Cards Market" />
+				<meta name="twitter:title" content="Pillars of Paras - NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -74,13 +77,13 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
+					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/pillars-of-paras-thumbnail.jpg"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Paras — Digital Art Cards Market" />
+				<meta property="og:title" content="Pillars of Paras - NFT Drops" />
 				<meta
 					property="og:site_name"
-					content="Paras — Digital Art Cards Market"
+					content="Pillars of Paras - NFT Drops"
 				/>
 				<meta
 					property="og:description"
@@ -89,7 +92,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
+					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/pillars-of-paras-thumbnail.jpg"
 				/>
 			</Head>
 			<Nav />
@@ -179,6 +182,7 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[0]}
 					onClick={setToken}
+					price={45}
 					titleCard={'The Founder'}
 					imgUrl="ipfs://bafybeift27nlq4ke6eh7vygl6n62riz3rtbrrps3erlc4xezww7lwd5g3y"
 					blurhash="U68qKjkE4-j;?Ht8Io%N?cocMwt9?wWAa0xb"
@@ -186,6 +190,7 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[1]}
 					onClick={setToken}
+					price={30}
 					titleCard={'The Firstman'}
 					imgUrl="ipfs://bafybeif5eyxsy5nhatlw56zg4t4havgmy6aw6br5uca2vjsa7syy6trf5e"
 					blurhash="UEA9pas*NYoP~DR$NGs?x^NZR%s;pIflsAj="
@@ -193,6 +198,7 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[2]}
 					onClick={setToken}
+					price={15}
 					titleCard={'The First Born'}
 					imgUrl="ipfs://bafybeibsi2aceq64gsn373jdex6opbjf6mjiekz25p6b5fa7z2blalzaru"
 					blurhash="U7BpU|=x00R$P;wbv#58W59$9c#$^+X1i[$-"
@@ -293,7 +299,14 @@ export default function Drops() {
 	)
 }
 
-const SpecialCard = ({ tokenId, onClick, blurhash, imgUrl, titleCard }) => {
+const SpecialCard = ({
+	tokenId,
+	onClick,
+	blurhash,
+	imgUrl,
+	titleCard,
+	price,
+}) => {
 	const [localToken, setLocalToken] = useState(null)
 	const router = useRouter()
 
@@ -384,22 +397,16 @@ const SpecialCard = ({ tokenId, onClick, blurhash, imgUrl, titleCard }) => {
 					<div className="text-center">
 						<div>
 							<p className="text-gray-400">Price</p>
-							{getPriceOriginal(localToken?.ownerships) ? (
-								<div className="mb-4">
-									<p className="text-gray-100 text-4xl font-bold">
-										{prettyBalance(
+							<div className="mb-4">
+								<p className="text-gray-100 text-4xl font-bold">
+									{`${price} Ⓝ`}
+									{/* {prettyBalance(
 											getPriceOriginal(localToken?.ownerships),
 											24,
 											4
-										)}{' '}
-										Ⓝ
-									</p>
-								</div>
-							) : (
-								<div className="line-through text-red-600 mb-4 text-4xl font-bold">
-									<span className="text-gray-100">SALE</span>
-								</div>
-							)}
+										)}{' '} */}
+								</p>
+							</div>
 						</div>
 						<div
 							className="flex flex-col cursor-default mb-4"
@@ -450,24 +457,17 @@ const SpecialCard = ({ tokenId, onClick, blurhash, imgUrl, titleCard }) => {
 								</svg>
 							</div>
 							<p className="text-gray-100 text-lg font-semibold">
-								{getCardAvailable(localToken?.ownerships) || '? '}/
-								{localToken?.supply || ' ?'}
+								{getCardAvailable(localToken?.ownerships) || '0'}
+								{' / '}
+								{localToken?.supply || '?'}
 							</p>
 						</div>
 						<div className="mx-8 mt-8">
 							<button
-								onClick={() =>
-									getPriceOriginal(localToken?.ownerships) && onPressBuyNow()
-								}
-								className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 ${
-									getPriceOriginal(localToken?.ownerships)
-										? 'bg-gray-200 text-primary'
-										: 'bg-transparent text-gray-200 cursor-not-allowed'
-								}`}
+								onClick={onPressBuyNow}
+								className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 bg-gray-200 text-primary`}
 							>
-								{getPriceOriginal(localToken?.ownerships)
-									? 'See details'
-									: 'Not for sale'}
+								See details
 							</button>
 						</div>
 					</div>
