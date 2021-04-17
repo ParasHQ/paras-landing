@@ -1547,7 +1547,7 @@ const CardDetail = ({ token }) => {
 										setShowModal('redirectLogin')
 									} else {
 										if (whitelist[1] === 'user_whitelisted') {
-											setChosenSeller(ownership)
+											setChosenSeller(_getLowestPrice(token.ownerships))
 											setShowModal('confirmBuy')
 										} else {
 											setShowModal('notAllowedBuy')
