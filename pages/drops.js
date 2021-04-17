@@ -13,9 +13,9 @@ import CardDetailModal from '../components/CardDetailModal'
 import { parseImgUrl, prettyBalance } from '../utils/common'
 
 export const specialTokenId = [
-	// 'QmPEdrFaTX4PUgZ2VqrbcWnJPD1ZAizbG5so3KqhbTN5cj',
-	// 'QmRmmeRzebGsgjFaX7qGCchCHEaYGiTNMXaQThUrFLDz9Y',
-	// 'QmNSZZ8r23P562nFA5JJ1vtZVSiDHKHAXMhkuvPVwHQGHt',
+	// 'bafybeihlapne76eyritjdvgsgpbtgbhwvl5mgkzbfgg3o6sqen23ballki',
+	// 'bafybeihlapne76eyritjdvgsgpbtgbhwvl5mgkzbfgg3o6sqen23ballki',
+	// 'bafybeihlapne76eyritjdvgsgpbtgbhwvl5mgkzbfgg3o6sqen23ballki',
 ]
 
 export const specialAccountId = 'hdriqi'
@@ -31,14 +31,14 @@ const timeline = [
 		date: 'April 19th',
 		note: [
 			'NFT Drops for whitelisted account',
-			'Drops will start on April 19th at 00.01 (UTC) and will end at April 21th at 00.00 (UTC) (2-days)',
+			'Drops will start on April 19th at 00.01 (UTC) and will end at April 20th at 23.59 (UTC) (2-days)',
 		],
 	},
 	{
 		date: 'April 21th',
 		note: [
 			'NFT Drops for public (if still available)',
-			'The remaining drops will start sale for public on April 21th at 00.01 (UTC) and will end at April 26th at 00.00 (UTC) (5 days)',
+			'The remaining drops will start sale for public on April 21th at 00.01 (UTC) and will end at April 25th at 23.59 (UTC) (5 days)',
 		],
 	},
 	{
@@ -179,6 +179,7 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[0]}
 					onClick={setToken}
+					price={45}
 					titleCard={'The Founder'}
 					imgUrl="ipfs://bafybeift27nlq4ke6eh7vygl6n62riz3rtbrrps3erlc4xezww7lwd5g3y"
 					blurhash="U68qKjkE4-j;?Ht8Io%N?cocMwt9?wWAa0xb"
@@ -186,6 +187,7 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[1]}
 					onClick={setToken}
+					price={30}
 					titleCard={'The Firstman'}
 					imgUrl="ipfs://bafybeif5eyxsy5nhatlw56zg4t4havgmy6aw6br5uca2vjsa7syy6trf5e"
 					blurhash="UEA9pas*NYoP~DR$NGs?x^NZR%s;pIflsAj="
@@ -193,6 +195,7 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[2]}
 					onClick={setToken}
+					price={15}
 					titleCard={'The First Born'}
 					imgUrl="ipfs://bafybeibsi2aceq64gsn373jdex6opbjf6mjiekz25p6b5fa7z2blalzaru"
 					blurhash="U7BpU|=x00R$P;wbv#58W59$9c#$^+X1i[$-"
@@ -293,7 +296,14 @@ export default function Drops() {
 	)
 }
 
-const SpecialCard = ({ tokenId, onClick, blurhash, imgUrl, titleCard }) => {
+const SpecialCard = ({
+	tokenId,
+	onClick,
+	blurhash,
+	imgUrl,
+	titleCard,
+	price,
+}) => {
 	const [localToken, setLocalToken] = useState(null)
 	const router = useRouter()
 
@@ -384,22 +394,16 @@ const SpecialCard = ({ tokenId, onClick, blurhash, imgUrl, titleCard }) => {
 					<div className="text-center">
 						<div>
 							<p className="text-gray-400">Price</p>
-							{getPriceOriginal(localToken?.ownerships) ? (
-								<div className="mb-4">
-									<p className="text-gray-100 text-4xl font-bold">
-										{prettyBalance(
+							<div className="mb-4">
+								<p className="text-gray-100 text-4xl font-bold">
+									{`${price} Ⓝ`}
+									{/* {prettyBalance(
 											getPriceOriginal(localToken?.ownerships),
 											24,
 											4
-										)}{' '}
-										Ⓝ
-									</p>
-								</div>
-							) : (
-								<div className="line-through text-red-600 mb-4 text-4xl font-bold">
-									<span className="text-gray-100">SALE</span>
-								</div>
-							)}
+										)}{' '} */}
+								</p>
+							</div>
 						</div>
 						<div
 							className="flex flex-col cursor-default mb-4"
