@@ -283,10 +283,7 @@ const CardDetail = ({ token }) => {
 	const [chosenSeller, setChosenSeller] = useState(null)
 	const [isCopied, setIsCopied] = useState(false)
 
-	const [whitelist, setWhitelist] = useState([
-		'token_not_whitelisted',
-		'user_whitelisted',
-	])
+	const [whitelist, setWhitelist] = useState([])
 
 	useEffect(() => {
 		setIsComponentMounted(true)
@@ -300,8 +297,7 @@ const CardDetail = ({ token }) => {
 					tokenId: token.tokenId,
 					buyerId: store.currentUser,
 				})
-				console.log('whitelist', res)
-				// setWhitelist(res.split('::'))
+				setWhitelist(res.split('::'))
 			} catch (err) {
 				console.log(err)
 			}
