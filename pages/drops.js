@@ -3,9 +3,7 @@ import dynamic from 'next/dynamic'
 import axios from 'axios'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-// import ReactTooltip from 'react-tooltip'
 import { Blurhash } from 'react-blurhash'
-import ReactLinkify from 'react-linkify'
 
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
@@ -81,10 +79,7 @@ export default function Drops() {
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Pillars of Paras - NFT Drops" />
-				<meta
-					property="og:site_name"
-					content="Pillars of Paras - NFT Drops"
-				/>
+				<meta property="og:site_name" content="Pillars of Paras - NFT Drops" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -204,95 +199,16 @@ export default function Drops() {
 					blurhash="U7BpU|=x00R$P;wbv#58W59$9c#$^+X1i[$-"
 				/>
 			</div>
-			<div>
-				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
-					Timeline
-				</h1>
-				<div className="max-w-6xl m-auto md:flex">
-					{timeline.map((item, index) => (
-						<div
-							key={index}
-							className="border-2 border-dashed border-gray-800 rounded-md p-4 m-4 md:w-1/3"
-						>
-							<p className="font-semibold text-lg text-center mb-2 text-gray-200">
-								{item.date}
-							</p>
-							<ul className="list-disc ml-4">
-								{item.note.map((note, index) => (
-									<li key={index} className="text-gray-200">
-										{note}
-									</li>
-								))}
-							</ul>
-						</div>
-					))}
-				</div>
-			</div>
 			<div className="max-w-xl m-4 md:m-auto text-gray-100 ">
-				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
-					How to register
+				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 md:mt-24 mb-4">
+					Thank you for your enthusiasm!
 				</h1>
-				<p className="mb-2">
-					So let’s get started! In order to get a whitelist for Paras NFT Drops,
-					please complete these tasks.
+				<p className="pb-12 text-center">
+					Pillars of Paras has sold out! For those who haven't had the chance to
+					grab our NFTs, we wish you good luck on the next event. Stay tuned
+					because our upcoming projects are as exciting as this one. Only on
+					#Paras!
 				</p>
-				<ReactLinkify
-					componentDecorator={(decoratedHref, decoratedText, key) => (
-						<a target="blank" href={decoratedHref} key={key} className="italic">
-							{decoratedText}
-						</a>
-					)}
-				>
-					<ol
-						className="text-gray-100 ml-8 break-all"
-						style={{ listStyleType: 'decimal' }}
-					>
-						<li>Follow Paras on Twitter (https://twitter.com/ParasHQ)</li>
-						<li>
-							Retweet, like, tag your friends to this pinned tweet about the NFT
-							Drops (https://twitter.com/ParasHQ/status/1381610575063478272)
-						</li>
-						<li>Join Paras Telegram group. (https://t.me/parashq)</li>
-						<li>
-							Join Paras Discord channel. (https://discord.com/invite/pApguHGf)
-						</li>
-						<li>
-							Fill the whitelist form (https://tripetto.app/run/2SM3PF3KQW)
-						</li>
-					</ol>
-				</ReactLinkify>
-				<div className="text-center">
-					<h1 className="text-center text-gray-100 font-bold text-3xl mt-12 mb-2">
-						Read details
-					</h1>
-					<p className="text-gray-200">
-						You can read full information on Paras publication
-					</p>
-					<div className="flex justify-center my-8">
-						<a
-							className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer"
-							target="_blank"
-							href="https://paras.id/publication/editorial/nft-drops-pillars-of-paras-60744f63b339123e55d9b027"
-						>
-							Find out more
-							<svg
-								width="12"
-								height="12"
-								viewBox="0 0 16 16"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-								className="ml-1"
-							>
-								<path
-									fillRule="evenodd"
-									clipRule="evenodd"
-									d="M7.70421 9.70711L13.9971 3.41421V7H15.9971V0H8.9971V2H12.5829L6.28999 8.29289L7.70421 9.70711ZM15 14V10H13V14H2V3H6V1H2C0.89543 1 0 1.89543 0 3V14C0 15.1046 0.89543 16 2 16H13C14.1046 16 15 15.1046 15 14Z"
-									fill="white"
-								/>
-							</svg>
-						</a>
-					</div>
-				</div>
 			</div>
 			<Footer />
 		</div>
@@ -400,11 +316,6 @@ const SpecialCard = ({
 							<div className="mb-4">
 								<p className="text-gray-100 text-4xl font-bold">
 									{`${price} Ⓝ`}
-									{/* {prettyBalance(
-											getPriceOriginal(localToken?.ownerships),
-											24,
-											4
-										)}{' '} */}
 								</p>
 							</div>
 						</div>
@@ -465,9 +376,9 @@ const SpecialCard = ({
 						<div className="mx-8 mt-8">
 							<button
 								onClick={onPressBuyNow}
-								className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 bg-gray-200 text-primary`}
+								className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 text-gray-200`}
 							>
-								See details
+								Sold Out
 							</button>
 						</div>
 					</div>
