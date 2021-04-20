@@ -136,36 +136,16 @@ export default function Drops() {
 								'ipfs://bafybeifxf24wvro5b4p6h3kyvx6zqdabgokwlmdvj73enxhxcelyqrqujy'
 							)}
 						/>
-						<div className="max-w-lg m-auto">
-							<p className="text-gray-400 mb-4">
-								Paras first NFT Drops since we started the marketplace. This set
-								of cards will be released in three different tiers signaled by
-								three different generations these characters represent.
+						<div className="max-w-xl m-4 md:m-auto text-gray-100 ">
+							<h1 className="text-center text-gray-100 font-bold text-3xl object-center mb-4">
+								Thank you for your enthusiasm!
+							</h1>
+							<p className="pb-12 text-center">
+								Pillars of Paras has sold out! For those who haven't had the
+								chance to grab our NFTs, we wish you good luck on the next
+								event. Stay tuned because our upcoming projects are as exciting
+								as this one. Only on #Paras!
 							</p>
-							<p className="text-gray-400">
-								The Pillars of Paras is a collection of great importance to
-								building the world of Paras; both in lore and reality.
-							</p>
-							<div className="my-8 flex justify-center space-x-8 items-center">
-								<p
-									className="outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100 mb-8 cursor-pointer"
-									onClick={() =>
-										window.scrollTo({
-											behavior: 'smooth',
-											top: document.body.scrollHeight,
-										})
-									}
-								>
-									Register now
-								</p>
-								<a
-									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer mb-8"
-									target="_blank"
-									href="https://paras.id/publication/editorial/nft-drops-pillars-of-paras-60744f63b339123e55d9b027"
-								>
-									Find out more
-								</a>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -198,17 +178,6 @@ export default function Drops() {
 					imgUrl="ipfs://bafybeibsi2aceq64gsn373jdex6opbjf6mjiekz25p6b5fa7z2blalzaru"
 					blurhash="U7BpU|=x00R$P;wbv#58W59$9c#$^+X1i[$-"
 				/>
-			</div>
-			<div className="max-w-xl m-4 md:m-auto text-gray-100 ">
-				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 md:mt-24 mb-4">
-					Thank you for your enthusiasm!
-				</h1>
-				<p className="pb-12 text-center">
-					Pillars of Paras has sold out! For those who haven't had the chance to
-					grab our NFTs, we wish you good luck on the next event. Stay tuned
-					because our upcoming projects are as exciting as this one. Only on
-					#Paras!
-				</p>
 			</div>
 			<Footer />
 		</div>
