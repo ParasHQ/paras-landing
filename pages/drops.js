@@ -4,6 +4,7 @@ import axios from 'axios'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Blurhash } from 'react-blurhash'
+import JSBI from 'jsbi'
 
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
@@ -221,18 +222,21 @@ const SpecialCard = ({
 		)
 	}
 
-	const getPriceOriginal = (ownerships = []) => {
+	const _getLowestPrice = (ownerships = []) => {
 		const marketDataList = ownerships
 			.filter((ownership) => ownership.marketData)
 			.map((ownership) => ownership.marketData.amount)
+			.sort((a, b) => a - b)
 		return marketDataList[0]
 	}
 
 	const getCardAvailable = (ownerships = []) => {
+		let total = 0
 		const marketDataList = ownerships
 			.filter((ownership) => ownership.marketData)
 			.map((ownership) => ownership.marketData.quantity)
-		return marketDataList[0] || 0
+		total = marketDataList.reduce((a, b) => a + b, 0)
+		return total
 	}
 
 	return (
@@ -345,9 +349,17 @@ const SpecialCard = ({
 						<div className="mx-8 mt-8">
 							<button
 								onClick={onPressBuyNow}
-								className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 text-gray-200`}
+								className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 text-primary bg-gray-200`}
 							>
-								Sold Out
+								{_getLowestPrice(localToken?.ownerships) ? (
+									<p>
+										{`Buy for
+										${prettyBalance(_getLowestPrice(localToken?.ownerships), 24, 4)}
+										Ⓝ`}
+									</p>
+								) : (
+									<p>Not for SALE</p>
+								)}
 							</button>
 						</div>
 					</div>
