@@ -94,15 +94,11 @@ const ActivityLog = ({ query }) => {
 			return
 		}
 
-		console.log('fetch query', fetchQuery)
-
 		setIsFetching(true)
-
 		try {
 			const _filter =
 				_filterQuery(fetchQuery?.filter) +
 				_filterMinMax(fetchQuery?.pmin, fetchQuery?.pmax)
-			console.log(_filter, 'filter')
 			const res = await axios.get(
 				`${process.env.API_URL}/activities?${_filter}__skip=${
 					_activityListPage * LIMIT
@@ -110,7 +106,6 @@ const ActivityLog = ({ query }) => {
 			)
 			const newData = await res.data.data
 
-			console.log('new', newData)
 			const newActivityList = [..._activityList, ...newData.results]
 			setActivityList(newActivityList)
 			setActivityListPage(_activityListPage + 1)
