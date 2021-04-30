@@ -7,7 +7,7 @@ const FilterActivity = () => {
 
 	const [showFilterModal, setShowFilterModal] = useState(false)
 	const [filterBy, setFilterBy] = useState(router.query.filter || filter[0].key)
-	const [minPrice, setMinPrice] = useState(router.query.pmin || '1')
+	const [minPrice, setMinPrice] = useState(router.query.pmin || '0.1')
 	const [maxPrice, setMaxPrice] = useState(router.query.pmax || '')
 
 	useEffect(() => {

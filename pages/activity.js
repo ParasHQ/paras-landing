@@ -74,7 +74,7 @@ const ActivityLog = ({ query }) => {
 		return `type=${filter}&`
 	}
 
-	const _filterMinMax = (min = '1', max) => {
+	const _filterMinMax = (min = '0.1', max) => {
 		let priceQuery = ''
 		if (min) {
 			priceQuery += `minPrice=${parseNearAmount(min)}&`
