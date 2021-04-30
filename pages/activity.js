@@ -8,6 +8,8 @@ import useStore from '../store'
 import ActivityDetail from '../components/ActivityDetail'
 import { useRouter } from 'next/router'
 import TopUsers from '../components/TopUsers'
+import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import FilterActivity from '../components/FilterActivity'
 
 const LIMIT = 10
 
@@ -52,18 +54,11 @@ const ActivityLog = ({ query }) => {
 			`${process.env.API_URL}/activities/topUsers?__limit=5`
 		)
 		setTopUser(res.data.data)
-	}, [])
+	}, [query])
 
 	const onClickType = (type) => {
 		setActivityType(type)
 		setShowModal(false)
-	}
-
-	const _changeFilter = (e) => {
-		router.push({
-			query: { filter: encodeURI(e.target.value) },
-		})
-		_fetchData({ filter: encodeURI(e.target.value) }, true)
 	}
 
 	const _filterQuery = (filter) => {
@@ -79,6 +74,17 @@ const ActivityLog = ({ query }) => {
 		return `type=${filter}&`
 	}
 
+	const _filterMinMax = (min = '0.1', max) => {
+		let priceQuery = ''
+		if (min) {
+			priceQuery += `minPrice=${parseNearAmount(min)}&`
+		}
+		if (max) {
+			priceQuery += `maxPrice=${parseNearAmount(max)}&`
+		}
+		return priceQuery
+	}
+
 	const _fetchData = async (fetchQuery, initial = false) => {
 		const _activityList = initial ? [] : activityList
 		const _activityListPage = initial ? 0 : activityListPage
@@ -89,9 +95,10 @@ const ActivityLog = ({ query }) => {
 		}
 
 		setIsFetching(true)
-
 		try {
-			const _filter = _filterQuery(fetchQuery?.filter)
+			const _filter =
+				_filterQuery(fetchQuery?.filter) +
+				_filterMinMax(fetchQuery?.pmin, fetchQuery?.pmax)
 			const res = await axios.get(
 				`${process.env.API_URL}/activities?${_filter}__skip=${
 					_activityListPage * LIMIT
@@ -168,7 +175,7 @@ const ActivityLog = ({ query }) => {
 				</Head>
 				<Nav />
 				<div className="max-w-5xl m-auto py-12 md:flex md:space-x-8">
-					<div className="md:w-2/3 max-w-2xl relative m-auto">
+					<div className="md:w-2/3 max-w-2xl relative mx-auto">
 						<div className="px-4 flex flex-wrap items-center justify-between">
 							<div ref={modalRef}>
 								<div
@@ -220,18 +227,7 @@ const ActivityLog = ({ query }) => {
 									activityType === 'top-users' && 'hidden'
 								} md:block`}
 							>
-								<select
-									className="p-2 bg-dark-primary-4 text-gray-100 rounded-md"
-									onChange={(e) => _changeFilter(e)}
-									value={router.query.filter}
-								>
-									<option value="showAll">Show All</option>
-									<option value="marketBuy">Market Sales</option>
-									<option value="marketUpdate">Market Update</option>
-									<option value="mint">Card Creation</option>
-									<option value="transfer">Card Transfer</option>
-									<option value="burn">Card Burn</option>
-								</select>
+								<FilterActivity />
 							</div>
 						</div>
 						<div
