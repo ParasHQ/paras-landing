@@ -74,7 +74,10 @@ const ActivityLog = ({ query }) => {
 		return `type=${filter}&`
 	}
 
-	const _filterMinMax = (min = '0.1', max) => {
+	const _filterMinMax = (filter, min = '0.1', max) => {
+		if (filter === 'mint' || filter === 'transfer' || filter === 'burn') {
+			return ''
+		}
 		let priceQuery = ''
 		if (min) {
 			priceQuery += `minPrice=${parseNearAmount(min)}&`
@@ -98,7 +101,7 @@ const ActivityLog = ({ query }) => {
 		try {
 			const _filter =
 				_filterQuery(fetchQuery?.filter) +
-				_filterMinMax(fetchQuery?.pmin, fetchQuery?.pmax)
+				_filterMinMax(fetchQuery?.filter, fetchQuery?.pmin, fetchQuery?.pmax)
 			const res = await axios.get(
 				`${process.env.API_URL}/activities?${_filter}__skip=${
 					_activityListPage * LIMIT
