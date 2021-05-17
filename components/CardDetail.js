@@ -23,6 +23,7 @@ import useSWR from 'swr'
 import getConfig from '../config/near'
 import LinkToProfile from './LinkToProfile'
 import ReactLinkify from 'react-linkify'
+import PublicationPreviewMini from './PublicationPreviewMini'
 
 const Activity = ({ activity }) => {
 	if (activity.type === 'marketUpdate') {
@@ -1570,6 +1571,11 @@ const CardDetail = ({ token }) => {
 								)}
 
 								{activeTab === 'history' && <ActivityList token={token} />}
+
+								{activeTab === 'publication' &&
+									pubData.map((pub) => (
+										<PublicationPreviewMini key={pub._id} data={pub} />
+									))}
 							</div>
 						</Scrollbars>
 						{_getLowestPrice(token.ownerships) &&
@@ -1647,3 +1653,148 @@ const CardDetail = ({ token }) => {
 }
 
 export default CardDetail
+
+const pubData = [
+	{
+		_id: '609c6c70ab78871e1c5d27ca',
+		slug: 'army-card',
+		title: 'Army Card',
+		thumbnail:
+			'ipfs://bafybeigzxgu5shyctby7wg2bqkbeykbzyc7xhpsylicufp7enksdpqy57m',
+		description:
+			'100 of these cards will be made, and I will burn 1 from my collection every day. The price will increase by 1 NEAR every day until all but 1 have been collected.',
+		authorId: 'artofjim.near',
+		content: {
+			blocks: [
+				{
+					key: 'foo',
+					text: 'You stumble into a grassy field, and witness something amazing.  An army  of ghosts, floating over the battlefield where they fell.  They run, in every direction, trying to get home.  They never make it, though.',
+					type: 'unstyled',
+					depth: 0,
+					inlineStyleRanges: [
+						{
+							offset: 0,
+							length: 211,
+							style: 'ITALIC',
+						},
+					],
+					entityRanges: [],
+					data: {},
+				},
+				{
+					key: '9h8dn',
+					text: '100 of these cards will be made, and I will burn 1 from my collection every day. The price will increase by 1 NEAR every day until all but 1 have been collected.    ',
+					type: 'unstyled',
+					depth: 0,
+					inlineStyleRanges: [],
+					entityRanges: [],
+					data: {},
+				},
+				{
+					key: '3cld7',
+					text: 'Collect these ghosts and give them a new home.  They deserve it.',
+					type: 'unstyled',
+					depth: 0,
+					inlineStyleRanges: [],
+					entityRanges: [],
+					data: {},
+				},
+			],
+			entityMap: {},
+		},
+		tokenIds: ['bafybeihmf2i6nr6bkojxsxp7v45kcrdkfzab4mejwlq2ki5xmi7v7dwj7u'],
+		type: 'community',
+		createdAt: 1620864112369,
+		updatedAt: 1620864112369,
+	},
+	{
+		_id: '609c2de15b91ca1e32387de4',
+		slug: 'ten-of-swords-urban-arcana-tarot',
+		title: 'TEN OF SWORDS - URBAN ARCANA TAROT',
+		thumbnail:
+			'ipfs://bafybeicwz76hcvr2rkxmiqytyzkumbfbzdwanssbvb5i323c7hvcaigexi',
+		description: 'The fourth card in this exciting, new tarot deck series.',
+		authorId: 'lawdri.near',
+		content: {
+			blocks: [
+				{
+					key: 'foo',
+					text: 'TEN OF SWORDS, the fourth card in the URBAN ARCANA TAROT series has just been released as a 7/7 edition for 10 NEAR.',
+					type: 'unstyled',
+					depth: 0,
+					inlineStyleRanges: [],
+					entityRanges: [],
+					data: {},
+				},
+				{
+					key: '6p34n',
+					text: 'This card can represent destruction, being pinned down by a multitude of things or situations.',
+					type: 'unstyled',
+					depth: 0,
+					inlineStyleRanges: [],
+					entityRanges: [],
+					data: {},
+				},
+				{
+					key: 'dtcvt',
+					text: 'Collect all of the URBAN ARCAN TAROT series and you will be able to tell your NFT future. Each week a new card will be released. Start your collection today!',
+					type: 'unstyled',
+					depth: 0,
+					inlineStyleRanges: [],
+					entityRanges: [],
+					data: {},
+				},
+			],
+			entityMap: {},
+		},
+		tokenIds: ['bafybeid2aba66i53e4mpxxpsovvy7shdg4g37ldziwwt42infiyduy436e'],
+		type: 'community',
+		createdAt: 1620848097295,
+		updatedAt: 1620848097295,
+	},
+	{
+		_id: '609c2de1ab78871e1c5d2717',
+		slug: 'ten-of-swords-urban-arcana-tarot',
+		title: 'TEN OF SWORDS - URBAN ARCANA TAROT',
+		thumbnail:
+			'ipfs://bafybeicwz76hcvr2rkxmiqytyzkumbfbzdwanssbvb5i323c7hvcaigexi',
+		description: 'The fourth card in this exciting, new tarot deck series.',
+		authorId: 'lawdri.near',
+		content: {
+			blocks: [
+				{
+					key: 'foo',
+					text: 'TEN OF SWORDS, the fourth card in the URBAN ARCANA TAROT series has just been released as a 7/7 edition for 10 NEAR.',
+					type: 'unstyled',
+					depth: 0,
+					inlineStyleRanges: [],
+					entityRanges: [],
+					data: {},
+				},
+				{
+					key: '6p34n',
+					text: 'This card can represent destruction, being pinned down by a multitude of things or situations.',
+					type: 'unstyled',
+					depth: 0,
+					inlineStyleRanges: [],
+					entityRanges: [],
+					data: {},
+				},
+				{
+					key: 'dtcvt',
+					text: 'Collect all of the URBAN ARCAN TAROT series and you will be able to tell your NFT future. Each week a new card will be released. Start your collection today!',
+					type: 'unstyled',
+					depth: 0,
+					inlineStyleRanges: [],
+					entityRanges: [],
+					data: {},
+				},
+			],
+			entityMap: {},
+		},
+		tokenIds: ['bafybeid2aba66i53e4mpxxpsovvy7shdg4g37ldziwwt42infiyduy436e'],
+		type: 'community',
+		createdAt: 1620848097294,
+		updatedAt: 1620848097294,
+	},
+]
