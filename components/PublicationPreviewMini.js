@@ -9,8 +9,10 @@ const PublicationPreviewMini = ({ data }) => {
 			<div className="m-auto">
 				<Link href={`/publication/${data.type}/${data.slug}-${data._id}`}>
 					<div className="cursor-pointer">
-						<h1 className="font-bold">{data.title}</h1>
-						<p className="text-sm mt-1 overflow-hidden">{data.description}</p>
+						<h1 className="font-bold line-clamp-1">{data.title}</h1>
+						<p className="text-sm mt-1 line-clamp-2 overflow-hidden">
+							{data.description}
+						</p>
 					</div>
 				</Link>
 			</div>
