@@ -1433,39 +1433,35 @@ const CardDetail = ({ token }) => {
 													</p>
 												</div>
 											</div>
-											{process.env.APP_ENV === 'production' && (
-												<div className="flex-1 w-1/2 px-2">
-													<div className="border-2 border-dashed mt-4 p-2 rounded-md">
-														<p className="text-sm text-black font-medium">
-															Analytic
+											<div className="flex-1 w-1/2 px-2">
+												<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+													<p className="text-sm text-black font-medium">View</p>
+													<div className="flex">
+														<svg
+															width="16"
+															height="20"
+															viewBox="0 0 511 350"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+														>
+															<path
+																d="M0 177.231C80.9998 -42.769 401 -73.769 510.5 174.231C437.936 394.703 101.751 420.866 0 177.231Z"
+																fill="black"
+															/>
+															<circle
+																cx="255"
+																cy="175"
+																r="116"
+																fill="#E5E5E5"
+															/>
+															<circle cx="255" cy="175" r="70" fill="black" />
+														</svg>
+														<p className="text-gray-900 ml-1">
+															{localToken.view}
 														</p>
-														<div className="flex">
-															<svg
-																width="16"
-																height="20"
-																viewBox="0 0 511 350"
-																fill="none"
-																xmlns="http://www.w3.org/2000/svg"
-															>
-																<path
-																	d="M0 177.231C80.9998 -42.769 401 -73.769 510.5 174.231C437.936 394.703 101.751 420.866 0 177.231Z"
-																	fill="black"
-																/>
-																<circle
-																	cx="255"
-																	cy="175"
-																	r="116"
-																	fill="#E5E5E5"
-																/>
-																<circle cx="255" cy="175" r="70" fill="black" />
-															</svg>
-															<p className="text-gray-900 ml-1">
-																{localToken.view}
-															</p>
-														</div>
 													</div>
 												</div>
-											)}
+											</div>
 										</div>
 										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
 											<p className="text-sm text-black font-medium">
