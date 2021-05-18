@@ -23,6 +23,7 @@ import useSWR from 'swr'
 import getConfig from '../config/near'
 import LinkToProfile from './LinkToProfile'
 import ReactLinkify from 'react-linkify'
+import PublicationPreviewMini from './PublicationPreviewMini'
 
 const Activity = ({ activity }) => {
 	if (activity.type === 'marketUpdate') {
@@ -239,7 +240,7 @@ const ActivityList = ({ token }) => {
 
 	return (
 		<div>
-			{activityList.length === 0 && (
+			{activityList.length === 0 && !hasMore && (
 				<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
 					<p className="text-gray-300 py-8">No Transactions</p>
 				</div>
@@ -248,7 +249,11 @@ const ActivityList = ({ token }) => {
 				dataLength={activityList.length}
 				next={_fetchData}
 				hasMore={hasMore}
-				loader={<h4>Loading...</h4>}
+				loader={
+					<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
+						<p className="my-2 text-center">Loading...</p>
+					</div>
+				}
 				scrollableTarget="activityListScroll"
 			>
 				{activityList.map((act, idx) => {
@@ -1345,50 +1350,53 @@ const CardDetail = ({ token }) => {
 									</div>
 								</div>
 
-								<div className="flex mt-2">
-									<div className="w-1/3">
+								<div className="flex mt-2 text-sm justify-between">
+									<div>
 										<div
-											className="cursor-pointer relative text-center font-semibold overflow-hidden rounded-md hover:bg-opacity-15 hover:bg-dark-primary-1"
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
+												activeTab === 'info'
+													? 'text-gray-100 bg-dark-primary-1'
+													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+											}`}
 											onClick={(_) => setActiveTab('info')}
 										>
-											<div
-												className={`${
-													activeTab === 'info' &&
-													'text-gray-100 bg-dark-primary-1'
-												}`}
-											>
-												Info
-											</div>
+											<div>Info</div>
 										</div>
 									</div>
-									<div className="w-1/3">
+									<div>
 										<div
-											className="cursor-pointer relative text-center font-semibold overflow-hidden rounded-md hover:bg-opacity-15 hover:bg-dark-primary-1"
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
+												activeTab === 'owners'
+													? 'text-gray-100 bg-dark-primary-1'
+													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+											}`}
 											onClick={(_) => setActiveTab('owners')}
 										>
-											<div
-												className={`${
-													activeTab === 'owners' &&
-													'text-gray-100 bg-dark-primary-1 rounded-md'
-												}`}
-											>
-												Owners
-											</div>
+											<div>Owners</div>
 										</div>
 									</div>
-									<div className="w-1/3">
+									<div>
 										<div
-											className="cursor-pointer relative text-center font-semibold overflow-hidden rounded-md hover:bg-opacity-15 hover:bg-dark-primary-1"
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
+												activeTab === 'history'
+													? 'text-gray-100 bg-dark-primary-1'
+													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+											}`}
 											onClick={(_) => setActiveTab('history')}
 										>
-											<div
-												className={`${
-													activeTab === 'history' &&
-													'text-gray-100 bg-dark-primary-1 rounded-md'
-												}`}
-											>
-												History
-											</div>
+											<div>History</div>
+										</div>
+									</div>
+									<div>
+										<div
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
+												activeTab === 'publication'
+													? 'text-gray-100 bg-dark-primary-1'
+													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+											}`}
+											onClick={(_) => setActiveTab('publication')}
+										>
+											<div>Publication</div>
 										</div>
 									</div>
 								</div>
@@ -1415,17 +1423,48 @@ const CardDetail = ({ token }) => {
 												</Link>
 											</div>
 										</div>
-										<div className="flex border-2 border-dashed mt-4 p-2 rounded-md">
-											<div>
-												<p className="text-sm text-black font-medium">
-													Royalty
-												</p>
-												<p className="text-gray-900">
-													{localToken.metadata.royalty &&
-													parseInt(localToken.metadata.royalty) > 0
-														? `${localToken.metadata.royalty}%`
-														: `No`}
-												</p>
+										<div className="flex items-center -mx-2">
+											<div className="flex-1 w-1/2 px-2">
+												<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+													<p className="text-sm text-black font-medium">
+														Royalty
+													</p>
+													<p className="text-gray-900">
+														{localToken.metadata.royalty &&
+														parseInt(localToken.metadata.royalty) > 0
+															? `${localToken.metadata.royalty}%`
+															: `No`}
+													</p>
+												</div>
+											</div>
+											<div className="flex-1 w-1/2 px-2">
+												<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+													<p className="text-sm text-black font-medium">View</p>
+													<div className="flex">
+														<svg
+															width="16"
+															height="20"
+															viewBox="0 0 511 350"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+														>
+															<path
+																d="M0 177.231C80.9998 -42.769 401 -73.769 510.5 174.231C437.936 394.703 101.751 420.866 0 177.231Z"
+																fill="black"
+															/>
+															<circle
+																cx="255"
+																cy="175"
+																r="116"
+																fill="#E5E5E5"
+															/>
+															<circle cx="255" cy="175" r="70" fill="black" />
+														</svg>
+														<p className="text-gray-900 ml-1">
+															{localToken.view}
+														</p>
+													</div>
+												</div>
 											</div>
 										</div>
 										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
@@ -1536,6 +1575,10 @@ const CardDetail = ({ token }) => {
 								)}
 
 								{activeTab === 'history' && <ActivityList token={token} />}
+
+								{activeTab === 'publication' && (
+									<PublicationPreviewMini tokenId={token.tokenId} />
+								)}
 							</div>
 						</Scrollbars>
 						{_getLowestPrice(token.ownerships) &&
