@@ -58,7 +58,7 @@ const PublicationPreviewList = ({ tokenId }) => {
 
 	return (
 		<div>
-			{publicationList.length === 0 && (
+			{publicationList.length === 0 && !hasMore && (
 				<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
 					<p className="text-gray-500 py-8 px-8">
 						Card not mentioned in any publication
@@ -69,7 +69,11 @@ const PublicationPreviewList = ({ tokenId }) => {
 				dataLength={publicationList.length}
 				next={_fetchData}
 				hasMore={hasMore}
-				loader={<h4>Loading...</h4>}
+				loader={
+					<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
+						<p className="my-2 text-center">Loading...</p>
+					</div>
+				}
 				scrollableTarget="publicationListScroll"
 			>
 				{publicationList.map((pub) => {

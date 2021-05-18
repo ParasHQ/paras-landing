@@ -240,7 +240,7 @@ const ActivityList = ({ token }) => {
 
 	return (
 		<div>
-			{activityList.length === 0 && (
+			{activityList.length === 0 && !hasMore && (
 				<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
 					<p className="text-gray-300 py-8">No Transactions</p>
 				</div>
@@ -249,7 +249,11 @@ const ActivityList = ({ token }) => {
 				dataLength={activityList.length}
 				next={_fetchData}
 				hasMore={hasMore}
-				loader={<h4>Loading...</h4>}
+				loader={
+					<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
+						<p className="my-2 text-center">Loading...</p>
+					</div>
+				}
 				scrollableTarget="activityListScroll"
 			>
 				{activityList.map((act, idx) => {
