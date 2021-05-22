@@ -40,6 +40,7 @@ const timeline = [
 		note: [
 			'NFT Drops for whitelisted account',
 			'Drops will start on May 27th at 00.01 (UTC) and will end at May 27th at 23.59 (UTC) (1-days)',
+			'Whitelisted accounts will get 20% in discount',
 		],
 	},
 	{
@@ -170,7 +171,7 @@ export default function Drops() {
 								<a
 									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer mb-8"
 									target="_blank"
-									href="https://paras.id/publication/editorial/nft-drops-pillars-of-paras-60744f63b339123e55d9b027"
+									href="https://paras.id/publication/editorial/paras-x-galaxyonline-nft-drops-first-settlers-60a9074e754d6939effcfa06"
 								>
 									Find out more
 								</a>
@@ -251,17 +252,25 @@ export default function Drops() {
 						className="text-gray-100 ml-8 break-all"
 						style={{ listStyleType: 'decimal' }}
 					>
-						<li>Follow Paras on Twitter (https://twitter.com/ParasHQ)</li>
 						<li>
 							Retweet, like, tag your friends to this pinned tweet about the NFT
-							Drops (https://twitter.com/ParasHQ/status/1381610575063478272)
-						</li>
-						<li>Join Paras Telegram group. (https://t.me/parashq)</li>
-						<li>
-							Join Paras Discord channel. (https://discord.com/invite/pApguHGf)
+							Drops (https://twitter.com/ParasHQ/status/1396103665199370241)
 						</li>
 						<li>
-							Fill the whitelist form (https://tripetto.app/run/2SM3PF3KQW)
+							Follow GalaxyOnline on Twitter
+							(https://twitter.com/galaxyonline_io)
+						</li>
+						<li>Follow Paras on Twitter (https://twitter.com/ParasHQ)</li>
+						<li>
+							Join GalaxyOnline Telegram group (https://t.me/GalaxyOnline_en)
+						</li>
+						<li>
+							Join GalaxyOnline Discord channel (https://discord.gg/9vdpd5YZ)
+						</li>
+						<li>Join Paras Telegram group (https://t.me/parashq)</li>
+						<li>Join Paras Discord channel (https://discord.gg/vWR2XBNupg)</li>
+						<li>
+							Fill the whitelist form (https://tripetto.app/run/KT3F8VHVQT)
 						</li>
 					</ol>
 				</ReactLinkify>
@@ -276,7 +285,7 @@ export default function Drops() {
 						<a
 							className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer"
 							target="_blank"
-							href="https://paras.id/publication/editorial/nft-drops-pillars-of-paras-60744f63b339123e55d9b027"
+							href="https://paras.id/publication/editorial/paras-x-galaxyonline-nft-drops-first-settlers-60a9074e754d6939effcfa06"
 						>
 							Find out more
 							<svg
