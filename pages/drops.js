@@ -49,10 +49,6 @@ const timeline = [
 			'The remaining drops will start sale for public on April 21th at 00.01 (UTC)',
 		],
 	},
-	// {
-	// 	date: 'April 26th',
-	// 	note: ['Burn all the remaining NFTs'],
-	// },
 ]
 
 export default function Drops() {
@@ -67,12 +63,12 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>Pillars of Paras - NFT Drops</title>
+				<title>Paras X Galaxy Online - NFT Drops</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
-				<meta name="twitter:title" content="Pillars of Paras - NFT Drops" />
+				<meta name="twitter:title" content="Paras X Galaxy Online NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -82,11 +78,14 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/pillars-of-paras-thumbnail.jpg"
+					content="https://ipfs.fleek.co/ipfs/bafybeidlqlomra5h64j7hk4da4vrpszz22yj7xkssyxzn42e5helcpmj6u"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Pillars of Paras - NFT Drops" />
-				<meta property="og:site_name" content="Pillars of Paras - NFT Drops" />
+				<meta property="og:title" content="Paras X Galaxy Online NFT Drops" />
+				<meta
+					property="og:site_name"
+					content="Paras X Galaxy Online NFT Drops"
+				/>
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -94,7 +93,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/pillars-of-paras-thumbnail.jpg"
+					content="https://ipfs.fleek.co/ipfs/bafybeidlqlomra5h64j7hk4da4vrpszz22yj7xkssyxzn42e5helcpmj6u"
 				/>
 			</Head>
 			<Nav />
@@ -143,20 +142,9 @@ export default function Drops() {
 						</h1>
 						<img
 							src={parseImgUrl(
-								'ipfs://bafybeifxf24wvro5b4p6h3kyvx6zqdabgokwlmdvj73enxhxcelyqrqujy'
+								'ipfs://bafybeigsseswoya6kcoxiyb7cvsucphbysa7rwl7qrw5fcoiu56llupqdu'
 							)}
 						/>
-						{/* <div className="max-w-xl m-4 md:m-auto text-gray-100 ">
-							<h1 className="text-center text-gray-100 font-bold text-3xl object-center mb-4">
-								Thank you for your enthusiasm!
-							</h1>
-							<p className="pb-12 text-center">
-								Pillars of Paras has sold out! For those who haven't had the
-								chance to grab our NFTs, we wish you good luck on the next
-								event. Stay tuned because our upcoming projects are as exciting
-								as this one. Only on #Paras!
-							</p>
-						</div> */}
 						<div className="max-w-xl m-auto">
 							<p className="text-gray-400 mb-4">
 								The first space expeditions arrived at the stars and established
