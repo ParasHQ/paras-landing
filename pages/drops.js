@@ -4,18 +4,18 @@ import axios from 'axios'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Blurhash } from 'react-blurhash'
-import JSBI from 'jsbi'
 
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import Card from '../components/Card'
 import CardDetailModal from '../components/CardDetailModal'
 import { parseImgUrl, prettyBalance } from '../utils/common'
+import ReactLinkify from 'react-linkify'
 
 export const specialTokenId = [
-	'bafybeih3zzpfhfz6uebn4lt2rk7z4t3cv7sauox6z34kmd7vrvck4xgrn4',
-	'bafybeicuevebpsk7sewjijiwqwegtwd3mdguzhjfwhjmim6znw3unzeqce',
-	'bafybeicg4ss7qh5odijfn2eogizuxkrdh3zlv4eftcmgnljwu7dm64uwji',
+	'bafybeih3zzpfhfz6uebn4lt2rk7z4t3cv7sauox6z34kmd7vrvck4xgrn4sdf',
+	'bafybeicuevebpsk7sewjijiwqwegtwd3mdguzhjfwhjmim6znw3unzeqcsdfe',
+	'bafybeicg4ss7qh5odijfn2eogizuxkrdh3zlv4eftcmgnljwu7dm64uwjifasd',
 ]
 
 const ReactTooltip = dynamic(() => import('react-tooltip'), { ssr: false })
@@ -24,28 +24,31 @@ export const specialAccountId = 'hdriqi'
 
 const timeline = [
 	{
-		date: 'April 12th',
+		date: 'May 22th',
 		note: [
 			'Open registration for user to get early access (whitelist) to buy NFT',
 		],
 	},
 	{
-		date: 'April 19th',
+		date: 'May 26th',
+		note: [
+			'Paras will whitelist accounts who sign up for Paras x Galaxy Online on the 26th of May 2021',
+		],
+	},
+	{
+		date: 'May 27th',
 		note: [
 			'NFT Drops for whitelisted account',
-			'Drops will start on April 19th at 00.01 (UTC) and will end at April 20th at 23.59 (UTC) (2-days)',
+			'Drops will start on May 27th at 00.01 (UTC) and will end at May 27th at 23.59 (UTC) (1-days)',
+			'Whitelisted accounts will get 20% in discount',
 		],
 	},
 	{
-		date: 'April 21th',
+		date: 'May 28th',
 		note: [
 			'NFT Drops for public (if still available)',
-			'The remaining drops will start sale for public on April 21th at 00.01 (UTC) and will end at April 25th at 23.59 (UTC) (5 days)',
+			'The remaining drops will start sale for public on April 21th at 00.01 (UTC)',
 		],
-	},
-	{
-		date: 'April 26th',
-		note: ['Burn all the remaining NFTs'],
 	},
 ]
 
@@ -61,12 +64,12 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>Pillars of Paras - NFT Drops</title>
+				<title>Paras X Galaxy Online - NFT Drops</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
-				<meta name="twitter:title" content="Pillars of Paras - NFT Drops" />
+				<meta name="twitter:title" content="Paras X Galaxy Online NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -76,11 +79,14 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/pillars-of-paras-thumbnail.jpg"
+					content="https://ipfs.fleek.co/ipfs/bafybeidlqlomra5h64j7hk4da4vrpszz22yj7xkssyxzn42e5helcpmj6u"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Pillars of Paras - NFT Drops" />
-				<meta property="og:site_name" content="Pillars of Paras - NFT Drops" />
+				<meta property="og:title" content="Paras X Galaxy Online NFT Drops" />
+				<meta
+					property="og:site_name"
+					content="Paras X Galaxy Online NFT Drops"
+				/>
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -88,7 +94,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/pillars-of-paras-thumbnail.jpg"
+					content="https://ipfs.fleek.co/ipfs/bafybeidlqlomra5h64j7hk4da4vrpszz22yj7xkssyxzn42e5helcpmj6u"
 				/>
 			</Head>
 			<Nav />
@@ -96,7 +102,7 @@ export default function Drops() {
 			<div className="max-w-2xl m-auto py-12 min-h-full">
 				<div className="flex items-center justify-center m-4 md:m-0">
 					<div className="text-center">
-						<div className="flex justify-center">
+						<div className="flex justify-center items-baseline">
 							<svg
 								className="cursor-pointer hidden md:block"
 								width="80"
@@ -128,25 +134,48 @@ export default function Drops() {
 									fill="white"
 								/>
 							</svg>
+							<div className="text-gray-100 ml-2 font-bold text-2xl">
+								{' X Galaxy Online'}
+							</div>
 						</div>
 						<h1 className="text-white font-bold text-6xl mt-4 mb-2">
 							NFT Drops
 						</h1>
 						<img
 							src={parseImgUrl(
-								'ipfs://bafybeifxf24wvro5b4p6h3kyvx6zqdabgokwlmdvj73enxhxcelyqrqujy'
+								'ipfs://bafybeigsseswoya6kcoxiyb7cvsucphbysa7rwl7qrw5fcoiu56llupqdu'
 							)}
 						/>
-						<div className="max-w-xl m-4 md:m-auto text-gray-100 ">
-							<h1 className="text-center text-gray-100 font-bold text-3xl object-center mb-4">
-								Thank you for your enthusiasm!
-							</h1>
-							<p className="pb-12 text-center">
-								Pillars of Paras has sold out! For those who haven't had the
-								chance to grab our NFTs, we wish you good luck on the next
-								event. Stay tuned because our upcoming projects are as exciting
-								as this one. Only on #Paras!
+						<div className="max-w-xl m-auto">
+							<p className="text-gray-400 mb-4">
+								The first space expeditions arrived at the stars and established
+								Space Stations near them. Each star orbits only one Space
+								Station. There are only 4,611 stars in the NEAR galaxy, and you
+								can build space stations on the stars. You can earn Solarium;
+								the important resource in the galaxy. You can loot others,
+								purchase on the market, or produce Solarium in your space
+								station.
 							</p>
+							<div className="my-8 flex justify-center space-x-8 items-center">
+								<p
+									className="outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100 mb-8 cursor-pointer"
+									onClick={() =>
+										window.scrollTo({
+											behavior: 'smooth',
+											top: document.body.scrollHeight,
+										})
+									}
+								>
+									Register now
+								</p>
+								<a
+									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer mb-8"
+									target="_blank"
+									href="https://paras.id/publication/editorial/paras-x-galaxyonline-nft-drops-first-settlers-60a9074e754d6939effcfa06"
+								>
+									Find out more
+								</a>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -158,27 +187,125 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[0]}
 					onClick={setToken}
-					price={45}
-					titleCard={'The Founder'}
-					imgUrl="ipfs://bafybeift27nlq4ke6eh7vygl6n62riz3rtbrrps3erlc4xezww7lwd5g3y"
-					blurhash="U68qKjkE4-j;?Ht8Io%N?cocMwt9?wWAa0xb"
+					price={'?'}
+					titleCard={'Alpha'}
+					imgUrl="ipfs://bafybeihqyrfk63rrktn6qwc4vsjpiube4elx3xsmcocax3n6xgsccqf43e"
+					blurhash="U9A08nI:-6WC~B5S-TR,}?EO-UW=^JI@-USh"
 				/>
 				<SpecialCard
 					tokenId={specialTokenId[1]}
 					onClick={setToken}
-					price={30}
-					titleCard={'The Firstman'}
-					imgUrl="ipfs://bafybeif5eyxsy5nhatlw56zg4t4havgmy6aw6br5uca2vjsa7syy6trf5e"
-					blurhash="UEA9pas*NYoP~DR$NGs?x^NZR%s;pIflsAj="
+					price={'?'}
+					titleCard={'Beta'}
+					imgUrl="ipfs://bafybeicxwnt7cwdynbb6camw6rojzmji4ihfaydg4hcakghjlvdtdx63m4"
+					blurhash="UA7Tx8au$UWA%QI*xdWS$:NWxdW,,{SZxdX4"
 				/>
 				<SpecialCard
 					tokenId={specialTokenId[2]}
 					onClick={setToken}
-					price={15}
-					titleCard={'The First Born'}
-					imgUrl="ipfs://bafybeibsi2aceq64gsn373jdex6opbjf6mjiekz25p6b5fa7z2blalzaru"
-					blurhash="U7BpU|=x00R$P;wbv#58W59$9c#$^+X1i[$-"
+					price={'?'}
+					titleCard={'Gamma'}
+					imgUrl="ipfs://bafybeibcewm2penp5hqc33hb3bcvztsi5pmeax2jqnz54mcnuunpy7aaz4"
+					blurhash="U543Djr:ksi^u6Zftmi]peivtnjEx^rotnoI"
 				/>
+			</div>
+			<div>
+				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
+					Timeline
+				</h1>
+				<div className="max-w-6xl m-auto md:flex">
+					{timeline.map((item, index) => (
+						<div
+							key={index}
+							className="border-2 border-dashed border-gray-800 rounded-md p-4 m-4 md:w-1/3"
+						>
+							<p className="font-semibold text-lg text-center mb-2 text-gray-200">
+								{item.date}
+							</p>
+							<ul className="list-disc ml-4">
+								{item.note.map((note, index) => (
+									<li key={index} className="text-gray-200">
+										{note}
+									</li>
+								))}
+							</ul>
+						</div>
+					))}
+				</div>
+			</div>
+			<div className="max-w-xl m-4 md:m-auto text-gray-100 ">
+				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
+					How to register
+				</h1>
+				<p className="mb-2">
+					So let’s get started! In order to get a whitelist for Paras x
+					GalaxyOnline NFT Drops, please complete these tasks.
+				</p>
+				<ReactLinkify
+					componentDecorator={(decoratedHref, decoratedText, key) => (
+						<a target="blank" href={decoratedHref} key={key} className="italic">
+							{decoratedText}
+						</a>
+					)}
+				>
+					<ol
+						className="text-gray-100 ml-8 break-all"
+						style={{ listStyleType: 'decimal' }}
+					>
+						<li>
+							Retweet, like, tag your friends to this pinned tweet about the NFT
+							Drops (https://twitter.com/ParasHQ/status/1396103665199370241)
+						</li>
+						<li>
+							Follow GalaxyOnline on Twitter
+							(https://twitter.com/galaxyonline_io)
+						</li>
+						<li>Follow Paras on Twitter (https://twitter.com/ParasHQ)</li>
+						<li>
+							Join GalaxyOnline Telegram group (https://t.me/GalaxyOnline_en)
+						</li>
+						<li>
+							Join GalaxyOnline Discord channel (https://discord.gg/9vdpd5YZ)
+						</li>
+						<li>Join Paras Telegram group (https://t.me/parashq)</li>
+						<li>Join Paras Discord channel (https://discord.gg/vWR2XBNupg)</li>
+						<li>
+							Fill the whitelist form (https://tripetto.app/run/KT3F8VHVQT)
+						</li>
+					</ol>
+				</ReactLinkify>
+				<div className="text-center">
+					<h1 className="text-center text-gray-100 font-bold text-3xl mt-12 mb-2">
+						Read details
+					</h1>
+					<p className="text-gray-200">
+						You can read full information on Paras publication
+					</p>
+					<div className="flex justify-center my-8">
+						<a
+							className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer"
+							target="_blank"
+							href="https://paras.id/publication/editorial/paras-x-galaxyonline-nft-drops-first-settlers-60a9074e754d6939effcfa06"
+						>
+							Find out more
+							<svg
+								width="12"
+								height="12"
+								viewBox="0 0 16 16"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+								className="ml-1"
+							>
+								<path
+									fillRule="evenodd"
+									clipRule="evenodd"
+									d="M7.70421 9.70711L13.9971 3.41421V7H15.9971V0H8.9971V2H12.5829L6.28999 8.29289L7.70421 9.70711ZM15 14V10H13V14H2V3H6V1H2C0.89543 1 0 1.89543 0 3V14C0 15.1046 0.89543 16 2 16H13C14.1046 16 15 15.1046 15 14Z"
+									fill="white"
+								/>
+							</svg>
+						</a>
+					</div>
+				</div>
 			</div>
 			<Footer />
 		</div>
@@ -207,19 +334,21 @@ const SpecialCard = ({
 	}
 
 	const onPressBuyNow = () => {
-		onClick(localToken)
-		router.push(
-			{
-				pathname: router.pathname,
-				query: {
-					...router.query,
-					...{ tokenId: localToken?.tokenId },
-					...{ prevAs: router.asPath },
+		if (localToken) {
+			onClick(localToken)
+			router.push(
+				{
+					pathname: router.pathname,
+					query: {
+						...router.query,
+						...{ tokenId: localToken?.tokenId },
+						...{ prevAs: router.asPath },
+					},
 				},
-			},
-			`/token/${localToken?.tokenId}`,
-			{ shallow: true }
-		)
+				`/token/${localToken?.tokenId}`,
+				{ shallow: true }
+			)
+		}
 	}
 
 	const _getLowestPrice = (ownerships = []) => {
@@ -341,7 +470,7 @@ const SpecialCard = ({
 								</svg>
 							</div>
 							<p className="text-gray-100 text-lg font-semibold">
-								{getCardAvailable(localToken?.ownerships) || '0'}
+								{getCardAvailable(localToken?.ownerships) || '?'}
 								{' / '}
 								{localToken?.supply || '?'}
 							</p>
