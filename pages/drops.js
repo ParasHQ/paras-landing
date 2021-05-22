@@ -134,7 +134,7 @@ export default function Drops() {
 									fill="white"
 								/>
 							</svg>
-							<div className="text-gray-100 ml-2 font-bold text-xl">
+							<div className="text-gray-100 ml-2 font-bold text-2xl">
 								{' X Galaxy Online'}
 							</div>
 						</div>
