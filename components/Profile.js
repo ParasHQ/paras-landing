@@ -125,7 +125,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 						)}
 						{userProfile.instagramId && (
 							<a
-								href={'https://instagram.com/' + userProfile?.twitterId}
+								href={'https://instagram.com/' + userProfile?.instagramId}
 								className="mt-2 mb-4"
 								target="_blank"
 							>
