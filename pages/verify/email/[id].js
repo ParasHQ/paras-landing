@@ -9,6 +9,7 @@ import Nav from '../../../components/Nav'
 const EmailVerification = () => {
 	const [emailVerified, setEmailVerified] = useState(false)
 	const [isLoading, setIsLoading] = useState(true)
+	const [message, setMessage] = useState('')
 	const router = useRouter()
 
 	useEffect(() => {
@@ -25,6 +26,7 @@ const EmailVerification = () => {
 			setEmailVerified(true)
 			setIsLoading(false)
 		} catch (error) {
+			setMessage(error.response.data.message)
 			setIsLoading(false)
 		}
 	}
@@ -129,6 +131,11 @@ const EmailVerification = () => {
 						<div className="text-2xl text-gray-100 font-bold">
 							Verification Error
 						</div>
+						{message === 'Token expired' && (
+							<div className="text-lg text-gray-100 mt-2">
+								Your link verification has expired
+							</div>
+						)}
 					</>
 				)}
 				<div className="mt-8">
