@@ -22,7 +22,7 @@ const EmailVerification = () => {
 			await Axios.put(`${process.env.API_URL}/credentials/mail/verify`, {
 				token: router.query.id,
 			})
-			// setEmailVerified(true)
+			setEmailVerified(true)
 			setIsLoading(false)
 		} catch (error) {
 			setIsLoading(false)
