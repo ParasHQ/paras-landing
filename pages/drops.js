@@ -13,9 +13,9 @@ import { parseImgUrl, prettyBalance } from '../utils/common'
 import ReactLinkify from 'react-linkify'
 
 export const specialTokenId = [
-	'bafybeih3zzpfhfz6uebn4lt2rk7z4t3cv7sauox6z34kmd7vrvck4xgrn4sdf',
-	'bafybeicuevebpsk7sewjijiwqwegtwd3mdguzhjfwhjmim6znw3unzeqcsdfe',
-	'bafybeicg4ss7qh5odijfn2eogizuxkrdh3zlv4eftcmgnljwu7dm64uwjifasd',
+	'bafybeicugxebcqxuldk5xtofjhvcu5ocyrpev5te64rlsxjkbhcsdeuapu',
+	'bafybeiagsme3xhpzlpyx2wrrifndjvwkjsmjcwitima7jdfpllnev5t76m',
+	'bafybeiemd2f5jz3dufhelisepsm7yroakiancffouh5yffdmqjcfr6yybm',
 ]
 
 const ReactTooltip = dynamic(() => import('react-tooltip'), { ssr: false })
@@ -187,7 +187,8 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[0]}
 					onClick={setToken}
-					price={'?'}
+					price={'40'}
+					priceOriginal={'50'}
 					titleCard={'Alpha'}
 					imgUrl="ipfs://bafybeihqyrfk63rrktn6qwc4vsjpiube4elx3xsmcocax3n6xgsccqf43e"
 					blurhash="U9A08nI:-6WC~B5S-TR,}?EO-UW=^JI@-USh"
@@ -195,7 +196,8 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[1]}
 					onClick={setToken}
-					price={'?'}
+					price={'20'}
+					priceOriginal={'25'}
 					titleCard={'Beta'}
 					imgUrl="ipfs://bafybeicxwnt7cwdynbb6camw6rojzmji4ihfaydg4hcakghjlvdtdx63m4"
 					blurhash="UA7Tx8au$UWA%QI*xdWS$:NWxdW,,{SZxdX4"
@@ -203,7 +205,8 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[2]}
 					onClick={setToken}
-					price={'?'}
+					price={'12'}
+					priceOriginal={'15'}
 					titleCard={'Gamma'}
 					imgUrl="ipfs://bafybeibcewm2penp5hqc33hb3bcvztsi5pmeax2jqnz54mcnuunpy7aaz4"
 					blurhash="U543Djr:ksi^u6Zftmi]peivtnjEx^rotnoI"
@@ -319,6 +322,7 @@ const SpecialCard = ({
 	imgUrl,
 	titleCard,
 	price,
+	priceOriginal,
 }) => {
 	const [localToken, setLocalToken] = useState(null)
 	const router = useRouter()
@@ -386,7 +390,7 @@ const SpecialCard = ({
 			</div>
 			<div className="relative py-8 m-auto">
 				<div className="static m-auto">
-					<h1 className="text-white mb-8 text-3xl font-bold text-center">
+					<h1 className="text-white mb-8 text-2xl font-bold text-center">
 						{localToken?.metadata.name || titleCard}
 					</h1>
 					<div className="m-8">
@@ -415,7 +419,13 @@ const SpecialCard = ({
 					<div className="text-center">
 						<div>
 							<p className="text-gray-400">Price</p>
-							<div className="mb-4">
+							<div className="mb-4 flex space-x-2 justify-center items-center">
+								<p
+									className="text-gray-100 text-xl font-bold line-through opacity-75"
+									style={{ textDecorationColor: '#DC143C' }}
+								>
+									{`${priceOriginal}`}
+								</p>
 								<p className="text-gray-100 text-4xl font-bold">
 									{`${price} Ⓝ`}
 								</p>
@@ -470,7 +480,7 @@ const SpecialCard = ({
 								</svg>
 							</div>
 							<p className="text-gray-100 text-lg font-semibold">
-								{getCardAvailable(localToken?.ownerships) || '?'}
+								{getCardAvailable(localToken?.ownerships) || '0'}
 								{' / '}
 								{localToken?.supply || '?'}
 							</p>
