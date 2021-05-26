@@ -14,6 +14,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import Scrollbars from 'react-custom-scrollbars'
 import useSWR from 'swr'
 import Setting from './Setting'
+import Cookies from 'js-cookie'
 
 const LIMIT = 10
 
@@ -606,6 +607,11 @@ const Nav = () => {
 		})
 	}
 
+	const hideEmailNotVerified = () => {
+		Cookies.set('hideEmailNotVerified', 'true', { expires: 30 })
+		store.setShowEmailWarning(false)
+	}
+
 	return (
 		<Fragment>
 			{testnetBannerRef.current && (
@@ -615,12 +621,23 @@ const Nav = () => {
 					}}
 				></div>
 			)}
-			<div className="h-16">
+			<div
+				className={`h-16 transition-height duration-500 ${
+					store.showEmailWarning && 'h-24'
+				}`}
+			>
 				<div className="fixed z-40 top-0 left-0 right-0 bg-black">
-					<div className="text-white text-center text-sm h-8 leading-8 m-auto bg-red-700 z-50 relative flex items-center justify-center">
+					<div
+						className={`relative text-white text-center overflow-hidden text-sm leading-8 m-auto bg-red-700 z-50 flex items-center justify-center transition-height duration-500 ${
+							store.showEmailWarning ? 'h-8' : 'h-0'
+						}`}
+					>
 						<div>Please add your email to be verified as Paras user</div>
 						<svg
-							className="absolute right-0 z-50 mr-2"
+							className={`absolute right-0 z-50 mr-2 cursor-pointer ${
+								!store.showEmailWarning && 'hidden'
+							}`}
+							onClick={hideEmailNotVerified}
 							width="16"
 							height="16"
 							viewBox="0 0 16 16"

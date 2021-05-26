@@ -54,12 +54,10 @@ const Setting = ({ close }) => {
 			setIsUpdating(false)
 			fetchEmail()
 		} catch (err) {
-			console.log(err)
+			const message = err.response.data.message
 			toast.show({
 				text: (
-					<div className="font-semibold text-center text-sm">
-						Something went wrong, try again later
-					</div>
+					<div className="font-semibold text-center text-sm">{message}</div>
 				),
 				type: 'error',
 				duration: 2500,
