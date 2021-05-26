@@ -1,7 +1,87 @@
-import { useState } from 'react'
+import Axios from 'axios'
+import { useEffect, useState } from 'react'
+import { useToast } from '../hooks/useToast'
+import near from '../lib/near'
 
 const Setting = ({ close }) => {
+	const toast = useToast()
 	const [email, setEmail] = useState('')
+	const [preferences, setPreferences] = useState([])
+	const [initialSetting, setInitialSetting] = useState(null)
+	const [isUpdating, setIsUpdating] = useState(false)
+
+	useEffect(() => {
+		fetchEmail()
+	}, [])
+
+	const fetchEmail = async () => {
+		const resp = await Axios.get(`${process.env.API_URL}/credentials/mail`, {
+			headers: {
+				authorization: await near.authToken(),
+			},
+		})
+		const data = await resp.data.data.results[0]
+		if (data) {
+			setEmail(data.email)
+			setPreferences(data.preferences)
+			setInitialSetting(data)
+		}
+	}
+
+	const updateEmail = async () => {
+		setIsUpdating(true)
+		try {
+			console.log('masuk')
+			const resp = await Axios.put(
+				`${process.env.API_URL}/credentials/mail`,
+				{ email, preferences },
+				{ headers: { authorization: await near.authToken() } }
+			)
+			const message = resp.data.data
+			const toastMessage =
+				message === 'verify-email'
+					? 'Add email success, please check your email address to verify'
+					: 'Update setting success'
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{toastMessage}
+					</div>
+				),
+				type: 'success',
+				duration: 5000,
+			})
+			setIsUpdating(false)
+			fetchEmail()
+		} catch (err) {
+			console.log(err)
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						Something went wrong, try again later
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsUpdating(false)
+		}
+	}
+
+	const updatePreferences = (preference) => {
+		let temp = [...preferences]
+		temp.includes(preference)
+			? temp.splice(preferences.indexOf(preference), 1)
+			: temp.push(preference)
+		setPreferences(temp)
+	}
+
+	const checkIfSettingUnedited = () => {
+		return (
+			initialSetting?.email === email &&
+			initialSetting?.preferences.length === preferences.length
+		)
+	}
 
 	return (
 		<>
@@ -52,7 +132,11 @@ const Setting = ({ close }) => {
 								Get first notified for any paras Info
 							</div>
 						</div>
-						<Toggle />
+						<Toggle
+							id="newsletter"
+							value={preferences.includes('newsletter')}
+							onChange={() => updatePreferences('newsletter')}
+						/>
 					</div>
 					<div className="text-gray-100 flex justify-between items-center my-2">
 						<div>
@@ -61,14 +145,18 @@ const Setting = ({ close }) => {
 								Get first notified for upcoming drops!
 							</div>
 						</div>
-						<Toggle />
+						<Toggle
+							id="nft-drops"
+							value={preferences.includes('nft-drops')}
+							onChange={() => updatePreferences('nft-drops')}
+						/>
 					</div>
 					<button
-						// disabled={isSubmitting}
+						disabled={checkIfSettingUnedited() || email === ''}
 						className="outline-none h-12 w-full mt-4 rounded-md bg-transparent text-sm font-semibold border-none px-4 py-2 bg-primary text-gray-100"
-						// onClick={_submit}
+						onClick={updateEmail}
 					>
-						Save
+						{isUpdating ? 'Saving...' : 'Save'}
 					</button>
 				</div>
 			</div>
@@ -78,19 +166,20 @@ const Setting = ({ close }) => {
 
 export default Setting
 
-const Toggle = () => {
+const Toggle = ({ value, onChange, id }) => {
 	return (
-		<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
-			<input
-				type="checkbox"
-				name="toggle"
-				id="toggle"
-				class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer focus:outline-none outline-none border-none"
-			/>
-			<label
-				for="toggle"
-				class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"
-			></label>
+		<div className="mb-2">
+			<div className="form-switch inline-block align-middle">
+				<input
+					type="checkbox"
+					name={id}
+					id={id}
+					className="form-switch-checkbox"
+					onChange={onChange}
+					checked={value}
+				/>
+				<label className="form-switch-label" htmlFor={id} />
+			</div>
 		</div>
 	)
 }
