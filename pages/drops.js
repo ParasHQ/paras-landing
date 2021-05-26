@@ -47,7 +47,7 @@ const timeline = [
 		date: 'May 28th',
 		note: [
 			'NFT Drops for public (if still available)',
-			'The remaining drops will start sale for public on April 21th at 00.01 (UTC)',
+			'The remaining drops will start sale for public on May 28th at 00.01 (UTC)',
 		],
 	},
 ]
