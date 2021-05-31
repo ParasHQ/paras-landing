@@ -13,9 +13,9 @@ import { parseImgUrl, prettyBalance } from '../utils/common'
 import ReactLinkify from 'react-linkify'
 
 export const specialTokenId = [
-	'bafybeicugxebcqxuldk5xtofjhvcu5ocyrpev5te64rlsxjkbhcsdeuapu',
-	'bafybeiagsme3xhpzlpyx2wrrifndjvwkjsmjcwitima7jdfpllnev5t76m',
-	'bafybeiemd2f5jz3dufhelisepsm7yroakiancffouh5yffdmqjcfr6yybm',
+	'bafybeicugxebcqxuldk5xtofjhvcu5ocyrpev5te64rlsxjkbhcsdeuapu////',
+	'bafybeiagsme3xhpzlpyx2wrrifndjvwkjsmjcwitima7jdfpllnev5t76m////',
+	'bafybeiemd2f5jz3dufhelisepsm7yroakiancffouh5yffdmqjcfr6yybm////',
 ]
 
 const ReactTooltip = dynamic(() => import('react-tooltip'), { ssr: false })
@@ -53,7 +53,7 @@ const timeline = [
 ]
 
 const tasks = [
-	'Retweet, like, and tag your friends to Paras’ pinned tweet',
+	'Retweet, like, and tag your friends to Paras’ pinned tweet (https://twitter.com/ParasHQ/status/1398640831276281861)',
 	'Follow OP Games on Twitter (https://twitter.com/Outplay_Games)',
 	'Join OP Games Telegram group (https://t.me/outplaygames)',
 	'Join OP Games Discord channel (https://discord.gg/ysZ7n6zTKQ)',
@@ -91,7 +91,7 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://ipfs.fleek.co/ipfs/bafybeidlqlomra5h64j7hk4da4vrpszz22yj7xkssyxzn42e5helcpmj6u"
+					content="https://ipfs.fleek.co/ipfs/bafybeig76l542z4tl4ngxnmirtzeu27qyn7bubyfy3w45qjmozedj4g4be"
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras X OP Games NFT Drops" />
@@ -103,7 +103,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://ipfs.fleek.co/ipfs/bafybeidlqlomra5h64j7hk4da4vrpszz22yj7xkssyxzn42e5helcpmj6u"
+					content="https://ipfs.fleek.co/ipfs/bafybeig76l542z4tl4ngxnmirtzeu27qyn7bubyfy3w45qjmozedj4g4be"
 				/>
 			</Head>
 			<Nav />
@@ -113,7 +113,7 @@ export default function Drops() {
 					<div className="text-center">
 						<div className="flex justify-center items-baseline">
 							<svg
-								className="cursor-pointer hidden md:block"
+								className="cursor-pointer md:block"
 								width="80"
 								height="19"
 								viewBox="0 0 80 19"
@@ -152,7 +152,7 @@ export default function Drops() {
 						</h1>
 						<img
 							src={parseImgUrl(
-								'ipfs://bafybeigsseswoya6kcoxiyb7cvsucphbysa7rwl7qrw5fcoiu56llupqdu'
+								'ipfs://bafybeiaq4m5dqooxavnu63agidzvwj7eotpp257bt55xtwlalrg4dkb7wi'
 							)}
 						/>
 						<div className="max-w-xl m-auto">
@@ -193,26 +193,26 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[0]}
 					onClick={setToken}
-					price={'50'}
-					titleCard={'Alpha'}
-					imgUrl="ipfs://bafybeihqyrfk63rrktn6qwc4vsjpiube4elx3xsmcocax3n6xgsccqf43e"
-					blurhash="U9A08nI:-6WC~B5S-TR,}?EO-UW=^JI@-USh"
+					price={'?'}
+					titleCard={'???'}
+					imgUrl="ipfs://bafybeifmxpfvq54auqpcu6ql6cm6sibadntjqiaxpitfo52fdazevlqfje"
+					blurhash="U02raRo45fSJxawMSJi}6=bW}es=ORjXxJof"
 				/>
 				<SpecialCard
 					tokenId={specialTokenId[1]}
 					onClick={setToken}
-					price={'25'}
-					titleCard={'Beta'}
-					imgUrl="ipfs://bafybeicxwnt7cwdynbb6camw6rojzmji4ihfaydg4hcakghjlvdtdx63m4"
-					blurhash="UA7Tx8au$UWA%QI*xdWS$:NWxdW,,{SZxdX4"
+					price={'?'}
+					titleCard={'Flip Flop'}
+					imgUrl="ipfs://bafybeienjnvv3e3abtweckuacavhsg6x46fz53p6vpyvirwkkln6zaxpiu"
+					blurhash="UmMOBr}P#RJYt9nMRiR.ScS$X8oe#;e:aeS$"
 				/>
 				<SpecialCard
 					tokenId={specialTokenId[2]}
 					onClick={setToken}
-					price={'15'}
-					titleCard={'Gamma'}
-					imgUrl="ipfs://bafybeibcewm2penp5hqc33hb3bcvztsi5pmeax2jqnz54mcnuunpy7aaz4"
-					blurhash="U543Djr:ksi^u6Zftmi]peivtnjEx^rotnoI"
+					price={'?'}
+					titleCard={'???'}
+					imgUrl="ipfs://bafybeifmxpfvq54auqpcu6ql6cm6sibadntjqiaxpitfo52fdazevlqfje"
+					blurhash="U02raRo45fSJxawMSJi}6=bW}es=ORjXxJof"
 				/>
 			</div>
 			<div>
@@ -458,11 +458,15 @@ const SpecialCard = ({
 									/>
 								</svg>
 							</div>
-							<p className="text-gray-100 text-lg font-semibold">
-								{getCardAvailable(localToken?.ownerships) || '0'}
-								{' / '}
-								{localToken?.supply || '?'}
-							</p>
+							{localToken ? (
+								<p className="text-gray-100 text-lg font-semibold">
+									{`${getCardAvailable(localToken?.ownerships) || '0'} / ${
+										localToken?.supply || '?'
+									}`}
+								</p>
+							) : (
+								<p className="text-gray-100 text-lg font-semibold">{'? / ?'}</p>
+							)}
 						</div>
 						<div className="mx-8 mt-8">
 							<button
