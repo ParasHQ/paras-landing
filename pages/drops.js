@@ -13,9 +13,9 @@ import { parseImgUrl, prettyBalance } from '../utils/common'
 import ReactLinkify from 'react-linkify'
 
 export const specialTokenId = [
-	'bafybeicugxebcqxuldk5xtofjhvcu5ocyrpev5te64rlsxjkbhcsdeuapu',
-	'bafybeiagsme3xhpzlpyx2wrrifndjvwkjsmjcwitima7jdfpllnev5t76m',
-	'bafybeiemd2f5jz3dufhelisepsm7yroakiancffouh5yffdmqjcfr6yybm',
+	'bafybeieq5m7vbnwgsm2xihrxg4yli7kaulfvy7dk65vshca54rwq4zd6oe',
+	'bafybeihqjnkaytfr4dpufethqroasfsmv3gscz5cwijnkfns653v2oewwa',
+	'bafybeiam65l23gf7fcgusugepomljnvctu4d2asczk3r5c6nrq3zxnhvpu',
 ]
 
 const ReactTooltip = dynamic(() => import('react-tooltip'), { ssr: false })
@@ -24,32 +24,44 @@ export const specialAccountId = 'hdriqi'
 
 const timeline = [
 	{
-		date: 'May 22th',
+		date: 'May 29th',
 		note: [
-			'Open registration for user to get early access (whitelist) to buy NFT',
+			'Everyone interested in Paras x OP Games NFT Drops can sign the Form of Eligibility',
 		],
 	},
 	{
-		date: 'May 26th',
+		date: 'June 4th',
 		note: [
-			'Paras will whitelist accounts who sign up for Paras x Galaxy Online on the 26th of May 2021',
+			'Paras will whitelist accounts who sign up for Paras x OP Games on the 29th of May 2021',
 		],
 	},
 	{
-		date: 'May 27th',
+		date: 'June 5th',
 		note: [
 			'NFT Drops for whitelisted account',
-			'Drops will start on May 27th at 00.01 (UTC) and will end at May 27th at 23.59 (UTC) (1-days)',
-			'Whitelisted accounts will get 20% in discount',
+			'Drops will start on June 5th at 00.00 (UTC) and will end at June 5th at 23.59 (UTC) (1-days)',
+			'Whitelisted accounts will get 10% in discount',
 		],
 	},
 	{
-		date: 'May 28th',
+		date: 'June 6th',
 		note: [
 			'NFT Drops for public (if still available)',
-			'The remaining drops will start sale for public on May 28th at 00.01 (UTC)',
+			'The remaining drops will start sale for public on June 6th at 00.00 (UTC)',
 		],
 	},
+]
+
+const tasks = [
+	'Retweet, like, and tag your friends to Paras’ pinned tweet (https://twitter.com/ParasHQ/status/1398640831276281861)',
+	'Follow OP Games on Twitter (https://twitter.com/Outplay_Games)',
+	'Join OP Games Telegram group (https://t.me/outplaygames)',
+	'Join OP Games Discord channel (https://discord.gg/ysZ7n6zTKQ)',
+	'Follow Paras on Twitter (https://twitter.com/ParasHQ)',
+	'Follow Paras on Instagram (https://www.instagram.com/paras.hq/)',
+	'Join Paras Telegram group (https://t.me/parashq)',
+	'Join Paras Discord channel (https://discord.gg/vWR2XBNupg)',
+	'Fill out the whitelist form (https://tripetto.app/run/2C53J6CJ50)',
 ]
 
 export default function Drops() {
@@ -64,12 +76,12 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>Paras X Galaxy Online - NFT Drops</title>
+				<title>Paras X OP Games - NFT Drops</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
-				<meta name="twitter:title" content="Paras X Galaxy Online NFT Drops" />
+				<meta name="twitter:title" content="Paras X OP Games NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -79,14 +91,11 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://ipfs.fleek.co/ipfs/bafybeidlqlomra5h64j7hk4da4vrpszz22yj7xkssyxzn42e5helcpmj6u"
+					content="https://ipfs.fleek.co/ipfs/bafybeiak4te5gze5obolggpkopgw52nf4uxbkhqoip7xldw7wcszcfcz2q"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Paras X Galaxy Online NFT Drops" />
-				<meta
-					property="og:site_name"
-					content="Paras X Galaxy Online NFT Drops"
-				/>
+				<meta property="og:title" content="Paras X OP Games NFT Drops" />
+				<meta property="og:site_name" content="Paras X OP Games NFT Drops" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -94,7 +103,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://ipfs.fleek.co/ipfs/bafybeidlqlomra5h64j7hk4da4vrpszz22yj7xkssyxzn42e5helcpmj6u"
+					content="https://ipfs.fleek.co/ipfs/bafybeiak4te5gze5obolggpkopgw52nf4uxbkhqoip7xldw7wcszcfcz2q"
 				/>
 			</Head>
 			<Nav />
@@ -104,7 +113,6 @@ export default function Drops() {
 					<div className="text-center">
 						<div className="flex justify-center items-baseline">
 							<svg
-								className="cursor-pointer hidden md:block"
 								width="80"
 								height="19"
 								viewBox="0 0 80 19"
@@ -135,7 +143,7 @@ export default function Drops() {
 								/>
 							</svg>
 							<div className="text-gray-100 ml-2 font-bold text-2xl">
-								{' X Galaxy Online'}
+								{'x OP Games'}
 							</div>
 						</div>
 						<h1 className="text-white font-bold text-6xl mt-4 mb-2">
@@ -143,39 +151,16 @@ export default function Drops() {
 						</h1>
 						<img
 							src={parseImgUrl(
-								'ipfs://bafybeigsseswoya6kcoxiyb7cvsucphbysa7rwl7qrw5fcoiu56llupqdu'
+								'ipfs://bafybeiajuwsgi7lj55quioy64ku56s4ftxcffkartsxawplubuslyqjpbu'
 							)}
 						/>
 						<div className="max-w-xl m-auto">
 							<p className="text-gray-400 mb-4">
-								The first space expeditions arrived at the stars and established
-								Space Stations near them. Each star orbits only one Space
-								Station. There are only 4,611 stars in the NEAR galaxy, and you
-								can build space stations on the stars. You can earn Solarium;
-								the important resource in the galaxy. You can loot others,
-								purchase on the market, or produce Solarium in your space
-								station.
+								Ever wondered what it’s like to own a piece of a game you like?
+								The OP Games card NFTs can make that dream a reality. Help shape
+								the future of these games and support indie game developers as
+								they create unique and exciting Web 3.0 games.
 							</p>
-							<div className="my-8 flex justify-center space-x-8 items-center">
-								<p
-									className="outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100 mb-8 cursor-pointer"
-									onClick={() =>
-										window.scrollTo({
-											behavior: 'smooth',
-											top: document.body.scrollHeight,
-										})
-									}
-								>
-									Register now
-								</p>
-								<a
-									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer mb-8"
-									target="_blank"
-									href="https://paras.id/publication/editorial/paras-x-galaxyonline-nft-drops-first-settlers-60a9074e754d6939effcfa06"
-								>
-									Find out more
-								</a>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -187,26 +172,29 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[0]}
 					onClick={setToken}
-					price={'50'}
-					titleCard={'Alpha'}
-					imgUrl="ipfs://bafybeihqyrfk63rrktn6qwc4vsjpiube4elx3xsmcocax3n6xgsccqf43e"
-					blurhash="U9A08nI:-6WC~B5S-TR,}?EO-UW=^JI@-USh"
+					price={'36'}
+					priceOriginal={'40'}
+					titleCard={'Conquest.eth'}
+					imgUrl="ipfs://bafybeicidr63grgyek2jpoktv5tpmvne7sskijeh47sjkli23toaidfhye"
+					blurhash="U370}OGvLKAI4TMIVXRR%#X.=g%00}t5=wjZ"
 				/>
 				<SpecialCard
 					tokenId={specialTokenId[1]}
 					onClick={setToken}
-					price={'25'}
-					titleCard={'Beta'}
-					imgUrl="ipfs://bafybeicxwnt7cwdynbb6camw6rojzmji4ihfaydg4hcakghjlvdtdx63m4"
-					blurhash="UA7Tx8au$UWA%QI*xdWS$:NWxdW,,{SZxdX4"
+					price={'36'}
+					priceOriginal={'40'}
+					titleCard={'Flip Flop'}
+					imgUrl="ipfs://bafybeid26a22em6k7vayfe22kvnuywwtlsaekqec5uefzpsomohgn5w3qa"
+					blurhash="UjLn=r}P+@R?xcr:RiR.W9X9XSoxw0aejFW="
 				/>
 				<SpecialCard
 					tokenId={specialTokenId[2]}
 					onClick={setToken}
-					price={'15'}
-					titleCard={'Gamma'}
-					imgUrl="ipfs://bafybeibcewm2penp5hqc33hb3bcvztsi5pmeax2jqnz54mcnuunpy7aaz4"
-					blurhash="U543Djr:ksi^u6Zftmi]peivtnjEx^rotnoI"
+					price={'36'}
+					priceOriginal={'40'}
+					titleCard={'Forest Cuties'}
+					imgUrl="ipfs://bafybeiendum2epaf25wqyyhkogviwcjfa26u572sspwxizqgqrawetpwda"
+					blurhash="ULMQns~W$~tS?^ELIowKVE%2S6Rj~CVZIobv"
 				/>
 			</div>
 			<div>
@@ -238,8 +226,8 @@ export default function Drops() {
 					How to register
 				</h1>
 				<p className="mb-2">
-					So let’s get started! In order to get a whitelist for Paras x
-					GalaxyOnline NFT Drops, please complete these tasks.
+					So let’s get started! In order to get a whitelist for Paras x OP Games
+					NFT Drops, please complete these tasks.
 				</p>
 				<ReactLinkify
 					componentDecorator={(decoratedHref, decoratedText, key) => (
@@ -252,26 +240,9 @@ export default function Drops() {
 						className="text-gray-100 ml-8 break-all"
 						style={{ listStyleType: 'decimal' }}
 					>
-						<li>
-							Retweet, like, tag your friends to this pinned tweet about the NFT
-							Drops (https://twitter.com/ParasHQ/status/1396103665199370241)
-						</li>
-						<li>
-							Follow GalaxyOnline on Twitter
-							(https://twitter.com/galaxyonline_io)
-						</li>
-						<li>Follow Paras on Twitter (https://twitter.com/ParasHQ)</li>
-						<li>
-							Join GalaxyOnline Telegram group (https://t.me/GalaxyOnline_en)
-						</li>
-						<li>
-							Join GalaxyOnline Discord channel (https://discord.gg/9vdpd5YZ)
-						</li>
-						<li>Join Paras Telegram group (https://t.me/parashq)</li>
-						<li>Join Paras Discord channel (https://discord.gg/vWR2XBNupg)</li>
-						<li>
-							Fill the whitelist form (https://tripetto.app/run/KT3F8VHVQT)
-						</li>
+						{tasks.map((task) => (
+							<li>{task}</li>
+						))}
 					</ol>
 				</ReactLinkify>
 				<div className="text-center">
@@ -285,7 +256,7 @@ export default function Drops() {
 						<a
 							className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer"
 							target="_blank"
-							href="https://paras.id/publication/editorial/paras-x-galaxyonline-nft-drops-first-settlers-60a9074e754d6939effcfa06"
+							href="https://paras.id/publication/editorial/paras-x-op-games-nft-drops-the-pioneers-60b240873ddf5f3a052f1d61"
 						>
 							Find out more
 							<svg
@@ -319,6 +290,7 @@ const SpecialCard = ({
 	imgUrl,
 	titleCard,
 	price,
+	priceOriginal
 }) => {
 	const [localToken, setLocalToken] = useState(null)
 	const router = useRouter()
@@ -416,6 +388,12 @@ const SpecialCard = ({
 						<div>
 							<p className="text-gray-400">Price</p>
 							<div className="mb-4 flex space-x-2 justify-center items-center">
+								<p
+									className="text-gray-100 text-xl font-bold line-through opacity-75"
+									style={{ textDecorationColor: '#DC143C' }}
+								>
+									{`${priceOriginal}`}
+								</p>
 								<p className="text-gray-100 text-4xl font-bold">
 									{`${price} Ⓝ`}
 								</p>
@@ -469,11 +447,15 @@ const SpecialCard = ({
 									/>
 								</svg>
 							</div>
-							<p className="text-gray-100 text-lg font-semibold">
-								{getCardAvailable(localToken?.ownerships) || '0'}
-								{' / '}
-								{localToken?.supply || '?'}
-							</p>
+							{localToken ? (
+								<p className="text-gray-100 text-lg font-semibold">
+									{`${getCardAvailable(localToken?.ownerships) || '0'} / ${
+										localToken?.supply || '?'
+									}`}
+								</p>
+							) : (
+								<p className="text-gray-100 text-lg font-semibold">{'? / ?'}</p>
+							)}
 						</div>
 						<div className="mx-8 mt-8">
 							<button
