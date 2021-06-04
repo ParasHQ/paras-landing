@@ -13,9 +13,9 @@ import { parseImgUrl, prettyBalance } from '../utils/common'
 import ReactLinkify from 'react-linkify'
 
 export const specialTokenId = [
-	'bafybeicugxebcqxuldk5xtofjhvcu5ocyrpev5te64rlsxjkbhcsdeuapu////',
-	'bafybeiagsme3xhpzlpyx2wrrifndjvwkjsmjcwitima7jdfpllnev5t76m////',
-	'bafybeiemd2f5jz3dufhelisepsm7yroakiancffouh5yffdmqjcfr6yybm////',
+	'bafybeieq5m7vbnwgsm2xihrxg4yli7kaulfvy7dk65vshca54rwq4zd6oe',
+	'bafybeihqjnkaytfr4dpufethqroasfsmv3gscz5cwijnkfns653v2oewwa',
+	'bafybeiam65l23gf7fcgusugepomljnvctu4d2asczk3r5c6nrq3zxnhvpu',
 ]
 
 const ReactTooltip = dynamic(() => import('react-tooltip'), { ssr: false })
@@ -91,7 +91,7 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://ipfs.fleek.co/ipfs/bafybeig76l542z4tl4ngxnmirtzeu27qyn7bubyfy3w45qjmozedj4g4be"
+					content="https://ipfs.fleek.co/ipfs/bafybeiak4te5gze5obolggpkopgw52nf4uxbkhqoip7xldw7wcszcfcz2q"
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras X OP Games NFT Drops" />
@@ -103,7 +103,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://ipfs.fleek.co/ipfs/bafybeig76l542z4tl4ngxnmirtzeu27qyn7bubyfy3w45qjmozedj4g4be"
+					content="https://ipfs.fleek.co/ipfs/bafybeiak4te5gze5obolggpkopgw52nf4uxbkhqoip7xldw7wcszcfcz2q"
 				/>
 			</Head>
 			<Nav />
@@ -113,7 +113,6 @@ export default function Drops() {
 					<div className="text-center">
 						<div className="flex justify-center items-baseline">
 							<svg
-								className="cursor-pointer md:block"
 								width="80"
 								height="19"
 								viewBox="0 0 80 19"
@@ -152,7 +151,7 @@ export default function Drops() {
 						</h1>
 						<img
 							src={parseImgUrl(
-								'ipfs://bafybeiaq4m5dqooxavnu63agidzvwj7eotpp257bt55xtwlalrg4dkb7wi'
+								'ipfs://bafybeiajuwsgi7lj55quioy64ku56s4ftxcffkartsxawplubuslyqjpbu'
 							)}
 						/>
 						<div className="max-w-xl m-auto">
@@ -162,26 +161,6 @@ export default function Drops() {
 								the future of these games and support indie game developers as
 								they create unique and exciting Web 3.0 games.
 							</p>
-							<div className="my-8 flex justify-center space-x-8 items-center">
-								<p
-									className="outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100 mb-8 cursor-pointer"
-									onClick={() =>
-										window.scrollTo({
-											behavior: 'smooth',
-											top: document.body.scrollHeight,
-										})
-									}
-								>
-									Register now
-								</p>
-								<a
-									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer mb-8"
-									target="_blank"
-									href="https://paras.id/publication/editorial/paras-x-op-games-nft-drops-the-pioneers-60b240873ddf5f3a052f1d61"
-								>
-									Find out more
-								</a>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -193,26 +172,29 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[0]}
 					onClick={setToken}
-					price={'?'}
-					titleCard={'???'}
-					imgUrl="ipfs://bafybeifmxpfvq54auqpcu6ql6cm6sibadntjqiaxpitfo52fdazevlqfje"
-					blurhash="U02raRo45fSJxawMSJi}6=bW}es=ORjXxJof"
+					price={'36'}
+					priceOriginal={'40'}
+					titleCard={'Conquest.eth'}
+					imgUrl="ipfs://bafybeicidr63grgyek2jpoktv5tpmvne7sskijeh47sjkli23toaidfhye"
+					blurhash="U370}OGvLKAI4TMIVXRR%#X.=g%00}t5=wjZ"
 				/>
 				<SpecialCard
 					tokenId={specialTokenId[1]}
 					onClick={setToken}
-					price={'?'}
+					price={'36'}
+					priceOriginal={'40'}
 					titleCard={'Flip Flop'}
-					imgUrl="ipfs://bafybeienjnvv3e3abtweckuacavhsg6x46fz53p6vpyvirwkkln6zaxpiu"
-					blurhash="UmMOBr}P#RJYt9nMRiR.ScS$X8oe#;e:aeS$"
+					imgUrl="ipfs://bafybeid26a22em6k7vayfe22kvnuywwtlsaekqec5uefzpsomohgn5w3qa"
+					blurhash="UjLn=r}P+@R?xcr:RiR.W9X9XSoxw0aejFW="
 				/>
 				<SpecialCard
 					tokenId={specialTokenId[2]}
 					onClick={setToken}
-					price={'?'}
-					titleCard={'???'}
-					imgUrl="ipfs://bafybeifmxpfvq54auqpcu6ql6cm6sibadntjqiaxpitfo52fdazevlqfje"
-					blurhash="U02raRo45fSJxawMSJi}6=bW}es=ORjXxJof"
+					price={'36'}
+					priceOriginal={'40'}
+					titleCard={'Forest Cuties'}
+					imgUrl="ipfs://bafybeiendum2epaf25wqyyhkogviwcjfa26u572sspwxizqgqrawetpwda"
+					blurhash="ULMQns~W$~tS?^ELIowKVE%2S6Rj~CVZIobv"
 				/>
 			</div>
 			<div>
@@ -308,6 +290,7 @@ const SpecialCard = ({
 	imgUrl,
 	titleCard,
 	price,
+	priceOriginal
 }) => {
 	const [localToken, setLocalToken] = useState(null)
 	const router = useRouter()
@@ -405,6 +388,12 @@ const SpecialCard = ({
 						<div>
 							<p className="text-gray-400">Price</p>
 							<div className="mb-4 flex space-x-2 justify-center items-center">
+								<p
+									className="text-gray-100 text-xl font-bold line-through opacity-75"
+									style={{ textDecorationColor: '#DC143C' }}
+								>
+									{`${priceOriginal}`}
+								</p>
 								<p className="text-gray-100 text-4xl font-bold">
 									{`${price} Ⓝ`}
 								</p>
