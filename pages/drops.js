@@ -172,8 +172,7 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[0]}
 					onClick={setToken}
-					price={'36'}
-					priceOriginal={'40'}
+					price={'40'}
 					titleCard={'Conquest.eth'}
 					imgUrl="ipfs://bafybeicidr63grgyek2jpoktv5tpmvne7sskijeh47sjkli23toaidfhye"
 					blurhash="U370}OGvLKAI4TMIVXRR%#X.=g%00}t5=wjZ"
@@ -181,8 +180,7 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[1]}
 					onClick={setToken}
-					price={'36'}
-					priceOriginal={'40'}
+					price={'40'}
 					titleCard={'Flip Flop'}
 					imgUrl="ipfs://bafybeid26a22em6k7vayfe22kvnuywwtlsaekqec5uefzpsomohgn5w3qa"
 					blurhash="UjLn=r}P+@R?xcr:RiR.W9X9XSoxw0aejFW="
@@ -190,8 +188,7 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[2]}
 					onClick={setToken}
-					price={'36'}
-					priceOriginal={'40'}
+					price={'40'}
 					titleCard={'Forest Cuties'}
 					imgUrl="ipfs://bafybeiendum2epaf25wqyyhkogviwcjfa26u572sspwxizqgqrawetpwda"
 					blurhash="ULMQns~W$~tS?^ELIowKVE%2S6Rj~CVZIobv"
