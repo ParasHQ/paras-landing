@@ -13,9 +13,9 @@ import { parseImgUrl, prettyBalance } from '../utils/common'
 import ReactLinkify from 'react-linkify'
 
 export const specialTokenId = [
-	'bafybeieq5m7vbnwgsm2xihrxg4yli7kaulfvy7dk65vshca54rwq4zd6oe',
-	'bafybeihqjnkaytfr4dpufethqroasfsmv3gscz5cwijnkfns653v2oewwa',
-	'bafybeiam65l23gf7fcgusugepomljnvctu4d2asczk3r5c6nrq3zxnhvpu',
+	'bafybeieq5m7vbnwgsm2xihrxg4yli7kaulfvy7dk65vshca54rwq4zd6oesss',
+	'bafybeihqjnkaytfr4dpufethqroasfsmv3gscz5cwijnkfns653v2oewwsass',
+	'bafybeiam65l23gf7fcgusugepomljnvctu4d2asczk3r5c6nrq3zxnhvpusss',
 ]
 
 const ReactTooltip = dynamic(() => import('react-tooltip'), { ssr: false })
@@ -24,44 +24,41 @@ export const specialAccountId = 'hdriqi'
 
 const timeline = [
 	{
-		date: 'May 29th',
+		date: 'June 9th',
 		note: [
-			'Everyone interested in Paras x OP Games NFT Drops can sign the Form of Eligibility',
+			'Open registration for user to get early access (whitelist) to buy NFT',
 		],
 	},
 	{
-		date: 'June 4th',
-		note: [
-			'Paras will whitelist accounts who sign up for Paras x OP Games on the 29th of May 2021',
-		],
-	},
-	{
-		date: 'June 5th',
+		date: 'June 16th',
 		note: [
 			'NFT Drops for whitelisted account',
-			'Drops will start on June 5th at 00.00 (UTC) and will end at June 5th at 23.59 (UTC) (1-days)',
-			'Whitelisted accounts will get 10% in discount',
+			'Drops will start on June 16th at 00.01 and will end at June 18th at 00.00 (2-days)',
 		],
 	},
 	{
-		date: 'June 6th',
+		date: 'June 19th',
 		note: [
 			'NFT Drops for public (if still available)',
-			'The remaining drops will start sale for public on June 6th at 00.00 (UTC)',
+			'The remaining drops will start sale for public on June 19th at 00.01 and will end at June 24th at 00.00 (5 days)',
 		],
+	},
+	{
+		date: 'June 25th',
+		note: ['Burn all the remaining NFTs'],
 	},
 ]
 
 const tasks = [
-	'Retweet, like, and tag your friends to Paras’ pinned tweet (https://twitter.com/ParasHQ/status/1398640831276281861)',
-	'Follow OP Games on Twitter (https://twitter.com/Outplay_Games)',
-	'Join OP Games Telegram group (https://t.me/outplaygames)',
-	'Join OP Games Discord channel (https://discord.gg/ysZ7n6zTKQ)',
+	'Fill the Form of Eligibility: https://tripetto.app/run/2OGYWACAC6',
+	'Follow MTVRS on Twitter (https://twitter.com/themtvrs)',
+	'Retweet, like, tag your friends to this pinned tweet about the NFT Drops',
+	'Join the MTVRS Telegram group (https://t.me/themtvrs)',
+	'Join the  MTVRS Discord channel (https://discord.com/invite/vPnyD85bgj)',
 	'Follow Paras on Twitter (https://twitter.com/ParasHQ)',
-	'Follow Paras on Instagram (https://www.instagram.com/paras.hq/)',
+	'Follow Paras on Instagram (https://instagram.com/paras.hq/)',
 	'Join Paras Telegram group (https://t.me/parashq)',
-	'Join Paras Discord channel (https://discord.gg/vWR2XBNupg)',
-	'Fill out the whitelist form (https://tripetto.app/run/2C53J6CJ50)',
+	'Join Paras Discord server (https://discord.com/invite/vWR2XBNupg',
 ]
 
 export default function Drops() {
@@ -76,12 +73,12 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>Paras X OP Games - NFT Drops</title>
+				<title>Paras X MTVRS - NFT Drops</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
-				<meta name="twitter:title" content="Paras X OP Games NFT Drops" />
+				<meta name="twitter:title" content="Paras X MTVRS NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -91,11 +88,11 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://ipfs.fleek.co/ipfs/bafybeiak4te5gze5obolggpkopgw52nf4uxbkhqoip7xldw7wcszcfcz2q"
+					content="https://ipfs.fleek.co/ipfs/bafybeigkjniothjzstnyei5bmweove7exhsxda7l5ta724xbl2qejudczy"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Paras X OP Games NFT Drops" />
-				<meta property="og:site_name" content="Paras X OP Games NFT Drops" />
+				<meta property="og:title" content="Paras X MTVRS NFT Drops" />
+				<meta property="og:site_name" content="Paras X MTVRS NFT Drops" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -103,7 +100,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://ipfs.fleek.co/ipfs/bafybeiak4te5gze5obolggpkopgw52nf4uxbkhqoip7xldw7wcszcfcz2q"
+					content="https://ipfs.fleek.co/ipfs/bafybeigkjniothjzstnyei5bmweove7exhsxda7l5ta724xbl2qejudczy"
 				/>
 			</Head>
 			<Nav />
@@ -143,7 +140,7 @@ export default function Drops() {
 								/>
 							</svg>
 							<div className="text-gray-100 ml-2 font-bold text-2xl">
-								{'x OP Games'}
+								{'x MTVRS'}
 							</div>
 						</div>
 						<h1 className="text-white font-bold text-6xl mt-4 mb-2">
@@ -151,16 +148,41 @@ export default function Drops() {
 						</h1>
 						<img
 							src={parseImgUrl(
-								'ipfs://bafybeiajuwsgi7lj55quioy64ku56s4ftxcffkartsxawplubuslyqjpbu'
+								'ipfs://bafybeih3l32jyqm732bxol4ic2qsgxvas6fee57vrs3e6tpgjzt4kcvady'
 							)}
 						/>
 						<div className="max-w-xl m-auto">
 							<p className="text-gray-400 mb-4">
-								Ever wondered what it’s like to own a piece of a game you like?
-								The OP Games card NFTs can make that dream a reality. Help shape
-								the future of these games and support indie game developers as
-								they create unique and exciting Web 3.0 games.
+								MTVRS (www.mtvrs.app) is a world of worlds and home to
+								blockchain-powered games for players, creators and developers!
+								MTVRS is designing a platform to create experiences and utility
+								around blockchain assets.
 							</p>
+							<p className="text-gray-400 mb-4">
+								This is MTVRS first NFT Drop, “The Architect’s Devices” a set of
+								exclusive collectibles forged by the architects of the metaverse
+								to empower them as they hop the infinite worlds.
+							</p>
+							<div className="my-8 flex justify-center space-x-8 items-center">
+								<p
+									className="outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100 mb-8 cursor-pointer"
+									onClick={() =>
+										window.scrollTo({
+											behavior: 'smooth',
+											top: document.body.scrollHeight,
+										})
+									}
+								>
+									Register now
+								</p>
+								<a
+									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer mb-8"
+									target="_blank"
+									href="https://paras.id/publication/editorial/paras-x-mtvrs-nft-drops-the-architects-devices-60bf7208a537580686cbf237"
+								>
+									Find out more
+								</a>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -172,26 +194,26 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[0]}
 					onClick={setToken}
-					price={'40'}
-					titleCard={'Conquest.eth'}
-					imgUrl="ipfs://bafybeicidr63grgyek2jpoktv5tpmvne7sskijeh47sjkli23toaidfhye"
-					blurhash="U370}OGvLKAI4TMIVXRR%#X.=g%00}t5=wjZ"
+					price={'?'}
+					titleCard={'MTVRS Hopping'}
+					imgUrl="ipfs://bafybeieq6qgmhyjpm6ctogjslka62j3w4rgl5hvz5qkkya7qc3defvr6le"
+					blurhash="UHC$2K~9J{5K-.%DflN3A5Su$P$jRFV@WEXA"
 				/>
 				<SpecialCard
 					tokenId={specialTokenId[1]}
 					onClick={setToken}
-					price={'40'}
-					titleCard={'Flip Flop'}
-					imgUrl="ipfs://bafybeid26a22em6k7vayfe22kvnuywwtlsaekqec5uefzpsomohgn5w3qa"
-					blurhash="UjLn=r}P+@R?xcr:RiR.W9X9XSoxw0aejFW="
+					price={'?'}
+					titleCard={'Quantum Crystal'}
+					imgUrl="ipfs://bafybeif5lh4nwnpbwnvx6bt4ky73bvmykf2bkmeza3x4z2pddtvfzhpuzu"
+					blurhash="U65=L[g48wm*EbbEsEWBz.nik]b_M]fkXTV?"
 				/>
 				<SpecialCard
 					tokenId={specialTokenId[2]}
 					onClick={setToken}
-					price={'40'}
-					titleCard={'Forest Cuties'}
-					imgUrl="ipfs://bafybeiendum2epaf25wqyyhkogviwcjfa26u572sspwxizqgqrawetpwda"
-					blurhash="ULMQns~W$~tS?^ELIowKVE%2S6Rj~CVZIobv"
+					price={'?'}
+					titleCard={'The Fusion Cell'}
+					imgUrl="ipfs://bafybeibh534mkoiem7m7sinkpuqtgtqeeigfknsckpy4j5jijdadapr7v4"
+					blurhash="U7G=];-A0NEh0%NcxrSLVzSN|s$g0~S2tQN^"
 				/>
 			</div>
 			<div>
@@ -222,8 +244,8 @@ export default function Drops() {
 				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
 					How to register
 				</h1>
-				<p className="mb-2">
-					So let’s get started! In order to get a whitelist for Paras x OP Games
+				<p className="mb-2 break-all">
+					So let’s get started! In order to get a whitelist for Paras x MTVRS
 					NFT Drops, please complete these tasks.
 				</p>
 				<ReactLinkify
@@ -237,8 +259,8 @@ export default function Drops() {
 						className="text-gray-100 ml-8 break-all"
 						style={{ listStyleType: 'decimal' }}
 					>
-						{tasks.map((task) => (
-							<li>{task}</li>
+						{tasks.map((task, index) => (
+							<li key={index}>{task}</li>
 						))}
 					</ol>
 				</ReactLinkify>
@@ -253,7 +275,7 @@ export default function Drops() {
 						<a
 							className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer"
 							target="_blank"
-							href="https://paras.id/publication/editorial/paras-x-op-games-nft-drops-the-pioneers-60b240873ddf5f3a052f1d61"
+							href="https://paras.id/publication/editorial/paras-x-mtvrs-nft-drops-the-architects-devices-60bf7208a537580686cbf237"
 						>
 							Find out more
 							<svg
@@ -287,7 +309,7 @@ const SpecialCard = ({
 	imgUrl,
 	titleCard,
 	price,
-	priceOriginal
+	priceOriginal,
 }) => {
 	const [localToken, setLocalToken] = useState(null)
 	const router = useRouter()
