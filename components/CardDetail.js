@@ -24,6 +24,7 @@ import getConfig from '../config/near'
 import LinkToProfile from './LinkToProfile'
 import ReactLinkify from 'react-linkify'
 import PublicationPreviewMini from './PublicationPreviewMini'
+import TokenInfoCopy from './TokenInfoCopy'
 
 const Activity = ({ activity }) => {
 	if (activity.type === 'marketUpdate') {
@@ -1515,6 +1516,25 @@ const CardDetail = ({ token }) => {
 														{localToken.supply}pcs
 													</p>
 												</div>
+											</div>
+										</div>
+										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+											<p className="text-sm text-black font-medium mb-2">
+												Token Info
+											</p>
+											<div className="flex justify-between text-sm">
+												<p>Token ID</p>
+												<TokenInfoCopy text={localToken.tokenId} />
+											</div>
+											<div className="flex justify-between text-sm">
+												<p>Smart Contract</p>
+												<TokenInfoCopy text={process.env.CONTRACT_NAME} small />
+											</div>
+											<div className="flex justify-between text-sm">
+												<p>Image Link</p>
+												<TokenInfoCopy
+													text={parseImgUrl(localToken.metadata.image)}
+												/>
 											</div>
 										</div>
 									</div>
