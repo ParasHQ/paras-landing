@@ -102,7 +102,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 								</svg>
 							</a>
 						)}
-						{userProfile.instagramId && (
+						{userProfile?.instagramId && (
 							<a
 								href={'https://instagram.com/' + userProfile?.instagramId}
 								className="mt-2 mb-4"
@@ -121,7 +121,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 								</svg>
 							</a>
 						)}
-						{userProfile.twitterId && (
+						{userProfile?.twitterId && (
 							<a
 								href={'https://twitter.com/' + userProfile?.twitterId}
 								className="mt-2 mb-4"
