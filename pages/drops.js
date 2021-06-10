@@ -54,7 +54,7 @@ const tasks = [
 	'Follow MTVRS on Twitter (https://twitter.com/themtvrs)',
 	'Retweet, like, tag your friends to this pinned tweet about the NFT Drops (https://twitter.com/ParasHQ/status/1402264239927185422)',
 	'Join the MTVRS Telegram group (https://t.me/themtvrs)',
-	'Join the  MTVRS Discord channel (https://discord.com/invite/vPnyD85bgj)',
+	'Join the  MTVRS Discord channel (https://discord.gg/zURCX2Gkwu)',
 	'Follow Paras on Twitter (https://twitter.com/ParasHQ)',
 	'Follow Paras on Instagram (https://instagram.com/paras.hq/)',
 	'Join Paras Telegram group (https://t.me/parashq)',
