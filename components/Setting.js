@@ -6,9 +6,14 @@ import near from '../lib/near'
 const Setting = ({ close }) => {
 	const toast = useToast()
 	const [email, setEmail] = useState('')
-	const [preferences, setPreferences] = useState([])
+	const [preferences, setPreferences] = useState([
+		'nft-drops',
+		'newsletter',
+		// 'notification',
+	])
 	const [initialSetting, setInitialSetting] = useState(null)
 	const [isUpdating, setIsUpdating] = useState(false)
+	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
 		fetchEmail()
@@ -26,6 +31,7 @@ const Setting = ({ close }) => {
 			setPreferences(data.preferences)
 			setInitialSetting(data)
 		}
+		setIsLoading(false)
 	}
 
 	const updateEmail = async () => {
@@ -77,7 +83,7 @@ const Setting = ({ close }) => {
 	const checkIfSettingUnedited = () => {
 		return (
 			initialSetting?.email === email &&
-			initialSetting?.preferences.length === preferences.length
+			initialSetting?.preferences.sort().join() === preferences.sort().join()
 		)
 	}
 
@@ -107,48 +113,69 @@ const Setting = ({ close }) => {
 							</svg>
 						</div>
 					</div>
-					<div>
-						<label className="font-bold text-xl my-2 text-gray-100">
-							Add Email
-						</label>
-						<input
-							type="text"
-							name="email"
-							value={email}
-							onChange={(e) => setEmail(e.target.value)}
-							className={`resize-none h-auto focus:border-gray-100`}
-							placeholder="Email"
-						/>
-					</div>
-					<div className="text-gray-100 font-bold text-xl mt-4 my-2">
-						Notification preferences
-					</div>
-					<div className="text-gray-100 flex justify-between items-center my-2">
-						<div>
-							<div className="text-lg">Newsletters</div>
-							<div className="text-gray-100 opacity-75">
-								Get first notified for any paras Info
+					{!isLoading ? (
+						<>
+							<div>
+								<label className="font-bold text-xl my-2 text-gray-100">
+									Add Email
+								</label>
+								<input
+									type="text"
+									name="email"
+									value={email}
+									onChange={(e) => setEmail(e.target.value)}
+									className={`resize-none h-auto focus:border-gray-100`}
+									placeholder="Email"
+								/>
 							</div>
-						</div>
-						<Toggle
-							id="newsletter"
-							value={preferences.includes('newsletter')}
-							onChange={() => updatePreferences('newsletter')}
-						/>
-					</div>
-					<div className="text-gray-100 flex justify-between items-center my-2">
-						<div>
-							<div className="text-lg">NFT Drops</div>
-							<div className="text-gray-100 opacity-75">
-								Get first notified for upcoming drops!
+							<div className="text-gray-100 font-bold text-xl mt-4 my-2">
+								Notification preferences
 							</div>
+							<div className="text-gray-100 flex justify-between items-center my-2">
+								<div>
+									<div className="text-lg">Newsletters</div>
+									<div className="text-gray-100 opacity-75 text-sm">
+										Get first notified for any paras Info
+									</div>
+								</div>
+								<Toggle
+									id="newsletter"
+									value={preferences.includes('newsletter')}
+									onChange={() => updatePreferences('newsletter')}
+								/>
+							</div>
+							<div className="text-gray-100 flex justify-between items-center my-2">
+								<div>
+									<div className="text-lg">NFT Drops</div>
+									<div className="text-gray-100 opacity-75 text-sm">
+										Get first notified for upcoming drops!
+									</div>
+								</div>
+								<Toggle
+									id="nft-drops"
+									value={preferences.includes('nft-drops')}
+									onChange={() => updatePreferences('nft-drops')}
+								/>
+							</div>
+							<div className="text-gray-100 flex justify-between items-center my-2">
+								<div>
+									<div className="text-lg">Notification</div>
+									<div className="text-gray-100 opacity-75 text-sm">
+										Get notified for your transaction on Paras
+									</div>
+								</div>
+								<Toggle
+									id="notification"
+									value={preferences.includes('notification')}
+									onChange={() => updatePreferences('notification')}
+								/>
+							</div>
+						</>
+					) : (
+						<div className="flex items-center justify-center h-64 text-gray-100">
+							Loading...
 						</div>
-						<Toggle
-							id="nft-drops"
-							value={preferences.includes('nft-drops')}
-							onChange={() => updatePreferences('nft-drops')}
-						/>
-					</div>
+					)}
 					<button
 						disabled={checkIfSettingUnedited() || email === ''}
 						className="outline-none h-12 w-full mt-4 rounded-md bg-transparent text-sm font-semibold border-none px-4 py-2 bg-primary text-gray-100"
