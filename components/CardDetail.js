@@ -312,6 +312,23 @@ const CardDetail = ({ token }) => {
 			quantity: data.buyQuantity,
 		}
 
+		if (
+			token.metadata.collection.includes('card4card') &&
+			data.buyQuantity > 1
+		) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						You can only buy maximum 1 card
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsSubmitting(false)
+			return
+		}
+
 		const attachedDeposit = JSBI.multiply(
 			JSBI.BigInt(data.buyQuantity),
 			JSBI.BigInt(chosenSeller.marketData.amount)
