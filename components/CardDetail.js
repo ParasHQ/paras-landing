@@ -155,10 +155,10 @@ const Ownership = ({ ownership, onBuy, onUpdateListing, whitelist }) => {
 							<span className="text-gray-800">
 								($
 								{prettyBalance(
-									JSBI.BigInt(ownership.marketData.amount * store.nearUsdPrice),
-									24,
-									4
-								)}
+								JSBI.BigInt(ownership.marketData.amount * store.nearUsdPrice),
+								24,
+								4
+							)}
 								)
 							</span>
 						</p>
@@ -220,8 +220,7 @@ const ActivityList = ({ token }) => {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/activities?tokenId=${token.tokenId}&__skip=${
-				page * 10
+			`${process.env.API_URL}/activities?tokenId=${token.tokenId}&__skip=${page * 10
 			}&__limit=10`
 		)
 		const newData = await res.data.data
@@ -789,9 +788,8 @@ const CardDetail = ({ token }) => {
 								<div className="mt-4">
 									<label className="block text-sm">Sale price</label>
 									<div
-										className={`flex justify-between bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full ${
-											errors.amount && 'error'
-										}`}
+										className={`flex justify-between bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full ${errors.amount && 'error'
+											}`}
 									>
 										<input
 											type="number"
@@ -811,7 +809,7 @@ const CardDetail = ({ token }) => {
 										{prettyBalance(
 											Number(
 												watch('amount', 0) *
-													(0.95 - (localToken.metadata.royalty || 0) / 100)
+												(0.95 - (localToken.metadata.royalty || 0) / 100)
 											)
 												.toPrecision(4)
 												.toString(),
@@ -822,8 +820,8 @@ const CardDetail = ({ token }) => {
 										{prettyBalance(
 											Number(
 												store.nearUsdPrice *
-													watch('amount', 0) *
-													(0.95 - (localToken.metadata.royalty || 0) / 100)
+												watch('amount', 0) *
+												(0.95 - (localToken.metadata.royalty || 0) / 100)
 											)
 												.toPrecision(4)
 												.toString(),
@@ -837,7 +835,7 @@ const CardDetail = ({ token }) => {
 										{prettyBalance(
 											Number(
 												watch('amount', 0) *
-													((localToken.metadata.royalty || 0) / 100)
+												((localToken.metadata.royalty || 0) / 100)
 											)
 												.toPrecision(4)
 												.toString(),
@@ -848,8 +846,8 @@ const CardDetail = ({ token }) => {
 										{prettyBalance(
 											Number(
 												store.nearUsdPrice *
-													watch('amount', 0) *
-													((localToken.metadata.royalty || 0) / 100)
+												watch('amount', 0) *
+												((localToken.metadata.royalty || 0) / 100)
 											)
 												.toPrecision(4)
 												.toString(),
@@ -1002,7 +1000,7 @@ const CardDetail = ({ token }) => {
 										<p>
 											{prettyBalance(
 												chosenSeller.marketData.amount *
-													watch('buyQuantity' || 0),
+												watch('buyQuantity' || 0),
 												24,
 												6
 											)}{' '}
@@ -1012,14 +1010,14 @@ const CardDetail = ({ token }) => {
 									<p className="text-sm">
 										~$
 										{prettyBalance(
-											JSBI.BigInt(
-												store.nearUsdPrice *
-													chosenSeller.marketData.amount *
-													watch('buyQuantity' || 0)
-											),
-											24,
-											6
-										)}
+										JSBI.BigInt(
+											store.nearUsdPrice *
+											chosenSeller.marketData.amount *
+											watch('buyQuantity' || 0)
+										),
+										24,
+										6
+									)}
 									</p>
 								</div>
 								<p className="text-gray-900 mt-4 text-sm text-center">
@@ -1083,8 +1081,8 @@ const CardDetail = ({ token }) => {
 										Quantity (Available for transfer:{' '}
 										{_getUserOwnership(store.currentUser)
 											? _getUserOwnership(store.currentUser).quantity -
-											  (_getUserOwnership(store.currentUser).marketData
-													?.quantity || 0)
+											(_getUserOwnership(store.currentUser).marketData
+												?.quantity || 0)
 											: 0}
 										, owns: {_getUserOwnership(store.currentUser)?.quantity})
 									</label>
@@ -1096,8 +1094,8 @@ const CardDetail = ({ token }) => {
 											min: 1,
 											max: _getUserOwnership(store.currentUser)
 												? _getUserOwnership(store.currentUser).quantity -
-												  (_getUserOwnership(store.currentUser).marketData
-														?.quantity || 0)
+												(_getUserOwnership(store.currentUser).marketData
+													?.quantity || 0)
 												: 0,
 										})}
 										className={`${errors.transferQuantity && 'error'}`}
@@ -1165,8 +1163,8 @@ const CardDetail = ({ token }) => {
 										Quantity (Available for Burn:{' '}
 										{_getUserOwnership(store.currentUser)
 											? _getUserOwnership(store.currentUser).quantity -
-											  (_getUserOwnership(store.currentUser).marketData
-													?.quantity || 0)
+											(_getUserOwnership(store.currentUser).marketData
+												?.quantity || 0)
 											: 0}
 										, owns: {_getUserOwnership(store.currentUser)?.quantity})
 									</label>
@@ -1178,8 +1176,8 @@ const CardDetail = ({ token }) => {
 											min: 1,
 											max: _getUserOwnership(store.currentUser)
 												? _getUserOwnership(store.currentUser).quantity -
-												  (_getUserOwnership(store.currentUser).marketData
-														?.quantity || 0)
+												(_getUserOwnership(store.currentUser).marketData
+													?.quantity || 0)
 												: 0,
 										})}
 										className={`${errors.transferQuantity && 'error'}`}
@@ -1369,10 +1367,9 @@ const CardDetail = ({ token }) => {
 											onClick={(_) => setActiveTab('info')}
 										>
 											<div
-												className={`${
-													activeTab === 'info' &&
+												className={`${activeTab === 'info' &&
 													'text-gray-100 bg-dark-primary-1'
-												}`}
+													}`}
 											>
 												Info
 											</div>
@@ -1384,10 +1381,9 @@ const CardDetail = ({ token }) => {
 											onClick={(_) => setActiveTab('owners')}
 										>
 											<div
-												className={`${
-													activeTab === 'owners' &&
+												className={`${activeTab === 'owners' &&
 													'text-gray-100 bg-dark-primary-1 rounded-md'
-												}`}
+													}`}
 											>
 												Owners
 											</div>
@@ -1399,10 +1395,9 @@ const CardDetail = ({ token }) => {
 											onClick={(_) => setActiveTab('history')}
 										>
 											<div
-												className={`${
-													activeTab === 'history' &&
+												className={`${activeTab === 'history' &&
 													'text-gray-100 bg-dark-primary-1 rounded-md'
-												}`}
+													}`}
 											>
 												History
 											</div>
@@ -1417,19 +1412,34 @@ const CardDetail = ({ token }) => {
 												<p className="text-sm text-black font-medium">
 													Collection
 												</p>
-												<Link
-													href={{
-														pathname: '/[id]/collection/[collectionName]',
-														query: {
-															collectionName: localToken.metadata.collection,
-															id: localToken.creatorId,
-														},
-													}}
-												>
-													<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
-														{localToken.metadata.collection}
-													</a>
-												</Link>
+												{
+													token.metadata.collection.includes('card4card') ? (
+														<Link
+															href={{
+																pathname: '/event/card4card'
+															}}
+														>
+															<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
+																{localToken.metadata.collection}
+															</a>
+														</Link>
+													) : (
+														<Link
+															href={{
+																pathname: '/[id]/collection/[collectionName]',
+																query: {
+																	collectionName: localToken.metadata.collection,
+																	id: localToken.creatorId,
+																},
+															}}
+														>
+															<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
+																{localToken.metadata.collection}
+															</a>
+														</Link>
+													)
+												}
+
 											</div>
 										</div>
 										<div className="flex border-2 border-dashed mt-4 p-2 rounded-md">
@@ -1439,7 +1449,7 @@ const CardDetail = ({ token }) => {
 												</p>
 												<p className="text-gray-900">
 													{localToken.metadata.royalty &&
-													parseInt(localToken.metadata.royalty) > 0
+														parseInt(localToken.metadata.royalty) > 0
 														? `${localToken.metadata.royalty}%`
 														: `No`}
 												</p>
@@ -1556,7 +1566,7 @@ const CardDetail = ({ token }) => {
 							</div>
 						</Scrollbars>
 						{_getLowestPrice(token.ownerships) &&
-						!_getUserOwnership(store.currentUser) ? (
+							!_getUserOwnership(store.currentUser) ? (
 							<button
 								className="box-border font-semibold m-4 py-3 w-auto rounded-md border-2 border-primary bg-primary text-white inline-block text-sm"
 								onClick={() => {
@@ -1579,7 +1589,7 @@ const CardDetail = ({ token }) => {
 								)} Ⓝ`}
 								{` ~ $${prettyBalance(
 									_getLowestPrice(token.ownerships).marketData.amount *
-										store.nearUsdPrice,
+									store.nearUsdPrice,
 									24,
 									4
 								)}`}
