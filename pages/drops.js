@@ -194,33 +194,33 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[0]}
 					onClick={setToken}
+					titleCard="MTVRS Hopping"
 					price="10"
 					priceOriginal="15"
-					titleCard={'MTVRS Hopping'}
-					supply={'500'}
-					cardAvailable="0/500"
+					cardSupplyText="500"
+					cardAvailableText="0/500"
 					imgUrl="ipfs://bafybeieq6qgmhyjpm6ctogjslka62j3w4rgl5hvz5qkkya7qc3defvr6le"
 					blurhash="UHC$2K~9J{5K-.%DflN3A5Su$P$jRFV@WEXA"
 				/>
 				<SpecialCard
 					tokenId={specialTokenId[1]}
 					onClick={setToken}
+					titleCard="Quantum Crystal"
 					price="45"
 					priceOriginal="60"
-					titleCard={'Quantum Crystal'}
-					supply={'100'}
-					cardAvailable="0/100"
+					cardSupplyText="100"
+					cardAvailableText="0/100"
 					imgUrl="ipfs://bafybeif5lh4nwnpbwnvx6bt4ky73bvmykf2bkmeza3x4z2pddtvfzhpuzu"
 					blurhash="U65=L[g48wm*EbbEsEWBz.nik]b_M]fkXTV?"
 				/>
 				<SpecialCard
 					tokenId={specialTokenId[2]}
 					onClick={setToken}
+					titleCard="The Fusion Cell"
 					price="30"
-					priceOriginal="40"
-					titleCard={'The Fusion Cell'}
-					supply={'200'}
-					cardAvailable="0/200"
+					priceOriginal="45"
+					cardSupplyText="200"
+					cardAvailableText="0/200"
 					imgUrl="ipfs://bafybeibh534mkoiem7m7sinkpuqtgtqeeigfknsckpy4j5jijdadapr7v4"
 					blurhash="U7G=];-A0NEh0%NcxrSLVzSN|s$g0~S2tQN^"
 				/>
@@ -318,9 +318,9 @@ const SpecialCard = ({
 	imgUrl,
 	titleCard,
 	price,
-	supply,
+	cardSupplyText,
 	priceOriginal,
-	cardAvailable,
+	cardAvailableText,
 }) => {
 	const [localToken, setLocalToken] = useState(null)
 	const router = useRouter()
@@ -395,7 +395,9 @@ const SpecialCard = ({
 						<div className="w-full m-auto">
 							<Card
 								special
-								imgUrl={parseImgUrl(imgUrl)}
+								imgUrl={
+									localToken ? localToken.metadata.image : parseImgUrl(imgUrl)
+								}
 								imgBlur={blurhash}
 								disableFlip
 								token={{
@@ -452,7 +454,7 @@ const SpecialCard = ({
 								</svg>
 							</div>
 							<p className="text-gray-100 text-lg font-semibold">
-								{localToken?.supply || supply} pcs
+								{localToken?.supply || cardSupplyText} pcs
 							</p>
 						</div>
 						<div
@@ -485,7 +487,7 @@ const SpecialCard = ({
 								</p>
 							) : (
 								<p className="text-gray-100 text-lg font-semibold">
-									{cardAvailable}
+									{cardAvailableText}
 								</p>
 							)}
 						</div>
