@@ -560,6 +560,7 @@ const Nav = () => {
 	const testnetBannerRef = useRef()
 	const toast = useToast()
 
+	const [showSettingModal, setShowSettingModal] = useState(false)
 	const [searchQuery, setSearchQuery] = useState(router.query.q || '')
 
 	useEffect(() => {
@@ -614,6 +615,15 @@ const Nav = () => {
 
 	return (
 		<Fragment>
+			{showSettingModal && (
+				<Modal
+					close={(_) => setShowSettingModal(false)}
+					closeOnBgClick={false}
+					closeOnEscape={false}
+				>
+					<Setting close={() => setShowSettingModal(false)} />
+				</Modal>
+			)}
 			{testnetBannerRef.current && (
 				<div
 					style={{
@@ -632,7 +642,15 @@ const Nav = () => {
 							store.showEmailWarning ? 'h-8' : 'h-0'
 						}`}
 					>
-						<div>Please add your email to be verified as Paras user</div>
+						<div>
+							Please add your email to be verified as Paras user{' '}
+							<span
+								onClick={() => setShowSettingModal(true)}
+								className="font-bold cursor-pointer hover:underline"
+							>
+								here
+							</span>
+						</div>
 						<svg
 							className={`absolute right-0 z-50 mr-2 cursor-pointer ${
 								!store.showEmailWarning && 'hidden'
