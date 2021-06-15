@@ -13,9 +13,9 @@ import { parseImgUrl, prettyBalance } from '../utils/common'
 import ReactLinkify from 'react-linkify'
 
 export const specialTokenId = [
-	'bafybeieq5m7vbnwgsm2xihrxg4yli7kaulfvy7dk65vshca54rwq4zd6oesss',
-	'bafybeihqjnkaytfr4dpufethqroasfsmv3gscz5cwijnkfns653v2oewwsass',
-	'bafybeiam65l23gf7fcgusugepomljnvctu4d2asczk3r5c6nrq3zxnhvpusss',
+	'bafybeihsd32maurfvj2w7bfl2ca2v5zb3fbxf6w7s5chjb5dtriegbvtxy',
+	'bafybeieqcjc2jixkaczxz52bl7tvujll32lme7dwoytqgf5eiyaiz775py',
+	'bafybeihqtgsmpytpvg6po7xdmzz3yj3hlofv3un5qthytspj6euov3djta',
 ]
 
 const ReactTooltip = dynamic(() => import('react-tooltip'), { ssr: false })
@@ -503,7 +503,7 @@ const SpecialCard = ({
 										Ⓝ`}
 									</p>
 								) : (
-									<p>Not for SALE</p>
+									<p>See Details</p>
 								)}
 							</button>
 						</div>
