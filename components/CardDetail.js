@@ -97,6 +97,20 @@ const Activity = ({ activity }) => {
 		return null
 	}
 
+	// bid add
+	if (activity.type === 'bidMarketAdd') {
+		return (
+			<div className="border-2 border-dashed p-2 rounded-md">
+				<p>
+					<LinkToProfile accountId={activity.accountId} />
+					<span> placed offer for </span>
+					<span>{prettyBalance(activity.amount, 24, 4)} Ⓝ</span>
+				</p>
+				<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
+			</div>
+		)
+	}
+
 	return (
 		<div className="border-2 border-dashed p-2 rounded-md">
 			<p>
