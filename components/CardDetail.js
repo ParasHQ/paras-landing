@@ -25,6 +25,8 @@ import LinkToProfile from './LinkToProfile'
 import ReactLinkify from 'react-linkify'
 import PublicationPreviewMini from './PublicationPreviewMini'
 import TokenInfoCopy from './TokenInfoCopy'
+import BidList from './BidList'
+import { useRouter } from 'next/router'
 
 const Activity = ({ activity }) => {
 	if (activity.type === 'marketUpdate') {
@@ -97,7 +99,6 @@ const Activity = ({ activity }) => {
 		return null
 	}
 
-	// bid add
 	if (activity.type === 'bidMarketAdd') {
 		return (
 			<div className="border-2 border-dashed p-2 rounded-md">
@@ -286,6 +287,7 @@ const ActivityList = ({ token }) => {
 const CardDetail = ({ token }) => {
 	const store = useStore()
 	const toast = useToast()
+	const router = useRouter()
 	const copyLinkRef = useRef()
 	const [localToken, setLocalToken] = useState(token)
 
@@ -295,7 +297,7 @@ const CardDetail = ({ token }) => {
 		},
 	})
 
-	const [activeTab, setActiveTab] = useState('info')
+	const [activeTab, setActiveTab] = useState(router.query.tab || 'info')
 	const [showModal, setShowModal] = useState('')
 	const [isComponentMounted, setIsComponentMounted] = useState(false)
 
@@ -375,6 +377,31 @@ const CardDetail = ({ token }) => {
 
 		try {
 			await near.contract.buy(
+				params,
+				'50000000000000',
+				attachedDeposit.toString()
+			)
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
+	const _placebid = async (data) => {
+		setIsSubmitting(true)
+		const params = {
+			ownerId: store.currentUser,
+			tokenId: localToken.tokenId,
+			quantity: data.bidQuantity,
+			amount: parseNearAmount(data.bidAmount),
+		}
+
+		const attachedDeposit = JSBI.multiply(
+			JSBI.BigInt(data.bidQuantity),
+			JSBI.BigInt(parseNearAmount(data.bidAmount))
+		)
+
+		try {
+			await near.contract.addBidMarketData(
 				params,
 				'50000000000000',
 				attachedDeposit.toString()
@@ -647,6 +674,119 @@ const CardDetail = ({ token }) => {
 			_localToken.ownerships = [...saleOwner, ...nonSaleOwner]
 		}
 		setLocalToken(_localToken)
+	}
+
+	const changeActiveTab = (tab) => {
+		router.push({
+			query: {
+				...router.query,
+				tab: tab,
+			},
+		})
+		setActiveTab(tab)
+	}
+
+	const buttonActionCardDetail = () => {
+		if (
+			_getLowestPrice(token.ownerships) &&
+			!_getUserOwnership(store.currentUser) &&
+			activeTab !== 'bids'
+		) {
+			return (
+				<div className="w-auto p-4">
+					<div className="flex -mx-2">
+						<div className="w-1/2 px-2">
+							<button
+								className="box-border font-semibold py-3 w-full rounded-md border-2 border-primary bg-primary text-white inline-block text-sm"
+								onClick={() => {
+									if (!store.currentUser) {
+										setShowModal('redirectLogin')
+									} else {
+										if (whitelist[1] === 'user_whitelisted') {
+											setChosenSeller(_getLowestPrice(token.ownerships))
+											setShowModal('confirmBuy')
+										} else {
+											setShowModal('notAllowedBuy')
+										}
+									}
+								}}
+							>
+								{`Buy for ${prettyBalance(
+									_getLowestPrice(token.ownerships).marketData.amount,
+									24,
+									4
+								)} Ⓝ`}
+							</button>
+						</div>
+						<div className="w-1/2 px-2">
+							<button
+								className="box-border font-semibold py-3 w-full rounded-md border-2 border-primary text-primary inline-block text-sm"
+								onClick={() => {
+									if (!store.currentUser) {
+										setShowModal('redirectLogin')
+									} else {
+										setShowModal('placeBid')
+									}
+								}}
+							>
+								Place a bid
+							</button>
+						</div>
+					</div>
+				</div>
+			)
+		} else if (
+			store.currentUser &&
+			_getUserOwnership(store.currentUser) &&
+			activeTab !== 'bids'
+		) {
+			return (
+				<div className="w-auto p-4">
+					<div className="flex -mx-2">
+						<div className="w-1/2 px-2">
+							<button
+								className="font-semibold py-3 w-full rounded-md border-2 border-primary text-primary text-sm"
+								onClick={() => {
+									if (
+										whitelist[0] === 'token_whitelisted' &&
+										store.currentUser !== localToken.creatorId
+									) {
+										setShowModal('notAllowedUpdate')
+									} else {
+										setShowModal('addUpdateListing')
+									}
+								}}
+							>
+								Update Listing
+							</button>
+						</div>
+						<div className="w-1/2 px-2">
+							<button
+								className="font-semibold py-3 w-full rounded-md border-2 border-primary bg-primary text-white text-sm"
+								onClick={() => setShowModal('placeBid')}
+							>
+								Transfer
+							</button>
+						</div>
+					</div>
+				</div>
+			)
+		} else {
+			return (
+				<button
+					className="box-border font-semibold m-4 py-3 w-auto rounded-md border-2 border-primary text-primary inline-block text-sm"
+					onClick={() => {
+						if (!store.currentUser) {
+							setShowModal('redirectLogin')
+						} else {
+							setShowModal('placeBid')
+						}
+					}}
+				>
+					Place a bid
+				</button>
+			)
+		}
 	}
 
 	return (
@@ -1070,6 +1210,109 @@ const CardDetail = ({ token }) => {
 					</div>
 				</Modal>
 			)}
+			{showModal === 'placeBid' && (
+				<Modal
+					close={(_) => setShowModal('')}
+					closeOnBgClick={false}
+					closeOnEscape={false}
+				>
+					<div className="max-w-sm w-full p-4 bg-gray-100 m-auto rounded-md">
+						<div>
+							<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+								Place a Bid
+							</h1>
+							<p className="text-gray-900 mt-2">
+								You are about to bid <b>{localToken.metadata.name}</b>. You must
+								bid at least <b>0.15 Ⓝ</b>
+							</p>
+							<form onSubmit={handleSubmit(_placebid)}>
+								<div className="mt-4 flex space-x-4">
+									<div className="w-1/2">
+										<label className="block text-sm">Quantity</label>
+										<input
+											type="number"
+											name="bidQuantity"
+											ref={register({
+												required: true,
+												min: 1,
+												max: localToken.supply,
+											})}
+											className={`${errors.bidQuantity && 'error'}`}
+											placeholder="Bid quantity"
+										/>
+										<div className="mt-2 text-sm text-red-500">
+											{errors.bidQuantity?.type === 'required' &&
+												`Bid quantity is required`}
+											{errors.bidQuantity?.type === 'min' && `Minimum 1`}
+											{errors.bidQuantity?.type === 'max' &&
+												`Must be less than number of supply`}
+										</div>
+									</div>
+									<div className="w-1/2">
+										<label className="block text-sm">Amount in Ⓝ</label>
+										<input
+											type="number"
+											name="bidAmount"
+											ref={register({
+												required: true,
+												min: 1,
+											})}
+											className={`${errors.bidAmount && 'error'}`}
+											placeholder="Place your bid"
+										/>
+										<div className="mt-2 text-sm text-red-500">
+											{errors.bidAmount?.type === 'required' &&
+												`Buy quantity is required`}
+											{errors.bidAmount?.type === 'min' && `Minimum 1 Ⓝ`}
+										</div>
+									</div>
+								</div>
+								<div className="mt-4 text-center">
+									<div className="flex justify-between">
+										<div className="text-sm">Your balance</div>
+										<div>
+											{prettyBalance(store.userBalance.available, 24, 4)} Ⓝ
+										</div>
+									</div>
+									<div className="flex justify-between">
+										<div className="text-sm">Service Fee</div>
+										<div>0.5 Ⓝ</div>
+									</div>
+									<div className="flex justify-between">
+										<div className="text-sm">Total bid Amount</div>
+										<div>
+											{watch('bidQuantity', 0) * watch('bidAmount', 0)} Ⓝ
+										</div>
+									</div>
+								</div>
+								<p className="text-gray-900 mt-4 text-sm text-center">
+									You will be redirected to NEAR Web Wallet to confirm your
+									transaction
+								</p>
+								<div className="">
+									<button
+										disabled={isSubmitting}
+										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+										type="submit"
+									>
+										{isSubmitting ? 'Redirecting...' : 'Submit Bid'}
+									</button>
+									<button
+										disabled={isSubmitting}
+										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
+										onClick={(_) => {
+											setChosenSeller(null)
+											setShowModal(false)
+										}}
+									>
+										Cancel
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</Modal>
+			)}
 			{showModal === 'confirmTransfer' && (
 				<Modal
 					close={(_) => setShowModal('')}
@@ -1281,7 +1524,7 @@ const CardDetail = ({ token }) => {
 						height: `85vh`,
 					}}
 				>
-					<div className="w-full h-1/2 lg:h-full lg:w-2/3 bg-dark-primary-1 p-12 relative">
+					<div className="w-full h-1/2 lg:h-full lg:w-3/5 bg-dark-primary-1 p-12 relative">
 						<div className="absolute inset-0 opacity-75">
 							<Blurhash
 								hash={
@@ -1315,7 +1558,7 @@ const CardDetail = ({ token }) => {
 							/>
 						</div>
 					</div>
-					<div className="flex flex-col w-full h-1/2 lg:h-full lg:w-1/3 bg-gray-100">
+					<div className="flex flex-col w-full h-1/2 lg:h-full lg:w-2/5 bg-gray-100">
 						<Scrollbars
 							style={{
 								height: `100%`,
@@ -1381,8 +1624,7 @@ const CardDetail = ({ token }) => {
 										</svg>
 									</div>
 								</div>
-
-								<div className="flex mt-2 text-sm justify-between">
+								<div className="flex mt-2 text-sm space-x-1 overflow-x-scroll disable-scrollbars -mb-4">
 									<div>
 										<div
 											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
@@ -1390,7 +1632,7 @@ const CardDetail = ({ token }) => {
 													? 'text-gray-100 bg-dark-primary-1'
 													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
 											}`}
-											onClick={(_) => setActiveTab('info')}
+											onClick={(_) => changeActiveTab('info')}
 										>
 											<div>Info</div>
 										</div>
@@ -1402,9 +1644,21 @@ const CardDetail = ({ token }) => {
 													? 'text-gray-100 bg-dark-primary-1'
 													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
 											}`}
-											onClick={(_) => setActiveTab('owners')}
+											onClick={(_) => changeActiveTab('owners')}
 										>
 											<div>Owners</div>
+										</div>
+									</div>
+									<div>
+										<div
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
+												activeTab === 'bids'
+													? 'text-gray-100 bg-dark-primary-1'
+													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+											}`}
+											onClick={(_) => changeActiveTab('bids')}
+										>
+											<div>Bids</div>
 										</div>
 									</div>
 									<div>
@@ -1414,7 +1668,7 @@ const CardDetail = ({ token }) => {
 													? 'text-gray-100 bg-dark-primary-1'
 													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
 											}`}
-											onClick={(_) => setActiveTab('history')}
+											onClick={(_) => changeActiveTab('history')}
 										>
 											<div>History</div>
 										</div>
@@ -1426,7 +1680,7 @@ const CardDetail = ({ token }) => {
 													? 'text-gray-100 bg-dark-primary-1'
 													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
 											}`}
-											onClick={(_) => setActiveTab('publication')}
+											onClick={(_) => changeActiveTab('publication')}
 										>
 											<div>Publication</div>
 										</div>
@@ -1592,6 +1846,7 @@ const CardDetail = ({ token }) => {
 											<select
 												className="py-1 rounded-md"
 												onChange={(e) => _changeSortBy(e.target.value)}
+												className="bg-transparent outline-none"
 												defaultValue="priceasc"
 											>
 												<option value="nameasc">Name A-Z</option>
@@ -1637,6 +1892,13 @@ const CardDetail = ({ token }) => {
 									</div>
 								)}
 
+								{activeTab === 'bids' && (
+									<BidList
+										tokenId={token.tokenId}
+										userOwnership={_getUserOwnership(store.currentUser)}
+									/>
+								)}
+
 								{activeTab === 'history' && <ActivityList token={token} />}
 
 								{activeTab === 'publication' && (
@@ -1644,73 +1906,7 @@ const CardDetail = ({ token }) => {
 								)}
 							</div>
 						</Scrollbars>
-						{_getLowestPrice(token.ownerships) &&
-						!_getUserOwnership(store.currentUser) ? (
-							<button
-								className="box-border font-semibold m-4 py-3 w-auto rounded-md border-2 border-primary bg-primary text-white inline-block text-sm"
-								onClick={() => {
-									if (!store.currentUser) {
-										setShowModal('redirectLogin')
-									} else {
-										if (whitelist[1] === 'user_whitelisted') {
-											setChosenSeller(_getLowestPrice(token.ownerships))
-											setShowModal('confirmBuy')
-										} else {
-											setShowModal('notAllowedBuy')
-										}
-									}
-								}}
-							>
-								{`Buy for ${prettyBalance(
-									_getLowestPrice(token.ownerships).marketData.amount,
-									24,
-									4
-								)} Ⓝ`}
-								{` ~ $${prettyBalance(
-									_getLowestPrice(token.ownerships).marketData.amount *
-										store.nearUsdPrice,
-									24,
-									4
-								)}`}
-							</button>
-						) : store.currentUser && _getUserOwnership(store.currentUser) ? (
-							<div className="w-auto p-4">
-								<div className="flex -mx-2">
-									<div className="w-1/2 px-2">
-										<button
-											className="font-semibold py-3 w-full rounded-md border-2 border-primary text-primary text-sm"
-											onClick={() => {
-												if (
-													whitelist[0] === 'token_whitelisted' &&
-													store.currentUser !== localToken.creatorId
-												) {
-													setShowModal('notAllowedUpdate')
-												} else {
-													setShowModal('addUpdateListing')
-												}
-											}}
-										>
-											Update Listing
-										</button>
-									</div>
-									<div className="w-1/2 px-2">
-										<button
-											className="font-semibold py-3 w-full rounded-md border-2 border-primary bg-primary text-white text-sm"
-											onClick={() => setShowModal('confirmTransfer')}
-										>
-											Transfer
-										</button>
-									</div>
-								</div>
-							</div>
-						) : (
-							<button
-								className="font-semibold m-4 py-3 w-auto rounded-md border-2 border-primary bg-primary text-white text-sm"
-								disabled
-							>
-								Not for Sale
-							</button>
-						)}
+						{buttonActionCardDetail()}
 					</div>
 				</div>
 			</div>
