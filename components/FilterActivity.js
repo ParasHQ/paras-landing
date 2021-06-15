@@ -1,13 +1,13 @@
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 
-const FilterActivity = () => {
+const FilterActivity = ({ onClickFilter }) => {
 	const filterModalRef = useRef()
 	const router = useRouter()
 
 	const [showFilterModal, setShowFilterModal] = useState(false)
 	const [filterBy, setFilterBy] = useState(router.query.filter || filter[0].key)
-	const [minPrice, setMinPrice] = useState(router.query.pmin || '0.1')
+	const [minPrice, setMinPrice] = useState(router.query.pmin || '')
 	const [maxPrice, setMaxPrice] = useState(router.query.pmax || '')
 
 	useEffect(() => {
@@ -25,13 +25,13 @@ const FilterActivity = () => {
 	})
 
 	const onClickApply = async () => {
-		router.push({
-			query: {
-				filter: filterBy,
-				...(minPrice && { pmin: minPrice }),
-				...(maxPrice && { pmax: maxPrice }),
-			},
-		})
+		const query = {
+			filter: filterBy,
+			...(minPrice && { pmin: minPrice }),
+			...(maxPrice && { pmax: maxPrice }),
+		}
+		router.push({ query })
+		onClickFilter(query)
 		setShowFilterModal(false)
 	}
 

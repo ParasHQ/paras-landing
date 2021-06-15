@@ -54,7 +54,11 @@ const ActivityLog = ({ query }) => {
 			`${process.env.API_URL}/activities/topUsers?__limit=5`
 		)
 		setTopUser(res.data.data)
-	}, [query])
+	}, [])
+
+	const onClickFilter = (query) => {
+		_fetchData(query, true)
+	}
 
 	const onClickType = (type) => {
 		setActivityType(type)
@@ -74,7 +78,7 @@ const ActivityLog = ({ query }) => {
 		return `type=${filter}&`
 	}
 
-	const _filterMinMax = (filter, min = '0.1', max) => {
+	const _filterMinMax = (filter, min, max) => {
 		if (filter === 'mint' || filter === 'transfer' || filter === 'burn') {
 			return ''
 		}
@@ -230,7 +234,7 @@ const ActivityLog = ({ query }) => {
 									activityType === 'top-users' && 'hidden'
 								} md:block`}
 							>
-								<FilterActivity />
+								<FilterActivity onClickFilter={onClickFilter} />
 							</div>
 						</div>
 						<div

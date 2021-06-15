@@ -4,18 +4,18 @@ import axios from 'axios'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Blurhash } from 'react-blurhash'
-import JSBI from 'jsbi'
 
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import Card from '../components/Card'
 import CardDetailModal from '../components/CardDetailModal'
 import { parseImgUrl, prettyBalance } from '../utils/common'
+import ReactLinkify from 'react-linkify'
 
 export const specialTokenId = [
-	'bafybeih3zzpfhfz6uebn4lt2rk7z4t3cv7sauox6z34kmd7vrvck4xgrn4',
-	'bafybeicuevebpsk7sewjijiwqwegtwd3mdguzhjfwhjmim6znw3unzeqce',
-	'bafybeicg4ss7qh5odijfn2eogizuxkrdh3zlv4eftcmgnljwu7dm64uwji',
+	'bafybeihsd32maurfvj2w7bfl2ca2v5zb3fbxf6w7s5chjb5dtriegbvtxy',
+	'bafybeieqcjc2jixkaczxz52bl7tvujll32lme7dwoytqgf5eiyaiz775py',
+	'bafybeihqtgsmpytpvg6po7xdmzz3yj3hlofv3un5qthytspj6euov3djta',
 ]
 
 const ReactTooltip = dynamic(() => import('react-tooltip'), { ssr: false })
@@ -24,29 +24,41 @@ export const specialAccountId = 'hdriqi'
 
 const timeline = [
 	{
-		date: 'April 12th',
+		date: 'June 9th',
 		note: [
 			'Open registration for user to get early access (whitelist) to buy NFT',
 		],
 	},
 	{
-		date: 'April 19th',
+		date: 'June 16th',
 		note: [
 			'NFT Drops for whitelisted account',
-			'Drops will start on April 19th at 00.01 (UTC) and will end at April 20th at 23.59 (UTC) (2-days)',
+			'Drops will start on June 16th at 00.01 and will end at June 18th at 00.00 (2-days)',
 		],
 	},
 	{
-		date: 'April 21th',
+		date: 'June 19th',
 		note: [
 			'NFT Drops for public (if still available)',
-			'The remaining drops will start sale for public on April 21th at 00.01 (UTC) and will end at April 25th at 23.59 (UTC) (5 days)',
+			'The remaining drops will start sale for public on June 19th at 00.01 and will end at June 24th at 00.00 (5 days)',
 		],
 	},
 	{
-		date: 'April 26th',
+		date: 'June 25th',
 		note: ['Burn all the remaining NFTs'],
 	},
+]
+
+const tasks = [
+	'Fill the Form of Eligibility: https://tripetto.app/run/2OGYWACAC6',
+	'Follow MTVRS on Twitter (https://twitter.com/themtvrs)',
+	'Retweet, like, tag your friends to this pinned tweet about the NFT Drops (https://twitter.com/ParasHQ/status/1402264239927185422)',
+	'Join the MTVRS Telegram group (https://t.me/themtvrs)',
+	'Join the  MTVRS Discord channel (https://discord.com/invite/wSNk3ktahF)',
+	'Follow Paras on Twitter (https://twitter.com/ParasHQ)',
+	'Follow Paras on Instagram (https://instagram.com/paras.hq/)',
+	'Join Paras Telegram group (https://t.me/parashq)',
+	'Join Paras Discord server (https://discord.com/invite/vWR2XBNupg',
 ]
 
 export default function Drops() {
@@ -61,12 +73,12 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>Pillars of Paras - NFT Drops</title>
+				<title>Paras X MTVRS - NFT Drops</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
-				<meta name="twitter:title" content="Pillars of Paras - NFT Drops" />
+				<meta name="twitter:title" content="Paras X MTVRS NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -76,11 +88,11 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/pillars-of-paras-thumbnail.jpg"
+					content="https://ipfs.fleek.co/ipfs/bafybeigkjniothjzstnyei5bmweove7exhsxda7l5ta724xbl2qejudczy"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Pillars of Paras - NFT Drops" />
-				<meta property="og:site_name" content="Pillars of Paras - NFT Drops" />
+				<meta property="og:title" content="Paras X MTVRS NFT Drops" />
+				<meta property="og:site_name" content="Paras X MTVRS NFT Drops" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -88,7 +100,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/pillars-of-paras-thumbnail.jpg"
+					content="https://ipfs.fleek.co/ipfs/bafybeigkjniothjzstnyei5bmweove7exhsxda7l5ta724xbl2qejudczy"
 				/>
 			</Head>
 			<Nav />
@@ -96,9 +108,8 @@ export default function Drops() {
 			<div className="max-w-2xl m-auto py-12 min-h-full">
 				<div className="flex items-center justify-center m-4 md:m-0">
 					<div className="text-center">
-						<div className="flex justify-center">
+						<div className="flex justify-center items-baseline">
 							<svg
-								className="cursor-pointer hidden md:block"
 								width="80"
 								height="19"
 								viewBox="0 0 80 19"
@@ -128,25 +139,50 @@ export default function Drops() {
 									fill="white"
 								/>
 							</svg>
+							<div className="text-gray-100 ml-2 font-bold text-2xl">
+								{'x MTVRS'}
+							</div>
 						</div>
 						<h1 className="text-white font-bold text-6xl mt-4 mb-2">
 							NFT Drops
 						</h1>
 						<img
 							src={parseImgUrl(
-								'ipfs://bafybeifxf24wvro5b4p6h3kyvx6zqdabgokwlmdvj73enxhxcelyqrqujy'
+								'ipfs://bafybeih3l32jyqm732bxol4ic2qsgxvas6fee57vrs3e6tpgjzt4kcvady'
 							)}
 						/>
-						<div className="max-w-xl m-4 md:m-auto text-gray-100 ">
-							<h1 className="text-center text-gray-100 font-bold text-3xl object-center mb-4">
-								Thank you for your enthusiasm!
-							</h1>
-							<p className="pb-12 text-center">
-								Pillars of Paras has sold out! For those who haven't had the
-								chance to grab our NFTs, we wish you good luck on the next
-								event. Stay tuned because our upcoming projects are as exciting
-								as this one. Only on #Paras!
+						<div className="max-w-xl m-auto">
+							<p className="text-gray-400 mb-4">
+								MTVRS (www.mtvrs.app) is a world of worlds and home to
+								blockchain-powered games for players, creators and developers!
+								MTVRS is designing a platform to create experiences and utility
+								around blockchain assets.
 							</p>
+							<p className="text-gray-400 mb-4">
+								This is MTVRS first NFT Drop, “The Architect’s Devices” a set of
+								exclusive collectibles forged by the architects of the metaverse
+								to empower them as they hop the infinite worlds.
+							</p>
+							<div className="my-8 flex justify-center space-x-8 items-center">
+								<p
+									className="outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100 mb-8 cursor-pointer"
+									onClick={() =>
+										window.scrollTo({
+											behavior: 'smooth',
+											top: document.body.scrollHeight,
+										})
+									}
+								>
+									Register now
+								</p>
+								<a
+									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer mb-8"
+									target="_blank"
+									href="https://paras.id/publication/editorial/paras-x-mtvrs-nft-drops-the-architects-devices-60bf7208a537580686cbf237"
+								>
+									Find out more
+								</a>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -158,27 +194,117 @@ export default function Drops() {
 				<SpecialCard
 					tokenId={specialTokenId[0]}
 					onClick={setToken}
-					price={45}
-					titleCard={'The Founder'}
-					imgUrl="ipfs://bafybeift27nlq4ke6eh7vygl6n62riz3rtbrrps3erlc4xezww7lwd5g3y"
-					blurhash="U68qKjkE4-j;?Ht8Io%N?cocMwt9?wWAa0xb"
+					titleCard="MTVRS Hopping"
+					price="10"
+					priceOriginal="15"
+					cardSupplyText="500"
+					cardAvailableText="0/500"
+					imgUrl="ipfs://bafybeieq6qgmhyjpm6ctogjslka62j3w4rgl5hvz5qkkya7qc3defvr6le"
+					blurhash="UHC$2K~9J{5K-.%DflN3A5Su$P$jRFV@WEXA"
 				/>
 				<SpecialCard
 					tokenId={specialTokenId[1]}
 					onClick={setToken}
-					price={30}
-					titleCard={'The Firstman'}
-					imgUrl="ipfs://bafybeif5eyxsy5nhatlw56zg4t4havgmy6aw6br5uca2vjsa7syy6trf5e"
-					blurhash="UEA9pas*NYoP~DR$NGs?x^NZR%s;pIflsAj="
+					titleCard="Quantum Crystal"
+					price="45"
+					priceOriginal="60"
+					cardSupplyText="100"
+					cardAvailableText="0/100"
+					imgUrl="ipfs://bafybeif5lh4nwnpbwnvx6bt4ky73bvmykf2bkmeza3x4z2pddtvfzhpuzu"
+					blurhash="U65=L[g48wm*EbbEsEWBz.nik]b_M]fkXTV?"
 				/>
 				<SpecialCard
 					tokenId={specialTokenId[2]}
 					onClick={setToken}
-					price={15}
-					titleCard={'The First Born'}
-					imgUrl="ipfs://bafybeibsi2aceq64gsn373jdex6opbjf6mjiekz25p6b5fa7z2blalzaru"
-					blurhash="U7BpU|=x00R$P;wbv#58W59$9c#$^+X1i[$-"
+					titleCard="The Fusion Cell"
+					price="30"
+					priceOriginal="45"
+					cardSupplyText="200"
+					cardAvailableText="0/200"
+					imgUrl="ipfs://bafybeibh534mkoiem7m7sinkpuqtgtqeeigfknsckpy4j5jijdadapr7v4"
+					blurhash="U7G=];-A0NEh0%NcxrSLVzSN|s$g0~S2tQN^"
 				/>
+			</div>
+			<div>
+				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
+					Timeline
+				</h1>
+				<div className="max-w-6xl m-auto md:flex">
+					{timeline.map((item, index) => (
+						<div
+							key={index}
+							className="border-2 border-dashed border-gray-800 rounded-md p-4 m-4 md:w-1/3"
+						>
+							<p className="font-semibold text-lg text-center mb-2 text-gray-200">
+								{item.date}
+							</p>
+							<ul className="list-disc ml-4">
+								{item.note.map((note, index) => (
+									<li key={index} className="text-gray-200">
+										{note}
+									</li>
+								))}
+							</ul>
+						</div>
+					))}
+				</div>
+			</div>
+			<div className="max-w-xl m-4 md:m-auto text-gray-100 ">
+				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
+					How to register
+				</h1>
+				<p className="mb-2 break-all">
+					So let’s get started! In order to get a whitelist for Paras x MTVRS
+					NFT Drops, please complete these tasks.
+				</p>
+				<ReactLinkify
+					componentDecorator={(decoratedHref, decoratedText, key) => (
+						<a target="blank" href={decoratedHref} key={key} className="italic">
+							{decoratedText}
+						</a>
+					)}
+				>
+					<ol
+						className="text-gray-100 ml-8 break-all"
+						style={{ listStyleType: 'decimal' }}
+					>
+						{tasks.map((task, index) => (
+							<li key={index}>{task}</li>
+						))}
+					</ol>
+				</ReactLinkify>
+				<div className="text-center">
+					<h1 className="text-center text-gray-100 font-bold text-3xl mt-12 mb-2">
+						Read details
+					</h1>
+					<p className="text-gray-200">
+						You can read full information on Paras publication
+					</p>
+					<div className="flex justify-center my-8">
+						<a
+							className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer"
+							target="_blank"
+							href="https://paras.id/publication/editorial/paras-x-mtvrs-nft-drops-the-architects-devices-60bf7208a537580686cbf237"
+						>
+							Find out more
+							<svg
+								width="12"
+								height="12"
+								viewBox="0 0 16 16"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+								className="ml-1"
+							>
+								<path
+									fillRule="evenodd"
+									clipRule="evenodd"
+									d="M7.70421 9.70711L13.9971 3.41421V7H15.9971V0H8.9971V2H12.5829L6.28999 8.29289L7.70421 9.70711ZM15 14V10H13V14H2V3H6V1H2C0.89543 1 0 1.89543 0 3V14C0 15.1046 0.89543 16 2 16H13C14.1046 16 15 15.1046 15 14Z"
+									fill="white"
+								/>
+							</svg>
+						</a>
+					</div>
+				</div>
 			</div>
 			<Footer />
 		</div>
@@ -192,6 +318,9 @@ const SpecialCard = ({
 	imgUrl,
 	titleCard,
 	price,
+	cardSupplyText,
+	priceOriginal,
+	cardAvailableText,
 }) => {
 	const [localToken, setLocalToken] = useState(null)
 	const router = useRouter()
@@ -207,19 +336,21 @@ const SpecialCard = ({
 	}
 
 	const onPressBuyNow = () => {
-		onClick(localToken)
-		router.push(
-			{
-				pathname: router.pathname,
-				query: {
-					...router.query,
-					...{ tokenId: localToken?.tokenId },
-					...{ prevAs: router.asPath },
+		if (localToken) {
+			onClick(localToken)
+			router.push(
+				{
+					pathname: router.pathname,
+					query: {
+						...router.query,
+						...{ tokenId: localToken?.tokenId },
+						...{ prevAs: router.asPath },
+					},
 				},
-			},
-			`/token/${localToken?.tokenId}`,
-			{ shallow: true }
-		)
+				`/token/${localToken?.tokenId}`,
+				{ shallow: true }
+			)
+		}
 	}
 
 	const _getLowestPrice = (ownerships = []) => {
@@ -257,14 +388,16 @@ const SpecialCard = ({
 			</div>
 			<div className="relative py-8 m-auto">
 				<div className="static m-auto">
-					<h1 className="text-white mb-8 text-3xl font-bold text-center">
+					<h1 className="text-white mb-8 text-2xl font-bold text-center">
 						{localToken?.metadata.name || titleCard}
 					</h1>
 					<div className="m-8">
 						<div className="w-full m-auto">
 							<Card
 								special
-								imgUrl={parseImgUrl(imgUrl)}
+								imgUrl={
+									localToken ? localToken.metadata.image : parseImgUrl(imgUrl)
+								}
 								imgBlur={blurhash}
 								disableFlip
 								token={{
@@ -286,7 +419,13 @@ const SpecialCard = ({
 					<div className="text-center">
 						<div>
 							<p className="text-gray-400">Price</p>
-							<div className="mb-4">
+							<div className="mb-4 flex space-x-2 justify-center items-center">
+								<p
+									className="text-gray-100 text-xl font-bold line-through opacity-75"
+									style={{ textDecorationColor: '#DC143C' }}
+								>
+									{priceOriginal}
+								</p>
 								<p className="text-gray-100 text-4xl font-bold">
 									{`${price} Ⓝ`}
 								</p>
@@ -315,7 +454,7 @@ const SpecialCard = ({
 								</svg>
 							</div>
 							<p className="text-gray-100 text-lg font-semibold">
-								{localToken?.supply || '?'} pcs
+								{localToken?.supply || cardSupplyText} pcs
 							</p>
 						</div>
 						<div
@@ -340,11 +479,17 @@ const SpecialCard = ({
 									/>
 								</svg>
 							</div>
-							<p className="text-gray-100 text-lg font-semibold">
-								{getCardAvailable(localToken?.ownerships) || '0'}
-								{' / '}
-								{localToken?.supply || '?'}
-							</p>
+							{localToken ? (
+								<p className="text-gray-100 text-lg font-semibold">
+									{`${getCardAvailable(localToken.ownerships) || '0'} / ${
+										localToken.supply
+									}`}
+								</p>
+							) : (
+								<p className="text-gray-100 text-lg font-semibold">
+									{cardAvailableText}
+								</p>
+							)}
 						</div>
 						<div className="mx-8 mt-8">
 							<button
@@ -358,7 +503,7 @@ const SpecialCard = ({
 										Ⓝ`}
 									</p>
 								) : (
-									<p>Not for SALE</p>
+									<p>See Details</p>
 								)}
 							</button>
 						</div>

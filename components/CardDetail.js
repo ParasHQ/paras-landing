@@ -332,6 +332,23 @@ const CardDetail = ({ token }) => {
 			quantity: data.buyQuantity,
 		}
 
+		if (
+			token.metadata.collection.includes('card4card') &&
+			data.buyQuantity > 1
+		) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						You can only buy maximum 1 card
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsSubmitting(false)
+			return
+		}
+
 		const attachedDeposit = JSBI.multiply(
 			JSBI.BigInt(data.buyQuantity),
 			JSBI.BigInt(chosenSeller.marketData.amount)
@@ -1423,19 +1440,31 @@ const CardDetail = ({ token }) => {
 												<p className="text-sm text-black font-medium">
 													Collection
 												</p>
-												<Link
-													href={{
-														pathname: '/[id]/collection/[collectionName]',
-														query: {
-															collectionName: localToken.metadata.collection,
-															id: localToken.creatorId,
-														},
-													}}
-												>
-													<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
-														{localToken.metadata.collection}
-													</a>
-												</Link>
+												{token.metadata.collection.includes('card4card') ? (
+													<Link
+														href={{
+															pathname: '/event/card4card',
+														}}
+													>
+														<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
+															{localToken.metadata.collection}
+														</a>
+													</Link>
+												) : (
+													<Link
+														href={{
+															pathname: '/[id]/collection/[collectionName]',
+															query: {
+																collectionName: localToken.metadata.collection,
+																id: localToken.creatorId,
+															},
+														}}
+													>
+														<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
+															{localToken.metadata.collection}
+														</a>
+													</Link>
+												)}
 											</div>
 										</div>
 										<div className="flex items-center -mx-2">
