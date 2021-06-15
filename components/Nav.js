@@ -13,6 +13,8 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Scrollbars from 'react-custom-scrollbars'
 import useSWR from 'swr'
+import Setting from './Setting'
+import Cookies from 'js-cookie'
 
 const LIMIT = 10
 
@@ -24,6 +26,7 @@ const User = () => {
 
 	const [showAccountModal, setShowAccountModal] = useState(false)
 	const [showEditAccountModal, setShowEditAccountModal] = useState(false)
+	const [showSettingModal, setShowSettingModal] = useState(false)
 
 	useEffect(() => {
 		const onClickEv = (e) => {
@@ -115,6 +118,15 @@ const User = () => {
 
 	return (
 		<div ref={accModalRef} className="relative">
+			{showSettingModal && (
+				<Modal
+					close={(_) => setShowSettingModal(false)}
+					closeOnBgClick={false}
+					closeOnEscape={false}
+				>
+					<Setting close={() => setShowSettingModal(false)} />
+				</Modal>
+			)}
 			{showEditAccountModal && (
 				<Modal
 					close={(_) => setShowEditAccountModal(false)}
@@ -218,6 +230,15 @@ const User = () => {
 							className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 						>
 							Edit Profile
+						</button>
+						<button
+							onClick={(_) => {
+								setShowSettingModal(true)
+								toggleAccountModal()
+							}}
+							className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+						>
+							Settings
 						</button>
 						<hr className="my-2" />
 						<p
@@ -586,6 +607,11 @@ const Nav = () => {
 		})
 	}
 
+	const hideEmailNotVerified = () => {
+		Cookies.set('hideEmailNotVerified', 'true', { expires: 30 })
+		store.setShowEmailWarning(false)
+	}
+
 	return (
 		<Fragment>
 			{testnetBannerRef.current && (
@@ -595,8 +621,37 @@ const Nav = () => {
 					}}
 				></div>
 			)}
-			<div className="h-16">
+			<div
+				className={`h-16 transition-height duration-500 ${
+					store.showEmailWarning && 'h-24'
+				}`}
+			>
 				<div className="fixed z-40 top-0 left-0 right-0 bg-black">
+					<div
+						className={`relative text-white text-center overflow-hidden text-sm leading-8 m-auto bg-red-700 z-50 flex items-center justify-center transition-height duration-500 ${
+							store.showEmailWarning ? 'h-8' : 'h-0'
+						}`}
+					>
+						<div>Please add your email to be verified as Paras user</div>
+						<svg
+							className={`absolute right-0 z-50 mr-2 cursor-pointer ${
+								!store.showEmailWarning && 'hidden'
+							}`}
+							onClick={hideEmailNotVerified}
+							width="16"
+							height="16"
+							viewBox="0 0 16 16"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								fillRule="evenodd"
+								clipRule="evenodd"
+								d="M8.00008 9.41423L3.70718 13.7071L2.29297 12.2929L6.58586 8.00001L2.29297 3.70712L3.70718 2.29291L8.00008 6.5858L12.293 2.29291L13.7072 3.70712L9.41429 8.00001L13.7072 12.2929L12.293 13.7071L8.00008 9.41423Z"
+								fill="white"
+							/>
+						</svg>
+					</div>
 					{process.env.APP_ENV !== 'production' && (
 						<div
 							ref={testnetBannerRef}

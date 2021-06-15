@@ -10,7 +10,7 @@ module.exports = {
 		},
 		extend: {
 			opacity: {
-				'15': '0.15'
+				15: '0.15',
 			},
 			colors: {
 				primary: '#1300BA',
@@ -40,6 +40,10 @@ module.exports = {
 			},
 		},
 	},
-	variants: {},
-	plugins: [],
+	variants: {
+		extend: {
+			transitionProperty: { height: ['responsive', 'hover', 'focus'] },
+		},
+	},
+	plugins: [require('@tailwindcss/line-clamp')],
 }

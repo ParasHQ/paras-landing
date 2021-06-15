@@ -43,12 +43,15 @@ const useStore = create((set, get) => ({
 	notificationList: [],
 	setNotificationList: (val) => set(() => ({ notificationList: val })),
 	notificationUnreadList: [],
-	setNotificationUnreadList: (val) => set(() => ({ notificationUnreadList: val })),
+	setNotificationUnreadList: (val) =>
+		set(() => ({ notificationUnreadList: val })),
 	notificationListPage: 0,
 	setNotificationListPage: (val) => set(() => ({ notificationListPage: val })),
 	notificationListHasMore: true,
 	setNotificationListHasMore: (val) =>
 		set(() => ({ notificationListHasMore: val })),
+	showEmailWarning: false,
+	setShowEmailWarning: (val) => set(() => ({ showEmailWarning: val })),
 }))
 
 export default useStore

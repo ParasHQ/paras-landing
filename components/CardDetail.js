@@ -23,6 +23,8 @@ import useSWR from 'swr'
 import getConfig from '../config/near'
 import LinkToProfile from './LinkToProfile'
 import ReactLinkify from 'react-linkify'
+import PublicationPreviewMini from './PublicationPreviewMini'
+import TokenInfoCopy from './TokenInfoCopy'
 
 const Activity = ({ activity }) => {
 	if (activity.type === 'marketUpdate') {
@@ -95,6 +97,20 @@ const Activity = ({ activity }) => {
 		return null
 	}
 
+	// bid add
+	if (activity.type === 'bidMarketAdd') {
+		return (
+			<div className="border-2 border-dashed p-2 rounded-md">
+				<p>
+					<LinkToProfile accountId={activity.accountId} />
+					<span> placed offer for </span>
+					<span>{prettyBalance(activity.amount, 24, 4)} Ⓝ</span>
+				</p>
+				<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
+			</div>
+		)
+	}
+
 	return (
 		<div className="border-2 border-dashed p-2 rounded-md">
 			<p>
@@ -155,10 +171,10 @@ const Ownership = ({ ownership, onBuy, onUpdateListing, whitelist }) => {
 							<span className="text-gray-800">
 								($
 								{prettyBalance(
-								JSBI.BigInt(ownership.marketData.amount * store.nearUsdPrice),
-								24,
-								4
-							)}
+									JSBI.BigInt(ownership.marketData.amount * store.nearUsdPrice),
+									24,
+									4
+								)}
 								)
 							</span>
 						</p>
@@ -220,7 +236,8 @@ const ActivityList = ({ token }) => {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/activities?tokenId=${token.tokenId}&__skip=${page * 10
+			`${process.env.API_URL}/activities?tokenId=${token.tokenId}&__skip=${
+				page * 10
 			}&__limit=10`
 		)
 		const newData = await res.data.data
@@ -238,7 +255,7 @@ const ActivityList = ({ token }) => {
 
 	return (
 		<div>
-			{activityList.length === 0 && (
+			{activityList.length === 0 && !hasMore && (
 				<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
 					<p className="text-gray-300 py-8">No Transactions</p>
 				</div>
@@ -247,7 +264,11 @@ const ActivityList = ({ token }) => {
 				dataLength={activityList.length}
 				next={_fetchData}
 				hasMore={hasMore}
-				loader={<h4>Loading...</h4>}
+				loader={
+					<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
+						<p className="my-2 text-center">Loading...</p>
+					</div>
+				}
 				scrollableTarget="activityListScroll"
 			>
 				{activityList.map((act, idx) => {
@@ -788,8 +809,9 @@ const CardDetail = ({ token }) => {
 								<div className="mt-4">
 									<label className="block text-sm">Sale price</label>
 									<div
-										className={`flex justify-between bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full ${errors.amount && 'error'
-											}`}
+										className={`flex justify-between bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full ${
+											errors.amount && 'error'
+										}`}
 									>
 										<input
 											type="number"
@@ -809,7 +831,7 @@ const CardDetail = ({ token }) => {
 										{prettyBalance(
 											Number(
 												watch('amount', 0) *
-												(0.95 - (localToken.metadata.royalty || 0) / 100)
+													(0.95 - (localToken.metadata.royalty || 0) / 100)
 											)
 												.toPrecision(4)
 												.toString(),
@@ -820,8 +842,8 @@ const CardDetail = ({ token }) => {
 										{prettyBalance(
 											Number(
 												store.nearUsdPrice *
-												watch('amount', 0) *
-												(0.95 - (localToken.metadata.royalty || 0) / 100)
+													watch('amount', 0) *
+													(0.95 - (localToken.metadata.royalty || 0) / 100)
 											)
 												.toPrecision(4)
 												.toString(),
@@ -835,7 +857,7 @@ const CardDetail = ({ token }) => {
 										{prettyBalance(
 											Number(
 												watch('amount', 0) *
-												((localToken.metadata.royalty || 0) / 100)
+													((localToken.metadata.royalty || 0) / 100)
 											)
 												.toPrecision(4)
 												.toString(),
@@ -846,8 +868,8 @@ const CardDetail = ({ token }) => {
 										{prettyBalance(
 											Number(
 												store.nearUsdPrice *
-												watch('amount', 0) *
-												((localToken.metadata.royalty || 0) / 100)
+													watch('amount', 0) *
+													((localToken.metadata.royalty || 0) / 100)
 											)
 												.toPrecision(4)
 												.toString(),
@@ -1000,7 +1022,7 @@ const CardDetail = ({ token }) => {
 										<p>
 											{prettyBalance(
 												chosenSeller.marketData.amount *
-												watch('buyQuantity' || 0),
+													watch('buyQuantity' || 0),
 												24,
 												6
 											)}{' '}
@@ -1010,14 +1032,14 @@ const CardDetail = ({ token }) => {
 									<p className="text-sm">
 										~$
 										{prettyBalance(
-										JSBI.BigInt(
-											store.nearUsdPrice *
-											chosenSeller.marketData.amount *
-											watch('buyQuantity' || 0)
-										),
-										24,
-										6
-									)}
+											JSBI.BigInt(
+												store.nearUsdPrice *
+													chosenSeller.marketData.amount *
+													watch('buyQuantity' || 0)
+											),
+											24,
+											6
+										)}
 									</p>
 								</div>
 								<p className="text-gray-900 mt-4 text-sm text-center">
@@ -1081,8 +1103,8 @@ const CardDetail = ({ token }) => {
 										Quantity (Available for transfer:{' '}
 										{_getUserOwnership(store.currentUser)
 											? _getUserOwnership(store.currentUser).quantity -
-											(_getUserOwnership(store.currentUser).marketData
-												?.quantity || 0)
+											  (_getUserOwnership(store.currentUser).marketData
+													?.quantity || 0)
 											: 0}
 										, owns: {_getUserOwnership(store.currentUser)?.quantity})
 									</label>
@@ -1094,8 +1116,8 @@ const CardDetail = ({ token }) => {
 											min: 1,
 											max: _getUserOwnership(store.currentUser)
 												? _getUserOwnership(store.currentUser).quantity -
-												(_getUserOwnership(store.currentUser).marketData
-													?.quantity || 0)
+												  (_getUserOwnership(store.currentUser).marketData
+														?.quantity || 0)
 												: 0,
 										})}
 										className={`${errors.transferQuantity && 'error'}`}
@@ -1163,8 +1185,8 @@ const CardDetail = ({ token }) => {
 										Quantity (Available for Burn:{' '}
 										{_getUserOwnership(store.currentUser)
 											? _getUserOwnership(store.currentUser).quantity -
-											(_getUserOwnership(store.currentUser).marketData
-												?.quantity || 0)
+											  (_getUserOwnership(store.currentUser).marketData
+													?.quantity || 0)
 											: 0}
 										, owns: {_getUserOwnership(store.currentUser)?.quantity})
 									</label>
@@ -1176,8 +1198,8 @@ const CardDetail = ({ token }) => {
 											min: 1,
 											max: _getUserOwnership(store.currentUser)
 												? _getUserOwnership(store.currentUser).quantity -
-												(_getUserOwnership(store.currentUser).marketData
-													?.quantity || 0)
+												  (_getUserOwnership(store.currentUser).marketData
+														?.quantity || 0)
 												: 0,
 										})}
 										className={`${errors.transferQuantity && 'error'}`}
@@ -1360,47 +1382,53 @@ const CardDetail = ({ token }) => {
 									</div>
 								</div>
 
-								<div className="flex mt-2">
-									<div className="w-1/3">
+								<div className="flex mt-2 text-sm justify-between">
+									<div>
 										<div
-											className="cursor-pointer relative text-center font-semibold overflow-hidden rounded-md hover:bg-opacity-15 hover:bg-dark-primary-1"
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
+												activeTab === 'info'
+													? 'text-gray-100 bg-dark-primary-1'
+													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+											}`}
 											onClick={(_) => setActiveTab('info')}
 										>
-											<div
-												className={`${activeTab === 'info' &&
-													'text-gray-100 bg-dark-primary-1'
-													}`}
-											>
-												Info
-											</div>
+											<div>Info</div>
 										</div>
 									</div>
-									<div className="w-1/3">
+									<div>
 										<div
-											className="cursor-pointer relative text-center font-semibold overflow-hidden rounded-md hover:bg-opacity-15 hover:bg-dark-primary-1"
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
+												activeTab === 'owners'
+													? 'text-gray-100 bg-dark-primary-1'
+													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+											}`}
 											onClick={(_) => setActiveTab('owners')}
 										>
-											<div
-												className={`${activeTab === 'owners' &&
-													'text-gray-100 bg-dark-primary-1 rounded-md'
-													}`}
-											>
-												Owners
-											</div>
+											<div>Owners</div>
 										</div>
 									</div>
-									<div className="w-1/3">
+									<div>
 										<div
-											className="cursor-pointer relative text-center font-semibold overflow-hidden rounded-md hover:bg-opacity-15 hover:bg-dark-primary-1"
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
+												activeTab === 'history'
+													? 'text-gray-100 bg-dark-primary-1'
+													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+											}`}
 											onClick={(_) => setActiveTab('history')}
 										>
-											<div
-												className={`${activeTab === 'history' &&
-													'text-gray-100 bg-dark-primary-1 rounded-md'
-													}`}
-											>
-												History
-											</div>
+											<div>History</div>
+										</div>
+									</div>
+									<div>
+										<div
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
+												activeTab === 'publication'
+													? 'text-gray-100 bg-dark-primary-1'
+													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+											}`}
+											onClick={(_) => setActiveTab('publication')}
+										>
+											<div>Publication</div>
 										</div>
 									</div>
 								</div>
@@ -1412,47 +1440,75 @@ const CardDetail = ({ token }) => {
 												<p className="text-sm text-black font-medium">
 													Collection
 												</p>
-												{
-													token.metadata.collection.includes('card4card') ? (
-														<Link
-															href={{
-																pathname: '/event/card4card'
-															}}
-														>
-															<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
-																{localToken.metadata.collection}
-															</a>
-														</Link>
-													) : (
-														<Link
-															href={{
-																pathname: '/[id]/collection/[collectionName]',
-																query: {
-																	collectionName: localToken.metadata.collection,
-																	id: localToken.creatorId,
-																},
-															}}
-														>
-															<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
-																{localToken.metadata.collection}
-															</a>
-														</Link>
-													)
-												}
-
+												{token.metadata.collection.includes('card4card') ? (
+													<Link
+														href={{
+															pathname: '/event/card4card',
+														}}
+													>
+														<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
+															{localToken.metadata.collection}
+														</a>
+													</Link>
+												) : (
+													<Link
+														href={{
+															pathname: '/[id]/collection/[collectionName]',
+															query: {
+																collectionName: localToken.metadata.collection,
+																id: localToken.creatorId,
+															},
+														}}
+													>
+														<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
+															{localToken.metadata.collection}
+														</a>
+													</Link>
+												)}
 											</div>
 										</div>
-										<div className="flex border-2 border-dashed mt-4 p-2 rounded-md">
-											<div>
-												<p className="text-sm text-black font-medium">
-													Royalty
-												</p>
-												<p className="text-gray-900">
-													{localToken.metadata.royalty &&
+										<div className="flex items-center -mx-2">
+											<div className="flex-1 w-1/2 px-2">
+												<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+													<p className="text-sm text-black font-medium">
+														Royalty
+													</p>
+													<p className="text-gray-900">
+														{localToken.metadata.royalty &&
 														parseInt(localToken.metadata.royalty) > 0
-														? `${localToken.metadata.royalty}%`
-														: `No`}
-												</p>
+															? `${localToken.metadata.royalty}%`
+															: `No`}
+													</p>
+												</div>
+											</div>
+											<div className="flex-1 w-1/2 px-2">
+												<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+													<p className="text-sm text-black font-medium">View</p>
+													<div className="flex">
+														<svg
+															width="16"
+															height="20"
+															viewBox="0 0 511 350"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+														>
+															<path
+																d="M0 177.231C80.9998 -42.769 401 -73.769 510.5 174.231C437.936 394.703 101.751 420.866 0 177.231Z"
+																fill="black"
+															/>
+															<circle
+																cx="255"
+																cy="175"
+																r="116"
+																fill="#E5E5E5"
+															/>
+															<circle cx="255" cy="175" r="70" fill="black" />
+														</svg>
+														<p className="text-gray-900 ml-1">
+															{localToken.view}
+														</p>
+													</div>
+												</div>
 											</div>
 										</div>
 										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
@@ -1503,6 +1559,25 @@ const CardDetail = ({ token }) => {
 														{localToken.supply}pcs
 													</p>
 												</div>
+											</div>
+										</div>
+										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+											<p className="text-sm text-black font-medium mb-2">
+												Token Info
+											</p>
+											<div className="flex justify-between text-sm">
+												<p>Token ID</p>
+												<TokenInfoCopy text={localToken.tokenId} />
+											</div>
+											<div className="flex justify-between text-sm">
+												<p>Smart Contract</p>
+												<TokenInfoCopy text={process.env.CONTRACT_NAME} small />
+											</div>
+											<div className="flex justify-between text-sm">
+												<p>Image Link</p>
+												<TokenInfoCopy
+													text={parseImgUrl(localToken.metadata.image)}
+												/>
 											</div>
 										</div>
 									</div>
@@ -1563,10 +1638,14 @@ const CardDetail = ({ token }) => {
 								)}
 
 								{activeTab === 'history' && <ActivityList token={token} />}
+
+								{activeTab === 'publication' && (
+									<PublicationPreviewMini tokenId={token.tokenId} />
+								)}
 							</div>
 						</Scrollbars>
 						{_getLowestPrice(token.ownerships) &&
-							!_getUserOwnership(store.currentUser) ? (
+						!_getUserOwnership(store.currentUser) ? (
 							<button
 								className="box-border font-semibold m-4 py-3 w-auto rounded-md border-2 border-primary bg-primary text-white inline-block text-sm"
 								onClick={() => {
@@ -1589,7 +1668,7 @@ const CardDetail = ({ token }) => {
 								)} Ⓝ`}
 								{` ~ $${prettyBalance(
 									_getLowestPrice(token.ownerships).marketData.amount *
-									store.nearUsdPrice,
+										store.nearUsdPrice,
 									24,
 									4
 								)}`}

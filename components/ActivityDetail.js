@@ -139,6 +139,30 @@ const Activity = ({ activity }) => {
 		)
 	}
 
+	// bid add
+	if (activity.type === 'bidMarketAdd') {
+		return (
+			<div className="text-gray-300">
+				<span>
+					<LinkToProfile
+						accountId={activity.accountId}
+						className="text-gray-100 hover:border-gray-100"
+					/>
+				</span>
+				<span> placed offer </span>
+				<span> for </span>
+				<span>
+					{prettyBalance(activity.amount, 24, 4)} Ⓝ
+					<span>
+						{' '}
+						($
+						{prettyBalance(JSBI.BigInt(activity.amount * nearUsdPrice), 24, 4)})
+					</span>
+				</span>
+			</div>
+		)
+	}
+
 	return (
 		<div className="text-gray-300">
 			<p>
