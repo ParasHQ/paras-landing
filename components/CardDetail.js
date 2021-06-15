@@ -97,6 +97,22 @@ const Activity = ({ activity }) => {
 		return null
 	}
 
+	// bid add
+	if (activity.type === 'bidMarketAdd') {
+		return (
+			<div className="border-2 border-dashed p-2 rounded-md">
+				<p>
+					<LinkToProfile accountId={activity.accountId} />
+					<span> placed offer for </span>
+					<span>
+						{prettyBalance(activity.amount, 24, 4)} Ⓝ
+					</span>
+				</p>
+				<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
+			</div>
+		)
+	}
+
 	return (
 		<div className="border-2 border-dashed p-2 rounded-md">
 			<p>
@@ -222,8 +238,7 @@ const ActivityList = ({ token }) => {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/activities?tokenId=${token.tokenId}&__skip=${
-				page * 10
+			`${process.env.API_URL}/activities?tokenId=${token.tokenId}&__skip=${page * 10
 			}&__limit=10`
 		)
 		const newData = await res.data.data
@@ -778,9 +793,8 @@ const CardDetail = ({ token }) => {
 								<div className="mt-4">
 									<label className="block text-sm">Sale price</label>
 									<div
-										className={`flex justify-between bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full ${
-											errors.amount && 'error'
-										}`}
+										className={`flex justify-between bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full ${errors.amount && 'error'
+											}`}
 									>
 										<input
 											type="number"
@@ -800,7 +814,7 @@ const CardDetail = ({ token }) => {
 										{prettyBalance(
 											Number(
 												watch('amount', 0) *
-													(0.95 - (localToken.metadata.royalty || 0) / 100)
+												(0.95 - (localToken.metadata.royalty || 0) / 100)
 											)
 												.toPrecision(4)
 												.toString(),
@@ -811,8 +825,8 @@ const CardDetail = ({ token }) => {
 										{prettyBalance(
 											Number(
 												store.nearUsdPrice *
-													watch('amount', 0) *
-													(0.95 - (localToken.metadata.royalty || 0) / 100)
+												watch('amount', 0) *
+												(0.95 - (localToken.metadata.royalty || 0) / 100)
 											)
 												.toPrecision(4)
 												.toString(),
@@ -826,7 +840,7 @@ const CardDetail = ({ token }) => {
 										{prettyBalance(
 											Number(
 												watch('amount', 0) *
-													((localToken.metadata.royalty || 0) / 100)
+												((localToken.metadata.royalty || 0) / 100)
 											)
 												.toPrecision(4)
 												.toString(),
@@ -837,8 +851,8 @@ const CardDetail = ({ token }) => {
 										{prettyBalance(
 											Number(
 												store.nearUsdPrice *
-													watch('amount', 0) *
-													((localToken.metadata.royalty || 0) / 100)
+												watch('amount', 0) *
+												((localToken.metadata.royalty || 0) / 100)
 											)
 												.toPrecision(4)
 												.toString(),
@@ -991,7 +1005,7 @@ const CardDetail = ({ token }) => {
 										<p>
 											{prettyBalance(
 												chosenSeller.marketData.amount *
-													watch('buyQuantity' || 0),
+												watch('buyQuantity' || 0),
 												24,
 												6
 											)}{' '}
@@ -1003,8 +1017,8 @@ const CardDetail = ({ token }) => {
 										{prettyBalance(
 											JSBI.BigInt(
 												store.nearUsdPrice *
-													chosenSeller.marketData.amount *
-													watch('buyQuantity' || 0)
+												chosenSeller.marketData.amount *
+												watch('buyQuantity' || 0)
 											),
 											24,
 											6
@@ -1072,8 +1086,8 @@ const CardDetail = ({ token }) => {
 										Quantity (Available for transfer:{' '}
 										{_getUserOwnership(store.currentUser)
 											? _getUserOwnership(store.currentUser).quantity -
-											  (_getUserOwnership(store.currentUser).marketData
-													?.quantity || 0)
+											(_getUserOwnership(store.currentUser).marketData
+												?.quantity || 0)
 											: 0}
 										, owns: {_getUserOwnership(store.currentUser)?.quantity})
 									</label>
@@ -1085,8 +1099,8 @@ const CardDetail = ({ token }) => {
 											min: 1,
 											max: _getUserOwnership(store.currentUser)
 												? _getUserOwnership(store.currentUser).quantity -
-												  (_getUserOwnership(store.currentUser).marketData
-														?.quantity || 0)
+												(_getUserOwnership(store.currentUser).marketData
+													?.quantity || 0)
 												: 0,
 										})}
 										className={`${errors.transferQuantity && 'error'}`}
@@ -1154,8 +1168,8 @@ const CardDetail = ({ token }) => {
 										Quantity (Available for Burn:{' '}
 										{_getUserOwnership(store.currentUser)
 											? _getUserOwnership(store.currentUser).quantity -
-											  (_getUserOwnership(store.currentUser).marketData
-													?.quantity || 0)
+											(_getUserOwnership(store.currentUser).marketData
+												?.quantity || 0)
 											: 0}
 										, owns: {_getUserOwnership(store.currentUser)?.quantity})
 									</label>
@@ -1167,8 +1181,8 @@ const CardDetail = ({ token }) => {
 											min: 1,
 											max: _getUserOwnership(store.currentUser)
 												? _getUserOwnership(store.currentUser).quantity -
-												  (_getUserOwnership(store.currentUser).marketData
-														?.quantity || 0)
+												(_getUserOwnership(store.currentUser).marketData
+													?.quantity || 0)
 												: 0,
 										})}
 										className={`${errors.transferQuantity && 'error'}`}
@@ -1354,11 +1368,10 @@ const CardDetail = ({ token }) => {
 								<div className="flex mt-2 text-sm justify-between">
 									<div>
 										<div
-											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
-												activeTab === 'info'
-													? 'text-gray-100 bg-dark-primary-1'
-													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
-											}`}
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${activeTab === 'info'
+												? 'text-gray-100 bg-dark-primary-1'
+												: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+												}`}
 											onClick={(_) => setActiveTab('info')}
 										>
 											<div>Info</div>
@@ -1366,11 +1379,10 @@ const CardDetail = ({ token }) => {
 									</div>
 									<div>
 										<div
-											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
-												activeTab === 'owners'
-													? 'text-gray-100 bg-dark-primary-1'
-													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
-											}`}
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${activeTab === 'owners'
+												? 'text-gray-100 bg-dark-primary-1'
+												: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+												}`}
 											onClick={(_) => setActiveTab('owners')}
 										>
 											<div>Owners</div>
@@ -1378,11 +1390,10 @@ const CardDetail = ({ token }) => {
 									</div>
 									<div>
 										<div
-											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
-												activeTab === 'history'
-													? 'text-gray-100 bg-dark-primary-1'
-													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
-											}`}
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${activeTab === 'history'
+												? 'text-gray-100 bg-dark-primary-1'
+												: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+												}`}
 											onClick={(_) => setActiveTab('history')}
 										>
 											<div>History</div>
@@ -1390,11 +1401,10 @@ const CardDetail = ({ token }) => {
 									</div>
 									<div>
 										<div
-											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
-												activeTab === 'publication'
-													? 'text-gray-100 bg-dark-primary-1'
-													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
-											}`}
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${activeTab === 'publication'
+												? 'text-gray-100 bg-dark-primary-1'
+												: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+												}`}
 											onClick={(_) => setActiveTab('publication')}
 										>
 											<div>Publication</div>
@@ -1432,7 +1442,7 @@ const CardDetail = ({ token }) => {
 													</p>
 													<p className="text-gray-900">
 														{localToken.metadata.royalty &&
-														parseInt(localToken.metadata.royalty) > 0
+															parseInt(localToken.metadata.royalty) > 0
 															? `${localToken.metadata.royalty}%`
 															: `No`}
 													</p>
@@ -1602,7 +1612,7 @@ const CardDetail = ({ token }) => {
 							</div>
 						</Scrollbars>
 						{_getLowestPrice(token.ownerships) &&
-						!_getUserOwnership(store.currentUser) ? (
+							!_getUserOwnership(store.currentUser) ? (
 							<button
 								className="box-border font-semibold m-4 py-3 w-auto rounded-md border-2 border-primary bg-primary text-white inline-block text-sm"
 								onClick={() => {
@@ -1625,7 +1635,7 @@ const CardDetail = ({ token }) => {
 								)} Ⓝ`}
 								{` ~ $${prettyBalance(
 									_getLowestPrice(token.ownerships).marketData.amount *
-										store.nearUsdPrice,
+									store.nearUsdPrice,
 									24,
 									4
 								)}`}
