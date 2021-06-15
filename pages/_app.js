@@ -104,6 +104,11 @@ function MyApp({ Component, pageProps }) {
 			} else {
 				const userProfile = userProfileResults[0]
 				store.setUserProfile(userProfile)
+
+				const { isEmailVerified = false } = userProfile
+				if (!isEmailVerified && !cookie.get('hideEmailNotVerified')) {
+					store.setShowEmailWarning(true)
+				}
 			}
 
 			store.setCurrentUser(currentUser.accountId)
