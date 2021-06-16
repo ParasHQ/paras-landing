@@ -316,7 +316,7 @@ const CardDetail = ({ token }) => {
 		if (store.currentUser) {
 			try {
 				const res = await near.contract.getUserPurchaseWhitelist({
-					tokenId: token.tokenId,
+					tokenId: localToken.tokenId,
 					buyerId: store.currentUser,
 				})
 				setWhitelist(res.split('::'))
@@ -335,7 +335,7 @@ const CardDetail = ({ token }) => {
 		}
 
 		if (
-			token.metadata.collection.includes('card4card') &&
+			localToken.metadata.collection.includes('card4card') &&
 			data.buyQuantity > 1
 		) {
 			toast.show({
@@ -677,18 +677,12 @@ const CardDetail = ({ token }) => {
 	}
 
 	const changeActiveTab = (tab) => {
-		router.push({
-			query: {
-				...router.query,
-				tab: tab,
-			},
-		})
 		setActiveTab(tab)
 	}
 
 	const buttonActionCardDetail = () => {
 		if (
-			_getLowestPrice(token.ownerships) &&
+			_getLowestPrice(localToken.ownerships) &&
 			!_getUserOwnership(store.currentUser) &&
 			activeTab !== 'bids'
 		) {
@@ -703,7 +697,7 @@ const CardDetail = ({ token }) => {
 										setShowModal('redirectLogin')
 									} else {
 										if (whitelist[1] === 'user_whitelisted') {
-											setChosenSeller(_getLowestPrice(token.ownerships))
+											setChosenSeller(_getLowestPrice(localToken.ownerships))
 											setShowModal('confirmBuy')
 										} else {
 											setShowModal('notAllowedBuy')
@@ -712,7 +706,7 @@ const CardDetail = ({ token }) => {
 								}}
 							>
 								{`Buy for ${prettyBalance(
-									_getLowestPrice(token.ownerships).marketData.amount,
+									_getLowestPrice(localToken.ownerships).marketData.amount,
 									24,
 									4
 								)} Ⓝ`}

@@ -638,11 +638,11 @@ const Nav = () => {
 			>
 				<div className="fixed z-40 top-0 left-0 right-0 bg-black">
 					<div
-						className={`relative text-white text-center overflow-hidden text-sm leading-8 m-auto bg-red-700 z-50 flex items-center justify-center transition-height duration-500 ${
-							store.showEmailWarning ? 'h-8' : 'h-0'
+						className={`relative text-white text-center overflow-hidden text-sm md:leading-8 m-auto bg-red-700 z-50 flex items-center justify-center transition-height duration-500 ${
+							store.showEmailWarning ? 'md:h-8' : 'h-0'
 						}`}
 					>
-						<div>
+						<div className="px-10 py-1 md:p-0 ">
 							Please add your email to be verified as Paras user{' '}
 							<span
 								onClick={() => setShowSettingModal(true)}
@@ -841,7 +841,10 @@ const Nav = () => {
 								}}
 							></div>
 						)}
-						<div className="h-16"></div>
+						<div
+							className={`h-16`}
+							style={{ height: store.showEmailWarning && '7rem' }}
+						></div>
 						<div className="text-center border-b-2 border-dashed border-gray-800">
 							<div className="text-gray-100 ">
 								<Link href="/drops">
