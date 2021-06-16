@@ -22,8 +22,9 @@ import CopyLink from './CopyLink'
 
 export const descriptionMaker = (activity, token) => {
 	if (activity.type === 'marketUpdate') {
-		return `${activity.from} put ${token?.metadata.name
-			} on sale for ${prettyBalance(activity.amount, 24, 4)} Ⓝ`
+		return `${activity.from} put ${
+			token?.metadata.name
+		} on sale for ${prettyBalance(activity.amount, 24, 4)} Ⓝ`
 	}
 
 	if (activity.type === 'marketDelete') {
@@ -31,12 +32,19 @@ export const descriptionMaker = (activity, token) => {
 	}
 
 	if (activity.type === 'marketBuy') {
-		return `${activity.from} bought ${activity.quantity}pcs of ${token?.metadata.name
-			} from ${activity.to} for ${prettyBalance(activity.amount, 24, 4)} Ⓝ`
+		return `${activity.from} bought ${activity.quantity}pcs of ${
+			token?.metadata.name
+		} from ${activity.to} for ${prettyBalance(activity.amount, 24, 4)} Ⓝ`
 	}
 
 	if (activity.type === 'transfer' && activity.from === '') {
 		return `${token?.metadata.name} created by ${activity.to} with supply of ${activity.quantity}pcs`
+	}
+
+	if (activity.type === 'bidMarketAdd') {
+		return `${activity.accountId} placed offer on ${
+			token?.metadata.name
+		} for ${prettyBalance(activity.amount, 24, 4)} Ⓝ`
 	}
 
 	return `${activity.from} transferred ${activity.quantity}pcs of ${token?.metadata.name} to ${activity.to}`
@@ -148,9 +156,7 @@ const Activity = ({ activity }) => {
 					/>
 				</span>
 				<span> placed offer </span>
-				<span>
-					{' '}for{' '}
-				</span>
+				<span> for </span>
 				<span>
 					{prettyBalance(activity.amount, 24, 4)} Ⓝ
 					<span>
@@ -159,7 +165,6 @@ const Activity = ({ activity }) => {
 						{prettyBalance(JSBI.BigInt(activity.amount * nearUsdPrice), 24, 4)})
 					</span>
 				</span>
-
 			</div>
 		)
 	}
