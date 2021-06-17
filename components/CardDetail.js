@@ -310,6 +310,10 @@ const CardDetail = ({ token }) => {
 		_changeSortBy('priceasc')
 	}, [])
 
+	useEffect(() => {
+		setLocalToken(token)
+	}, [token])
+
 	useEffect(async () => {
 		if (store.currentUser) {
 			try {
