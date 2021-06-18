@@ -420,14 +420,14 @@ const SpecialCard = ({
 						<div>
 							<p className="text-gray-400">Price</p>
 							<div className="mb-4 flex space-x-2 justify-center items-center">
-								<p
+								{/* <p
 									className="text-gray-100 text-xl font-bold line-through opacity-75"
 									style={{ textDecorationColor: '#DC143C' }}
 								>
 									{priceOriginal}
-								</p>
+								</p> */}
 								<p className="text-gray-100 text-4xl font-bold">
-									{`${price} Ⓝ`}
+									{`${priceOriginal} Ⓝ`}
 								</p>
 							</div>
 						</div>
