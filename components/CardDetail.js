@@ -310,6 +310,10 @@ const CardDetail = ({ token }) => {
 		_changeSortBy('priceasc')
 	}, [])
 
+	useEffect(() => {
+		setLocalToken(token)
+	}, [token])
+
 	useEffect(async () => {
 		if (store.currentUser) {
 			try {
@@ -1455,7 +1459,9 @@ const CardDetail = ({ token }) => {
 														href={{
 															pathname: '/[id]/collection/[collectionName]',
 															query: {
-																collectionName: localToken.metadata.collection,
+																collectionName: encodeURIComponent(
+																	localToken.metadata.collection
+																),
 																id: localToken.creatorId,
 															},
 														}}

@@ -317,6 +317,26 @@ const Notification = ({ notif }) => {
 			</div>
 		)
 	}
+	if (notif.type === 'onBidAdd') {
+		return (
+			<div>
+				<Link href={`/token/${notif.payload.tokenId}?tab=bids`}>
+					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
+							<img src={parseImgUrl(token?.metadata?.image)} />
+						</div>
+						<div className="pl-2 text-gray-300">
+							received new bid from{' '}
+							<span className="font-medium text-gray-100">
+								{prettyTruncate(notif.payload.accountId, 12, 'address')}
+							</span>{' '}
+							for {prettyBalance(notif.payload.amount, 24, 4)} Ⓝ
+						</div>
+					</div>
+				</Link>
+			</div>
+		)
+	}
 	return (
 		<div>
 			<Link href={`/token/${notif.payload.tokenId}`}>

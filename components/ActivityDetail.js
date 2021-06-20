@@ -41,6 +41,12 @@ export const descriptionMaker = (activity, token) => {
 		return `${token?.metadata.name} created by ${activity.to} with supply of ${activity.quantity}pcs`
 	}
 
+	if (activity.type === 'bidMarketAdd') {
+		return `${activity.accountId} placed offer on ${
+			token?.metadata.name
+		} for ${prettyBalance(activity.amount, 24, 4)} Ⓝ`
+	}
+
 	return `${activity.from} transferred ${activity.quantity}pcs of ${token?.metadata.name} to ${activity.to}`
 }
 
