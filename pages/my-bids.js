@@ -109,10 +109,10 @@ const MyBids = () => {
 			</Head>
 			<Nav />
 			<div className="max-w-4xl relative m-auto py-12 px-4 md:px-0">
-				<div className="flex space-x-6">
+				<div className="md:flex md:space-x-6 mb-4">
 					<div
 						onClick={() => switchType('myBids')}
-						className={`cursor-pointer text-4xl text-gray-100 mb-4 ${
+						className={`cursor-pointer text-4xl text-gray-100 ${
 							type === 'myBids' ? 'font-bold' : 'opacity-75'
 						}`}
 					>
@@ -120,7 +120,7 @@ const MyBids = () => {
 					</div>
 					<div
 						onClick={() => switchType('receivedBids')}
-						className={`cursor-pointer text-4xl text-gray-100 mb-4 ${
+						className={`cursor-pointer text-4xl text-gray-100 ${
 							type === 'receivedBids' ? 'font-bold' : 'opacity-75'
 						}`}
 					>
@@ -132,8 +132,8 @@ const MyBids = () => {
 					next={_fetchData}
 					hasMore={hasMore}
 					loader={
-						<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
-							<p className="my-2 text-center">Loading...</p>
+						<div className="border-2 border-dashed my-4 p-2 rounded-md text-center border-gray-800">
+							<p className="my-2 text-center text-gray-200">Loading...</p>
 						</div>
 					}
 				>

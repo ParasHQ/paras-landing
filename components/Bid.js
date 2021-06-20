@@ -237,7 +237,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 				</Modal>
 			)}
 			<div className="border-2 border-dashed my-4 p-4 md:py-6 md:px-8 rounded-md border-gray-800">
-				<div className="w-full flex items-center">
+				<div className="flex items-center">
 					<div className="w-40 h-full">
 						<Card
 							imgUrl={parseImgUrl(token?.metadata?.image)}
@@ -258,57 +258,63 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 							disableFlip={true}
 						/>
 					</div>
-					<div className="ml-6 flex-1 text-gray-100 truncate cursor-pointer">
-						<Link
-							href={{
-								pathname: router.pathname,
-								query: {
-									...router.query,
-									...{ tokenId: token?.tokenId },
-									...{ prevAs: router.asPath },
-								},
-							}}
-							as={`/token/${token?.tokenId}`}
-							scroll={false}
-							shallow
-						>
-							<div className="font-bold text-2xl">{token?.metadata?.name}</div>
-						</Link>
-						<p className="opacity-75">{token?.metadata?.collection}</p>
-						<div className="mt-4 mb-6">
-							{`Bid ${prettyBalance(data.bidMarketData.amount, 24, 4)} Ⓝ for 
-						${data.bidMarketData.quantity} pcs`}
-						</div>
-						<p className="mt-2 text-sm opacity-50">
-							{token && timeAgo.format(token.createdAt)}
-						</p>
-					</div>
-					<div className="flex flex-col">
-						<div>{isLoading && 'Loading'}</div>
-						{getUserOwnership(store.currentUser) &&
-						store.currentUser !== data.accountId ? (
-							<button
-								onClick={() => setShowModal('acceptBid')}
-								className="font-semibold w-32 rounded-md border-2 border-primary bg-primary text-white mb-2"
+					<div className="flex-1 md:flex ml-4 md:ml-6 justify-between items-center">
+						<div className="text-gray-100 truncate cursor-pointer">
+							<Link
+								href={{
+									pathname: router.pathname,
+									query: {
+										...router.query,
+										...{ tokenId: token?.tokenId },
+										...{ prevAs: router.asPath },
+									},
+								}}
+								as={`/token/${token?.tokenId}`}
+								scroll={false}
+								shallow
 							>
-								Accept
-							</button>
-						) : (
-							<>
+								<div className="font-bold text-2xl">
+									{token?.metadata?.name}
+								</div>
+							</Link>
+							<p className="opacity-75">{token?.metadata?.collection}</p>
+							<div className="mt-4 mb-6">
+								{`Bid ${prettyBalance(
+									data.bidMarketData.amount,
+									24,
+									4
+								)} Ⓝ for ${data.bidMarketData.quantity} pcs`}
+							</div>
+							<p className="mt-2 text-sm opacity-50 mb-6 md:mb-0">
+								{token && timeAgo.format(token.createdAt)}
+							</p>
+						</div>
+						<div className="flex flex-col">
+							{getUserOwnership(store.currentUser) &&
+							store.currentUser !== data.accountId ? (
 								<button
-									onClick={() => setShowModal('updateBid')}
+									onClick={() => setShowModal('acceptBid')}
 									className="font-semibold w-32 rounded-md border-2 border-primary bg-primary text-white mb-2"
 								>
-									Update
+									Accept
 								</button>
-								<button
-									className="font-semibold w-32 rounded-md border-2 bg-red-600 text-white border-red-600 mb-2"
-									onClick={() => setShowModal('cancelBid')}
-								>
-									Cancel
-								</button>
-							</>
-						)}
+							) : (
+								<>
+									<button
+										onClick={() => setShowModal('updateBid')}
+										className="font-semibold w-32 rounded-md border-2 border-primary bg-primary text-white mb-2"
+									>
+										Update
+									</button>
+									<button
+										className="font-semibold w-32 rounded-md border-2 bg-red-600 text-white border-red-600 mb-2"
+										onClick={() => setShowModal('cancelBid')}
+									>
+										Cancel
+									</button>
+								</>
+							)}
+						</div>
 					</div>
 				</div>
 			</div>
