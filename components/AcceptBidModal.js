@@ -19,7 +19,7 @@ const AcceptBidModal = ({
 					</h1>
 					<p className="text-gray-900 mt-2">
 						You are about to accept bid for <b>{token.metadata.name}</b> from{' '}
-						<b>ahnaf.near</b>
+						<b>{data.accountId}</b>
 					</p>
 					<div className="text-gray-900 mt-4 text-2xl font-bold text-center">
 						{`${prettyBalance(data.bidMarketData.amount, 24, 4)} Ⓝ `}
