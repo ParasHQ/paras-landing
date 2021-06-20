@@ -11,32 +11,43 @@ import useStore from '../store'
 const MyBids = () => {
 	const store = useStore()
 	const [page, setPage] = useState(0)
+	const [type, setType] = useState('receivedBids')
 	const [bidsData, setBidsData] = useState([])
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 
 	useEffect(() => {
+		if (store.currentUser) {
+			_fetchData(true)
+		}
+	}, [type])
+
+	useEffect(() => {
 		if (bidsData.length === 0 && hasMore && store.currentUser) {
-			_fetchData()
+			_fetchData(true)
 		}
 	}, [store.currentUser])
 
-	const _fetchData = async () => {
-		if (!hasMore || isFetching) {
+	const _fetchData = async (initial = false) => {
+		const _hasMore = initial ? true : hasMore
+		const _page = initial ? 0 : page
+		const _bidsData = initial ? [] : bidsData
+
+		if (!_hasMore || isFetching) {
 			return
 		}
 
 		setIsFetching(true)
 		const res = await Axios(
 			`${process.env.API_URL}/bids?accountId=${store.currentUser}&__skip=${
-				page * 10
-			}&isReceived=true&__limit=10`
+				_page * 10
+			}${type === 'receivedBids' && '&isReceived=true'}&__limit=10`
 		)
 		const newData = await res.data.data
 
-		const newBidsData = [...bidsData, ...newData.results]
+		const newBidsData = [..._bidsData, ...newData.results]
 		setBidsData(newBidsData)
-		setPage(page + 1)
+		setPage(_page + 1)
 		if (newData.results.length === 0) {
 			setHasMore(false)
 		} else {
@@ -48,6 +59,10 @@ const MyBids = () => {
 	const updateBidData = (bidId) => {
 		const updatedData = bidsData.filter((bid) => bid.id !== bidId)
 		setBidsData(updatedData)
+	}
+
+	const switchType = (_type) => {
+		setType(_type)
 	}
 
 	return (
@@ -94,7 +109,24 @@ const MyBids = () => {
 			</Head>
 			<Nav />
 			<div className="max-w-4xl relative m-auto py-12 px-4 md:px-0">
-				<div className="font-bold text-4xl text-gray-100 mb-4">My Bids</div>
+				<div className="flex space-x-6">
+					<div
+						onClick={() => switchType('myBids')}
+						className={`cursor-pointer text-4xl text-gray-100 mb-4 ${
+							type === 'myBids' ? 'font-bold' : 'opacity-75'
+						}`}
+					>
+						My Bids
+					</div>
+					<div
+						onClick={() => switchType('receivedBids')}
+						className={`cursor-pointer text-4xl text-gray-100 mb-4 ${
+							type === 'receivedBids' ? 'font-bold' : 'opacity-75'
+						}`}
+					>
+						Received Bids
+					</div>
+				</div>
 				<InfiniteScroll
 					dataLength={bidsData.length}
 					next={_fetchData}
@@ -114,11 +146,16 @@ const MyBids = () => {
 							/>
 						</div>
 					))}
-					{bidsData.length === 0 && !isFetching && (
-						<div className="border-2 border-dashed p-2 rounded-md text-center border-gray-800">
-							<p className="my-4 text-center text-gray-200">
+					{bidsData.length === 0 && !hasMore && (
+						<div className="border-2 border-dashed p-2 rounded-md text-center border-gray-800 my-4">
+							<p className="my-20 text-center text-gray-200">
 								You have no active bid
 							</p>
+						</div>
+					)}
+					{bidsData.length === 0 && hasMore && (
+						<div className="border-2 border-dashed p-2 rounded-md text-center border-gray-800 my-4">
+							<p className="my-20 text-center text-gray-200">Loading...</p>
 						</div>
 					)}
 				</InfiniteScroll>
