@@ -307,6 +307,7 @@ const CardDetail = ({ token }) => {
 	const [isCopied, setIsCopied] = useState(false)
 
 	const [whitelist, setWhitelist] = useState([])
+	const [bidMarketData, setBidMarketData] = useState(null)
 
 	useEffect(() => {
 		setIsComponentMounted(true)
@@ -320,11 +321,16 @@ const CardDetail = ({ token }) => {
 	useEffect(async () => {
 		if (store.currentUser) {
 			try {
-				const res = await near.contract.getUserPurchaseWhitelist({
+				const resUserWhitelist = await near.contract.getUserPurchaseWhitelist({
 					tokenId: localToken.tokenId,
 					buyerId: store.currentUser,
 				})
-				setWhitelist(res.split('::'))
+				const resBidMarketData = await near.contract.getBidMarketData({
+					tokenId: localToken.tokenId,
+					ownerId: store.currentUser,
+				})
+				setBidMarketData(resBidMarketData)
+				setWhitelist(resUserWhitelist.split('::'))
 			} catch (err) {
 				console.log(err)
 			}
@@ -391,6 +397,18 @@ const CardDetail = ({ token }) => {
 		}
 	}
 
+	const _cancelBid = async () => {
+		const params = {
+			ownerId: store.currentUser,
+			tokenId: localToken.tokenId,
+		}
+		try {
+			await near.contract.deleteBidMarketData(params, '50000000000000')
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
 	const _placebid = async (data) => {
 		setIsSubmitting(true)
 		const params = {
@@ -423,8 +441,8 @@ const CardDetail = ({ token }) => {
 			setIsSubmitting(false)
 			return
 		}
-
 		try {
+			bidMarketData && (await _cancelBid())
 			await near.contract.addBidMarketData(
 				params,
 				'50000000000000',
@@ -781,7 +799,7 @@ const CardDetail = ({ token }) => {
 						<div className="w-1/2 px-2">
 							<button
 								className="font-semibold py-3 w-full rounded-md border-2 border-primary bg-primary text-white text-sm"
-								onClick={() => setShowModal('placeBid')}
+								onClick={() => setShowModal('confirmTransfer')}
 							>
 								Transfer
 							</button>
@@ -1230,6 +1248,8 @@ const CardDetail = ({ token }) => {
 			)}
 			{showModal === 'placeBid' && (
 				<PlaceBidModal
+					bidAmount={bidMarketData && prettyBalance(bidMarketData.price, 24, 4)}
+					bidQuantity={bidMarketData && bidMarketData.quantity}
 					localToken={localToken}
 					onSubmitForm={_placebid}
 					onCancel={() => setShowModal('')}
