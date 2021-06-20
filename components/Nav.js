@@ -629,7 +629,7 @@ const Nav = () => {
 	}
 
 	const hideEmailNotVerified = () => {
-		Cookies.set('hideEmailNotVerified', 'true', { expires: 30 })
+		Cookies.set('hideEmailNotVerified', 'true', { expires: 3 })
 		store.setShowEmailWarning(false)
 	}
 
