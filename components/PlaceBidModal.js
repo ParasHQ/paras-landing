@@ -27,8 +27,7 @@ const PlaceBidModal = ({
 						Place a Bid
 					</h1>
 					<p className="text-gray-900 mt-2">
-						You are about to bid <b>{localToken.metadata.name}</b>. You must bid
-						at least <b>0.15 Ⓝ</b>
+						You are about to bid <b>{localToken.metadata.name}</b>.
 					</p>
 					<form onSubmit={handleSubmit(onSubmitForm)}>
 						<div className="mt-4 flex space-x-4">

@@ -1,39 +1,41 @@
-import { useEffect, useState } from 'react'
 import Axios from 'axios'
-import LinkToProfile from './LinkToProfile'
-import { parseImgUrl, prettyBalance, timeAgo } from '../utils/common'
-import useSWR from 'swr'
-import Link from 'next/link'
-import useStore from '../store'
-import Modal from './Modal'
-import near from '../lib/near'
-import PlaceBidModal from './PlaceBidModal'
 import JSBI from 'jsbi'
-import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
+import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
+import { useEffect } from 'react/cjs/react.development'
+import AcceptBidModal from '../components/AcceptBidModal'
+import Card from '../components/Card'
+import CardDetailModal from '../components/CardDetailModal'
+import Modal from '../components/Modal'
+import PlaceBidModal from '../components/PlaceBidModal'
 import { useToast } from '../hooks/useToast'
-import AcceptBidModal from './AcceptBidModal'
+import near from '../lib/near'
+import useStore from '../store'
+import { parseImgUrl, prettyBalance, timeAgo } from '../utils/common'
 
-const BidItem = ({ data, userOwnership, token, fetchBid }) => {
+const Bid = ({ tokenId, data, updateBidData }) => {
 	const store = useStore()
 	const toast = useToast()
-	const [showModal, setShowModal] = useState('')
+	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
+	const [token, setToken] = useState(null)
+	const [showModal, setShowModal] = useState('')
 
-	const fetcher = async (key) => {
-		const resp = await axios.get(`${process.env.API_URL}/${key}`)
-		if (resp.data.data.results.length > 0) {
-			return resp.data.data.results[0]
-		} else {
-			return {}
-		}
+	useEffect(() => {
+		fetchData()
+	}, [])
+
+	const fetchData = async (key) => {
+		const resp = await Axios.get(
+			`${process.env.API_URL}/tokens?tokenId=${tokenId}`
+		)
+		setToken(resp.data.data.results[0])
 	}
 
-	const { data: profile } = useSWR(
-		`profiles?accountId=${data.accountId}`,
-		fetcher
-	)
-
 	const acceptBid = async () => {
+		const userOwnership = getUserOwnership(store.currentUser)
 		const quantity =
 			data.bidMarketData.quantity > userOwnership.quantity
 				? userOwnership.quantity.toString()
@@ -67,6 +69,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 			const currentUser = await near.currentUser
 
 			store.setUserBalance(currentUser.balance)
+
 			setIsLoading(false)
 			setShowModal('')
 			toast.show({
@@ -78,7 +81,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 				type: 'success',
 				duration: 2500,
 			})
-			fetchBid()
+			updateBidData(data.id)
 		} catch (err) {
 			console.log(err)
 			toast.show({
@@ -136,19 +139,10 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 			)
 		} catch (err) {
 			console.log(err)
-			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						Something went wrong, try again later
-					</div>
-				),
-				type: 'error',
-				duration: 2500,
-			})
 		}
 	}
 
-	const cancelBid = async (fetchAfterCancel = true) => {
+	const cancelBid = async (updateData = true) => {
 		const params = {
 			ownerId: data.accountId,
 			tokenId: token.tokenId,
@@ -156,9 +150,9 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 		setIsLoading(true)
 		try {
 			await near.contract.deleteBidMarketData(params, '50000000000000')
-			fetchAfterCancel && setIsLoading(false)
-			fetchAfterCancel && fetchBid()
-			fetchAfterCancel &&
+			updateData && setIsLoading(false)
+			updateData && updateBidData(data.id)
+			updateData &&
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
@@ -182,8 +176,19 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 		}
 	}
 
+	const getUserOwnership = (userId) => {
+		if (token) {
+			const ownership = token.ownerships.find(
+				(ownership) => ownership.ownerId === userId
+			)
+			return ownership
+		}
+		return null
+	}
+
 	return (
 		<>
+			<CardDetailModal tokens={[token]} />
 			{showModal === 'acceptBid' && (
 				<AcceptBidModal
 					data={data}
@@ -191,7 +196,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 					onClose={() => setShowModal('')}
 					onSubmitForm={acceptBid}
 					token={token}
-					userOwnership={userOwnership}
+					userOwnership={getUserOwnership(store.currentUser)}
 				/>
 			)}
 			{showModal === 'updateBid' && (
@@ -231,117 +236,84 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 					</div>
 				</Modal>
 			)}
-			<div className="m-auto border-2 border-dashed my-4 p-2 rounded-md">
-				<div className="flex justify-between items-center">
-					<div className="flex items-center overflow-hidden">
-						<Link href={`/${data.accountId}`}>
-							<div className="w-8 h-8 flex-shrink-0 rounded-full overflow-hidden cursor-pointer bg-primary">
-								{profile && (
-									<img
-										className="object-cover"
-										src={parseImgUrl(profile.imgUrl)}
-									/>
-								)}
-							</div>
-						</Link>
-						<div className="px-2">
-							<LinkToProfile accountId={data.accountId} len={20} />
-						</div>
+			<div className="border-2 border-dashed my-4 p-4 md:py-6 md:px-8 rounded-md border-gray-800">
+				<div className="w-full flex items-center">
+					<div className="w-40 h-full">
+						<Card
+							imgUrl={parseImgUrl(token?.metadata?.image)}
+							imgBlur={token?.metadata?.blurhash}
+							token={{
+								name: token?.metadata?.name,
+								collection: token?.metadata?.collection,
+								description: token?.metadata?.description,
+								creatorId: token?.creatorId,
+								supply: token?.supply,
+								tokenId: token?.tokenId,
+								createdAt: token?.createdAt,
+							}}
+							initialRotate={{
+								x: 0,
+								y: 0,
+							}}
+							disableFlip={true}
+						/>
 					</div>
-					<p className="mt-1 text-sm">{timeAgo.format(data.createdAt)}</p>
-				</div>
-				<div className="flex items-center justify-between mt-2">
-					<div>
-						<span>Bid {prettyBalance(data.bidMarketData.amount, 24, 4)} Ⓝ</span>
-						<span> for {data.bidMarketData.quantity} pcs</span>
-					</div>
-					{userOwnership && store.currentUser !== data.accountId && (
-						<button
-							className="font-semibold w-24 rounded-md bg-primary text-white"
-							onClick={() => setShowModal('acceptBid')}
+					<div className="ml-6 flex-1 text-gray-100 truncate cursor-pointer">
+						<Link
+							href={{
+								pathname: router.pathname,
+								query: {
+									...router.query,
+									...{ tokenId: token?.tokenId },
+									...{ prevAs: router.asPath },
+								},
+							}}
+							as={`/token/${token?.tokenId}`}
+							scroll={false}
+							shallow
 						>
-							Accept
-						</button>
-					)}
-					{store.currentUser === data.accountId && (
-						<div className="flex space-x-1">
-							<button
-								onClick={() => setShowModal('updateBid')}
-								className="font-semibold w-24 rounded-md border-primary border-2 text-primary"
-							>
-								Update
-							</button>
-							<div
-								onClick={() => setShowModal('cancelBid')}
-								className="border-2 border-red-700 px-1 flex items-center justify-center rounded-md"
-							>
-								<svg
-									width="16"
-									height="16"
-									viewBox="0 0 16 16"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path
-										fillRule="evenodd"
-										clipRule="evenodd"
-										d="M8.00008 9.41423L3.70718 13.7071L2.29297 12.2929L6.58586 8.00001L2.29297 3.70712L3.70718 2.29291L8.00008 6.5858L12.293 2.29291L13.7072 3.70712L9.41429 8.00001L13.7072 12.2929L12.293 13.7071L8.00008 9.41423Z"
-										fill="#c53030"
-									/>
-								</svg>
-							</div>
+							<div className="font-bold text-2xl">{token?.metadata?.name}</div>
+						</Link>
+						<p className="opacity-75">{token?.metadata?.collection}</p>
+						<div className="mt-4 mb-6">
+							{`Bid ${prettyBalance(data.bidMarketData.amount, 24, 4)} Ⓝ for 
+						${data.bidMarketData.quantity} pcs`}
 						</div>
-					)}
+						<p className="mt-2 text-sm opacity-50">
+							{token && timeAgo.format(token.createdAt)}
+						</p>
+					</div>
+					<div className="flex flex-col">
+						<div>{isLoading && 'Loading'}</div>
+						{getUserOwnership(store.currentUser) &&
+						store.currentUser !== data.accountId ? (
+							<button
+								onClick={() => setShowModal('acceptBid')}
+								className="font-semibold w-32 rounded-md border-2 border-primary bg-primary text-white mb-2"
+							>
+								Accept
+							</button>
+						) : (
+							<>
+								<button
+									onClick={() => setShowModal('updateBid')}
+									className="font-semibold w-32 rounded-md border-2 border-primary bg-primary text-white mb-2"
+								>
+									Update
+								</button>
+								<button
+									className="font-semibold w-32 rounded-md border-2 bg-red-600 text-white border-red-600 mb-2"
+									onClick={() => setShowModal('cancelBid')}
+								>
+									Cancel
+								</button>
+							</>
+						)}
+					</div>
 				</div>
 			</div>
 		</>
 	)
 }
 
-const BidList = ({ userOwnership, token }) => {
-	const [bidList, setBidList] = useState([])
-	const [isFetching, setIsFetching] = useState(true)
-
-	useEffect(() => {
-		_fetchData()
-	}, [])
-
-	const _fetchData = async () => {
-		const res = await Axios(
-			`${process.env.API_URL}/bids?tokenId=${token.tokenId}`
-		)
-		const newData = await res.data.data
-
-		setBidList(newData.results)
-		setIsFetching(false)
-	}
-
-	return (
-		<div>
-			{bidList.length === 0 && !isFetching && (
-				<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
-					<p className="text-gray-500 py-8 px-8">No bidding yet</p>
-				</div>
-			)}
-			{isFetching && (
-				<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
-					<p className="my-2 text-center">Loading...</p>
-				</div>
-			)}
-			{bidList.length !== 0 &&
-				bidList.map((bid) => {
-					return (
-						<BidItem
-							key={bid._id}
-							data={bid}
-							userOwnership={userOwnership}
-							token={token}
-							fetchBid={_fetchData}
-						/>
-					)
-				})}
-		</div>
-	)
-}
-
-export default BidList
+export default Bid
