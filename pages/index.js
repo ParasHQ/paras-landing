@@ -146,24 +146,28 @@ const PublicationList = ({ idx, data }) => {
 					</Link>
 				</div>
 				<div className="w-full md:w-7/12 mt-2 lg:mt-0 px-2">
-					<LinkToProfile
-						accountId={data.authorId}
-						className="inline-block mt-2 lg:mt-0 text-gray-100 hover:border-white font-semibold"
-					/>
-					<Link href={`/publication/${data.type}/${data.slug}-${data._id}`}>
-						<a className="inline-block mt-2">
-							<div
-								className="cursor-pointer overflow-hidden"
-								style={{
-									maxHeight: `3.75rem`,
-								}}
-							>
-								<h1 className="text-white text-xl font-bold hover:underline line-clamp-2">
-									{data.title}
-								</h1>
-							</div>
-						</a>
-					</Link>
+					<div className="mt-2 lg:mt-0">
+						<LinkToProfile
+							accountId={data.authorId}
+							className="text-gray-100 hover:border-white font-semibold"
+						/>
+					</div>
+					<div className="mt-2">
+						<Link href={`/publication/${data.type}/${data.slug}-${data._id}`}>
+							<a className="">
+								<div
+									className="cursor-pointer overflow-hidden"
+									style={{
+										maxHeight: `3.75rem`,
+									}}
+								>
+									<h1 className="text-white text-xl font-bold hover:underline line-clamp-2">
+										{data.title}
+									</h1>
+								</div>
+							</a>
+						</Link>
+					</div>
 					<div className="mt-2">
 						<Link href={`/publication/${data.type}`}>
 							<a className="capitalize text-sm text-gray-300 font-semibold hover:border-white border-b-2 border-transparent">
