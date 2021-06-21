@@ -35,9 +35,9 @@ const collection = ({ ownerTokens, userProfile, accountId }) => {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/tokens?excludeTotalBurn=true&ownerId=${router.query.id}&__skip=${
-				page * 5
-			}&__limit=5`
+			`${process.env.API_URL}/tokens?excludeTotalBurn=true&ownerId=${
+				router.query.id
+			}&__skip=${page * 12}&__limit=12`
 		)
 		const newData = await res.data.data
 
@@ -111,7 +111,7 @@ export default collection
 
 export async function getServerSideProps({ params }) {
 	const ownerRes = await axios(
-		`${process.env.API_URL}/tokens?excludeTotalBurn=true&ownerId=${params.id}&__limit=5`
+		`${process.env.API_URL}/tokens?excludeTotalBurn=true&ownerId=${params.id}&__limit=12`
 	)
 	const profileRes = await axios(
 		`${process.env.API_URL}/profiles?accountId=${params.id}`

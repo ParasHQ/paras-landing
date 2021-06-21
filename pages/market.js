@@ -6,12 +6,11 @@ import CardList from '../components/CardList'
 import Head from 'next/head'
 import Footer from '../components/Footer'
 import useStore from '../store'
-import FeaturedPostList from '../components/FeaturedPost'
 import FilterMarket from '../components/FilterMarket'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { parseSortQuery } from '../utils/common'
 
-const LIMIT = 6
+const LIMIT = 12
 
 export default function MarketPage({ data, featured }) {
 	const store = useStore()
@@ -107,7 +106,6 @@ export default function MarketPage({ data, featured }) {
 			</Head>
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
-				<FeaturedPostList post={featured} />
 				<div className="flex justify-end mb-4">
 					<h1 className="absolute inset-x-0 text-4xl font-bold text-gray-100 text-center">
 						Market
