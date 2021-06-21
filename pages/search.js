@@ -11,7 +11,7 @@ import useStore from '../store'
 import FilterMarket from '../components/FilterMarket'
 import { parseSortQuery } from '../utils/common'
 
-const LIMIT = 6
+const LIMIT = 12
 
 export default function SearchPage({ data, searchQuery }) {
 	const store = useStore()
@@ -84,19 +84,13 @@ export default function SearchPage({ data, searchQuery }) {
 		>
 			<Head>
 				<title>{headMeta.title}</title>
-				<meta
-					name="description"
-					content={headMeta.description}
-				/>
+				<meta name="description" content={headMeta.description} />
 
 				<meta name="twitter:title" content={headMeta.title} />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
-				<meta
-					name="twitter:description"
-					content={headMeta.description}
-				/>
+				<meta name="twitter:description" content={headMeta.description} />
 				<meta
 					name="twitter:image"
 					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
@@ -104,10 +98,7 @@ export default function SearchPage({ data, searchQuery }) {
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Search Result — Paras" />
 				<meta property="og:site_name" content="Search Result — Paras" />
-				<meta
-					property="og:description"
-					content={headMeta.description}
-				/>
+				<meta property="og:description" content={headMeta.description} />
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
@@ -119,7 +110,8 @@ export default function SearchPage({ data, searchQuery }) {
 				<div className="text-center">
 					<h1 className="text-3xl font-bold text-gray-100">Search Result</h1>
 					<h4 className="text-xl font-semibold text-gray-300">
-						<span className="opacity-75">for</span> <span className="border-b-2 border-gray-100">{searchQuery}</span>
+						<span className="opacity-75">for</span>{' '}
+						<span className="border-b-2 border-gray-100">{searchQuery}</span>
 					</h4>
 				</div>
 				<div className="flex justify-end">

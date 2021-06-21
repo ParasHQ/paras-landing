@@ -8,7 +8,7 @@ import useStore from '../../../store'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-const LIMIT = 6
+const LIMIT = 12
 
 export default function MarketPage({ data }) {
 	const store = useStore()
@@ -138,11 +138,13 @@ export default function MarketPage({ data }) {
 }
 
 export async function getServerSideProps({ params }) {
+	console.log(params.collectionName)
 	const res = await axios(
 		`${process.env.API_URL}/tokens?collection=${encodeURIComponent(
 			params.collectionName
 		)}&creatorId=${params.id}&excludeTotalBurn=true&__limit=${LIMIT}`
 	)
+	console.log(res)
 	const data = await res.data.data
 
 	return { props: { data } }
