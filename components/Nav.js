@@ -842,53 +842,47 @@ const Nav = () => {
 						</div>
 					</div>
 				</div>
-				<div
-					ref={mobileNavRef}
-					className={`absolute bg-black top-0 left-0 right-0 z-30 transform transition-transform duration-200`}
-					style={{ '--transform-translate-y': !showMobileNav && '-24rem' }}
-				>
-					{testnetBannerRef.current && (
-						<div
-							style={{
-								height: `${testnetBannerRef.current.offsetHeight}px`,
-							}}
-						></div>
-					)}
-					<div className="h-16"></div>
-					<div className="text-center border-b-2 border-dashed border-gray-800">
-						<div className="text-gray-100 ">
-							<Link href="/drops">
-								<a className="p-4 block w-full fireText">Drops</a>
-							</Link>
-						</div>
-						<div className="text-gray-100 ">
-							{router.pathname === '/market' ? (
-								<a
-									className="cursor-pointer p-4 block w-full"
-									onClick={(_) => store.setMarketScrollPersist(0)}
-								>
-									Market
-								</a>
-							) : (
-								<Link href="/market">
-									<a className="p-4 block w-full">Market</a>
+				<div className="relative">
+					<div
+						ref={mobileNavRef}
+						className={`absolute bg-black top-0 left-0 right-0 z-30 transform transition-transform duration-200`}
+						style={{ '--transform-translate-y': !showMobileNav && '-100%' }}
+					>
+						<div className="text-center border-b-2 border-dashed border-gray-800">
+							<div className="text-gray-100 ">
+								<Link href="/drops">
+									<a className="p-4 block w-full fireText">Drops</a>
 								</Link>
-							)}
-						</div>
-						<div className="text-gray-100 ">
-							<Link href="/publication">
-								<a className="p-4 block w-full">Publication</a>
-							</Link>
-						</div>
-						<div className="text-gray-100 ">
-							<Link href="/activity">
-								<a className="p-4 block w-full">Activity</a>
-							</Link>
-						</div>
-						<div className="text-gray-100">
-							<Link href="/activity/top-cards">
-								<a className="p-4 block w-full">Stats</a>
-							</Link>
+							</div>
+							<div className="text-gray-100 ">
+								{router.pathname === '/market' ? (
+									<a
+										className="cursor-pointer p-4 block w-full"
+										onClick={(_) => store.setMarketScrollPersist(0)}
+									>
+										Market
+									</a>
+								) : (
+									<Link href="/market">
+										<a className="p-4 block w-full">Market</a>
+									</Link>
+								)}
+							</div>
+							<div className="text-gray-100 ">
+								<Link href="/publication">
+									<a className="p-4 block w-full">Publication</a>
+								</Link>
+							</div>
+							<div className="text-gray-100 ">
+								<Link href="/activity">
+									<a className="p-4 block w-full">Activity</a>
+								</Link>
+							</div>
+							<div className="text-gray-100">
+								<Link href="/activity/top-cards">
+									<a className="p-4 block w-full">Stats</a>
+								</Link>
+							</div>
 						</div>
 					</div>
 				</div>
