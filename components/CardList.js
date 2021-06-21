@@ -82,7 +82,7 @@ const CardList = ({
 			className="overflow-x-hidden border-2 border-dashed border-gray-800 rounded-md"
 		>
 			<CardDetailModal tokens={tokens} />
-			{tokens.length === 0 && (
+			{tokens.length === 0 && !hasMore && (
 				<div className="w-full">
 					<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">
 						<div className="w-40 m-auto">
