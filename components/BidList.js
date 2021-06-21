@@ -64,9 +64,10 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 		setIsLoading(true)
 		try {
 			await near.contract.acceptBidMarketData(params, '50000000000000')
-			const currentUser = await near.currentUser
 
-			store.setUserBalance(currentUser.balance)
+			const balance = await near.wallet.account().getAccountBalance()
+			store.setUserBalance(balance)
+
 			setIsLoading(false)
 			setShowModal('')
 			toast.show({
@@ -165,8 +166,11 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 							Your bid has been deleted
 						</div>
 					),
+					type: 'success',
 					duration: 2500,
 				})
+			const balance = await near.wallet.account().getAccountBalance()
+			store.setUserBalance(balance)
 		} catch (err) {
 			console.log(err)
 			toast.show({

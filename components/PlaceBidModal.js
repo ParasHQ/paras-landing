@@ -78,7 +78,7 @@ const PlaceBidModal = ({
 							</div>
 							<div className="flex justify-between">
 								<div className="text-sm">Service Fee</div>
-								<div>0.5 Ⓝ</div>
+								<div>0.003 Ⓝ</div>
 							</div>
 							<div className="flex justify-between">
 								<div className="text-sm">Total bid Amount</div>
