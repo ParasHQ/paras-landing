@@ -1299,7 +1299,7 @@ const CardDetail = ({ token }) => {
 								punch={1}
 							/>
 						</div>
-						<div className="h-full">
+						<div className="h-full flex items-center">
 							<Card
 								imgUrl={parseImgUrl(localToken.metadata.image)}
 								imgBlur={localToken.metadata.blurhash}
