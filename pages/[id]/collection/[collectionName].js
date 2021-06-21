@@ -10,7 +10,7 @@ import Link from 'next/link'
 
 const LIMIT = 12
 
-export default function MarketPage() {
+export default function MarketPage({ collectionName }) {
 	const store = useStore()
 	const router = useRouter()
 	const [tokens, setTokens] = useState([])
@@ -18,12 +18,10 @@ export default function MarketPage() {
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
 
-	const { collectionName, filter, id } = router.query
+	const { filter, id } = router.query
 
-	useEffect(() => {
-		return () => {
-			store.setMarketScrollPersist('market', 0)
-		}
+	useEffect(async () => {
+		await _fetchData()
 	}, [])
 
 	const _fetchData = async () => {
@@ -44,7 +42,7 @@ export default function MarketPage() {
 		const newTokens = [...tokens, ...newData.results]
 		setTokens(newTokens)
 		setPage(page + 1)
-		if (newData.results.length === 0) {
+		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
@@ -135,4 +133,10 @@ export default function MarketPage() {
 			<Footer />
 		</div>
 	)
+}
+
+export async function getServerSideProps({ params }) {
+	return {
+		props: { collectionName: params.collectionName },
+	}
 }
