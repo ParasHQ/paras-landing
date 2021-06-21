@@ -9,7 +9,7 @@ const Setting = ({ close }) => {
 	const [preferences, setPreferences] = useState([
 		'nft-drops',
 		'newsletter',
-		// 'notification',
+		'notification',
 	])
 	const [initialSetting, setInitialSetting] = useState(null)
 	const [isUpdating, setIsUpdating] = useState(false)
