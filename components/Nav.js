@@ -850,6 +850,11 @@ const Nav = () => {
 					>
 						<div className="text-center border-b-2 border-dashed border-gray-800">
 							<div className="text-gray-100 ">
+								<Link href="/">
+									<a className="p-4 block w-full">Home</a>
+								</Link>
+							</div>
+							<div className="text-gray-100 ">
 								<Link href="/drops">
 									<a className="p-4 block w-full fireText">Drops</a>
 								</Link>
