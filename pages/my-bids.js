@@ -11,7 +11,7 @@ import useStore from '../store'
 const MyBids = () => {
 	const store = useStore()
 	const [page, setPage] = useState(0)
-	const [type, setType] = useState('receivedBids')
+	const [type, setType] = useState('myBids')
 	const [bidsData, setBidsData] = useState([])
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
@@ -108,7 +108,7 @@ const MyBids = () => {
 				/>
 			</Head>
 			<Nav />
-			<div className="max-w-4xl relative m-auto py-12 px-4 md:px-0">
+			<div className="max-w-4xl relative m-auto py-12 px-4">
 				<div className="md:flex md:space-x-6 mb-4">
 					<div
 						onClick={() => switchType('myBids')}
