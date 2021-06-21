@@ -63,9 +63,7 @@ const LoginPage = () => {
 					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 				/>
 			</Head>
-			<div className="fixed">
-				<Nav />
-			</div>
+			<Nav />
 			<div className="max-w-lg m-auto flex items-center justify-center h-full px-4 pt-48 pb-24">
 				<div className=" w-full">
 					<div className="flex items-center">
