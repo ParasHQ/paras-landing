@@ -21,7 +21,7 @@ export default function SearchPage({ searchQuery }) {
 	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isRefreshing, setIsRefreshing] = useState(false)
-	const [hasMore, setHasMore] = useState(true)
+	const [hasMore, setHasMore] = useState(false)
 
 	const { query } = router
 
