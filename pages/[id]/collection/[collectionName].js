@@ -10,11 +10,11 @@ import Link from 'next/link'
 
 const LIMIT = 12
 
-export default function MarketPage({ data }) {
+export default function MarketPage() {
 	const store = useStore()
 	const router = useRouter()
-	const [tokens, setTokens] = useState(data.results)
-	const [page, setPage] = useState(1)
+	const [tokens, setTokens] = useState([])
+	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
 
@@ -135,17 +135,4 @@ export default function MarketPage({ data }) {
 			<Footer />
 		</div>
 	)
-}
-
-export async function getServerSideProps({ params }) {
-	console.log(params.collectionName)
-	const res = await axios(
-		`${process.env.API_URL}/tokens?collection=${encodeURIComponent(
-			params.collectionName
-		)}&creatorId=${params.id}&excludeTotalBurn=true&__limit=${LIMIT}`
-	)
-	console.log(res)
-	const data = await res.data.data
-
-	return { props: { data } }
 }

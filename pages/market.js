@@ -9,15 +9,16 @@ import useStore from '../store'
 import FilterMarket from '../components/FilterMarket'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { parseSortQuery } from '../utils/common'
+import CardListLoader from '../components/CardListLoader'
 
 const LIMIT = 12
 
-export default function MarketPage({ data, featured }) {
+export default function MarketPage() {
 	const store = useStore()
 	const router = useRouter()
 
-	const [tokens, setTokens] = useState(data.results)
-	const [page, setPage] = useState(1)
+	const [tokens, setTokens] = useState([])
+	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(true)
 	const [hasMore, setHasMore] = useState(true)
@@ -47,17 +48,15 @@ export default function MarketPage({ data, featured }) {
 		if (!hasMore || isFetching) {
 			return
 		}
-
 		setIsFetching(true)
 		const res = await axios(`${process.env.API_URL}/tokens`, {
 			params: tokensParams(page, router.query),
 		})
 		const newData = await res.data.data
-
 		const newTokens = [...tokens, ...newData.results]
 		setTokens(newTokens)
 		setPage(page + 1)
-		if (newData.results.length === 0) {
+		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
@@ -117,14 +116,7 @@ export default function MarketPage({ data, featured }) {
 				<div className="mt-4 px-4">
 					{isFiltering ? (
 						<div className="min-h-full border-2 border-dashed border-gray-800 rounded-md">
-							<div className="w-full">
-								<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">
-									<div className="w-40 m-auto">
-										<img src="/cardstack.png" className="opacity-75" />
-									</div>
-									<p className="mt-4">Loading Cards</p>
-								</div>
-							</div>
+							<CardListLoader />
 						</div>
 					) : (
 						<CardList
@@ -151,18 +143,4 @@ const tokensParams = (_page = 0, query) => {
 		...(query.pmax && { maxPrice: parseNearAmount(query.pmax) }),
 	}
 	return params
-}
-
-export async function getServerSideProps({ query }) {
-	const marketRes = await axios(`${process.env.API_URL}/tokens`, {
-		params: tokensParams(0, query),
-	})
-	const featuredRes = await axios(`${process.env.API_URL}/features`)
-
-	return {
-		props: {
-			data: marketRes.data.data,
-			featured: featuredRes.data.data.results,
-		},
-	}
 }
