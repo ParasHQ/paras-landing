@@ -46,7 +46,7 @@ const Publication = ({ pubList }) => {
 				className="fixed inset-0 opacity-75"
 				style={{
 					zIndex: 0,
-					backgroundImage: `url('./bg.jpg')`,
+					backgroundImage: `url('/bg.jpg')`,
 					backgroundRepeat: 'no-repeat',
 					backgroundSize: 'cover',
 				}}
