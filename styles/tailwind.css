@@ -153,6 +153,10 @@ input.clear {
 	pointer-events: none;
 }
 
+.publication-card:hover .publication-card-img {
+	@apply transform duration-300 scale-110;
+}
+
 /*!
  * Hamburgers
  * @description Tasty CSS-animated hamburgers
