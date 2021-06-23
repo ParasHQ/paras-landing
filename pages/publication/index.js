@@ -7,35 +7,45 @@ import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
 import PublicationList from '../../components/PublicationList'
 import PublicationCardListLoader from '../../components/Publication/PublicationCardListLoader'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 const LIMIT = 6
 
 const Publication = () => {
+	const router = useRouter()
 	const [pubData, setPubData] = useState([])
 	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
 
 	useEffect(() => {
-		_fetchData()
-	}, [])
+		if (router.isReady) {
+			window.scrollTo(0, 0)
+			_fetchData(true)
+		}
+	}, [router.isReady, router.query])
 
-	const _fetchData = async () => {
-		if (!hasMore || isFetching) {
+	const _fetchData = async (initial = false) => {
+		const _hasMore = initial ? true : hasMore
+		const _page = initial ? 0 : page
+		const _pubData = initial ? [] : pubData
+
+		if (!_hasMore || isFetching) {
 			return
 		}
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/publications?__skip=${
-				page * LIMIT
-			}&__limit=${LIMIT}`
+			`${process.env.API_URL}/publications?${
+				router.query.type ? `type=${router.query.type}` : ``
+			}&__skip=${_page * LIMIT}&__limit=${LIMIT}`
 		)
 		const newData = await res.data.data
 
-		const newPubData = [...pubData, ...newData.results]
+		const newPubData = [..._pubData, ...newData.results]
 		setPubData(newPubData)
-		setPage(page + 1)
+		setPage(_page + 1)
 
 		if (newData.results.length < LIMIT) {
 			setHasMore(false)
@@ -102,6 +112,43 @@ const Publication = () => {
 					</p>
 				</div>
 				<div className="mt-8">
+					<div className="flex text-white">
+						<div className="px-4">
+							<Link href="/publication">
+								<a className="text-xl text-gray-600 font-semibold">
+									<span className={!router.query.type && 'text-gray-100'}>
+										All
+									</span>
+								</a>
+							</Link>
+						</div>
+						<div className="px-4">
+							<Link href="/publication?type=editorial" shallow={true}>
+								<a className="text-xl text-gray-600 font-semibold">
+									<span
+										className={
+											router.query.type === 'editorial' && 'text-gray-100'
+										}
+									>
+										Editorial
+									</span>
+								</a>
+							</Link>
+						</div>
+						<div className="px-4">
+							<Link href="/publication?type=community" shallow={true}>
+								<a className="text-xl text-gray-600 font-semibold">
+									<span
+										className={
+											router.query.type === 'community' && 'text-gray-100'
+										}
+									>
+										Community
+									</span>
+								</a>
+							</Link>
+						</div>
+					</div>
 					<InfiniteScroll
 						dataLength={pubData.length}
 						next={_fetchData}

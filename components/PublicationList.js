@@ -45,7 +45,7 @@ const PublicationList = ({ data }) => {
 				<div className="flex mt-auto">
 					<p className="text-white">
 						<span className="capitalize">
-							<Link href={`/publication/${data.type}`}>
+							<Link href={`/publication?type=${data.type}`} shallow={true}>
 								<a className="text-white font-semibold hover:border-white border-b-2 border-transparent">
 									{data.type}
 								</a>
