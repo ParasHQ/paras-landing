@@ -116,7 +116,9 @@ const Publication = () => {
 						<div className="px-4">
 							<Link href="/publication">
 								<a className="text-xl text-gray-600 font-semibold">
-									<span className={!router.query.type && 'text-gray-100'}>
+									<span
+										className={!router.query.type ? 'text-gray-100' : undefined}
+									>
 										All
 									</span>
 								</a>
@@ -127,7 +129,9 @@ const Publication = () => {
 								<a className="text-xl text-gray-600 font-semibold">
 									<span
 										className={
-											router.query.type === 'editorial' && 'text-gray-100'
+											router.query.type === 'editorial'
+												? 'text-gray-100'
+												: undefined
 										}
 									>
 										Editorial
@@ -140,7 +144,9 @@ const Publication = () => {
 								<a className="text-xl text-gray-600 font-semibold">
 									<span
 										className={
-											router.query.type === 'community' && 'text-gray-100'
+											router.query.type === 'community'
+												? 'text-gray-100'
+												: undefined
 										}
 									>
 										Community
