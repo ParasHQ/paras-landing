@@ -9,6 +9,7 @@ import cookie from '../lib/cookie'
 
 import '../styles/font.css'
 import '../styles/tailwind.css'
+import 'draft-js/dist/Draft.css'
 import 'pure-react-carousel/dist/react-carousel.es.css'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
