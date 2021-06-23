@@ -103,9 +103,12 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			amount: parseNearAmount(data.bidAmount),
 		}
 
-		const attachedDeposit = JSBI.multiply(
-			JSBI.BigInt(data.bidQuantity),
-			JSBI.BigInt(parseNearAmount(data.bidAmount))
+		const attachedDeposit = JSBI.add(
+			JSBI.multiply(
+				JSBI.BigInt(data.bidQuantity),
+				JSBI.BigInt(parseNearAmount(data.bidAmount))
+			),
+			JSBI.BigInt(parseNearAmount('0.003'))
 		)
 
 		if (
@@ -202,6 +205,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			)}
 			{showModal === 'updateBid' && (
 				<PlaceBidModal
+					isUpdate={true}
 					bidAmount={prettyBalance(data.bidMarketData.amount, 24, 4)}
 					bidQuantity={data.bidMarketData.quantity}
 					isSubmitting={isLoading}
@@ -287,7 +291,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 								)} Ⓝ for ${data.bidMarketData.quantity} pcs`}
 							</div>
 							<p className="mt-2 text-sm opacity-50 mb-6 md:mb-0">
-								{token && timeAgo.format(token.createdAt)}
+								{token && timeAgo.format(data.createdAt)}
 							</p>
 						</div>
 						<div className="flex flex-col">

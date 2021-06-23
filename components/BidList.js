@@ -103,9 +103,12 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 			amount: parseNearAmount(data.bidAmount),
 		}
 
-		const attachedDeposit = JSBI.multiply(
-			JSBI.BigInt(data.bidQuantity),
-			JSBI.BigInt(parseNearAmount(data.bidAmount))
+		const attachedDeposit = JSBI.add(
+			JSBI.multiply(
+				JSBI.BigInt(data.bidQuantity),
+				JSBI.BigInt(parseNearAmount(data.bidAmount))
+			),
+			JSBI.BigInt(parseNearAmount('0.003'))
 		)
 
 		if (
