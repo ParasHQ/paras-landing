@@ -1,19 +1,24 @@
 import Head from 'next/head'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
 import PublicationList from '../../components/PublicationList'
+import PublicationCardListLoader from '../../components/Publication/PublicationCardListLoader'
 
 const LIMIT = 6
 
-const Publication = ({ pubList }) => {
-	const [pubData, setPubData] = useState(pubList)
-	const [page, setPage] = useState(1)
+const Publication = () => {
+	const [pubData, setPubData] = useState([])
+	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
+
+	useEffect(() => {
+		_fetchData()
+	}, [])
 
 	const _fetchData = async () => {
 		if (!hasMore || isFetching) {
@@ -32,7 +37,7 @@ const Publication = ({ pubList }) => {
 		setPubData(newPubData)
 		setPage(page + 1)
 
-		if (newData.results.length === 0) {
+		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
@@ -101,6 +106,7 @@ const Publication = ({ pubList }) => {
 						dataLength={pubData.length}
 						next={_fetchData}
 						hasMore={hasMore}
+						loader={<PublicationCardListLoader />}
 					>
 						<div className="flex flex-wrap">
 							{pubData.map((pub, idx) => (
@@ -118,12 +124,3 @@ const Publication = ({ pubList }) => {
 }
 
 export default Publication
-
-export async function getServerSideProps() {
-	const res = await axios(
-		`${process.env.API_URL}/publications?__limit=${LIMIT}`
-	)
-	const pubList = await res.data.data.results
-
-	return { props: { pubList } }
-}
