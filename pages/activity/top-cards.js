@@ -35,7 +35,7 @@ const TopCardsPage = () => {
 		setCardsData(newCardsData)
 		setPage(page + 1)
 
-		if (res.data.data.results < 5) {
+		if (res.data.data.results < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
