@@ -31,7 +31,7 @@
 		"jsbi": "^3.1.4",
 		"lowdb": "^1.0.0",
 		"near-api-js": "^0.39.0",
-		"next": "9.5.5",
+		"next": "^11.0.1",
 		"pure-react-carousel": "^1.27.6",
 		"react": "17.0.1",
 		"react-blurhash": "^0.1.3",
