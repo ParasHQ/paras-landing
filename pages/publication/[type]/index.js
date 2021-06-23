@@ -12,16 +12,16 @@ import {
 } from 'react-share'
 import { useRouter } from 'next/router'
 
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import Error from '../404'
-import TextEditor from '../../components/TextEditor'
-import LinkToProfile from '../../components/LinkToProfile'
-import { parseDate, parseImgUrl } from '../../utils/common'
-import Modal from '../../components/Modal'
-import useStore from '../../store'
-import near from '../../lib/near'
-import EmbeddedCard from '../../components/EmbeddedCard'
+import Nav from '../../../components/Nav'
+import Footer from '../../../components/Footer'
+import Error from '../../404'
+import TextEditor from '../../../components/TextEditor'
+import LinkToProfile from '../../../components/LinkToProfile'
+import { parseDate, parseImgUrl } from '../../../utils/common'
+import Modal from '../../../components/Modal'
+import useStore from '../../../store'
+import near from '../../../lib/near'
+import EmbeddedCard from '../../../components/EmbeddedCard'
 
 const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const store = useStore()
@@ -34,8 +34,6 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const [isCopied, setIsCopied] = useState(false)
 	const [isDeleting, setIsDeleting] = useState(false)
 	const [isComponentMounted, setIsComponentMounted] = useState(false)
-
-	const { slug } = router.query
 
 	useEffect(() => {
 		setIsComponentMounted(true)
@@ -75,7 +73,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 				}
 			)
 			setTimeout(() => {
-				router.push('/publication/community')
+				router.push('/publication')
 			}, 1000)
 		} catch (err) {
 			const msg =
@@ -222,12 +220,14 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 				)}
 				<div className="max-w-5xl relative m-auto pb-12 pt-4">
 					<p className="mb-8 px-4 max-w-3xl m-auto text-gray-400">
-						<Link href={`/publication/editorial`}>
+						<Link href={`/publication`}>
 							<span className="cursor-pointer">Publication</span>
 						</Link>
 						{' > '}
-						<Link href={`/publication/${slug[0]}`}>
-							<span className="cursor-pointer capitalize">{slug[0]}</span>
+						<Link href={`/publication?type=${pubDetail.type}`}>
+							<span className="cursor-pointer capitalize">
+								{pubDetail.type}
+							</span>
 						</Link>
 						{' > '}
 						<span className="font-semibold text-white">{pubDetail.title}</span>
@@ -325,14 +325,12 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 }
 
 export async function getServerSideProps({ params }) {
-	const { slug } = params
-	const id = slug[1].split('-')
+	const { type } = params
+	const id = type.split('-')
 	const slugName = id.slice(0, id.length - 1).join('-')
 
 	const resp = await axios(
-		`${process.env.API_URL}/publications?type=${slug[0]}&_id=${
-			id[id.length - 1]
-		}`
+		`${process.env.API_URL}/publications?_id=${id[id.length - 1]}`
 	)
 
 	const pubDetail = (await resp.data?.data?.results[0]) || null

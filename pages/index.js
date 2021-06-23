@@ -132,7 +132,7 @@ const PublicationList = ({ idx, data }) => {
 				}`}
 			>
 				<div className="w-full md:w-5/12 px-2">
-					<Link href={`/publication/${data.type}/${data.slug}-${data._id}`}>
+					<Link href={`/publication/${data.slug}-${data._id}`}>
 						<a>
 							<div className="flex h-40 lg:h-32 overflow-hidden rounded-md">
 								<div className="m-auto cursor-pointer">
@@ -153,7 +153,7 @@ const PublicationList = ({ idx, data }) => {
 						/>
 					</div>
 					<div className="mt-2">
-						<Link href={`/publication/${data.type}/${data.slug}-${data._id}`}>
+						<Link href={`/publication/${data.slug}-${data._id}`}>
 							<a className="">
 								<div
 									className="cursor-pointer overflow-hidden"
@@ -169,7 +169,7 @@ const PublicationList = ({ idx, data }) => {
 						</Link>
 					</div>
 					<div className="mt-2">
-						<Link href={`/publication/${data.type}`}>
+						<Link href={`/publication?type=${data.type}`}>
 							<a className="capitalize text-sm text-gray-300 font-semibold hover:border-white border-b-2 border-transparent">
 								{data.type}
 							</a>

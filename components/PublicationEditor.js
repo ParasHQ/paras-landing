@@ -141,7 +141,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				},
 			})
 			const pub = res.data.data
-			const routerUrl = `/publication/${pub.type}/${pub.slug}-${pub._id}`
+			const routerUrl = `/publication/${pub.slug}-${pub._id}`
 			setTimeout(() => {
 				router.push(routerUrl)
 			}, 1000)
