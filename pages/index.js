@@ -29,12 +29,12 @@ const renderThumb = ({ style, ...props }) => {
 
 const FeaturedPost = ({ post = {} }) => {
 	return (
-		<div>
+		<div className="publication-card">
 			<div className="bg-dark-primary-1 rounded-md overflow-hidden relative h-56 lg:h-64">
 				<div className="h-full">
 					<img
 						src={parseImgUrl(post.image)}
-						className="object-cover h-full w-full"
+						className="object-cover h-full w-full publication-card-img"
 					/>
 				</div>
 			</div>
@@ -125,7 +125,7 @@ const TopUser = ({ user, idx }) => {
 
 const PublicationList = ({ idx, data }) => {
 	return (
-		<div>
+		<div className="publication-card">
 			<div
 				className={`flex flex-wrap -mx-2 items-center border-gray-800 border-dashed ${
 					idx !== 0 && 'border-t-2 pt-6 mt-6'
@@ -137,7 +137,7 @@ const PublicationList = ({ idx, data }) => {
 							<div className="flex h-40 lg:h-32 overflow-hidden rounded-md">
 								<div className="m-auto cursor-pointer">
 									<img
-										className="w-full h-40 lg:h-32 object-cover"
+										className="w-full h-40 lg:h-32 object-cover publication-card-img"
 										src={parseImgUrl(data.thumbnail)}
 									/>
 								</div>
@@ -293,7 +293,7 @@ export default function Home({
 				</Modal>
 			)}
 			<div
-				className="fixed inset-0 opacity-50"
+				className="fixed inset-0 opacity-75"
 				style={{
 					zIndex: 0,
 					backgroundImage: `url('./bg.jpg')`,

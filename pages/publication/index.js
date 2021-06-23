@@ -1,15 +1,13 @@
 import Head from 'next/head'
 import { useState } from 'react'
 import axios from 'axios'
-import { useRouter } from 'next/router'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
-import { PublicationType } from '../../components/PublicationType'
 import PublicationList from '../../components/PublicationList'
 
-const LIMIT = 5
+const LIMIT = 6
 
 const Publication = ({ pubList }) => {
 	const [pubData, setPubData] = useState(pubList)
@@ -43,12 +41,16 @@ const Publication = ({ pubList }) => {
 	}
 
 	return (
-		<div
-			className="min-h-screen relative bg-dark-primary-1"
-			style={{
-				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-			}}
-		>
+		<div className="min-h-screen relative bg-black">
+			<div
+				className="fixed inset-0 opacity-75"
+				style={{
+					zIndex: 0,
+					backgroundImage: `url('./bg.jpg')`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+				}}
+			></div>
 			<Head>
 				<title>Publication — Paras</title>
 				<meta
@@ -85,19 +87,28 @@ const Publication = ({ pubList }) => {
 				/>
 			</Head>
 			<Nav />
-			<div className="max-w-4xl relative m-auto py-12 p-4">
-				<h1 className="font-bold text-3xl md:text-4xl text-gray-100 cursor-pointer px-4">
+			<div className="max-w-6xl relative m-auto py-12">
+				<h1 className="text-4xl font-bold text-gray-100 text-center">
 					Publication
 				</h1>
-				<div>
+				<div className="mt-4">
+					<p className="text-center text-xl text-gray-300">
+						Enhancing The Visuals through Stories
+					</p>
+				</div>
+				<div className="mt-8">
 					<InfiniteScroll
 						dataLength={pubData.length}
 						next={_fetchData}
 						hasMore={hasMore}
 					>
-						{pubData.map((pub) => (
-							<PublicationList key={pub._id} data={pub} />
-						))}
+						<div className="flex flex-wrap">
+							{pubData.map((pub, idx) => (
+								<div key={idx} className="w-full md:w-1/2 p-4">
+									<PublicationList key={pub._id} data={pub} />
+								</div>
+							))}
+						</div>
 					</InfiniteScroll>
 				</div>
 			</div>
