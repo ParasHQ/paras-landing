@@ -10,6 +10,7 @@ const PlaceBidModal = ({
 	isSubmitting,
 	bidAmount,
 	bidQuantity,
+	isUpdate = false,
 }) => {
 	const { errors, register, handleSubmit, watch } = useForm({
 		defaultValues: {
@@ -24,7 +25,7 @@ const PlaceBidModal = ({
 			<div className="max-w-sm w-full p-4 bg-gray-100 m-auto rounded-md">
 				<div>
 					<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-						Place a Bid
+						{isUpdate ? 'Update My Bid' : 'Place a Bid'}
 					</h1>
 					<p className="text-gray-900 mt-2">
 						You are about to bid <b>{localToken.metadata.name}</b>.
