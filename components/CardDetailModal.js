@@ -10,8 +10,20 @@ function CardDetailModal({ tokens = [] }) {
 	const [activeToken, setActiveToken] = useState(null)
 
 	const closeCardDetail = () => {
-		router.back()
+		const prevUrl = window.sessionStorage.getItem('prevPath')
+		if (prevUrl) {
+			router.push(prevUrl, prevUrl, { shallow: true })
+		} else {
+			router.back()
+		}
 	}
+
+	useEffect(() => {
+		router.beforePopState((state) => {
+			state.options.scroll = false
+			return true
+		})
+	}, [])
 
 	useEffect(() => {
 		if (router.query.tokenId) {
