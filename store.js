@@ -52,6 +52,29 @@ const useStore = create((set, get) => ({
 		set(() => ({ notificationListHasMore: val })),
 	showEmailWarning: false,
 	setShowEmailWarning: (val) => set(() => ({ showEmailWarning: val })),
+	// publication page
+	pubList: [],
+	setPubList: (val) => set(() => ({ pubList: val })),
+	pubListPage: 0,
+	setPubListPage: (val) => set(() => ({ pubListPage: val })),
+	pubListHasMore: true,
+	setPubListHasMore: (val) => set(() => ({ pubListHasMore: val })),
+	// publication page type=editorial
+	pubListEditorial: [],
+	setPubListEditorial: (val) => set(() => ({ pubListEditorial: val })),
+	pubListEditorialPage: 0,
+	setPubListEditorialPage: (val) => set(() => ({ pubListEditorialPage: val })),
+	pubListEditorialHasMore: true,
+	setPubListEditorialHasMore: (val) =>
+		set(() => ({ pubListEditorialHasMore: val })),
+	// publication page type=community
+	pubListCommunity: [],
+	setPubListCommunity: (val) => set(() => ({ pubListCommunity: val })),
+	pubListCommunityPage: 0,
+	setPubListCommunityPage: (val) => set(() => ({ pubListCommunityPage: val })),
+	pubListCommunityHasMore: true,
+	setPubListCommunityHasMore: (val) =>
+		set(() => ({ pubListCommunityHasMore: val })),
 }))
 
 export default useStore

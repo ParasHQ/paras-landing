@@ -9,27 +9,121 @@ import PublicationList from '../../components/PublicationList'
 import PublicationCardListLoader from '../../components/Publication/PublicationCardListLoader'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import useStore from '../../store'
 
 const LIMIT = 6
 
+const PublicationListContainer = ({ data, fetchData, hasMore }) => (
+	<InfiniteScroll
+		dataLength={data.length}
+		next={fetchData}
+		hasMore={hasMore}
+		loader={<PublicationCardListLoader />}
+	>
+		<div className="flex flex-wrap">
+			{data.map((pub, idx) => (
+				<div key={idx} className="w-full md:w-1/2 p-4">
+					<PublicationList key={pub._id} data={pub} />
+				</div>
+			))}
+		</div>
+	</InfiniteScroll>
+)
+
 const Publication = () => {
 	const router = useRouter()
-	const [pubData, setPubData] = useState([])
-	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
-	const [hasMore, setHasMore] = useState(true)
+	const {
+		pubList,
+		setPubList,
+		pubListHasMore,
+		setPubListHasMore,
+		pubListPage,
+		setPubListPage,
+		pubListEditorial,
+		setPubListEditorial,
+		pubListEditorialPage,
+		setPubListEditorialPage,
+		pubListEditorialHasMore,
+		setPubListEditorialHasMore,
+		pubListCommunity,
+		setPubListCommunity,
+		pubListCommunityPage,
+		setPubListCommunityPage,
+		pubListCommunityHasMore,
+		setPubListCommunityHasMore,
+	} = useStore()
 
 	useEffect(() => {
 		if (router.isReady) {
-			window.scrollTo(0, 0)
-			_fetchData(true)
+			if (
+				(!router.query.type && pubList.length === 0) ||
+				(router.query.type === 'editorial' && pubListEditorial.length === 0) ||
+				(router.query.type === 'community' && pubListCommunity.length === 0)
+			) {
+				fetchData(true)
+			}
 		}
 	}, [router.isReady, router.query])
 
-	const _fetchData = async (initial = false) => {
+	useEffect(() => {
+		const handleRouteChange = () => {
+			window.scrollTo(0, 0)
+		}
+
+		router.events.on('routeChangeComplete', handleRouteChange)
+
+		return () => {
+			router.events.off('routeChangeComplete', handleRouteChange)
+		}
+	}, [])
+
+	const fetchData = async (initial = false) => {
+		if (!router.query.type) {
+			_fetchData(
+				initial,
+				pubList,
+				setPubList,
+				pubListHasMore,
+				setPubListHasMore,
+				pubListPage,
+				setPubListPage
+			)
+		} else if (router.query.type === 'editorial') {
+			_fetchData(
+				initial,
+				pubListEditorial,
+				setPubListEditorial,
+				pubListEditorialPage,
+				setPubListEditorialPage,
+				pubListEditorialHasMore,
+				setPubListEditorialHasMore
+			)
+		} else if (router.query.type === 'community') {
+			_fetchData(
+				initial,
+				pubListCommunity,
+				setPubListCommunity,
+				pubListCommunityPage,
+				setPubListCommunityPage,
+				pubListCommunityHasMore,
+				setPubListCommunityHasMore
+			)
+		}
+	}
+
+	const _fetchData = async (
+		initial = false,
+		list,
+		setList,
+		hasMore,
+		setHasMore,
+		page,
+		setPage
+	) => {
+		const _pubList = initial ? [] : list
 		const _hasMore = initial ? true : hasMore
 		const _page = initial ? 0 : page
-		const _pubData = initial ? [] : pubData
 
 		if (!_hasMore || isFetching) {
 			return
@@ -42,9 +136,9 @@ const Publication = () => {
 			}&__skip=${_page * LIMIT}&__limit=${LIMIT}`
 		)
 		const newData = await res.data.data
+		const newPubList = [..._pubList, ...newData.results]
 
-		const newPubData = [..._pubData, ...newData.results]
-		setPubData(newPubData)
+		setList(newPubList)
 		setPage(_page + 1)
 
 		if (newData.results.length < LIMIT) {
@@ -155,20 +249,30 @@ const Publication = () => {
 							</Link>
 						</div>
 					</div>
-					<InfiniteScroll
-						dataLength={pubData.length}
-						next={_fetchData}
-						hasMore={hasMore}
-						loader={<PublicationCardListLoader />}
-					>
-						<div className="flex flex-wrap">
-							{pubData.map((pub, idx) => (
-								<div key={idx} className="w-full md:w-1/2 p-4">
-									<PublicationList key={pub._id} data={pub} />
-								</div>
-							))}
-						</div>
-					</InfiniteScroll>
+					{/* render All */}
+					{!router.query.type && (
+						<PublicationListContainer
+							data={pubList}
+							hasMore={pubListHasMore}
+							fetchData={fetchData}
+						/>
+					)}
+					{/* render Editorial */}
+					{router.query.type === 'editorial' && (
+						<PublicationListContainer
+							data={pubListEditorial}
+							hasMore={pubListEditorialHasMore}
+							fetchData={fetchData}
+						/>
+					)}
+					{/* render Community */}
+					{router.query.type === 'community' && (
+						<PublicationListContainer
+							data={pubListCommunity}
+							hasMore={pubListCommunityHasMore}
+							fetchData={fetchData}
+						/>
+					)}
 				</div>
 			</div>
 			<Footer />
