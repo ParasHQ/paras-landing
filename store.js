@@ -1,5 +1,4 @@
 import create from 'zustand'
-import near from './lib/near'
 
 const useStore = create((set, get) => ({
 	currentUser: null,
@@ -26,6 +25,28 @@ const useStore = create((set, get) => ({
 			}
 			return {
 				marketDataPersist: newMarket,
+			}
+		}),
+	usersPublicationList: {},
+	setUsersPublicationList: (key, val) =>
+		set(() => {
+			const newUsersPublicationList = {
+				...get().usersPublicationList,
+				...{ [key]: val },
+			}
+			return {
+				usersPublicationList: newUsersPublicationList,
+			}
+		}),
+	usersPublicationMeta: {},
+	setUsersPublicationMeta: (key, val) =>
+		set(() => {
+			const newUsersPublicationMeta = {
+				...get().setUsersPublicationMeta,
+				...{ [key]: val },
+			}
+			return {
+				usersPublicationMeta: newUsersPublicationMeta,
 			}
 		}),
 	nearUsdPrice: 0,

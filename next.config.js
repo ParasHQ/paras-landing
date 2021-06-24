@@ -1,4 +1,7 @@
 module.exports = {
+	experimental: {
+		scrollRestoration: true,
+	},
 	env: {
 		APP_ENV: process.env.APP_ENV,
 		CONTRACT_NAME: process.env.CONTRACT_NAME,
