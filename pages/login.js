@@ -22,12 +22,16 @@ const LoginPage = () => {
 	}
 
 	return (
-		<div
-			className="min-h-screen relative bg-dark-primary-1"
-			style={{
-				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-			}}
-		>
+		<div className="min-h-screen relative bg-black">
+			<div
+				className="fixed inset-0 opacity-75"
+				style={{
+					zIndex: 0,
+					backgroundImage: `url('/bg.jpg')`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+				}}
+			></div>
 			<Head>
 				<title>Login — Paras</title>
 				<meta
@@ -64,40 +68,44 @@ const LoginPage = () => {
 				/>
 			</Head>
 			<Nav />
-			<div className="max-w-lg m-auto flex items-center justify-center h-full px-4 pt-48 pb-24">
-				<div className=" w-full">
-					<div className="flex items-center">
-						<div>
+			<div className="relative min-h-screen flex flex-col justify-between px-4 pb-24">
+				<div className="max-w-lg m-auto pt-16">
+					<div className="w-full">
+						<div className="flex items-center">
 							<div>
-								<h3 className="text-4xl text-gray-100 font-bold">
-									Create and Collect
-								</h3>
-								<h3 className="text-xl text-gray-300 font-semibold">
-									Start your journey with digital art cards on blockchain
-								</h3>
+								<div>
+									<h3 className="text-4xl text-gray-100 font-bold">
+										Create and Collect
+									</h3>
+									<h3 className="text-xl text-gray-300 font-semibold">
+										Start your journey with digital art cards on blockchain
+									</h3>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div className="mt-4">
-						<button
-							onClick={() => _signIn()}
-							className="outline-none h-12 w-full mt-4 rounded-md bg-transparent font-semibold px-4 py-2 bg-primary text-gray-100 "
-						>
-							Login with NEAR
-						</button>
-					</div>
-					<div className="mt-8 text-center">
-						<a
-							href="https://faucet.paras.id"
-							target="_blank"
-							className="text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer text-sm"
-						>
-							Create free NEAR account with Metamask
-						</a>
+						<div className="mt-4">
+							<button
+								onClick={() => _signIn()}
+								className="outline-none h-12 w-full mt-4 rounded-md bg-transparent font-semibold px-4 py-2 bg-primary text-gray-100 "
+							>
+								Login with NEAR
+							</button>
+						</div>
+						<div className="mt-8 text-center">
+							<a
+								href="https://faucet.paras.id"
+								target="_blank"
+								className="text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer text-sm"
+							>
+								Create free NEAR account with Metamask
+							</a>
+						</div>
 					</div>
 				</div>
+				<div className="mt-auto">
+					<Footer />
+				</div>
 			</div>
-			<Footer />
 		</div>
 	)
 }

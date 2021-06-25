@@ -32,12 +32,16 @@ const EmailVerification = () => {
 	}
 
 	return (
-		<div
-			className="min-h-screen relative bg-dark-primary-1"
-			style={{
-				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-			}}
-		>
+		<div className="min-h-screen relative bg-black">
+			<div
+				className="fixed inset-0 opacity-75"
+				style={{
+					zIndex: 0,
+					backgroundImage: `url('/bg.jpg')`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+				}}
+			></div>
 			<Head>
 				<title>Paras — Digital Art Cards Market</title>
 				<meta
@@ -74,7 +78,7 @@ const EmailVerification = () => {
 				/>
 			</Head>
 			<Nav />
-			<div className="pt-48 py-32 text-center">
+			<div className="pt-48 py-32 text-center relative">
 				{emailVerified && !isLoading && (
 					<>
 						<svg

@@ -186,12 +186,16 @@ const NewPage = () => {
 	}
 
 	return (
-		<div
-			className="min-h-screen bg-dark-primary-1"
-			style={{
-				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-			}}
-		>
+		<div className="min-h-screen bg-black">
+			<div
+				className="fixed inset-0 opacity-75"
+				style={{
+					zIndex: 0,
+					backgroundImage: `url('/bg.jpg')`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+				}}
+			></div>
 			<Head>
 				<title>Create New Card — Paras</title>
 				<meta
@@ -401,7 +405,7 @@ const NewPage = () => {
 					}}
 				/>
 			)}
-			<div className="max-w-6xl m-auto py-12 px-4">
+			<div className="relative max-w-6xl m-auto py-12 px-4">
 				<div className="flex flex-wrap rounded-md overflow-hidden">
 					<div className="w-full lg:w-2/3 py-16 px-4 flex justify-center items-center bg-dark-primary-2 ">
 						<div
