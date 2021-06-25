@@ -9,6 +9,7 @@ import cookie from '../lib/cookie'
 
 import '../styles/font.css'
 import '../styles/tailwind.css'
+import 'draft-js/dist/Draft.css'
 import 'pure-react-carousel/dist/react-carousel.es.css'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
@@ -65,6 +66,18 @@ function MyApp({ Component, pageProps }) {
 			router.events.off('routeChangeComplete', handleRouteChange)
 		}
 	}, [router.events])
+
+	useEffect(() => storePathValues, [router.asPath])
+
+	function storePathValues() {
+		const storage = globalThis?.sessionStorage
+		if (!storage) return
+
+		const prevPath = storage.getItem('currentPath')
+		storage.setItem('prevPath', prevPath)
+
+		storage.setItem('currentPath', globalThis.location.pathname)
+	}
 
 	useEffect(() => {
 		_init()

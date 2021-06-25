@@ -7,7 +7,7 @@ const PublicationPreviewMini = ({ data }) => {
 	return (
 		<div className="m-auto border-2 border-dashed my-4 p-2 rounded-md">
 			<div className="m-auto">
-				<Link href={`/publication/${data.type}/${data.slug}-${data._id}`}>
+				<Link href={`/publication/${data.slug}-${data._id}`}>
 					<div className="cursor-pointer">
 						<h1 className="font-bold line-clamp-1">{data.title}</h1>
 						<p className="text-sm mt-1 line-clamp-2 overflow-hidden">

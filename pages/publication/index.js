@@ -1,38 +1,147 @@
 import Head from 'next/head'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
 import PublicationList from '../../components/PublicationList'
+import PublicationCardListLoader from '../../components/Publication/PublicationCardListLoader'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+import useStore from '../../store'
 
 const LIMIT = 6
 
-const Publication = ({ pubList }) => {
-	const [pubData, setPubData] = useState(pubList)
-	const [page, setPage] = useState(1)
-	const [isFetching, setIsFetching] = useState(false)
-	const [hasMore, setHasMore] = useState(true)
+const PublicationListContainer = ({ data, fetchData, hasMore }) => (
+	<InfiniteScroll
+		dataLength={data.length}
+		next={fetchData}
+		hasMore={hasMore}
+		loader={<PublicationCardListLoader />}
+	>
+		<div className="flex flex-wrap">
+			{data.map((pub, idx) => (
+				<div key={idx} className="w-full md:w-1/2 p-4">
+					<PublicationList key={pub._id} data={pub} />
+				</div>
+			))}
+		</div>
+	</InfiniteScroll>
+)
 
-	const _fetchData = async () => {
-		if (!hasMore || isFetching) {
+const Publication = () => {
+	const router = useRouter()
+	const [isFetching, setIsFetching] = useState(false)
+	const {
+		pubList,
+		setPubList,
+		pubListHasMore,
+		setPubListHasMore,
+		pubListPage,
+		setPubListPage,
+		pubListEditorial,
+		setPubListEditorial,
+		pubListEditorialPage,
+		setPubListEditorialPage,
+		pubListEditorialHasMore,
+		setPubListEditorialHasMore,
+		pubListCommunity,
+		setPubListCommunity,
+		pubListCommunityPage,
+		setPubListCommunityPage,
+		pubListCommunityHasMore,
+		setPubListCommunityHasMore,
+	} = useStore()
+
+	useEffect(() => {
+		if (router.isReady) {
+			if (
+				(!router.query.type && pubList.length === 0) ||
+				(router.query.type === 'editorial' && pubListEditorial.length === 0) ||
+				(router.query.type === 'community' && pubListCommunity.length === 0)
+			) {
+				fetchData(true)
+			}
+		}
+	}, [router.isReady, router.query])
+
+	useEffect(() => {
+		const handleRouteChange = () => {
+			window.scrollTo(0, 0)
+		}
+
+		router.events.on('routeChangeComplete', handleRouteChange)
+
+		return () => {
+			router.events.off('routeChangeComplete', handleRouteChange)
+		}
+	}, [])
+
+	const fetchData = async (initial = false) => {
+		if (!router.query.type) {
+			_fetchData(
+				initial,
+				pubList,
+				setPubList,
+				pubListHasMore,
+				setPubListHasMore,
+				pubListPage,
+				setPubListPage
+			)
+		} else if (router.query.type === 'editorial') {
+			_fetchData(
+				initial,
+				pubListEditorial,
+				setPubListEditorial,
+				pubListEditorialPage,
+				setPubListEditorialPage,
+				pubListEditorialHasMore,
+				setPubListEditorialHasMore
+			)
+		} else if (router.query.type === 'community') {
+			_fetchData(
+				initial,
+				pubListCommunity,
+				setPubListCommunity,
+				pubListCommunityPage,
+				setPubListCommunityPage,
+				pubListCommunityHasMore,
+				setPubListCommunityHasMore
+			)
+		}
+	}
+
+	const _fetchData = async (
+		initial = false,
+		list,
+		setList,
+		hasMore,
+		setHasMore,
+		page,
+		setPage
+	) => {
+		const _pubList = initial ? [] : list
+		const _hasMore = initial ? true : hasMore
+		const _page = initial ? 0 : page
+
+		if (!_hasMore || isFetching) {
 			return
 		}
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/publications?__skip=${
-				page * LIMIT
-			}&__limit=${LIMIT}`
+			`${process.env.API_URL}/publications?${
+				router.query.type ? `type=${router.query.type}` : ``
+			}&__skip=${_page * LIMIT}&__limit=${LIMIT}`
 		)
 		const newData = await res.data.data
+		const newPubList = [..._pubList, ...newData.results]
 
-		const newPubData = [...pubData, ...newData.results]
-		setPubData(newPubData)
-		setPage(page + 1)
+		setList(newPubList)
+		setPage(_page + 1)
 
-		if (newData.results.length === 0) {
+		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
@@ -97,19 +206,73 @@ const Publication = ({ pubList }) => {
 					</p>
 				</div>
 				<div className="mt-8">
-					<InfiniteScroll
-						dataLength={pubData.length}
-						next={_fetchData}
-						hasMore={hasMore}
-					>
-						<div className="flex flex-wrap">
-							{pubData.map((pub, idx) => (
-								<div key={idx} className="w-full md:w-1/2 p-4">
-									<PublicationList key={pub._id} data={pub} />
-								</div>
-							))}
+					<div className="flex text-white">
+						<div className="px-4">
+							<Link href="/publication">
+								<a className="text-xl text-gray-600 font-semibold">
+									<span
+										className={!router.query.type ? 'text-gray-100' : undefined}
+									>
+										All
+									</span>
+								</a>
+							</Link>
 						</div>
-					</InfiniteScroll>
+						<div className="px-4">
+							<Link href="/publication?type=editorial" shallow={true}>
+								<a className="text-xl text-gray-600 font-semibold">
+									<span
+										className={
+											router.query.type === 'editorial'
+												? 'text-gray-100'
+												: undefined
+										}
+									>
+										Editorial
+									</span>
+								</a>
+							</Link>
+						</div>
+						<div className="px-4">
+							<Link href="/publication?type=community" shallow={true}>
+								<a className="text-xl text-gray-600 font-semibold">
+									<span
+										className={
+											router.query.type === 'community'
+												? 'text-gray-100'
+												: undefined
+										}
+									>
+										Community
+									</span>
+								</a>
+							</Link>
+						</div>
+					</div>
+					{/* render All */}
+					{!router.query.type && (
+						<PublicationListContainer
+							data={pubList}
+							hasMore={pubListHasMore}
+							fetchData={fetchData}
+						/>
+					)}
+					{/* render Editorial */}
+					{router.query.type === 'editorial' && (
+						<PublicationListContainer
+							data={pubListEditorial}
+							hasMore={pubListEditorialHasMore}
+							fetchData={fetchData}
+						/>
+					)}
+					{/* render Community */}
+					{router.query.type === 'community' && (
+						<PublicationListContainer
+							data={pubListCommunity}
+							hasMore={pubListCommunityHasMore}
+							fetchData={fetchData}
+						/>
+					)}
 				</div>
 			</div>
 			<Footer />
@@ -118,12 +281,3 @@ const Publication = ({ pubList }) => {
 }
 
 export default Publication
-
-export async function getServerSideProps() {
-	const res = await axios(
-		`${process.env.API_URL}/publications?__limit=${LIMIT}`
-	)
-	const pubList = await res.data.data.results
-
-	return { props: { pubList } }
-}

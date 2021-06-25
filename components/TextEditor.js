@@ -27,8 +27,6 @@ import { checkUrl, compressImg, readFileAsUrl } from '../utils/common'
 import { useToast } from '../hooks/useToast'
 import Modal from './Modal'
 
-import 'draft-js/dist/Draft.css'
-
 const TextEditor = ({
 	content,
 	readOnly = false,

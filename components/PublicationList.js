@@ -6,7 +6,7 @@ const PublicationList = ({ data }) => {
 	return (
 		<div className="publication-card rounded-md overflow-hidden border-dashed border-2 border-gray-800">
 			<div className="relative z-10 bg-gray-800">
-				<Link href={`/publication/${data.type}/${data.slug}-${data._id}`}>
+				<Link href={`/publication/${data.slug}-${data._id}`}>
 					<a>
 						<div className="h-64 overflow-hidden m-auto cursor-pointer shadow-inner">
 							<img
@@ -18,7 +18,7 @@ const PublicationList = ({ data }) => {
 				</Link>
 			</div>
 			<div className="flex flex-col p-4 -mt-1 h-48">
-				<Link href={`/publication/${data.type}/${data.slug}-${data._id}`}>
+				<Link href={`/publication/${data.slug}-${data._id}`}>
 					<a>
 						<div className="cursor-pointer">
 							<div
@@ -45,7 +45,7 @@ const PublicationList = ({ data }) => {
 				<div className="flex mt-auto">
 					<p className="text-white">
 						<span className="capitalize">
-							<Link href={`/publication/${data.type}`}>
+							<Link href={`/publication?type=${data.type}`} shallow={true}>
 								<a className="text-white font-semibold hover:border-white border-b-2 border-transparent">
 									{data.type}
 								</a>
