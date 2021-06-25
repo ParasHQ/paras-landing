@@ -133,12 +133,16 @@ const ActivityLog = ({ query }) => {
 
 	return (
 		<div>
-			<div
-				className="min-h-screen bg-dark-primary-1"
-				style={{
-					backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-				}}
-			>
+			<div className="min-h-screen bg-black">
+				<div
+					className="fixed inset-0 opacity-75"
+					style={{
+						zIndex: 0,
+						backgroundImage: `url('/bg.jpg')`,
+						backgroundRepeat: 'no-repeat',
+						backgroundSize: 'cover',
+					}}
+				></div>
 				<Head>
 					<title>Activity — Paras</title>
 					<meta
@@ -268,7 +272,7 @@ const ActivityLog = ({ query }) => {
 						</div>
 					</div>
 					<div
-						className={`pt-8 md:pt-20 md:w-1/3 md:block px-4 md:p-0 ${
+						className={`relative pt-8 md:pt-20 md:w-1/3 md:block px-4 md:p-0 ${
 							activityType === 'activity' && 'hidden'
 						} md:block`}
 					>

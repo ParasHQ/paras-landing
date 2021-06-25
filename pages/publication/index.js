@@ -94,20 +94,20 @@ const Publication = () => {
 				initial,
 				pubListEditorial,
 				setPubListEditorial,
-				pubListEditorialPage,
-				setPubListEditorialPage,
 				pubListEditorialHasMore,
-				setPubListEditorialHasMore
+				setPubListEditorialHasMore,
+				pubListEditorialPage,
+				setPubListEditorialPage
 			)
 		} else if (router.query.type === 'community') {
 			_fetchData(
 				initial,
 				pubListCommunity,
 				setPubListCommunity,
-				pubListCommunityPage,
-				setPubListCommunityPage,
 				pubListCommunityHasMore,
-				setPubListCommunityHasMore
+				setPubListCommunityHasMore,
+				pubListCommunityPage,
+				setPubListCommunityPage
 			)
 		}
 	}
