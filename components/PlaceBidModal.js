@@ -56,11 +56,12 @@ const PlaceBidModal = ({
 							<div className="w-1/2">
 								<label className="block text-sm">Amount in Ⓝ</label>
 								<input
-									type="number"
 									name="bidAmount"
+									type="number"
+									step="any"
 									ref={register({
 										required: true,
-										min: 1,
+										min: 0.01,
 									})}
 									className={`${errors.bidAmount && 'error'}`}
 									placeholder="Place your bid"
@@ -68,7 +69,7 @@ const PlaceBidModal = ({
 								<div className="mt-2 text-sm text-red-500">
 									{errors.bidAmount?.type === 'required' &&
 										`Buy quantity is required`}
-									{errors.bidAmount?.type === 'min' && `Minimum 1 Ⓝ`}
+									{errors.bidAmount?.type === 'min' && `Minimum 0.01 Ⓝ`}
 								</div>
 							</div>
 						</div>
@@ -78,16 +79,16 @@ const PlaceBidModal = ({
 								<div>{prettyBalance(store.userBalance.available, 24, 4)} Ⓝ</div>
 							</div>
 							<div className="flex justify-between">
-								<div className="text-sm">Service Fee</div>
-								<div>0.003 Ⓝ</div>
-							</div>
-							<div className="flex justify-between">
 								<div className="text-sm">Total bid Amount</div>
 								<div>
 									{watch('bidQuantity', bidQuantity || 0) *
 										watch('bidAmount', bidAmount || 0)}{' '}
 									Ⓝ
 								</div>
+							</div>
+							<div className="flex justify-between">
+								<div className="text-sm">Service Fee</div>
+								<div>0.003 Ⓝ</div>
 							</div>
 						</div>
 						<p className="text-gray-900 mt-4 text-sm text-center">
