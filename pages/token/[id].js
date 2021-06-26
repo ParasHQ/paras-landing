@@ -55,7 +55,7 @@ const TokenDetail = ({ errorCode, token }) => {
 				/>
 			</Head>
 			<Nav />
-			<div className="max-w-6xl w-full m-auto pt-4 px-4">
+			<div className="relative max-w-6xl w-full m-auto pt-4 px-4">
 				<CardDetail token={token} />
 			</div>
 			<Footer />
