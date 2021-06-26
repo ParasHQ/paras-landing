@@ -652,12 +652,12 @@ const Nav = () => {
 				</Modal>
 			)}
 			<div className="sticky top-0 left-0 right-0 z-40 bg-black">
-				<div
-					className={`relative text-white text-center overflow-hidden text-sm md:leading-8 m-auto bg-red-700 z-50 flex items-center justify-center transition-height duration-500 ${
-						store.showEmailWarning ? 'md:h-8' : 'h-0'
-					}`}
-				>
-					{process.env.APP_ENV !== 'testnet' && (
+				{process.env.APP_ENV !== 'testnet' && (
+					<div
+						className={`relative text-white text-center overflow-hidden text-sm md:leading-8 m-auto bg-red-700 z-50 flex items-center justify-center transition-height duration-500 ${
+							store.showEmailWarning ? 'md:h-8' : 'h-0'
+						}`}
+					>
 						<div className="px-10 py-1 md:p-0 ">
 							Please add your email to be verified as Paras user{' '}
 							<span
@@ -667,27 +667,28 @@ const Nav = () => {
 								here
 							</span>
 						</div>
-					)}
 
-					<svg
-						className={`absolute right-0 z-50 mr-2 cursor-pointer ${
-							!store.showEmailWarning && 'hidden'
-						}`}
-						onClick={hideEmailNotVerified}
-						width="16"
-						height="16"
-						viewBox="0 0 16 16"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
-					>
-						<path
-							fillRule="evenodd"
-							clipRule="evenodd"
-							d="M8.00008 9.41423L3.70718 13.7071L2.29297 12.2929L6.58586 8.00001L2.29297 3.70712L3.70718 2.29291L8.00008 6.5858L12.293 2.29291L13.7072 3.70712L9.41429 8.00001L13.7072 12.2929L12.293 13.7071L8.00008 9.41423Z"
-							fill="white"
-						/>
-					</svg>
-				</div>
+						<svg
+							className={`absolute right-0 z-50 mr-2 cursor-pointer ${
+								!store.showEmailWarning && 'hidden'
+							}`}
+							onClick={hideEmailNotVerified}
+							width="16"
+							height="16"
+							viewBox="0 0 16 16"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								fillRule="evenodd"
+								clipRule="evenodd"
+								d="M8.00008 9.41423L3.70718 13.7071L2.29297 12.2929L6.58586 8.00001L2.29297 3.70712L3.70718 2.29291L8.00008 6.5858L12.293 2.29291L13.7072 3.70712L9.41429 8.00001L13.7072 12.2929L12.293 13.7071L8.00008 9.41423Z"
+								fill="white"
+							/>
+						</svg>
+					</div>
+				)}
+
 				{process.env.APP_ENV !== 'production' && (
 					<div
 						ref={testnetBannerRef}
