@@ -11,7 +11,7 @@ function CardDetailModal({ tokens = [] }) {
 
 	const closeCardDetail = () => {
 		const prevUrl = window.sessionStorage.getItem('prevPath')
-		if (prevUrl) {
+		if (prevUrl && prevUrl[0] === '/') {
 			router.push(prevUrl, prevUrl, { shallow: true })
 		} else {
 			router.back()
