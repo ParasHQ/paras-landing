@@ -236,15 +236,17 @@ const User = () => {
 						>
 							Edit Profile
 						</button>
-						<button
-							onClick={(_) => {
-								setShowSettingModal(true)
-								toggleAccountModal()
-							}}
-							className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
-						>
-							Settings
-						</button>
+						{process.env.APP_ENV !== 'testnet' && (
+							<button
+								onClick={(_) => {
+									setShowSettingModal(true)
+									toggleAccountModal()
+								}}
+								className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+							>
+								Settings
+							</button>
+						)}
 						<hr className="my-2" />
 						<p
 							onClick={_signOut}
@@ -655,15 +657,18 @@ const Nav = () => {
 						store.showEmailWarning ? 'md:h-8' : 'h-0'
 					}`}
 				>
-					<div className="px-10 py-1 md:p-0 ">
-						Please add your email to be verified as Paras user{' '}
-						<span
-							onClick={() => setShowSettingModal(true)}
-							className="font-bold cursor-pointer hover:underline"
-						>
-							here
-						</span>
-					</div>
+					{process.env.APP_ENV !== 'testnet' && (
+						<div className="px-10 py-1 md:p-0 ">
+							Please add your email to be verified as Paras user{' '}
+							<span
+								onClick={() => setShowSettingModal(true)}
+								className="font-bold cursor-pointer hover:underline"
+							>
+								here
+							</span>
+						</div>
+					)}
+
 					<svg
 						className={`absolute right-0 z-50 mr-2 cursor-pointer ${
 							!store.showEmailWarning && 'hidden'
