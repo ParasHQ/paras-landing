@@ -31,9 +31,9 @@ export default function MarketPage({ collectionName }) {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/tokens?collection=${encodeURIComponent(
-				collectionName
-			)}&creatorId=${id}&excludeTotalBurn=true&__skip=${
+			`${
+				process.env.API_URL
+			}/tokens?collection=${collectionName}&creatorId=${id}&excludeTotalBurn=true&__skip=${
 				page * LIMIT
 			}&__limit=${LIMIT}`
 		)
