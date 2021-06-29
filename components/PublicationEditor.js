@@ -378,6 +378,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 								/>
 								<button
 									className="font-semibold mt-3 py-3 w-40 rounded-md bg-primary text-white"
+									disabled={isSubmitting}
 									onClick={postPublication}
 								>
 									{isSubmitting ? 'Publishing...' : 'Publish'}

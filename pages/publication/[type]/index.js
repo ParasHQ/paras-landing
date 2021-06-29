@@ -178,6 +178,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							<button
 								className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 								type="submit"
+								disabled={isDeleting}
 								onClick={_deletePublication}
 							>
 								{isDeleting ? 'Deleting...' : 'Delete my publication'}
