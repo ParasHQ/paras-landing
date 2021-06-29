@@ -77,15 +77,20 @@ function MyApp({ Component, pageProps }) {
 		if (prevPath) {
 			storage.setItem('prevPath', prevPath)
 		}
-
-		storage.setItem('currentPath', globalThis.location.pathname)
+		storage.setItem(
+			'currentPath',
+			`${globalThis.location.pathname}${globalThis.location.search}`
+		)
 	}
 
 	useEffect(() => {
 		_init()
 		const storage = globalThis?.sessionStorage
 		if (!storage) return
-		storage.setItem('currentPath', globalThis.location.pathname)
+		storage.setItem(
+			'currentPath',
+			`${globalThis.location.pathname}${globalThis.location.search}`
+		)
 	}, [])
 
 	const _init = async () => {
