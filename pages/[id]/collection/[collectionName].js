@@ -57,8 +57,10 @@ export default function MarketPage({ collectionName }) {
 	}
 
 	const headMeta = {
-		title: `${collectionName} — Paras`,
-		description: `Explore and collect ${collectionName} digital art cards on Paras. All-in-one social digital art card marketplace for creators and collectors.`,
+		title: `${decodeURIComponent(collectionName)} — Paras`,
+		description: `Explore and collect ${decodeURIComponent(
+			collectionName
+		)} digital art cards on Paras. All-in-one social digital art card marketplace for creators and collectors.`,
 	}
 
 	return (
