@@ -359,7 +359,7 @@ input.clear {
 		height: 210px;
 	}
 }
-/* 
+
 .toggle-checkbox:checked {
 	@apply: right-0 border-green-400;
 	right: 0;
@@ -399,7 +399,7 @@ input.clear {
 
 .form-switch-checkbox:checked + .form-switch-label:before {
 	@apply .right-0;
-} */
+}
 
 .disable-scrollbars::-webkit-scrollbar {
 	width: 0px;
