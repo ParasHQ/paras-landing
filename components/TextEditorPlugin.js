@@ -17,7 +17,7 @@ import { parseImgUrl } from '../utils/common'
 
 const focusPlugin = createFocusPlugin({
 	theme: {
-		focused: 'border-gray-700 rounded-md border-4 -m-0.5',
+		focused: 'border-transparent rounded-md border-4 -m-0.5',
 		unfocused: 'border-transparent rounded-md border-4 -m-0.5',
 	},
 })
