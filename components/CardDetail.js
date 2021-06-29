@@ -1655,9 +1655,8 @@ const CardDetail = ({ token }) => {
 														href={{
 															pathname: '/[id]/collection/[collectionName]',
 															query: {
-																collectionName: encodeURIComponent(
-																	localToken.metadata.collection
-																),
+																collectionName:
+																	localToken.metadata.collection.trim(),
 																id: localToken.creatorId,
 															},
 														}}
