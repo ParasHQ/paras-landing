@@ -57,8 +57,10 @@ export default function MarketPage({ collectionName }) {
 	}
 
 	const headMeta = {
-		title: `${collectionName} — Paras`,
-		description: `Explore and collect ${collectionName} digital art cards on Paras. All-in-one social digital art card marketplace for creators and collectors.`,
+		title: `${decodeURIComponent(collectionName)} — Paras`,
+		description: `Explore and collect ${decodeURIComponent(
+			collectionName
+		)} digital art cards on Paras. All-in-one social digital art card marketplace for creators and collectors.`,
 	}
 
 	return (
@@ -98,7 +100,7 @@ export default function MarketPage({ collectionName }) {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<h1 className="text-4xl font-bold text-gray-100 mx-4">
-					{collectionName}
+					{decodeURIComponent(collectionName)}
 				</h1>
 				<div className="flex justify-between m-4 mt-0">
 					<h4 className="text-xl text-gray-300 self-center">
