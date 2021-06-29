@@ -7,12 +7,16 @@ import PublicationEditor from '../../../components/PublicationEditor'
 
 const Edit = ({ pubDetail }) => {
 	return (
-		<div
-			className="min-h-screen relative bg-dark-primary-1"
-			style={{
-				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-			}}
-		>
+		<div className="min-h-screen relative bg-black">
+			<div
+				className="fixed inset-0 opacity-75"
+				style={{
+					zIndex: 0,
+					backgroundImage: `url('/bg.jpg')`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+				}}
+			></div>
 			<Head>
 				<title>Edit Publication — Paras</title>
 				<meta
@@ -49,7 +53,9 @@ const Edit = ({ pubDetail }) => {
 				/>
 			</Head>
 			<Nav />
-			<PublicationEditor isEdit={true} pubDetail={pubDetail} />
+			<div className="relative">
+				<PublicationEditor isEdit={true} pubDetail={pubDetail} />
+			</div>
 			<Footer />
 		</div>
 	)

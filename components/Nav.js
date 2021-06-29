@@ -13,6 +13,8 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Scrollbars from 'react-custom-scrollbars'
 import useSWR from 'swr'
+import Setting from './Setting'
+import Cookies from 'js-cookie'
 
 const LIMIT = 10
 
@@ -24,6 +26,7 @@ const User = () => {
 
 	const [showAccountModal, setShowAccountModal] = useState(false)
 	const [showEditAccountModal, setShowEditAccountModal] = useState(false)
+	const [showSettingModal, setShowSettingModal] = useState(false)
 
 	useEffect(() => {
 		const onClickEv = (e) => {
@@ -115,6 +118,15 @@ const User = () => {
 
 	return (
 		<div ref={accModalRef} className="relative">
+			{showSettingModal && (
+				<Modal
+					close={(_) => setShowSettingModal(false)}
+					closeOnBgClick={false}
+					closeOnEscape={false}
+				>
+					<Setting close={() => setShowSettingModal(false)} />
+				</Modal>
+			)}
 			{showEditAccountModal && (
 				<Modal
 					close={(_) => setShowEditAccountModal(false)}
@@ -210,6 +222,11 @@ const User = () => {
 								My Profile
 							</a>
 						</Link>
+						<Link href={`/my-bids`}>
+							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
+								My Bids
+							</a>
+						</Link>
 						<button
 							onClick={(_) => {
 								setShowEditAccountModal(true)
@@ -219,6 +236,17 @@ const User = () => {
 						>
 							Edit Profile
 						</button>
+						{process.env.APP_ENV !== 'testnet' && (
+							<button
+								onClick={(_) => {
+									setShowSettingModal(true)
+									toggleAccountModal()
+								}}
+								className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+							>
+								Settings
+							</button>
+						)}
 						<hr className="my-2" />
 						<p
 							onClick={_signOut}
@@ -290,6 +318,26 @@ const Notification = ({ notif }) => {
 								4
 							)}{' '}
 							Ⓝ
+						</div>
+					</div>
+				</Link>
+			</div>
+		)
+	}
+	if (notif.type === 'onBidAdd') {
+		return (
+			<div>
+				<Link href={`/token/${notif.payload.tokenId}?tab=bids`}>
+					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
+							<img src={parseImgUrl(token?.metadata?.image)} />
+						</div>
+						<div className="pl-2 text-gray-300">
+							received new bid from{' '}
+							<span className="font-medium text-gray-100">
+								{prettyTruncate(notif.payload.accountId, 12, 'address')}
+							</span>{' '}
+							for {prettyBalance(notif.payload.amount, 24, 4)} Ⓝ
 						</div>
 					</div>
 				</Link>
@@ -539,6 +587,7 @@ const Nav = () => {
 	const testnetBannerRef = useRef()
 	const toast = useToast()
 
+	const [showSettingModal, setShowSettingModal] = useState(false)
 	const [searchQuery, setSearchQuery] = useState(router.query.q || '')
 
 	useEffect(() => {
@@ -586,60 +635,104 @@ const Nav = () => {
 		})
 	}
 
+	const hideEmailNotVerified = () => {
+		Cookies.set('hideEmailNotVerified', 'true', { expires: 3 })
+		store.setShowEmailWarning(false)
+	}
+
 	return (
 		<Fragment>
-			{testnetBannerRef.current && (
-				<div
-					style={{
-						height: `${testnetBannerRef.current.offsetHeight}px`,
-					}}
-				></div>
+			{showSettingModal && (
+				<Modal
+					close={(_) => setShowSettingModal(false)}
+					closeOnBgClick={false}
+					closeOnEscape={false}
+				>
+					<Setting close={() => setShowSettingModal(false)} />
+				</Modal>
 			)}
-			<div className="h-16">
-				<div className="fixed z-40 top-0 left-0 right-0 bg-black">
-					{process.env.APP_ENV !== 'production' && (
-						<div
-							ref={testnetBannerRef}
-							className="bg-primary relative z-50 text-white text-sm text-center p-1 px-2"
-						>
-							<p>
-								You are using Testnet. Everything here has no value. To use
-								Paras, please switch to{' '}
-								<a
-									className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100"
-									href="https://mainnet.paras.id"
-								>
-									Mainnet
-								</a>
-								<svg
-									width="16"
-									height="16"
-									viewBox="0 0 16 16"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-									className="inline	ml-2 cursor-pointer opacity-75"
-									onClick={_showTestnetInfo}
-								>
-									<path
-										fillRule="evenodd"
-										clipRule="evenodd"
-										d="M0 8C0 12.4183 3.58172 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8ZM14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8ZM7 10V9.5C7 8.28237 7.42356 7.68233 8.4 6.95C8.92356 6.55733 9 6.44904 9 6C9 5.44772 8.55229 5 8 5C7.44772 5 7 5.44772 7 6H5C5 4.34315 6.34315 3 8 3C9.65685 3 11 4.34315 11 6C11 7.21763 10.5764 7.81767 9.6 8.55C9.07644 8.94267 9 9.05096 9 9.5V10H7ZM9.00066 11.9983C9.00066 12.5506 8.55279 12.9983 8.00033 12.9983C7.44786 12.9983 7 12.5506 7 11.9983C7 11.4461 7.44786 10.9983 8.00033 10.9983C8.55279 10.9983 9.00066 11.4461 9.00066 11.9983Z"
-										fill="white"
-									/>
-								</svg>
-							</p>
+			<div className="sticky top-0 left-0 right-0 z-40 bg-black">
+				{process.env.APP_ENV !== 'testnet' && (
+					<div
+						className={`relative text-white text-center overflow-hidden text-sm md:leading-8 m-auto bg-red-700 z-50 flex items-center justify-center transition-height duration-500 ${
+							store.showEmailWarning ? 'md:h-8' : 'h-0'
+						}`}
+					>
+						<div className="px-10 py-1 md:p-0 ">
+							Please add your email to be verified as Paras user{' '}
+							<span
+								onClick={() => setShowSettingModal(true)}
+								className="font-bold cursor-pointer hover:underline"
+							>
+								here
+							</span>
 						</div>
-					)}
-					<div className="relative z-40 flex items-center justify-between max-w-6xl m-auto p-4 h-16">
-						<div className="flex items-center pr-4">
-							<div className="block md:hidden">
-								<Hamburger
-									active={showMobileNav}
-									type="squeeze"
-									onClick={(_) => setShowMobileNav(!showMobileNav)}
+
+						<svg
+							className={`absolute right-0 z-50 mr-2 cursor-pointer ${
+								!store.showEmailWarning && 'hidden'
+							}`}
+							onClick={hideEmailNotVerified}
+							width="16"
+							height="16"
+							viewBox="0 0 16 16"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								fillRule="evenodd"
+								clipRule="evenodd"
+								d="M8.00008 9.41423L3.70718 13.7071L2.29297 12.2929L6.58586 8.00001L2.29297 3.70712L3.70718 2.29291L8.00008 6.5858L12.293 2.29291L13.7072 3.70712L9.41429 8.00001L13.7072 12.2929L12.293 13.7071L8.00008 9.41423Z"
+								fill="white"
+							/>
+						</svg>
+					</div>
+				)}
+
+				{process.env.APP_ENV !== 'production' && (
+					<div
+						ref={testnetBannerRef}
+						className="bg-primary relative z-50 text-white text-sm text-center p-1 px-2"
+					>
+						<p>
+							You are using Testnet. Everything here has no value. To use Paras,
+							please switch to{' '}
+							<a
+								className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100"
+								href="https://mainnet.paras.id"
+							>
+								Mainnet
+							</a>
+							<svg
+								width="16"
+								height="16"
+								viewBox="0 0 16 16"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+								className="inline	ml-2 cursor-pointer opacity-75"
+								onClick={_showTestnetInfo}
+							>
+								<path
+									fillRule="evenodd"
+									clipRule="evenodd"
+									d="M0 8C0 12.4183 3.58172 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8ZM14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8ZM7 10V9.5C7 8.28237 7.42356 7.68233 8.4 6.95C8.92356 6.55733 9 6.44904 9 6C9 5.44772 8.55229 5 8 5C7.44772 5 7 5.44772 7 6H5C5 4.34315 6.34315 3 8 3C9.65685 3 11 4.34315 11 6C11 7.21763 10.5764 7.81767 9.6 8.55C9.07644 8.94267 9 9.05096 9 9.5V10H7ZM9.00066 11.9983C9.00066 12.5506 8.55279 12.9983 8.00033 12.9983C7.44786 12.9983 7 12.5506 7 11.9983C7 11.4461 7.44786 10.9983 8.00033 10.9983C8.55279 10.9983 9.00066 11.4461 9.00066 11.9983Z"
+									fill="white"
 								/>
-							</div>
-							<Link href="/">
+							</svg>
+						</p>
+					</div>
+				)}
+				<div className="relative z-40 flex items-center justify-between max-w-6xl m-auto p-4 h-16">
+					<div className="flex items-center pr-4">
+						<div className="block md:hidden">
+							<Hamburger
+								active={showMobileNav}
+								type="squeeze"
+								onClick={(_) => setShowMobileNav(!showMobileNav)}
+							/>
+						</div>
+						<Link href="/">
+							<a>
 								<svg
 									className="cursor-pointer hidden md:block"
 									width="80"
@@ -671,105 +764,104 @@ const Nav = () => {
 										fill="white"
 									/>
 								</svg>
-							</Link>
-						</div>
-						<div className="flex-1 pr-4">
-							<div className="max-w-sm mr-auto">
-								<form action="/search" method="get" onSubmit={_handleSubmit}>
-									<div className="flex border-dark-primary-1 border-2 rounded-lg bg-dark-primary-1">
-										<svg
-											width="36"
-											height="36"
-											viewBox="0 0 32 32"
-											fill="none"
-											xmlns="http://www.w3.org/2000/svg"
-										>
-											<path
-												fillRule="evenodd"
-												clipRule="evenodd"
-												d="M10.6667 15.1667C10.6667 12.6814 12.6814 10.6667 15.1667 10.6667C17.6519 10.6667 19.6667 12.6814 19.6667 15.1667C19.6667 17.6519 17.6519 19.6667 15.1667 19.6667C12.6814 19.6667 10.6667 17.6519 10.6667 15.1667ZM15.1667 8C11.2086 8 8 11.2086 8 15.1667C8 19.1247 11.2086 22.3333 15.1667 22.3333C16.6639 22.3333 18.0538 21.8742 19.2035 21.0891L21.7239 23.6095C22.2446 24.1302 23.0888 24.1302 23.6095 23.6095C24.1302 23.0888 24.1302 22.2446 23.6095 21.7239L21.0891 19.2035C21.8742 18.0538 22.3333 16.6639 22.3333 15.1667C22.3333 11.2086 19.1247 8 15.1667 8Z"
-												fill="white"
-											></path>
-										</svg>
-										<input
-											name="q"
-											type="search"
-											value={searchQuery}
-											onChange={(event) => setSearchQuery(event.target.value)}
-											placeholder="Search by title, collection or artist"
-											className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-sm font-medium"
-										/>
-									</div>
-								</form>
-							</div>
-						</div>
-						<div className="flex items-center -mx-4">
-							<div className="px-3 text-gray-100 hidden md:block fireText">
-								<Link href="/drops">
-									<a>Drops</a>
-								</Link>
-							</div>
-							<div className="px-3 text-gray-100 hidden md:block">
-								{router.pathname === '/market' ? (
-									<a
-										className="cursor-pointer"
-										onClick={(_) => store.setMarketScrollPersist(0)}
+							</a>
+						</Link>
+					</div>
+					<div className="flex-1 pr-4">
+						<div className="max-w-sm mr-auto">
+							<form action="/search" method="get" onSubmit={_handleSubmit}>
+								<div className="flex border-dark-primary-1 border-2 rounded-lg bg-dark-primary-1">
+									<svg
+										width="36"
+										height="36"
+										viewBox="0 0 32 32"
+										fill="none"
+										xmlns="http://www.w3.org/2000/svg"
 									>
-										Market
-									</a>
-								) : (
-									<Link href="/market">
-										<a>Market</a>
-									</Link>
-								)}
-							</div>
-							<div className="px-3 text-gray-100 hidden md:block">
-								<Link href="/publication/editorial">
-									<a>Publication</a>
-								</Link>
-							</div>
-							<div className="px-3 text-gray-100 hidden md:block">
-								<Link href="/activity">
-									<a>Activity</a>
-								</Link>
-							</div>
-							<div className="px-3 text-gray-100 hidden md:block">
-								<Link href="/activity/top-cards">
-									<a>Stats</a>
-								</Link>
-							</div>
-							<div className="px-3">
-								{store.currentUser ? (
-									<div className="flex items-center -mx-2">
-										<div className="px-2">
-											<NotificationList />
-										</div>
-										<div className="px-2">
-											<User />
-										</div>
-									</div>
-								) : (
-									<Link href="/login">
-										<a className="text-gray-100 ">Login</a>
-									</Link>
-								)}
-							</div>
+										<path
+											fillRule="evenodd"
+											clipRule="evenodd"
+											d="M10.6667 15.1667C10.6667 12.6814 12.6814 10.6667 15.1667 10.6667C17.6519 10.6667 19.6667 12.6814 19.6667 15.1667C19.6667 17.6519 17.6519 19.6667 15.1667 19.6667C12.6814 19.6667 10.6667 17.6519 10.6667 15.1667ZM15.1667 8C11.2086 8 8 11.2086 8 15.1667C8 19.1247 11.2086 22.3333 15.1667 22.3333C16.6639 22.3333 18.0538 21.8742 19.2035 21.0891L21.7239 23.6095C22.2446 24.1302 23.0888 24.1302 23.6095 23.6095C24.1302 23.0888 24.1302 22.2446 23.6095 21.7239L21.0891 19.2035C21.8742 18.0538 22.3333 16.6639 22.3333 15.1667C22.3333 11.2086 19.1247 8 15.1667 8Z"
+											fill="white"
+										></path>
+									</svg>
+									<input
+										name="q"
+										type="search"
+										value={searchQuery}
+										onChange={(event) => setSearchQuery(event.target.value)}
+										placeholder="Search by title, collection or artist"
+										className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-sm font-medium"
+									/>
+								</div>
+							</form>
 						</div>
 					</div>
+					<div className="flex items-center -mx-4">
+						<div className="px-3 text-gray-100 hidden md:block fireText">
+							<Link href="/drops">
+								<a>Drops</a>
+							</Link>
+						</div>
+						<div className="px-3 text-gray-100 hidden md:block">
+							{router.pathname === '/market' ? (
+								<a
+									className="cursor-pointer"
+									onClick={(_) => store.setMarketScrollPersist(0)}
+								>
+									Market
+								</a>
+							) : (
+								<Link href="/market">
+									<a>Market</a>
+								</Link>
+							)}
+						</div>
+						<div className="px-3 text-gray-100 hidden md:block">
+							<Link href="/publication">
+								<a>Publication</a>
+							</Link>
+						</div>
+						<div className="px-3 text-gray-100 hidden md:block">
+							<Link href="/activity">
+								<a>Activity</a>
+							</Link>
+						</div>
+						<div className="px-3 text-gray-100 hidden md:block">
+							<Link href="/activity/top-cards">
+								<a>Stats</a>
+							</Link>
+						</div>
+						<div className="px-3">
+							{store.currentUser ? (
+								<div className="flex items-center -mx-2">
+									<div className="px-2">
+										<NotificationList />
+									</div>
+									<div className="px-2">
+										<User />
+									</div>
+								</div>
+							) : (
+								<Link href="/login">
+									<a className="text-gray-100 ">Login</a>
+								</Link>
+							)}
+						</div>
+					</div>
+				</div>
+				<div className="relative">
 					<div
 						ref={mobileNavRef}
 						className={`absolute bg-black top-0 left-0 right-0 z-30 transform transition-transform duration-200`}
-						style={{ '--transform-translate-y': !showMobileNav && '-24rem' }}
+						style={{ '--transform-translate-y': !showMobileNav && '-200%' }}
 					>
-						{testnetBannerRef.current && (
-							<div
-								style={{
-									height: `${testnetBannerRef.current.offsetHeight}px`,
-								}}
-							></div>
-						)}
-						<div className="h-16"></div>
 						<div className="text-center border-b-2 border-dashed border-gray-800">
+							<div className="text-gray-100 ">
+								<Link href="/">
+									<a className="p-4 block w-full">Home</a>
+								</Link>
+							</div>
 							<div className="text-gray-100 ">
 								<Link href="/drops">
 									<a className="p-4 block w-full fireText">Drops</a>
@@ -790,7 +882,7 @@ const Nav = () => {
 								)}
 							</div>
 							<div className="text-gray-100 ">
-								<Link href="/publication/editorial">
+								<Link href="/publication">
 									<a className="p-4 block w-full">Publication</a>
 								</Link>
 							</div>

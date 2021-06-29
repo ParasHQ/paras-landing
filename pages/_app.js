@@ -9,7 +9,10 @@ import cookie from '../lib/cookie'
 
 import '../styles/font.css'
 import '../styles/tailwind.css'
+import 'draft-js/dist/Draft.css'
 import 'pure-react-carousel/dist/react-carousel.es.css'
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
 import 'croppie/croppie.css'
 
 import ToastProvider from '../hooks/useToast'
@@ -64,8 +67,25 @@ function MyApp({ Component, pageProps }) {
 		}
 	}, [router.events])
 
+	useEffect(() => storePathValues, [router.asPath])
+
+	function storePathValues() {
+		const storage = globalThis?.sessionStorage
+		if (!storage) return
+
+		const prevPath = storage.getItem('currentPath')
+		if (prevPath) {
+			storage.setItem('prevPath', prevPath)
+		}
+
+		storage.setItem('currentPath', globalThis.location.pathname)
+	}
+
 	useEffect(() => {
 		_init()
+		const storage = globalThis?.sessionStorage
+		if (!storage) return
+		storage.setItem('currentPath', globalThis.location.pathname)
 	}, [])
 
 	const _init = async () => {
@@ -104,6 +124,11 @@ function MyApp({ Component, pageProps }) {
 			} else {
 				const userProfile = userProfileResults[0]
 				store.setUserProfile(userProfile)
+
+				const { isEmailVerified = false } = userProfile
+				if (!isEmailVerified && !cookie.get('hideEmailNotVerified')) {
+					store.setShowEmailWarning(true)
+				}
 			}
 
 			store.setCurrentUser(currentUser.accountId)

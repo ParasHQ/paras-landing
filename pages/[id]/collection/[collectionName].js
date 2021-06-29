@@ -8,22 +8,20 @@ import useStore from '../../../store'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-const LIMIT = 6
+const LIMIT = 12
 
-export default function MarketPage({ data }) {
+export default function MarketPage({ collectionName }) {
 	const store = useStore()
 	const router = useRouter()
-	const [tokens, setTokens] = useState(data.results)
-	const [page, setPage] = useState(1)
+	const [tokens, setTokens] = useState([])
+	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
 
-	const { collectionName, filter, id } = router.query
+	const { filter, id } = router.query
 
-	useEffect(() => {
-		return () => {
-			store.setMarketScrollPersist('market', 0)
-		}
+	useEffect(async () => {
+		await _fetchData()
 	}, [])
 
 	const _fetchData = async () => {
@@ -44,7 +42,7 @@ export default function MarketPage({ data }) {
 		const newTokens = [...tokens, ...newData.results]
 		setTokens(newTokens)
 		setPage(page + 1)
-		if (newData.results.length === 0) {
+		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
@@ -64,12 +62,16 @@ export default function MarketPage({ data }) {
 	}
 
 	return (
-		<div
-			className="min-h-screen bg-dark-primary-1"
-			style={{
-				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-			}}
-		>
+		<div className="min-h-screen bg-black">
+			<div
+				className="fixed inset-0 opacity-75"
+				style={{
+					zIndex: 0,
+					backgroundImage: `url('/bg.jpg')`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+				}}
+			></div>
 			<Head>
 				<title>{headMeta.title}</title>
 				<meta name="description" content={headMeta.description} />
@@ -138,12 +140,7 @@ export default function MarketPage({ data }) {
 }
 
 export async function getServerSideProps({ params }) {
-	const res = await axios(
-		`${process.env.API_URL}/tokens?collection=${encodeURIComponent(
-			params.collectionName
-		)}&creatorId=${params.id}&excludeTotalBurn=true&__limit=${LIMIT}`
-	)
-	const data = await res.data.data
-
-	return { props: { data } }
+	return {
+		props: { collectionName: params.collectionName },
+	}
 }

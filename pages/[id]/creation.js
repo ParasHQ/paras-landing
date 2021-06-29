@@ -6,26 +6,21 @@ import CardList from '../../components/CardList'
 import Footer from '../../components/Footer'
 import Nav from '../../components/Nav'
 import Profile from '../../components/Profile'
-import useStore from '../../store'
 
-const creation = ({ creatorTokens, userProfile, accountId }) => {
-	const store = useStore()
+const LIMIT = 12
+
+const creation = ({ userProfile, accountId }) => {
 	const router = useRouter()
 
 	const scrollCreation = `${router.query.id}::creation`
-	const tokens = store.marketDataPersist[scrollCreation]
 
-	const [page, setPage] = useState(1)
+	const [tokens, setTokens] = useState([])
+	const [page, setPage] = useState(0)
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 
-	useEffect(() => {
-		store.setMarketDataPersist(scrollCreation, creatorTokens)
-
-		return () => {
-			store.setMarketScrollPersist(scrollCreation, 0)
-			store.setMarketDataPersist(scrollCreation, [])
-		}
+	useEffect(async () => {
+		await fetchCreatorTokens()
 	}, [router.query.id])
 
 	const fetchCreatorTokens = async () => {
@@ -35,16 +30,16 @@ const creation = ({ creatorTokens, userProfile, accountId }) => {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/tokens?excludeTotalBurn=true&creatorId=${router.query.id}&__skip=${
-				page * 5
-			}&__limit=5`
+			`${process.env.API_URL}/tokens?excludeTotalBurn=true&creatorId=${
+				router.query.id
+			}&__skip=${page * LIMIT}&__limit=${LIMIT}`
 		)
 		const newData = await res.data.data
 
-		const newTokens = [...tokens, ...newData.results]
-		store.setMarketDataPersist(scrollCreation, newTokens)
+		const newTokens = [...(tokens || []), ...newData.results]
+		setTokens(newTokens)
 		setPage(page + 1)
-		if (newData.results.length === 0) {
+		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
@@ -65,12 +60,16 @@ const creation = ({ creatorTokens, userProfile, accountId }) => {
 	}
 
 	return (
-		<div
-			className="min-h-screen bg-dark-primary-1"
-			style={{
-				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-			}}
-		>
+		<div className="min-h-screen bg-black">
+			<div
+				className="fixed inset-0 opacity-75"
+				style={{
+					zIndex: 0,
+					backgroundImage: `url('/bg.jpg')`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+				}}
+			></div>
 			<Head>
 				<title>{headMeta.title}</title>
 				<meta name="description" content={headMeta.description} />
@@ -91,16 +90,14 @@ const creation = ({ creatorTokens, userProfile, accountId }) => {
 			<Nav />
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'creation'} />
-				{tokens && (
-					<div className="mt-8">
-						<CardList
-							name={scrollCreation}
-							tokens={tokens}
-							fetchData={fetchCreatorTokens}
-							hasMore={hasMore}
-						/>
-					</div>
-				)}
+				<div className="mt-8">
+					<CardList
+						name={scrollCreation}
+						tokens={tokens}
+						fetchData={fetchCreatorTokens}
+						hasMore={hasMore}
+					/>
+				</div>
 			</div>
 			<Footer />
 		</div>
@@ -110,17 +107,12 @@ const creation = ({ creatorTokens, userProfile, accountId }) => {
 export default creation
 
 export async function getServerSideProps({ params }) {
-	const creatorRes = await axios(
-		`${process.env.API_URL}/tokens?excludeTotalBurn=true&creatorId=${params.id}&__limit=5`
-	)
 	const profileRes = await axios(
 		`${process.env.API_URL}/profiles?accountId=${params.id}`
 	)
-
-	const creatorTokens = await creatorRes.data.data.results
 	const userProfile = (await profileRes.data.data.results[0]) || null
 
 	return {
-		props: { creatorTokens, userProfile, accountId: params.id },
+		props: { userProfile, accountId: params.id },
 	}
 }

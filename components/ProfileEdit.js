@@ -15,6 +15,10 @@ const ProfileEdit = ({ close }) => {
 
 	const [bio, setBio] = useState(store.userProfile.bio || '')
 	const [website, setWebsite] = useState(store.userProfile.website || '')
+	const [instagram, setInstagram] = useState(
+		store.userProfile.instagramId || ''
+	)
+	const [twitter, setTwitter] = useState(store.userProfile.twitterId || '')
 	const [isSubmitting, setIsSubmitting] = useState(false)
 
 	const _submit = async (e) => {
@@ -43,6 +47,8 @@ const ProfileEdit = ({ close }) => {
 		formData.append('bio', bio)
 		formData.append('website', website)
 		formData.append('accountId', store.currentUser)
+		formData.append('twitterId', twitter)
+		formData.append('instagramId', instagram)
 
 		try {
 			const resp = await axios.put(
@@ -139,6 +145,30 @@ const ProfileEdit = ({ close }) => {
 						className={`resize-none h-auto focus:border-gray-100`}
 						placeholder="Website"
 					/>
+				</div>
+				<div className="my-4 flex space-x-4">
+					<div>
+						<label className="block text-sm text-gray-100">Instagram</label>
+						<input
+							type="text"
+							name="instagram"
+							value={instagram}
+							onChange={(e) => setInstagram(e.target.value)}
+							className={`resize-none h-auto focus:border-gray-100`}
+							placeholder="Username"
+						/>
+					</div>
+					<div>
+						<label className="block text-sm text-gray-100">Twitter</label>
+						<input
+							type="text"
+							name="twitter"
+							value={twitter}
+							onChange={(e) => setTwitter(e.target.value)}
+							className={`resize-none h-auto focus:border-gray-100`}
+							placeholder="Username"
+						/>
+					</div>
 				</div>
 				<div className="">
 					<button

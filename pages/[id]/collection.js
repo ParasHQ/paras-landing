@@ -6,26 +6,21 @@ import CardList from '../../components/CardList'
 import Footer from '../../components/Footer'
 import Nav from '../../components/Nav'
 import Profile from '../../components/Profile'
-import useStore from '../../store'
 
-const collection = ({ ownerTokens, userProfile, accountId }) => {
-	const store = useStore()
+const LIMIT = 12
+
+const collection = ({ userProfile, accountId }) => {
 	const router = useRouter()
 
 	const scrollCollection = `${router.query.id}::collection`
-	const tokens = store.marketDataPersist[scrollCollection]
 
-	const [page, setPage] = useState(1)
+	const [tokens, setTokens] = useState([])
+	const [page, setPage] = useState(0)
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 
-	useEffect(() => {
-		store.setMarketDataPersist(scrollCollection, ownerTokens)
-
-		return () => {
-			store.setMarketScrollPersist(scrollCollection, 0)
-			store.setMarketDataPersist(scrollCollection, [])
-		}
+	useEffect(async () => {
+		await fetchOwnerTokens(true)
 	}, [router.query.id])
 
 	const fetchOwnerTokens = async () => {
@@ -35,16 +30,16 @@ const collection = ({ ownerTokens, userProfile, accountId }) => {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/tokens?excludeTotalBurn=true&ownerId=${router.query.id}&__skip=${
-				page * 5
-			}&__limit=5`
+			`${process.env.API_URL}/tokens?excludeTotalBurn=true&ownerId=${
+				router.query.id
+			}&__skip=${page * LIMIT}&__limit=${LIMIT}`
 		)
 		const newData = await res.data.data
 
-		const newTokens = [...tokens, ...newData.results]
-		store.setMarketDataPersist(scrollCollection, newTokens)
+		const newTokens = [...(tokens || []), ...newData.results]
+		setTokens(newTokens)
 		setPage(page + 1)
-		if (newData.results.length === 0) {
+		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
@@ -65,12 +60,16 @@ const collection = ({ ownerTokens, userProfile, accountId }) => {
 	}
 
 	return (
-		<div
-			className="min-h-screen bg-dark-primary-1"
-			style={{
-				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-			}}
-		>
+		<div className="min-h-screen bg-black">
+			<div
+				className="fixed inset-0 opacity-75"
+				style={{
+					zIndex: 0,
+					backgroundImage: `url('/bg.jpg')`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+				}}
+			></div>
 			<Head>
 				<title>{headMeta.title}</title>
 				<meta name="description" content={headMeta.description} />
@@ -91,16 +90,14 @@ const collection = ({ ownerTokens, userProfile, accountId }) => {
 			<Nav />
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'collection'} />
-				{tokens && (
-					<div className="mt-8">
-						<CardList
-							name={scrollCollection}
-							tokens={tokens}
-							fetchData={fetchOwnerTokens}
-							hasMore={hasMore}
-						/>
-					</div>
-				)}
+				<div className="mt-8">
+					<CardList
+						name={scrollCollection}
+						tokens={tokens}
+						fetchData={fetchOwnerTokens}
+						hasMore={hasMore}
+					/>
+				</div>
 			</div>
 			<Footer />
 		</div>
@@ -110,17 +107,13 @@ const collection = ({ ownerTokens, userProfile, accountId }) => {
 export default collection
 
 export async function getServerSideProps({ params }) {
-	const ownerRes = await axios(
-		`${process.env.API_URL}/tokens?excludeTotalBurn=true&ownerId=${params.id}&__limit=5`
-	)
 	const profileRes = await axios(
 		`${process.env.API_URL}/profiles?accountId=${params.id}`
 	)
 
-	const ownerTokens = await ownerRes.data.data.results
 	const userProfile = (await profileRes.data.data.results[0]) || null
 
 	return {
-		props: { ownerTokens, userProfile, accountId: params.id },
+		props: { userProfile, accountId: params.id },
 	}
 }

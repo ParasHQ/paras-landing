@@ -6,19 +6,19 @@ import CardList from '../components/CardList'
 import Head from 'next/head'
 import Footer from '../components/Footer'
 import useStore from '../store'
-import FeaturedPostList from '../components/FeaturedPost'
 import FilterMarket from '../components/FilterMarket'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { parseSortQuery } from '../utils/common'
+import CardListLoader from '../components/CardListLoader'
 
-const LIMIT = 6
+const LIMIT = 12
 
-export default function MarketPage({ data, featured }) {
+export default function MarketPage() {
 	const store = useStore()
 	const router = useRouter()
 
-	const [tokens, setTokens] = useState(data.results)
-	const [page, setPage] = useState(1)
+	const [tokens, setTokens] = useState([])
+	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(true)
 	const [hasMore, setHasMore] = useState(true)
@@ -48,17 +48,15 @@ export default function MarketPage({ data, featured }) {
 		if (!hasMore || isFetching) {
 			return
 		}
-
 		setIsFetching(true)
 		const res = await axios(`${process.env.API_URL}/tokens`, {
 			params: tokensParams(page, router.query),
 		})
 		const newData = await res.data.data
-
 		const newTokens = [...tokens, ...newData.results]
 		setTokens(newTokens)
 		setPage(page + 1)
-		if (newData.results.length === 0) {
+		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
@@ -67,12 +65,16 @@ export default function MarketPage({ data, featured }) {
 	}
 
 	return (
-		<div
-			className="min-h-screen bg-dark-primary-1"
-			style={{
-				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-			}}
-		>
+		<div className="min-h-screen bg-black">
+			<div
+				className="fixed inset-0 opacity-50"
+				style={{
+					zIndex: 0,
+					backgroundImage: `url('./bg.jpg')`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+				}}
+			></div>
 			<Head>
 				<title>Market — Paras</title>
 				<meta
@@ -107,7 +109,6 @@ export default function MarketPage({ data, featured }) {
 			</Head>
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
-				<FeaturedPostList post={featured} />
 				<div className="flex justify-end mb-4">
 					<h1 className="absolute inset-x-0 text-4xl font-bold text-gray-100 text-center">
 						Market
@@ -119,14 +120,7 @@ export default function MarketPage({ data, featured }) {
 				<div className="mt-4 px-4">
 					{isFiltering ? (
 						<div className="min-h-full border-2 border-dashed border-gray-800 rounded-md">
-							<div className="w-full">
-								<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">
-									<div className="w-40 m-auto">
-										<img src="/cardstack.png" className="opacity-75" />
-									</div>
-									<p className="mt-4">Loading Cards</p>
-								</div>
-							</div>
+							<CardListLoader />
 						</div>
 					) : (
 						<CardList
@@ -153,18 +147,4 @@ const tokensParams = (_page = 0, query) => {
 		...(query.pmax && { maxPrice: parseNearAmount(query.pmax) }),
 	}
 	return params
-}
-
-export async function getServerSideProps({ query }) {
-	const marketRes = await axios(`${process.env.API_URL}/tokens`, {
-		params: tokensParams(0, query),
-	})
-	const featuredRes = await axios(`${process.env.API_URL}/features`)
-
-	return {
-		props: {
-			data: marketRes.data.data,
-			featured: featuredRes.data.data.results,
-		},
-	}
 }

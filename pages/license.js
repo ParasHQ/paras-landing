@@ -55,7 +55,6 @@ const LicenseOverview = () => {
 					the website/app cryptographically verifies that you are the owner, and
 					the DAC doesn’t stay on the website/app after you’ve left; and
 				</li>
-				
 			</ul>
 			<p className="font-medium mt-4">
 				What am I NOT allowed to do with the art associated with my NFT?
@@ -66,7 +65,10 @@ const LicenseOverview = () => {
 			</p>
 			<ul className="list-disc mt-2 opacity-75 pl-4">
 				<li>Modifying the art;</li>
-				<li>Using the art for commercialize purpose without asking from the creator/artist permission</li>
+				<li>
+					Using the art for commercialize purpose without asking from the
+					creator/artist permission
+				</li>
 				<li>Using the art to market or sell third-party products;</li>
 				<li>
 					Using the art in connection with images of hatred, violence, or other
@@ -231,12 +233,16 @@ const License = () => {
 	const [activeTab, setActiveTab] = useState('overview')
 
 	return (
-		<div
-			className="min-h-screen relative bg-dark-primary-1"
-			style={{
-				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-			}}
-		>
+		<div className="min-h-screen relative bg-black">
+			<div
+				className="fixed inset-0 opacity-75"
+				style={{
+					zIndex: 0,
+					backgroundImage: `url('/bg.jpg')`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+				}}
+			></div>
 			<Head>
 				<title>License — Paras</title>
 				<meta
@@ -274,7 +280,7 @@ const License = () => {
 			</Head>
 			<div>
 				<Nav />
-				<div className="py-16 max-w-4xl mx-auto text-gray-100 px-4">
+				<div className="relative py-16 max-w-4xl mx-auto text-gray-100 px-4">
 					<h2 className="font-bold text-4xl text-center">NFT License</h2>
 					<div className="flex mt-6 justify-between items-center">
 						<div className="w-1/2 text-center">

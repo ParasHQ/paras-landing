@@ -5,14 +5,19 @@ import Head from 'next/head'
 import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
 import CardStats from '../../components/Stats/CardStats'
+import { useEffect } from 'react'
 
 const LIMIT = 5
 
-const TopCardsPage = ({ topCards }) => {
-	const [cardsData, setCardsData] = useState(topCards)
-	const [page, setPage] = useState(1)
+const TopCardsPage = () => {
+	const [cardsData, setCardsData] = useState([])
+	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
+
+	useEffect(() => {
+		_fetchData()
+	}, [])
 
 	const _fetchData = async () => {
 		if (!hasMore || isFetching) {
@@ -30,7 +35,7 @@ const TopCardsPage = ({ topCards }) => {
 		setCardsData(newCardsData)
 		setPage(page + 1)
 
-		if (res.data.data.results < 5) {
+		if (res.data.data.results < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
@@ -46,12 +51,16 @@ const TopCardsPage = ({ topCards }) => {
 	}
 
 	return (
-		<div
-			className="min-h-screen bg-dark-primary-1"
-			style={{
-				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-			}}
-		>
+		<div className="min-h-screen bg-black">
+			<div
+				className="fixed inset-0 opacity-50"
+				style={{
+					zIndex: 0,
+					backgroundImage: `url('/bg.jpg')`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+				}}
+			></div>
 			<Head>
 				<title>{headMeta.title}</title>
 				<meta name="description" content={headMeta.description} />
@@ -85,15 +94,6 @@ const TopCardsPage = ({ topCards }) => {
 			<Footer />
 		</div>
 	)
-}
-
-export async function getServerSideProps() {
-	const res = await axios(
-		`${process.env.API_URL}/activities/topCards?__limit=${LIMIT}`
-	)
-	const topCards = res.data.data.results
-
-	return { props: { topCards } }
 }
 
 export default TopCardsPage

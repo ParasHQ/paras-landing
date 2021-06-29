@@ -1,10 +1,10 @@
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { parseImgUrl, prettyBalance } from '../../utils/common'
 import Card from '../Card'
 import CardDetailModal from '../CardDetailModal'
+import CardStatListLoader from './CardStatListLoader'
 import LinkToProfile from '../LinkToProfile'
 
 const CardStats = ({ cardsData, fetchData, hasMore }) => {
@@ -34,6 +34,7 @@ const CardStats = ({ cardsData, fetchData, hasMore }) => {
 				dataLength={cardsData.length}
 				next={fetchData}
 				hasMore={hasMore}
+				loader={<CardStatListLoader />}
 			>
 				<table className="text-white text-center">
 					<thead>
@@ -85,7 +86,7 @@ const CardStats = ({ cardsData, fetchData, hasMore }) => {
 											className="p-4"
 											onClick={() => onPressCard(localToken)}
 										>
-											<div className="w-32 md:w-full">
+											<div className="w-32 md:w-48">
 												<Card
 													imgUrl={parseImgUrl(localToken?.metadata?.image)}
 													imgBlur={localToken?.metadata?.blurhash}

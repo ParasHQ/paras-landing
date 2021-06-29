@@ -8,6 +8,8 @@ import { useRouter } from 'next/router'
 import JSBI from 'jsbi'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import CardDetailModal from './CardDetailModal'
+import CardLoader from './CardLoader'
+import CardListLoader from './CardListLoader'
 
 const CardList = ({
 	name = 'default',
@@ -19,35 +21,13 @@ const CardList = ({
 	const store = useStore()
 	const router = useRouter()
 	const containerRef = useRef()
-	const [mouseDown, setMouseDown] = useState(null)
-	const [touchStart, setTouchStart] = useState(null)
 	const animValuesRef = useRef(store.marketScrollPersist[name])
-
-	const props = useSpring({
-		transform: `translate3d(${store.marketScrollPersist[name] || 0}px, 0,0)`,
-	})
 
 	useEffect(() => {
 		animValuesRef.current = store.marketScrollPersist[name]
 	}, [store.marketScrollPersist[name]])
 
 	useEffect(() => {
-		document.body.addEventListener('mouseup', handleMouseUp)
-		document.body.addEventListener('touchend', handleTouchEnd)
-
-		return () => {
-			document.body.removeEventListener('mouseup', handleMouseUp)
-			document.body.removeEventListener('touchend', handleTouchEnd)
-		}
-	}, [])
-
-	useEffect(() => {
-		if (containerRef) {
-			// containerRef.current.addEventListener('wheel', handleScroll, {
-			// 	passive: false,
-			// })
-		}
-
 		return () => {
 			if (containerRef.current) {
 				containerRef.current.removeEventListener('wheel', handleScroll)
@@ -73,67 +53,14 @@ const CardList = ({
 
 		var bounds = -(max - win)
 
-		// console.log(containerRef)
 		if (newAnimationValue > 0) {
-			// containerRef.current.scrollLeft = 0
 			store.setMarketScrollPersist(name, 0)
 		} else if (newAnimationValue < bounds) {
 			fetchData()
-			// containerRef.current.scrollLeft = bounds
 			store.setMarketScrollPersist(name, bounds)
 		} else {
-			// containerRef.current.scrollLeft = -1 * newAnimationValue
 			store.setMarketScrollPersist(name, newAnimationValue)
 		}
-	}
-
-	const handleMouseDown = (e) => {
-		setMouseDown({
-			x: e.pageX,
-			y: e.pageY,
-		})
-	}
-
-	const handleMouseMove = (e) => {
-		if (mouseDown) {
-			const diffX = mouseDown.x - e.pageX
-
-			const animationValue = animValuesRef.current || 0
-
-			animateScroll(animationValue - diffX)
-			setMouseDown({
-				x: e.pageX,
-				y: e.pageY,
-			})
-		}
-	}
-
-	const handleMouseUp = (e) => {
-		setMouseDown(null)
-	}
-
-	const handleTouchStart = (e) => {
-		setTouchStart({
-			x: e.touches[0].pageX,
-			y: e.touches[0].pageY,
-		})
-	}
-
-	const handleTouchMove = (e) => {
-		if (touchStart) {
-			const diffX = touchStart.x - e.touches[0].pageX
-
-			const animationValue = animValuesRef.current || 0
-			animateScroll(animationValue - diffX * 2.5)
-			setTouchStart({
-				x: e.touches[0].pageX,
-				y: e.touches[0].pageY,
-			})
-		}
-	}
-
-	const handleTouchEnd = () => {
-		setTouchStart(null)
 	}
 
 	const _getLowestPrice = (ownerships) => {
@@ -152,16 +79,10 @@ const CardList = ({
 	return (
 		<div
 			ref={containerRef}
-			// onMouseDown={handleMouseDown}
-			// onMouseUp={handleMouseUp}
-			// onMouseMove={handleMouseMove}
-			// onTouchStart={handleTouchStart}
-			// onTouchEnd={handleTouchEnd}
-			// onTouchMove={handleTouchMove}
 			className="overflow-x-hidden border-2 border-dashed border-gray-800 rounded-md"
 		>
 			<CardDetailModal tokens={tokens} />
-			{tokens.length === 0 && (
+			{tokens.length === 0 && !hasMore && (
 				<div className="w-full">
 					<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">
 						<div className="w-40 m-auto">
@@ -175,16 +96,14 @@ const CardList = ({
 				dataLength={tokens.length}
 				next={fetchData}
 				hasMore={hasMore}
+				loader={<CardListLoader />}
 			>
-				<animated.div
-					className="flex flex-wrap select-none "
-					// style={props}
-				>
+				<animated.div className="flex flex-wrap select-none ">
 					{tokens.map((token) => {
 						return (
 							<div
 								key={token.tokenId}
-								className={`w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8 lg:p-12 relative ${
+								className={`w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-8 relative ${
 									toggleOwnership &&
 									!_getUserOwnership(store.currentUser, token.ownerships) &&
 									'opacity-25'

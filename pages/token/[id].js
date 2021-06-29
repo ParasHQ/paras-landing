@@ -11,12 +11,16 @@ const TokenDetail = ({ errorCode, token }) => {
 	}
 
 	return (
-		<div
-			className="min-h-screen bg-dark-primary-1"
-			style={{
-				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-			}}
-		>
+		<div className="min-h-screen bg-black">
+			<div
+				className="fixed inset-0 opacity-75"
+				style={{
+					zIndex: 0,
+					backgroundImage: `url('/bg.jpg')`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+				}}
+			></div>
 			<Head>
 				<title>{`${token.metadata.name} — Paras`}</title>
 				<meta
@@ -51,7 +55,7 @@ const TokenDetail = ({ errorCode, token }) => {
 				/>
 			</Head>
 			<Nav />
-			<div className="max-w-6xl w-full m-auto pt-4 px-4">
+			<div className="relative max-w-6xl w-full m-auto pt-4 px-4">
 				<CardDetail token={token} />
 			</div>
 			<Footer />

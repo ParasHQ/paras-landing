@@ -23,6 +23,11 @@ import useSWR from 'swr'
 import getConfig from '../config/near'
 import LinkToProfile from './LinkToProfile'
 import ReactLinkify from 'react-linkify'
+import PublicationPreviewMini from './PublicationPreviewMini'
+import TokenInfoCopy from './TokenInfoCopy'
+import BidList from './BidList'
+import { useRouter } from 'next/router'
+import PlaceBidModal from './PlaceBidModal'
 
 const Activity = ({ activity }) => {
 	if (activity.type === 'marketUpdate') {
@@ -93,6 +98,19 @@ const Activity = ({ activity }) => {
 
 	if (activity.type === 'transfer' && !activity.to) {
 		return null
+	}
+
+	if (activity.type === 'bidMarketAdd') {
+		return (
+			<div className="border-2 border-dashed p-2 rounded-md">
+				<p>
+					<LinkToProfile accountId={activity.accountId} />
+					<span> placed offer for </span>
+					<span>{prettyBalance(activity.amount, 24, 4)} Ⓝ</span>
+				</p>
+				<p className="mt-1 text-sm">{timeAgo.format(activity.createdAt)}</p>
+			</div>
+		)
 	}
 
 	return (
@@ -239,7 +257,7 @@ const ActivityList = ({ token }) => {
 
 	return (
 		<div>
-			{activityList.length === 0 && (
+			{activityList.length === 0 && !hasMore && (
 				<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
 					<p className="text-gray-300 py-8">No Transactions</p>
 				</div>
@@ -248,7 +266,11 @@ const ActivityList = ({ token }) => {
 				dataLength={activityList.length}
 				next={_fetchData}
 				hasMore={hasMore}
-				loader={<h4>Loading...</h4>}
+				loader={
+					<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
+						<p className="my-2 text-center">Loading...</p>
+					</div>
+				}
 				scrollableTarget="activityListScroll"
 			>
 				{activityList.map((act, idx) => {
@@ -266,6 +288,7 @@ const ActivityList = ({ token }) => {
 const CardDetail = ({ token }) => {
 	const store = useStore()
 	const toast = useToast()
+	const router = useRouter()
 	const copyLinkRef = useRef()
 	const [localToken, setLocalToken] = useState(token)
 
@@ -275,7 +298,7 @@ const CardDetail = ({ token }) => {
 		},
 	})
 
-	const [activeTab, setActiveTab] = useState('info')
+	const [activeTab, setActiveTab] = useState(router.query.tab || 'info')
 	const [showModal, setShowModal] = useState('')
 	const [isComponentMounted, setIsComponentMounted] = useState(false)
 
@@ -284,20 +307,30 @@ const CardDetail = ({ token }) => {
 	const [isCopied, setIsCopied] = useState(false)
 
 	const [whitelist, setWhitelist] = useState([])
+	const [bidMarketData, setBidMarketData] = useState(null)
 
 	useEffect(() => {
 		setIsComponentMounted(true)
 		_changeSortBy('priceasc')
 	}, [])
 
+	useEffect(() => {
+		setLocalToken(token)
+	}, [token])
+
 	useEffect(async () => {
 		if (store.currentUser) {
 			try {
-				const res = await near.contract.getUserPurchaseWhitelist({
-					tokenId: token.tokenId,
+				const resUserWhitelist = await near.contract.getUserPurchaseWhitelist({
+					tokenId: localToken.tokenId,
 					buyerId: store.currentUser,
 				})
-				setWhitelist(res.split('::'))
+				const resBidMarketData = await near.contract.getBidMarketData({
+					tokenId: localToken.tokenId,
+					ownerId: store.currentUser,
+				})
+				setBidMarketData(resBidMarketData)
+				setWhitelist(resUserWhitelist.split('::'))
 			} catch (err) {
 				console.log(err)
 			}
@@ -310,6 +343,23 @@ const CardDetail = ({ token }) => {
 			ownerId: chosenSeller.ownerId,
 			tokenId: chosenSeller.tokenId,
 			quantity: data.buyQuantity,
+		}
+
+		if (
+			localToken.metadata.collection.includes('card4card') &&
+			data.buyQuantity > 1
+		) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						You can only buy maximum 1 card
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsSubmitting(false)
+			return
 		}
 
 		const attachedDeposit = JSBI.multiply(
@@ -338,6 +388,65 @@ const CardDetail = ({ token }) => {
 
 		try {
 			await near.contract.buy(
+				params,
+				'50000000000000',
+				attachedDeposit.toString()
+			)
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
+	const _cancelBid = async () => {
+		const params = {
+			ownerId: store.currentUser,
+			tokenId: localToken.tokenId,
+		}
+		try {
+			await near.contract.deleteBidMarketData(params, '50000000000000')
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
+	const _placebid = async (data) => {
+		setIsSubmitting(true)
+		const params = {
+			ownerId: store.currentUser,
+			tokenId: localToken.tokenId,
+			quantity: data.bidQuantity,
+			amount: parseNearAmount(data.bidAmount),
+		}
+
+		const attachedDeposit = JSBI.add(
+			JSBI.multiply(
+				JSBI.BigInt(data.bidQuantity),
+				JSBI.BigInt(parseNearAmount(data.bidAmount))
+			),
+			JSBI.BigInt(parseNearAmount('0.003'))
+		)
+
+		if (
+			JSBI.lessThan(JSBI.BigInt(store.userBalance.available), attachedDeposit)
+		) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						Insufficient Balance
+						<p className="mt-2">
+							Available {prettyBalance(store.userBalance.available, 24, 6)} Ⓝ
+						</p>
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsSubmitting(false)
+			return
+		}
+		try {
+			bidMarketData && (await _cancelBid())
+			await near.contract.addBidMarketData(
 				params,
 				'50000000000000',
 				attachedDeposit.toString()
@@ -610,6 +719,113 @@ const CardDetail = ({ token }) => {
 			_localToken.ownerships = [...saleOwner, ...nonSaleOwner]
 		}
 		setLocalToken(_localToken)
+	}
+
+	const changeActiveTab = (tab) => {
+		setActiveTab(tab)
+	}
+
+	const buttonActionCardDetail = () => {
+		if (
+			_getLowestPrice(localToken.ownerships) &&
+			!_getUserOwnership(store.currentUser) &&
+			activeTab !== 'bids'
+		) {
+			return (
+				<div className="w-auto p-4">
+					<div className="flex -mx-2">
+						<div className="w-1/2 px-2">
+							<button
+								className="box-border font-semibold py-3 w-full rounded-md border-2 border-primary bg-primary text-white inline-block text-sm"
+								onClick={() => {
+									if (!store.currentUser) {
+										setShowModal('redirectLogin')
+									} else {
+										if (whitelist[1] === 'user_whitelisted') {
+											setChosenSeller(_getLowestPrice(localToken.ownerships))
+											setShowModal('confirmBuy')
+										} else {
+											setShowModal('notAllowedBuy')
+										}
+									}
+								}}
+							>
+								{`Buy for ${prettyBalance(
+									_getLowestPrice(localToken.ownerships).marketData.amount,
+									24,
+									4
+								)} Ⓝ`}
+							</button>
+						</div>
+						<div className="w-1/2 px-2">
+							<button
+								className="box-border font-semibold py-3 w-full rounded-md border-2 border-primary text-primary inline-block text-sm"
+								onClick={() => {
+									if (!store.currentUser) {
+										setShowModal('redirectLogin')
+									} else {
+										setShowModal('placeBid')
+									}
+								}}
+							>
+								Place a bid
+							</button>
+						</div>
+					</div>
+				</div>
+			)
+		} else if (
+			store.currentUser &&
+			_getUserOwnership(store.currentUser) &&
+			activeTab !== 'bids'
+		) {
+			return (
+				<div className="w-auto p-4">
+					<div className="flex -mx-2">
+						<div className="w-1/2 px-2">
+							<button
+								className="font-semibold py-3 w-full rounded-md border-2 border-primary text-primary text-sm"
+								onClick={() => {
+									if (
+										whitelist[0] === 'token_whitelisted' &&
+										store.currentUser !== localToken.creatorId
+									) {
+										setShowModal('notAllowedUpdate')
+									} else {
+										setShowModal('addUpdateListing')
+									}
+								}}
+							>
+								Update Listing
+							</button>
+						</div>
+						<div className="w-1/2 px-2">
+							<button
+								className="font-semibold py-3 w-full rounded-md border-2 border-primary bg-primary text-white text-sm"
+								onClick={() => setShowModal('confirmTransfer')}
+							>
+								Transfer
+							</button>
+						</div>
+					</div>
+				</div>
+			)
+		} else {
+			return (
+				<button
+					className="box-border font-semibold m-4 py-3 w-auto rounded-md border-2 border-primary text-primary inline-block text-sm"
+					onClick={() => {
+						if (!store.currentUser) {
+							setShowModal('redirectLogin')
+						} else {
+							setShowModal('placeBid')
+						}
+					}}
+				>
+					Place a bid
+				</button>
+			)
+		}
 	}
 
 	return (
@@ -1033,6 +1249,16 @@ const CardDetail = ({ token }) => {
 					</div>
 				</Modal>
 			)}
+			{showModal === 'placeBid' && (
+				<PlaceBidModal
+					bidAmount={bidMarketData && prettyBalance(bidMarketData.price, 24, 4)}
+					bidQuantity={bidMarketData && bidMarketData.quantity}
+					localToken={localToken}
+					onSubmitForm={_placebid}
+					onCancel={() => setShowModal('')}
+					isSubmitting={isSubmitting}
+				/>
+			)}
 			{showModal === 'confirmTransfer' && (
 				<Modal
 					close={(_) => setShowModal('')}
@@ -1244,7 +1470,7 @@ const CardDetail = ({ token }) => {
 						height: `85vh`,
 					}}
 				>
-					<div className="w-full h-1/2 lg:h-full lg:w-2/3 bg-dark-primary-1 p-12 relative">
+					<div className="w-full h-1/2 lg:h-full lg:w-3/5 bg-dark-primary-1 p-12 relative">
 						<div className="absolute inset-0 opacity-75">
 							<Blurhash
 								hash={
@@ -1258,7 +1484,7 @@ const CardDetail = ({ token }) => {
 								punch={1}
 							/>
 						</div>
-						<div className="h-full">
+						<div className="h-full flex items-center">
 							<Card
 								imgUrl={parseImgUrl(localToken.metadata.image)}
 								imgBlur={localToken.metadata.blurhash}
@@ -1278,7 +1504,7 @@ const CardDetail = ({ token }) => {
 							/>
 						</div>
 					</div>
-					<div className="flex flex-col w-full h-1/2 lg:h-full lg:w-1/3 bg-gray-100">
+					<div className="flex flex-col w-full h-1/2 lg:h-full lg:w-2/5 bg-gray-100">
 						<Scrollbars
 							style={{
 								height: `100%`,
@@ -1344,51 +1570,65 @@ const CardDetail = ({ token }) => {
 										</svg>
 									</div>
 								</div>
-
-								<div className="flex mt-2">
-									<div className="w-1/3">
+								<div className="flex mt-2 text-sm space-x-1 overflow-x-scroll disable-scrollbars -mb-4">
+									<div>
 										<div
-											className="cursor-pointer relative text-center font-semibold overflow-hidden rounded-md hover:bg-opacity-15 hover:bg-dark-primary-1"
-											onClick={(_) => setActiveTab('info')}
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
+												activeTab === 'info'
+													? 'text-gray-100 bg-dark-primary-1'
+													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+											}`}
+											onClick={(_) => changeActiveTab('info')}
 										>
-											<div
-												className={`${
-													activeTab === 'info' &&
-													'text-gray-100 bg-dark-primary-1'
-												}`}
-											>
-												Info
-											</div>
+											<div>Info</div>
 										</div>
 									</div>
-									<div className="w-1/3">
+									<div>
 										<div
-											className="cursor-pointer relative text-center font-semibold overflow-hidden rounded-md hover:bg-opacity-15 hover:bg-dark-primary-1"
-											onClick={(_) => setActiveTab('owners')}
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
+												activeTab === 'owners'
+													? 'text-gray-100 bg-dark-primary-1'
+													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+											}`}
+											onClick={(_) => changeActiveTab('owners')}
 										>
-											<div
-												className={`${
-													activeTab === 'owners' &&
-													'text-gray-100 bg-dark-primary-1 rounded-md'
-												}`}
-											>
-												Owners
-											</div>
+											<div>Owners</div>
 										</div>
 									</div>
-									<div className="w-1/3">
+									<div>
 										<div
-											className="cursor-pointer relative text-center font-semibold overflow-hidden rounded-md hover:bg-opacity-15 hover:bg-dark-primary-1"
-											onClick={(_) => setActiveTab('history')}
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
+												activeTab === 'bids'
+													? 'text-gray-100 bg-dark-primary-1'
+													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+											}`}
+											onClick={(_) => changeActiveTab('bids')}
 										>
-											<div
-												className={`${
-													activeTab === 'history' &&
-													'text-gray-100 bg-dark-primary-1 rounded-md'
-												}`}
-											>
-												History
-											</div>
+											<div>Bids</div>
+										</div>
+									</div>
+									<div>
+										<div
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
+												activeTab === 'history'
+													? 'text-gray-100 bg-dark-primary-1'
+													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+											}`}
+											onClick={(_) => changeActiveTab('history')}
+										>
+											<div>History</div>
+										</div>
+									</div>
+									<div>
+										<div
+											className={`px-3 cursor-pointer relative text-center font-semibold overflow-hidden rounded-md ${
+												activeTab === 'publication'
+													? 'text-gray-100 bg-dark-primary-1'
+													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
+											}`}
+											onClick={(_) => changeActiveTab('publication')}
+										>
+											<div>Publication</div>
 										</div>
 									</div>
 								</div>
@@ -1400,32 +1640,77 @@ const CardDetail = ({ token }) => {
 												<p className="text-sm text-black font-medium">
 													Collection
 												</p>
-												<Link
-													href={{
-														pathname: '/[id]/collection/[collectionName]',
-														query: {
-															collectionName: localToken.metadata.collection,
-															id: localToken.creatorId,
-														},
-													}}
-												>
-													<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
-														{localToken.metadata.collection}
-													</a>
-												</Link>
+												{token.metadata.collection.includes('card4card') ? (
+													<Link
+														href={{
+															pathname: '/event/card4card',
+														}}
+													>
+														<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
+															{localToken.metadata.collection}
+														</a>
+													</Link>
+												) : (
+													<Link
+														href={{
+															pathname: '/[id]/collection/[collectionName]',
+															query: {
+																collectionName: encodeURIComponent(
+																	localToken.metadata.collection
+																),
+																id: localToken.creatorId,
+															},
+														}}
+													>
+														<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
+															{localToken.metadata.collection}
+														</a>
+													</Link>
+												)}
 											</div>
 										</div>
-										<div className="flex border-2 border-dashed mt-4 p-2 rounded-md">
-											<div>
-												<p className="text-sm text-black font-medium">
-													Royalty
-												</p>
-												<p className="text-gray-900">
-													{localToken.metadata.royalty &&
-													parseInt(localToken.metadata.royalty) > 0
-														? `${localToken.metadata.royalty}%`
-														: `No`}
-												</p>
+										<div className="flex items-center -mx-2">
+											<div className="flex-1 w-1/2 px-2">
+												<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+													<p className="text-sm text-black font-medium">
+														Royalty
+													</p>
+													<p className="text-gray-900">
+														{localToken.metadata.royalty &&
+														parseInt(localToken.metadata.royalty) > 0
+															? `${localToken.metadata.royalty}%`
+															: `No`}
+													</p>
+												</div>
+											</div>
+											<div className="flex-1 w-1/2 px-2">
+												<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+													<p className="text-sm text-black font-medium">View</p>
+													<div className="flex">
+														<svg
+															width="16"
+															height="20"
+															viewBox="0 0 511 350"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+														>
+															<path
+																d="M0 177.231C80.9998 -42.769 401 -73.769 510.5 174.231C437.936 394.703 101.751 420.866 0 177.231Z"
+																fill="black"
+															/>
+															<circle
+																cx="255"
+																cy="175"
+																r="116"
+																fill="#E5E5E5"
+															/>
+															<circle cx="255" cy="175" r="70" fill="black" />
+														</svg>
+														<p className="text-gray-900 ml-1">
+															{localToken.view}
+														</p>
+													</div>
+												</div>
 											</div>
 										</div>
 										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
@@ -1478,6 +1763,25 @@ const CardDetail = ({ token }) => {
 												</div>
 											</div>
 										</div>
+										<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+											<p className="text-sm text-black font-medium mb-2">
+												Token Info
+											</p>
+											<div className="flex justify-between text-sm">
+												<p>Token ID</p>
+												<TokenInfoCopy text={localToken.tokenId} />
+											</div>
+											<div className="flex justify-between text-sm">
+												<p>Smart Contract</p>
+												<TokenInfoCopy text={process.env.CONTRACT_NAME} small />
+											</div>
+											<div className="flex justify-between text-sm">
+												<p>Image Link</p>
+												<TokenInfoCopy
+													text={parseImgUrl(localToken.metadata.image)}
+												/>
+											</div>
+										</div>
 									</div>
 								)}
 
@@ -1490,6 +1794,7 @@ const CardDetail = ({ token }) => {
 											<select
 												className="py-1 rounded-md"
 												onChange={(e) => _changeSortBy(e.target.value)}
+												className="bg-transparent outline-none"
 												defaultValue="priceasc"
 											>
 												<option value="nameasc">Name A-Z</option>
@@ -1535,76 +1840,21 @@ const CardDetail = ({ token }) => {
 									</div>
 								)}
 
+								{activeTab === 'bids' && (
+									<BidList
+										token={localToken}
+										userOwnership={_getUserOwnership(store.currentUser)}
+									/>
+								)}
+
 								{activeTab === 'history' && <ActivityList token={token} />}
+
+								{activeTab === 'publication' && (
+									<PublicationPreviewMini tokenId={token.tokenId} />
+								)}
 							</div>
 						</Scrollbars>
-						{_getLowestPrice(token.ownerships) &&
-						!_getUserOwnership(store.currentUser) ? (
-							<button
-								className="box-border font-semibold m-4 py-3 w-auto rounded-md border-2 border-primary bg-primary text-white inline-block text-sm"
-								onClick={() => {
-									if (!store.currentUser) {
-										setShowModal('redirectLogin')
-									} else {
-										if (whitelist[1] === 'user_whitelisted') {
-											setChosenSeller(_getLowestPrice(token.ownerships))
-											setShowModal('confirmBuy')
-										} else {
-											setShowModal('notAllowedBuy')
-										}
-									}
-								}}
-							>
-								{`Buy for ${prettyBalance(
-									_getLowestPrice(token.ownerships).marketData.amount,
-									24,
-									4
-								)} Ⓝ`}
-								{` ~ $${prettyBalance(
-									_getLowestPrice(token.ownerships).marketData.amount *
-										store.nearUsdPrice,
-									24,
-									4
-								)}`}
-							</button>
-						) : store.currentUser && _getUserOwnership(store.currentUser) ? (
-							<div className="w-auto p-4">
-								<div className="flex -mx-2">
-									<div className="w-1/2 px-2">
-										<button
-											className="font-semibold py-3 w-full rounded-md border-2 border-primary text-primary text-sm"
-											onClick={() => {
-												if (
-													whitelist[0] === 'token_whitelisted' &&
-													store.currentUser !== localToken.creatorId
-												) {
-													setShowModal('notAllowedUpdate')
-												} else {
-													setShowModal('addUpdateListing')
-												}
-											}}
-										>
-											Update Listing
-										</button>
-									</div>
-									<div className="w-1/2 px-2">
-										<button
-											className="font-semibold py-3 w-full rounded-md border-2 border-primary bg-primary text-white text-sm"
-											onClick={() => setShowModal('confirmTransfer')}
-										>
-											Transfer
-										</button>
-									</div>
-								</div>
-							</div>
-						) : (
-							<button
-								className="font-semibold m-4 py-3 w-auto rounded-md border-2 border-primary bg-primary text-white text-sm"
-								disabled
-							>
-								Not for Sale
-							</button>
-						)}
+						{buttonActionCardDetail()}
 					</div>
 				</div>
 			</div>

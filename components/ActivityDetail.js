@@ -41,6 +41,12 @@ export const descriptionMaker = (activity, token) => {
 		return `${token?.metadata.name} created by ${activity.to} with supply of ${activity.quantity}pcs`
 	}
 
+	if (activity.type === 'bidMarketAdd') {
+		return `${activity.accountId} placed offer on ${
+			token?.metadata.name
+		} for ${prettyBalance(activity.amount, 24, 4)} Ⓝ`
+	}
+
 	return `${activity.from} transferred ${activity.quantity}pcs of ${token?.metadata.name} to ${activity.to}`
 }
 
@@ -134,6 +140,30 @@ const Activity = ({ activity }) => {
 						accountId={activity.from}
 						className="text-gray-100 hover:border-gray-100"
 					/>
+				</span>
+			</div>
+		)
+	}
+
+	// bid add
+	if (activity.type === 'bidMarketAdd') {
+		return (
+			<div className="text-gray-300">
+				<span>
+					<LinkToProfile
+						accountId={activity.accountId}
+						className="text-gray-100 hover:border-gray-100"
+					/>
+				</span>
+				<span> placed offer </span>
+				<span> for </span>
+				<span>
+					{prettyBalance(activity.amount, 24, 4)} Ⓝ
+					<span>
+						{' '}
+						($
+						{prettyBalance(JSBI.BigInt(activity.amount * nearUsdPrice), 24, 4)})
+					</span>
 				</span>
 			</div>
 		)

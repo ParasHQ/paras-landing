@@ -1,45 +1,70 @@
 import axios from 'axios'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Footer from '../../components/Footer'
 import Nav from '../../components/Nav'
 import Profile from '../../components/Profile'
+import PublicationCardListLoader from '../../components/Publication/PublicationCardListLoader'
 import PublicationList from '../../components/PublicationList'
+import useStore from '../../store'
 
-const Publication = ({ publications, userProfile, accountId }) => {
+const LIMIT = 6
+
+const Publication = ({ userProfile, accountId }) => {
 	const router = useRouter()
+	const {
+		usersPublicationList,
+		setUsersPublicationList,
+		usersPublicationMeta,
+		setUsersPublicationMeta,
+	} = useStore()
 
-	const [page, setPage] = useState(1)
-	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
-	const [pubData, setPubData] = useState(publications)
 
-	const _fetchData = async () => {
-		if (!hasMore || isFetching) {
+	useEffect(() => {
+		if (router.isReady && !usersPublicationList[router.query.id]) {
+			_fetchData(true)
+		}
+	}, [router.isReady])
+
+	const _fetchData = async (initial = false) => {
+		const pubList = usersPublicationList[router.query.id]
+		const meta = usersPublicationMeta[router.query.id]
+
+		const _pubList = initial ? [] : pubList
+		const _pubListPage = initial ? 0 : meta.page
+		const _pubListHasMore = initial ? true : meta.hasMore
+
+		if (!_pubListHasMore || isFetching) {
 			return
 		}
 
 		setIsFetching(true)
 		const res = await axios(
 			`${process.env.API_URL}/publications?authorId=${router.query.id}&__skip=${
-				page * 5
-			}&__limit=5`
+				_pubListPage * LIMIT
+			}&__limit=${LIMIT}`
 		)
 		const newData = await res.data.data
 
-		const newPubData = [...pubData, ...newData.results]
-		setPubData(newPubData)
-		setPage(page + 1)
-		if (newData.results.length === 0) {
-			setHasMore(false)
+		const newPubData = [..._pubList, ...newData.results]
+
+		setUsersPublicationList(router.query.id, newPubData)
+		if (newData.results.length < LIMIT) {
+			setUsersPublicationMeta(router.query.id, {
+				page: _pubListPage + 1,
+				hasMore: false,
+			})
 		} else {
-			setHasMore(true)
+			setUsersPublicationMeta(router.query.id, {
+				page: _pubListPage + 1,
+				hasMore: true,
+			})
 		}
 		setIsFetching(false)
 	}
-
 	const headMeta = {
 		title: `${accountId} — Paras`,
 		description: `See digital card collectibles and creations from ${accountId}. ${
@@ -53,12 +78,16 @@ const Publication = ({ publications, userProfile, accountId }) => {
 	}
 
 	return (
-		<div
-			className="min-h-screen bg-dark-primary-1"
-			style={{
-				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-			}}
-		>
+		<div className="min-h-screen bg-black">
+			<div
+				className="fixed inset-0 opacity-75"
+				style={{
+					zIndex: 0,
+					backgroundImage: `url('/bg.jpg')`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+				}}
+			></div>
 			<Head>
 				<title>{headMeta.title}</title>
 				<meta name="description" content={headMeta.description} />
@@ -79,26 +108,34 @@ const Publication = ({ publications, userProfile, accountId }) => {
 			<Nav />
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'publication'} />
-				<div className="mt-8 overflow-x-hidden border-2 border-dashed border-gray-800 rounded-md">
-					{pubData.length === 0 && !isFetching ? (
-						<div className="">
-							<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">
-								<div className="w-40 m-auto">
-									<img src="/cardstack.png" className="opacity-75" />
-								</div>
-								<p className="mt-4">No Publications</p>
+				<div>
+					{!usersPublicationList[router.query.id] ? (
+						<div className="mt-4 -mx-2">
+							<PublicationCardListLoader />
+						</div>
+					) : usersPublicationList[router.query.id]?.length === 0 &&
+					  !isFetching ? (
+						<div className="mt-8 text-2xl text-gray-600 font-semibold py-32 text-center overflow-x-hidden border-2 border-dashed border-gray-800 rounded-md">
+							<div className="w-40 m-auto">
+								<img src="/cardstack.png" className="opacity-75" />
 							</div>
+							<p className="mt-4">No Publications</p>
 						</div>
 					) : (
-						<div className="max-w-4xl mx-auto px-4 mb-8">
+						<div className="mt-4 -mx-2">
 							<InfiniteScroll
-								dataLength={pubData.length}
+								dataLength={usersPublicationList[router.query.id]?.length}
 								next={_fetchData}
-								hasMore={hasMore}
+								hasMore={usersPublicationMeta[router.query.id]?.hasMore}
+								loader={<PublicationCardListLoader />}
 							>
-								{pubData.map((pub) => (
-									<PublicationList key={pub._id} data={pub} />
-								))}
+								<div className="flex flex-wrap">
+									{usersPublicationList[router.query.id]?.map((pub, idx) => (
+										<div key={idx} className="w-full md:w-1/2 p-4">
+											<PublicationList key={pub._id} data={pub} />
+										</div>
+									))}
+								</div>
 							</InfiniteScroll>
 						</div>
 					)}
@@ -112,17 +149,13 @@ const Publication = ({ publications, userProfile, accountId }) => {
 export default Publication
 
 export async function getServerSideProps({ params }) {
-	const publicationRes = await axios(
-		`${process.env.API_URL}/publications?authorId=${params.id}&__limit=5`
-	)
 	const profileRes = await axios(
 		`${process.env.API_URL}/profiles?accountId=${params.id}`
 	)
 
-	const publications = await publicationRes.data.data.results
 	const userProfile = (await profileRes.data.data.results[0]) || null
 
 	return {
-		props: { publications, userProfile, accountId: params.id },
+		props: { userProfile, accountId: params.id },
 	}
 }

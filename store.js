@@ -1,5 +1,4 @@
 import create from 'zustand'
-import near from './lib/near'
 
 const useStore = create((set, get) => ({
 	currentUser: null,
@@ -28,6 +27,28 @@ const useStore = create((set, get) => ({
 				marketDataPersist: newMarket,
 			}
 		}),
+	usersPublicationList: {},
+	setUsersPublicationList: (key, val) =>
+		set(() => {
+			const newUsersPublicationList = {
+				...get().usersPublicationList,
+				...{ [key]: val },
+			}
+			return {
+				usersPublicationList: newUsersPublicationList,
+			}
+		}),
+	usersPublicationMeta: {},
+	setUsersPublicationMeta: (key, val) =>
+		set(() => {
+			const newUsersPublicationMeta = {
+				...get().setUsersPublicationMeta,
+				...{ [key]: val },
+			}
+			return {
+				usersPublicationMeta: newUsersPublicationMeta,
+			}
+		}),
 	nearUsdPrice: 0,
 	setNearUsdPrice: (val) => set(() => ({ nearUsdPrice: val })),
 	userBalance: {},
@@ -43,12 +64,38 @@ const useStore = create((set, get) => ({
 	notificationList: [],
 	setNotificationList: (val) => set(() => ({ notificationList: val })),
 	notificationUnreadList: [],
-	setNotificationUnreadList: (val) => set(() => ({ notificationUnreadList: val })),
+	setNotificationUnreadList: (val) =>
+		set(() => ({ notificationUnreadList: val })),
 	notificationListPage: 0,
 	setNotificationListPage: (val) => set(() => ({ notificationListPage: val })),
 	notificationListHasMore: true,
 	setNotificationListHasMore: (val) =>
 		set(() => ({ notificationListHasMore: val })),
+	showEmailWarning: false,
+	setShowEmailWarning: (val) => set(() => ({ showEmailWarning: val })),
+	// publication page
+	pubList: [],
+	setPubList: (val) => set(() => ({ pubList: val })),
+	pubListPage: 0,
+	setPubListPage: (val) => set(() => ({ pubListPage: val })),
+	pubListHasMore: true,
+	setPubListHasMore: (val) => set(() => ({ pubListHasMore: val })),
+	// publication page type=editorial
+	pubListEditorial: [],
+	setPubListEditorial: (val) => set(() => ({ pubListEditorial: val })),
+	pubListEditorialPage: 0,
+	setPubListEditorialPage: (val) => set(() => ({ pubListEditorialPage: val })),
+	pubListEditorialHasMore: true,
+	setPubListEditorialHasMore: (val) =>
+		set(() => ({ pubListEditorialHasMore: val })),
+	// publication page type=community
+	pubListCommunity: [],
+	setPubListCommunity: (val) => set(() => ({ pubListCommunity: val })),
+	pubListCommunityPage: 0,
+	setPubListCommunityPage: (val) => set(() => ({ pubListCommunityPage: val })),
+	pubListCommunityHasMore: true,
+	setPubListCommunityHasMore: (val) =>
+		set(() => ({ pubListCommunityHasMore: val })),
 }))
 
 export default useStore

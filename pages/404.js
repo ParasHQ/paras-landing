@@ -3,12 +3,16 @@ import Link from 'next/link'
 
 const Custom404 = () => {
 	return (
-		<div
-			className="h-screen bg-dark-primary-1"
-			style={{
-				backgroundImage: `linear-gradient(to bottom, #000000 0%, rgba(0, 0, 0, 0.69) 69%, rgba(0, 0, 0, 0) 100%)`,
-			}}
-		>
+		<div className="h-screen bg-black">
+			<div
+				className="fixed inset-0 opacity-75"
+				style={{
+					zIndex: 0,
+					backgroundImage: `url('/bg.jpg')`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+				}}
+			></div>
 			<Head>
 				<title>Not Found — Paras</title>
 				<meta
@@ -41,7 +45,7 @@ const Custom404 = () => {
 					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 				/>
 			</Head>
-			<div className="h-full w-full max-w-6xl m-auto">
+			<div className="h-full w-full max-w-6xl m-auto relative">
 				<div className="h-full w-full flex items-center justify-center">
 					<div className="text-center">
 						<div className="w-40 m-auto mt-8">
