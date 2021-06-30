@@ -1,29 +1,31 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import Nav from '../components/Nav'
-import CardList from '../components/CardList'
+import Nav from '../../components/Nav'
 import Head from 'next/head'
-import Footer from '../components/Footer'
-import useStore from '../store'
-import FilterMarket from '../components/FilterMarket'
+import Footer from '../../components/Footer'
+import useStore from '../../store'
+import CardList from '../../components/CardList'
+import CardListLoader from '../../components/CardListLoader'
+import { parseSortQuery } from '../../utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
-import { parseSortQuery } from '../utils/common'
-import CardListLoader from '../components/CardListLoader'
-import Link from 'next/link'
-import CategoryList from '../components/CategoryList'
+import CategoryList from '../../components/CategoryList'
 
 const LIMIT = 12
 
-export default function MarketPage() {
+export default function Category({ query }) {
 	const store = useStore()
 	const router = useRouter()
 
-	const [tokens, setTokens] = useState([])
 	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(true)
 	const [hasMore, setHasMore] = useState(true)
+
+	const categoryDetail = store.cardCategory.filter(
+		(category) => category.categoryId === router.query.categoryId
+	)[0]
+	const { categoryId } = query
 
 	useEffect(() => {
 		getCategory()
@@ -33,37 +35,48 @@ export default function MarketPage() {
 	}, [])
 
 	useEffect(() => {
+		_fetchData(true)
+	}, [router.query.categoryId])
+
+	useEffect(() => {
 		updateFilter(router.query)
 	}, [router.query.sort, router.query.pmin, router.query.pmax])
-
-	const updateFilter = async (query) => {
-		setIsFiltering(true)
-		const res = await axios(`${process.env.API_URL}/tokens`, {
-			params: tokensParams(0, query),
-		})
-		setPage(1)
-		setTokens(res.data.data.results)
-		setHasMore(true)
-		setIsFiltering(false)
-	}
 
 	const getCategory = async () => {
 		const res = await axios(`${process.env.API_URL}/categories`)
 		store.setCardCategory(res.data.data.results)
 	}
 
-	const _fetchData = async () => {
-		if (!hasMore || isFetching) {
+	const updateFilter = async (query) => {
+		setIsFiltering(true)
+		const res = await axios(`${process.env.API_URL}/tokens`, {
+			params: tokensParams(0, query),
+		})
+		_fetchData(true)
+		setIsFiltering(false)
+	}
+
+	const _fetchData = async (initial = false) => {
+		const _hasMore = initial ? true : hasMore
+		const _tokens = initial ? [] : categoryDetail.list
+		const _page = initial ? 0 : page
+
+		if (!_hasMore || isFetching) {
 			return
 		}
+
 		setIsFetching(true)
 		const res = await axios(`${process.env.API_URL}/tokens`, {
-			params: tokensParams(page, router.query),
+			params: tokensParams(_page, router.query),
 		})
 		const newData = await res.data.data
-		const newTokens = [...tokens, ...newData.results]
-		setTokens(newTokens)
-		setPage(page + 1)
+		const newTokens = [..._tokens, ...newData.results]
+		const newCategoryData = store.categoryCardList
+		newCategoryData[categoryId] = newTokens
+		console.log('veve', store.cardCategory, newCategoryData)
+
+		store.setCategoryCardList(newCategoryData)
+		setPage(_page + 1)
 		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
@@ -72,19 +85,21 @@ export default function MarketPage() {
 		setIsFetching(false)
 	}
 
+	console.log(store.cardCategory)
+
 	return (
 		<div className="min-h-screen bg-black">
 			<div
 				className="fixed inset-0 opacity-50"
 				style={{
 					zIndex: 0,
-					backgroundImage: `url('./bg.jpg')`,
+					backgroundImage: `url('../bg.jpg')`,
 					backgroundRepeat: 'no-repeat',
 					backgroundSize: 'cover',
 				}}
 			></div>
 			<Head>
-				<title>Market — Paras</title>
+				<title>Category — Paras</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -122,16 +137,51 @@ export default function MarketPage() {
 						Market
 					</h1>
 				</div>
-				<CategoryList listCategory={store.cardCategory} />
-				<div className="mt-4 px-4">
-					{isFiltering ? (
+				<CategoryList
+					categoryId={categoryDetail?.categoryId || ''}
+					listCategory={store.cardCategory}
+				/>
+				<div className="md:flex justify-between mt-8 px-4">
+					{categoryDetail && (
+						<>
+							<div className="mb-8">
+								<h1 className="text-gray-100 font-bold text-4xl mb-4">
+									{categoryDetail.name}
+								</h1>
+								<p className="text-gray-200 max-w-lg">
+									{categoryDetail.description}
+								</p>
+							</div>
+							<div className="text-gray-100 md:w-1/3 my-4">
+								<div className="flex justify-between mb-4">
+									<div>Status</div>
+									<div>Open</div>
+								</div>
+								<div className="flex justify-between mb-6">
+									<div>Curators</div>
+									{categoryDetail.curators.map((curator) => (
+										<div key={curator}>{curator}</div>
+									))}
+								</div>
+								<button
+									className="w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+									type="submit"
+								>
+									{`Submit to ${categoryDetail.name}`}
+								</button>
+							</div>
+						</>
+					)}
+				</div>
+				<div className="mt-8 px-4">
+					{hasMore ? (
 						<div className="min-h-full border-2 border-dashed border-gray-800 rounded-md">
 							<CardListLoader />
 						</div>
 					) : (
 						<CardList
 							name="market"
-							tokens={tokens}
+							tokens={store.categoryCardList[categoryId] || []}
 							fetchData={_fetchData}
 							hasMore={hasMore}
 						/>
@@ -143,8 +193,13 @@ export default function MarketPage() {
 	)
 }
 
+export async function getServerSideProps({ query }) {
+	return { props: { query } }
+}
+
 const tokensParams = (_page = 0, query) => {
 	const params = {
+		categoryId: query.categoryId,
 		excludeTotalBurn: true,
 		__sort: parseSortQuery(query.sort),
 		__skip: _page * LIMIT,

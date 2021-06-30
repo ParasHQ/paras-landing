@@ -96,6 +96,12 @@ const useStore = create((set, get) => ({
 	pubListCommunityHasMore: true,
 	setPubListCommunityHasMore: (val) =>
 		set(() => ({ pubListCommunityHasMore: val })),
+
+	cardCategory: [],
+	setCardCategory: (category) => set(() => ({ cardCategory: category })),
+	categoryCardList: {},
+	setCategoryCardList: (cardList) =>
+		set(() => ({ categoryCardList: cardList })),
 }))
 
 export default useStore

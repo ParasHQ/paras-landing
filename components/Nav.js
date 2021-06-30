@@ -145,7 +145,13 @@ const User = () => {
 				<div className="cursor-pointer select-none overflow-hidden rounded-md bg-dark-primary-2">
 					<div className="flex items-center w-full h-full button-wrapper p-1">
 						<div className="w-8 h-8 rounded-full overflow-hidden bg-primary shadow-inner">
-							<img src={parseImgUrl(store.userProfile.imgUrl)} />
+							<img
+								src={
+									store.userProfile.imgUrl
+										? parseImgUrl(store.userProfile.imgUrl)
+										: null
+								}
+							/>
 						</div>
 						<div className="ml-1">
 							<svg
