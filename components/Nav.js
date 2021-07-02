@@ -350,6 +350,52 @@ const Notification = ({ notif }) => {
 			</div>
 		)
 	}
+	if (notif.type === 'onTokenCategoryAccepted') {
+		return (
+			<div>
+				<Link href={`/token/${notif.payload.tokenId}?tab=bids`}>
+					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
+							<img src={parseImgUrl(token?.metadata?.image)} />
+						</div>
+						<div className="pl-2 text-gray-300">
+							<span className="font-medium text-gray-100">
+								{token?.metadata?.name}
+							</span>
+							<span> is accepted tp </span>
+							<span className="font-medium text-gray-100">
+								{notif.payload.categoryId.replace(/-/g, ' ')}
+							</span>
+							<span> category</span>
+						</div>
+					</div>
+				</Link>
+			</div>
+		)
+	}
+	if (notif.type === 'onTokenCategoryRejected') {
+		return (
+			<div>
+				<Link href={`/token/${notif.payload.tokenId}?tab=bids`}>
+					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
+							<img src={parseImgUrl(token?.metadata?.image)} />
+						</div>
+						<div className="pl-2 text-gray-300">
+							<span className="font-medium text-gray-100">
+								{token?.metadata?.name}
+							</span>
+							<span> is rejected from </span>
+							<span className="font-medium text-gray-100">
+								{notif.payload.categoryId.replace(/-/g, ' ')}
+							</span>
+							<span> category</span>
+						</div>
+					</div>
+				</Link>
+			</div>
+		)
+	}
 	return (
 		<div>
 			<Link href={`/token/${notif.payload.tokenId}`}>
