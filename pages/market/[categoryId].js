@@ -10,6 +10,7 @@ import CardListLoader from '../../components/CardListLoader'
 import { parseSortQuery } from '../../utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CategoryList from '../../components/CategoryList'
+import AddCategoryModal from '../../components/AddCategoryModal'
 
 const LIMIT = 12
 
@@ -21,6 +22,7 @@ export default function Category({ query }) {
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(true)
 	const [hasMore, setHasMore] = useState(true)
+	const [showAddModal, setShowAddModal] = useState(false)
 
 	const categoryDetail = store.cardCategory.filter(
 		(category) => category.categoryId === router.query.categoryId
@@ -73,7 +75,6 @@ export default function Category({ query }) {
 		const newTokens = [..._tokens, ...newData.results]
 		const newCategoryData = store.categoryCardList
 		newCategoryData[categoryId] = newTokens
-		console.log('veve', store.cardCategory, newCategoryData)
 
 		store.setCategoryCardList(newCategoryData)
 		setPage(_page + 1)
@@ -84,8 +85,6 @@ export default function Category({ query }) {
 		}
 		setIsFetching(false)
 	}
-
-	console.log(store.cardCategory)
 
 	return (
 		<div className="min-h-screen bg-black">
@@ -131,6 +130,13 @@ export default function Category({ query }) {
 				/>
 			</Head>
 			<Nav />
+			{showAddModal && (
+				<AddCategoryModal
+					onClose={() => setShowAddModal(false)}
+					categoryName={categoryDetail.name}
+					categoryId={router.query.categoryId}
+				/>
+			)}
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="flex justify-center mb-4">
 					<h1 className="text-4xl font-bold text-gray-100 text-center">
@@ -165,6 +171,7 @@ export default function Category({ query }) {
 								</div>
 								<button
 									className="w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+									onClick={() => setShowAddModal(true)}
 									type="submit"
 								>
 									{`Submit to ${categoryDetail.name}`}
