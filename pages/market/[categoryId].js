@@ -172,7 +172,9 @@ export default function Category() {
 								</div>
 								<div className="flex justify-between mb-6">
 									<div>Curators</div>
-									<div>{categoryDetail.curators.join(', ')}</div>
+									<div className="text-right">
+										{categoryDetail.curators.join(', ')}
+									</div>
 								</div>
 								<div className="flex">
 									<button
@@ -182,13 +184,15 @@ export default function Category() {
 									>
 										{`Submit to ${categoryDetail.name}`}
 									</button>
-									<button
-										className="ml-4 w-full outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-white text-white"
-										onClick={manageSubmission}
-										type="button"
-									>
-										{`Manage Submission`}
-									</button>
+									{categoryDetail.curators.includes(store.currentUser) && (
+										<button
+											className="ml-4 w-full outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-white text-white"
+											onClick={manageSubmission}
+											type="button"
+										>
+											{`Manage Submission`}
+										</button>
+									)}
 								</div>
 							</div>
 						</>
