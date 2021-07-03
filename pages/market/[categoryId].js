@@ -168,12 +168,24 @@ export default function Category() {
 							<div className="text-gray-100 md:w-1/3 my-4">
 								<div className="flex justify-between mb-4">
 									<div>Status</div>
-									<div>Open</div>
+									<div className="font-medium">Open</div>
 								</div>
 								<div className="flex justify-between mb-6">
 									<div>Curators</div>
-									<div className="text-right">
-										{categoryDetail.curators.join(', ')}
+									<div className="text-right font-medium">
+										{categoryDetail.curators.map((curator, index) => (
+											<>
+												<span
+													className="cursor-pointer"
+													onClick={() => router.push(`/${curator}`)}
+												>
+													{curator}
+												</span>
+												{index !== categoryDetail.curators.length - 1 && (
+													<span>, </span>
+												)}
+											</>
+										))}
 									</div>
 								</div>
 								<div className="flex">
