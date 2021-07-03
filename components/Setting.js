@@ -37,7 +37,6 @@ const Setting = ({ close }) => {
 	const updateEmail = async () => {
 		setIsUpdating(true)
 		try {
-			console.log('masuk')
 			const resp = await Axios.put(
 				`${process.env.API_URL}/credentials/mail`,
 				{ email, preferences },

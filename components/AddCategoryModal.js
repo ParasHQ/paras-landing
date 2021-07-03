@@ -15,8 +15,6 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId }) => {
 	const toast = useToast()
 	const store = useStore()
 
-	console.log('category', categoryName, categoryId)
-
 	const fetchToken = async () => {
 		if (isLoading) {
 			return
@@ -63,8 +61,6 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId }) => {
 			tokenId: tokenId,
 			categoryId: categoryId,
 		}
-
-		console.log('query', query)
 
 		try {
 			await Axios.post(`${process.env.API_URL}/categories/tokens`, query, {

@@ -41,7 +41,6 @@ const CategorySubmission = () => {
 						},
 					}
 				)
-				console.log('asss', res.data.data.results)
 				setSubmissions(res.data.data.results)
 			} catch (error) {
 				if (error.response.status === 401) {
@@ -80,7 +79,7 @@ const CategorySubmission = () => {
 			<div className="max-w-6xl relative m-auto p-4">
 				<div className="text-white text-2xl mt-8">Category submission</div>
 				<div className="text-white font-bold text-4xl mb-8 capitalize">
-					{categoryId.replace('-', ' ')}
+					{categoryId && categoryId.replace('-', ' ')}
 				</div>
 				{submissions && submissions.length !== 0 ? (
 					<div className="md:grid md:grid-cols-2 md:gap-4">
