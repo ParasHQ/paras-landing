@@ -14,7 +14,7 @@ import AddCategoryModal from '../../components/AddCategoryModal'
 
 const LIMIT = 12
 
-export default function Category({ query }) {
+export default function Category() {
 	const store = useStore()
 	const router = useRouter()
 
@@ -27,7 +27,6 @@ export default function Category({ query }) {
 	const categoryDetail = store.cardCategory.filter(
 		(category) => category.categoryId === router.query.categoryId
 	)[0]
-	const { categoryId } = query
 
 	useEffect(() => {
 		getCategory()
@@ -37,11 +36,15 @@ export default function Category({ query }) {
 	}, [])
 
 	useEffect(() => {
-		_fetchData(true)
+		if (router.query.categoryId) {
+			_fetchData(true)
+		}
 	}, [router.query.categoryId])
 
 	useEffect(() => {
-		updateFilter(router.query)
+		if (router.query.sort || router.query.pmin || router.query.pmax) {
+			updateFilter(router.query)
+		}
 	}, [router.query.sort, router.query.pmin, router.query.pmax])
 
 	const getCategory = async () => {
@@ -74,7 +77,7 @@ export default function Category({ query }) {
 		const newData = await res.data.data
 		const newTokens = [..._tokens, ...newData.results]
 		const newCategoryData = store.categoryCardList
-		newCategoryData[categoryId] = newTokens
+		newCategoryData[router.query.categoryId] = newTokens
 
 		store.setCategoryCardList(newCategoryData)
 		setPage(_page + 1)
@@ -84,6 +87,10 @@ export default function Category({ query }) {
 			setHasMore(true)
 		}
 		setIsFetching(false)
+	}
+
+	const manageSubmission = () => {
+		router.push(`/category-submission/${router.query.categoryId}`)
 	}
 
 	return (
@@ -150,7 +157,7 @@ export default function Category({ query }) {
 				<div className="md:flex justify-between mt-8 px-4">
 					{categoryDetail && (
 						<>
-							<div className="mb-8">
+							<div className="mb-8 md:mb-0">
 								<h1 className="text-gray-100 font-bold text-4xl mb-4">
 									{categoryDetail.name}
 								</h1>
@@ -165,17 +172,24 @@ export default function Category({ query }) {
 								</div>
 								<div className="flex justify-between mb-6">
 									<div>Curators</div>
-									{categoryDetail.curators.map((curator) => (
-										<div key={curator}>{curator}</div>
-									))}
+									<div>{categoryDetail.curators.join(', ')}</div>
 								</div>
-								<button
-									className="w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
-									onClick={() => setShowAddModal(true)}
-									type="submit"
-								>
-									{`Submit to ${categoryDetail.name}`}
-								</button>
+								<div className="flex">
+									<button
+										className="w-full outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+										onClick={() => setShowAddModal(true)}
+										type="button"
+									>
+										{`Submit to ${categoryDetail.name}`}
+									</button>
+									<button
+										className="ml-4 w-full outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-white text-white"
+										onClick={manageSubmission}
+										type="button"
+									>
+										{`Manage Submission`}
+									</button>
+								</div>
 							</div>
 						</>
 					)}
@@ -188,7 +202,7 @@ export default function Category({ query }) {
 					) : (
 						<CardList
 							name="market"
-							tokens={store.categoryCardList[categoryId] || []}
+							tokens={store.categoryCardList[router.query.categoryId] || []}
 							fetchData={_fetchData}
 							hasMore={hasMore}
 						/>
@@ -198,10 +212,6 @@ export default function Category({ query }) {
 			<Footer />
 		</div>
 	)
-}
-
-export async function getServerSideProps({ query }) {
-	return { props: { query } }
 }
 
 const tokensParams = (_page = 0, query) => {
