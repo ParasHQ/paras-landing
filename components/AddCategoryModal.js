@@ -121,8 +121,8 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId }) => {
 						</svg>
 					</div>
 				</div>
-				<div className="flex md:pl-2 space-x-4 md:space-x-6 pb-2">
-					<div className="w-1/3 h-full text-black">
+				<div className="md:flex md:pl-2 md:space-x-4 md:space-x-6 pb-2 items-center">
+					<div className="w-1/2 mb-4 md:mb-0 md:w-1/3 h-full text-black">
 						<Card
 							imgUrl={parseImgUrl(tokenData?.metadata?.image)}
 							imgBlur={tokenData?.metadata?.blurhash || null}
@@ -141,7 +141,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId }) => {
 							}}
 						/>
 					</div>
-					<div className="w-2/3">
+					<div className="md:w-2/3">
 						{page === 1 && (
 							<div>
 								<input
