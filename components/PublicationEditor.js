@@ -163,7 +163,6 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				entityMap[key].type === 'IMAGE' &&
 				!entityMap[key].data.src?.includes('ipfs://')
 			) {
-				console.log('masuk')
 				const file = dataURLtoFile(entityMap[key].data.src, key)
 				formData.append('files', file, key)
 			}
