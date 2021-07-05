@@ -191,6 +191,7 @@ export default function Category() {
 					onClose={() => setShowAddModal(false)}
 					categoryName={categoryDetail.name}
 					categoryId={router.query.categoryId}
+					curators={categoryDetail.curators}
 				/>
 			)}
 			<div className="max-w-6xl relative m-auto py-12">
