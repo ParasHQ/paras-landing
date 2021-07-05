@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import Nav from '../../components/Nav'
 import Head from 'next/head'
@@ -11,18 +11,22 @@ import { parseSortQuery } from '../../utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CategoryList from '../../components/CategoryList'
 import AddCategoryModal from '../../components/AddCategoryModal'
+import { useToast } from '../../hooks/useToast'
 
 const LIMIT = 12
 
 export default function Category() {
 	const store = useStore()
 	const router = useRouter()
+	const chooseSubmitRef = useRef()
+	const toast = useToast()
 
 	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(true)
 	const [hasMore, setHasMore] = useState(true)
 	const [showAddModal, setShowAddModal] = useState(false)
+	const [chooseSubmilModal, setChooseSubmitModal] = useState(false)
 
 	const categoryDetail = store.cardCategory.filter(
 		(category) => category.categoryId === router.query.categoryId
@@ -46,6 +50,20 @@ export default function Category() {
 			updateFilter(router.query)
 		}
 	}, [router.query.sort, router.query.pmin, router.query.pmax])
+
+	useEffect(() => {
+		const onClickEv = (e) => {
+			if (!chooseSubmitRef.current?.contains(e.target)) {
+				setChooseSubmitModal(false)
+			}
+		}
+		if (chooseSubmilModal) {
+			document.body.addEventListener('click', onClickEv)
+		}
+		return () => {
+			document.body.removeEventListener('click', onClickEv)
+		}
+	})
 
 	const getCategory = async () => {
 		const res = await axios(`${process.env.API_URL}/categories`)
@@ -91,6 +109,37 @@ export default function Category() {
 
 	const manageSubmission = () => {
 		router.push(`/category-submission/${router.query.categoryId}`)
+	}
+
+	const createCard = () => {
+		if (process.env.APP_ENV !== 'production') {
+			router.push(`/new?categoryId=${router.query.categoryId}`)
+		} else if (store.userProfile.isCreator) {
+			router.push(`/new?categoryId=${router.query.categoryId}`)
+		} else {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						<p>
+							Currently we only allow whitelisted Artist to create their digital
+							art card on Paras.
+						</p>
+						<p className="mt-2">Apply now using the link below:</p>
+						<div className="mt-2">
+							<a
+								href="https://forms.gle/QsZHqa2MKXpjckj98"
+								target="_blank"
+								className="cursor-pointer border-b-2 border-gray-900"
+							>
+								Apply as an Artist
+							</a>
+						</div>
+					</div>
+				),
+				type: 'info',
+				duration: null,
+			})
+		}
 	}
 
 	return (
@@ -165,7 +214,7 @@ export default function Category() {
 									{categoryDetail.description}
 								</p>
 							</div>
-							<div className="text-gray-100 md:w-1/3 my-4">
+							<div className="text-gray-100 md:w-1/3 my-4 relative">
 								<div className="flex justify-between mb-4">
 									<div>Status</div>
 									<div className="font-medium">Open</div>
@@ -174,7 +223,7 @@ export default function Category() {
 									<div>Curators</div>
 									<div className="text-right font-medium">
 										{categoryDetail.curators.map((curator, index) => (
-											<>
+											<Fragment key={index}>
 												<span
 													className="cursor-pointer"
 													onClick={() => router.push(`/${curator}`)}
@@ -184,14 +233,14 @@ export default function Category() {
 												{index !== categoryDetail.curators.length - 1 && (
 													<span>, </span>
 												)}
-											</>
+											</Fragment>
 										))}
 									</div>
 								</div>
 								<div className="flex">
 									<button
 										className="w-full outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
-										onClick={() => setShowAddModal(true)}
+										onClick={() => setChooseSubmitModal(true)}
 										type="button"
 									>
 										{`Submit to ${categoryDetail.name}`}
@@ -206,6 +255,31 @@ export default function Category() {
 										</button>
 									)}
 								</div>
+								{chooseSubmilModal && (
+									<div
+										ref={chooseSubmitRef}
+										className="absolute w-full z-20 mt-2 right-0 shadow-lg"
+									>
+										<div className="bg-dark-primary-2 rounded-md p-4">
+											<h1
+												className="text-white font-medium cursor-pointer"
+												onClick={() => {
+													setChooseSubmitModal(false)
+													setShowAddModal(true)
+												}}
+											>
+												Submit an existing cards
+											</h1>
+											<hr className="my-4 -mx-1" />
+											<h1
+												className="text-white font-medium cursor-pointer"
+												onClick={createCard}
+											>
+												Create a new card
+											</h1>
+										</div>
+									</div>
+								)}
 							</div>
 						</>
 					)}

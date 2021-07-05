@@ -56,6 +56,8 @@ const NewPage = () => {
 		formData.append('description', formInput.description)
 		formData.append('collection', formInput.collection)
 		formData.append('royalty', formInput.royalty)
+		router.query.categoryId &&
+			formData.append('categoryId', router.query.categoryId)
 
 		try {
 			await axios.post(`${process.env.API_URL}/tokens`, formData, {
@@ -182,6 +184,16 @@ const NewPage = () => {
 		)
 		if (resp.data.data) {
 			setCollectionList(resp.data.data.results.map((res) => res.collection))
+		}
+	}
+
+	const formatCategoryId = (categoryId) => {
+		const capitalize = (str) => {
+			return str.charAt(0).toUpperCase() + str.slice(1)
+		}
+
+		if (categoryId) {
+			return categoryId.split('-').map(capitalize).join(' ')
 		}
 	}
 
@@ -437,6 +449,19 @@ const NewPage = () => {
 						</div>
 					</div>
 					<div className="w-full lg:w-1/3 bg-gray-100 p-4">
+						{router.query.categoryId && (
+							<div
+								className="w-full bg-primary px-4 py-1 text-center -m-4 mb-4 shadow-md"
+								style={{ width: 'calc(100% + 2rem)' }}
+							>
+								<div className="block text-sm text-white">
+									<span>You will submit card to </span>
+									<span className="font-bold">
+										{formatCategoryId(router.query.categoryId)}
+									</span>
+								</div>
+							</div>
+						)}
 						<div>
 							<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
 								Card Creation

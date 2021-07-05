@@ -10,11 +10,13 @@ import Modal from '../../components/Modal'
 import Nav from '../../components/Nav'
 import { useToast } from '../../hooks/useToast'
 import near from '../../lib/near'
+import useStore from '../../store'
 import { parseImgUrl, timeAgo } from '../../utils/common'
 
 const CategorySubmission = () => {
 	const [submissions, setSubmissions] = useState(null)
 	const { categoryId } = useRouter().query
+	const currentUser = useStore((state) => state.currentUser)
 	const toast = useToast()
 
 	useEffect(() => {
@@ -22,10 +24,13 @@ const CategorySubmission = () => {
 	}, [])
 
 	useEffect(() => {
-		getCategorySubmission()
-	}, [categoryId])
+		if (currentUser) {
+			getCategorySubmission()
+		}
+	}, [categoryId, currentUser])
 
 	const getCategorySubmission = async () => {
+		const auth = await near.authToken()
 		if (categoryId) {
 			try {
 				const res = await Axios.get(
@@ -37,7 +42,7 @@ const CategorySubmission = () => {
 						},
 						headers: {
 							'Content-Type': 'application/x-www-form-urlencoded',
-							authorization: await near.authToken(),
+							authorization: auth,
 						},
 					}
 				)
@@ -79,12 +84,12 @@ const CategorySubmission = () => {
 			<div className="max-w-6xl relative m-auto p-4">
 				<div className="text-white text-2xl mt-8">Category submission</div>
 				<div className="text-white font-bold text-4xl mb-8 capitalize">
-					{categoryId && categoryId.replace('-', ' ')}
+					{categoryId && categoryId.split('-').join(' ')}
 				</div>
 				{submissions && submissions.length !== 0 ? (
 					<div className="md:grid md:grid-cols-2 md:gap-4">
 						{submissions.map((submission) => (
-							<div key={submissions.id} className="text-white">
+							<div key={submission.id} className="text-white">
 								<SubmissionDetail
 									tokenId={submission.tokenId}
 									submission={submission}
@@ -204,7 +209,9 @@ const SubmissionDetail = ({ tokenId, submission, updateData }) => {
 					</div>
 				</Modal>
 			)}
-			<CardDetailModal tokens={[localToken]} />
+			<div className="text-black">
+				<CardDetailModal tokens={[localToken]} />
+			</div>
 			<div className="flex flex-wrap border-2 border-dashed border-gray-800 p-4 md:p-8 rounded-md items-center">
 				<div className="w-40 md:mr-6">
 					<Card
