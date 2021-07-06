@@ -7,7 +7,7 @@ import { parseImgUrl } from '../utils/common'
 import Card from './Card'
 import Modal from './Modal'
 
-const AddCategoryModal = ({ onClose, categoryName, categoryId }) => {
+const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 	const [tokenId, setTokenId] = useState('')
 	const [tokenData, setTokenData] = useState(null)
 	const [page, setPage] = useState(1)
@@ -42,7 +42,10 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId }) => {
 
 	const submitCard = async () => {
 		setIsLoading(true)
-		if (store.currentUser !== tokenData.creatorId) {
+		if (
+			store.currentUser !== tokenData.creatorId &&
+			!curators.includes(store.currentUser)
+		) {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
@@ -185,16 +188,11 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId }) => {
 									</span>
 								</div>
 								<button
-									type="button"
-									className="flex justify-end items-center px-6 py-1 rounded-md border-2 border-primary mt-6 bg-primary"
+									className="rounded-md py-1 font-bold mr-1 w-32 border-2 border-primary bg-primary"
+									disabled={isLoading}
+									onClick={submitCard}
 								>
-									<button
-										className="rounded-md py-1 font-bold mr-1 w-20"
-										disabled={isLoading}
-										onClick={submitCard}
-									>
-										{isLoading ? 'Loading' : 'Submit'}
-									</button>
+									{isLoading ? 'Loading' : 'Submit'}
 								</button>
 							</div>
 						)}
