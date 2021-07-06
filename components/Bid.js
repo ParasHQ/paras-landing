@@ -82,12 +82,11 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			updateBidData(data.id)
 		} catch (err) {
 			console.log(err)
+			const msg =
+				err.response?.data?.message || 'Something went wrong, try again later.'
+
 			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						Something went wrong, try again later.
-					</div>
-				),
+				text: <div className="font-semibold text-center text-sm">{msg}</div>,
 				type: 'error',
 				duration: 2500,
 			})
@@ -167,12 +166,11 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			store.setUserBalance(balance)
 		} catch (err) {
 			console.log(err)
+			const msg =
+				err.response?.data?.message || 'Something went wrong, try again later.'
+
 			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						Something went wrong, try again later
-					</div>
-				),
+				text: <div className="font-semibold text-center text-sm">{msg}</div>,
 				type: 'error',
 				duration: 2500,
 			})

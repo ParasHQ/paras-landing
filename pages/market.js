@@ -10,6 +10,8 @@ import FilterMarket from '../components/FilterMarket'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { parseSortQuery } from '../utils/common'
 import CardListLoader from '../components/CardListLoader'
+import Link from 'next/link'
+import CategoryList from '../components/CategoryList'
 
 const LIMIT = 12
 
@@ -24,6 +26,7 @@ export default function MarketPage() {
 	const [hasMore, setHasMore] = useState(true)
 
 	useEffect(() => {
+		getCategory()
 		return () => {
 			store.setMarketScrollPersist('market', 0)
 		}
@@ -42,6 +45,11 @@ export default function MarketPage() {
 		setTokens(res.data.data.results)
 		setHasMore(true)
 		setIsFiltering(false)
+	}
+
+	const getCategory = async () => {
+		const res = await axios(`${process.env.API_URL}/categories`)
+		store.setCardCategory(res.data.data.results)
 	}
 
 	const _fetchData = async () => {
@@ -109,14 +117,12 @@ export default function MarketPage() {
 			</Head>
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
-				<div className="flex justify-end mb-4">
-					<h1 className="absolute inset-x-0 text-4xl font-bold text-gray-100 text-center">
+				<div className="flex justify-center mb-4">
+					<h1 className="text-4xl font-bold text-gray-100 text-center">
 						Market
 					</h1>
-					<div className="z-10">
-						<FilterMarket />
-					</div>
 				</div>
+				<CategoryList listCategory={store.cardCategory} />
 				<div className="mt-4 px-4">
 					{isFiltering ? (
 						<div className="min-h-full border-2 border-dashed border-gray-800 rounded-md">

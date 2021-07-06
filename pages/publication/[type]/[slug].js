@@ -22,6 +22,7 @@ import Modal from '../../../components/Modal'
 import useStore from '../../../store'
 import near from '../../../lib/near'
 import EmbeddedCard from '../../../components/EmbeddedCard'
+import { useToast } from '../../../hooks/useToast'
 
 const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const store = useStore()
@@ -34,6 +35,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const [isCopied, setIsCopied] = useState(false)
 	const [isDeleting, setIsDeleting] = useState(false)
 	const [isComponentMounted, setIsComponentMounted] = useState(false)
+	const toast = useToast()
 
 	useEffect(() => {
 		setIsComponentMounted(true)
@@ -77,7 +79,12 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 			}, 1000)
 		} catch (err) {
 			const msg =
-				err.response?.data?.message || `Something went wrong, try again later`
+				err.response?.data?.message || 'Something went wrong, try again later.'
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{msg}</div>,
+				type: 'error',
+				duration: 2500,
+			})
 			setIsDeleting(false)
 		}
 	}

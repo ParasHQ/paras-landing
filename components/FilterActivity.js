@@ -71,7 +71,7 @@ const FilterActivity = ({ onClickFilter }) => {
 							{filter.map((item) => (
 								<button
 									key={item.key}
-									className={`rounded-md text-white px-3 py-1 inline-block mb-2 mr-2 border-2 border-gray-800 ${
+									className={`rounded-md text-white px-2 py-1 inline-block mb-2 mr-2 border-2 border-gray-800 ${
 										filterBy === item.key && 'bg-gray-800'
 									}`}
 									onClick={() => setFilterBy(item.key)}
@@ -141,6 +141,18 @@ const filter = [
 	{
 		key: 'burn',
 		value: 'Card Burn',
+	},
+	{
+		key: 'bidMarketAccept',
+		value: 'Bid Accept',
+	},
+	{
+		key: 'bidMarketAdd',
+		value: 'Bid Add',
+	},
+	{
+		key: 'bidMarketDelete',
+		value: 'Bid Delete',
 	},
 ]
 
