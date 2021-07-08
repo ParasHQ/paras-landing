@@ -24,6 +24,7 @@ const Card = ({
 	const [dimension, setDimension] = useState({ width: 0, height: 0 })
 	const [rotate, setRotate] = useState(initialRotate)
 	if (!setIsShowFront) {
+		// eslint-disable-next-line no-extra-semi
 		;[isShowFront, setIsShowFront] = useState(true)
 	}
 

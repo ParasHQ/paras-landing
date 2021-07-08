@@ -5,7 +5,8 @@
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
-		"start": "next start"
+		"start": "next start",
+		"lint": "next lint"
 	},
 	"dependencies": {
 		"@draft-js-plugins/anchor": "^4.1.1",
@@ -55,6 +56,9 @@
 	},
 	"devDependencies": {
 		"autoprefixer": "^10.0.1",
+		"eslint": "^7.30.0",
+		"eslint-config-next": "^11.0.1",
+		"eslint-plugin-react-hooks": "^4.2.0",
 		"postcss-import": "^13.0.0",
 		"postcss-preset-env": "^6.7.0",
 		"tailwindcss": "^1.9.5"
