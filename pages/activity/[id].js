@@ -5,6 +5,7 @@ import Footer from '../../components/Footer'
 import ActivityDetail, {
 	descriptionMaker,
 } from '../../components/ActivityDetail'
+import Error from '../404'
 
 const ActivityDetailPage = ({ errorCode, activity, token }) => {
 	if (errorCode) {

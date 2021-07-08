@@ -1,3 +1,4 @@
+/* eslint-disable react/display-name */
 import { composeDecorators } from '@draft-js-plugins/editor'
 
 import createToolbarPlugin from '@draft-js-plugins/static-toolbar'

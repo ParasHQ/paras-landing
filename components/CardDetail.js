@@ -1816,9 +1816,8 @@ const CardDetail = ({ token }) => {
 												Sort By
 											</p>
 											<select
-												className="py-1 rounded-md"
+												className="py-1 rounded-md bg-transparent outline-none"
 												onChange={(e) => _changeSortBy(e.target.value)}
-												className="bg-transparent outline-none"
 												defaultValue="priceasc"
 											>
 												<option value="nameasc">Name A-Z</option>
