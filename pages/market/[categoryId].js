@@ -51,7 +51,7 @@ export default function Category() {
 	}, [])
 
 	useEffect(() => {
-		if (categoryId && !categoryCardList[categoryId]) {
+		if (categoryId) {
 			_fetchData(true)
 		}
 	}, [categoryId])
