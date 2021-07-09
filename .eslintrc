@@ -5,7 +5,6 @@
 		"es2020": true
 	},
 	"extends": ["next", "eslint:recommended"],
-	"parser": "babel-eslint",
 	"plugins": ["react-hooks"],
 	"rules": {
 		"semi": 0,
