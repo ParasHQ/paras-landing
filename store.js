@@ -102,6 +102,12 @@ const useStore = create((set, get) => ({
 	categoryCardList: {},
 	setCategoryCardList: (cardList) =>
 		set(() => ({ categoryCardList: cardList })),
+	pageCategoryCardList: {},
+	setPageCategoryCardList: (pageCategory) =>
+		set(() => ({ pageCategoryCardList: pageCategory })),
+	hasMoreCategoryCard: {},
+	setHasMoreCategoryCard: (hasMoreCategory) =>
+		set(() => ({ hasMoreCategoryCard: hasMoreCategory })),
 }))
 
 export default useStore
