@@ -9,7 +9,7 @@ import Modal from './Modal'
 import near from '../lib/near'
 import PlaceBidModal from './PlaceBidModal'
 import JSBI from 'jsbi'
-import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
+import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useToast } from '../hooks/useToast'
 import AcceptBidModal from './AcceptBidModal'
 
@@ -20,7 +20,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 	const [isLoading, setIsLoading] = useState(false)
 
 	const fetcher = async (key) => {
-		const resp = await axios.get(`${process.env.API_URL}/${key}`)
+		const resp = await Axios.get(`${process.env.API_URL}/${key}`)
 		if (resp.data.data.results.length > 0) {
 			return resp.data.data.results[0]
 		} else {

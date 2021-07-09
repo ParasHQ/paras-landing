@@ -4,14 +4,12 @@ import Nav from '../../../components/Nav'
 import CardList from '../../../components/CardList'
 import Head from 'next/head'
 import Footer from '../../../components/Footer'
-import useStore from '../../../store'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 const LIMIT = 12
 
 export default function MarketPage({ collectionName }) {
-	const store = useStore()
 	const router = useRouter()
 	const [tokens, setTokens] = useState([])
 	const [page, setPage] = useState(0)

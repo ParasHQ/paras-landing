@@ -16,38 +16,49 @@ import { useToast } from '../../hooks/useToast'
 const LIMIT = 12
 
 export default function Category() {
-	const store = useStore()
+	const {
+		categoryCardList,
+		setCategoryCardList,
+		cardCategory,
+		setCardCategory,
+		setMarketScrollPersist,
+		pageCategoryCardList,
+		setPageCategoryCardList,
+		hasMoreCategoryCard,
+		setHasMoreCategoryCard,
+		userProfile,
+		currentUser,
+	} = useStore()
 	const router = useRouter()
 	const chooseSubmitRef = useRef()
 	const toast = useToast()
 
-	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
-	const [isFiltering, setIsFiltering] = useState(true)
-	const [hasMore, setHasMore] = useState(true)
+	const [isFiltering, setIsFiltering] = useState(false)
 	const [showAddModal, setShowAddModal] = useState(false)
 	const [chooseSubmilModal, setChooseSubmitModal] = useState(false)
 
-	const categoryDetail = store.cardCategory.filter(
-		(category) => category.categoryId === router.query.categoryId
+	const { categoryId } = router.query
+	const categoryDetail = cardCategory.filter(
+		(category) => category.categoryId === categoryId
 	)[0]
 
 	useEffect(() => {
 		getCategory()
 		return () => {
-			store.setMarketScrollPersist('market', 0)
+			setMarketScrollPersist('market', 0)
 		}
 	}, [])
 
 	useEffect(() => {
-		if (router.query.categoryId) {
+		if (categoryId) {
 			_fetchData(true)
 		}
-	}, [router.query.categoryId])
+	}, [categoryId])
 
 	useEffect(() => {
 		if (router.query.sort || router.query.pmin || router.query.pmax) {
-			updateFilter(router.query)
+			updateFilter()
 		}
 	}, [router.query.sort, router.query.pmin, router.query.pmax])
 
@@ -67,22 +78,19 @@ export default function Category() {
 
 	const getCategory = async () => {
 		const res = await axios(`${process.env.API_URL}/categories`)
-		store.setCardCategory(res.data.data.results)
+		setCardCategory(res.data.data.results)
 	}
 
-	const updateFilter = async (query) => {
+	const updateFilter = async () => {
 		setIsFiltering(true)
-		const res = await axios(`${process.env.API_URL}/tokens`, {
-			params: tokensParams(0, query),
-		})
-		_fetchData(true)
+		await _fetchData(true)
 		setIsFiltering(false)
 	}
 
 	const _fetchData = async (initial = false) => {
-		const _hasMore = initial ? true : hasMore
-		const _tokens = initial ? [] : categoryDetail.list
-		const _page = initial ? 0 : page
+		const _hasMore = initial ? true : hasMoreCategoryCard[categoryId]
+		const _tokens = initial ? [] : categoryCardList[categoryId]
+		const _page = initial ? 0 : pageCategoryCardList[categoryId]
 
 		if (!_hasMore || isFetching) {
 			return
@@ -94,28 +102,39 @@ export default function Category() {
 		})
 		const newData = await res.data.data
 		const newTokens = [..._tokens, ...newData.results]
-		const newCategoryData = store.categoryCardList
-		newCategoryData[router.query.categoryId] = newTokens
+		const newCategoryData = {
+			...categoryCardList,
+			[categoryId]: newTokens,
+		}
 
-		store.setCategoryCardList(newCategoryData)
-		setPage(_page + 1)
+		setCategoryCardList(newCategoryData)
+		setPageCategoryCardList({
+			...pageCategoryCardList,
+			[categoryId]: _page + 1,
+		})
 		if (newData.results.length < LIMIT) {
-			setHasMore(false)
+			setHasMoreCategoryCard({
+				...hasMoreCategoryCard,
+				[categoryId]: false,
+			})
 		} else {
-			setHasMore(true)
+			setHasMoreCategoryCard({
+				...hasMoreCategoryCard,
+				[categoryId]: true,
+			})
 		}
 		setIsFetching(false)
 	}
 
 	const manageSubmission = () => {
-		router.push(`/category-submission/${router.query.categoryId}`)
+		router.push(`/category-submission/${categoryId}`)
 	}
 
 	const createCard = () => {
 		if (process.env.APP_ENV !== 'production') {
-			router.push(`/new?categoryId=${router.query.categoryId}`)
-		} else if (store.userProfile.isCreator) {
-			router.push(`/new?categoryId=${router.query.categoryId}`)
+			router.push(`/new?categoryId=${categoryId}`)
+		} else if (userProfile.isCreator) {
+			router.push(`/new?categoryId=${categoryId}`)
 		} else {
 			toast.show({
 				text: (
@@ -190,7 +209,7 @@ export default function Category() {
 				<AddCategoryModal
 					onClose={() => setShowAddModal(false)}
 					categoryName={categoryDetail.name}
-					categoryId={router.query.categoryId}
+					categoryId={categoryId}
 					curators={categoryDetail.curators}
 				/>
 			)}
@@ -202,7 +221,7 @@ export default function Category() {
 				</div>
 				<CategoryList
 					categoryId={categoryDetail?.categoryId || ''}
-					listCategory={store.cardCategory}
+					listCategory={cardCategory}
 				/>
 				<div className="md:flex justify-between mt-8 px-4">
 					{categoryDetail && (
@@ -246,7 +265,7 @@ export default function Category() {
 									>
 										{`Submit to ${categoryDetail.name}`}
 									</button>
-									{categoryDetail.curators.includes(store.currentUser) && (
+									{categoryDetail.curators.includes(currentUser) && (
 										<button
 											className="ml-4 w-full outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-white text-white"
 											onClick={manageSubmission}
@@ -286,16 +305,16 @@ export default function Category() {
 					)}
 				</div>
 				<div className="mt-8 px-4">
-					{hasMore ? (
+					{!categoryCardList[categoryId] || isFiltering ? (
 						<div className="min-h-full border-2 border-dashed border-gray-800 rounded-md">
 							<CardListLoader />
 						</div>
 					) : (
 						<CardList
 							name="market"
-							tokens={store.categoryCardList[router.query.categoryId] || []}
+							tokens={categoryCardList[categoryId] || []}
 							fetchData={_fetchData}
-							hasMore={hasMore}
+							hasMore={hasMoreCategoryCard[categoryId]}
 						/>
 					)}
 				</div>
