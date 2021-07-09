@@ -486,10 +486,10 @@ const NewPage = () => {
 										{step === 1 && (
 											<button
 												disabled={
-													err.name ||
-													err.collection ||
-													err.description ||
-													err.supply
+													errors.name ||
+													errors.collection ||
+													errors.description ||
+													errors.supply
 												}
 												onClick={(_) => setStep(step + 1)}
 											>
