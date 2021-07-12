@@ -6,11 +6,9 @@ import CardList from '../components/CardList'
 import Head from 'next/head'
 import Footer from '../components/Footer'
 import useStore from '../store'
-import FilterMarket from '../components/FilterMarket'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { parseSortQuery } from '../utils/common'
 import CardListLoader from '../components/CardListLoader'
-import Link from 'next/link'
 import CategoryList from '../components/CategoryList'
 
 const LIMIT = 12

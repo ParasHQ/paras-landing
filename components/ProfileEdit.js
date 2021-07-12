@@ -64,7 +64,6 @@ const ProfileEdit = ({ close }) => {
 			store.setUserProfile(resp.data.data)
 			close()
 		} catch (err) {
-			console.log(err)
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
@@ -96,7 +95,7 @@ const ProfileEdit = ({ close }) => {
 						height: 512,
 					}}
 					type="circle"
-					left={(_) => setShowImgCrop(false)}
+					left={() => setShowImgCrop(false)}
 					right={(res) => {
 						setImgUrl(res.payload.imgUrl)
 						setImgFile(res.payload.imgFile)

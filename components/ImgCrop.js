@@ -18,7 +18,6 @@ const ImgCrop = ({
 	const containerRef = useRef(null)
 	const [imgUrl, setImgUrl] = useState('')
 	const [firstLoad, setFirstLoad] = useState(true)
-	const [showConfirm, setShowConfirm] = useState(false)
 
 	useEffect(() => {
 		const readImg = async () => {
@@ -87,7 +86,7 @@ const ImgCrop = ({
 				<div className="bg-white w-full rounded-md overflow-hidden">
 					<div className="flex justify-between items-center w-full h-16 bg-dark-12 px-4">
 						<div className="w-8 flex items-center">
-							<button onClick={(_) => _left()}>
+							<button onClick={() => _left()}>
 								<svg
 									width="28"
 									height="28"

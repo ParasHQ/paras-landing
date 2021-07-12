@@ -12,7 +12,6 @@ let timeout
 
 const ToastProvider = ({ children }) => {
 	const [reveal, setReveal] = useState(false)
-	// const [text, setText] = useState('')
 	const [config, setConfig] = useState({
 		text: '',
 		type: 'info',

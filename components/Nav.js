@@ -120,7 +120,7 @@ const User = () => {
 		<div ref={accModalRef} className="relative">
 			{showSettingModal && (
 				<Modal
-					close={(_) => setShowSettingModal(false)}
+					close={() => setShowSettingModal(false)}
 					closeOnBgClick={false}
 					closeOnEscape={false}
 				>
@@ -129,12 +129,12 @@ const User = () => {
 			)}
 			{showEditAccountModal && (
 				<Modal
-					close={(_) => setShowEditAccountModal(false)}
+					close={() => setShowEditAccountModal(false)}
 					closeOnBgClick={false}
 					closeOnEscape={false}
 				>
 					<div className="w-full max-w-sm p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
-						<ProfileEdit close={(_) => setShowEditAccountModal(false)} />
+						<ProfileEdit close={() => setShowEditAccountModal(false)} />
 					</div>
 				</Modal>
 			)}
@@ -147,7 +147,7 @@ const User = () => {
 						<div className="w-8 h-8 rounded-full overflow-hidden bg-primary shadow-inner">
 							<img
 								src={
-									store.userProfile.imgUrl
+									store.userProfile?.imgUrl
 										? parseImgUrl(store.userProfile.imgUrl)
 										: null
 								}
@@ -234,7 +234,7 @@ const User = () => {
 							</a>
 						</Link>
 						<button
-							onClick={(_) => {
+							onClick={() => {
 								setShowEditAccountModal(true)
 								toggleAccountModal()
 							}}
@@ -244,7 +244,7 @@ const User = () => {
 						</button>
 						{process.env.APP_ENV !== 'testnet' && (
 							<button
-								onClick={(_) => {
+								onClick={() => {
 									setShowSettingModal(true)
 									toggleAccountModal()
 								}}
@@ -344,6 +344,28 @@ const Notification = ({ notif }) => {
 								{prettyTruncate(notif.payload.accountId, 12, 'address')}
 							</span>{' '}
 							for {prettyBalance(notif.payload.amount, 24, 4)} Ⓝ
+						</div>
+					</div>
+				</Link>
+			</div>
+		)
+	}
+	if (notif.type === 'onBidAccept') {
+		return (
+			<div>
+				<Link href={`/token/${notif.payload.tokenId}?tab=bids`}>
+					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
+							<img src={parseImgUrl(token?.metadata?.image)} />
+						</div>
+						<div className="pl-2 text-gray-300">
+							<span className="font-medium text-gray-100">
+								{prettyTruncate(notif.payload.seller, 12, 'address')}
+							</span>{' '}
+							accept your bid and send you {notif.payload.quantity}pcs of{' '}
+							<span className="font-medium text-gray-100">
+								{token?.metadata?.name}
+							</span>
 						</div>
 					</div>
 				</Link>
@@ -696,7 +718,7 @@ const Nav = () => {
 		<Fragment>
 			{showSettingModal && (
 				<Modal
-					close={(_) => setShowSettingModal(false)}
+					close={() => setShowSettingModal(false)}
 					closeOnBgClick={false}
 					closeOnEscape={false}
 				>
@@ -780,7 +802,7 @@ const Nav = () => {
 							<Hamburger
 								active={showMobileNav}
 								type="squeeze"
-								onClick={(_) => setShowMobileNav(!showMobileNav)}
+								onClick={() => setShowMobileNav(!showMobileNav)}
 							/>
 						</div>
 						<Link href="/">
@@ -859,7 +881,7 @@ const Nav = () => {
 							{router.pathname === '/market' ? (
 								<a
 									className="cursor-pointer"
-									onClick={(_) => store.setMarketScrollPersist(0)}
+									onClick={() => store.setMarketScrollPersist(0)}
 								>
 									Market
 								</a>
@@ -923,7 +945,7 @@ const Nav = () => {
 								{router.pathname === '/market' ? (
 									<a
 										className="cursor-pointer p-4 block w-full"
-										onClick={(_) => store.setMarketScrollPersist(0)}
+										onClick={() => store.setMarketScrollPersist(0)}
 									>
 										Market
 									</a>

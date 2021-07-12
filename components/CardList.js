@@ -1,5 +1,5 @@
-import { useSpring, animated } from 'react-spring'
-import { useEffect, useRef, useState } from 'react'
+import { animated } from 'react-spring'
+import { useEffect, useRef } from 'react'
 import Card from '../components/Card'
 import { prettyBalance } from '../utils/common'
 import Link from 'next/link'
@@ -8,7 +8,6 @@ import { useRouter } from 'next/router'
 import JSBI from 'jsbi'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import CardDetailModal from './CardDetailModal'
-import CardLoader from './CardLoader'
 import CardListLoader from './CardListLoader'
 
 const CardList = ({
