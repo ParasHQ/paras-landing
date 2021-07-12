@@ -350,6 +350,28 @@ const Notification = ({ notif }) => {
 			</div>
 		)
 	}
+	if (notif.type === 'onBidAccept') {
+		return (
+			<div>
+				<Link href={`/token/${notif.payload.tokenId}?tab=bids`}>
+					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
+							<img src={parseImgUrl(token?.metadata?.image)} />
+						</div>
+						<div className="pl-2 text-gray-300">
+							<span className="font-medium text-gray-100">
+								{prettyTruncate(notif.payload.seller, 12, 'address')}
+							</span>{' '}
+							accept your bid and send you {notif.payload.quantity}pcs of{' '}
+							<span className="font-medium text-gray-100">
+								{token?.metadata?.name}
+							</span>
+						</div>
+					</div>
+				</Link>
+			</div>
+		)
+	}
 	if (notif.type === 'onTokenCategoryAccepted') {
 		return (
 			<div>
