@@ -149,7 +149,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 				<div className="flex -mx-4">
 					<div
 						className="px-4 relative"
-						onClick={(_) => router.push(`/${router.query.id}/collection`)}
+						onClick={() => router.push(`/${router.query.id}/collection`)}
 					>
 						<h4 className="text-gray-100 font-bold cursor-pointer">
 							Collection
@@ -167,7 +167,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 					</div>
 					<div
 						className="px-4 relative"
-						onClick={(_) => router.push(`/${router.query.id}/creation`)}
+						onClick={() => router.push(`/${router.query.id}/creation`)}
 					>
 						<h4 className="text-gray-100 font-bold cursor-pointer">Creation</h4>
 						{activeTab === 'creation' && (
@@ -183,7 +183,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 					</div>
 					<div
 						className="px-4 relative"
-						onClick={(_) => router.push(`/${router.query.id}/publication`)}
+						onClick={() => router.push(`/${router.query.id}/publication`)}
 					>
 						<h4 className="text-gray-100 font-bold cursor-pointer">
 							Publication

@@ -22,10 +22,12 @@ import Modal from '../../../components/Modal'
 import useStore from '../../../store'
 import near from '../../../lib/near'
 import EmbeddedCard from '../../../components/EmbeddedCard'
+import { useToast } from '../../../hooks/useToast'
 
 const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const store = useStore()
 	const router = useRouter()
+	const toast = useToast()
 	const textAreaRef = useRef(null)
 	const [content, setContent] = useState(
 		EditorState.createWithContent(convertFromRaw(pubDetail.content))
@@ -78,6 +80,11 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 		} catch (err) {
 			const msg =
 				err.response?.data?.message || `Something went wrong, try again later`
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{msg}</div>,
+				type: 'error',
+				duration: 2500,
+			})
 			setIsDeleting(false)
 		}
 	}
@@ -128,14 +135,14 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 					</div>
 				)}
 				{showModal === 'options' && (
-					<Modal close={(_) => setShowModal('')}>
+					<Modal close={() => setShowModal('')}>
 						<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
-							<div className="py-2 cursor-pointer" onClick={(_) => _copyLink()}>
+							<div className="py-2 cursor-pointer" onClick={() => _copyLink()}>
 								{isCopied ? `Copied` : `Copy Link`}
 							</div>
 							<div
 								className="py-2 cursor-pointer"
-								onClick={(_) => {
+								onClick={() => {
 									setShowModal('shareTo')
 								}}
 							>
@@ -145,7 +152,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 								<Link href={`/publication/edit/${pubDetail._id}`}>
 									<div
 										className="py-2 cursor-pointer"
-										onClick={(_) => setShowModal('confirmTransfer')}
+										onClick={() => setShowModal('confirmTransfer')}
 									>
 										Update publication
 									</div>
@@ -154,7 +161,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							{store.currentUser === pubDetail.authorId && (
 								<div
 									className="py-2 cursor-pointer"
-									onClick={(_) => setShowModal('confirmDelete')}
+									onClick={() => setShowModal('confirmDelete')}
 								>
 									Delete
 								</div>
@@ -164,7 +171,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 				)}
 				{showModal === 'confirmDelete' && (
 					<Modal
-						close={(_) => setShowModal('')}
+						close={() => setShowModal('')}
 						closeOnBgClick={true}
 						closeOnEscape={true}
 					>
@@ -187,7 +194,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 					</Modal>
 				)}
 				{showModal === 'shareTo' && (
-					<Modal close={(_) => setShowModal('')}>
+					<Modal close={() => setShowModal('')}>
 						<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
 							<div className="py-2 cursor-pointer">
 								<TwitterShareButton
@@ -264,7 +271,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							<div>
 								<svg
 									className="cursor-pointer m-auto"
-									onClick={(_) => setShowModal('options')}
+									onClick={() => setShowModal('options')}
 									width="24"
 									height="24"
 									viewBox="0 0 29 7"

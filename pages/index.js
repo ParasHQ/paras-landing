@@ -256,12 +256,12 @@ export default function Home({
 				/>
 			</Head>
 			{showVideoModal && (
-				<Modal close={(_) => setShowVideoModal(false)}>
+				<Modal close={() => setShowVideoModal(false)}>
 					<div className="max-w-3xl w-full mx-auto p-4 relative">
 						<div className="absolute z-10 top-0 right-0">
 							<div
 								className="bg-gray-300 p-2 rounded-full cursor-pointer"
-								onClick={(_) => setShowVideoModal(false)}
+								onClick={() => setShowVideoModal(false)}
 							>
 								<svg
 									width="16"
@@ -592,7 +592,7 @@ export default function Home({
 								<div className="absolute inset-0 flex items-center justify-center">
 									<div
 										className="p-2 rounded-full overflow-hidden cursor-pointer relative"
-										onClick={(_) => setShowVideoModal(true)}
+										onClick={() => setShowVideoModal(true)}
 									>
 										<div className="absolute z-0 inset-0 bg-gray-100 opacity-75"></div>
 										<svg

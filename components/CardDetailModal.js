@@ -39,12 +39,12 @@ function CardDetailModal({ tokens = [] }) {
 	return (
 		<div>
 			{activeToken && (
-				<Modal close={(_) => closeCardDetail(null)}>
+				<Modal close={() => closeCardDetail(null)}>
 					<div className="max-w-5xl m-auto w-full relative">
 						<div className="absolute top-0 left-0 p-4 z-50">
 							<div
 								className="cursor-pointer flex items-center select-none"
-								onClick={(_) => closeCardDetail(null)}
+								onClick={() => closeCardDetail(null)}
 							>
 								<svg
 									width="16"

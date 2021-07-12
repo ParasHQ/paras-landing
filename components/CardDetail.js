@@ -125,7 +125,7 @@ const Activity = ({ activity }) => {
 	)
 }
 
-const Ownership = ({ ownership, onBuy, onUpdateListing, whitelist }) => {
+const Ownership = ({ ownership, onBuy, onUpdateListing }) => {
 	const store = useStore()
 
 	const fetcher = async (key) => {
@@ -846,14 +846,14 @@ const CardDetail = ({ token }) => {
 				</div>
 			)}
 			{showModal === 'options' && (
-				<Modal close={(_) => setShowModal('')}>
+				<Modal close={() => setShowModal('')}>
 					<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
-						<div className="py-2 cursor-pointer" onClick={(_) => _copyLink()}>
+						<div className="py-2 cursor-pointer" onClick={() => _copyLink()}>
 							{isCopied ? `Copied` : `Copy Link`}
 						</div>
 						<div
 							className="py-2 cursor-pointer"
-							onClick={(_) => {
+							onClick={() => {
 								setShowModal('shareTo')
 							}}
 						>
@@ -863,7 +863,7 @@ const CardDetail = ({ token }) => {
 							_getUserOwnership(store.currentUser).quantity > 0 && (
 								<div
 									className="py-2 cursor-pointer"
-									onClick={(_) => {
+									onClick={() => {
 										if (
 											whitelist[0] === 'token_whitelisted' &&
 											store.currentUser !== localToken.creatorId
@@ -881,7 +881,7 @@ const CardDetail = ({ token }) => {
 							_getUserOwnership(store.currentUser).quantity > 0 && (
 								<div
 									className="py-2 cursor-pointer"
-									onClick={(_) => setShowModal('confirmTransfer')}
+									onClick={() => setShowModal('confirmTransfer')}
 								>
 									Transfer Card
 								</div>
@@ -890,7 +890,7 @@ const CardDetail = ({ token }) => {
 							_getUserOwnership(store.currentUser).quantity > 0 && (
 								<div
 									className="py-2 cursor-pointer"
-									onClick={(_) => setShowModal('confirmBurn')}
+									onClick={() => setShowModal('confirmBurn')}
 								>
 									Burn Card
 								</div>
@@ -899,7 +899,7 @@ const CardDetail = ({ token }) => {
 				</Modal>
 			)}
 			{showModal === 'shareTo' && (
-				<Modal close={(_) => setShowModal('')}>
+				<Modal close={() => setShowModal('')}>
 					<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
 						<div className="py-2 cursor-pointer">
 							<TwitterShareButton
@@ -937,7 +937,7 @@ const CardDetail = ({ token }) => {
 			)}
 			{showModal === 'addUpdateListing' && (
 				<Modal
-					close={(_) => setShowModal('')}
+					close={() => setShowModal('')}
 					closeOnBgClick={false}
 					closeOnEscape={false}
 				>
@@ -1093,7 +1093,7 @@ const CardDetail = ({ token }) => {
 									<button
 										disabled={isSubmitting}
 										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
-										onClick={(_) => setShowModal(false)}
+										onClick={() => setShowModal(false)}
 									>
 										Cancel
 									</button>
@@ -1104,7 +1104,7 @@ const CardDetail = ({ token }) => {
 				</Modal>
 			)}
 			{showModal === 'removeListing' && (
-				<Modal close={(_) => setShowModal('')}>
+				<Modal close={() => setShowModal('')}>
 					<div className="max-w-sm w-full px-4 bg-gray-100 m-auto rounded-md">
 						<div>
 							<button onClick={_removePrice}>Remove Listing</button>
@@ -1113,7 +1113,7 @@ const CardDetail = ({ token }) => {
 				</Modal>
 			)}
 			{showModal === 'redirectLogin' && (
-				<Modal close={(_) => setShowModal('')}>
+				<Modal close={() => setShowModal('')}>
 					<div className="max-w-sm text-center w-full p-4 bg-gray-100 m-auto rounded-md">
 						<div className="flex justify-center items-center">
 							<svg
@@ -1150,7 +1150,7 @@ const CardDetail = ({ token }) => {
 			)}
 			{showModal === 'confirmBuy' && (
 				<Modal
-					close={(_) => setShowModal('')}
+					close={() => setShowModal('')}
 					closeOnBgClick={false}
 					closeOnEscape={false}
 				>
@@ -1236,7 +1236,7 @@ const CardDetail = ({ token }) => {
 									<button
 										disabled={isSubmitting}
 										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
-										onClick={(_) => {
+										onClick={() => {
 											setChosenSeller(null)
 											setShowModal(false)
 										}}
@@ -1261,7 +1261,7 @@ const CardDetail = ({ token }) => {
 			)}
 			{showModal === 'confirmTransfer' && (
 				<Modal
-					close={(_) => setShowModal('')}
+					close={() => setShowModal('')}
 					closeOnBgClick={false}
 					closeOnEscape={false}
 				>
@@ -1335,7 +1335,7 @@ const CardDetail = ({ token }) => {
 									<button
 										disabled={isSubmitting}
 										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
-										onClick={(_) => {
+										onClick={() => {
 											setChosenSeller(null)
 											setShowModal(false)
 										}}
@@ -1350,7 +1350,7 @@ const CardDetail = ({ token }) => {
 			)}
 			{showModal === 'confirmBurn' && (
 				<Modal
-					close={(_) => setShowModal('')}
+					close={() => setShowModal('')}
 					closeOnBgClick={false}
 					closeOnEscape={false}
 				>
@@ -1416,7 +1416,7 @@ const CardDetail = ({ token }) => {
 									<button
 										disabled={isSubmitting}
 										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
-										onClick={(_) => {
+										onClick={() => {
 											setShowModal(false)
 										}}
 									>
@@ -1429,7 +1429,7 @@ const CardDetail = ({ token }) => {
 				</Modal>
 			)}
 			{showModal === 'notAllowedBuy' && (
-				<Modal close={(_) => setShowModal('')}>
+				<Modal close={() => setShowModal('')}>
 					<div className="max-w-xs text-center w-full p-4 bg-gray-100 m-auto rounded-md">
 						<p className="mt-1 text-gray-900">
 							You are not allowed to buy this card at the moment. Only
@@ -1447,7 +1447,7 @@ const CardDetail = ({ token }) => {
 				</Modal>
 			)}
 			{showModal === 'notAllowedUpdate' && (
-				<Modal close={(_) => setShowModal('')}>
+				<Modal close={() => setShowModal('')}>
 					<div className="max-w-xs text-center w-full p-4 bg-gray-100 m-auto rounded-md">
 						<p className="mt-1 text-gray-900">
 							You are not allowed to list this card at the moment
@@ -1539,7 +1539,7 @@ const CardDetail = ({ token }) => {
 									<div>
 										<svg
 											className="cursor-pointer"
-											onClick={(_) => setShowModal('options')}
+											onClick={() => setShowModal('options')}
 											width="18"
 											height="18"
 											viewBox="0 0 29 7"
@@ -1578,7 +1578,7 @@ const CardDetail = ({ token }) => {
 													? 'text-gray-100 bg-dark-primary-1'
 													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
 											}`}
-											onClick={(_) => changeActiveTab('info')}
+											onClick={() => changeActiveTab('info')}
 										>
 											<div>Info</div>
 										</div>
@@ -1590,7 +1590,7 @@ const CardDetail = ({ token }) => {
 													? 'text-gray-100 bg-dark-primary-1'
 													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
 											}`}
-											onClick={(_) => changeActiveTab('owners')}
+											onClick={() => changeActiveTab('owners')}
 										>
 											<div>Owners</div>
 										</div>
@@ -1602,7 +1602,7 @@ const CardDetail = ({ token }) => {
 													? 'text-gray-100 bg-dark-primary-1'
 													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
 											}`}
-											onClick={(_) => changeActiveTab('bids')}
+											onClick={() => changeActiveTab('bids')}
 										>
 											<div>Bids</div>
 										</div>
@@ -1614,7 +1614,7 @@ const CardDetail = ({ token }) => {
 													? 'text-gray-100 bg-dark-primary-1'
 													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
 											}`}
-											onClick={(_) => changeActiveTab('history')}
+											onClick={() => changeActiveTab('history')}
 										>
 											<div>History</div>
 										</div>
@@ -1626,7 +1626,7 @@ const CardDetail = ({ token }) => {
 													? 'text-gray-100 bg-dark-primary-1'
 													: 'hover:bg-opacity-15 hover:bg-dark-primary-1'
 											}`}
-											onClick={(_) => changeActiveTab('publication')}
+											onClick={() => changeActiveTab('publication')}
 										>
 											<div>Publication</div>
 										</div>
@@ -1829,7 +1829,7 @@ const CardDetail = ({ token }) => {
 										{localToken.ownerships.map((ownership, idx) => {
 											return (
 												<Ownership
-													onUpdateListing={(_) => {
+													onUpdateListing={() => {
 														if (
 															whitelist[0] === 'token_whitelisted' &&
 															store.currentUser !== localToken.creatorId
@@ -1839,7 +1839,7 @@ const CardDetail = ({ token }) => {
 															setShowModal('addUpdateListing')
 														}
 													}}
-													onBuy={(_) => {
+													onBuy={() => {
 														if (
 															store.currentUser === ownership.ownerId ||
 															!store.currentUser

@@ -190,6 +190,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	}
 
 	const uploadThumbnail = async () => {
+		// eslint-disable-next-line no-unused-vars
 		const [protocol, path] = thumbnail.split('://')
 		if (protocol === 'ipfs') {
 			return thumbnail
