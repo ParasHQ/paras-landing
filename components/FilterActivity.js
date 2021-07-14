@@ -143,16 +143,8 @@ const filter = [
 		value: 'Card Burn',
 	},
 	{
-		key: 'bidMarketAccept',
-		value: 'Bid Accept',
-	},
-	{
 		key: 'bidMarketAdd',
-		value: 'Bid Add',
-	},
-	{
-		key: 'bidMarketDelete',
-		value: 'Bid Delete',
+		value: 'Card Bid',
 	},
 ]
 
