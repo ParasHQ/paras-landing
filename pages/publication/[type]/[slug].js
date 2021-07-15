@@ -135,14 +135,14 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 					</div>
 				)}
 				{showModal === 'options' && (
-					<Modal close={(_) => setShowModal('')}>
+					<Modal close={() => setShowModal('')}>
 						<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
-							<div className="py-2 cursor-pointer" onClick={(_) => _copyLink()}>
+							<div className="py-2 cursor-pointer" onClick={() => _copyLink()}>
 								{isCopied ? `Copied` : `Copy Link`}
 							</div>
 							<div
 								className="py-2 cursor-pointer"
-								onClick={(_) => {
+								onClick={() => {
 									setShowModal('shareTo')
 								}}
 							>
@@ -152,7 +152,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 								<Link href={`/publication/edit/${pubDetail._id}`}>
 									<div
 										className="py-2 cursor-pointer"
-										onClick={(_) => setShowModal('confirmTransfer')}
+										onClick={() => setShowModal('confirmTransfer')}
 									>
 										Update publication
 									</div>
@@ -161,7 +161,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							{store.currentUser === pubDetail.authorId && (
 								<div
 									className="py-2 cursor-pointer"
-									onClick={(_) => setShowModal('confirmDelete')}
+									onClick={() => setShowModal('confirmDelete')}
 								>
 									Delete
 								</div>
@@ -171,7 +171,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 				)}
 				{showModal === 'confirmDelete' && (
 					<Modal
-						close={(_) => setShowModal('')}
+						close={() => setShowModal('')}
 						closeOnBgClick={true}
 						closeOnEscape={true}
 					>
@@ -194,7 +194,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 					</Modal>
 				)}
 				{showModal === 'shareTo' && (
-					<Modal close={(_) => setShowModal('')}>
+					<Modal close={() => setShowModal('')}>
 						<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
 							<div className="py-2 cursor-pointer">
 								<TwitterShareButton
@@ -253,7 +253,9 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 								<Link href={`/${pubDetail.authorId}`}>
 									<div className="w-16 h-16 rounded-full overflow-hidden bg-primary cursor-pointer">
 										<img
-											src={parseImgUrl(userProfile.imgUrl)}
+											src={parseImgUrl(userProfile.imgUrl, null, {
+												width: `800`,
+											})}
 											className="object-cover"
 										/>
 									</div>
@@ -271,7 +273,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							<div>
 								<svg
 									className="cursor-pointer m-auto"
-									onClick={(_) => setShowModal('options')}
+									onClick={() => setShowModal('options')}
 									width="24"
 									height="24"
 									viewBox="0 0 29 7"
@@ -316,7 +318,11 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 								<h4 className="text-white font-semibold text-3xl md:mb-4 text-center">
 									Card Collectibles
 								</h4>
-								<div className="md:flex justify-center lg:-m-8">
+								<div
+									className={`flex flex-wrap ${
+										pubDetail.tokenIds.length <= 3 && 'justify-center'
+									}`}
+								>
 									{pubDetail.tokenIds?.map((tokenId) => (
 										<div
 											key={tokenId}

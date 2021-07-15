@@ -33,7 +33,9 @@ const FeaturedPost = ({ post = {} }) => {
 			<div className="bg-dark-primary-1 rounded-md overflow-hidden relative h-56 lg:h-64">
 				<div className="h-full">
 					<img
-						src={parseImgUrl(post.image)}
+						src={parseImgUrl(post.image, null, {
+							width: `800`,
+						})}
 						className="object-cover h-full w-full publication-card-img"
 					/>
 				</div>
@@ -106,7 +108,12 @@ const TopUser = ({ user, idx }) => {
 			<p className="text-base text-gray-100 opacity-50 mr-3">{idx + 1}</p>
 			<Link href={`/${user._id}`}>
 				<div className="flex-shrink-0 cursor-pointer w-12 h-12 rounded-full overflow-hidden bg-primary border-white border">
-					<img src={parseImgUrl(profile?.imgUrl)} className="object-cover" />
+					<img
+						src={parseImgUrl(profile?.imgUrl, null, {
+							width: `300`,
+						})}
+						className="object-cover"
+					/>
 				</div>
 			</Link>
 			<div className="ml-3">
@@ -138,7 +145,9 @@ const PublicationList = ({ idx, data }) => {
 								<div className="m-auto cursor-pointer">
 									<img
 										className="w-full h-40 lg:h-32 object-cover publication-card-img"
-										src={parseImgUrl(data.thumbnail)}
+										src={parseImgUrl(data.thumbnail, null, {
+											width: `400`,
+										})}
 									/>
 								</div>
 							</div>
@@ -256,12 +265,12 @@ export default function Home({
 				/>
 			</Head>
 			{showVideoModal && (
-				<Modal close={(_) => setShowVideoModal(false)}>
+				<Modal close={() => setShowVideoModal(false)}>
 					<div className="max-w-3xl w-full mx-auto p-4 relative">
 						<div className="absolute z-10 top-0 right-0">
 							<div
 								className="bg-gray-300 p-2 rounded-full cursor-pointer"
-								onClick={(_) => setShowVideoModal(false)}
+								onClick={() => setShowVideoModal(false)}
 							>
 								<svg
 									width="16"
@@ -592,7 +601,7 @@ export default function Home({
 								<div className="absolute inset-0 flex items-center justify-center">
 									<div
 										className="p-2 rounded-full overflow-hidden cursor-pointer relative"
-										onClick={(_) => setShowVideoModal(true)}
+										onClick={() => setShowVideoModal(true)}
 									>
 										<div className="absolute z-0 inset-0 bg-gray-100 opacity-75"></div>
 										<svg

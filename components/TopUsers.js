@@ -53,7 +53,12 @@ const TopUser = ({ user, idx }) => {
 			<p className="text-base text-gray-100 opacity-50 mr-3">{idx + 1}</p>
 			<Link href={`/${user._id}`}>
 				<div className="cursor-pointer w-12 h-12 rounded-full overflow-hidden bg-primary">
-					<img src={parseImgUrl(profile?.imgUrl)} className="object-cover" />
+					<img
+						src={parseImgUrl(profile?.imgUrl, null, {
+							width: `300`,
+						})}
+						className="object-cover"
+					/>
 				</div>
 			</Link>
 			<div className="ml-3">

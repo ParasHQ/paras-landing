@@ -26,7 +26,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 		fetchData()
 	}, [])
 
-	const fetchData = async (key) => {
+	const fetchData = async () => {
 		const resp = await Axios.get(
 			`${process.env.API_URL}/tokens?tokenId=${tokenId}`
 		)
@@ -81,7 +81,6 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			})
 			updateBidData(data.id)
 		} catch (err) {
-			console.log(err)
 			const msg =
 				err.response?.data?.message || 'Something went wrong, try again later.'
 
@@ -165,10 +164,8 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			const balance = await near.wallet.account().getAccountBalance()
 			store.setUserBalance(balance)
 		} catch (err) {
-			console.log(err)
 			const msg =
 				err.response?.data?.message || 'Something went wrong, try again later.'
-
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">{msg}</div>,
 				type: 'error',
@@ -243,7 +240,9 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 				<div className="flex items-center">
 					<div className="w-40 h-full">
 						<Card
-							imgUrl={parseImgUrl(token?.metadata?.image)}
+							imgUrl={parseImgUrl(token?.metadata?.image, null, {
+								width: `300`,
+							})}
 							imgBlur={token?.metadata?.blurhash}
 							token={{
 								name: token?.metadata?.name,

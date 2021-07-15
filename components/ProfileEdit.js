@@ -64,7 +64,6 @@ const ProfileEdit = ({ close }) => {
 			store.setUserProfile(resp.data.data)
 			close()
 		} catch (err) {
-			console.log(err)
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
@@ -96,7 +95,7 @@ const ProfileEdit = ({ close }) => {
 						height: 512,
 					}}
 					type="circle"
-					left={(_) => setShowImgCrop(false)}
+					left={() => setShowImgCrop(false)}
 					right={(res) => {
 						setImgUrl(res.payload.imgUrl)
 						setImgFile(res.payload.imgFile)
@@ -120,7 +119,12 @@ const ProfileEdit = ({ close }) => {
 					/>
 					<div className="flex items-center justify-center">
 						<div className="w-32 h-32 rounded-full overflow-hidden bg-primary shadow-inner">
-							<img src={parseImgUrl(imgUrl)} className="w-full object-cover" />
+							<img
+								src={parseImgUrl(imgUrl, null, {
+									width: `300`,
+								})}
+								className="w-full object-cover"
+							/>
 						</div>
 					</div>
 				</div>

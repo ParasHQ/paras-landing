@@ -242,7 +242,9 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 								{profile && (
 									<img
 										className="object-cover"
-										src={parseImgUrl(profile.imgUrl)}
+										src={parseImgUrl(profile.imgUrl, null, {
+											width: `300`,
+										})}
 									/>
 								)}
 							</div>

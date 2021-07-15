@@ -1,6 +1,6 @@
 import JSBI from 'jsbi'
 import useSWR from 'swr'
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useState } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
 import {
@@ -223,7 +223,7 @@ const ActivityDetail = ({ activity, token }) => {
 		<Fragment>
 			<CardDetailModal tokens={[localToken]} />
 			{showModal === 'options' && (
-				<Modal close={(_) => setShowModal('')}>
+				<Modal close={() => setShowModal('')}>
 					<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
 						<CopyLink link={shareLink} afterCopy={handleAfterCopy}>
 							<div className="py-2 cursor-pointer flex items-center">
@@ -287,7 +287,9 @@ const ActivityDetail = ({ activity, token }) => {
 				<div className="w-full md:w-1/3">
 					<div className="w-40 mx-auto">
 						<Card
-							imgUrl={parseImgUrl(localToken?.metadata?.image)}
+							imgUrl={parseImgUrl(localToken?.metadata?.image, null, {
+								width: `300`,
+							})}
 							imgBlur={localToken?.metadata?.blurhash}
 							token={{
 								name: localToken?.metadata?.name,
@@ -333,7 +335,7 @@ const ActivityDetail = ({ activity, token }) => {
 							</div>
 							<div>
 								<div
-									onClick={(_) => setShowModal('options')}
+									onClick={() => setShowModal('options')}
 									className="cursor-pointer w-8 h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-4 flex items-center justify-center"
 								>
 									<svg

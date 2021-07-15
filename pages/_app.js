@@ -123,7 +123,6 @@ function MyApp({ Component, pageProps }) {
 					)
 					store.setUserProfile(resp.data.data)
 				} catch (err) {
-					console.log(err)
 					store.setUserProfile({})
 				}
 			} else {

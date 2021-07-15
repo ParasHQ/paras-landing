@@ -1,14 +1,13 @@
-import { useSpring, animated } from 'react-spring'
-import { useEffect, useRef, useState } from 'react'
+import { animated } from 'react-spring'
+import { useEffect, useRef } from 'react'
 import Card from '../components/Card'
-import { prettyBalance } from '../utils/common'
+import { parseImgUrl, prettyBalance } from '../utils/common'
 import Link from 'next/link'
 import useStore from '../store'
 import { useRouter } from 'next/router'
 import JSBI from 'jsbi'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import CardDetailModal from './CardDetailModal'
-import CardLoader from './CardLoader'
 import CardListLoader from './CardListLoader'
 
 const CardList = ({
@@ -111,7 +110,9 @@ const CardList = ({
 							>
 								<div className="w-full m-auto">
 									<Card
-										imgUrl={token.metadata.image}
+										imgUrl={parseImgUrl(token.metadata.image, null, {
+											width: `300`,
+										})}
 										imgBlur={token.metadata.blurhash}
 										token={{
 											name: token.metadata.name,

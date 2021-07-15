@@ -20,7 +20,7 @@ const CopyLink = ({ children, link, afterCopy }) => {
 	}
 
 	return (
-		<div onClick={(_) => _copyLink()}>
+		<div onClick={() => _copyLink()}>
 			{isComponentMounted && (
 				<div
 					className="absolute z-0 opacity-0"

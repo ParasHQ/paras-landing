@@ -285,7 +285,7 @@ const License = () => {
 					<div className="flex mt-6 justify-between items-center">
 						<div className="w-1/2 text-center">
 							<h3
-								onClick={(_) => setActiveTab('overview')}
+								onClick={() => setActiveTab('overview')}
 								className={`cursor-pointer font-bold text-2xl ${
 									activeTab !== 'overview' && 'opacity-75'
 								}`}
@@ -295,7 +295,7 @@ const License = () => {
 						</div>
 						<div className="w-1/2 text-center">
 							<h3
-								onClick={(_) => setActiveTab('detail')}
+								onClick={() => setActiveTab('detail')}
 								className={`cursor-pointer font-bold text-2xl ${
 									activeTab !== 'detail' && 'opacity-75'
 								}`}

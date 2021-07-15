@@ -396,7 +396,9 @@ const SpecialCard = ({
 							<Card
 								special
 								imgUrl={
-									localToken ? localToken.metadata.image : parseImgUrl(imgUrl)
+									localToken
+										? parseImgUrl(localToken.metadata.image)
+										: parseImgUrl(imgUrl)
 								}
 								imgBlur={blurhash}
 								disableFlip

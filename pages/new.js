@@ -13,6 +13,7 @@ import Head from 'next/head'
 import { useToast } from '../hooks/useToast'
 import Footer from '../components/Footer'
 import {
+	parseImgUrl,
 	prettyBalance,
 	readFileAsUrl,
 	readFileDimension,
@@ -70,7 +71,6 @@ const NewPage = () => {
 				router.push('/market')
 			}, 1000)
 		} catch (err) {
-			console.log(err.response)
 			const msg =
 				err.response?.data?.message || `Something went wrong, try again later`
 			toast.show({
@@ -242,14 +242,14 @@ const NewPage = () => {
 			</Head>
 			<Nav />
 			{showAlertErr && (
-				<Modal close={(_) => setShowAlertErr(false)}>
+				<Modal close={() => setShowAlertErr(false)}>
 					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
 						<div>
 							<div className="w-full">{showAlertErr}</div>
 							<div>
 								<button
 									className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
-									onClick={(_) => setShowAlertErr(false)}
+									onClick={() => setShowAlertErr(false)}
 								>
 									OK
 								</button>
@@ -260,7 +260,7 @@ const NewPage = () => {
 			)}
 			{showConfirmModal && (
 				<Modal
-					close={(_) => setShowConfirmModal(false)}
+					close={() => setShowConfirmModal(false)}
 					closeOnEscape={false}
 					closeOnBgClick={false}
 				>
@@ -270,7 +270,7 @@ const NewPage = () => {
 								<Card
 									imgWidth={640}
 									imgHeight={890}
-									imgUrl={imgUrl}
+									imgUrl={parseImgUrl(imgUrl)}
 									token={{
 										name: formInput.name,
 										collection: formInput.collection,
@@ -389,7 +389,7 @@ const NewPage = () => {
 									</button>
 									<button
 										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
-										onClick={(_) => setShowConfirmModal(false)}
+										onClick={() => setShowConfirmModal(false)}
 									>
 										Cancel
 									</button>
@@ -406,7 +406,7 @@ const NewPage = () => {
 						width: 640 * 2,
 						height: 890 * 2,
 					}}
-					left={(_) => {
+					left={() => {
 						setImgFile(null)
 						setShowImgCrop(false)
 					}}
@@ -429,7 +429,7 @@ const NewPage = () => {
 							<Card
 								imgWidth={640}
 								imgHeight={890}
-								imgUrl={imgUrl}
+								imgUrl={parseImgUrl(imgUrl)}
 								token={{
 									name: watch('name', formInput.name),
 									collection: watch('collection', formInput.collection),
@@ -478,7 +478,7 @@ const NewPage = () => {
 										{step === 0 && (
 											<button
 												disabled={!imgFile}
-												onClick={(_) => setStep(step + 1)}
+												onClick={() => setStep(step + 1)}
 											>
 												Next
 											</button>
@@ -491,13 +491,13 @@ const NewPage = () => {
 													errors.description ||
 													errors.supply
 												}
-												onClick={(_) => setStep(step + 1)}
+												onClick={() => setStep(step + 1)}
 											>
 												Next
 											</button>
 										)}
 										{step === 2 && (
-											<button onClick={(_) => _submit()}>Submit</button>
+											<button onClick={() => _submit()}>Submit</button>
 										)}
 									</div>
 								</div>
