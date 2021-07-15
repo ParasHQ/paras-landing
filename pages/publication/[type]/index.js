@@ -318,7 +318,11 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 								<h4 className="text-white font-semibold text-3xl md:mb-4 text-center">
 									Card Collectibles
 								</h4>
-								<div className="flex flex-wrap">
+								<div
+									className={`flex flex-wrap ${
+										pubDetail.tokenIds.length <= 3 && 'justify-center'
+									}`}
+								>
 									{pubDetail.tokenIds?.map((tokenId) => (
 										<div
 											key={tokenId}
