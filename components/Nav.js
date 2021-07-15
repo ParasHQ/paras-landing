@@ -288,7 +288,11 @@ const Notification = ({ notif }) => {
 				<Link href={`/token/${notif.payload.tokenId}`}>
 					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
 						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-							<img src={parseImgUrl(token?.metadata?.image)} />
+							<img
+								src={parseImgUrl(token?.metadata?.image, null, {
+									width: `300`,
+								})}
+							/>
 						</div>
 						<div className="pl-2 text-gray-300">
 							<span className="font-medium text-gray-100">
@@ -311,7 +315,11 @@ const Notification = ({ notif }) => {
 				<Link href={`/token/${notif.payload.tokenId}`}>
 					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
 						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-							<img src={parseImgUrl(token?.metadata?.image)} />
+							<img
+								src={parseImgUrl(token?.metadata?.image, null, {
+									width: `300`,
+								})}
+							/>
 						</div>
 						<div className="pl-2 text-gray-300">
 							received royalty{' '}
@@ -336,7 +344,11 @@ const Notification = ({ notif }) => {
 				<Link href={`/token/${notif.payload.tokenId}?tab=bids`}>
 					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
 						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-							<img src={parseImgUrl(token?.metadata?.image)} />
+							<img
+								src={parseImgUrl(token?.metadata?.image, null, {
+									width: `300`,
+								})}
+							/>
 						</div>
 						<div className="pl-2 text-gray-300">
 							received new bid from{' '}
@@ -356,7 +368,11 @@ const Notification = ({ notif }) => {
 				<Link href={`/token/${notif.payload.tokenId}?tab=bids`}>
 					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
 						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-							<img src={parseImgUrl(token?.metadata?.image)} />
+							<img
+								src={parseImgUrl(token?.metadata?.image, null, {
+									width: `300`,
+								})}
+							/>
 						</div>
 						<div className="pl-2 text-gray-300">
 							<span className="font-medium text-gray-100">
@@ -378,7 +394,11 @@ const Notification = ({ notif }) => {
 				<Link href={`/token/${notif.payload.tokenId}?tab=bids`}>
 					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
 						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-							<img src={parseImgUrl(token?.metadata?.image)} />
+							<img
+								src={parseImgUrl(token?.metadata?.image, null, {
+									width: `300`,
+								})}
+							/>
 						</div>
 						<div className="pl-2 text-gray-300">
 							<span className="font-medium text-gray-100">
@@ -401,7 +421,11 @@ const Notification = ({ notif }) => {
 				<Link href={`/token/${notif.payload.tokenId}?tab=bids`}>
 					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
 						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-							<img src={parseImgUrl(token?.metadata?.image)} />
+							<img
+								src={parseImgUrl(token?.metadata?.image, null, {
+									width: `300`,
+								})}
+							/>
 						</div>
 						<div className="pl-2 text-gray-300">
 							<span className="font-medium text-gray-100">
@@ -423,7 +447,11 @@ const Notification = ({ notif }) => {
 			<Link href={`/token/${notif.payload.tokenId}`}>
 				<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
 					<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-						<img src={parseImgUrl(token?.metadata?.image)} />
+						<img
+							src={parseImgUrl(token?.metadata?.image, null, {
+								width: `300`,
+							})}
+						/>
 					</div>
 					<div className="pl-2 text-gray-300">
 						<span className="font-medium text-gray-100">

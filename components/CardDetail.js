@@ -1486,7 +1486,9 @@ const CardDetail = ({ token }) => {
 						</div>
 						<div className="h-full flex items-center">
 							<Card
-								imgUrl={parseImgUrl(localToken.metadata.image)}
+								imgUrl={parseImgUrl(localToken.metadata.image, null, {
+									width: `0.8`,
+								})}
 								imgBlur={localToken.metadata.blurhash}
 								token={{
 									name: localToken.metadata.name,
@@ -1802,7 +1804,9 @@ const CardDetail = ({ token }) => {
 											<div className="flex justify-between text-sm">
 												<p>Image Link</p>
 												<TokenInfoCopy
-													text={parseImgUrl(localToken.metadata.image)}
+													text={parseImgUrl(localToken.metadata.image, null, {
+														useOriginal: true,
+													})}
 												/>
 											</div>
 										</div>

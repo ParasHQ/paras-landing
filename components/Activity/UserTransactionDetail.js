@@ -75,7 +75,9 @@ const UserTransactionDetail = ({
 					<Link href={`/${data._id}`}>
 						<div className="cursor-pointer w-20 h-20 rounded-full overflow-hidden bg-primary">
 							<img
-								src={parseImgUrl(profile?.imgUrl)}
+								src={parseImgUrl(profile?.imgUrl, null, {
+									width: `300`,
+								})}
 								className="object-cover"
 							/>
 						</div>
@@ -160,7 +162,9 @@ const UserTransactionCard = ({ tokenId, setLocalToken }) => {
 		>
 			<div className="w-full m-auto">
 				<Card
-					imgUrl={parseImgUrl(localToken?.metadata?.image)}
+					imgUrl={parseImgUrl(localToken?.metadata?.image, null, {
+						width: `300`,
+					})}
 					imgBlur={localToken?.metadata?.blurhash}
 					token={{
 						name: localToken?.metadata?.name,

@@ -88,7 +88,13 @@ const CardStats = ({ cardsData, fetchData, hasMore }) => {
 										>
 											<div className="w-32 md:w-48">
 												<Card
-													imgUrl={parseImgUrl(localToken?.metadata?.image)}
+													imgUrl={parseImgUrl(
+														localToken?.metadata?.image,
+														null,
+														{
+															width: `300`,
+														}
+													)}
 													imgBlur={localToken?.metadata?.blurhash}
 													token={{
 														name: localToken?.metadata?.name,

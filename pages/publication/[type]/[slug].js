@@ -253,7 +253,9 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 								<Link href={`/${pubDetail.authorId}`}>
 									<div className="w-16 h-16 rounded-full overflow-hidden bg-primary cursor-pointer">
 										<img
-											src={parseImgUrl(userProfile.imgUrl)}
+											src={parseImgUrl(userProfile.imgUrl, null, {
+												width: `800`,
+											})}
 											className="object-cover"
 										/>
 									</div>

@@ -38,7 +38,9 @@ const EmbeddedCard = ({ tokenId }) => {
 			<CardDetailModal tokens={[localToken]} />
 			<div className="w-full m-auto">
 				<Card
-					imgUrl={parseImgUrl(localToken?.metadata?.image)}
+					imgUrl={parseImgUrl(localToken?.metadata?.image, null, {
+						width: `300`,
+					})}
 					imgBlur={localToken?.metadata?.blurhash}
 					token={{
 						name: localToken?.metadata?.name,

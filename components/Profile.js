@@ -13,7 +13,9 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 			<div className="flex flex-col items-center justify-center">
 				<div className="w-32 h-32 rounded-full overflow-hidden bg-primary">
 					<img
-						src={parseImgUrl(userProfile?.imgUrl)}
+						src={parseImgUrl(userProfile?.imgUrl, null, {
+							width: `300`,
+						})}
 						className="object-cover"
 					/>
 				</div>

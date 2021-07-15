@@ -287,7 +287,9 @@ const ActivityDetail = ({ activity, token }) => {
 				<div className="w-full md:w-1/3">
 					<div className="w-40 mx-auto">
 						<Card
-							imgUrl={parseImgUrl(localToken?.metadata?.image)}
+							imgUrl={parseImgUrl(localToken?.metadata?.image, null, {
+								width: `300`,
+							})}
 							imgBlur={localToken?.metadata?.blurhash}
 							token={{
 								name: localToken?.metadata?.name,

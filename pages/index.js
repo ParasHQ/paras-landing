@@ -33,7 +33,9 @@ const FeaturedPost = ({ post = {} }) => {
 			<div className="bg-dark-primary-1 rounded-md overflow-hidden relative h-56 lg:h-64">
 				<div className="h-full">
 					<img
-						src={parseImgUrl(post.image)}
+						src={parseImgUrl(post.image, null, {
+							width: `800`,
+						})}
 						className="object-cover h-full w-full publication-card-img"
 					/>
 				</div>
@@ -106,7 +108,12 @@ const TopUser = ({ user, idx }) => {
 			<p className="text-base text-gray-100 opacity-50 mr-3">{idx + 1}</p>
 			<Link href={`/${user._id}`}>
 				<div className="flex-shrink-0 cursor-pointer w-12 h-12 rounded-full overflow-hidden bg-primary border-white border">
-					<img src={parseImgUrl(profile?.imgUrl)} className="object-cover" />
+					<img
+						src={parseImgUrl(profile?.imgUrl, null, {
+							width: `300`,
+						})}
+						className="object-cover"
+					/>
 				</div>
 			</Link>
 			<div className="ml-3">
@@ -138,7 +145,9 @@ const PublicationList = ({ idx, data }) => {
 								<div className="m-auto cursor-pointer">
 									<img
 										className="w-full h-40 lg:h-32 object-cover publication-card-img"
-										src={parseImgUrl(data.thumbnail)}
+										src={parseImgUrl(data.thumbnail, null, {
+											width: `400`,
+										})}
 									/>
 								</div>
 							</div>
