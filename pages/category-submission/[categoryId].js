@@ -215,7 +215,9 @@ const SubmissionDetail = ({ tokenId, submission, updateData }) => {
 			<div className="flex flex-wrap border-2 border-dashed border-gray-800 p-4 md:p-8 rounded-md items-center">
 				<div className="w-40 md:mr-6">
 					<Card
-						imgUrl={parseImgUrl(localToken?.metadata?.image)}
+						imgUrl={parseImgUrl(localToken?.metadata?.image, null, {
+							width: `300`,
+						})}
 						imgBlur={localToken?.metadata?.blurhash}
 						token={{
 							name: localToken?.metadata?.name,

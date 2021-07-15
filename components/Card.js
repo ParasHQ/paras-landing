@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { Blurhash } from 'react-blurhash'
-import { parseImgUrl } from '../utils/common'
 
 const Card = ({
 	imgUrl,
@@ -33,9 +32,9 @@ const Card = ({
 	useEffect(() => {
 		var img = new Image()
 		img.onload = function () {
-			setImgLoaded(parseImgUrl(imgUrl))
+			setImgLoaded(imgUrl)
 		}
-		img.src = parseImgUrl(imgUrl)
+		img.src = imgUrl
 	}, [imgUrl])
 
 	useEffect(() => {

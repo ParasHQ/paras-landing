@@ -11,7 +11,9 @@ const PublicationList = ({ data }) => {
 						<div className="h-64 overflow-hidden m-auto cursor-pointer shadow-inner">
 							<img
 								className="publication-card-img h-64 w-full object-cover"
-								src={parseImgUrl(data.thumbnail)}
+								src={parseImgUrl(data.thumbnail, null, {
+									width: `600`,
+								})}
 							/>
 						</div>
 					</a>

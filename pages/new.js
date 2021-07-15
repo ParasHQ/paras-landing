@@ -13,6 +13,7 @@ import Head from 'next/head'
 import { useToast } from '../hooks/useToast'
 import Footer from '../components/Footer'
 import {
+	parseImgUrl,
 	prettyBalance,
 	readFileAsUrl,
 	readFileDimension,
@@ -269,7 +270,7 @@ const NewPage = () => {
 								<Card
 									imgWidth={640}
 									imgHeight={890}
-									imgUrl={imgUrl}
+									imgUrl={parseImgUrl(imgUrl)}
 									token={{
 										name: formInput.name,
 										collection: formInput.collection,
@@ -428,7 +429,7 @@ const NewPage = () => {
 							<Card
 								imgWidth={640}
 								imgHeight={890}
-								imgUrl={imgUrl}
+								imgUrl={parseImgUrl(imgUrl)}
 								token={{
 									name: watch('name', formInput.name),
 									collection: watch('collection', formInput.collection),

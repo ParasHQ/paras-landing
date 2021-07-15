@@ -119,7 +119,12 @@ const ProfileEdit = ({ close }) => {
 					/>
 					<div className="flex items-center justify-center">
 						<div className="w-32 h-32 rounded-full overflow-hidden bg-primary shadow-inner">
-							<img src={parseImgUrl(imgUrl)} className="w-full object-cover" />
+							<img
+								src={parseImgUrl(imgUrl, null, {
+									width: `300`,
+								})}
+								className="w-full object-cover"
+							/>
 						</div>
 					</div>
 				</div>

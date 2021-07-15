@@ -348,7 +348,9 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 									{thumbnail && (
 										<img
 											className="w-full h-full object-cover m-auto"
-											src={parseImgUrl(thumbnail)}
+											src={parseImgUrl(thumbnail, null, {
+												width: `600`,
+											})}
 										/>
 									)}
 								</div>
@@ -522,7 +524,9 @@ const CardPublication = ({ localToken, deleteCard }) => {
 		<Fragment>
 			<div className="w-full m-auto">
 				<Card
-					imgUrl={parseImgUrl(localToken?.metadata?.image)}
+					imgUrl={parseImgUrl(localToken?.metadata?.image, null, {
+						width: `300`,
+					})}
 					imgBlur={localToken?.metadata?.blurhash}
 					token={{
 						name: localToken?.metadata?.name,

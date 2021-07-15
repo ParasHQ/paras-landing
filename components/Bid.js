@@ -240,7 +240,9 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 				<div className="flex items-center">
 					<div className="w-40 h-full">
 						<Card
-							imgUrl={parseImgUrl(token?.metadata?.image)}
+							imgUrl={parseImgUrl(token?.metadata?.image, null, {
+								width: `300`,
+							})}
 							imgBlur={token?.metadata?.blurhash}
 							token={{
 								name: token?.metadata?.name,
