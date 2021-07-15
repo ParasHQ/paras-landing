@@ -1743,30 +1743,31 @@ const CardDetail = ({ token }) => {
 												</p>
 											</ReactLinkify>
 										</div>
-										{localToken.categories.length !== 0 && (
-											<div className="border-2 border-dashed mt-4 p-2 rounded-md">
-												<p className="text-sm text-black font-medium">
-													Featured in
-												</p>
-												{localToken.categories.map(
-													({ _id, name, categoryId }, idx) => (
-														<Fragment key={_id}>
-															<span
-																onClick={() =>
-																	router.push(`/market/${categoryId}`)
-																}
-																className="cursor-pointer text-black font-semibold border-b-2 border-transparent hover:border-black"
-															>
-																{name}
-															</span>
-															{idx !== localToken.categories.length - 1 && (
-																<span>, </span>
-															)}
-														</Fragment>
-													)
-												)}
-											</div>
-										)}
+										{localToken.categories &&
+											localToken.categories?.length !== 0 && (
+												<div className="border-2 border-dashed mt-4 p-2 rounded-md">
+													<p className="text-sm text-black font-medium">
+														Featured in
+													</p>
+													{localToken.categories.map(
+														({ _id, name, categoryId }, idx) => (
+															<Fragment key={_id}>
+																<span
+																	onClick={() =>
+																		router.push(`/market/${categoryId}`)
+																	}
+																	className="cursor-pointer text-black font-semibold border-b-2 border-transparent hover:border-black"
+																>
+																	{name}
+																</span>
+																{idx !== localToken.categories.length - 1 && (
+																	<span>, </span>
+																)}
+															</Fragment>
+														)
+													)}
+												</div>
+											)}
 										<div className="flex items-center -mx-2">
 											<div className="w-1/2 px-2">
 												<div className="border-2 border-dashed mt-4 p-2 rounded-md">
