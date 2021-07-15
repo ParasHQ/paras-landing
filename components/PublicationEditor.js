@@ -90,8 +90,8 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	}
 
 	const showCardModal = () => {
-		embeddedCards.length === 3
-			? showToast('Maximum 3 cards')
+		embeddedCards.length === 6
+			? showToast('Maximum 6 cards')
 			: setShowModal('card')
 	}
 
@@ -449,15 +449,19 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			</div>
 			{embeddedCards.length !== 0 && (
 				<div className="max-w-4xl mx-auto px-4 pt-16">
-					<div className=" border-2 border-dashed border-gray-800 rounded-md p-4">
+					<div className=" border-2 border-dashed border-gray-800 rounded-md p-4 md:p-8">
 						<h4 className="text-white font-semibold text-3xl mb-4 text-center">
 							Card Collectibles
 						</h4>
-						<div className="md:flex justify-center -m-4 lg:-m-8">
+						<div
+							className={`md:flex md:flex-wrap ${
+								embeddedCards.length <= 3 && 'justify-center'
+							}`}
+						>
 							{embeddedCards.map((card) => (
 								<div
 									key={card.tokenId}
-									className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-4 lg:p-8"
+									className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8"
 								>
 									<CardPublication
 										localToken={card}
