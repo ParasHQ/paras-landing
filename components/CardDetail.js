@@ -903,7 +903,7 @@ const CardDetail = ({ token }) => {
 					<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
 						<div className="py-2 cursor-pointer">
 							<TwitterShareButton
-								title={`Checkout ${localToken.metadata.name} from collection ${localToken.metadata.collection} on @ParasHQ\n\n#cryptoart #digitalart #tradingcards`}
+								title={`Checkout ${localToken.metadata.name} from collection ${localToken.metadata.collection} on @ParasHQ\n\n#card4card #cryptoart #digitalart #tradingcards`}
 								url={window.location.href}
 								className="flex items-center w-full"
 							>
