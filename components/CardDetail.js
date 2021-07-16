@@ -346,7 +346,10 @@ const CardDetail = ({ token }) => {
 		}
 
 		if (
-			localToken.metadata.collection.includes('card4card') &&
+			(localToken.metadata.categories?.findIndex((c) =>
+				c.categoryId.includes('card4card')
+			) > -1 ||
+				localToken.metadata.includes('card4card')) &&
 			data.buyQuantity > 1
 		) {
 			toast.show({
