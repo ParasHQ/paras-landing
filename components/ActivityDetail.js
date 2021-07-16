@@ -251,7 +251,7 @@ const ActivityDetail = ({ activity, token }) => {
 								title={`${descriptionMaker(
 									activity,
 									localToken
-								)} via @ParasHQ\n\n#cryptoart #digitalart #tradingcards`}
+								)} via @ParasHQ\n\n#card4card #cryptoart #digitalart #tradingcards`}
 								url={shareLink}
 								className="flex items-center w-full"
 							>
