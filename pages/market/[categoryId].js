@@ -7,7 +7,7 @@ import Footer from '../../components/Footer'
 import useStore from '../../store'
 import CardList from '../../components/CardList'
 import CardListLoader from '../../components/CardListLoader'
-import { parseSortQuery } from '../../utils/common'
+import { parseImgUrl, parseSortQuery } from '../../utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CategoryList from '../../components/CategoryList'
 import AddCategoryModal from '../../components/AddCategoryModal'
@@ -15,7 +15,7 @@ import { useToast } from '../../hooks/useToast'
 
 const LIMIT = 12
 
-export default function Category({ query }) {
+export default function Category({ categoryList, _categoryDetail }) {
 	const {
 		categoryCardList,
 		setCategoryCardList,
@@ -37,11 +37,9 @@ export default function Category({ query }) {
 	const [isFiltering, setIsFiltering] = useState(false)
 	const [showAddModal, setShowAddModal] = useState(false)
 	const [chooseSubmilModal, setChooseSubmitModal] = useState(false)
+	const [categoryDetail, setCategoryDetail] = useState(_categoryDetail)
 
 	const { categoryId } = router.query
-	const categoryDetail = cardCategory.filter(
-		(category) => category.categoryId === categoryId
-	)[0]
 
 	const metaTitle = `Category ${
 		categoryId
@@ -55,7 +53,11 @@ export default function Category({ query }) {
 	} — Paras`
 
 	useEffect(() => {
-		getCategory()
+		if (categoryList) {
+			setCardCategory(categoryList)
+		} else {
+			getCategory()
+		}
 		return () => {
 			setMarketScrollPersist('market', 0)
 		}
@@ -64,6 +66,13 @@ export default function Category({ query }) {
 	useEffect(() => {
 		if (categoryId) {
 			_fetchData(true)
+
+			const detail = cardCategory.find(
+				(category) => category.categoryId === categoryId
+			)
+			if (detail) {
+				setCategoryDetail(detail)
+			}
 		}
 	}, [categoryId])
 
@@ -184,35 +193,65 @@ export default function Category({ query }) {
 				}}
 			></div>
 			<Head>
-				<title>{metaTitle}</title>
+				<title>
+					{categoryDetail ? categoryDetail.name : _categoryDetail.name} — Paras
+				</title>
 				<meta
 					name="description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content={`Create, trade, and collect ${(categoryDetail
+						? categoryDetail.name
+						: _categoryDetail.name
+					).toLowerCase()} digital card collectibles`}
 				/>
 
-				<meta name="twitter:title" content="Market — Paras" />
+				<meta
+					name="twitter:title"
+					content={`${
+						categoryDetail ? categoryDetail.name : _categoryDetail.name
+					} — Paras`}
+				/>
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
 				<meta
 					name="twitter:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content={`Create, trade, and collect ${(categoryDetail
+						? categoryDetail.name
+						: _categoryDetail.name
+					).toLowerCase()} digital card collectibles`}
 				/>
 				<meta
 					name="twitter:image"
-					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
+					content={parseImgUrl(
+						categoryDetail ? categoryDetail.coverImg : _categoryDetail.coverImg
+					)}
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Market — Paras" />
-				<meta property="og:site_name" content="Market — Paras" />
+				<meta
+					property="og:title"
+					content={`${
+						categoryDetail ? categoryDetail.name : _categoryDetail.name
+					} — Paras`}
+				/>
+				<meta
+					property="og:site_name"
+					content={`${
+						categoryDetail ? categoryDetail.name : _categoryDetail.name
+					} — Paras`}
+				/>
 				<meta
 					property="og:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content={`Create, trade, and collect ${(categoryDetail
+						? categoryDetail.name
+						: _categoryDetail.name
+					).toLowerCase()} digital card collectibles`}
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
+					content={parseImgUrl(
+						categoryDetail ? categoryDetail.coverImg : _categoryDetail.coverImg
+					)}
 				/>
 			</Head>
 			<Nav />
@@ -335,10 +374,6 @@ export default function Category({ query }) {
 	)
 }
 
-export async function getServerSideProps({ query }) {
-	return { props: { query } }
-}
-
 const tokensParams = (_page = 0, query) => {
 	const params = {
 		categoryId: query.categoryId,
@@ -350,4 +385,19 @@ const tokensParams = (_page = 0, query) => {
 		...(query.pmax && { maxPrice: parseNearAmount(query.pmax) }),
 	}
 	return params
+}
+
+export async function getServerSideProps({ params }) {
+	const categoryListResp = await axios(`${process.env.API_URL}/categories`)
+	const categoryList = categoryListResp.data.data.results
+	const categoryDetail = categoryList.filter(
+		(category) => category.categoryId === params.categoryId
+	)[0]
+
+	return {
+		props: {
+			categoryList: categoryList,
+			_categoryDetail: categoryDetail,
+		},
+	}
 }
