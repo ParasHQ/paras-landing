@@ -374,10 +374,6 @@ export default function Category({ categoryList, _categoryDetail }) {
 	)
 }
 
-export async function getServerSideProps({ query }) {
-	return { props: { query } }
-}
-
 const tokensParams = (_page = 0, query) => {
 	const params = {
 		categoryId: query.categoryId,
