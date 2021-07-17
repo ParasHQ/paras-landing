@@ -404,7 +404,7 @@ const Notification = ({ notif }) => {
 							<span className="font-medium text-gray-100">
 								{token?.metadata?.name}
 							</span>
-							<span> is accepted tp </span>
+							<span> is accepted to </span>
 							<span className="font-medium text-gray-100">
 								{notif.payload.categoryId.replace(/-/g, ' ')}
 							</span>
