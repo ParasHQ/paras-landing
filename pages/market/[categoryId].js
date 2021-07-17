@@ -15,7 +15,7 @@ import { useToast } from '../../hooks/useToast'
 
 const LIMIT = 12
 
-export default function Category() {
+export default function Category({ query }) {
 	const {
 		categoryCardList,
 		setCategoryCardList,
@@ -42,6 +42,17 @@ export default function Category() {
 	const categoryDetail = cardCategory.filter(
 		(category) => category.categoryId === categoryId
 	)[0]
+
+	const metaTitle = `Category ${
+		categoryId
+			.split('-')
+			.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+			.join(' ') ||
+		query.categoryId
+			.split('-')
+			.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+			.join(' ')
+	} — Paras`
 
 	useEffect(() => {
 		getCategory()
@@ -173,7 +184,7 @@ export default function Category() {
 				}}
 			></div>
 			<Head>
-				<title>Category — Paras</title>
+				<title>{metaTitle}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -322,6 +333,10 @@ export default function Category() {
 			<Footer />
 		</div>
 	)
+}
+
+export async function getServerSideProps({ query }) {
+	return { props: { query } }
 }
 
 const tokensParams = (_page = 0, query) => {
