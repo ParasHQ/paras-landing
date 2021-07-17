@@ -41,17 +41,6 @@ export default function Category({ categoryList, _categoryDetail }) {
 
 	const { categoryId } = router.query
 
-	const metaTitle = `Category ${
-		categoryId
-			.split('-')
-			.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-			.join(' ') ||
-		query.categoryId
-			.split('-')
-			.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-			.join(' ')
-	} — Paras`
-
 	useEffect(() => {
 		if (categoryList) {
 			setCardCategory(categoryList)
