@@ -1645,33 +1645,21 @@ const CardDetail = ({ token }) => {
 												<p className="text-sm text-black font-medium">
 													Collection
 												</p>
-												{token.metadata.collection.includes('card4card') ? (
-													<Link
-														href={{
-															pathname: '/event/card4card',
-														}}
-													>
-														<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
-															{localToken.metadata.collection}
-														</a>
-													</Link>
-												) : (
-													<Link
-														href={{
-															pathname: '/[id]/collection/[collectionName]',
-															query: {
-																collectionName: encodeURIComponent(
-																	localToken.metadata.collection
-																),
-																id: localToken.creatorId,
-															},
-														}}
-													>
-														<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
-															{localToken.metadata.collection}
-														</a>
-													</Link>
-												)}
+												<Link
+													href={{
+														pathname: '/[id]/collection/[collectionName]',
+														query: {
+															collectionName: encodeURIComponent(
+																localToken.metadata.collection
+															),
+															id: localToken.creatorId,
+														},
+													}}
+												>
+													<a className="text-black font-semibold border-b-2 border-transparent hover:border-black">
+														{localToken.metadata.collection}
+													</a>
+												</Link>
 											</div>
 										</div>
 										<div className="flex items-center -mx-2">
