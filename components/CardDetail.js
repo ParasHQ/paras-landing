@@ -391,7 +391,7 @@ const CardDetail = ({ token }) => {
 		}
 
 		event({
-			action: 'redirect_purchase',
+			action: 'confirm_purchase',
 			category: 'card_detail',
 			label: localToken.tokenId,
 		})
@@ -456,7 +456,7 @@ const CardDetail = ({ token }) => {
 		}
 
 		event({
-			action: 'redirect_bid',
+			action: 'confirm_bid',
 			category: 'card_detail',
 			label: localToken.tokenId,
 		})
