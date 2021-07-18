@@ -28,6 +28,7 @@ import TokenInfoCopy from './TokenInfoCopy'
 import BidList from './BidList'
 import { useRouter } from 'next/router'
 import PlaceBidModal from './PlaceBidModal'
+import { event } from '../lib/gtag'
 
 const Activity = ({ activity }) => {
 	if (activity.type === 'marketUpdate') {
@@ -389,6 +390,12 @@ const CardDetail = ({ token }) => {
 			return
 		}
 
+		event({
+			action: 'confirm_purchase',
+			category: 'card_detail',
+			label: localToken.tokenId,
+		})
+
 		try {
 			await near.contract.buy(
 				params,
@@ -447,6 +454,13 @@ const CardDetail = ({ token }) => {
 			setIsSubmitting(false)
 			return
 		}
+
+		event({
+			action: 'confirm_bid',
+			category: 'card_detail',
+			label: localToken.tokenId,
+		})
+
 		try {
 			bidMarketData && (await _cancelBid())
 			await near.contract.addBidMarketData(
@@ -726,6 +740,11 @@ const CardDetail = ({ token }) => {
 
 	const changeActiveTab = (tab) => {
 		setActiveTab(tab)
+		event({
+			action: `card_detail_${tab}_tab`,
+			category: 'card_detail',
+			label: localToken.tokenId,
+		})
 	}
 
 	const buttonActionCardDetail = () => {
@@ -747,6 +766,11 @@ const CardDetail = ({ token }) => {
 										if (whitelist[1] === 'user_whitelisted') {
 											setChosenSeller(_getLowestPrice(localToken.ownerships))
 											setShowModal('confirmBuy')
+											event({
+												action: 'begin_purchase',
+												category: 'card_detail',
+												label: localToken.tokenId,
+											})
 										} else {
 											setShowModal('notAllowedBuy')
 										}
@@ -768,6 +792,11 @@ const CardDetail = ({ token }) => {
 										setShowModal('redirectLogin')
 									} else {
 										setShowModal('placeBid')
+										event({
+											action: 'begin_bid',
+											category: 'card_detail',
+											label: localToken.tokenId,
+										})
 									}
 								}}
 							>
@@ -822,6 +851,11 @@ const CardDetail = ({ token }) => {
 							setShowModal('redirectLogin')
 						} else {
 							setShowModal('placeBid')
+							event({
+								action: 'begin_bid',
+								category: 'card_detail',
+								label: localToken.tokenId,
+							})
 						}
 					}}
 				>
@@ -1242,6 +1276,11 @@ const CardDetail = ({ token }) => {
 										onClick={() => {
 											setChosenSeller(null)
 											setShowModal(false)
+											event({
+												action: 'cancel_purchase',
+												category: 'card_detail',
+												label: localToken.tokenId,
+											})
 										}}
 									>
 										Cancel
@@ -1258,7 +1297,14 @@ const CardDetail = ({ token }) => {
 					bidQuantity={bidMarketData && bidMarketData.quantity}
 					localToken={localToken}
 					onSubmitForm={_placebid}
-					onCancel={() => setShowModal('')}
+					onCancel={() => {
+						setShowModal('')
+						event({
+							action: 'cancel_bid',
+							category: 'card_detail',
+							label: localToken.tokenId,
+						})
+					}}
 					isSubmitting={isSubmitting}
 				/>
 			)}
@@ -1845,6 +1891,11 @@ const CardDetail = ({ token }) => {
 															if (whitelist[1] === 'user_whitelisted') {
 																setChosenSeller(ownership)
 																setShowModal('confirmBuy')
+																event({
+																	action: 'begin_purchase',
+																	category: 'card_detail',
+																	label: localToken.tokenId,
+																})
 															} else {
 																setShowModal('notAllowedBuy')
 															}
