@@ -41,7 +41,9 @@ const MyBids = () => {
 		const res = await Axios(
 			`${process.env.API_URL}/bids?accountId=${store.currentUser}&__skip=${
 				_page * 10
-			}${type === 'receivedBids' && '&isReceived=true'}&__limit=10`
+			}${
+				type === 'receivedBids' ? '&isReceived=true' : '&isReceived=false'
+			}&__limit=10`
 		)
 		const newData = await res.data.data
 
