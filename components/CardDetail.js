@@ -1536,7 +1536,7 @@ const CardDetail = ({ token }) => {
 						<div className="h-full flex items-center">
 							<Card
 								imgUrl={parseImgUrl(localToken.metadata.image, null, {
-									width: `0.8`,
+									useOriginal: true,
 								})}
 								imgBlur={localToken.metadata.blurhash}
 								token={{
