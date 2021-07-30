@@ -113,6 +113,23 @@ const CardList = ({
 										imgUrl={parseImgUrl(token.metadata.image, null, {
 											width: `300`,
 										})}
+										onClick={() => {
+											router.push(
+												{
+													pathname: router.pathname,
+													query: {
+														...router.query,
+														...{ tokenId: token.tokenId },
+														...{ prevAs: router.asPath },
+													},
+												},
+												`/token/${token.tokenId}`,
+												{
+													shallow: true,
+													scroll: false,
+												}
+											)
+										}}
 										imgBlur={token.metadata.blurhash}
 										token={{
 											name: token.metadata.name,

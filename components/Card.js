@@ -6,17 +6,18 @@ const Card = ({
 	imgWidth = 640,
 	imgHeight = 890,
 	token,
-	initialRotate = {
-		x: 15,
-		y: 15,
-	},
 	imgBlur,
 	disableFlip = false,
 	isShowFront = null,
 	setIsShowFront = null,
 	borderRadius = '10px',
 	special = false,
+	onClick = () => {},
 }) => {
+	const initialRotate = {
+		x: 0,
+		y: 0,
+	}
 	const containerRef = useRef()
 	const cardRef = useRef()
 	const [imgLoaded, setImgLoaded] = useState(null)
@@ -97,10 +98,8 @@ const Card = ({
 	return (
 		<div
 			className="relative select-none m-auto"
-			onClick={_flipCard}
 			style={{
 				transition: `transform .6s .1s`,
-				transform: !isShowFront && `rotateY(180deg)`,
 				transformStyle: `preserve-3d`,
 				width: dimension.width,
 				height: dimension.height,
@@ -116,6 +115,7 @@ const Card = ({
 				}}
 			>
 				<div
+					onClick={onClick}
 					className={`card-wrap`}
 					onMouseMove={handleMouseMove}
 					onMouseEnter={handleMouseEnter}
@@ -126,8 +126,9 @@ const Card = ({
 					}}
 				>
 					<div
-						className="card  bg-gray-800 w-full h-full"
+						className="card bg-dark-primary-1 w-full h-full"
 						style={{
+							fontSize: `${dimension.width / 14}px`,
 							transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)`,
 							borderRadius: borderRadius,
 							boxShadow:
@@ -135,203 +136,62 @@ const Card = ({
 								'rgba(255, 255, 255, 0.2) 0 0 40px 5px, white 0 0 0 1px,rgba(0, 0, 0, 0.66) 0 30px 60px 0',
 						}}
 					>
-						<div className="card-bg relative">
-							<img
-								className="object-cover w-full h-full relative z-10"
-								src={imgLoaded}
-							/>
-							<div
-								className="absolute inset-0 z-20 transition-opacity duration-500 ease-in"
-								style={{
-									opacity: imgLoaded ? 0 : 1,
-								}}
-							>
-								<Blurhash
-									hash={imgBlur || 'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'}
-									width={`100%`}
-									height={`100%`}
-									resolutionX={32}
-									resolutionY={32}
-									punch={1}
-								/>
+						<div className="h-full py-2 flex flex-col">
+							<div className="text-center px-2">
+								<p
+									className="text-white font-bold truncate"
+									style={{
+										fontSize: `.85em`,
+									}}
+								>
+									{token.name}
+								</p>
+								<p
+									className="text-white truncate"
+									style={{
+										fontSize: `.6em`,
+									}}
+								>
+									{token.collection}
+								</p>
 							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div
-				className="card-back absolute inset-0 z-10"
-				style={{
-					transform: `rotateY(180deg)`,
-					backfaceVisibility: `hidden`,
-					WebkitBackfaceVisibility: 'hidden',
-				}}
-			>
-				<div
-					className={`card-wrap`}
-					onMouseMove={handleMouseMove}
-					onMouseEnter={handleMouseEnter}
-					onMouseLeave={handleMouseLeave}
-					ref={cardRef}
-					style={{
-						transform: `perspective(${dimension.height * 4}px)`,
-					}}
-				>
-					<div
-						className="card bg-gray-100 w-full h-full"
-						style={{
-							transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)`,
-						}}
-					>
-						<div className="card-bg relative">
-							<img
-								className="object-cover w-full h-full relative z-10 opacity-25"
-								src={imgLoaded}
-							/>
-							<div
-								className="absolute inset-0 z-30 transition-opacity duration-500 ease-in"
-								style={{
-									opacity: imgLoaded ? 0 : 1,
-								}}
-							>
-								<Blurhash
-									hash={imgBlur || 'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'}
-									width={`100%`}
-									height={`100%`}
-									resolutionX={32}
-									resolutionY={32}
-									punch={1}
+							<div className="card-content my-2 relative flex flex-grow h-0">
+								<img
+									className="mx-auto h-full object-contain relative z-10"
+									src={imgLoaded}
 								/>
+								<div className="absolute inset-0 z-0">
+									<Blurhash
+										hash={imgBlur || 'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'}
+										width={`100%`}
+										height={`100%`}
+										resolutionX={32}
+										resolutionY={32}
+										punch={1}
+									/>
+								</div>
 							</div>
-							<div
-								className="absolute inset-0 rounded-md z-20"
-								style={{
-									fontSize: `${dimension.width / 14}px`,
-									padding: `.3em`,
-								}}
-							>
-								<div className="h-full border-gray-900 border-2">
-									<div
-										className="border-b-2 border-gray-900 flex items-center"
-										style={{
-											height: `15%`,
-										}}
-									>
-										<div className="px-2 overflow-hidden">
-											<h4
-												className="truncate"
-												style={{
-													fontSize: `0.75em`,
-												}}
-											>
-												{token.name?.length > 0 ? token.name : 'Card Name'}
-											</h4>
-											<h4
-												className="truncate"
-												style={{
-													fontSize: `0.5em`,
-												}}
-											>
-												{token.collection && token.collection?.length > 0
-													? token.collection
-													: 'Collection'}
-											</h4>
-										</div>
-									</div>
-									<div
-										className="border-b-2 border-gray-900"
-										style={{
-											height: `15%`,
-										}}
-									>
-										<div className="flex h-full">
-											<div className="w-1/2 flex items-center">
-												<div className="overflow-hidden">
-													<h4
-														className="px-2 truncate"
-														style={{
-															fontSize: `0.5em`,
-														}}
-													>
-														Artist
-													</h4>
-													<h4
-														style={{
-															fontSize: `0.65em`,
-														}}
-														className="truncate px-2"
-													>
-														{token.creatorId}
-													</h4>
-												</div>
-											</div>
-											<div className="w-1/2 flex items-center border-l-2 border-gray-900 h-full">
-												<div className="overflow-hidden">
-													<h4
-														className="px-2 truncate"
-														style={{
-															fontSize: `0.5em`,
-														}}
-													>
-														Year
-													</h4>
-													<h4
-														className="truncate px-2"
-														style={{
-															fontSize: `0.65em`,
-														}}
-													>
-														{new Date(token.createdAt).getFullYear() ||
-															new Date().getFullYear()}
-													</h4>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div
-										className="py-2 overflow-hidden"
-										style={{
-											height: '65%',
-										}}
-									>
-										<h4
-											className="px-2 whitespace-pre-line"
+							<div className="px-2 mt-auto">
+								<div className="flex justify-between">
+									<div className="w-1/2">
+										<p
+											className="text-white truncate"
 											style={{
-												fontSize: `0.5em`,
+												fontSize: `.6em`,
 											}}
 										>
-											{token.description?.length > 0
-												? token.description.replace(/\n\s*\n\s*\n/g, '\n\n')
-												: 'Your card description'}
-										</h4>
+											{token.creatorId}
+										</p>
 									</div>
-									<div
-										style={{
-											height: '5%',
-										}}
-									>
-										<div className="flex items-center h-full justify-between">
-											<div>
-												<h4
-													className="px-2"
-													style={{
-														fontSize: `0.5em`,
-													}}
-												>
-													Edition of {parseInt(token.supply || 0)}
-												</h4>
-											</div>
-											<div>
-												<h4
-													className="px-2"
-													style={{
-														fontSize: `0.5em`,
-													}}
-												>
-													{token.tokenId?.slice(0, 8)}
-												</h4>
-											</div>
-										</div>
+									<div className="w-1/2 text-right">
+										<p
+											className="text-white"
+											style={{
+												fontSize: `.6em`,
+											}}
+										>
+											Edition of {token.supply}
+										</p>
 									</div>
 								</div>
 							</div>
