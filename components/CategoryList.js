@@ -26,23 +26,25 @@ const CategoryList = ({ listCategory, categoryId = '' }) => {
 							All
 						</a>
 					</Link>
-					{listCategory.map((category) => (
-						<Link
-							key={category.categoryId}
-							href={`/market/${category.categoryId}`}
-							shallow={true}
-						>
-							<a
-								className={`text-xl ${
-									category.categoryId === categoryId
-										? 'text-gray-100'
-										: 'text-gray-600'
-								} font-semibold`}
+					{listCategory
+						.filter((category) => !category.isHide)
+						.map((category) => (
+							<Link
+								key={category.categoryId}
+								href={`/market/${category.categoryId}`}
+								shallow={true}
 							>
-								<span>{category.name}</span>
-							</a>
-						</Link>
-					))}
+								<a
+									className={`text-xl ${
+										category.categoryId === categoryId
+											? 'text-gray-100'
+											: 'text-gray-600'
+									} font-semibold`}
+								>
+									<span>{category.name}</span>
+								</a>
+							</Link>
+						))}
 				</div>
 			</Scrollbars>
 			<div className="md:ml-8 z-10">
