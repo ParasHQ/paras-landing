@@ -269,9 +269,12 @@ export default function Category({ categoryList, _categoryDetail }) {
 								<h1 className="text-gray-100 font-bold text-4xl mb-4">
 									{categoryDetail.name}
 								</h1>
-								<p className="text-gray-200 max-w-lg">
-									{categoryDetail.description}
-								</p>
+								<div
+									className="category-description text-gray-200 max-w-lg"
+									dangerouslySetInnerHTML={{
+										__html: categoryDetail.description,
+									}}
+								></div>
 							</div>
 							<div className="text-gray-100 md:w-1/3 my-4 relative">
 								<div className="flex justify-between mb-4">
