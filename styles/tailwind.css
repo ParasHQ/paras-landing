@@ -157,6 +157,10 @@ input.clear {
 	@apply transform duration-300 scale-110;
 }
 
+.category-description a {
+	@apply text-white border-b-2 border-white;
+}
+
 /*!
  * Hamburgers
  * @description Tasty CSS-animated hamburgers
