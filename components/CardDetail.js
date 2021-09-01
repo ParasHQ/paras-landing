@@ -307,7 +307,10 @@ const CardDetail = ({ token }) => {
 	const [chosenSeller, setChosenSeller] = useState(null)
 	const [isCopied, setIsCopied] = useState(false)
 
-	const [whitelist, setWhitelist] = useState([])
+	const [whitelist, setWhitelist] = useState([
+		'token_not_whitelisted',
+		'user_whitelisted',
+	])
 	const [bidMarketData, setBidMarketData] = useState(null)
 
 	useEffect(() => {

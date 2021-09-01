@@ -111,7 +111,7 @@ const CardList = ({
 								<div className="w-full m-auto">
 									<Card
 										imgUrl={parseImgUrl(token.metadata.image, null, {
-											width: `300`,
+											width: `600`,
 										})}
 										onClick={() => {
 											router.push(
