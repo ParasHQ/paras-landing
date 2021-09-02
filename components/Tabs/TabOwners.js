@@ -72,7 +72,7 @@ const Owner = ({ token = {} }) => {
 
 	const fetchOwnerProfile = async () => {
 		try {
-			const resp = await axios.get(`${process.env.PARAS_API_URL}/profiles`, {
+			const resp = await axios.get(`${process.env.V1_API_URL}/profiles`, {
 				params: {
 					accountId: token.owner_id,
 				},
