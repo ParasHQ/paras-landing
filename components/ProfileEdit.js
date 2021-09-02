@@ -52,7 +52,7 @@ const ProfileEdit = ({ close }) => {
 
 		try {
 			const resp = await axios.put(
-				`${process.env.API_URL}/profiles`,
+				`${process.env.V1_API_URL}/profiles`,
 				formData,
 				{
 					headers: {
