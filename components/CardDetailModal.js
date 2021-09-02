@@ -26,9 +26,9 @@ function CardDetailModal({ tokens = [] }) {
 	}, [])
 
 	useEffect(() => {
-		if (router.query.tokenId) {
+		if (router.query.tokenSeriesId) {
 			const token = tokens.find(
-				(token) => token?.tokenId === router.query.tokenId
+				(token) => token?.token_series_id === router.query.tokenSeriesId
 			)
 			setActiveToken(token)
 		} else {

@@ -53,7 +53,6 @@ const TokenSeriesTransferBuyer = ({
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(async () => {
-		console.log(data.token_series_id, store.currentUser)
 		if (data.token_series_id && store.currentUser) {
 			await fetchTokens()
 		}
