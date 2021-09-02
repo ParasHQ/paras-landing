@@ -36,7 +36,7 @@ export default function MarketPage() {
 
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
-		const res = await axios(`${process.env.API_URL}/tokens`, {
+		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: tokensParams(0, query),
 		})
 		setPage(1)
@@ -55,7 +55,7 @@ export default function MarketPage() {
 			return
 		}
 		setIsFetching(true)
-		const res = await axios(`${process.env.API_URL}/tokens`, {
+		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: tokensParams(page, router.query),
 		})
 		const newData = await res.data.data
@@ -144,7 +144,7 @@ export default function MarketPage() {
 const tokensParams = (_page = 0, query) => {
 	const params = {
 		excludeTotalBurn: true,
-		__sort: parseSortQuery(query.sort),
+		__sort: { _id: -1 },
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
 		...(query.pmin && { minPrice: parseNearAmount(query.pmin) }),

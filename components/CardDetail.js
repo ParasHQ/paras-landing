@@ -114,7 +114,7 @@ const CardDetail = ({ token, metadata, className }) => {
 			<div
 				className="flex flex-col lg:flex-row"
 				style={{
-					height: `85vh`,
+					height: `90vh`,
 				}}
 			>
 				<div className="w-full h-1/2 lg:h-full">
@@ -127,7 +127,7 @@ const CardDetail = ({ token, metadata, className }) => {
 						/>
 					</div>
 				</div>
-				<div className="h-1/2 lg:h-full flex flex-col w-full md:w-2/5 max-w-2xl">
+				<div className="h-1/2 lg:h-full flex flex-col w-full md:w-7/12 max-w-2xl">
 					<Scrollbars
 						className="h-full"
 						universal={true}

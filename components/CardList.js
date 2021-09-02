@@ -10,8 +10,6 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import CardDetailModal from './CardDetailModal'
 import CardListLoader from './CardListLoader'
 
-import _tokens from '../dummy/tokens.json'
-
 const CardList = ({
 	name = 'default',
 	tokens,
@@ -69,7 +67,7 @@ const CardList = ({
 	}
 
 	return (
-		<div ref={containerRef} className="rounded-md">
+		<div ref={containerRef} className="rounded-md p-4 md:p-0">
 			<CardDetailModal tokens={tokens} />
 			{tokens.length === 0 && !hasMore && (
 				<div className="w-full">
@@ -88,7 +86,9 @@ const CardList = ({
 				loader={<CardListLoader />}
 			>
 				<animated.div className="flex flex-wrap select-none -mx-4">
-					{_tokens.map((token) => {
+					{tokens.map((token) => {
+						const price = token.lowest_price || token.price
+
 						return (
 							<div
 								key={token.tokenId}
@@ -98,51 +98,62 @@ const CardList = ({
 									'opacity-25'
 								}`}
 							>
-								<div className="w-full m-auto">
-									<Card
-										imgUrl={parseImgUrl(token.metadata.media, null, {
-											width: `600`,
-											useOriginal: true,
-										})}
-										onClick={() => {
-											router.push(
-												{
-													pathname: router.pathname,
-													query: {
-														...router.query,
-														...{ tokenId: token.tokenId },
-														...{ prevAs: router.asPath },
-													},
-												},
-												`/token/${token.token_series_id}`
-												// {
-												// 	shallow: true,
-												// 	scroll: false,
-												// }
-											)
+								<Link
+									href={`/token/${token.contract_id}::${token.token_series_id}`}
+								>
+									<a
+										onClick={(e) => {
+											e.preventDefault()
 										}}
-										imgBlur={token.metadata.blurhash}
-										token={{
-											title: token.metadata.title,
-											collection:
-												token.metadata.collection || token.contract_id,
-											copies: token.metadata.copies,
-											creatorId: token.metadata.creator_id || token.contract_id,
-										}}
-									/>
-								</div>
+									>
+										<div className="w-full m-auto">
+											<Card
+												imgUrl={parseImgUrl(token.metadata.media, null, {
+													width: `600`,
+													useOriginal: true,
+												})}
+												onClick={() => {
+													router.push(
+														{
+															pathname: router.pathname,
+															query: {
+																...router.query,
+																...{ tokenSeriesId: token.token_series_id },
+																...{ prevAs: router.asPath },
+															},
+														},
+														`/token/${token.contract_id}::${token.token_series_id}`,
+														{
+															shallow: true,
+															scroll: false,
+														}
+													)
+												}}
+												imgBlur={token.metadata.blurhash}
+												token={{
+													title: token.metadata.title,
+													collection:
+														token.metadata.collection || token.contract_id,
+													copies: token.metadata.copies,
+													creatorId:
+														token.metadata.creator_id || token.contract_id,
+												}}
+											/>
+										</div>
+									</a>
+								</Link>
 								<div className="text-center">
 									<div className="mt-4">
-										<div className="p-2">
+										<div className="p-2 pb-4">
 											<p className="text-gray-400 text-xs">Start From</p>
 											<div className="text-gray-100 text-xl">
-												{token.price ? (
+												{price ? (
 													<div>
-														<div>{prettyBalance(token.price, 24, 4)} Ⓝ</div>
+														<div>{prettyBalance(price, 24, 4)} Ⓝ</div>
 														<div className="text-xs text-gray-400">
 															~ $
 															{prettyBalance(
-																JSBI.BigInt(token.price * store.nearUsdPrice),
+																JSBI.BigInt(price * store.nearUsdPrice),
 																24,
 																4
 															)}
