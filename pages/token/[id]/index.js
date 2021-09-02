@@ -1,9 +1,9 @@
 import axios from 'axios'
 import Head from 'next/head'
-import Nav from '../components/Nav'
-import CardDetail from '../components/CardDetail'
-import Footer from '../components/Footer'
-import Error from './404'
+import Error from 'pages/404'
+import Nav from 'components/Nav'
+import CardDetail from 'components/CardDetail'
+import Footer from 'components/Footer'
 
 const TokenDetail = ({ errorCode, token }) => {
 	if (errorCode) {
