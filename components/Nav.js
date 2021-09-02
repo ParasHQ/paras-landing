@@ -753,7 +753,7 @@ const Nav = () => {
 					<Setting close={() => setShowSettingModal(false)} />
 				</Modal>
 			)}
-			<div className="sticky top-0 left-0 right-0 z-40 bg-black">
+			<div className="sticky top-0 left-0 right-0 z-40 bg-black bg-opacity-75 border-b border-white">
 				{process.env.APP_ENV !== 'testnet' && (
 					<div
 						className={`relative text-white text-center overflow-hidden text-sm md:leading-8 m-auto bg-red-700 z-50 flex items-center justify-center transition-height duration-500 ${
@@ -900,11 +900,6 @@ const Nav = () => {
 						</div>
 					</div>
 					<div className="flex items-center -mx-4">
-						<div className="px-3 text-gray-100 hidden md:block fireText">
-							<Link href="/drops">
-								<a>Drops</a>
-							</Link>
-						</div>
 						<div className="px-3 text-gray-100 hidden md:block">
 							{router.pathname === '/market' ? (
 								<a
@@ -955,18 +950,14 @@ const Nav = () => {
 				<div className="relative">
 					<div
 						ref={mobileNavRef}
-						className={`absolute bg-black top-0 left-0 right-0 z-30 transform transition-transform duration-200`}
-						style={{ '--transform-translate-y': !showMobileNav && '-200%' }}
+						className={`absolute bg-black top-0 left-0 right-0 z-30 transform-gpu transition-transform duration-200 ${
+							showMobileNav ? `` : `-translate-y-full`
+						} `}
 					>
 						<div className="text-center border-b-2 border-dashed border-gray-800">
 							<div className="text-gray-100 ">
 								<Link href="/">
 									<a className="p-4 block w-full">Home</a>
-								</Link>
-							</div>
-							<div className="text-gray-100 ">
-								<Link href="/drops">
-									<a className="p-4 block w-full fireText">Drops</a>
 								</Link>
 							</div>
 							<div className="text-gray-100 ">

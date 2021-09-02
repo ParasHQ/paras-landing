@@ -42,7 +42,7 @@ module.exports = {
 	},
 	variants: {
 		extend: {
-			transitionProperty: { height: ['responsive', 'hover', 'focus'] },
+			transitionProperty: ['responsive', 'hover', 'focus'],
 		},
 	},
 	plugins: [require('@tailwindcss/line-clamp')],

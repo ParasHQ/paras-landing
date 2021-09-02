@@ -7,28 +7,12 @@ const Card = ({
 	imgHeight = 890,
 	token,
 	imgBlur,
-	disableFlip = false,
-	isShowFront = null,
-	setIsShowFront = null,
 	borderRadius = '10px',
-	special = false,
 	onClick = () => {},
 }) => {
-	const initialRotate = {
-		x: 0,
-		y: 0,
-	}
 	const containerRef = useRef()
-	const cardRef = useRef()
 	const [imgLoaded, setImgLoaded] = useState(null)
 	const [dimension, setDimension] = useState({ width: 0, height: 0 })
-	const [rotate, setRotate] = useState(initialRotate)
-	if (!setIsShowFront) {
-		// eslint-disable-next-line no-extra-semi
-		;[isShowFront, setIsShowFront] = useState(true)
-	}
-
-	let cardTimeout
 
 	useEffect(() => {
 		var img = new Image()
@@ -63,38 +47,6 @@ const Card = ({
 		return () => window.removeEventListener('resize', updateSize)
 	}, [containerRef])
 
-	const handleMouseMove = (e) => {
-		const bbox = cardRef.current.getBoundingClientRect()
-
-		const mouseX = e.pageX - (bbox.left + window.scrollX) - dimension.width / 2
-		const mouseY = e.pageY - (bbox.top + window.scrollY) - dimension.height / 2
-
-		const mousePX = mouseX / dimension.width
-		const mousePY = mouseY / dimension.height
-
-		setRotate({
-			x: mousePX * 30,
-			y: mousePY * -30,
-		})
-	}
-
-	const handleMouseEnter = () => {
-		clearTimeout(cardTimeout)
-	}
-
-	const handleMouseLeave = () => {
-		cardTimeout = setTimeout(() => {
-			setRotate(initialRotate)
-		}, 500)
-	}
-
-	const _flipCard = () => {
-		if (disableFlip) {
-			return
-		}
-		setIsShowFront(!isShowFront)
-	}
-
 	return (
 		<div
 			className="relative select-none m-auto"
@@ -116,24 +68,13 @@ const Card = ({
 			>
 				<div
 					onClick={onClick}
-					className={`card-wrap`}
-					onMouseMove={handleMouseMove}
-					onMouseEnter={handleMouseEnter}
-					onMouseLeave={handleMouseLeave}
-					ref={cardRef}
-					style={{
-						transform: `perspective(${dimension.height * 4}px)`,
-					}}
+					className="card-wrap transform transition-all origin-bottom-right duration-300 ease-in-out hover:rotate-1 hover:-translate-y-1"
 				>
 					<div
-						className="card bg-dark-primary-1 w-full h-full"
+						className="card bg-transparent w-full h-full"
 						style={{
 							fontSize: `${dimension.width / 14}px`,
-							transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)`,
 							borderRadius: borderRadius,
-							boxShadow:
-								special &&
-								'rgba(255, 255, 255, 0.2) 0 0 40px 5px, white 0 0 0 1px,rgba(0, 0, 0, 0.66) 0 30px 60px 0',
 						}}
 					>
 						<div className="h-full py-2 flex flex-col">
@@ -144,7 +85,7 @@ const Card = ({
 										fontSize: `.85em`,
 									}}
 								>
-									{token.name}
+									{token.title}
 								</p>
 								<p
 									className="text-white truncate"
@@ -190,7 +131,7 @@ const Card = ({
 												fontSize: `.6em`,
 											}}
 										>
-											Edition of {token.supply}
+											Edition of {token.copies}
 										</p>
 									</div>
 								</div>

@@ -22,32 +22,35 @@ const TokenDetail = ({ errorCode, token }) => {
 				}}
 			></div>
 			<Head>
-				<title>{`${token.metadata.name} — Paras`}</title>
+				<title>{`${token.metadata.title} — Paras`}</title>
 				<meta
 					name="description"
-					content={`${token.metadata.name} from collection ${token.metadata.collection} by ${token.creatorId}. ${token.metadata.description}`}
+					content={`${token.metadata.title} from collection ${token.metadata.collection} by ${token.creator_id}. ${token.metadata.description}`}
 				/>
 
-				<meta name="twitter:title" content={`${token.metadata.name} — Paras`} />
+				<meta
+					name="twitter:title"
+					content={`${token.metadata.title} — Paras`}
+				/>
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta
 					name="twitter:description"
-					content={`${token.metadata.name} from collection ${token.metadata.collection} by ${token.creatorId}. ${token.metadata.description}`}
+					content={`${token.metadata.title} from collection ${token.metadata.collection} by ${token.creator_id}. ${token.metadata.description}`}
 				/>
 				<meta
 					name="twitter:image"
 					content={`${process.env.API_URL}/socialCard/${token.tokenId}`}
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content={`${token.metadata.name} - Paras`} />
+				<meta property="og:title" content={`${token.metadata.title} - Paras`} />
 				<meta
 					property="og:site_name"
-					content={`${token.metadata.name} — Paras`}
+					content={`${token.metadata.title} — Paras`}
 				/>
 				<meta
 					property="og:description"
-					content={`${token.metadata.name} from collection ${token.metadata.collection} by ${token.creatorId}. ${token.metadata.description}`}
+					content={`${token.metadata.title} from collection ${token.metadata.collection} by ${token.creator_id}. ${token.metadata.description}`}
 				/>
 				<meta
 					property="og:image"
@@ -55,7 +58,7 @@ const TokenDetail = ({ errorCode, token }) => {
 				/>
 			</Head>
 			<Nav />
-			<div className="relative max-w-6xl w-full m-auto pt-4 px-4">
+			<div className="relative w-full m-auto pt-4 px-4">
 				<CardDetail token={token} />
 			</div>
 			<Footer />
@@ -64,8 +67,16 @@ const TokenDetail = ({ errorCode, token }) => {
 }
 
 export async function getServerSideProps({ params }) {
-	const res = await axios(`${process.env.API_URL}/tokens?tokenId=${params.id}`)
-	const token = (await res.data.data.results[0]) || null
+	const [contractId, tokenSeriesId] = params.id.split('::')
+
+	const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+		params: {
+			contract_id: contractId,
+			token_series_id: tokenSeriesId,
+		},
+	})
+
+	const token = res.data.data.results[0]
 
 	const errorCode = token ? false : 404
 

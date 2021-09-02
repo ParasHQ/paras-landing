@@ -10,6 +10,8 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import CardDetailModal from './CardDetailModal'
 import CardListLoader from './CardListLoader'
 
+import _tokens from '../dummy/tokens.json'
+
 const CardList = ({
 	name = 'default',
 	tokens,
@@ -62,24 +64,12 @@ const CardList = ({
 		}
 	}
 
-	const _getLowestPrice = (ownerships) => {
-		const marketDataList = ownerships
-			.filter((ownership) => ownership.marketData)
-			.map((ownership) => ownership.marketData.amount)
-			.sort((a, b) => a - b)
-
-		return marketDataList[0]
-	}
-
 	const _getUserOwnership = (userId, ownership) => {
 		return ownership.some((ownership) => ownership.ownerId === userId)
 	}
 
 	return (
-		<div
-			ref={containerRef}
-			className="overflow-x-hidden border-2 border-dashed border-gray-800 rounded-md"
-		>
+		<div ref={containerRef} className="rounded-md">
 			<CardDetailModal tokens={tokens} />
 			{tokens.length === 0 && !hasMore && (
 				<div className="w-full">
@@ -97,12 +87,12 @@ const CardList = ({
 				hasMore={hasMore}
 				loader={<CardListLoader />}
 			>
-				<animated.div className="flex flex-wrap select-none ">
-					{tokens.map((token) => {
+				<animated.div className="flex flex-wrap select-none -mx-4">
+					{_tokens.map((token) => {
 						return (
 							<div
 								key={token.tokenId}
-								className={`w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-8 relative ${
+								className={`w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-4 relative ${
 									toggleOwnership &&
 									!_getUserOwnership(store.currentUser, token.ownerships) &&
 									'opacity-25'
@@ -110,8 +100,9 @@ const CardList = ({
 							>
 								<div className="w-full m-auto">
 									<Card
-										imgUrl={parseImgUrl(token.metadata.image, null, {
+										imgUrl={parseImgUrl(token.metadata.media, null, {
 											width: `600`,
+											useOriginal: true,
 										})}
 										onClick={() => {
 											router.push(
@@ -123,51 +114,35 @@ const CardList = ({
 														...{ prevAs: router.asPath },
 													},
 												},
-												`/token/${token.tokenId}`,
-												{
-													shallow: true,
-													scroll: false,
-												}
+												`/token/${token.token_series_id}`
+												// {
+												// 	shallow: true,
+												// 	scroll: false,
+												// }
 											)
 										}}
 										imgBlur={token.metadata.blurhash}
 										token={{
-											name: token.metadata.name,
-											collection: token.metadata.collection,
-											description: token.metadata.description,
-											creatorId: token.creatorId,
-											supply: token.supply,
-											tokenId: token.tokenId,
-											createdAt: token.createdAt,
-										}}
-										initialRotate={{
-											x: 0,
-											y: 0,
+											title: token.metadata.title,
+											collection:
+												token.metadata.collection || token.contract_id,
+											copies: token.metadata.copies,
+											creatorId: token.metadata.creator_id || token.contract_id,
 										}}
 									/>
 								</div>
 								<div className="text-center">
-									<div className="mt-8">
+									<div className="mt-4">
 										<div className="p-2">
 											<p className="text-gray-400 text-xs">Start From</p>
-											<div className="text-gray-100 text-2xl">
-												{_getLowestPrice(token.ownerships) ? (
+											<div className="text-gray-100 text-xl">
+												{token.price ? (
 													<div>
-														<div>
-															{prettyBalance(
-																_getLowestPrice(token.ownerships),
-																24,
-																4
-															)}{' '}
-															Ⓝ
-														</div>
-														<div className="text-sm text-gray-400">
+														<div>{prettyBalance(token.price, 24, 4)} Ⓝ</div>
+														<div className="text-xs text-gray-400">
 															~ $
 															{prettyBalance(
-																JSBI.BigInt(
-																	_getLowestPrice(token.ownerships) *
-																		store.nearUsdPrice
-																),
+																JSBI.BigInt(token.price * store.nearUsdPrice),
 																24,
 																4
 															)}
@@ -182,7 +157,7 @@ const CardList = ({
 										</div>
 									</div>
 								</div>
-								<div className="text-center mt-2 text-sm">
+								{/* <div className="text-center mt-2 text-xs pb-4">
 									<Link
 										href={{
 											pathname: router.pathname,
@@ -199,8 +174,8 @@ const CardList = ({
 										<a className="inline-block text-gray-100 cursor-pointer font-semibold border-b-2 border-gray-100">
 											See Details
 										</a>
-									</Link>
-								</div>
+									</Link> */}
+								{/* </div> */}
 							</div>
 						)
 					})}
