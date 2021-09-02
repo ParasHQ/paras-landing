@@ -118,7 +118,9 @@ const TokenSeriesBuyModal = ({
 							<div className="text-white my-1">
 								<div className="flex justify-between">
 									<div className="text-sm">Total</div>
-									<div className="text">{formatNearAmount(data.price)} Ⓝ</div>
+									<div className="text">
+										{data.price && `${formatNearAmount(data.price)} Ⓝ`}
+									</div>
 								</div>
 								<div className="flex justify-between">
 									<div className="text-sm">Storage Fee</div>
