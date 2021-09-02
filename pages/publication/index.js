@@ -9,7 +9,7 @@ import PublicationList from '../../components/PublicationList'
 import PublicationCardListLoader from '../../components/Publication/PublicationCardListLoader'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import useStore from '../../store'
+import useStore from '../../lib/store'
 
 const LIMIT = 6
 

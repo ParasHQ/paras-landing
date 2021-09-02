@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import useStore from '../store'
+import useStore from '../lib/store'
 import { prettyBalance } from '../utils/common'
 import Modal from './Modal'
 

@@ -8,7 +8,7 @@ import Nav from '../../components/Nav'
 import Profile from '../../components/Profile'
 import PublicationCardListLoader from '../../components/Publication/PublicationCardListLoader'
 import PublicationList from '../../components/PublicationList'
-import useStore from '../../store'
+import useStore from '../../lib/store'
 
 const LIMIT = 6
 

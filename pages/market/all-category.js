@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import CategoryList from '../../components/CategoryList'
 import Footer from '../../components/Footer'
 import Nav from '../../components/Nav'
-import useStore from '../../store'
+import useStore from '../../lib/store'
 
 const AllCategory = () => {
 	const store = useStore()

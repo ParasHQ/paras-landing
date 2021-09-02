@@ -10,7 +10,7 @@ import Modal from '../../components/Modal'
 import Nav from '../../components/Nav'
 import { useToast } from '../../hooks/useToast'
 import near from '../../lib/near'
-import useStore from '../../store'
+import useStore from '../../lib/store'
 import { parseImgUrl, timeAgo } from '../../utils/common'
 
 const CategorySubmission = () => {

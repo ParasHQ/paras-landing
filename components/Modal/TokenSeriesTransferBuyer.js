@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react'
 import owned from 'dummy/tokens_owned.json'
 import TokenTransferModal from './TokenTransferModal'
 import Scrollbars from 'react-custom-scrollbars'
-import near from 'lib/near'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import useStore from 'lib/store'
 
 const FETCH_TOKENS_LIMIT = 12
 
@@ -49,13 +49,15 @@ const TokenSeriesTransferBuyer = ({
 	const [page, setPage] = useState(0)
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
+	const store = useStore()
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(async () => {
-		if (data.token_series_id && near.currentUser) {
+		console.log(data.token_series_id, store.currentUser)
+		if (data.token_series_id && store.currentUser) {
 			await fetchTokens()
 		}
-	}, [data])
+	}, [data, store])
 
 	const fetchTokens = async () => {
 		if (!hasMore || isFetching) {
@@ -66,7 +68,7 @@ const TokenSeriesTransferBuyer = ({
 		const resp = await axios.get(`${process.env.V2_API_URL}/token`, {
 			params: {
 				token_series_id: data.token_series_id,
-				owner_id: near.currentUser.accountId,
+				owner_id: store.currentUser,
 				__skip: page * FETCH_TOKENS_LIMIT,
 				__limit: FETCH_TOKENS_LIMIT,
 			},

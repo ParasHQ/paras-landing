@@ -2,7 +2,7 @@ import axios from 'axios'
 import { useState } from 'react'
 import { useToast } from '../hooks/useToast'
 import near from '../lib/near'
-import useStore from '../store'
+import useStore from '../lib/store'
 import { checkUrl, parseImgUrl } from '../utils/common'
 import ImgCrop from './ImgCrop'
 

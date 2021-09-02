@@ -6,7 +6,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import Bid from '../components/Bid'
 import Footer from '../components/Footer'
 import Nav from '../components/Nav'
-import useStore from '../store'
+import useStore from '../lib/store'
 
 const MyBids = () => {
 	const store = useStore()

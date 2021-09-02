@@ -14,7 +14,7 @@ import Card from './Card'
 import LinkToProfile from './LinkToProfile'
 import Modal from './Modal'
 
-import useStore from '../store'
+import useStore from '../lib/store'
 import { parseImgUrl, prettyBalance, timeAgo } from '../utils/common'
 import CardDetailModal from './CardDetailModal'
 import { useRouter } from 'next/router'

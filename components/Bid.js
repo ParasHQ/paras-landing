@@ -11,7 +11,7 @@ import Modal from '../components/Modal'
 import PlaceBidModal from '../components/PlaceBidModal'
 import { useToast } from '../hooks/useToast'
 import near from '../lib/near'
-import useStore from '../store'
+import useStore from '../lib/store'
 import { parseImgUrl, prettyBalance, timeAgo } from '../utils/common'
 
 const Bid = ({ tokenId, data, updateBidData }) => {

@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import Hamburger from 'react-hamburgers'
 
 import near from '../lib/near'
-import useStore from '../store'
+import useStore from '../lib/store'
 import Modal from './Modal'
 import ProfileEdit from './ProfileEdit'
 import { parseImgUrl, prettyBalance, prettyTruncate } from '../utils/common'

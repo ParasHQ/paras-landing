@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import near from '../lib/near'
 import Nav from '../components/Nav'
-import useStore from '../store'
+import useStore from '../lib/store'
 import Footer from '../components/Footer'
 
 const LoginPage = () => {

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import near from '../lib/near'
-import useStore from '../store'
+import useStore from '../lib/store'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import * as gtag from '../lib/gtag'

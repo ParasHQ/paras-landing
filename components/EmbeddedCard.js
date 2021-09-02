@@ -6,7 +6,7 @@ import { parseImgUrl, prettyBalance } from '../utils/common'
 import Card from './Card'
 import { useRouter } from 'next/router'
 import CardDetailModal from './CardDetailModal'
-import useStore from '../store'
+import useStore from '../lib/store'
 import JSBI from 'jsbi'
 
 const EmbeddedCard = ({ tokenId }) => {
