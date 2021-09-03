@@ -59,7 +59,7 @@ const TokenSeriesTransferModal = ({
 				contractId: data.contract_id,
 				methodName: `nft_mint`,
 				args: params,
-				gas: `300000000000000`,
+				gas: `30000000000000`,
 				attachedDeposit: STORAGE_MINT_FEE,
 			})
 		} catch (err) {

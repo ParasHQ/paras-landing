@@ -83,7 +83,7 @@ const TokenStorageModal = ({
 				contractId: process.env.MARKETPLACE_CONTRACT_ID,
 				methodName: `storage_deposit`,
 				args: params,
-				gas: `300000000000000`,
+				gas: `30000000000000`,
 				attachedDeposit: STORAGE_ADD_MARKET_FEE,
 			})
 		} catch (err) {

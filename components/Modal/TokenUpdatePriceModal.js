@@ -59,7 +59,7 @@ const TokenUpdatePriceModal = ({
 					contractId: process.env.MARKETPLACE_CONTRACT_ID,
 					methodName: `update_market_data`,
 					args: params,
-					gas: `300000000000000`,
+					gas: `30000000000000`,
 					attachedDeposit: `1`,
 				})
 			} else {
@@ -75,7 +75,7 @@ const TokenUpdatePriceModal = ({
 					contractId: data.contract_id,
 					methodName: `nft_approve`,
 					args: params,
-					gas: `300000000000000`,
+					gas: `30000000000000`,
 					attachedDeposit: STORAGE_APPROVE_FEE,
 				})
 			}
@@ -165,18 +165,7 @@ const TokenUpdatePriceModal = ({
 								</div>
 							</div>
 							<p className="text-sm mt-2 text-gray-200">
-								Receive: {calculatePriceDistribution().receive}
-								{/* {prettyBalance(
-                  Number(
-                    watch('amount', 0) *
-                      (0.95 - (localToken.metadata.royalty || 0) / 100)
-                  )
-                    .toPrecision(4)
-                    .toString(),
-                  0,
-                  4
-                )}{' '} */}
-								Ⓝ (~$ 20
+								Receive: {calculatePriceDistribution().receive} Ⓝ (~$ 20
 								{/* {prettyBalance(
                   Number(
                     store.nearUsdPrice *
@@ -238,6 +227,28 @@ const TokenUpdatePriceModal = ({
 								{/* {errors.amount?.type === 'required' && `Sale price is required`}
                 {errors.amount?.type === 'min' && `Minimum 0`} */}
 							</div>
+							{!data.approval_id && (
+								<div>
+									<div className="mt-4 text-center">
+										<div className="text-white my-1">
+											<div className="flex justify-between">
+												<div className="text-sm">Storage Fee</div>
+												<div className="text">
+													{formatNearAmount(STORAGE_APPROVE_FEE)} Ⓝ
+												</div>
+											</div>
+										</div>
+									</div>
+									<p className="text-white mt-4 text-sm text-center opacity-90">
+										*Small storage fee is applied
+									</p>
+								</div>
+							)}
+
+							<p className="text-white mt-2 text-sm text-center opacity-90">
+								You will be redirected to NEAR Web Wallet to confirm your
+								transaction.
+							</p>
 						</div>
 						<div className="mt-6">
 							<Button type="submit" size="md" isFullWidth>

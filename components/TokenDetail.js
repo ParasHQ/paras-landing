@@ -38,10 +38,12 @@ const TokenDetail = ({ token, metadata, className }) => {
 	const { currentUser } = useStore()
 
 	useEffect(() => {
-		if (near.wallet.account) {
-			checkStorageBalance()
+		if (currentUser) {
+			setTimeout(() => {
+				checkStorageBalance()
+			}, 250)
 		}
-	}, [near.wallet])
+	}, [currentUser])
 
 	const checkStorageBalance = async () => {
 		try {
@@ -71,7 +73,6 @@ const TokenDetail = ({ token, metadata, className }) => {
 					JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
 				)
 
-				console.log(currentStorage, usedStorage.toString())
 				if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
 					setNeedDeposit(false)
 				}
@@ -245,7 +246,6 @@ const TokenDetail = ({ token, metadata, className }) => {
 							<div className="flex">
 								<Button
 									onClick={() => {
-										console.log(needDeposit)
 										if (needDeposit) {
 											setShowModal('storage')
 										} else {

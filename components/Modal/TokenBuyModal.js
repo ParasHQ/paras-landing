@@ -37,9 +37,7 @@ const TokenBuyModal = ({
 		price: '0',
 	},
 }) => {
-	console.log(data)
 	const [showLogin, setShowLogin] = useState(false)
-	const buyChapter = useStore((state) => state.buyChapter)
 
 	const onBuyToken = async () => {
 		if (!near.currentUser) {
@@ -86,7 +84,7 @@ const TokenBuyModal = ({
 				contractId: process.env.MARKETPLACE_CONTRACT_ID,
 				methodName: `buy`,
 				args: params,
-				gas: `300000000000000`,
+				gas: `30000000000000`,
 				attachedDeposit: data.price,
 			})
 		} catch (err) {

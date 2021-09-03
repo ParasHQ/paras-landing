@@ -88,7 +88,7 @@ const TokenSeriesBuyModal = ({
 				contractId: data.contract_id,
 				methodName: `nft_buy`,
 				args: params,
-				gas: `300000000000000`,
+				gas: `30000000000000`,
 				attachedDeposit: attachedDeposit.toString(),
 			})
 		} catch (err) {

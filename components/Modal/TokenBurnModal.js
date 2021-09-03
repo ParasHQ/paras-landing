@@ -88,7 +88,7 @@ const TokenBurnModal = ({
 				contractId: data.contract_id,
 				methodName: `nft_burn`,
 				args: params,
-				gas: `300000000000000`,
+				gas: `30000000000000`,
 				attachedDeposit: `1`,
 			})
 		} catch (err) {

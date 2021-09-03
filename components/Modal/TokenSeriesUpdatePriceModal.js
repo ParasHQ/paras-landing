@@ -86,7 +86,7 @@ const TokenSeriesUpdatePriceModal = ({
 				contractId: data.contract_id,
 				methodName: `nft_set_series_price`,
 				args: params,
-				gas: `300000000000000`,
+				gas: `30000000000000`,
 				attachedDeposit: `1`,
 			})
 		} catch (err) {

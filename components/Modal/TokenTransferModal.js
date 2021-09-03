@@ -84,7 +84,7 @@ const TokenTransferModal = ({
 				contractId: data.contract_id,
 				methodName: `nft_transfer`,
 				args: params,
-				gas: `300000000000000`,
+				gas: `30000000000000`,
 				attachedDeposit: `1`,
 			})
 		} catch (err) {
