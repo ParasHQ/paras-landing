@@ -1,9 +1,9 @@
-import axios from 'axios'
+import cachios from 'cachios'
 import LinkToProfile from 'components/Common/LinkToProfile'
-import Link from 'next/link'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
 import { timeAgo } from 'utils/common'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 const FETCH_TOKENS_LIMIT = 12
 
@@ -16,17 +16,9 @@ const TabHistory = ({ localToken }) => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
 		if (localToken.token_series_id) {
-			fetchAllHistory()
+			fetchHistory()
 		}
 	}, [localToken])
-
-	const fetchAllHistory = async () => {
-		const _hasMore = await fetchHistory()
-
-		if (_hasMore) {
-			fetchAllHistory()
-		}
-	}
 
 	const fetchHistory = async () => {
 		if (!hasMore || isFetching) {
@@ -46,27 +38,38 @@ const TabHistory = ({ localToken }) => {
 			params.token_series_id = localToken.token_series_id
 		}
 
-		const resp = await axios.get(`${process.env.V2_API_URL}/activities`, {
+		const resp = await cachios.get(`${process.env.V2_API_URL}/activities`, {
 			params: params,
+			ttl: 30,
 		})
 		const newData = resp.data.data
 
 		const newHistory = [...(history || []), ...newData.results]
 		setHistory(newHistory)
-		setPage(page + 1)
-		const _hasMore = newData.results.length < FETCH_TOKENS_LIMIT ? false : true
 
+		const _page = page + 1
+		setPage(page + 1)
+
+		const _hasMore = newData.results.length < FETCH_TOKENS_LIMIT ? false : true
 		setHasMore(_hasMore)
+
 		setIsFetching(false)
 
-		return _hasMore
+		return [_hasMore, _page]
 	}
 
 	return (
-		<div className="mt-4 text-white">
-			{history.map((h) => (
-				<Activity key={h._id} activity={h} />
-			))}
+		<div className="text-white">
+			<InfiniteScroll
+				dataLength={history.length}
+				next={fetchHistory}
+				hasMore={hasMore}
+				loader={<div className="text-white h-20">Loading...</div>}
+			>
+				{history.map((h) => (
+					<Activity key={h._id} activity={h} />
+				))}
+			</InfiniteScroll>
 		</div>
 	)
 }

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import cachios from 'cachios'
 import Avatar from 'components/Common/Avatar'
 import Button from 'components/Common/Button'
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
@@ -41,13 +42,15 @@ const TabOwners = ({ localToken }) => {
 		}
 
 		setIsFetching(true)
-		const resp = await axios.get(`${process.env.V2_API_URL}/token`, {
+		const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
 			params: {
 				token_series_id: localToken.token_series_id,
 				__skip: page * FETCH_TOKENS_LIMIT,
 				__limit: FETCH_TOKENS_LIMIT,
 			},
+			ttl: 30,
 		})
+
 		const newData = resp.data.data
 
 		const newTokens = [...(tokens || []), ...newData.results]
@@ -122,10 +125,11 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 
 	const fetchOwnerProfile = async () => {
 		try {
-			const resp = await axios.get(`${process.env.V1_API_URL}/profiles`, {
+			const resp = await cachios.get(`${process.env.V1_API_URL}/profiles`, {
 				params: {
 					accountId: token.owner_id,
 				},
+				ttl: 60,
 			})
 			const newData = resp.data.data.results[0] || {}
 			setProfile(newData)
