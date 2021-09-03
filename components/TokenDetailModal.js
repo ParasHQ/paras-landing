@@ -26,9 +26,9 @@ function TokenDetailModal({ tokens = [] }) {
 	}, [])
 
 	useEffect(() => {
-		if (router.query.tokenSeriesId) {
+		if (router.query.tokenId) {
 			const token = tokens.find(
-				(token) => token?.token_series_id === router.query.tokenSeriesId
+				(token) => token?.token_id === router.query.tokenId
 			)
 			setActiveToken(token)
 		} else {

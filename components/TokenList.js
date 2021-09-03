@@ -119,7 +119,7 @@ const TokenList = ({
 															pathname: router.pathname,
 															query: {
 																...router.query,
-																...{ tokenSeriesId: token.token_series_id },
+																...{ tokenId: token.token_id },
 																...{ prevAs: router.asPath },
 															},
 														},
