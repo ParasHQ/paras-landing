@@ -22,6 +22,8 @@ import TokenDetailModal from './TokenDetailModal'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
 export const descriptionMaker = (activity, token) => {
+	const type = activity.type
+
 	if (type === 'add_market_data' || type === 'update_market_data') {
 		return `${
 			activity.msg.params.owner_id
