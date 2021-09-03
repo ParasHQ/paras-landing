@@ -753,7 +753,7 @@ const Nav = () => {
 					<Setting close={() => setShowSettingModal(false)} />
 				</Modal>
 			)}
-			<div className="sticky top-0 left-0 right-0 z-40 bg-black bg-opacity-75 border-b border-white">
+			<div className="sticky top-0 left-0 right-0 z-40 bg-black border-b border-white">
 				{process.env.APP_ENV !== 'testnet' && (
 					<div
 						className={`relative text-white text-center overflow-hidden text-sm md:leading-8 m-auto bg-red-700 z-50 flex items-center justify-center transition-height duration-500 ${
@@ -950,9 +950,10 @@ const Nav = () => {
 				<div className="relative">
 					<div
 						ref={mobileNavRef}
-						className={`absolute bg-black top-0 left-0 right-0 z-30 transform-gpu transition-transform duration-200 ${
-							showMobileNav ? `` : `-translate-y-full`
-						} `}
+						className="absolute bg-black top-0 left-0 right-0 z-30 transform-gpu transition-transform duration-200"
+						style={{
+							'--tw-translate-y': showMobileNav ? `0%` : `-200%`,
+						}}
 					>
 						<div className="text-center border-b-2 border-dashed border-gray-800">
 							<div className="text-gray-100 ">

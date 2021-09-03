@@ -82,7 +82,7 @@ export async function getServerSideProps({ params }) {
 		return { props: { token } }
 	} catch (err) {
 		console.log(err)
-		const errorCode = token ? false : 404
+		const errorCode = 404
 		return { props: { errorCode } }
 	}
 }

@@ -16,6 +16,7 @@ import TokenMoreModal from './Modal/TokenMoreModal'
 import TokenSeriesMintModal from './Modal/TokenSeriesMintModal'
 import TokenShareModal from './Modal/TokenShareModal'
 import useStore from 'lib/store'
+import TabHistory from './Tabs/TabHistory'
 
 const CardDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
