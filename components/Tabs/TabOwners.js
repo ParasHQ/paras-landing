@@ -48,15 +48,19 @@ const TabOwners = ({ localToken }) => {
 
 	return (
 		<div>
-			<InfiniteScroll
-				dataLength={tokens.length}
-				next={fetchTokens}
-				hasMore={true}
-			>
-				{tokens.map((token) => (
-					<Owner token={token} key={token.token_id} />
-				))}
-			</InfiniteScroll>
+			{!isFetching && !hasMore && tokens.length === 0 ? (
+				<div className="text-white">No owners, become the first one!</div>
+			) : (
+				<InfiniteScroll
+					dataLength={tokens.length}
+					next={fetchTokens}
+					hasMore={true}
+				>
+					{tokens.map((token) => (
+						<Owner token={token} key={token.token_id} />
+					))}
+				</InfiniteScroll>
+			)}
 		</div>
 	)
 }

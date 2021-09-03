@@ -80,14 +80,15 @@ const TabInfo = ({ localToken, isNFT }) => {
 					</Link>
 				</div>
 			</div>
+
 			<div className="flex bg-blueGray-900 border border-blueGray-700 mt-4 p-3 rounded-md shadow-md">
 				<div>
 					<p className="text-sm text-white font-bold">Royalty</p>
-					<Link href={`/token/${Object.keys(localToken.royalty)[0]}`}>
-						<a className="text-gray-100 font-semibold hover:opacity-80">
-							{Object.values(localToken.royalty)[0] / 100} %
-						</a>
-					</Link>
+					<p className="text-gray-100 font-semibold">
+						{Object.keys(localToken.royalty).length === 0
+							? `None`
+							: `${Object.values(localToken.royalty)[0] / 100} %`}
+					</p>
 				</div>
 			</div>
 		</div>
