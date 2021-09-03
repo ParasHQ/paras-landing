@@ -2,31 +2,18 @@ import Link from 'next/link'
 import ReactLinkify from 'react-linkify'
 
 const TabInfo = ({ localToken, isNFT }) => {
-	const supply = localToken.metadata.copies
-		? `${localToken.metadata.copies}pcs`
-		: `Open Edition`
+	const collection = localToken.metadata.collection_id
+		? {
+				id: localToken.metadata.collection_id,
+				name: localToken.metadata.collection,
+		  }
+		: {
+				id: localToken.contract_id,
+				name: localToken.contract_id,
+		  }
+
 	return (
 		<div>
-			{/* <div className="flex bg-gray-900 border border-blueGray-700 mt-4 p-3 rounded-md shadow-md">
-        <div>
-          <p className="text-sm text-white font-bold">Collection</p>
-          <Link
-            href={{
-              pathname: '/[id]/collection/[collectionName]',
-              query: {
-                collectionName: encodeURIComponent(
-                  localToken.metadata.collection
-                ),
-                id: localToken.creatorId,
-              },
-            }}
-          >
-            <a className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100">
-              {localToken.metadata.collection}
-            </a>
-          </Link>
-        </div>
-      </div> */}
 			<div className="bg-gray-900 border border-blueGray-700 mt-4 p-3 rounded-md shadow-md">
 				<p className="text-sm text-white font-bold">Description</p>
 				<ReactLinkify
@@ -60,27 +47,14 @@ const TabInfo = ({ localToken, isNFT }) => {
 			)}
 			<div className="flex bg-gray-900 border border-blueGray-700 mt-4 p-3 rounded-md shadow-md">
 				<div>
-					<p className="text-sm text-white font-bold">Edition</p>
-					<Link
-						href={`/token/${localToken.contract_id}::${localToken.token_series_id}`}
-					>
-						<a className="text-gray-100 font-semibold hover:opacity-80">
-							{supply}
-						</a>
-					</Link>
-				</div>
-			</div>
-			<div className="flex bg-gray-900 border border-blueGray-700 mt-4 p-3 rounded-md shadow-md">
-				<div>
 					<p className="text-sm text-white font-bold">Collection</p>
-					<Link href={`/token/${localToken.metadata.collection}`}>
+					<Link href={`/collection/${collection.id}`}>
 						<a className="text-gray-100 font-semibold hover:opacity-80">
-							{localToken.metadata.collection}
+							{collection.name}
 						</a>
 					</Link>
 				</div>
 			</div>
-
 			<div className="flex bg-gray-900 border border-blueGray-700 mt-4 p-3 rounded-md shadow-md">
 				<div>
 					<p className="text-sm text-white font-bold">Royalty</p>
