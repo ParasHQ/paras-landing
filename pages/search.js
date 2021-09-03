@@ -28,7 +28,7 @@ export default function SearchPage({ searchQuery }) {
 	useEffect(async () => {
 		setIsRefreshing(true)
 		window.scrollTo(0, 0)
-		const res = await axios(`${process.env.API_URL}/tokens`, {
+		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: tokensParams(0, {
 				...query,
 				search: encodeURIComponent(query.q),
@@ -54,7 +54,7 @@ export default function SearchPage({ searchQuery }) {
 		}
 
 		setIsFetching(true)
-		const res = await axios(`${process.env.API_URL}/tokens`, {
+		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: tokensParams(page, {
 				...query,
 				search: encodeURIComponent(query.q),
