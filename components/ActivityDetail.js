@@ -55,6 +55,9 @@ export const descriptionMaker = (activity, token) => {
 	}
 
 	if (type === 'nft_transfer') {
+		if (activity.price) {
+			return `${activity.to} bought from ${activity.from}`
+		}
 		return `${activity.from} transferred to ${activity.to}`
 	}
 
@@ -157,6 +160,21 @@ const Activity = ({ activity }) => {
 	}
 
 	if (type === 'nft_transfer') {
+		if (activity.price) {
+			return (
+				<p>
+					<LinkToProfile
+						className="text-gray-100 hover:border-gray-100"
+						accountId={activity.to}
+					/>
+					<span> bought from </span>
+					<LinkToProfile
+						className="text-gray-100 hover:border-gray-100"
+						accountId={activity.from}
+					/>
+				</p>
+			)
+		}
 		return (
 			<p>
 				<LinkToProfile
