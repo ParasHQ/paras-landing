@@ -80,7 +80,7 @@ const EditProfileModal = ({ userData = {}, setUserData, active, onClose }) => {
 					}}
 				/>
 			)}
-			<div className="w-full relative max-w-md md:flex bg-blueGray-800 rounded-lg m-4 md:m-auto ">
+			<div className="w-full relative max-w-md md:flex bg-gray-800 rounded-lg m-4 md:m-auto ">
 				<div className="w-full p-4">
 					<div className="mt-4 mx-auto relative cursor-pointer w-32 h-32 rounded-full">
 						<input

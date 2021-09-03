@@ -116,7 +116,7 @@ const Owner = ({ token = {}, onBuy }) => {
 	}
 
 	return (
-		<div className="bg-blueGray-900 border border-blueGray-700 mt-3 p-3 rounded-md shadow-md">
+		<div className="bg-gray-900 border border-blueGray-700 mt-3 p-3 rounded-md shadow-md">
 			<div className="flex items-center justify-between">
 				<div className="flex items-center">
 					<Link href={`/${token.owner_id}`}>

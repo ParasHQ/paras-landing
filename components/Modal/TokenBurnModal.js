@@ -104,7 +104,7 @@ const TokenBurnModal = ({
 				closeOnEscape={false}
 				close={onClose}
 			>
-				<div className="max-w-sm w-full p-4 bg-blueGray-800 m-4 md:m-auto rounded-md">
+				<div className="max-w-sm w-full p-4 bg-gray-800 m-4 md:m-auto rounded-md">
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
 							Burn Asset
