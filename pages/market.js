@@ -41,7 +41,11 @@ export default function MarketPage() {
 		})
 		setPage(1)
 		setTokens(res.data.data.results)
-		setHasMore(true)
+		if (res.data.data.results.length < LIMIT) {
+			setHasMore(false)
+		} else {
+			setHasMore(true)
+		}
 		setIsFiltering(false)
 	}
 

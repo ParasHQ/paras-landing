@@ -1,5 +1,5 @@
 import axios from 'axios'
-import TokenList from 'components/TokenList'
+import CardList from 'components/CardList'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -94,7 +94,7 @@ const collection = ({ userProfile, accountId }) => {
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'collection'} />
 				<div className="mt-8">
-					<TokenList
+					<CardList
 						name={scrollCollection}
 						tokens={tokens}
 						fetchData={fetchOwnerTokens}

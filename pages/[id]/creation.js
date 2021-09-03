@@ -29,11 +29,14 @@ const creation = ({ userProfile, accountId }) => {
 		}
 
 		setIsFetching(true)
-		const res = await axios(
-			`${process.env.API_URL}/tokens?excludeTotalBurn=true&creatorId=${
-				router.query.id
-			}&__skip=${page * LIMIT}&__limit=${LIMIT}`
-		)
+		const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+			params: {
+				exclude_total_burn: true,
+				creator_id: router.query.id,
+				__skip: page * LIMIT,
+				__limit: LIMIT,
+			},
+		})
 		const newData = await res.data.data
 
 		const newTokens = [...(tokens || []), ...newData.results]

@@ -133,7 +133,9 @@ const Card = ({
 										>
 											{token.edition_id
 												? `#${token.edition_id} of ${token.copies}`
-												: `Edition of ${token.copies}`}
+												: token.copies
+												? `Edition of ${token.copies}`
+												: `Open Edition`}
 										</p>
 									</div>
 								</div>

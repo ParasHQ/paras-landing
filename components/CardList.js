@@ -84,14 +84,15 @@ const CardList = ({
 				next={fetchData}
 				hasMore={hasMore}
 				loader={<CardListLoader />}
+				className="-mx-4"
 			>
-				<animated.div className="flex flex-wrap select-none -mx-4">
+				<animated.div className="flex flex-wrap select-none">
 					{tokens.map((token) => {
 						const price = token.lowest_price || token.price
 
 						return (
 							<div
-								key={token.tokenId}
+								key={token.token_series_id}
 								className={`w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-4 relative ${
 									toggleOwnership &&
 									!_getUserOwnership(store.currentUser, token.ownerships) &&
@@ -168,25 +169,6 @@ const CardList = ({
 										</div>
 									</div>
 								</div>
-								{/* <div className="text-center mt-2 text-xs pb-4">
-									<Link
-										href={{
-											pathname: router.pathname,
-											query: {
-												...router.query,
-												...{ tokenId: token.tokenId },
-												...{ prevAs: router.asPath },
-											},
-										}}
-										as={`/token/${token.tokenId}`}
-										scroll={false}
-										shallow
-									>
-										<a className="inline-block text-gray-100 cursor-pointer font-semibold border-b-2 border-gray-100">
-											See Details
-										</a>
-									</Link> */}
-								{/* </div> */}
 							</div>
 						)
 					})}

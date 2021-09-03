@@ -84,15 +84,15 @@ const TokenList = ({
 				next={fetchData}
 				hasMore={hasMore}
 				loader={<CardListLoader />}
+				className="-mx-4"
 			>
-				<animated.div className="flex flex-wrap select-none -mx-4">
+				<animated.div className="flex flex-wrap select-none">
 					{tokens.map((token) => {
-						console.log(token)
 						const price = token.price
 
 						return (
 							<div
-								key={token.tokenId}
+								key={token.token_id}
 								className={`w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-4 relative ${
 									toggleOwnership &&
 									!_getUserOwnership(store.currentUser, token.ownerships) &&

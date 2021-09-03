@@ -92,12 +92,6 @@ const CardDetail = ({ token, metadata, className }) => {
 		setShowModal('buyerTransfer')
 	}
 
-	const onClickRead = () => {
-		router.push({
-			pathname: `/viewer/${token.comic_id}/${token.chapter_id}`,
-		})
-	}
-
 	const isCreator = () => {
 		if (!near.currentUser) {
 			return false
@@ -107,6 +101,10 @@ const CardDetail = ({ token, metadata, className }) => {
 			(!token.metadata.creator_id &&
 				near.currentUser.accountId === token.contract_id)
 		)
+	}
+
+	const getCreatorId = () => {
+		return token.metadata.creator_id || token.contract_id
 	}
 
 	return (
@@ -153,9 +151,9 @@ const CardDetail = ({ token, metadata, className }) => {
 									<p className="mt-1 text-white">
 										by{' '}
 										<span className="font-semibold">
-											<Link href={`/${token.metadata.creator_id}`}>
+											<Link href={`/${getCreatorId()}}`}>
 												<a className="text-white font-semibold border-b-2 border-transparent hover:border-white">
-													{token.metadata.creator_id}
+													{getCreatorId()}
 												</a>
 											</Link>
 										</span>
