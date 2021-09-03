@@ -1,7 +1,5 @@
 import JSBI from 'jsbi'
-import useSWR from 'swr'
-import { Fragment, useState } from 'react'
-import axios from 'axios'
+import { Fragment, useEffect, useState } from 'react'
 import Link from 'next/link'
 import {
 	FacebookIcon,
@@ -9,6 +7,7 @@ import {
 	TwitterIcon,
 	TwitterShareButton,
 } from 'react-share'
+import cachios from 'cachios'
 
 import Card from './Card'
 import LinkToProfile from './LinkToProfile'
@@ -19,196 +18,228 @@ import { parseImgUrl, prettyBalance, timeAgo } from '../utils/common'
 import CardDetailModal from './CardDetailModal'
 import { useRouter } from 'next/router'
 import CopyLink from './CopyLink'
+import TokenDetailModal from './TokenDetailModal'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
 export const descriptionMaker = (activity, token) => {
-	if (activity.type === 'marketUpdate') {
-		return `${activity.from} put ${
-			token?.metadata.name
-		} on sale for ${prettyBalance(activity.amount, 24, 4)} Ⓝ`
+	if (type === 'add_market_data' || type === 'update_market_data') {
+		return `${
+			activity.msg.params.owner_id
+		} put on sale put on sale for ${formatNearAmount(
+			activity.msg.params.price
+		)} Ⓝ`
 	}
 
-	if (activity.type === 'marketDelete') {
-		return `${activity.from} removed ${token?.metadata.name} from sale`
+	if (type === 'delete_market_data') {
+		return `${activity.msg.params.owner_id} remove from sale`
 	}
 
-	if (activity.type === 'marketBuy') {
-		return `${activity.from} bought ${activity.quantity}pcs of ${
-			token?.metadata.name
-		} from ${activity.to} for ${prettyBalance(activity.amount, 24, 4)} Ⓝ`
+	if (type === 'resolve_purchase') {
+		return `${activity.from} bought from ${activity.to} for ${formatNearAmount(
+			activity.msg.params.price
+		)} Ⓝ`
 	}
 
-	if (activity.type === 'transfer' && activity.from === '') {
-		return `${token?.metadata.name} created by ${activity.to} with supply of ${activity.quantity}pcs`
+	if (type === 'nft_transfer' && activity.from === null) {
+		const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+
+		return `${activity.to} minted #${edition_id || 1}`
 	}
 
-	if (activity.type === 'bidMarketAdd') {
-		return `${activity.accountId} placed offer on ${
-			token?.metadata.name
-		} for ${prettyBalance(activity.amount, 24, 4)} Ⓝ`
+	if (type === 'nft_transfer' && activity.to === null) {
+		const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+
+		return `${activity.from} burned #${edition_id || 1}`
 	}
 
-	return `${activity.from} transferred ${activity.quantity}pcs of ${token?.metadata.name} to ${activity.to}`
+	if (type === 'nft_transfer') {
+		return `${activity.from} transferred to ${activity.to}`
+	}
+
+	if (type === 'nft_create_series') {
+		return `series created by ${activity.msg.params.creator_id}`
+	}
+
+	if (type === 'nft_set_series_price') {
+		return `put the series on sale for ${formatNearAmount(
+			activity.msg.params.price
+		)} Ⓝ`
+	}
+
+	if (type === 'nft_set_series_non_mintable') {
+		return `put the series to non-mintable`
+	}
+
+	if (type === 'nft_decrease_series_copies') {
+		return `decrease the series copies to ${activity.msg.params.copies}`
+	}
+
+	return ``
 }
 
 const Activity = ({ activity }) => {
 	const { nearUsdPrice } = useStore()
+	const type = activity.type
 
-	if (activity.type === 'marketUpdate') {
+	if (type === 'add_market_data' || type === 'update_market_data') {
 		return (
-			<div className="text-gray-300">
-				<p>
-					<LinkToProfile
-						accountId={activity.from}
-						className="text-gray-100 hover:border-gray-100"
-					/>
-					<span>
-						{' '}
-						put on sale for {prettyBalance(activity.amount, 24, 4)} Ⓝ
-					</span>
-					<span>
-						{' '}
-						($
-						{prettyBalance(JSBI.BigInt(activity.amount * nearUsdPrice), 24, 4)})
-					</span>
-				</p>
-			</div>
-		)
-	}
-
-	if (activity.type === 'marketDelete') {
-		return (
-			<div className="text-gray-300">
-				<p>
-					<span>removed from sale by </span>
-					<LinkToProfile
-						accountId={activity.from}
-						className="text-gray-100 hover:border-gray-100"
-					/>
-				</p>
-			</div>
-		)
-	}
-
-	if (activity.type === 'marketBuy') {
-		return (
-			<div className="text-gray-300">
-				<p>
-					<LinkToProfile
-						accountId={activity.from}
-						className="text-gray-100 hover:border-gray-100"
-					/>
-					<span> bought {activity.quantity}pcs from </span>
-					<LinkToProfile
-						accountId={activity.to}
-						className="text-gray-100 hover:border-gray-100"
-					/>
-					<span> for </span>
-					{prettyBalance(activity.amount, 24, 4)} Ⓝ
-					<span>
-						{' '}
-						($
-						{prettyBalance(JSBI.BigInt(activity.amount * nearUsdPrice), 24, 4)})
-					</span>
-				</p>
-			</div>
-		)
-	}
-
-	// mint
-	if (activity.type === 'transfer' && activity.from === '') {
-		return (
-			<div className="text-gray-300">
-				<span>created by </span>
-				<span>
-					<LinkToProfile
-						accountId={activity.to}
-						className="text-gray-100 hover:border-gray-100"
-					/>
-				</span>
-				<span> with supply of {activity.quantity}pcs</span>
-			</div>
-		)
-	}
-
-	// burn
-	if (activity.type === 'transfer' && activity.to === '') {
-		return (
-			<div className="text-gray-300">
-				<span>burned {activity.quantity}pcs by </span>
-				<span>
-					<LinkToProfile
-						accountId={activity.from}
-						className="text-gray-100 hover:border-gray-100"
-					/>
-				</span>
-			</div>
-		)
-	}
-
-	// bid add
-	if (activity.type === 'bidMarketAdd') {
-		return (
-			<div className="text-gray-300">
-				<span>
-					<LinkToProfile
-						accountId={activity.accountId}
-						className="text-gray-100 hover:border-gray-100"
-					/>
-				</span>
-				<span> placed offer </span>
-				<span> for </span>
-				<span>
-					{prettyBalance(activity.amount, 24, 4)} Ⓝ
-					<span>
-						{' '}
-						($
-						{prettyBalance(JSBI.BigInt(activity.amount * nearUsdPrice), 24, 4)})
-					</span>
-				</span>
-			</div>
-		)
-	}
-
-	return (
-		<div className="text-gray-300">
 			<p>
 				<LinkToProfile
-					accountId={activity.from}
 					className="text-gray-100 hover:border-gray-100"
+					accountId={activity.msg.params.owner_id}
 				/>
-				<span> transfer {activity.quantity}pcs to </span>
+				<span>
+					{' '}
+					put on sale for {formatNearAmount(activity.msg.params.price)} Ⓝ
+				</span>
+			</p>
+		)
+	}
+
+	if (type === 'delete_market_data') {
+		return (
+			<p>
 				<LinkToProfile
-					accountId={activity.to}
 					className="text-gray-100 hover:border-gray-100"
+					accountId={activity.msg.params.owner_id}
+				/>
+				<span> remove from sale</span>
+			</p>
+		)
+	}
+
+	if (type === 'resolve_purchase') {
+		return (
+			<p>
+				<LinkToProfile
+					className="text-gray-100 hover:border-gray-100"
+					accountId={activity.from}
+				/>
+				<span> bought from </span>
+				<LinkToProfile
+					className="text-gray-100 hover:border-gray-100"
+					accountId={activity.to}
+				/>
+				<span> for </span>
+				{formatNearAmount(activity.msg.params.price)} Ⓝ
+			</p>
+		)
+	}
+
+	if (type === 'nft_transfer' && activity.from === null) {
+		const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+
+		return (
+			<p>
+				<LinkToProfile
+					className="text-gray-100 hover:border-gray-100"
+					accountId={activity.to}
+				/>
+				<span> minted #{edition_id || 1}</span>
+			</p>
+		)
+	}
+
+	if (type === 'nft_transfer' && activity.to === null) {
+		const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+
+		return (
+			<p>
+				<LinkToProfile
+					className="text-gray-100 hover:border-gray-100"
+					accountId={activity.from}
+				/>
+				<span> burned #{edition_id || 1}</span>
+			</p>
+		)
+	}
+
+	if (type === 'nft_transfer') {
+		return (
+			<p>
+				<LinkToProfile
+					className="text-gray-100 hover:border-gray-100"
+					accountId={activity.from}
+				/>
+				<span> transferred to </span>
+				<LinkToProfile
+					className="text-gray-100 hover:border-gray-100"
+					accountId={activity.to}
 				/>
 			</p>
-		</div>
-	)
+		)
+	}
+
+	if (type === 'nft_create_series') {
+		return (
+			<p>
+				<span>series created by </span>
+				<LinkToProfile
+					className="text-gray-100 hover:border-gray-100"
+					accountId={activity.msg.params.creator_id}
+				/>
+			</p>
+		)
+	}
+
+	if (type === 'nft_set_series_price') {
+		return (
+			<p>
+				<span>
+					put the series on sale for{' '}
+					{formatNearAmount(activity.msg.params.price)} Ⓝ
+				</span>
+			</p>
+		)
+	}
+
+	if (type === 'nft_set_series_non_mintable') {
+		return (
+			<p>
+				<span> put the series to non-mintable </span>
+			</p>
+		)
+	}
+
+	if (type === 'nft_decrease_series_copies') {
+		return (
+			<p>
+				<span>
+					{' '}
+					decrease the series copies to {activity.msg.params.copies}{' '}
+				</span>
+			</p>
+		)
+	}
+
+	return null
 }
 
 const ActivityDetail = ({ activity, token }) => {
 	const router = useRouter()
 	const [showModal, setShowModal] = useState(null)
 	const [isCopied, setIsCopied] = useState(false)
+	const [localToken, setLocalToken] = useState(null)
 
 	const shareLink = `${process.env.BASE_URL}/activity/${activity._id}`
 
-	const fetcher = async (key) => {
-		const resp = await axios.get(`${process.env.API_URL}/${key}`)
-		if (resp.data.data.results.length > 0) {
-			return resp.data.data.results[0]
-		} else {
-			return {}
+	useEffect(() => {
+		if (activity) {
+			fetchData()
 		}
-	}
+	}, [activity])
 
-	const { data: localToken } = useSWR(
-		`tokens?tokenId=${activity.tokenId}`,
-		fetcher,
-		{
-			initialData: token,
-		}
-	)
+	const fetchData = async () => {
+		const url = activity.token_id
+			? `${process.env.V2_API_URL}/token?token_id=${activity.token_id}`
+			: `${process.env.V2_API_URL}/token-series?token_series_id=${activity.token_series_id}`
+
+		const resp = await cachios.get(url, {
+			ttl: 60,
+		})
+
+		setLocalToken(resp.data.data.results[0])
+	}
 
 	const handleAfterCopy = () => {
 		setIsCopied(true)
@@ -222,6 +253,7 @@ const ActivityDetail = ({ activity, token }) => {
 	return (
 		<Fragment>
 			<CardDetailModal tokens={[localToken]} />
+			<TokenDetailModal tokens={[localToken]} />
 			{showModal === 'options' && (
 				<Modal close={() => setShowModal('')}>
 					<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
@@ -287,24 +319,20 @@ const ActivityDetail = ({ activity, token }) => {
 				<div className="w-full md:w-1/3">
 					<div className="w-40 mx-auto">
 						<Card
-							imgUrl={parseImgUrl(localToken?.metadata?.image, null, {
-								width: `300`,
+							imgUrl={parseImgUrl(localToken?.metadata.media, null, {
+								width: `600`,
+								useOriginal: true,
 							})}
-							imgBlur={localToken?.metadata?.blurhash}
+							imgBlur={localToken?.metadata.blurhash}
 							token={{
-								name: localToken?.metadata?.name,
-								collection: localToken?.metadata?.collection,
-								description: localToken?.metadata?.description,
-								creatorId: localToken?.creatorId,
-								supply: localToken?.supply,
-								tokenId: localToken?.tokenId,
-								createdAt: localToken?.createdAt,
+								title: localToken?.metadata.title,
+								edition_id: localToken?.edition_id,
+								collection:
+									localToken?.metadata.collection || localToken?.contract_id,
+								copies: localToken?.metadata.copies,
+								creatorId:
+									localToken?.metadata.creator_id || localToken?.contract_id,
 							}}
-							initialRotate={{
-								x: 15,
-								y: 15,
-							}}
-							disableFlip={true}
 						/>
 					</div>
 				</div>
@@ -315,21 +343,29 @@ const ActivityDetail = ({ activity, token }) => {
 								<Link
 									href={{
 										pathname: router.pathname,
-										query: {
-											...router.query,
-											...{ tokenId: localToken?.tokenId },
-											...{ prevAs: router.asPath },
-										},
+										query: activity.token_id
+											? {
+													...router.query,
+													...{ tokenId: localToken?.token_id },
+													...{ prevAs: router.asPath },
+											  }
+											: {
+													...router.query,
+													...{ tokenSeriesId: localToken?.token_series_id },
+													...{ prevAs: router.asPath },
+											  },
 									}}
-									as={`/token/${localToken?.tokenId}`}
+									as={`/token/${localToken?.contract_id}::${
+										localToken?.token_series_id
+									}${activity.token_id ? `/${localToken?.token_id}` : ''}`}
 									scroll={false}
 									shallow
 								>
 									<a
-										title={localToken?.metadata?.name}
+										title={localToken?.metadata?.title}
 										className="text-2xl font-bold border-b-2 border-transparent hover:border-gray-100"
 									>
-										{localToken?.metadata?.name}
+										{localToken?.metadata?.title}
 									</a>
 								</Link>
 							</div>
@@ -356,12 +392,14 @@ const ActivityDetail = ({ activity, token }) => {
 							</div>
 						</div>
 						<p className="opacity-75 truncate">
-							{localToken?.metadata?.collection}
+							{localToken?.metadata?.collection_id
+								? localToken?.metadata.collection
+								: localToken?.contract_id}
 						</p>
 						<div className="mt-4">
 							<Activity activity={activity} />
 							<p className="mt-2 text-sm opacity-50">
-								{timeAgo.format(activity.createdAt)}
+								{timeAgo.format(new Date(activity.msg.datetime))}
 							</p>
 						</div>
 					</div>

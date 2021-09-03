@@ -11,7 +11,7 @@ import TopUsers from '../components/TopUsers'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import FilterActivity from '../components/FilterActivity'
 
-const LIMIT = 10
+const FETCH_TOKENS_LIMIT = 10
 
 const ActivityLog = ({ query }) => {
 	const {
@@ -106,11 +106,12 @@ const ActivityLog = ({ query }) => {
 			const _filter =
 				_filterQuery(fetchQuery?.filter) +
 				_filterMinMax(fetchQuery?.filter, fetchQuery?.pmin, fetchQuery?.pmax)
-			const res = await axios.get(
-				`${process.env.API_URL}/activities?${_filter}__skip=${
-					_activityListPage * LIMIT
-				}&__limit=${LIMIT}`
-			)
+			const res = await axios.get(`${process.env.V2_API_URL}/activities`, {
+				params: {
+					__skip: _activityListPage * FETCH_TOKENS_LIMIT,
+					__limit: FETCH_TOKENS_LIMIT,
+				},
+			})
 			const newData = await res.data.data
 
 			const newActivityList = [..._activityList, ...newData.results]
@@ -271,7 +272,7 @@ const ActivityLog = ({ query }) => {
 							</InfiniteScroll>
 						</div>
 					</div>
-					<div
+					{/* <div
 						className={`relative pt-8 md:pt-20 md:w-1/3 md:block px-4 md:p-0 ${
 							activityType === 'activity' && 'hidden'
 						} md:block`}
@@ -287,7 +288,7 @@ const ActivityLog = ({ query }) => {
 							className="mt-12"
 							linkTo="/activity/top-sellers"
 						/>
-					</div>
+					</div> */}
 				</div>
 				<Footer />
 			</div>
