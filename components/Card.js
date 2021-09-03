@@ -131,7 +131,9 @@ const Card = ({
 												fontSize: `.6em`,
 											}}
 										>
-											Edition of {token.copies}
+											{token.edition_id
+												? `#${token.edition_id} of ${token.copies}`
+												: `Edition of ${token.copies}`}
 										</p>
 									</div>
 								</div>

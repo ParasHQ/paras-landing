@@ -27,14 +27,20 @@ import JSBI from 'jsbi'
 import TokenStorageModal from './Modal/TokenStorageModal'
 import TokenBurnModal from './Modal/TokenBurnModal'
 import TokenTransferModal from './Modal/TokenTransferModal'
+import useStore from 'lib/store'
 
 const STORAGE_FEE = 8590000000000000000000
 
 const TokenDetail = ({ token, metadata, className }) => {
+	console.log(token)
+
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState(null)
 	const [needDeposit, setNeedDeposit] = useState(true)
 	const router = useRouter()
+	const { currentUser } = useStore()
+
+	console.log(currentUser)
 
 	useEffect(() => {
 		if (near.wallet.account) {
@@ -52,7 +58,7 @@ const TokenDetail = ({ token, metadata, className }) => {
 						process.env.MARKETPLACE_CONTRACT_ID,
 						`storage_balance_of`,
 						{
-							account_id: near.currentUser.accountId,
+							account_id: currentUser,
 						}
 					)
 
@@ -62,7 +68,7 @@ const TokenDetail = ({ token, metadata, className }) => {
 						process.env.MARKETPLACE_CONTRACT_ID,
 						`get_supply_by_owner_id`,
 						{
-							account_id: near.currentUser.accountId,
+							account_id: currentUser,
 						}
 					)
 
@@ -123,7 +129,7 @@ const TokenDetail = ({ token, metadata, className }) => {
 	}
 
 	const onClickBuy = () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowModal('notLogin')
 			return
 		}
@@ -131,7 +137,7 @@ const TokenDetail = ({ token, metadata, className }) => {
 	}
 
 	const onClickTransfer = () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowModal('notLogin')
 			return
 		}
@@ -139,7 +145,7 @@ const TokenDetail = ({ token, metadata, className }) => {
 	}
 
 	const onClickMint = () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowModal('notLogin')
 			return
 		}
@@ -147,7 +153,7 @@ const TokenDetail = ({ token, metadata, className }) => {
 	}
 
 	const onClickBurn = () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowModal('notLogin')
 			return
 		}
@@ -161,10 +167,10 @@ const TokenDetail = ({ token, metadata, className }) => {
 	}
 
 	const isOwner = () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			return false
 		}
-		return near.currentUser.accountId === token.owner_id
+		return currentUser === token.owner_id
 	}
 
 	const getCreatorId = () => {
@@ -200,7 +206,13 @@ const TokenDetail = ({ token, metadata, className }) => {
 						<div>
 							<div className="flex justify-between">
 								<div>
-									<h1 className="text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
+									<div className="flex justify-between items-center">
+										<p className="text-gray-300">
+											NFT // #{token.edition_id} of {token.metadata.copies}
+										</p>
+									</div>
+
+									<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
 										{token.metadata.title}
 									</h1>
 									<p className="mt-1 text-white">
@@ -236,7 +248,7 @@ const TokenDetail = ({ token, metadata, className }) => {
 						</div>
 					</Scrollbars>
 					<div className="p-3">
-						{token.owner_id === near.currentUser?.accountId && (
+						{token.owner_id === currentUser && (
 							<div className="flex">
 								<Button
 									onClick={() => {
@@ -256,7 +268,7 @@ const TokenDetail = ({ token, metadata, className }) => {
 								</Button>
 							</div>
 						)}
-						{token.owner_id !== near.currentUser?.accountId && token.price && (
+						{token.owner_id !== currentUser && token.price && (
 							<div className="flex">
 								<Button
 									onClick={() => {

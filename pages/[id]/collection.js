@@ -1,8 +1,8 @@
 import axios from 'axios'
+import TokenList from 'components/TokenList'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import CardList from '../../components/CardList'
 import Footer from '../../components/Footer'
 import Nav from '../../components/Nav'
 import Profile from '../../components/Profile'
@@ -29,11 +29,14 @@ const collection = ({ userProfile, accountId }) => {
 		}
 
 		setIsFetching(true)
-		const res = await axios(
-			`${process.env.API_URL}/tokens?excludeTotalBurn=true&ownerId=${
-				router.query.id
-			}&__skip=${page * LIMIT}&__limit=${LIMIT}`
-		)
+		const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+			params: {
+				exclude_total_burn: true,
+				owner_id: router.query.id,
+				__skip: page * LIMIT,
+				__limit: LIMIT,
+			},
+		})
 		const newData = await res.data.data
 
 		const newTokens = [...(tokens || []), ...newData.results]
@@ -91,7 +94,7 @@ const collection = ({ userProfile, accountId }) => {
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'collection'} />
 				<div className="mt-8">
-					<CardList
+					<TokenList
 						name={scrollCollection}
 						tokens={tokens}
 						fetchData={fetchOwnerTokens}

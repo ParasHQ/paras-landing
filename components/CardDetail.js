@@ -138,7 +138,16 @@ const CardDetail = ({ token, metadata, className }) => {
 						<div>
 							<div className="flex justify-between">
 								<div>
-									<h1 className="text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
+									<div className="flex justify-between items-center">
+										<p className="text-gray-300">
+											SERIES //{' '}
+											{token.metadata.copies
+												? `Edition of ${token.metadata.copies}`
+												: `Open Edition`}
+										</p>
+									</div>
+
+									<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
 										{token.metadata.title}
 									</h1>
 									<p className="mt-1 text-white">
