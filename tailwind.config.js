@@ -12,6 +12,12 @@ module.exports = {
 			opacity: {
 				15: '0.15',
 			},
+			height: {
+				'100vh': '100vh',
+				'80vh': '80vh',
+				'90vh': '90vh',
+				'100vh': '100vh',
+			},
 			colors: {
 				primary: '#1300BA',
 				'light-primary-1': '#efe6fa',

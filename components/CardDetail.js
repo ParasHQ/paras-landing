@@ -1,22 +1,13 @@
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { Blurhash } from 'react-blurhash'
+import { useState } from 'react'
 import Scrollbars from 'react-custom-scrollbars'
-import { useRouter } from 'next/router'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 
 import Button from 'components/Common/Button'
 import { IconDots } from 'components/Icons'
 import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
-// import TabHistory from 'components/Tabs/TabHistory'
 
-// import TokenMoreModal from 'components/Modal/TokenMoreModal'
-// import TokenShareModal from 'components/Modal/TokenShareModal'
-// import TokenDetailUpdateModal from 'components/Modal/TokenDetailUpdateModal'
-// import useStore from 'lib/store'
-// import LoginModal from 'components/Modal/LoginModal'
-import near from 'lib/near'
 import { parseImgUrl } from '../utils/common'
 import TokenSeriesTransferBuyer from './Modal/TokenSeriesTransferBuyer'
 import TokenSeriesUpdatePriceModal from './Modal/TokenSeriesUpdatePriceModal'
@@ -24,18 +15,12 @@ import TokenSeriesBuyModal from './Modal/TokenSeriesBuyModal'
 import TokenMoreModal from './Modal/TokenMoreModal'
 import TokenSeriesMintModal from './Modal/TokenSeriesMintModal'
 import TokenShareModal from './Modal/TokenShareModal'
+import useStore from 'lib/store'
 
-const CardDetail = ({ token, metadata, className }) => {
+const CardDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
-	const router = useRouter()
-
-	// const isOwned = useStore((state) => state.isOwned)
-	// const fetchOwned = useStore((state) => state.fetchOwned)
-
-	// useEffect(() => {
-	// 	fetchOwned(token.token_type)
-	// }, [fetchOwned, token.token_type])
+	const { currentUser } = useStore()
 
 	const changeActiveTab = (tab) => {
 		setActiveTab(tab)
@@ -69,7 +54,7 @@ const CardDetail = ({ token, metadata, className }) => {
 	}
 
 	const onClickBuy = () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowModal('notLogin')
 			return
 		}
@@ -77,7 +62,7 @@ const CardDetail = ({ token, metadata, className }) => {
 	}
 
 	const onClickMint = () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowModal('notLogin')
 			return
 		}
@@ -85,7 +70,7 @@ const CardDetail = ({ token, metadata, className }) => {
 	}
 
 	const onClickBuyerTransfer = () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowModal('notLogin')
 			return
 		}
@@ -93,13 +78,12 @@ const CardDetail = ({ token, metadata, className }) => {
 	}
 
 	const isCreator = () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			return false
 		}
 		return (
-			near.currentUser.accountId === token.metadata.creator_id ||
-			(!token.metadata.creator_id &&
-				near.currentUser.accountId === token.contract_id)
+			currentUser === token.metadata.creator_id ||
+			(!token.metadata.creator_id && currentUser === token.contract_id)
 		)
 	}
 
@@ -108,13 +92,8 @@ const CardDetail = ({ token, metadata, className }) => {
 	}
 
 	return (
-		<div className={`m-auto ${className}`}>
-			<div
-				className="flex flex-col lg:flex-row"
-				style={{
-					height: `90vh`,
-				}}
-			>
+		<div className={`m-auto bg-dark-primary-1 rounded-lg ${className}`}>
+			<div className="flex flex-col lg:flex-row h-90vh lg:h-80vh">
 				<div className="w-full h-1/2 lg:h-full">
 					<div className="w-full h-full flex items-center justify-center p-2 lg:p-8">
 						<img
@@ -125,7 +104,7 @@ const CardDetail = ({ token, metadata, className }) => {
 						/>
 					</div>
 				</div>
-				<div className="h-1/2 lg:h-full flex flex-col w-full md:w-7/12 max-w-2xl">
+				<div className="h-1/2 lg:h-full flex flex-col w-full lg:w-7/12 lg:max-w-2xl bg-dark-primary-6">
 					<Scrollbars
 						className="h-full"
 						universal={true}
@@ -179,22 +158,26 @@ const CardDetail = ({ token, metadata, className }) => {
 					</Scrollbars>
 					<div className="p-3">
 						{isCreator() ? (
-							<div className="flex">
-								<Button onClick={onClickMint} isFullWidth>
-									Mint
-								</Button>
-								<Button onClick={onClickUpdatePrice} isFullWidth>
-									Update Price
-								</Button>
+							<div className="flex flex-wrap">
+								<div className="w-full lg:w-1/2">
+									<Button size="md" onClick={onClickMint} isFullWidth>
+										Mint
+									</Button>
+								</div>
+								<div className="w-full lg:w-1/2 mt-4 lg:mt-0">
+									<Button size="md" onClick={onClickUpdatePrice} isFullWidth>
+										Update Price
+									</Button>
+								</div>
 							</div>
 						) : token.price ? (
-							<Button onClick={onClickBuy} isFullWidth>
+							<Button size="md" onClick={onClickBuy} isFullWidth>
 								{token.price === '0'
 									? 'Free'
 									: `Buy for ${formatNearAmount(token.price)} Ⓝ`}
 							</Button>
 						) : (
-							<Button onClick={onClickBuy} isFullWidth>
+							<Button size="md" onClick={onClickBuy} isFullWidth>
 								Not for Sale
 							</Button>
 						)}

@@ -40,7 +40,7 @@ function CardDetailModal({ tokens = [] }) {
 		<div>
 			{activeToken && (
 				<Modal close={() => closeCardDetail(null)}>
-					<div className="max-w-5xl m-auto w-full relative">
+					<div className="max-w-xl lg:max-w-5xl m-auto w-full relative">
 						<div className="absolute top-0 left-0 p-4 z-50">
 							<div
 								className="cursor-pointer flex items-center select-none"

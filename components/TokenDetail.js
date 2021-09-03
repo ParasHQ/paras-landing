@@ -9,15 +9,8 @@ import Button from 'components/Common/Button'
 import { IconDots } from 'components/Icons'
 import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
-// import TabHistory from 'components/Tabs/TabHistory'
 
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
-// import TokenMoreModal from 'components/Modal/TokenMoreModal'
-// import TokenShareModal from 'components/Modal/TokenShareModal'
-// import TokenDetailUpdateModal from 'components/Modal/TokenDetailUpdateModal'
-import TokenType from './Card'
-// import useStore from 'lib/store'
-// import LoginModal from 'components/Modal/LoginModal'
 import near from 'lib/near'
 import { parseImgUrl } from '../utils/common'
 import TokenMoreModal from './Modal/TokenMoreModal'
@@ -30,11 +23,10 @@ import TokenTransferModal from './Modal/TokenTransferModal'
 import useStore from 'lib/store'
 import { STORAGE_ADD_MARKET_FEE } from 'config/constants'
 
-const TokenDetail = ({ token, metadata, className }) => {
+const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState(null)
 	const [needDeposit, setNeedDeposit] = useState(true)
-	const router = useRouter()
 	const { currentUser } = useStore()
 
 	useEffect(() => {
@@ -84,13 +76,6 @@ const TokenDetail = ({ token, metadata, className }) => {
 		}
 	}
 
-	// const isOwned = useStore((state) => state.isOwned)
-	// const fetchOwned = useStore((state) => state.fetchOwned)
-
-	// useEffect(() => {
-	// 	fetchOwned(token.token_type)
-	// }, [fetchOwned, token.token_type])
-
 	const changeActiveTab = (tab) => {
 		setActiveTab(tab)
 	}
@@ -127,7 +112,7 @@ const TokenDetail = ({ token, metadata, className }) => {
 			setShowModal('notLogin')
 			return
 		}
-		setShowModal('confirmBuy')
+		setShowModal('buy')
 	}
 
 	const onClickTransfer = () => {
@@ -154,12 +139,6 @@ const TokenDetail = ({ token, metadata, className }) => {
 		setShowModal('burn')
 	}
 
-	const onClickRead = () => {
-		router.push({
-			pathname: `/viewer/${token.comic_id}/${token.chapter_id}`,
-		})
-	}
-
 	const isOwner = () => {
 		if (!currentUser) {
 			return false
@@ -173,12 +152,7 @@ const TokenDetail = ({ token, metadata, className }) => {
 
 	return (
 		<div className={`m-auto ${className}`}>
-			<div
-				className="flex flex-col lg:flex-row"
-				style={{
-					height: `85vh`,
-				}}
-			>
+			<div className="flex flex-col lg:flex-row h-90vh lg:h-80vh">
 				<div className="w-full h-1/2 lg:h-full">
 					<div className="w-full h-full flex items-center justify-center p-2 lg:p-8">
 						<img
@@ -189,7 +163,7 @@ const TokenDetail = ({ token, metadata, className }) => {
 						/>
 					</div>
 				</div>
-				<div className="h-1/2 lg:h-full flex flex-col w-full md:w-2/5 max-w-2xl">
+				<div className="h-1/2 lg:h-full flex flex-col w-full lg:w-7/12 lg:max-w-2xl bg-dark-primary-6">
 					<Scrollbars
 						className="h-full"
 						universal={true}
@@ -243,29 +217,35 @@ const TokenDetail = ({ token, metadata, className }) => {
 					</Scrollbars>
 					<div className="p-3">
 						{token.owner_id === currentUser && (
-							<div className="flex">
-								<Button
-									onClick={() => {
-										if (needDeposit) {
-											setShowModal('storage')
-										} else {
-											setShowModal('updatePrice')
-										}
-									}}
-									isFullWidth
-								>
-									Update Listing
-								</Button>
-								<Button onClick={onClickTransfer} isFullWidth>
-									Transfer
-								</Button>
+							<div className="flex flex-wrap">
+								<div className="w-full lg:w-1/2">
+									<Button
+										size="md"
+										onClick={() => {
+											if (needDeposit) {
+												setShowModal('storage')
+											} else {
+												setShowModal('updatePrice')
+											}
+										}}
+										isFullWidth
+									>
+										Update Listing
+									</Button>
+								</div>
+								<div className="w-full lg:w-1/2 mt-4 lg:mt-0">
+									<Button size="md" onClick={onClickTransfer} isFullWidth>
+										Transfer
+									</Button>
+								</div>
 							</div>
 						)}
 						{token.owner_id !== currentUser && token.price && (
 							<div className="flex">
 								<Button
+									size="md"
 									onClick={() => {
-										setShowModal('buy')
+										onClickBuy()
 									}}
 									isFullWidth
 								>

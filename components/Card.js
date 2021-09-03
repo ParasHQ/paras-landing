@@ -68,7 +68,7 @@ const Card = ({
 			>
 				<div
 					onClick={onClick}
-					className="card-wrap transform transition-all origin-bottom-right duration-300 ease-in-out hover:rotate-1 hover:-translate-y-1"
+					className="card-wrap transform transition-all origin-bottom-right duration-300 ease-in-out hover:-translate-y-1"
 				>
 					<div
 						className="card bg-transparent w-full h-full"
