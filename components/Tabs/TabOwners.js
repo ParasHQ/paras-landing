@@ -1,9 +1,12 @@
 import axios from 'axios'
 import Avatar from 'components/Common/Avatar'
+import Button from 'components/Common/Button'
+import TokenBuyModal from 'components/Modal/TokenBuyModal'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { parseImgUrl } from 'utils/common'
+import { parseImgUrl, prettyTruncate } from 'utils/common'
 
 const FETCH_TOKENS_LIMIT = 12
 
@@ -12,13 +15,22 @@ const TabOwners = ({ localToken }) => {
 	const [page, setPage] = useState(0)
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
+	const [activeToken, setActiveToken] = useState(null)
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	useEffect(async () => {
+	useEffect(() => {
 		if (localToken.token_series_id) {
-			await fetchTokens()
+			fetchAllTokens()
 		}
 	}, [localToken])
+
+	const fetchAllTokens = async () => {
+		const _hasMore = await fetchTokens()
+
+		if (_hasMore) {
+			fetchAllTokens()
+		}
+	}
 
 	const fetchTokens = async () => {
 		if (!hasMore || isFetching) {
@@ -38,12 +50,16 @@ const TabOwners = ({ localToken }) => {
 		const newTokens = [...(tokens || []), ...newData.results]
 		setTokens(newTokens)
 		setPage(page + 1)
-		if (newData.results.length < FETCH_TOKENS_LIMIT) {
-			setHasMore(false)
-		} else {
-			setHasMore(true)
-		}
+		const _hasMore = newData.results.length < FETCH_TOKENS_LIMIT ? false : true
+
+		setHasMore(_hasMore)
 		setIsFetching(false)
+
+		return _hasMore
+	}
+
+	const onDismissModal = () => {
+		setActiveToken(null)
 	}
 
 	return (
@@ -57,15 +73,26 @@ const TabOwners = ({ localToken }) => {
 					hasMore={true}
 				>
 					{tokens.map((token) => (
-						<Owner token={token} key={token.token_id} />
+						<Owner
+							token={token}
+							key={token.token_id}
+							onBuy={(token) => setActiveToken(token)}
+						/>
 					))}
 				</InfiniteScroll>
+			)}
+			{activeToken && (
+				<TokenBuyModal
+					show={activeToken}
+					onClose={onDismissModal}
+					data={activeToken}
+				/>
 			)}
 		</div>
 	)
 }
 
-const Owner = ({ token = {} }) => {
+const Owner = ({ token = {}, onBuy }) => {
 	const [profile, setProfile] = useState({})
 
 	useEffect(() => {
@@ -102,18 +129,20 @@ const Owner = ({ token = {} }) => {
 						</a>
 					</Link>
 					{token.owner_id ? (
-						<Link href={`/${token.owner_id}`}>
-							<a className="hover:opacity-80">
-								<p className="ml-2 text-white font-semibold">
-									{token.owner_id}
-								</p>
-							</a>
-						</Link>
+						<div className="ml-2">
+							<Link href={`/${token.owner_id}`}>
+								<a className="hover:opacity-80">
+									<p className="text-white font-semibold truncate">
+										{prettyTruncate(token.owner_id, 16, 'address')}
+									</p>
+								</a>
+							</Link>
+						</div>
 					) : (
 						<p className="ml-2 text-white font-semibold">Burned</p>
 					)}
 				</div>
-				<div className="flex">
+				<div>
 					<Link
 						href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
 					>
@@ -124,6 +153,22 @@ const Owner = ({ token = {} }) => {
 						</a>
 					</Link>
 				</div>
+			</div>
+			<div className="mt-1">
+				{token.price ? (
+					<div className="flex items-center justify-between">
+						<p className="text-white">
+							On sale {formatNearAmount(token.price)} Ⓝ
+						</p>
+						<div className="w-24">
+							<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
+								Buy
+							</Button>
+						</div>
+					</div>
+				) : (
+					<p className="text-white">Not for sale</p>
+				)}
 			</div>
 		</div>
 	)
