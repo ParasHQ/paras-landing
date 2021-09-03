@@ -23,6 +23,8 @@ const CardDetail = ({ token, className }) => {
 	const [showModal, setShowModal] = useState('creatorTransfer')
 	const { currentUser } = useStore()
 
+	console.log(showModal)
+
 	const changeActiveTab = (tab) => {
 		setActiveTab(tab)
 	}
@@ -178,7 +180,7 @@ const CardDetail = ({ token, className }) => {
 									: `Buy for ${formatNearAmount(token.price)} Ⓝ`}
 							</Button>
 						) : (
-							<Button size="md" onClick={onClickBuy} isFullWidth>
+							<Button size="md" isFullWidth>
 								Not for Sale
 							</Button>
 						)}

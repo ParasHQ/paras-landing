@@ -6,6 +6,7 @@ import useStore from 'lib/store'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import JSBI from 'jsbi'
+import { GAS_FEE } from 'config/constants'
 
 const STORAGE_FEE = 8590000000000000000000
 
@@ -88,7 +89,7 @@ const TokenBurnModal = ({
 				contractId: data.contract_id,
 				methodName: `nft_burn`,
 				args: params,
-				gas: `30000000000000`,
+				gas: GAS_FEE,
 				attachedDeposit: `1`,
 			})
 		} catch (err) {

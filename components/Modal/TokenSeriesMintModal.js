@@ -8,7 +8,7 @@ import LoginModal from './LoginModal'
 import JSBI from 'jsbi'
 import { InputLabel, InputText } from 'components/Common/form'
 import TokenTransferModal from './TokenTransferModal'
-import { STORAGE_MINT_FEE } from 'config/constants'
+import { GAS_FEE, STORAGE_MINT_FEE } from 'config/constants'
 
 const TokenSeriesTransferModal = ({
 	show,
@@ -59,7 +59,7 @@ const TokenSeriesTransferModal = ({
 				contractId: data.contract_id,
 				methodName: `nft_mint`,
 				args: params,
-				gas: `30000000000000`,
+				gas: GAS_FEE,
 				attachedDeposit: STORAGE_MINT_FEE,
 			})
 		} catch (err) {

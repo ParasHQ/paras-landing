@@ -5,7 +5,7 @@ import near from 'lib/near'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
-import { STORAGE_APPROVE_FEE } from 'config/constants'
+import { GAS_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
 
 const TokenUpdatePriceModal = ({
 	show,
@@ -59,7 +59,7 @@ const TokenUpdatePriceModal = ({
 					contractId: process.env.MARKETPLACE_CONTRACT_ID,
 					methodName: `update_market_data`,
 					args: params,
-					gas: `30000000000000`,
+					gas: GAS_FEE,
 					attachedDeposit: `1`,
 				})
 			} else {
@@ -75,7 +75,7 @@ const TokenUpdatePriceModal = ({
 					contractId: data.contract_id,
 					methodName: `nft_approve`,
 					args: params,
-					gas: `30000000000000`,
+					gas: GAS_FEE,
 					attachedDeposit: STORAGE_APPROVE_FEE,
 				})
 			}

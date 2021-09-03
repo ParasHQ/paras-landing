@@ -7,6 +7,7 @@ import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
+import { GAS_FEE } from 'config/constants'
 
 const TokenSeriesUpdatePriceModal = ({
 	show,
@@ -86,7 +87,7 @@ const TokenSeriesUpdatePriceModal = ({
 				contractId: data.contract_id,
 				methodName: `nft_set_series_price`,
 				args: params,
-				gas: `30000000000000`,
+				gas: GAS_FEE,
 				attachedDeposit: `1`,
 			})
 		} catch (err) {
