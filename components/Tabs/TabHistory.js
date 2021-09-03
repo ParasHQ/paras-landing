@@ -1,7 +1,6 @@
 import LinkToProfile from 'components/Common/LinkToProfile'
 import { HISTORY_DATA } from 'constants/dummy'
 import { prettyBalance } from 'utils/common'
-import { formatTimeAgo } from 'utils/dateHelper'
 
 const TabHistory = () => {
 	return (
@@ -92,7 +91,7 @@ const Activity = ({ activity }) => {
 	return (
 		<div className="bg-gray-900 border border-blueGray-700 mt-3 p-3 rounded-md shadow-md">
 			{TextActivity(activity.type)}
-			<p className="mt-1 text-sm">{formatTimeAgo(activity.createdAt)}</p>
+			<p className="mt-1 text-sm">{activity.createdAt}</p>
 		</div>
 	)
 }
