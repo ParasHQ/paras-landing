@@ -1,11 +1,10 @@
 import LinkToProfile from 'components/Common/LinkToProfile'
-import { HISTORY_DATA } from 'constants/dummy'
 import { prettyBalance } from 'utils/common'
 
 const TabHistory = () => {
 	return (
 		<div className="mt-4 text-white">
-			{HISTORY_DATA.results.map((history) => (
+			{[].map((history) => (
 				<Activity key={history._id} activity={history} />
 			))}
 		</div>
