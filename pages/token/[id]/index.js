@@ -5,7 +5,7 @@ import Nav from 'components/Nav'
 import CardDetail from 'components/CardDetail'
 import Footer from 'components/Footer'
 
-const TokenDetail = ({ errorCode, token }) => {
+const TokenSeriesPage = ({ errorCode, token }) => {
 	if (errorCode) {
 		return <Error />
 	}
@@ -85,4 +85,4 @@ export async function getServerSideProps({ params }) {
 	return { props: { errorCode, token } }
 }
 
-export default TokenDetail
+export default TokenSeriesPage
