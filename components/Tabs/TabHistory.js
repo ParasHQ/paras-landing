@@ -134,9 +134,9 @@ const Activity = ({ activity }) => {
 		if (type === 'nft_transfer') {
 			return (
 				<p>
-					<LinkToProfile accountId={activity.to} />
-					<span> transferred to </span>
 					<LinkToProfile accountId={activity.from} />
+					<span> transferred to </span>
+					<LinkToProfile accountId={activity.to} />
 				</p>
 			)
 		}

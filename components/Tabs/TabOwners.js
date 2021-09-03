@@ -3,7 +3,10 @@ import cachios from 'cachios'
 import Avatar from 'components/Common/Avatar'
 import Button from 'components/Common/Button'
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
+import TokenStorageModal from 'components/Modal/TokenStorageModal'
 import TokenUpdatePriceModal from 'components/Modal/TokenUpdatePriceModal'
+import JSBI from 'jsbi'
+import near from 'lib/near'
 import useStore from 'lib/store'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Link from 'next/link'
@@ -20,8 +23,57 @@ const TabOwners = ({ localToken }) => {
 	const [isFetching, setIsFetching] = useState(false)
 	const [activeToken, setActiveToken] = useState(null)
 	const [showModal, setShowModal] = useState(null)
+	const [needDeposit, setNeedDeposit] = useState(true)
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const { currentUser } = useStore()
+
+	useEffect(() => {
+		if (currentUser) {
+			setTimeout(() => {
+				checkStorageBalance()
+			}, 250)
+		}
+	}, [currentUser])
+
+	const checkStorageBalance = async () => {
+		try {
+			if (!localToken.approval_id) {
+				const currentStorage = await near.wallet
+					.account()
+					.viewFunction(
+						process.env.MARKETPLACE_CONTRACT_ID,
+						`storage_balance_of`,
+						{
+							account_id: currentUser,
+						}
+					)
+
+				const supplyPerOwner = await near.wallet
+					.account()
+					.viewFunction(
+						process.env.MARKETPLACE_CONTRACT_ID,
+						`get_supply_by_owner_id`,
+						{
+							account_id: currentUser,
+						}
+					)
+
+				const usedStorage = JSBI.multiply(
+					JSBI.BigInt(parseInt(supplyPerOwner) + 1),
+					JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
+				)
+
+				if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
+					setNeedDeposit(false)
+				}
+			} else {
+				setNeedDeposit(false)
+			}
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
 	useEffect(() => {
 		if (localToken.token_series_id) {
 			fetchAllTokens()
@@ -88,7 +140,11 @@ const TabOwners = ({ localToken }) => {
 								setActiveToken(token)
 							}}
 							onUpdateListing={(token) => {
-								setShowModal('update')
+								if (needDeposit) {
+									setShowModal('storage')
+								} else {
+									setShowModal('update')
+								}
 								setActiveToken(token)
 							}}
 						/>
@@ -105,6 +161,13 @@ const TabOwners = ({ localToken }) => {
 			{showModal === 'update' && (
 				<TokenUpdatePriceModal
 					show={showModal === 'update'}
+					onClose={onDismissModal}
+					data={activeToken}
+				/>
+			)}
+			{showModal === 'storage' && (
+				<TokenStorageModal
+					show={showModal === 'storage'}
 					onClose={onDismissModal}
 					data={activeToken}
 				/>
