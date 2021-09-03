@@ -143,7 +143,7 @@ export default function MarketPage() {
 
 const tokensParams = (_page = 0, query) => {
 	const params = {
-		excludeTotalBurn: true,
+		exclude_total_burn: true,
 		__sort: parseSortQuery(query.sort),
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
