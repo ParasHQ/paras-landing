@@ -6,6 +6,7 @@ import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
+import { IconX } from 'components/Icons'
 
 const TokenUpdatePriceModal = ({
 	show,
@@ -38,7 +39,9 @@ const TokenUpdatePriceModal = ({
 	},
 }) => {
 	const [showLogin, setShowLogin] = useState(false)
-	const [newPrice, setNewPrice] = useState(0)
+	const [newPrice, setNewPrice] = useState(
+		data.price ? formatNearAmount(data.price) : 0
+	)
 
 	const onUpdateListing = async (e) => {
 		e.preventDefault()
@@ -48,7 +51,19 @@ const TokenUpdatePriceModal = ({
 		}
 
 		try {
-			if (data.approval_id) {
+			if (newPrice == 0) {
+				const params = {
+					token_id: data.token_id,
+					nft_contract_id: data.contract_id,
+				}
+				await near.wallet.account().functionCall({
+					contractId: process.env.MARKETPLACE_CONTRACT_ID,
+					methodName: `delete_market_data`,
+					args: params,
+					gas: GAS_FEE,
+					attachedDeposit: `1`,
+				})
+			} else if (data.approval_id) {
 				const params = {
 					token_id: data.token_id,
 					nft_contract_id: data.contract_id,
@@ -79,6 +94,30 @@ const TokenUpdatePriceModal = ({
 					attachedDeposit: STORAGE_APPROVE_FEE,
 				})
 			}
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
+	const onRemoveListing = async (e) => {
+		e.preventDefault()
+		if (!near.currentUser) {
+			setShowLogin(true)
+			return
+		}
+
+		try {
+			const params = {
+				token_id: data.token_id,
+				nft_contract_id: data.contract_id,
+			}
+			await near.wallet.account().functionCall({
+				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				methodName: `delete_market_data`,
+				args: params,
+				gas: GAS_FEE,
+				attachedDeposit: `1`,
+			})
 		} catch (err) {
 			console.log(err)
 		}
@@ -134,12 +173,17 @@ const TokenUpdatePriceModal = ({
 			closeOnEscape={false}
 			close={onClose}
 		>
-			<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md">
+			<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative">
+				<div className="absolute right-0 top-0 pr-4 pt-4">
+					<div className="cursor-pointer" onClick={onClose}>
+						<IconX />
+					</div>
+				</div>
 				<div>
 					<h1 className="text-2xl font-bold text-white tracking-tight">
 						Card Listing
 					</h1>
-					<form onSubmit={onUpdateListing}>
+					<form>
 						<div className="mt-4">
 							<label className="block text-sm text-white mb-2">
 								New Price{' '}
@@ -251,17 +295,24 @@ const TokenUpdatePriceModal = ({
 							</p>
 						</div>
 						<div className="mt-6">
-							<Button type="submit" size="md" isFullWidth>
+							<Button
+								type="submit"
+								size="md"
+								isFullWidth
+								onClick={onUpdateListing}
+							>
 								Update Listing
 							</Button>
 							<Button
+								className="mt-4"
+								type="submit"
 								variant="ghost"
 								size="md"
 								isFullWidth
-								className="mt-4"
-								onClick={onClose}
+								onClick={onRemoveListing}
+								isDisabled={!data.price}
 							>
-								Cancel
+								Remove Listing
 							</Button>
 						</div>
 					</form>

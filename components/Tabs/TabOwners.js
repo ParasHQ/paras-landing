@@ -2,6 +2,8 @@ import axios from 'axios'
 import Avatar from 'components/Common/Avatar'
 import Button from 'components/Common/Button'
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
+import TokenUpdatePriceModal from 'components/Modal/TokenUpdatePriceModal'
+import useStore from 'lib/store'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -16,6 +18,7 @@ const TabOwners = ({ localToken }) => {
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 	const [activeToken, setActiveToken] = useState(null)
+	const [showModal, setShowModal] = useState(null)
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
@@ -60,6 +63,7 @@ const TabOwners = ({ localToken }) => {
 
 	const onDismissModal = () => {
 		setActiveToken(null)
+		setShowModal(null)
 	}
 
 	return (
@@ -76,14 +80,28 @@ const TabOwners = ({ localToken }) => {
 						<Owner
 							token={token}
 							key={token.token_id}
-							onBuy={(token) => setActiveToken(token)}
+							onBuy={(token) => {
+								setShowModal('buy')
+								setActiveToken(token)
+							}}
+							onUpdateListing={(token) => {
+								setShowModal('update')
+								setActiveToken(token)
+							}}
 						/>
 					))}
 				</InfiniteScroll>
 			)}
-			{activeToken && (
+			{showModal === 'buy' && (
 				<TokenBuyModal
-					show={activeToken}
+					show={showModal === 'buy'}
+					onClose={onDismissModal}
+					data={activeToken}
+				/>
+			)}
+			{showModal === 'update' && (
+				<TokenUpdatePriceModal
+					show={showModal === 'update'}
 					onClose={onDismissModal}
 					data={activeToken}
 				/>
@@ -92,8 +110,9 @@ const TabOwners = ({ localToken }) => {
 	)
 }
 
-const Owner = ({ token = {}, onBuy }) => {
+const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 	const [profile, setProfile] = useState({})
+	const { currentUser } = useStore()
 
 	useEffect(() => {
 		if (token.owner_id) {
@@ -155,20 +174,33 @@ const Owner = ({ token = {}, onBuy }) => {
 				</div>
 			</div>
 			<div className="mt-1">
-				{token.price ? (
-					<div className="flex items-center justify-between">
+				<div className="flex items-center justify-between">
+					{token.price ? (
 						<p className="text-white">
 							On sale {formatNearAmount(token.price)} Ⓝ
 						</p>
+					) : (
+						<p className="text-white">Not for sale</p>
+					)}
+					{token.owner_id === currentUser ? (
+						<div className="w-24">
+							<Button
+								onClick={() => onUpdateListing(token)}
+								size="sm"
+								variant="secondary"
+								isFullWidth
+							>
+								Update
+							</Button>
+						</div>
+					) : (
 						<div className="w-24">
 							<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
 								Buy
 							</Button>
 						</div>
-					</div>
-				) : (
-					<p className="text-white">Not for sale</p>
-				)}
+					)}
+				</div>
 			</div>
 		</div>
 	)

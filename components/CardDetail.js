@@ -23,8 +23,6 @@ const CardDetail = ({ token, className }) => {
 	const [showModal, setShowModal] = useState('creatorTransfer')
 	const { currentUser } = useStore()
 
-	console.log(showModal)
-
 	const changeActiveTab = (tab) => {
 		setActiveTab(tab)
 	}

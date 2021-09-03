@@ -8,6 +8,7 @@ import LoginModal from './LoginModal'
 import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE } from 'config/constants'
+import { IconX } from 'components/Icons'
 
 const TokenTransferModal = ({
 	show,
@@ -101,7 +102,12 @@ const TokenTransferModal = ({
 				closeOnEscape={false}
 				close={onClose}
 			>
-				<div className="max-w-sm w-full p-4 bg-gray-800 m-4 md:m-auto rounded-md">
+				<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative">
+					<div className="absolute right-0 top-0 pr-4 pt-4">
+						<div className="cursor-pointer" onClick={onClose}>
+							<IconX />
+						</div>
+					</div>
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
 							Confirm Transfer
@@ -134,15 +140,6 @@ const TokenTransferModal = ({
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onTransfer}>
 								Transfer
-							</Button>
-							<Button
-								variant="ghost"
-								size="md"
-								isFullWidth
-								className="mt-4"
-								onClick={onClose}
-							>
-								Cancel
 							</Button>
 						</div>
 					</div>
