@@ -28,19 +28,14 @@ import TokenStorageModal from './Modal/TokenStorageModal'
 import TokenBurnModal from './Modal/TokenBurnModal'
 import TokenTransferModal from './Modal/TokenTransferModal'
 import useStore from 'lib/store'
-
-const STORAGE_FEE = 8590000000000000000000
+import { STORAGE_ADD_MARKET_FEE } from 'config/constants'
 
 const TokenDetail = ({ token, metadata, className }) => {
-	console.log(token)
-
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState(null)
 	const [needDeposit, setNeedDeposit] = useState(true)
 	const router = useRouter()
 	const { currentUser } = useStore()
-
-	console.log(currentUser)
 
 	useEffect(() => {
 		if (near.wallet.account) {
@@ -49,7 +44,6 @@ const TokenDetail = ({ token, metadata, className }) => {
 	}, [near.wallet])
 
 	const checkStorageBalance = async () => {
-		console.log(token)
 		try {
 			if (!token.approval_id) {
 				const currentStorage = await near.wallet
@@ -74,12 +68,11 @@ const TokenDetail = ({ token, metadata, className }) => {
 
 				const usedStorage = JSBI.multiply(
 					JSBI.BigInt(parseInt(supplyPerOwner) + 1),
-					JSBI.BigInt(STORAGE_FEE)
+					JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
 				)
 
 				console.log(currentStorage, usedStorage.toString())
 				if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
-					console.log('masih ada')
 					setNeedDeposit(false)
 				}
 			} else {
