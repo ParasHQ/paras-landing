@@ -182,7 +182,7 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 					) : (
 						<p className="text-white">Not for sale</p>
 					)}
-					{token.owner_id === currentUser ? (
+					{token.owner_id === currentUser && (
 						<div className="w-24">
 							<Button
 								onClick={() => onUpdateListing(token)}
@@ -193,7 +193,8 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 								Update
 							</Button>
 						</div>
-					) : (
+					)}
+					{token.price && (
 						<div className="w-24">
 							<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
 								Buy
