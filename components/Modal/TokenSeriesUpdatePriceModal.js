@@ -8,6 +8,7 @@ import LoginModal from './LoginModal'
 import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE } from 'config/constants'
+import { IconX } from 'components/Icons'
 
 const TokenSeriesUpdatePriceModal = ({
 	show,
@@ -146,10 +147,15 @@ const TokenSeriesUpdatePriceModal = ({
 			closeOnEscape={false}
 			close={onClose}
 		>
-			<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md">
+			<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative">
+				<div className="absolute right-0 top-0 pr-4 pt-4">
+					<div className="cursor-pointer" onClick={onClose}>
+						<IconX />
+					</div>
+				</div>
 				<div>
 					<h1 className="text-2xl font-bold text-white tracking-tight">
-						Card Listing
+						Series Listing
 					</h1>
 					<form onSubmit={onUpdateListing}>
 						<div className="mt-4">
@@ -258,15 +264,6 @@ const TokenSeriesUpdatePriceModal = ({
 						<div className="mt-6">
 							<Button type="submit" size="md" isFullWidth>
 								Update Listing
-							</Button>
-							<Button
-								variant="ghost"
-								size="md"
-								isFullWidth
-								className="mt-4"
-								onClick={onClose}
-							>
-								Cancel
 							</Button>
 						</div>
 					</form>

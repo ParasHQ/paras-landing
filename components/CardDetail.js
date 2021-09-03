@@ -158,7 +158,17 @@ const CardDetail = ({ token, className }) => {
 						</div>
 					</Scrollbars>
 					<div className="p-3">
-						{isCreator() ? (
+						{token.is_non_mintable ? (
+							<div>
+								<Button
+									size="md"
+									onClick={() => changeActiveTab('owners')}
+									isFullWidth
+								>
+									Check Owners
+								</Button>
+							</div>
+						) : isCreator() ? (
 							<div className="flex flex-wrap">
 								<div className="w-full lg:w-1/2">
 									<Button size="md" onClick={onClickMint} isFullWidth>

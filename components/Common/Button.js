@@ -18,7 +18,7 @@ const Button = ({
 	let buttonVariantStyle
 	switch (variant) {
 		case 'primary':
-			buttonVariantStyle = `bg-primary text-gray-900 ${
+			buttonVariantStyle = `bg-primary text-gray-100 ${
 				!isDisabled && 'hover:bg-opacity-70'
 			}`
 			break
@@ -28,13 +28,13 @@ const Button = ({
 			}`
 			break
 		case 'error':
-			buttonVariantStyle = `bg-red-500 text-gray-900 ${
+			buttonVariantStyle = `bg-red-500 text-gray-100 ${
 				!isDisabled && 'hover:bg-opacity-70'
 			}`
 			break
 		case 'ghost':
-			buttonVariantStyle = `bg-transparent border border-electricLime-600 text-electricLime-600 ${
-				!isDisabled && 'hover:bg-electricLime-600 hover:bg-opacity-10'
+			buttonVariantStyle = `bg-transparent border border-primary text-primary ${
+				!isDisabled && 'hover:bg-primary hover:bg-opacity-10'
 			}`
 			break
 		default:

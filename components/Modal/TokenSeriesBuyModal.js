@@ -2,11 +2,11 @@ import { useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import near from 'lib/near'
-import useStore from 'lib/store'
-import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import JSBI from 'jsbi'
 import { GAS_FEE, STORAGE_MINT_FEE } from 'config/constants'
+import { IconX } from 'components/Icons'
 
 const TokenSeriesBuyModal = ({
 	show,
@@ -41,7 +41,6 @@ const TokenSeriesBuyModal = ({
 	const [showLogin, setShowLogin] = useState(false)
 
 	const onBuyToken = async () => {
-		console.log(near)
 		if (!near.currentUser) {
 			setShowLogin(true)
 			return
@@ -56,33 +55,6 @@ const TokenSeriesBuyModal = ({
 			JSBI.BigInt(STORAGE_MINT_FEE)
 		)
 
-		// if (
-		// 	JSBI.lessThan(
-		// 		JSBI.BigInt(near.currentUser.balance.available),
-		// 		attachedDeposit
-		// 	)
-		// ) {
-		// 	get().setToastConfig({
-		// 		text: (
-		// 			<div className="font-semibold text-center text-sm">
-		// 				Insufficient Balance
-		// 				<p className="mt-2">
-		// 					Available
-		// 					{prettyBalance(near.getAccount().balance.available, 24, 4)} Ⓝ
-		// 				</p>
-		// 			</div>
-		// 		),
-		// 		type: 'error',
-		// 		duration: 2500,
-		// 	})
-		// 	return
-		// }
-
-		// nft_buy(
-		//   params,
-		//   '50000000000000',
-		//   attachedDeposit.toString()
-		// )
 		try {
 			await near.wallet.account().functionCall({
 				contractId: data.contract_id,
@@ -104,7 +76,12 @@ const TokenSeriesBuyModal = ({
 				closeOnEscape={false}
 				close={onClose}
 			>
-				<div className="max-w-sm w-full p-4 bg-gray-800 m-4 md:m-auto rounded-md">
+				<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative">
+					<div className="absolute right-0 top-0 pr-4 pt-4">
+						<div className="cursor-pointer" onClick={onClose}>
+							<IconX />
+						</div>
+					</div>
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
 							Confirm Buy
@@ -132,24 +109,12 @@ const TokenSeriesBuyModal = ({
 							</div>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							*Small storage fee is applied
-						</p>
-						<p className="text-white mt-2 text-sm text-center opacity-90">
 							You will be redirected to NEAR Web Wallet to confirm your
 							transaction.
 						</p>
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onBuyToken}>
 								{data.price !== '0' ? 'Buy' : 'Get for Free'}
-							</Button>
-							<Button
-								variant="ghost"
-								size="md"
-								isFullWidth
-								className="mt-4"
-								onClick={onClose}
-							>
-								Cancel
 							</Button>
 						</div>
 					</div>

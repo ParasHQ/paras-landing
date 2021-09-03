@@ -9,6 +9,7 @@ import JSBI from 'jsbi'
 import { InputLabel, InputText } from 'components/Common/form'
 import TokenTransferModal from './TokenTransferModal'
 import { GAS_FEE, STORAGE_MINT_FEE } from 'config/constants'
+import { IconX } from 'components/Icons'
 
 const TokenSeriesTransferModal = ({
 	show,
@@ -75,7 +76,12 @@ const TokenSeriesTransferModal = ({
 				closeOnEscape={false}
 				close={onClose}
 			>
-				<div className="max-w-sm w-full p-4 bg-gray-800 m-4 md:m-auto rounded-md">
+				<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative">
+					<div className="absolute right-0 top-0 pr-4 pt-4">
+						<div className="cursor-pointer" onClick={onClose}>
+							<IconX />
+						</div>
+					</div>
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
 							Confirm Mint
@@ -128,24 +134,12 @@ const TokenSeriesTransferModal = ({
 							</div>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							*Small storage fee is applied
-						</p>
-						<p className="text-white mt-2 text-sm text-center opacity-90">
 							You will be redirected to NEAR Web Wallet to confirm your
 							transaction.
 						</p>
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onTransfer}>
 								Mint
-							</Button>
-							<Button
-								variant="ghost"
-								size="md"
-								isFullWidth
-								className="mt-4"
-								onClick={onClose}
-							>
-								Cancel
 							</Button>
 						</div>
 					</div>

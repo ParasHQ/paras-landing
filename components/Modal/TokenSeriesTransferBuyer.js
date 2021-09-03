@@ -8,6 +8,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import useStore from 'lib/store'
 import Link from 'next/link'
 import Button from 'components/Common/Button'
+import { IconX } from 'components/Icons'
 
 const FETCH_TOKENS_LIMIT = 12
 
@@ -92,13 +93,16 @@ const TokenSeriesTransferBuyer = ({
 	return (
 		<>
 			<Modal isShow={show} close={onClose}>
-				<div className="max-w-sm w-full p-4 bg-gray-800 m-4 md:m-auto rounded-md max-h-96">
+				<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative max-h-96">
 					<Scrollbars autoHeight>
 						<div>
-							<div className="sticky top-0">
+							<div className="sticky top-0 flex justify-between">
 								<h1 className="text-2xl font-bold text-white tracking-tight ">
 									Transfer
 								</h1>
+								<div className="cursor-pointer" onClick={onClose}>
+									<IconX />
+								</div>
 							</div>
 							{!isFetching && !hasMore && tokens.length === 0 ? (
 								<div className="mt-4">

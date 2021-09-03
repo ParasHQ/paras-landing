@@ -133,7 +133,7 @@ const TokenTransferModal = ({
 								placeholder="Account ID (abc.near)"
 							/>
 						</div>
-						<p className="text-white mt-2 text-sm text-center opacity-90">
+						<p className="text-white mt-4 text-sm text-center opacity-90">
 							You will be redirected to NEAR Web Wallet to confirm your
 							transaction.
 						</p>
