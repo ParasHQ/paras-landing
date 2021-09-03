@@ -6,6 +6,7 @@ import useStore from 'lib/store'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import JSBI from 'jsbi'
+import { STORAGE_MINT_FEE } from 'config/constants'
 
 const TokenSeriesBuyModal = ({
 	show,
@@ -52,7 +53,7 @@ const TokenSeriesBuyModal = ({
 
 		const attachedDeposit = JSBI.add(
 			JSBI.BigInt(data.price),
-			JSBI.BigInt(parseNearAmount('0.01832'))
+			JSBI.BigInt(STORAGE_MINT_FEE)
 		)
 
 		// if (
@@ -124,7 +125,9 @@ const TokenSeriesBuyModal = ({
 								</div>
 								<div className="flex justify-between">
 									<div className="text-sm">Storage Fee</div>
-									<div className="text">0.01832 Ⓝ</div>
+									<div className="text">
+										{formatNearAmount(STORAGE_MINT_FEE)} Ⓝ
+									</div>
 								</div>
 							</div>
 						</div>

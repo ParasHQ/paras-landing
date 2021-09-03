@@ -8,6 +8,7 @@ import LoginModal from './LoginModal'
 import JSBI from 'jsbi'
 import { InputLabel, InputText } from 'components/Common/form'
 import TokenTransferModal from './TokenTransferModal'
+import { STORAGE_MINT_FEE } from 'config/constants'
 
 const TokenSeriesTransferModal = ({
 	show,
@@ -53,15 +54,13 @@ const TokenSeriesTransferModal = ({
 			receiver_id: isSelfMint ? near.currentUser.accountId : receiverId,
 		}
 
-		const attachedDeposit = JSBI.BigInt(parseNearAmount('0.01832'))
-
 		try {
 			await near.wallet.account().functionCall({
 				contractId: data.contract_id,
 				methodName: `nft_mint`,
 				args: params,
 				gas: `300000000000000`,
-				attachedDeposit: attachedDeposit.toString(),
+				attachedDeposit: STORAGE_MINT_FEE,
 			})
 		} catch (err) {
 			console.log(err)
@@ -122,7 +121,9 @@ const TokenSeriesTransferModal = ({
 							<div className="text-white my-1">
 								<div className="flex justify-between">
 									<div className="text-sm">Storage Fee</div>
-									<div className="text">0.01832 Ⓝ</div>
+									<div className="text">
+										{formatNearAmount(STORAGE_MINT_FEE)} Ⓝ
+									</div>
 								</div>
 							</div>
 						</div>

@@ -2,13 +2,10 @@ import { useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import near from 'lib/near'
-import useStore from 'lib/store'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
-import LoginModal from './LoginModal'
 import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
-
-const STORAGE_FEE = 8590000000000000000000
+import { STORAGE_APPROVE_FEE } from 'config/constants'
 
 const TokenUpdatePriceModal = ({
 	show,
@@ -79,7 +76,7 @@ const TokenUpdatePriceModal = ({
 					methodName: `nft_approve`,
 					args: params,
 					gas: `300000000000000`,
-					attachedDeposit: JSBI.BigInt(STORAGE_FEE).toString(),
+					attachedDeposit: STORAGE_APPROVE_FEE,
 				})
 			}
 		} catch (err) {
