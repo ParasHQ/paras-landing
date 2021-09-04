@@ -8,7 +8,7 @@ import {
 } from 'react-share'
 import ListModal from './ListModal'
 
-const Share = ({ show, onClose }) => {
+const Share = ({ show, onClose, tokenData }) => {
 	const ShareList = [
 		{
 			name: (
@@ -25,7 +25,7 @@ const Share = ({ show, onClose }) => {
 		{
 			name: (
 				<TwitterShareButton
-					title={`Test Share`}
+					title={`Checkout ${tokenData.metadata.title} from collection ${tokenData.metadata.collection} on @ParasHQ\n\n#card4card #cryptoart #digitalart #tradingcards`}
 					url={window.location.href}
 					className="flex text-white"
 				>
@@ -52,12 +52,12 @@ const Share = ({ show, onClose }) => {
 	return <ListModal show={show} onClose={onClose} list={ShareList} />
 }
 
-const TokenShareModal = ({ show, onClose }) => {
+const TokenShareModal = ({ show, onClose, tokenData }) => {
 	if (typeof window == 'undefined') {
 		return null
 	}
 
-	return <Share show={show} onClose={onClose} />
+	return <Share show={show} onClose={onClose} tokenData={tokenData} />
 }
 
 export default TokenShareModal
