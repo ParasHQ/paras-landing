@@ -62,7 +62,7 @@ const UserTransactionDetail = ({
 
 	useEffect(async () => {
 		const res = await axios(
-			`${process.env.API_URL}/profiles?accountId=${data._id}`
+			`${process.env.API_URL}/profiles?accountId=${data.account_id}`
 		)
 		setProfile(res.data.data.results[0])
 	}, [])
@@ -88,11 +88,13 @@ const UserTransactionDetail = ({
 						</div>
 					</Link>
 					<div className="ml-4">
-						<LinkToProfile
-							accountId={data.account_id}
-							len={16}
-							className="text-gray-100 hover:border-gray-100 font-bold text-lg md:text-2xl"
-						/>
+						{data.account_id && (
+							<LinkToProfile
+								accountId={data.account_id}
+								len={16}
+								className="text-gray-100 hover:border-gray-100 font-bold text-lg md:text-2xl"
+							/>
+						)}
 						<p className="text-base text-gray-400">
 							Total {type !== 'buyer' ? 'sales' : 'purchase'}:{' '}
 							{formatNearAmount(data.total_sum)} Ⓝ
