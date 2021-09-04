@@ -77,17 +77,9 @@ const TabOwners = ({ localToken }) => {
 
 	useEffect(() => {
 		if (localToken.token_series_id) {
-			fetchAllTokens()
+			fetchTokens()
 		}
-	}, [localToken])
-
-	const fetchAllTokens = async () => {
-		const _hasMore = await fetchTokens()
-
-		if (_hasMore) {
-			fetchAllTokens()
-		}
-	}
+	}, [])
 
 	const fetchTokens = async () => {
 		if (!hasMore || isFetching) {
@@ -113,8 +105,6 @@ const TabOwners = ({ localToken }) => {
 
 		setHasMore(_hasMore)
 		setIsFetching(false)
-
-		return _hasMore
 	}
 
 	const onDismissModal = () => {
@@ -125,12 +115,15 @@ const TabOwners = ({ localToken }) => {
 	return (
 		<div>
 			{!isFetching && !hasMore && tokens.length === 0 ? (
-				<div className="text-white">No owners, become the first one!</div>
+				<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
+					<div className="text-white">No owners, become the first one!</div>
+				</div>
 			) : (
 				<InfiniteScroll
 					dataLength={tokens.length}
 					next={fetchTokens}
-					hasMore={true}
+					hasMore={hasMore}
+					scrollableTarget="TokenScroll"
 				>
 					{tokens.map((token) => (
 						<Owner
@@ -203,7 +196,7 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 	}
 
 	return (
-		<div className="bg-gray-900 border border-blueGray-700 mt-3 p-3 rounded-md shadow-md">
+		<div className="bg-gray-900 mt-3 p-3 rounded-md shadow-md">
 			<div className="flex items-center justify-between">
 				<div className="flex items-center">
 					<Link href={`/${token.owner_id}`}>

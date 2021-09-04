@@ -18,6 +18,7 @@ import TokenShareModal from './Modal/TokenShareModal'
 import useStore from 'lib/store'
 import TabHistory from './Tabs/TabHistory'
 import TokenSeriesBurnModal from './Modal/TokenSeriesBurnModal'
+import { Blurhash } from 'react-blurhash'
 
 const TokenSeriesDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -102,10 +103,26 @@ const TokenSeriesDetail = ({ token, className }) => {
 	}
 
 	return (
-		<div className={`m-auto bg-dark-primary-1 rounded-lg ${className}`}>
-			<div className="flex flex-col lg:flex-row h-90vh lg:h-80vh">
-				<div className="w-full h-1/2 lg:h-full">
-					<div className="w-full h-full flex items-center justify-center p-2 lg:p-8">
+		<div className={`m-auto rounded-lg overflow-hidden ${className}`}>
+			<div
+				className="flex flex-col lg:flex-row h-90vh lg:h-80vh"
+				style={{ background: '#202124' }}
+			>
+				<div className="w-full h-1/2 lg:h-full lg:w-3/5 relative">
+					{/* <div className="absolute inset-0 opacity-75 z-0">
+						<Blurhash
+							hash={
+								token.metadata.blurhash ||
+								'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'
+							}
+							width={`100%`}
+							height={`100%`}
+							resolutionX={32}
+							resolutionY={32}
+							punch={1}
+						/>
+					</div> */}
+					<div className="w-full h-full flex items-center justify-center p-2 lg:p-8 relative z-10">
 						<img
 							className="object-contain w-full h-full"
 							src={parseImgUrl(token.metadata.media, null, {
@@ -114,12 +131,12 @@ const TokenSeriesDetail = ({ token, className }) => {
 						/>
 					</div>
 				</div>
-				<div className="h-1/2 lg:h-full flex flex-col w-full lg:w-7/12 lg:max-w-2xl bg-dark-primary-6">
+				<div className="h-1/2 lg:h-full flex flex-col w-full lg:w-2/5 lg:max-w-2xl bg-gray-700">
 					<Scrollbars
 						className="h-full"
 						universal={true}
 						renderView={(props) => (
-							<div {...props} id="activityListScroll" className="p-4" />
+							<div {...props} id="TokenScroll" className="p-4" />
 						)}
 					>
 						<div>

@@ -61,7 +61,9 @@ function TokenDetailModal({ tokens = [] }) {
 										fill="white"
 									/>
 								</svg>
-								<p className="pl-2 text-gray-100 cursor-pointer">Back yoo</p>
+								<p className="pl-2 text-gray-100 cursor-pointer relative z-50">
+									Back
+								</p>
 							</div>
 						</div>
 						<TokenDetail token={activeToken} />

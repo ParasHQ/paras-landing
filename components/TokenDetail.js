@@ -152,10 +152,23 @@ const TokenDetail = ({ token, className }) => {
 	}
 
 	return (
-		<div className={`m-auto ${className}`}>
+		<div className={`m-auto rounded-lg overflow-hidden ${className}`}>
 			<div className="flex flex-col lg:flex-row h-90vh lg:h-80vh">
-				<div className="w-full h-1/2 lg:h-full bg-white">
-					<div className="w-full h-full flex items-center justify-center p-2 lg:p-8">
+				<div className="w-full h-1/2 lg:h-full lg:w-3/5 relative bg-dark-primary-1 ">
+					<div className="absolute inset-0 opacity-75">
+						<Blurhash
+							hash={
+								token.metadata.blurhash ||
+								'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'
+							}
+							width={`100%`}
+							height={`100%`}
+							resolutionX={32}
+							resolutionY={32}
+							punch={1}
+						/>
+					</div>
+					<div className="w-full h-full flex items-center justify-center p-2 lg:p-8 relative z-50">
 						<img
 							className="object-contain w-full h-full"
 							src={parseImgUrl(token.metadata.media, null, {
@@ -164,7 +177,7 @@ const TokenDetail = ({ token, className }) => {
 						/>
 					</div>
 				</div>
-				<div className="h-1/2 lg:h-full flex flex-col w-full lg:w-7/12 lg:max-w-2xl bg-dark-primary-6">
+				<div className="h-1/2 lg:h-full flex flex-col w-full lg:w-2/5 lg:max-w-2xl bg-gray-700">
 					<Scrollbars
 						className="h-full"
 						universal={true}

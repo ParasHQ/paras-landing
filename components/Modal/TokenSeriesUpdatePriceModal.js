@@ -172,7 +172,7 @@ const TokenSeriesUpdatePriceModal = ({
 									//   required: true,
 									//   min: 0,
 									// })}
-									className="clear pr-2"
+									// className="clear pr-2"
 									placeholder="Card price per pcs"
 								/>
 								<div className="absolute inset-y-0 right-3 flex items-center text-white">

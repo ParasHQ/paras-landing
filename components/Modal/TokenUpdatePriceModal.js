@@ -201,7 +201,6 @@ const TokenUpdatePriceModal = ({
 									step="any"
 									value={newPrice}
 									onChange={(e) => setNewPrice(e.target.value)}
-									className="clear pr-2"
 									placeholder="Card price per pcs"
 								/>
 								<div className="absolute inset-y-0 right-3 flex items-center text-white">

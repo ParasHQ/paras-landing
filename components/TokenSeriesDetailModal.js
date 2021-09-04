@@ -61,7 +61,9 @@ function TokenSeriesDetailModal({ tokens = [] }) {
 										fill="white"
 									/>
 								</svg>
-								<p className="pl-2 text-gray-100 cursor-pointer">Back</p>
+								<p className="pl-2 text-gray-100 cursor-pointer relative z-50">
+									Back
+								</p>
 							</div>
 						</div>
 						<TokenSeriesDetail token={activeToken} />

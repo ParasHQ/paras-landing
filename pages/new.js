@@ -204,7 +204,7 @@ const NewPage = () => {
 	}
 
 	useEffect(() => {
-		if (store.initialized) {
+		if (store.initialized && store.currentUser) {
 			fetchCollectionUser()
 		}
 	}, [store.initialized])
@@ -600,46 +600,45 @@ const NewPage = () => {
 									</button>
 								</div>
 								<div className="text-sm">Choose Collection</div>
-								<InfiniteScroll
-									dataLength={collectionList.length}
-									next={fetchCollectionUser}
-									hasMore={hasMore}
-									className="overflow-y-scroll"
-									style={{
-										maxHeight: `60vh`,
-									}}
-								>
-									<div
-										onClick={() => router.push('/new-collection')}
-										className="bg-gray-200 mt-2 flex items-center rounded-md overflow-hidden cursor-pointer border-2"
+								<div id="collection::user" className="h-60vh overflow-auto">
+									<InfiniteScroll
+										dataLength={collectionList.length}
+										next={fetchCollectionUser}
+										hasMore={hasMore}
+										scrollableTarget="collection::user"
 									>
-										<div className="h-10 w-full flex items-center justify-center flex-shrink-0 text-sm text-center font-medium">
-											+ Create New Collection
-										</div>
-									</div>
-									{collectionList.map((item) => (
 										<div
-											key={item.collection_id}
-											onClick={() => setChoosenCollection(item)}
-											className={`bg-gray-200 mt-3 flex items-center rounded-md overflow-hidden cursor-pointer border-2 ${
-												item.collection_id ===
-													choosenCollection.collection_id && 'border-gray-400'
-											}`}
+											onClick={() => router.push('/new-collection')}
+											className="bg-gray-200 mt-2 flex items-center rounded-md overflow-hidden cursor-pointer border-2"
 										>
-											<div className="w-10 h-10 bg-primary flex-shrink-0">
-												{item.media && (
-													<img
-														src={parseImgUrl(item.media)}
-														className="w-10 h-10"
-													/>
-												)}
-											</div>
-											<div className="ml-3 text-sm truncate">
-												{item.collection}
+											<div className="h-10 w-full flex items-center justify-center flex-shrink-0 text-sm text-center font-medium">
+												+ Create New Collection
 											</div>
 										</div>
-									))}
-								</InfiniteScroll>
+										{collectionList.map((item) => (
+											<div
+												key={item.collection_id}
+												onClick={() => setChoosenCollection(item)}
+												className={`bg-gray-200 mt-3 flex items-center rounded-md overflow-hidden cursor-pointer border-2 ${
+													item.collection_id ===
+														choosenCollection.collection_id && 'border-gray-400'
+												}`}
+											>
+												<div className="w-10 h-10 bg-primary flex-shrink-0">
+													{item.media && (
+														<img
+															src={parseImgUrl(item.media)}
+															className="w-10 h-10"
+														/>
+													)}
+												</div>
+												<div className="ml-3 text-sm truncate">
+													{item.collection}
+												</div>
+											</div>
+										))}
+									</InfiniteScroll>
+								</div>
 							</div>
 						)}
 						{step === 1 && (
