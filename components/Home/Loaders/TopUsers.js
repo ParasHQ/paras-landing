@@ -16,12 +16,12 @@ const TopUserLoader = (props) => (
 	</ContentLoader>
 )
 
-const HomeTopUsersLoader = (props) => {
+const HomeTopUsersLoader = () => {
 	return (
 		<div className="w-full flex -mx-4 py-2 pb-4">
 			{[1, 2, 3, 4, 5].map((x) => {
 				return (
-					<div className="flex-shrink-0 flex-grow-0">
+					<div key={x} className="flex-shrink-0 flex-grow-0">
 						<TopUserLoader />
 					</div>
 				)
