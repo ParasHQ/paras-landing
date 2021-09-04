@@ -22,7 +22,7 @@ const TopSellersPage = ({ topUser }) => {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/activities/topUsers?__skip=${
+			`${process.env.V2_API_URL}/activities/top-users?__skip=${
 				page * LIMIT
 			}__limit=${LIMIT}`
 		)
@@ -105,7 +105,7 @@ const TopSellersPage = ({ topUser }) => {
 
 export async function getServerSideProps() {
 	const res = await axios(
-		`${process.env.API_URL}/activities/topUsers?__limit=${LIMIT}`
+		`${process.env.V2_API_URL}/activities/top-users?__limit=${LIMIT}`
 	)
 	const topUser = res.data.data
 

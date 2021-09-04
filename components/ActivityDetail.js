@@ -66,6 +66,9 @@ export const descriptionMaker = (activity, token) => {
 	}
 
 	if (type === 'nft_set_series_price') {
+		if (!activity.msg.params.price) {
+			return `put the series to not for sale`
+		}
 		return `put the series on sale for ${formatNearAmount(
 			activity.msg.params.price
 		)} Ⓝ`
@@ -203,6 +206,13 @@ const Activity = ({ activity }) => {
 	}
 
 	if (type === 'nft_set_series_price') {
+		if (!activity.msg.params.price) {
+			return (
+				<p>
+					<span>put the series to not for sale</span>
+				</p>
+			)
+		}
 		return (
 			<p>
 				<span>

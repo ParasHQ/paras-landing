@@ -51,7 +51,7 @@ const ActivityLog = ({ query }) => {
 			_fetchData({}, true)
 		}
 		const res = await axios(
-			`${process.env.API_URL}/activities/topUsers?__limit=5`
+			`${process.env.V2_API_URL}/activities/top-users?__limit=5`
 		)
 		setTopUser(res.data.data)
 	}, [])
@@ -272,7 +272,7 @@ const ActivityLog = ({ query }) => {
 							</InfiniteScroll>
 						</div>
 					</div>
-					{/* <div
+					<div
 						className={`relative pt-8 md:pt-20 md:w-1/3 md:block px-4 md:p-0 ${
 							activityType === 'activity' && 'hidden'
 						} md:block`}
@@ -288,7 +288,7 @@ const ActivityLog = ({ query }) => {
 							className="mt-12"
 							linkTo="/activity/top-sellers"
 						/>
-					</div> */}
+					</div>
 				</div>
 				<Footer />
 			</div>
