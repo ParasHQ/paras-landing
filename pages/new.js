@@ -123,6 +123,12 @@ const NewPage = () => {
 	}
 
 	useEffect(() => {
+		if (router.query.transactionHashes) {
+			router.push('/market')
+		}
+	}, [router.query.transactionHashes])
+
+	useEffect(() => {
 		setValue('name', formInput.name)
 		setValue('collection', formInput.collection)
 		setValue('description', formInput.description)
@@ -181,13 +187,17 @@ const NewPage = () => {
 				return
 			} else {
 				const newImgUrl = await readFileAsUrl(e.target.files[0])
-				const _blurhash = await encodeImageToBlurhash(newImgUrl)
-
-				setBlurhash(_blurhash)
 				setImgFile(e.target.files[0])
 				setImgUrl(newImgUrl)
+
+				encodeBlurhash(newImgUrl)
 			}
 		}
+	}
+
+	const encodeBlurhash = async (imgUrl) => {
+		const _blurhash = await encodeImageToBlurhash(imgUrl)
+		setBlurhash(_blurhash)
 	}
 
 	useEffect(() => {

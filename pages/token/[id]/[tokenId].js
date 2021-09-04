@@ -58,7 +58,7 @@ const TokenPage = ({ errorCode, token }) => {
 				/>
 			</Head>
 			<Nav />
-			<div className="relative w-full m-auto pt-16 px-4">
+			<div className="relative max-w-6xl m-auto pt-16 px-4">
 				<TokenDetail token={token} />
 			</div>
 			<Footer />

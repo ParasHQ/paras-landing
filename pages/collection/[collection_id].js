@@ -99,7 +99,7 @@ const CollectionPage = ({ collectionId }) => {
 					{collection && (
 						<div className="w-32 h-32 overflow-hidden bg-primary shadow-inner">
 							<img
-								src={parseImgUrl(collection?.imgUri, null, {
+								src={parseImgUrl(collection?.media, null, {
 									width: `300`,
 								})}
 								className="w-full object-cover"
