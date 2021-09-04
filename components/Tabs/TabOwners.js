@@ -248,7 +248,6 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 							<Button
 								onClick={() => onUpdateListing(token)}
 								size="sm"
-								variant="secondary"
 								isFullWidth
 							>
 								Update

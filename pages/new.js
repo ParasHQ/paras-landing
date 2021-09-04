@@ -17,6 +17,7 @@ import { encodeImageToBlurhash } from 'lib/blurhash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { GAS_FEE, STORAGE_CREATE_SERIES_FEE } from 'config/constants'
 import Button from 'components/Common/Button'
+import { InputText, InputTextarea } from 'components/Common/form'
 
 const LIMIT = 10
 
@@ -34,7 +35,7 @@ const NewPage = () => {
 	const [step, setStep] = useState(0)
 	const [isUploading, setIsUploading] = useState(false)
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
-	const [showCreatingModal, setShowCreatingModal] = useState(false)
+	const [showCreatingModal, setShowCreatingModal] = useState(true)
 
 	const [showAlertErr, setShowAlertErr] = useState(false)
 	const [choosenCollection, setChoosenCollection] = useState({})
@@ -311,7 +312,7 @@ const NewPage = () => {
 					closeOnEscape={false}
 					closeOnBgClick={false}
 				>
-					<div className="w-full flex flex-wrap max-w-xl p-4 m-auto bg-gray-100 rounded-md overflow-x-hidden overflow-y-auto max-h-full">
+					<div className="w-full flex flex-wrap max-w-xl p-4 m-auto bg-gray-800 rounded-md overflow-x-hidden overflow-y-auto max-h-full">
 						<div className="w-full md:w-1/2 px-4">
 							<div className="w-full bg-dark-primary-2 rounded-md">
 								<Card
@@ -334,62 +335,37 @@ const NewPage = () => {
 						</div>
 						<div className="w-full md:w-1/2 pl-0 md:pl-2 flex items-center">
 							<div className="w-full">
-								<h1 className="mt-4 text-2xl font-bold text-gray-900 tracking-tight">
+								<h1 className="mt-4 text-2xl font-bold text-white tracking-tight">
 									Market Data
 								</h1>
-								{isOnSale && (
-									<>
-										<p className="text-sm mt-2">
-											Price:{' '}
-											{prettyBalance(
-												Number(getValues('amount', 0))
-													.toPrecision(4)
-													.toString(),
-												0,
-												6
-											)}{' '}
-											Ⓝ (~$
-											{prettyBalance(
-												Number(store.nearUsdPrice * getValues('amount', 0))
-													.toPrecision(4)
-													.toString(),
-												0,
-												6
-											)}
-											)
-										</p>
-										<p className="text-sm">
-											Receive:{' '}
-											{prettyBalance(
-												Number(
-													getValues('amount', 0) *
-														((95 - (formInput.royalty || 0)) / 100)
+								<div className="text-white opacity-80">
+									{isOnSale && (
+										<>
+											<p className="text-sm mt-2">
+												Price:{' '}
+												{prettyBalance(
+													Number(getValues('amount', 0))
+														.toPrecision(4)
+														.toString(),
+													0,
+													6
+												)}{' '}
+												Ⓝ (~$
+												{prettyBalance(
+													Number(store.nearUsdPrice * getValues('amount', 0))
+														.toPrecision(4)
+														.toString(),
+													0,
+													6
+												)}
 												)
-													.toPrecision(4)
-													.toString(),
-												0,
-												6
-											)}{' '}
-											Ⓝ (~$
-											{prettyBalance(
-												Number(
-													store.nearUsdPrice *
-														getValues('amount', 0) *
-														((95 - (formInput.royalty || 0)) / 100)
-												)
-													.toPrecision(4)
-													.toString(),
-												0,
-												6
-											)}
-											)
-										</p>
-										{formInput.royalty !== 0 && (
+											</p>
 											<p className="text-sm">
-												Royalty:{' '}
+												Receive:{' '}
 												{prettyBalance(
 													Number(
-														getValues('amount', 0) * (formInput.royalty / 100)
+														getValues('amount', 0) *
+															((95 - (formInput.royalty || 0)) / 100)
 													)
 														.toPrecision(4)
 														.toString(),
@@ -401,7 +377,7 @@ const NewPage = () => {
 													Number(
 														store.nearUsdPrice *
 															getValues('amount', 0) *
-															(formInput.royalty / 100)
+															((95 - (formInput.royalty || 0)) / 100)
 													)
 														.toPrecision(4)
 														.toString(),
@@ -410,46 +386,76 @@ const NewPage = () => {
 												)}
 												)
 											</p>
-										)}
-										<p className="text-sm">
-											Fee:{' '}
-											{prettyBalance(
-												Number(getValues('amount', 0) * 0.05)
-													.toPrecision(4)
-													.toString(),
-												0,
-												6
-											)}{' '}
-											Ⓝ (~$
-											{prettyBalance(
-												Number(
-													store.nearUsdPrice * getValues('amount', 0) * 0.05
-												)
-													.toPrecision(4)
-													.toString(),
-												0,
-												6
+											{formInput.royalty !== 0 && (
+												<p className="text-sm">
+													Royalty:{' '}
+													{prettyBalance(
+														Number(
+															getValues('amount', 0) * (formInput.royalty / 100)
+														)
+															.toPrecision(4)
+															.toString(),
+														0,
+														6
+													)}{' '}
+													Ⓝ (~$
+													{prettyBalance(
+														Number(
+															store.nearUsdPrice *
+																getValues('amount', 0) *
+																(formInput.royalty / 100)
+														)
+															.toPrecision(4)
+															.toString(),
+														0,
+														6
+													)}
+													)
+												</p>
 											)}
-											)
-										</p>
-									</>
-								)}
-								<div className="mt-2">
+											<p className="text-sm">
+												Fee:{' '}
+												{prettyBalance(
+													Number(getValues('amount', 0) * 0.05)
+														.toPrecision(4)
+														.toString(),
+													0,
+													6
+												)}{' '}
+												Ⓝ (~$
+												{prettyBalance(
+													Number(
+														store.nearUsdPrice * getValues('amount', 0) * 0.05
+													)
+														.toPrecision(4)
+														.toString(),
+													0,
+													6
+												)}
+												)
+											</p>
+										</>
+									)}
+								</div>
+								<div className="mt-2 text-white opacity-80">
 									<p>Confirm card creation?</p>
 								</div>
 								<div className="">
-									<button
-										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+									<Button
+										className="mt-4"
 										onClick={uploadImageMetadata}
+										isFullWidth
 									>
 										Create
-									</button>
-									<button
-										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
+									</Button>
+									<Button
+										variant="ghost"
+										isFullWidth
+										className="mt-4"
 										onClick={() => setShowConfirmModal(false)}
 									>
 										Cancel
-									</button>
+									</Button>
 								</div>
 							</div>
 						</div>
@@ -458,11 +464,13 @@ const NewPage = () => {
 			)}
 			{showCreatingModal && (
 				<Modal closeOnEscape={false} closeOnBgClick={false}>
-					<div className="max-w-xs m-auto p-4 bg-white rounded-md">
-						<div className="font-bold text-2xl mb-4">Creating Card</div>
+					<div className="max-w-xs m-auto p-4 bg-gray-800 rounded-md">
+						<div className="font-bold text-2xl mb-4 text-white">
+							Creating Card
+						</div>
 						<div>
-							<p className="text-blueGray-400 font-bold text-lg">Upload</p>
-							<p className="text-blueGray-400 text-sm mb-2">
+							<p className="text-gray-200 font-bold text-lg">Upload</p>
+							<p className="text-gray-200 text-sm mb-2">
 								Uploading your image and meta data
 							</p>
 							<Button
@@ -480,13 +488,11 @@ const NewPage = () => {
 							</Button>
 						</div>
 						<div>
-							<p className="text-blueGray-400 font-bold text-lg">
-								Confirmation
-							</p>
-							<p className="text-blueGray-400 text-sm">
+							<p className="text-gray-200 font-bold text-lg">Confirmation</p>
+							<p className="text-gray-200 text-sm">
 								Confirm your transaction on Near Wallet
 							</p>
-							<p className="text-blueGray-400 text-sm mb-2">
+							<p className="text-gray-200 text-sm mb-2">
 								Small transaction fee is applied of 0.00854 Ⓝ
 							</p>
 							<Button
@@ -531,9 +537,12 @@ const NewPage = () => {
 					}}
 				/>
 			)}
-			<div className="relative max-w-6xl m-auto py-12 px-4">
+			<div className="relative max-w-6xl m-auto py-12 px-4 text-white">
 				<div className="flex flex-wrap rounded-md overflow-hidden">
-					<div className="w-full lg:w-2/3 py-16 px-4 flex justify-center items-center bg-dark-primary-2 ">
+					<div
+						className="w-full lg:w-2/3 py-16 px-8 flex justify-center items-center bg-dark-primary-2 "
+						style={{ background: '#202124' }}
+					>
 						<div
 							className="w-full"
 							style={{
@@ -558,7 +567,7 @@ const NewPage = () => {
 							/>
 						</div>
 					</div>
-					<div className="w-full lg:w-1/3 bg-gray-100 p-4">
+					<div className="w-full lg:w-1/3 bg-gray-700 p-4">
 						{router.query.categoryId && (
 							<div
 								className="w-full bg-primary px-4 py-1 text-center -m-4 mb-4 shadow-md"
@@ -573,7 +582,7 @@ const NewPage = () => {
 							</div>
 						)}
 						<div>
-							<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+							<h1 className="text-2xl font-bold text-white tracking-tight">
 								Card Creation
 							</h1>
 						</div>
@@ -609,7 +618,7 @@ const NewPage = () => {
 									>
 										<div
 											onClick={() => router.push('/new-collection')}
-											className="bg-gray-200 mt-2 flex items-center rounded-md overflow-hidden cursor-pointer border-2"
+											className="bg-gray-800 mt-2 flex items-center rounded-md overflow-hidden cursor-pointer border-2 border-gray-800"
 										>
 											<div className="h-10 w-full flex items-center justify-center flex-shrink-0 text-sm text-center font-medium">
 												+ Create New Collection
@@ -619,9 +628,9 @@ const NewPage = () => {
 											<div
 												key={item.collection_id}
 												onClick={() => setChoosenCollection(item)}
-												className={`bg-gray-200 mt-3 flex items-center rounded-md overflow-hidden cursor-pointer border-2 ${
+												className={`bg-gray-800 mt-3 flex items-center rounded-md overflow-hidden cursor-pointer border-2 shadow-xl drop-shadow-xl border-gray-800 ${
 													item.collection_id ===
-														choosenCollection.collection_id && 'border-gray-400'
+														choosenCollection.collection_id && 'border-gray-900'
 												}`}
 											>
 												<div className="w-10 h-10 bg-primary flex-shrink-0">
@@ -657,7 +666,7 @@ const NewPage = () => {
 										)}
 									</div>
 								</div>
-								<div className="mt-4 relative border-2 h-56 border-dashed rounded-md cursor-pointer overflow-hidden">
+								<div className="mt-4 relative border-2 h-56 border-dashed rounded-md cursor-pointer overflow-hidden border-gray-400">
 									<input
 										className="cursor-pointer w-full opacity-0 absolute inset-0"
 										type="file"
@@ -682,10 +691,10 @@ const NewPage = () => {
 														fillRule="evenodd"
 														clipRule="evenodd"
 														d="M4 2H20C21.1046 2 22 2.89543 22 4V20C22 21.1046 21.1046 22 20 22H4C2.89543 22 2 21.1046 2 20V4C2 2.89543 2.89543 2 4 2ZM4 4V15.5858L8 11.5858L11.5 15.0858L18 8.58579L20 10.5858V4H4ZM4 20V18.4142L8 14.4142L13.5858 20H4ZM20 20H16.4142L12.9142 16.5L18 11.4142L20 13.4142V20ZM14 8C14 6.34315 12.6569 5 11 5C9.34315 5 8 6.34315 8 8C8 9.65685 9.34315 11 11 11C12.6569 11 14 9.65685 14 8ZM10 8C10 7.44772 10.4477 7 11 7C11.5523 7 12 7.44772 12 8C12 8.55228 11.5523 9 11 9C10.4477 9 10 8.55228 10 8Z"
-														fill="black"
+														fill="rgba(229, 231, 235, 0.5)"
 													/>
 												</svg>
-												<p className="text-gray-700 mt-4 truncate">
+												<p className="text-gray-200 mt-4 truncate">
 													{imgFile.name}
 												</p>
 											</div>
@@ -703,10 +712,12 @@ const NewPage = () => {
 														fillRule="evenodd"
 														clipRule="evenodd"
 														d="M4 2H20C21.1046 2 22 2.89543 22 4V20C22 21.1046 21.1046 22 20 22H4C2.89543 22 2 21.1046 2 20V4C2 2.89543 2.89543 2 4 2ZM4 4V15.5858L8 11.5858L11.5 15.0858L18 8.58579L20 10.5858V4H4ZM4 20V18.4142L8 14.4142L13.5858 20H4ZM20 20H16.4142L12.9142 16.5L18 11.4142L20 13.4142V20ZM14 8C14 6.34315 12.6569 5 11 5C9.34315 5 8 6.34315 8 8C8 9.65685 9.34315 11 11 11C12.6569 11 14 9.65685 14 8ZM10 8C10 7.44772 10.4477 7 11 7C11.5523 7 12 7.44772 12 8C12 8.55228 11.5523 9 11 9C10.4477 9 10 8.55228 10 8Z"
-														fill="rgba(0,0,0,0.8)"
+														fill="rgba(229, 231, 235, 0.5)"
 													/>
 												</svg>
-												<p className="text-gray-700 mt-2">Maximum size 16mb</p>
+												<p className="text-gray-200 mt-2 opacity-50">
+													Maximum size 16mb
+												</p>
 											</div>
 										)}
 									</div>
@@ -728,7 +739,7 @@ const NewPage = () => {
 									</div>
 									<div>
 										<label className="block text-sm">Name</label>
-										<input
+										<InputText
 											autoComplete="off"
 											type="text"
 											name="name"
@@ -755,7 +766,7 @@ const NewPage = () => {
 												</p>
 											</div>
 										</div>
-										<textarea
+										<InputTextarea
 											type="text"
 											name="description"
 											ref={register({
@@ -766,7 +777,7 @@ const NewPage = () => {
 												errors.description && 'error'
 											} resize-none h-24`}
 											placeholder="Card description"
-										></textarea>
+										/>
 										<div className="text-sm text-red-500">
 											{errors.description?.type === 'required' &&
 												'Description is required'}
@@ -778,7 +789,7 @@ const NewPage = () => {
 									</div>
 									<div className="mt-4">
 										<label className="block text-sm">Number of copies</label>
-										<input
+										<InputText
 											type="number"
 											name="supply"
 											ref={register({
@@ -818,12 +829,8 @@ const NewPage = () => {
 								</div>
 								<div>
 									<label className="block text-sm">Royalty</label>
-									<div
-										className={`flex justify-between bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full ${
-											errors.royalty && 'error'
-										}`}
-									>
-										<input
+									<div className="relative">
+										<InputText
 											type="number"
 											name="royalty"
 											ref={register({
@@ -832,10 +839,12 @@ const NewPage = () => {
 												max: 90,
 												validate: (value) => Number.isInteger(Number(value)),
 											})}
-											className="clear pr-2"
+											className={errors.royalty && 'error'}
 											placeholder="Royalty"
 										/>
-										<div className="font-bold inline-block">%</div>
+										<div className="font-bold absolute right-0 top-0 bottom-0 flex items-center justify-center">
+											<div className="pr-4">%</div>
+										</div>
 									</div>
 									<div className="mt-2 text-sm text-red-500">
 										{errors.royalty?.type === 'required' &&
@@ -864,22 +873,20 @@ const NewPage = () => {
 									{isOnSale && (
 										<>
 											<label className="block text-sm">Sale price</label>
-											<div
-												className={`flex justify-between bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full ${
-													errors.amount && 'error'
-												}`}
-											>
-												<input
+											<div className="relative">
+												<InputText
 													type="number"
 													name="amount"
 													ref={register({
 														required: true,
 														min: 0,
 													})}
-													className="clear pr-2"
+													className={errors.amount && 'error'}
 													placeholder="Card price per pcs"
 												/>
-												<div className="inline-block">Ⓝ</div>
+												<div className="font-bold absolute right-0 top-0 bottom-0 flex items-center justify-center">
+													<div className="pr-4">%</div>
+												</div>
 											</div>
 											<p>
 												~$
