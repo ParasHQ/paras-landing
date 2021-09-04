@@ -218,8 +218,8 @@ const TokenDetail = ({ token, className }) => {
 					</Scrollbars>
 					<div className="p-3">
 						{token.owner_id === currentUser && (
-							<div className="flex flex-wrap">
-								<div className="w-full lg:w-1/2">
+							<div className="flex flex-wrap space-x-4">
+								<div className="w-full flex-1">
 									<Button
 										size="md"
 										onClick={() => {
@@ -234,7 +234,7 @@ const TokenDetail = ({ token, className }) => {
 										Update Listing
 									</Button>
 								</div>
-								<div className="w-full lg:w-1/2 mt-4 lg:mt-0">
+								<div className="w-full flex-1 mt-4 lg:mt-0">
 									<Button size="md" onClick={onClickTransfer} isFullWidth>
 										Transfer
 									</Button>

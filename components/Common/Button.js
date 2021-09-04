@@ -12,7 +12,7 @@ const Button = ({
 	onClick,
 }) => {
 	const buttonBaseStyle =
-		'inline-block text-center relative whitespace-nowrap rounded-full font-medium text-body'
+		'inline-block text-center relative whitespace-nowrap rounded-md font-medium text-body'
 	const buttonTransition = 'transition duration-150 ease-in-out'
 
 	let buttonVariantStyle
