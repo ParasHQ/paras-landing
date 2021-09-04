@@ -83,9 +83,7 @@ const CollectionPageEdit = ({ collectionId }) => {
 					type: 'success',
 					duration: 2500,
 				})
-				setTimeout(() => {
-					router.push(`/collection/${resp.data.data.collection.collection_id}`)
-				}, 2500)
+				router.push(`/collection/${resp.data.data.collection.collection_id}`)
 			}
 		} catch (err) {
 			const msg =
@@ -198,7 +196,8 @@ const CollectionPageEdit = ({ collectionId }) => {
 						collectionName === '' ||
 						collectionDesc === ''
 					}
-					className="mt-8"
+					className="mt-8 w-40"
+					size="md"
 					onClick={_submit}
 				>
 					{isSubmitting ? 'Please wait...' : 'Edit'}
