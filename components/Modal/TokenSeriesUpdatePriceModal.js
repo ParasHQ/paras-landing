@@ -54,36 +54,30 @@ const TokenSeriesUpdatePriceModal = ({
 			price: parseNearAmount(newPrice),
 		}
 
-		// if (
-		// 	JSBI.lessThan(
-		// 		JSBI.BigInt(near.currentUser.balance.available),
-		// 		attachedDeposit
-		// 	)
-		// ) {
-		// 	get().setToastConfig({
-		// 		text: (
-		// 			<div className="font-semibold text-center text-sm">
-		// 				Insufficient Balance
-		// 				<p className="mt-2">
-		// 					Available
-		// 					{prettyBalance(near.getAccount().balance.available, 24, 4)} Ⓝ
-		// 				</p>
-		// 			</div>
-		// 		),
-		// 		type: 'error',
-		// 		duration: 2500,
-		// 	})
-		// 	return
-		// }
+		try {
+			await near.wallet.account().functionCall({
+				contractId: data.contract_id,
+				methodName: `nft_set_series_price`,
+				args: params,
+				gas: GAS_FEE,
+				attachedDeposit: `1`,
+			})
+		} catch (err) {
+			console.log(err)
+		}
+	}
 
-		// nft_buy(
-		//   params,
-		//   '50000000000000',
-		//   attachedDeposit.toString()
-		// )
-		console.log(params)
+	const onRemoveListing = async (e) => {
+		e.preventDefault()
+		if (!near.currentUser) {
+			setShowLogin(true)
+			return
+		}
 
 		try {
+			const params = {
+				token_series_id: data.token_series_id,
+			}
 			await near.wallet.account().functionCall({
 				contractId: data.contract_id,
 				methodName: `nft_set_series_price`,
@@ -103,17 +97,16 @@ const TokenSeriesUpdatePriceModal = ({
 		) {
 			let fee = JSBI.BigInt(500)
 
-			console.log(parseNearAmount(newPrice))
-
-			const calcRoyalty = data.royalty
-				? JSBI.divide(
-						JSBI.multiply(
-							JSBI.BigInt(parseNearAmount(newPrice)),
-							JSBI.BigInt(Object.values(data.royalty)[0])
-						),
-						JSBI.BigInt(10000)
-				  )
-				: JSBI.BigInt(0)
+			const calcRoyalty =
+				Object.values(data.royalty).length > 0
+					? JSBI.divide(
+							JSBI.multiply(
+								JSBI.BigInt(parseNearAmount(newPrice)),
+								JSBI.BigInt(Object.values(data.royalty)[0])
+							),
+							JSBI.BigInt(10000)
+					  )
+					: JSBI.BigInt(0)
 
 			const calcFee = JSBI.divide(
 				JSBI.multiply(JSBI.BigInt(parseNearAmount(newPrice)), fee),
@@ -264,6 +257,17 @@ const TokenSeriesUpdatePriceModal = ({
 						<div className="mt-6">
 							<Button type="submit" size="md" isFullWidth>
 								Update Listing
+							</Button>
+							<Button
+								className="mt-4"
+								type="submit"
+								variant="ghost"
+								size="md"
+								isFullWidth
+								onClick={onRemoveListing}
+								isDisabled={!data.price}
+							>
+								Remove Listing
 							</Button>
 						</div>
 					</form>
