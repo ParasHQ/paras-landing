@@ -1,18 +1,18 @@
-import Head from 'next/head'
-import Footer from 'components/Footer'
-import Nav from 'components/Nav'
-import { InputText, InputTextarea } from 'components/Common/form'
+import axios from 'axios'
 import Button from 'components/Common/Button'
-import { parseImgUrl } from 'utils/common'
-import { useState } from 'react'
+import { InputText, InputTextarea } from 'components/Common/form'
+import Footer from 'components/Footer'
 import ImgCrop from 'components/ImgCrop'
-import useStore from 'lib/store'
-import Axios from 'axios'
-import near from 'lib/near'
+import Nav from 'components/Nav'
 import { useToast } from 'hooks/useToast'
+import near from 'lib/near'
+import useStore from 'lib/store'
+import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import { parseImgUrl } from 'utils/common'
 
-const NewCollection = () => {
+const CollectionPageEdit = ({ collectionId }) => {
 	const [showImgCrop, setShowImgCrop] = useState(false)
 	const [imgFile, setImgFile] = useState({})
 	const [imgUrl, setImgUrl] = useState('')
@@ -26,11 +26,27 @@ const NewCollection = () => {
 	const currentUser = useStore((state) => state.currentUser)
 	const router = useRouter()
 
+	useEffect(() => {
+		fetchCollection()
+	}, [])
+
 	const _setImg = async (e) => {
 		if (e.target.files[0]) {
 			setImgFile(e.target.files[0])
 			setShowImgCrop(true)
 		}
+	}
+
+	const fetchCollection = async () => {
+		const resp = await axios.get(`${process.env.V2_API_URL}/collections`, {
+			params: {
+				collection_id: collectionId,
+			},
+		})
+		const collectionData = resp.data.data.results[0]
+		setCollectionName(collectionData.collection)
+		setCollectionDesc(collectionData.description)
+		setImgUrl(collectionData.media)
 	}
 
 	const _submit = async (e) => {
@@ -42,12 +58,12 @@ const NewCollection = () => {
 		if (imgFile) {
 			formData.append('file', imgFile)
 		}
-		formData.append('collection', collectionName)
+		formData.append('collection_id', collectionId)
 		formData.append('description', collectionDesc)
 		formData.append('creator_id', currentUser)
 
 		try {
-			const resp = await Axios.post(
+			const resp = await axios.put(
 				`${process.env.V2_API_URL}/collections`,
 				formData,
 				{
@@ -61,7 +77,7 @@ const NewCollection = () => {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							Create collection success
+							Update collection success
 						</div>
 					),
 					type: 'success',
@@ -144,7 +160,9 @@ const NewCollection = () => {
 				/>
 			)}
 			<div className="relative max-w-3xl m-auto py-12 px-4">
-				<div className="text-white font-bold text-4xl">Create collection</div>
+				<div className="text-white font-bold text-4xl">
+					Edit collection {collectionName}
+				</div>
 				<div className="text-white mt-4">Logo</div>
 				<div className="relative cursor-pointer w-32 h-32 overflow-hidden rounded-md mt-2">
 					<input
@@ -167,14 +185,6 @@ const NewCollection = () => {
 						</div>
 					</div>
 				</div>
-				<div className="text-white mt-4">Name</div>
-				<InputText
-					type="text"
-					value={collectionName}
-					onChange={(e) => setCollectionName(e.target.value)}
-					className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
-					placeholder="Pillars of Paras"
-				/>
 				<div className="text-white mt-4">Description</div>
 				<InputTextarea
 					value={collectionDesc}
@@ -191,7 +201,7 @@ const NewCollection = () => {
 					className="mt-8"
 					onClick={_submit}
 				>
-					{isSubmitting ? 'Creating...' : 'Create'}
+					{isSubmitting ? 'Please wait...' : 'Edit'}
 				</Button>
 			</div>
 			<Footer />
@@ -199,4 +209,10 @@ const NewCollection = () => {
 	)
 }
 
-export default NewCollection
+export default CollectionPageEdit
+
+export async function getServerSideProps({ params }) {
+	return {
+		props: { collectionId: params.collection_id },
+	}
+}

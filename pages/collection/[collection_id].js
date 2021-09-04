@@ -6,6 +6,7 @@ import Nav from 'components/Nav'
 import useStore from 'lib/store'
 import Head from 'next/head'
 import Link from 'next/link'
+import router from 'next/router'
 import { useEffect, useState } from 'react'
 import { parseImgUrl } from 'utils/common'
 
@@ -58,8 +59,11 @@ const CollectionPage = ({ collectionId }) => {
 				collection_id: collectionId,
 			},
 		})
-		console.log('resp', resp.data.data.results)
 		setCollection(resp.data.data.results[0])
+	}
+
+	const editCollection = () => {
+		router.push(`/collection/edit/${collectionId}`)
 	}
 
 	return (
@@ -132,7 +136,14 @@ const CollectionPage = ({ collectionId }) => {
 						</p>
 						{currentUser === collection.creator_id && (
 							<div className="flex flex-col max-w-xs m-auto mt-4">
-								<Button variant="secondary">Edit</Button>
+								<Button
+									onClick={editCollection}
+									variant="secondary"
+									size="md"
+									className="w-40 m-auto"
+								>
+									Edit
+								</Button>
 							</div>
 						)}
 					</div>
