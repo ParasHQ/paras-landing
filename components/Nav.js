@@ -30,7 +30,10 @@ const User = () => {
 
 	useEffect(() => {
 		const onClickEv = (e) => {
-			if (!accModalRef.current.contains(e.target)) {
+			if (
+				accModalRef.current?.contains &&
+				!accModalRef.current.contains(e.target)
+			) {
 				setShowAccountModal(false)
 			}
 		}
@@ -535,7 +538,7 @@ const NotificationList = () => {
 	useEffect(() => {
 		const onClickEv = (e) => {
 			if (
-				accModalRef.current.contains &&
+				accModalRef.current?.contains &&
 				!accModalRef.current?.contains(e.target)
 			) {
 				setShowAccountModal(false)
