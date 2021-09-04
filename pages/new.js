@@ -5,35 +5,27 @@ import Card from '../components/Card'
 import ImgCrop from '../components/ImgCrop'
 import Nav from '../components/Nav'
 import useStore from '../lib/store'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import Modal from '../components/Modal'
 import { useRouter } from 'next/router'
 import near from '../lib/near'
 import Head from 'next/head'
 import { useToast } from '../hooks/useToast'
 import Footer from '../components/Footer'
-import {
-	parseImgUrl,
-	prettyBalance,
-	readFileAsUrl,
-	readFileDimension,
-} from '../utils/common'
-import Autocomplete from '../components/Autocomplete'
+import { parseImgUrl, prettyBalance, readFileAsUrl } from '../utils/common'
+import { encodeImageToBlurhash } from 'lib/blurhash'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { GAS_FEE, STORAGE_CREATE_SERIES_FEE } from 'config/constants'
+
+const LIMIT = 10
 
 const NewPage = () => {
 	const store = useStore()
 	const router = useRouter()
 	const toast = useToast()
 	const [formInput, setFormInput] = useState({})
-	const {
-		control,
-		errors,
-		register,
-		handleSubmit,
-		watch,
-		setValue,
-		getValues,
-	} = useForm()
+	const { errors, register, handleSubmit, watch, setValue, getValues } =
+		useForm()
 
 	const [showImgCrop, setShowImgCrop] = useState(false)
 	const [imgFile, setImgFile] = useState('')
@@ -43,33 +35,81 @@ const NewPage = () => {
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
 	const [showFront, setShowFront] = useState(true)
 	const [showAlertErr, setShowAlertErr] = useState(false)
+	const [choosenCollection, setChoosenCollection] = useState({})
+
+	const [collectionList, setCollectionList] = useState([])
+	const [page, setPage] = useState(0)
+	const [hasMore, setHasMore] = useState(true)
+	const [isFetching, setIsFetching] = useState(false)
+	const [blurhash, setBlurhash] = useState('')
+
+	const [isOnSale, setIsOnSale] = useState(false)
 
 	const _submit = async () => {
 		setIsSubmitting(true)
 
-		const formData = new FormData()
-		formData.append('file', imgFile)
-		formData.append('ownerId', store.currentUser)
-		formData.append('supply', formInput.supply)
-		formData.append('quantity', formInput.quantity)
-		formData.append('amount', parseNearAmount(formInput.amount))
-		formData.append('name', formInput.name)
-		formData.append('description', formInput.description)
-		formData.append('collection', formInput.collection)
-		formData.append('royalty', formInput.royalty)
-		router.query.categoryId &&
-			formData.append('categoryId', router.query.categoryId)
+		const reference = JSON.stringify({
+			description: formInput.description,
+			collection: choosenCollection.collection,
+			collection_id: choosenCollection.collection_id,
+			creator_id: store.currentUser,
+			blurhash: blurhash,
+		})
+		const blob = new Blob([reference], { type: 'text/plain' })
 
+		const formData = new FormData()
+		formData.append('files', imgFile)
+		formData.append('files', blob)
+
+		let resp
 		try {
-			await axios.post(`${process.env.API_URL}/tokens`, formData, {
+			resp = await axios.post(`${process.env.V1_API_URL}/uploads`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 					authorization: await near.authToken(),
 				},
 			})
-			setTimeout(() => {
-				router.push('/market')
-			}, 1000)
+		} catch (err) {
+			const msg =
+				err.response?.data?.message || `Something went wrong, try again later`
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{msg}</div>,
+				type: 'error',
+				duration: 2500,
+			})
+			setIsSubmitting(false)
+			return
+		}
+
+		const mediaHash = resp.data.data[0].split('://')[1]
+		const referenceHash = resp.data.data[1].split('://')[1]
+
+		try {
+			let params = {
+				creator_id: store.currentUser,
+				token_metadata: {
+					title: formInput.name,
+					media: mediaHash,
+					reference: referenceHash,
+					copies: parseInt(formInput.supply),
+				},
+				price: parseNearAmount(formInput.amount || 0),
+			}
+
+			if (formInput.royalty !== 0) {
+				params = {
+					...params,
+					[store.currentUser]: parseInt(formInput.royalty),
+				}
+			}
+
+			near.wallet.account().functionCall({
+				contractId: process.env.NFT_CONTRACT_ID,
+				methodName: `nft_create_series`,
+				args: params,
+				gas: GAS_FEE,
+				attachedDeposit: STORAGE_CREATE_SERIES_FEE,
+			})
 		} catch (err) {
 			const msg =
 				err.response?.data?.message || `Something went wrong, try again later`
@@ -81,18 +121,6 @@ const NewPage = () => {
 			setIsSubmitting(false)
 		}
 	}
-
-	useEffect(() => {
-		if (store.initialized) {
-			if (
-				process.env.APP_ENV === 'production' &&
-				!store.userProfile.isCreator
-			) {
-				router.push('/new')
-			}
-			getNewCollectionList('')
-		}
-	}, [store.initialized])
 
 	useEffect(() => {
 		setValue('name', formInput.name)
@@ -151,40 +179,46 @@ const NewPage = () => {
 			if (e.target.files[0].size > 20 * 1024 * 1024) {
 				setShowAlertErr('Maximum file size is 20 Mb')
 				return
-			}
-			if (e.target.files[0].type === 'image/gif') {
-				const dimension = await readFileDimension(e.target.files[0])
-
-				if (dimension.width / dimension.height === 64 / 89) {
-					const imgUrl = await readFileAsUrl(e.target.files[0])
-					setImgFile(e.target.files[0])
-					setImgUrl(imgUrl)
-				} else {
-					const msg = `The submitted gif is not in ratio of 64 : 89 (Found gif with dimension ${dimension.width} x ${dimension.height})`
-					toast.show({
-						text: (
-							<div className="font-semibold text-center text-sm">{msg}</div>
-						),
-						type: 'error',
-						duration: null,
-					})
-				}
 			} else {
+				const newImgUrl = await readFileAsUrl(e.target.files[0])
+				const _blurhash = await encodeImageToBlurhash(newImgUrl)
+
+				setBlurhash(_blurhash)
 				setImgFile(e.target.files[0])
-				setShowImgCrop(true)
+				setImgUrl(newImgUrl)
 			}
 		}
 	}
 
-	const [collectionList, setCollectionList] = useState([])
-
-	const getNewCollectionList = async (val) => {
-		const resp = await axios.get(
-			`${process.env.API_URL}/collections?creatorId=${store.currentUser}&collection=${val}`
-		)
-		if (resp.data.data) {
-			setCollectionList(resp.data.data.results.map((res) => res.collection))
+	useEffect(() => {
+		if (store.initialized) {
+			fetchCollectionUser()
 		}
+	}, [store.initialized])
+
+	const fetchCollectionUser = async () => {
+		if (!hasMore || isFetching) {
+			return
+		}
+
+		setIsFetching(true)
+		const res = await axios.get(`${process.env.V2_API_URL}/collections`, {
+			params: {
+				creator_id: store.currentUser,
+				__skip: page * LIMIT,
+				__limit: LIMIT,
+			},
+		})
+		const newData = await res.data.data
+		const newCollections = [...collectionList, ...newData.results]
+		setCollectionList(newCollections)
+		setPage(page + 1)
+		if (newData.results.length < LIMIT) {
+			setHasMore(false)
+		} else {
+			setHasMore(true)
+		}
+		setIsFetching(false)
 	}
 
 	const formatCategoryId = (categoryId) => {
@@ -266,19 +300,17 @@ const NewPage = () => {
 				>
 					<div className="w-full flex flex-wrap max-w-lg p-4 m-auto bg-gray-100 rounded-md overflow-x-hidden overflow-y-auto max-h-full">
 						<div className="w-full md:w-1/2 px-4">
-							<div className="w-full">
+							<div className="w-full bg-dark-primary-2 rounded-md">
 								<Card
 									imgWidth={640}
 									imgHeight={890}
+									imgBlur={blurhash}
 									imgUrl={parseImgUrl(imgUrl)}
 									token={{
-										name: formInput.name,
+										title: formInput.name,
 										collection: formInput.collection,
-										description: formInput.description,
 										creatorId: store.currentUser,
-										supply: formInput.supply,
-										tokenId: 'ID',
-										createdAt: new Date().getTime(),
+										copies: formInput.supply,
 									}}
 									initialRotate={{
 										x: 0,
@@ -292,90 +324,103 @@ const NewPage = () => {
 								<h1 className="mt-4 text-2xl font-bold text-gray-900 tracking-tight">
 									Market Data
 								</h1>
-								<p className="text-sm mt-2">
-									Price:{' '}
-									{prettyBalance(
-										Number(getValues('amount', 0)).toPrecision(4).toString(),
-										0,
-										6
-									)}{' '}
-									Ⓝ (~$
-									{prettyBalance(
-										Number(store.nearUsdPrice * getValues('amount', 0))
-											.toPrecision(4)
-											.toString(),
-										0,
-										6
-									)}
-									)
-								</p>
-								<p className="text-sm">
-									Receive:{' '}
-									{prettyBalance(
-										Number(
-											getValues('amount', 0) * ((95 - formInput.royalty) / 100)
-										)
-											.toPrecision(4)
-											.toString(),
-										0,
-										6
-									)}{' '}
-									Ⓝ (~$
-									{prettyBalance(
-										Number(
-											store.nearUsdPrice *
-												getValues('amount', 0) *
-												((95 - formInput.royalty) / 100)
-										)
-											.toPrecision(4)
-											.toString(),
-										0,
-										6
-									)}
-									)
-								</p>
-								<p className="text-sm">
-									Royalty:{' '}
-									{prettyBalance(
-										Number(getValues('amount', 0) * (formInput.royalty / 100))
-											.toPrecision(4)
-											.toString(),
-										0,
-										6
-									)}{' '}
-									Ⓝ (~$
-									{prettyBalance(
-										Number(
-											store.nearUsdPrice *
-												getValues('amount', 0) *
-												(formInput.royalty / 100)
-										)
-											.toPrecision(4)
-											.toString(),
-										0,
-										6
-									)}
-									)
-								</p>
-								<p className="text-sm">
-									Fee:{' '}
-									{prettyBalance(
-										Number(getValues('amount', 0) * 0.05)
-											.toPrecision(4)
-											.toString(),
-										0,
-										6
-									)}{' '}
-									Ⓝ (~$
-									{prettyBalance(
-										Number(store.nearUsdPrice * getValues('amount', 0) * 0.05)
-											.toPrecision(4)
-											.toString(),
-										0,
-										6
-									)}
-									)
-								</p>
+								{isOnSale && (
+									<>
+										<p className="text-sm mt-2">
+											Price:{' '}
+											{prettyBalance(
+												Number(getValues('amount', 0))
+													.toPrecision(4)
+													.toString(),
+												0,
+												6
+											)}{' '}
+											Ⓝ (~$
+											{prettyBalance(
+												Number(store.nearUsdPrice * getValues('amount', 0))
+													.toPrecision(4)
+													.toString(),
+												0,
+												6
+											)}
+											)
+										</p>
+										<p className="text-sm">
+											Receive:{' '}
+											{prettyBalance(
+												Number(
+													getValues('amount', 0) *
+														((95 - (formInput.royalty || 0)) / 100)
+												)
+													.toPrecision(4)
+													.toString(),
+												0,
+												6
+											)}{' '}
+											Ⓝ (~$
+											{prettyBalance(
+												Number(
+													store.nearUsdPrice *
+														getValues('amount', 0) *
+														((95 - (formInput.royalty || 0)) / 100)
+												)
+													.toPrecision(4)
+													.toString(),
+												0,
+												6
+											)}
+											)
+										</p>
+										{formInput.royalty !== 0 && (
+											<p className="text-sm">
+												Royalty:{' '}
+												{prettyBalance(
+													Number(
+														getValues('amount', 0) * (formInput.royalty / 100)
+													)
+														.toPrecision(4)
+														.toString(),
+													0,
+													6
+												)}{' '}
+												Ⓝ (~$
+												{prettyBalance(
+													Number(
+														store.nearUsdPrice *
+															getValues('amount', 0) *
+															(formInput.royalty / 100)
+													)
+														.toPrecision(4)
+														.toString(),
+													0,
+													6
+												)}
+												)
+											</p>
+										)}
+										<p className="text-sm">
+											Fee:{' '}
+											{prettyBalance(
+												Number(getValues('amount', 0) * 0.05)
+													.toPrecision(4)
+													.toString(),
+												0,
+												6
+											)}{' '}
+											Ⓝ (~$
+											{prettyBalance(
+												Number(
+													store.nearUsdPrice * getValues('amount', 0) * 0.05
+												)
+													.toPrecision(4)
+													.toString(),
+												0,
+												6
+											)}
+											)
+										</p>
+									</>
+								)}
 								<div className="mt-2">
 									<p>Confirm card creation?</p>
 								</div>
@@ -430,14 +475,12 @@ const NewPage = () => {
 								imgWidth={640}
 								imgHeight={890}
 								imgUrl={parseImgUrl(imgUrl)}
+								imgBlur={blurhash}
 								token={{
-									name: watch('name', formInput.name),
-									collection: watch('collection', formInput.collection),
-									description: watch('description', formInput.description),
+									title: watch('name', formInput.name) || 'Name',
+									collection: choosenCollection.collection || 'Collection',
 									creatorId: store.currentUser,
-									supply: watch('supply', formInput.supply),
-									tokenId: 'ID',
-									createdAt: new Date().getTime(),
+									copies: watch('supply', formInput.supply),
 								}}
 								initialRotate={{
 									x: 0,
@@ -469,35 +512,74 @@ const NewPage = () => {
 						</div>
 						{step === 0 && (
 							<div>
+								<div className="flex justify-between py-2">
+									<button disabled={step === 0} onClick={_handleBack}>
+										Back
+									</button>
+									<div>{step + 1}/4</div>
+									{step === 1 && (
+										<button
+											disabled={!imgFile}
+											onClick={() => setStep(step + 1)}
+										>
+											Next
+										</button>
+									)}
+									<button
+										disabled={!choosenCollection.collection_id}
+										onClick={() => setStep(step + 1)}
+									>
+										Next
+									</button>
+								</div>
+								<div className="text-sm">Choose Collection</div>
+								<InfiniteScroll
+									dataLength={collectionList.length}
+									next={fetchCollectionUser}
+									hasMore={hasMore}
+									className="overflow-y-scroll"
+									style={{
+										maxHeight: `60vh`,
+									}}
+								>
+									{collectionList.map((item) => (
+										<div
+											key={item.collection_id}
+											onClick={() => setChoosenCollection(item)}
+											className={`bg-gray-200 mt-4 flex items-center rounded-md overflow-hidden cursor-pointer border-2 ${
+												item.collection_id ===
+													choosenCollection.collection_id && 'border-gray-400'
+											}`}
+										>
+											<div className="w-10 h-10 bg-primary flex-shrink-0">
+												{item.media && (
+													<img
+														src={parseImgUrl(item.media)}
+														className="w-10 h-10"
+													/>
+												)}
+											</div>
+											<div className="ml-3 text-sm truncate">
+												{item.collection}
+											</div>
+										</div>
+									))}
+								</InfiniteScroll>
+							</div>
+						)}
+						{step === 1 && (
+							<div>
 								<div>
 									<div className="flex justify-between py-2">
-										<button disabled={step === 0} onClick={_handleBack}>
-											Back
-										</button>
-										<div>{step + 1}/3</div>
-										{step === 0 && (
+										<button onClick={_handleBack}>Back</button>
+										<div>{step + 1}/4</div>
+										{step === 1 && (
 											<button
 												disabled={!imgFile}
 												onClick={() => setStep(step + 1)}
 											>
 												Next
 											</button>
-										)}
-										{step === 1 && (
-											<button
-												disabled={
-													errors.name ||
-													errors.collection ||
-													errors.description ||
-													errors.supply
-												}
-												onClick={() => setStep(step + 1)}
-											>
-												Next
-											</button>
-										)}
-										{step === 2 && (
-											<button onClick={() => _submit()}>Submit</button>
 										)}
 									</div>
 								</div>
@@ -550,9 +632,6 @@ const NewPage = () => {
 														fill="rgba(0,0,0,0.8)"
 													/>
 												</svg>
-												<p className="text-gray-700 mt-4">
-													Recommended ratio 64 : 89
-												</p>
 												<p className="text-gray-700 mt-2">Maximum size 16mb</p>
 											</div>
 										)}
@@ -560,14 +639,12 @@ const NewPage = () => {
 								</div>
 							</div>
 						)}
-						{step === 1 && (
+						{step === 2 && (
 							<form onSubmit={handleSubmit(_handleSubmitStep1)}>
 								<div>
 									<div className="flex justify-between py-2">
-										<button disabled={step === 0} onClick={_handleBack}>
-											Back
-										</button>
-										<div>{step + 1}/3</div>
+										<button onClick={_handleBack}>Back</button>
+										<div>{step + 1}/4</div>
 										<button
 											type="submit"
 											onClick={handleSubmit(_handleSubmitStep1)}
@@ -589,30 +666,6 @@ const NewPage = () => {
 										/>
 										<div className="mt-2 text-sm text-red-500">
 											{errors.name && 'Name is required'}
-										</div>
-									</div>
-									<div className="mt-4">
-										<label className="block text-sm">Collection</label>
-										<Controller
-											render={({ onChange, onBlur, value, ref }) => (
-												<Autocomplete
-													onBlur={onBlur}
-													onChange={onChange}
-													value={value}
-													inputRef={ref}
-													placeholder="Card Collection"
-													suggestions={collectionList}
-													getNewSuggestions={getNewCollectionList}
-													inputClassName={`${errors.collection && 'error'}`}
-													errors={errors}
-												/>
-											)}
-											name="collection"
-											control={control}
-											rules={{ required: true }}
-										/>
-										<div className="mt-2 text-sm text-red-500">
-											{errors.collection && 'Collection is required'}
 										</div>
 									</div>
 									<div className="mt-4">
@@ -677,13 +730,11 @@ const NewPage = () => {
 								</div>
 							</form>
 						)}
-						{step === 2 && (
+						{step === 3 && (
 							<form onSubmit={handleSubmit(_handleSubmitStep2)}>
 								<div className="flex justify-between py-2">
-									<button disabled={step === 0} onClick={_handleBack}>
-										Back
-									</button>
-									<div>{step + 1}/3</div>
+									<button onClick={_handleBack}>Back</button>
+									<div>{step + 1}/4</div>
 									<button
 										type="submit"
 										onClick={handleSubmit(_handleSubmitStep2)}
@@ -722,63 +773,55 @@ const NewPage = () => {
 									</div>
 								</div>
 								<div className="mt-4">
-									<label className="block text-sm">Sale quantity</label>
-									<input
-										type="number"
-										name="quantity"
-										ref={register({
-											required: true,
-											min: 0,
-											max: formInput.supply,
-											validate: (value) => Number.isInteger(Number(value)),
-										})}
-										className={`${errors.quantity && 'error'}`}
-										placeholder="Number of card on sale"
-									/>
-									<div className="mt-2 text-sm text-red-500">
-										{errors.quantity?.type === 'required' &&
-											`Sale quantity is required`}
-										{errors.quantity?.type === 'min' && `Minimum 0`}
-										{errors.quantity?.type === 'max' &&
-											`Must be less than number of copies`}
-										{errors.quantity?.type === 'validate' &&
-											'Only use rounded number'}
+									<div className="flex items-center mb-2">
+										<div className="pr-2">
+											<input
+												id="self-mint"
+												className="w-auto"
+												type="checkbox"
+												defaultChecked={isOnSale}
+												onChange={() => {
+													setIsOnSale(!isOnSale)
+												}}
+											/>
+										</div>
+										<label className="block text-sm">Put on Marketplace</label>
 									</div>
-								</div>
-								<div className="mt-2">
-									<p className="text-gray-600 text-sm">
-										Set sale quantity to <b>0</b> if you only want to create
-										card without selling
-									</p>
-								</div>
-								<div className="mt-4">
-									<label className="block text-sm">Sale price</label>
-									<div
-										className={`flex justify-between bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full ${
-											errors.amount && 'error'
-										}`}
-									>
-										<input
-											type="number"
-											name="amount"
-											ref={register({
-												required: true,
-												min: 0,
-											})}
-											className="clear pr-2"
-											placeholder="Card price per pcs"
-										/>
-										<div className="inline-block">Ⓝ</div>
-									</div>
-									<p>
-										~$
-										{prettyBalance(store.nearUsdPrice * watch('amount'), 0, 6)}
-									</p>
-									<div className="mt-2 text-sm text-red-500">
-										{errors.amount?.type === 'required' &&
-											`Sale price is required`}
-										{errors.amount?.type === 'min' && `Minimum 0`}
-									</div>
+									{isOnSale && (
+										<>
+											<label className="block text-sm">Sale price</label>
+											<div
+												className={`flex justify-between bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full ${
+													errors.amount && 'error'
+												}`}
+											>
+												<input
+													type="number"
+													name="amount"
+													ref={register({
+														required: true,
+														min: 0,
+													})}
+													className="clear pr-2"
+													placeholder="Card price per pcs"
+												/>
+												<div className="inline-block">Ⓝ</div>
+											</div>
+											<p>
+												~$
+												{prettyBalance(
+													store.nearUsdPrice * watch('amount'),
+													0,
+													6
+												)}
+											</p>
+											<div className="mt-2 text-sm text-red-500">
+												{errors.amount?.type === 'required' &&
+													`Sale price is required`}
+												{errors.amount?.type === 'min' && `Minimum 0`}
+											</div>
+										</>
+									)}
 								</div>
 							</form>
 						)}

@@ -10,5 +10,6 @@ module.exports = {
 		V1_API_URL: process.env.V1_API_URL,
 		V2_API_URL: process.env.V2_API_URL,
 		MARKETPLACE_CONTRACT_ID: process.env.MARKETPLACE_CONTRACT_ID,
+		NFT_CONTRACT_ID: process.env.NFT_CONTRACT_ID,
 	},
 }

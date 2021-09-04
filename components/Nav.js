@@ -79,6 +79,37 @@ const User = () => {
 		}
 	}
 
+	const _createColllection = () => {
+		if (process.env.APP_ENV !== 'production') {
+			router.push('/new-collection')
+		} else if (store.userProfile.isCreator) {
+			router.push('/new-collection')
+		} else {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						<p>
+							Currently we only allow whitelisted Artist to create their digital
+							art card on Paras.
+						</p>
+						<p className="mt-2">Apply now using the link below:</p>
+						<div className="mt-2">
+							<a
+								href="https://forms.gle/QsZHqa2MKXpjckj98"
+								target="_blank"
+								className="cursor-pointer border-b-2 border-gray-900"
+							>
+								Apply as an Artist
+							</a>
+						</div>
+					</div>
+				),
+				type: 'info',
+				duration: null,
+			})
+		}
+	}
+
 	const _createPublication = () => {
 		if (process.env.APP_ENV !== 'production') {
 			router.push('/publication/create')
@@ -215,6 +246,11 @@ const User = () => {
 						<div onClick={_createCard}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
 								Create Card
+							</a>
+						</div>
+						<div onClick={_createColllection}>
+							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
+								Create Collection
 							</a>
 						</div>
 						<div onClick={_createPublication}>
@@ -498,7 +534,10 @@ const NotificationList = () => {
 
 	useEffect(() => {
 		const onClickEv = (e) => {
-			if (!accModalRef.current.contains(e.target)) {
+			if (
+				accModalRef.current.contains &&
+				!accModalRef.current?.contains(e.target)
+			) {
 				setShowAccountModal(false)
 			}
 		}
@@ -753,7 +792,7 @@ const Nav = () => {
 					<Setting close={() => setShowSettingModal(false)} />
 				</Modal>
 			)}
-			<div className="sticky top-0 left-0 right-0 z-40 bg-black border-b border-white">
+			<div className="sticky top-0 left-0 right-0 z-40 bg-black">
 				{process.env.APP_ENV !== 'testnet' && (
 					<div
 						className={`relative text-white text-center overflow-hidden text-sm md:leading-8 m-auto bg-red-700 z-50 flex items-center justify-center transition-height duration-500 ${
