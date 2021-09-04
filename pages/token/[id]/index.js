@@ -76,8 +76,6 @@ export async function getServerSideProps({ params }) {
 		},
 	})
 
-	console.log(res)
-
 	const token = res.data.data.results[0]
 
 	const errorCode = token ? false : 404
