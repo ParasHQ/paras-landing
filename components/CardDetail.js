@@ -17,6 +17,7 @@ import TokenSeriesMintModal from './Modal/TokenSeriesMintModal'
 import TokenShareModal from './Modal/TokenShareModal'
 import useStore from 'lib/store'
 import TabHistory from './Tabs/TabHistory'
+import TokenSeriesBurnModal from './Modal/TokenSeriesBurnModal'
 
 const CardDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -68,6 +69,14 @@ const CardDetail = ({ token, className }) => {
 			return
 		}
 		setShowModal('confirmMint')
+	}
+
+	const onClickDecreaseCopies = () => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+		setShowModal('decreaseCopies')
 	}
 
 	const onClickBuyerTransfer = () => {
@@ -215,13 +224,21 @@ const CardDetail = ({ token, className }) => {
 				onClose={onDismissModal}
 				data={token}
 			/>
+			<TokenSeriesBurnModal
+				show={showModal === 'decreaseCopies'}
+				onClose={onDismissModal}
+				data={token}
+			/>
 			<TokenMoreModal
 				show={showModal === 'more'}
 				onClose={onDismissModal}
 				listModalItem={[
 					{ name: 'Share to...', onClick: onClickShare },
 					{ name: 'Transfer', onClick: onClickBuyerTransfer },
-				]}
+					isCreator()
+						? { name: 'Reduce Copies', onClick: onClickDecreaseCopies }
+						: null,
+				].filter((x) => x)}
 			/>
 			<TokenShareModal show={showModal === 'share'} onClose={onDismissModal} />
 			{/* <TokenDetailUpdateModal
