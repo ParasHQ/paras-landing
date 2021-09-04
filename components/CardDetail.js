@@ -240,7 +240,11 @@ const CardDetail = ({ token, className }) => {
 						: null,
 				].filter((x) => x)}
 			/>
-			<TokenShareModal show={showModal === 'share'} onClose={onDismissModal} />
+			<TokenShareModal
+				show={showModal === 'share'}
+				onClose={onDismissModal}
+				tokenData={token}
+			/>
 			{/* <TokenDetailUpdateModal
 				show={showModal === 'update'}
 				onClose={onDismissModal}

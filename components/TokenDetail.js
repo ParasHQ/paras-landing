@@ -267,7 +267,11 @@ const TokenDetail = ({ token, className }) => {
 					isOwner() && { name: 'Burn Card', onClick: onClickBurn },
 				].filter((x) => x)}
 			/>
-			<TokenShareModal show={showModal === 'share'} onClose={onDismissModal} />
+			<TokenShareModal
+				show={showModal === 'share'}
+				onClose={onDismissModal}
+				tokenData={token}
+			/>
 			<TokenUpdatePriceModal
 				show={showModal === 'updatePrice'}
 				onClose={onDismissModal}
