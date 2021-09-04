@@ -178,13 +178,13 @@ const CardDetail = ({ token, className }) => {
 								</Button>
 							</div>
 						) : isCreator() ? (
-							<div className="flex flex-wrap">
-								<div className="w-full lg:w-1/2">
+							<div className="flex flex-wrap space-x-4">
+								<div className="w-full flex-1">
 									<Button size="md" onClick={onClickMint} isFullWidth>
 										Mint
 									</Button>
 								</div>
-								<div className="w-full lg:w-1/2 mt-4 lg:mt-0">
+								<div className="w-full flex-1">
 									<Button size="md" onClick={onClickUpdatePrice} isFullWidth>
 										Update Price
 									</Button>
