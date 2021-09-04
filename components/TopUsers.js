@@ -51,7 +51,7 @@ const TopUser = ({ user, idx }) => {
 	return (
 		<div className="my-3 flex items-center">
 			<p className="text-base text-gray-100 opacity-50 mr-3">{idx + 1}</p>
-			<Link href={`/${user._id}`}>
+			<Link href={`/${user.account_id}`}>
 				<div className="cursor-pointer w-12 h-12 rounded-full overflow-hidden bg-primary">
 					<img
 						src={parseImgUrl(profile?.imgUrl, null, {
@@ -62,13 +62,15 @@ const TopUser = ({ user, idx }) => {
 				</div>
 			</Link>
 			<div className="ml-3">
-				<LinkToProfile
-					accountId={user._id}
-					len={16}
-					className="text-gray-100 hover:border-gray-100 font-semibold text-lg"
-				/>
+				{user.account_id && (
+					<LinkToProfile
+						accountId={user.account_id}
+						len={16}
+						className="text-gray-100 hover:border-gray-100 font-semibold text-lg"
+					/>
+				)}
 				<p className="text-base text-gray-400">
-					{prettyBalance(user.total, 24, 6)} Ⓝ
+					{prettyBalance(user.total_sum, 24, 6)} Ⓝ
 				</p>
 			</div>
 		</div>
