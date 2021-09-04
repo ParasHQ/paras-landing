@@ -1,8 +1,8 @@
 import CardLoader from './CardLoader'
 
-const CardListLoader = () => (
+const CardListLoader = ({ length = 12 }) => (
 	<div className="flex flex-wrap">
-		{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((k) => {
+		{[...Array(length).keys()].map((k) => {
 			return (
 				<div
 					key={k}
