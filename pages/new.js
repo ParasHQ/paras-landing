@@ -16,6 +16,7 @@ import { parseImgUrl, prettyBalance, readFileAsUrl } from '../utils/common'
 import { encodeImageToBlurhash } from 'lib/blurhash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { GAS_FEE, STORAGE_CREATE_SERIES_FEE } from 'config/constants'
+import Button from 'components/Common/Button'
 
 const LIMIT = 10
 
@@ -31,9 +32,10 @@ const NewPage = () => {
 	const [imgFile, setImgFile] = useState('')
 	const [imgUrl, setImgUrl] = useState('')
 	const [step, setStep] = useState(0)
-	const [isSubmitting, setIsSubmitting] = useState(false)
+	const [isUploading, setIsUploading] = useState(false)
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
-	const [showFront, setShowFront] = useState(true)
+	const [showCreatingModal, setShowCreatingModal] = useState(false)
+
 	const [showAlertErr, setShowAlertErr] = useState(false)
 	const [choosenCollection, setChoosenCollection] = useState({})
 
@@ -41,12 +43,16 @@ const NewPage = () => {
 	const [page, setPage] = useState(0)
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
-	const [blurhash, setBlurhash] = useState('')
 
+	const [blurhash, setBlurhash] = useState('')
 	const [isOnSale, setIsOnSale] = useState(false)
 
-	const _submit = async () => {
-		setIsSubmitting(true)
+	const [mediaHash, setMediaHash] = useState(null)
+	const [referenceHash, setReferenceHash] = useState(null)
+
+	const uploadImageMetadata = async () => {
+		setIsUploading(true)
+		setShowCreatingModal(true)
 
 		const reference = JSON.stringify({
 			description: formInput.description,
@@ -69,6 +75,10 @@ const NewPage = () => {
 					authorization: await near.authToken(),
 				},
 			})
+			setMediaHash(resp.data.data[0].split('://')[1])
+			setReferenceHash(resp.data.data[1].split('://')[1])
+
+			setIsUploading('success')
 		} catch (err) {
 			const msg =
 				err.response?.data?.message || `Something went wrong, try again later`
@@ -77,13 +87,12 @@ const NewPage = () => {
 				type: 'error',
 				duration: 2500,
 			})
-			setIsSubmitting(false)
+			setIsUploading('fail')
 			return
 		}
+	}
 
-		const mediaHash = resp.data.data[0].split('://')[1]
-		const referenceHash = resp.data.data[1].split('://')[1]
-
+	const creteSeriesNFT = () => {
 		try {
 			let params = {
 				creator_id: store.currentUser,
@@ -99,7 +108,9 @@ const NewPage = () => {
 			if (formInput.royalty !== 0) {
 				params = {
 					...params,
-					[store.currentUser]: parseInt(formInput.royalty),
+					royalty: {
+						[store.currentUser]: parseInt(formInput.royalty) * 100,
+					},
 				}
 			}
 
@@ -118,7 +129,7 @@ const NewPage = () => {
 				type: 'error',
 				duration: 2500,
 			})
-			setIsSubmitting(false)
+			setIsUploading(false)
 		}
 	}
 
@@ -136,14 +147,6 @@ const NewPage = () => {
 		setValue('quantity', formInput.quantity)
 		setValue('amount', formInput.amount)
 		setValue('royalty', formInput.royalty)
-
-		if (step === 0 || step === 2) {
-			setShowFront(true)
-		}
-
-		if (step === 1) {
-			setShowFront(false)
-		}
 	}, [step])
 
 	const _updateValues = () => {
@@ -308,7 +311,7 @@ const NewPage = () => {
 					closeOnEscape={false}
 					closeOnBgClick={false}
 				>
-					<div className="w-full flex flex-wrap max-w-lg p-4 m-auto bg-gray-100 rounded-md overflow-x-hidden overflow-y-auto max-h-full">
+					<div className="w-full flex flex-wrap max-w-xl p-4 m-auto bg-gray-100 rounded-md overflow-x-hidden overflow-y-auto max-h-full">
 						<div className="w-full md:w-1/2 px-4">
 							<div className="w-full bg-dark-primary-2 rounded-md">
 								<Card
@@ -436,11 +439,10 @@ const NewPage = () => {
 								</div>
 								<div className="">
 									<button
-										disabled={isSubmitting}
 										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
-										onClick={_submit}
+										onClick={uploadImageMetadata}
 									>
-										{!isSubmitting ? 'Create' : 'Creating...'}
+										Create
 									</button>
 									<button
 										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
@@ -450,6 +452,63 @@ const NewPage = () => {
 									</button>
 								</div>
 							</div>
+						</div>
+					</div>
+				</Modal>
+			)}
+			{showCreatingModal && (
+				<Modal closeOnEscape={false} closeOnBgClick={false}>
+					<div className="max-w-xs m-auto p-4 bg-white rounded-md">
+						<div className="font-bold text-2xl mb-4">Creating Card</div>
+						<div>
+							<p className="text-blueGray-400 font-bold text-lg">Upload</p>
+							<p className="text-blueGray-400 text-sm mb-2">
+								Uploading your image and meta data
+							</p>
+							<Button
+								isFullWidth
+								size="md"
+								isDisabled={!(isUploading === 'fail')}
+								onClick={uploadImageMetadata}
+								className="mb-6"
+							>
+								{isUploading === true
+									? 'In progress...'
+									: isUploading
+									? 'Success'
+									: 'Try Again'}
+							</Button>
+						</div>
+						<div>
+							<p className="text-blueGray-400 font-bold text-lg">
+								Confirmation
+							</p>
+							<p className="text-blueGray-400 text-sm">
+								Confirm your transaction on Near Wallet
+							</p>
+							<p className="text-blueGray-400 text-sm mb-2">
+								Small transaction fee is applied of 0.00854 Ⓝ
+							</p>
+							<Button
+								isDisabled={!(isUploading === 'success')}
+								isFullWidth
+								size="md"
+								onClick={creteSeriesNFT}
+							>
+								Confirm
+							</Button>
+							<Button
+								isFullWidth
+								size="md"
+								variant="ghost"
+								className="mt-3"
+								onClick={() => {
+									setShowCreatingModal(false)
+									setIsUploading(false)
+								}}
+							>
+								Cancel
+							</Button>
 						</div>
 					</div>
 				</Modal>
@@ -496,8 +555,6 @@ const NewPage = () => {
 									x: 0,
 									y: 0,
 								}}
-								isShowFront={showFront}
-								setIsShowFront={setShowFront}
 							/>
 						</div>
 					</div>
@@ -552,11 +609,19 @@ const NewPage = () => {
 										maxHeight: `60vh`,
 									}}
 								>
+									<div
+										onClick={() => router.push('/new-collection')}
+										className="bg-gray-200 mt-2 flex items-center rounded-md overflow-hidden cursor-pointer border-2"
+									>
+										<div className="h-10 w-full flex items-center justify-center flex-shrink-0 text-sm text-center font-medium">
+											+ Create New Collection
+										</div>
+									</div>
 									{collectionList.map((item) => (
 										<div
 											key={item.collection_id}
 											onClick={() => setChoosenCollection(item)}
-											className={`bg-gray-200 mt-4 flex items-center rounded-md overflow-hidden cursor-pointer border-2 ${
+											className={`bg-gray-200 mt-3 flex items-center rounded-md overflow-hidden cursor-pointer border-2 ${
 												item.collection_id ===
 													choosenCollection.collection_id && 'border-gray-400'
 											}`}

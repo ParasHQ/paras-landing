@@ -1,7 +1,9 @@
 import axios from 'axios'
 import CardList from 'components/CardList'
+import Button from 'components/Common/Button'
 import Footer from 'components/Footer'
 import Nav from 'components/Nav'
+import useStore from 'lib/store'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -11,6 +13,7 @@ const LIMIT = 12
 
 const CollectionPage = ({ collectionId }) => {
 	const [collection, setCollection] = useState(null)
+	const currentUser = useStore((store) => store.currentUser)
 
 	const [tokens, setTokens] = useState([])
 	const [page, setPage] = useState(0)
@@ -111,7 +114,7 @@ const CollectionPage = ({ collectionId }) => {
 					{collection?.collection}
 				</h1>
 				{collection && (
-					<div className="m-4 mt-0 text-center">
+					<div className="m-4 mt-0 text-center relative">
 						<h4 className="text-xl text-gray-300 self-center">
 							<span>
 								collection by{' '}
@@ -124,7 +127,14 @@ const CollectionPage = ({ collectionId }) => {
 								</span>
 							</span>
 						</h4>
-						<p className="text-gray-200 mt-4">{collection?.description}</p>
+						<p className="text-gray-200 mt-4 max-w-lg m-auto">
+							{collection?.description}
+						</p>
+						{currentUser === collection.creator_id && (
+							<div className="flex flex-col max-w-xs m-auto mt-4">
+								<Button variant="secondary">Edit</Button>
+							</div>
+						)}
 					</div>
 				)}
 				<div className="mt-12 px-4">
