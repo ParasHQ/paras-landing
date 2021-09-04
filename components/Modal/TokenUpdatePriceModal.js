@@ -51,19 +51,7 @@ const TokenUpdatePriceModal = ({
 		}
 
 		try {
-			if (newPrice == 0) {
-				const params = {
-					token_id: data.token_id,
-					nft_contract_id: data.contract_id,
-				}
-				await near.wallet.account().functionCall({
-					contractId: process.env.MARKETPLACE_CONTRACT_ID,
-					methodName: `delete_market_data`,
-					args: params,
-					gas: GAS_FEE,
-					attachedDeposit: `1`,
-				})
-			} else if (data.approval_id) {
+			if (data.approval_id) {
 				const params = {
 					token_id: data.token_id,
 					nft_contract_id: data.contract_id,
