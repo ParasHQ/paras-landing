@@ -13,7 +13,6 @@ const TabHistory = ({ localToken }) => {
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
 		if (localToken.token_series_id) {
 			fetchHistory()
@@ -45,17 +44,13 @@ const TabHistory = ({ localToken }) => {
 		const newData = resp.data.data
 
 		const newHistory = [...(history || []), ...newData.results]
-		setHistory(newHistory)
-
-		const _page = page + 1
-		setPage(page + 1)
-
 		const _hasMore = newData.results.length < FETCH_TOKENS_LIMIT ? false : true
+
+		setHistory(newHistory)
+		setPage(page + 1)
 		setHasMore(_hasMore)
 
 		setIsFetching(false)
-
-		return [_hasMore, _page]
 	}
 
 	return (
@@ -166,10 +161,17 @@ const Activity = ({ activity }) => {
 		}
 
 		if (type === 'nft_set_series_price') {
+			if (!activity.msg.params.price) {
+				return (
+					<p>
+						<span>Creator put the series to not for sale</span>
+					</p>
+				)
+			}
 			return (
 				<p>
 					<span>
-						put the series on sale for{' '}
+						Creator put the series on sale for{' '}
 						{formatNearAmount(activity.msg.params.price)} Ⓝ
 					</span>
 				</p>
@@ -179,7 +181,7 @@ const Activity = ({ activity }) => {
 		if (type === 'nft_set_series_non_mintable') {
 			return (
 				<p>
-					<span> put the series to non-mintable </span>
+					<span>Creator put the series to non-mintable </span>
 				</p>
 			)
 		}
@@ -188,8 +190,7 @@ const Activity = ({ activity }) => {
 			return (
 				<p>
 					<span>
-						{' '}
-						decrease the series copies to {activity.msg.params.copies}{' '}
+						Creator decrease the series copies to {activity.msg.params.copies}{' '}
 					</span>
 				</p>
 			)
