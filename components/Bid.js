@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import AcceptBidModal from '../components/AcceptBidModal'
 import Card from '../components/Card'
-import CardDetailModal from '../components/CardDetailModal'
+import TokenSeriesDetailModal from '../components/TokenSeriesDetailModal'
 import Modal from '../components/Modal'
 import PlaceBidModal from '../components/PlaceBidModal'
 import { useToast } from '../hooks/useToast'
@@ -187,7 +187,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 
 	return (
 		<>
-			<CardDetailModal tokens={[token]} />
+			<TokenSeriesDetailModal tokens={[token]} />
 			{showModal === 'acceptBid' && (
 				<AcceptBidModal
 					data={data}

@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { parseImgUrl, prettyBalance } from '../utils/common'
 import Card from './Card'
 import { useRouter } from 'next/router'
-import CardDetailModal from './CardDetailModal'
+import TokenSeriesDetailModal from './TokenSeriesDetailModal'
 import useStore from '../lib/store'
 import JSBI from 'jsbi'
 
@@ -35,7 +35,7 @@ const EmbeddedCard = ({ tokenId }) => {
 
 	return (
 		<Fragment>
-			<CardDetailModal tokens={[localToken]} />
+			<TokenSeriesDetailModal tokens={[localToken]} />
 			<div className="w-full m-auto">
 				<Card
 					imgUrl={parseImgUrl(localToken?.metadata?.image, null, {

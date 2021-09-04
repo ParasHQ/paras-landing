@@ -154,7 +154,7 @@ const TokenDetail = ({ token, className }) => {
 	return (
 		<div className={`m-auto ${className}`}>
 			<div className="flex flex-col lg:flex-row h-90vh lg:h-80vh">
-				<div className="w-full h-1/2 lg:h-full">
+				<div className="w-full h-1/2 lg:h-full bg-white">
 					<div className="w-full h-full flex items-center justify-center p-2 lg:p-8">
 						<img
 							className="object-contain w-full h-full"

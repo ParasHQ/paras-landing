@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { parseImgUrl, prettyBalance } from '../../utils/common'
 import Card from '../Card'
-import CardDetailModal from '../CardDetailModal'
+import TokenSeriesDetailModal from '../TokenSeriesDetailModal'
 import CardStatListLoader from './CardStatListLoader'
 import LinkToProfile from '../LinkToProfile'
 
@@ -29,7 +29,7 @@ const CardStats = ({ cardsData, fetchData, hasMore }) => {
 
 	return (
 		<div>
-			<CardDetailModal tokens={[token]} />
+			<TokenSeriesDetailModal tokens={[token]} />
 			<InfiniteScroll
 				dataLength={cardsData.length}
 				next={fetchData}

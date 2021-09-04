@@ -19,7 +19,7 @@ import useStore from 'lib/store'
 import TabHistory from './Tabs/TabHistory'
 import TokenSeriesBurnModal from './Modal/TokenSeriesBurnModal'
 
-const CardDetail = ({ token, className }) => {
+const TokenSeriesDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
 	const { currentUser } = useStore()
@@ -254,4 +254,4 @@ const CardDetail = ({ token, className }) => {
 	)
 }
 
-export default CardDetail
+export default TokenSeriesDetail

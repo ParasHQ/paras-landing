@@ -2,7 +2,7 @@ import axios from 'axios'
 import Head from 'next/head'
 import Error from 'pages/404'
 import Nav from 'components/Nav'
-import CardDetail from 'components/CardDetail'
+import TokenSeriesDetail from 'components/TokenSeriesDetail'
 import Footer from 'components/Footer'
 
 const TokenSeriesPage = ({ errorCode, token }) => {
@@ -59,7 +59,7 @@ const TokenSeriesPage = ({ errorCode, token }) => {
 			</Head>
 			<Nav />
 			<div className="relative max-w-6xl m-auto pt-16 px-4">
-				<CardDetail token={token} />
+				<TokenSeriesDetail token={token} />
 			</div>
 			<Footer />
 		</div>

@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import Modal from './Modal'
-import CardDetail from './CardDetail'
+import TokenSeriesDetail from './TokenSeriesDetail'
 
-function CardDetailModal({ tokens = [] }) {
+function TokenSeriesDetailModal({ tokens = [] }) {
 	const router = useRouter()
 
 	const [activeToken, setActiveToken] = useState(null)
 
-	const closeCardDetail = () => {
+	const closeTokenSeriesDetail = () => {
 		const prevUrl = window.sessionStorage.getItem('prevPath')
 		if (prevUrl && prevUrl[0] === '/') {
 			router.push(prevUrl, prevUrl, { shallow: true })
@@ -26,10 +26,11 @@ function CardDetailModal({ tokens = [] }) {
 	}, [])
 
 	useEffect(() => {
-		if (router.query.tokenSeriesId) {
+		if (router.query.tokenSeriesId && activeToken === null) {
 			const token = tokens.find(
 				(token) => token?.token_series_id === router.query.tokenSeriesId
 			)
+			console.log('masuk TokenSeriesDetailmodal')
 			setActiveToken(token)
 		} else {
 			setActiveToken(null)
@@ -39,12 +40,12 @@ function CardDetailModal({ tokens = [] }) {
 	return (
 		<div>
 			{activeToken && (
-				<Modal close={() => closeCardDetail(null)}>
-					<div className="max-w-xl lg:max-w-5xl m-auto w-full relative">
+				<Modal close={() => closeTokenSeriesDetail(null)}>
+					<div className="max-w-5xl m-auto w-full relative">
 						<div className="absolute top-0 left-0 p-4 z-50">
 							<div
 								className="cursor-pointer flex items-center select-none"
-								onClick={() => closeCardDetail(null)}
+								onClick={() => closeTokenSeriesDetail(null)}
 							>
 								<svg
 									width="16"
@@ -63,7 +64,7 @@ function CardDetailModal({ tokens = [] }) {
 								<p className="pl-2 text-gray-100 cursor-pointer">Back</p>
 							</div>
 						</div>
-						<CardDetail token={activeToken} />
+						<TokenSeriesDetail token={activeToken} />
 					</div>
 				</Modal>
 			)}
@@ -71,4 +72,4 @@ function CardDetailModal({ tokens = [] }) {
 	)
 }
 
-export default CardDetailModal
+export default TokenSeriesDetailModal
