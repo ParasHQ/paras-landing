@@ -196,7 +196,7 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 	}
 
 	return (
-		<div className="bg-gray-900 mt-3 p-3 rounded-md shadow-md">
+		<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 			<div className="flex items-center justify-between">
 				<div className="flex items-center">
 					<Link href={`/${token.owner_id}`}>
