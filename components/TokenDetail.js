@@ -23,12 +23,13 @@ import TokenTransferModal from './Modal/TokenTransferModal'
 import useStore from 'lib/store'
 import { STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import TabHistory from './Tabs/TabHistory'
+import LoginModal from './Modal/LoginModal'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState(null)
 	const [needDeposit, setNeedDeposit] = useState(true)
-	const { currentUser } = useStore()
+	const currentUser = useStore((state) => state.currentUser)
 
 	useEffect(() => {
 		if (currentUser) {
@@ -310,7 +311,7 @@ const TokenDetail = ({ token, className }) => {
 				onClose={onDismissModal}
 				data={token}
 			/>
-			{/* <LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} /> */}
+			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>
 	)
 }
