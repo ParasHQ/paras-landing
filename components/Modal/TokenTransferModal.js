@@ -9,6 +9,9 @@ import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
+import getConfig from 'config/near'
+import Axios from 'axios'
+import { useToast } from 'hooks/useToast'
 
 const TokenTransferModal = ({
 	show,
@@ -42,6 +45,7 @@ const TokenTransferModal = ({
 }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [receiverId, setReceiverId] = useState('')
+	const toast = useToast()
 
 	const onTransfer = async () => {
 		if (!near.currentUser) {
@@ -53,33 +57,36 @@ const TokenTransferModal = ({
 			receiver_id: receiverId,
 		}
 
-		// if (
-		// 	JSBI.lessThan(
-		// 		JSBI.BigInt(near.currentUser.balance.available),
-		// 		attachedDeposit
-		// 	)
-		// ) {
-		// 	get().setToastConfig({
-		// 		text: (
-		// 			<div className="font-semibold text-center text-sm">
-		// 				Insufficient Balance
-		// 				<p className="mt-2">
-		// 					Available
-		// 					{prettyBalance(near.getAccount().balance.available, 24, 4)} Ⓝ
-		// 				</p>
-		// 			</div>
-		// 		),
-		// 		type: 'error',
-		// 		duration: 2500,
-		// 	})
-		// 	return
-		// }
-
-		// nft_buy(
-		//   params,
-		//   '50000000000000',
-		//   attachedDeposit.toString()
-		// )
+		try {
+			if (receiverId === near.currentUser.accountId) {
+				throw new Error(`Cannot transfer to self`)
+			}
+			const nearConfig = getConfig(process.env.APP_ENV || 'development')
+			const resp = await Axios.post(nearConfig.nodeUrl, {
+				jsonrpc: '2.0',
+				id: 'dontcare',
+				method: 'query',
+				params: {
+					request_type: 'view_account',
+					finality: 'final',
+					account_id: receiverId,
+				},
+			})
+			if (resp.data.error) {
+				throw new Error(`Account ${receiverId} not exist`)
+			}
+			console.log(resp.data)
+		} catch (err) {
+			const message = err.message || 'Something went wrong, try again later'
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">{message}</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			return
+		}
 
 		try {
 			await near.wallet.account().functionCall({
@@ -129,7 +136,6 @@ const TokenTransferModal = ({
 								step="any"
 								value={receiverId}
 								onChange={(e) => setReceiverId(e.target.value)}
-								className="clear pr-2"
 								placeholder="Account ID (abc.near)"
 							/>
 						</div>
