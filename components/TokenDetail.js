@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Blurhash } from 'react-blurhash'
 import Scrollbars from 'react-custom-scrollbars'
 import { useRouter } from 'next/router'
-import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 
 import Button from 'components/Common/Button'
 import { IconDots } from 'components/Icons'
@@ -31,6 +30,8 @@ const TokenDetail = ({ token, className }) => {
 	const [needDeposit, setNeedDeposit] = useState(true)
 	const currentUser = useStore((state) => state.currentUser)
 
+	const router = useRouter()
+
 	useEffect(() => {
 		if (currentUser) {
 			setTimeout(() => {
@@ -38,6 +39,10 @@ const TokenDetail = ({ token, className }) => {
 			}, 250)
 		}
 	}, [currentUser])
+
+	useEffect(() => {
+		setActiveTab('info')
+	}, [router.query.tokenId])
 
 	const checkStorageBalance = async () => {
 		try {
