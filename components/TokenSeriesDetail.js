@@ -19,11 +19,12 @@ import useStore from 'lib/store'
 import TabHistory from './Tabs/TabHistory'
 import TokenSeriesBurnModal from './Modal/TokenSeriesBurnModal'
 import { Blurhash } from 'react-blurhash'
+import LoginModal from './Modal/LoginModal'
 
 const TokenSeriesDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
-	const { currentUser } = useStore()
+	const currentUser = useStore((state) => state.currentUser)
 
 	const changeActiveTab = (tab) => {
 		setActiveTab(tab)
@@ -262,11 +263,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 				onClose={onDismissModal}
 				tokenData={token}
 			/>
-			{/* <TokenDetailUpdateModal
-				show={showModal === 'update'}
-				onClose={onDismissModal}
-			/>
-			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} /> */}
+			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>
 	)
 }
