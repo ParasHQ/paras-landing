@@ -50,7 +50,7 @@ export default function MarketPage() {
 	}
 
 	const getCategory = async () => {
-		const res = await axios(`${process.env.API_URL}/categories`)
+		const res = await axios(`${process.env.V2_API_URL}/categories`)
 		store.setCardCategory(res.data.data.results)
 	}
 

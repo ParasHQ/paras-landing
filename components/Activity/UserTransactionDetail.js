@@ -62,7 +62,7 @@ const UserTransactionDetail = ({
 
 	useEffect(async () => {
 		const res = await axios(
-			`${process.env.API_URL}/profiles?accountId=${data.account_id}`
+			`${process.env.V2_API_URL}/profiles?accountId=${data.account_id}`
 		)
 		setProfile(res.data.data.results[0])
 	}, [])

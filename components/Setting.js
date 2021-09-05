@@ -20,7 +20,7 @@ const Setting = ({ close }) => {
 	}, [])
 
 	const fetchEmail = async () => {
-		const resp = await Axios.get(`${process.env.API_URL}/credentials/mail`, {
+		const resp = await Axios.get(`${process.env.V2_API_URL}/credentials/mail`, {
 			headers: {
 				authorization: await near.authToken(),
 			},
@@ -38,7 +38,7 @@ const Setting = ({ close }) => {
 		setIsUpdating(true)
 		try {
 			const resp = await Axios.put(
-				`${process.env.API_URL}/credentials/mail`,
+				`${process.env.V2_API_URL}/credentials/mail`,
 				{ email, preferences },
 				{ headers: { authorization: await near.authToken() } }
 			)

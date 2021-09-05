@@ -111,7 +111,7 @@ export default collection
 
 export async function getServerSideProps({ params }) {
 	const profileRes = await axios(
-		`${process.env.API_URL}/profiles?accountId=${params.id}`
+		`${process.env.V2_API_URL}/profiles?accountId=${params.id}`
 	)
 
 	const userProfile = (await profileRes.data.data.results[0]) || null

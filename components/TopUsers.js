@@ -43,7 +43,7 @@ const TopUser = ({ user, idx }) => {
 
 	useEffect(async () => {
 		const res = await axios(
-			`${process.env.API_URL}/profiles?accountId=${user._id}`
+			`${process.env.V2_API_URL}/profiles?accountId=${user._id}`
 		)
 		setProfile(res.data.data.results[0])
 	}, [])

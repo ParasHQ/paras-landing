@@ -20,7 +20,7 @@ const EmailVerification = () => {
 
 	const verifyEmail = async () => {
 		try {
-			await Axios.put(`${process.env.API_URL}/credentials/mail/verify`, {
+			await Axios.put(`${process.env.V2_API_URL}/credentials/mail/verify`, {
 				token: router.query.id,
 			})
 			setEmailVerified(true)
