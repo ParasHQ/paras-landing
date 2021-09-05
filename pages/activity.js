@@ -69,12 +69,6 @@ const ActivityLog = ({ query }) => {
 		if (!filter || filter === 'showAll') {
 			return ``
 		}
-		if (filter === 'mint') {
-			return `type=transfer&from=root&`
-		}
-		if (filter === 'burn') {
-			return `type=transfer&to=root&`
-		}
 		return `type=${filter}&`
 	}
 
@@ -106,12 +100,18 @@ const ActivityLog = ({ query }) => {
 			const _filter =
 				_filterQuery(fetchQuery?.filter) +
 				_filterMinMax(fetchQuery?.filter, fetchQuery?.pmin, fetchQuery?.pmax)
-			const res = await axios.get(`${process.env.V2_API_URL}/activities`, {
-				params: {
-					__skip: _activityListPage * FETCH_TOKENS_LIMIT,
-					__limit: FETCH_TOKENS_LIMIT,
-				},
-			})
+
+			console.log(_filter)
+
+			const res = await axios.get(
+				`${process.env.V2_API_URL}/activities?${_filter}`,
+				{
+					params: {
+						__skip: _activityListPage * FETCH_TOKENS_LIMIT,
+						__limit: FETCH_TOKENS_LIMIT,
+					},
+				}
+			)
 			const newData = await res.data.data
 
 			const newActivityList = [..._activityList, ...newData.results]

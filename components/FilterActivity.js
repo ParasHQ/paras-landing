@@ -123,28 +123,28 @@ const filter = [
 		value: 'Show All',
 	},
 	{
-		key: 'marketBuy',
+		key: 'market_sales',
 		value: 'Market Sales',
 	},
 	{
-		key: 'marketUpdate',
+		key: 'market_update',
 		value: 'Market Update',
 	},
 	{
-		key: 'mint',
-		value: 'Card Creation',
+		key: 'nft_create_series',
+		value: 'Series Creation',
 	},
 	{
-		key: 'transfer',
-		value: 'Card Transfer',
+		key: 'gift',
+		value: 'NFT Transfer',
+	},
+	{
+		key: 'mint',
+		value: 'NFT Mint',
 	},
 	{
 		key: 'burn',
-		value: 'Card Burn',
-	},
-	{
-		key: 'bidMarketAdd',
-		value: 'Card Bid',
+		value: 'NFT Burn',
 	},
 ]
 

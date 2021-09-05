@@ -74,45 +74,6 @@ const FeaturedPost = ({ post = {} }) => {
 	)
 }
 
-const TopUser = ({ user, idx }) => {
-	const [profile, setProfile] = useState({})
-
-	useEffect(async () => {
-		const res = await axios(
-			`${process.env.API_URL}/profiles?accountId=${user.account_id}`
-		)
-		setProfile(res.data.data.results[0])
-	}, [])
-
-	return (
-		<div className="my-3 flex items-center">
-			<p className="text-base text-gray-100 opacity-50 mr-3">{idx + 1}</p>
-			<Link href={`/${user.account_id}`}>
-				<div className="flex-shrink-0 cursor-pointer w-12 h-12 rounded-full overflow-hidden bg-primary border-white border">
-					<img
-						src={parseImgUrl(profile?.imgUrl, null, {
-							width: `300`,
-						})}
-						className="object-cover"
-					/>
-				</div>
-			</Link>
-			<div className="ml-3">
-				{user.account_id && (
-					<LinkToProfile
-						accountId={user.account_id}
-						len={16}
-						className="text-gray-100 hover:border-gray-100 font-semibold text-lg"
-					/>
-				)}
-				<p className="text-base text-gray-400">
-					{formatNearAmount(user.total_sum)} Ⓝ
-				</p>
-			</div>
-		</div>
-	)
-}
-
 const PublicationList = ({ idx, data }) => {
 	return (
 		<div className="publication-card">
@@ -209,7 +170,7 @@ export const HomePublicationList = () => {
 		<div className="flex flex-wrap mt-8 -mx-4">
 			<div className="w-full lg:w-7/12 px-4">
 				<p className="text-white font-semibold text-3xl">Featured</p>
-				<div className="mt-4 h-96">
+				<div className="mt-4 h-96 mb-24">
 					{!isLoading ? (
 						<div className="border-2 border-dashed border-gray-800 rounded-md">
 							<Slider
