@@ -885,7 +885,7 @@ const NewPage = () => {
 													placeholder="Card price per pcs"
 												/>
 												<div className="font-bold absolute right-0 top-0 bottom-0 flex items-center justify-center">
-													<div className="pr-4">%</div>
+													<div className="pr-4">Ⓝ</div>
 												</div>
 											</div>
 											<p>
