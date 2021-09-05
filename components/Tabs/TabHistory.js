@@ -59,6 +59,7 @@ const TabHistory = ({ localToken }) => {
 				dataLength={history.length}
 				next={fetchHistory}
 				hasMore={hasMore}
+				scrollableTarget="TokenScroll"
 				loader={<div className="text-white h-20">Loading...</div>}
 			>
 				{history.map((h) => (
@@ -200,7 +201,7 @@ const Activity = ({ activity }) => {
 	}
 
 	return (
-		<div className="bg-gray-900 border border-blueGray-700 mt-3 p-3 rounded-md shadow-md">
+		<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 			<TextActivity type={activity.type} />
 			<p className="mt-1 text-sm">
 				{timeAgo.format(new Date(activity.msg.datetime))}

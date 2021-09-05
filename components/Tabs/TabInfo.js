@@ -14,7 +14,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 
 	return (
 		<div>
-			<div className="bg-gray-900 border border-blueGray-700 mt-4 p-3 rounded-md shadow-md">
+			<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 				<p className="text-sm text-white font-bold">Description</p>
 				<ReactLinkify
 					componentDecorator={(decoratedHref, decoratedText, key) => (
@@ -34,7 +34,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 				</ReactLinkify>
 			</div>
 			{isNFT && (
-				<div className="flex bg-gray-900 border border-blueGray-700 mt-4 p-3 rounded-md shadow-md">
+				<div className="flex bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 					<div>
 						<p className="text-sm text-white font-bold">Owner</p>
 						<Link href={`/${localToken.owner_id}`}>
@@ -45,7 +45,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 					</div>
 				</div>
 			)}
-			<div className="flex bg-gray-900 border border-blueGray-700 mt-4 p-3 rounded-md shadow-md">
+			<div className="flex bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 				<div>
 					<p className="text-sm text-white font-bold">Collection</p>
 					<Link href={`/collection/${collection.id}`}>
@@ -55,7 +55,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 					</Link>
 				</div>
 			</div>
-			<div className="flex bg-gray-900 border border-blueGray-700 mt-4 p-3 rounded-md shadow-md">
+			<div className="flex bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 				<div>
 					<p className="text-sm text-white font-bold">Royalty</p>
 					<p className="text-gray-100 font-semibold">

@@ -9,7 +9,7 @@ function TokenDetailModal({ tokens = [] }) {
 
 	const [activeToken, setActiveToken] = useState(null)
 
-	const closeCardDetail = () => {
+	const closeTokenSeriesDetail = () => {
 		const prevUrl = window.sessionStorage.getItem('prevPath')
 		if (prevUrl && prevUrl[0] === '/') {
 			router.push(prevUrl, prevUrl, { shallow: true })
@@ -26,10 +26,11 @@ function TokenDetailModal({ tokens = [] }) {
 	}, [])
 
 	useEffect(() => {
-		if (router.query.tokenId) {
+		if (router.query.tokenId && activeToken === null) {
 			const token = tokens.find(
 				(token) => token?.token_id === router.query.tokenId
 			)
+			console.log('masuk tokendetailmodal')
 			setActiveToken(token)
 		} else {
 			setActiveToken(null)
@@ -39,12 +40,12 @@ function TokenDetailModal({ tokens = [] }) {
 	return (
 		<div>
 			{activeToken && (
-				<Modal close={() => closeCardDetail(null)}>
+				<Modal close={() => closeTokenSeriesDetail(null)}>
 					<div className="max-w-5xl m-auto w-full relative">
 						<div className="absolute top-0 left-0 p-4 z-50">
 							<div
 								className="cursor-pointer flex items-center select-none"
-								onClick={() => closeCardDetail(null)}
+								onClick={() => closeTokenSeriesDetail(null)}
 							>
 								<svg
 									width="16"
@@ -60,7 +61,9 @@ function TokenDetailModal({ tokens = [] }) {
 										fill="white"
 									/>
 								</svg>
-								<p className="pl-2 text-gray-100 cursor-pointer">Back</p>
+								<p className="pl-2 text-gray-100 cursor-pointer relative z-50">
+									Back
+								</p>
 							</div>
 						</div>
 						<TokenDetail token={activeToken} />

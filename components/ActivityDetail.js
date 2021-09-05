@@ -15,7 +15,7 @@ import Modal from './Modal'
 
 import useStore from '../lib/store'
 import { parseImgUrl, prettyBalance, timeAgo } from '../utils/common'
-import CardDetailModal from './CardDetailModal'
+import TokenSeriesDetailModal from './TokenSeriesDetailModal'
 import { useRouter } from 'next/router'
 import CopyLink from './CopyLink'
 import TokenDetailModal from './TokenDetailModal'
@@ -282,7 +282,7 @@ const ActivityDetail = ({ activity, token }) => {
 
 	return (
 		<Fragment>
-			<CardDetailModal tokens={[localToken]} />
+			<TokenSeriesDetailModal tokens={[localToken]} />
 			<TokenDetailModal tokens={[localToken]} />
 			{showModal === 'options' && (
 				<Modal close={() => setShowModal('')}>

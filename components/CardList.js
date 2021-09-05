@@ -7,7 +7,7 @@ import useStore from '../lib/store'
 import { useRouter } from 'next/router'
 import JSBI from 'jsbi'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import CardDetailModal from './CardDetailModal'
+import TokenSeriesDetailModal from './TokenSeriesDetailModal'
 import CardListLoader from './CardListLoader'
 
 const CardList = ({
@@ -68,7 +68,7 @@ const CardList = ({
 
 	return (
 		<div ref={containerRef} className="rounded-md p-4 md:p-0">
-			<CardDetailModal tokens={tokens} />
+			<TokenSeriesDetailModal tokens={tokens} />
 			{tokens.length === 0 && !hasMore && (
 				<div className="w-full">
 					<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">

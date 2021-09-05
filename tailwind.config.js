@@ -14,9 +14,10 @@ module.exports = {
 			},
 			height: {
 				'100vh': '100vh',
-				'80vh': '80vh',
 				'90vh': '90vh',
-				'100vh': '100vh',
+				'80vh': '80vh',
+				'70vh': '70vh',
+				'60vh': '60vh',
 			},
 			colors: {
 				primary: '#1300BA',

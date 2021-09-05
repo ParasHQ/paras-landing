@@ -71,10 +71,11 @@ const Card = ({
 					className="card-wrap transform transition-all origin-bottom-right duration-300 ease-in-out hover:-translate-y-1"
 				>
 					<div
-						className="card bg-transparent w-full h-full"
+						className="card bg-transparent w-full h-full bg-black"
 						style={{
 							fontSize: `${dimension.width / 14}px`,
 							borderRadius: borderRadius,
+							// background: '#202124',
 						}}
 					>
 						<div className="h-full py-2 flex flex-col">
@@ -102,14 +103,14 @@ const Card = ({
 									src={imgLoaded}
 								/>
 								<div className="absolute inset-0 z-0">
-									<Blurhash
+									{/* <Blurhash
 										hash={imgBlur || 'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'}
 										width={`100%`}
 										height={`100%`}
 										resolutionX={32}
 										resolutionY={32}
 										punch={1}
-									/>
+									/> */}
 								</div>
 							</div>
 							<div className="px-2 mt-auto">

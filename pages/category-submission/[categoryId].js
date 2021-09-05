@@ -4,7 +4,7 @@ import router, { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import useSWR from 'swr'
 import Card from '../../components/Card'
-import CardDetailModal from '../../components/CardDetailModal'
+import TokenSeriesDetailModal from '../../components/TokenSeriesDetailModal'
 import Footer from '../../components/Footer'
 import Modal from '../../components/Modal'
 import Nav from '../../components/Nav'
@@ -210,7 +210,7 @@ const SubmissionDetail = ({ tokenId, submission, updateData }) => {
 				</Modal>
 			)}
 			<div className="text-black">
-				<CardDetailModal tokens={[localToken]} />
+				<TokenSeriesDetailModal tokens={[localToken]} />
 			</div>
 			<div className="flex flex-wrap border-2 border-dashed border-gray-800 p-4 md:p-8 rounded-md items-center">
 				<div className="w-40 md:mr-6">

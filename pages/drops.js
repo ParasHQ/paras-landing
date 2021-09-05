@@ -8,7 +8,7 @@ import { Blurhash } from 'react-blurhash'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import Card from '../components/Card'
-import CardDetailModal from '../components/CardDetailModal'
+import TokenSeriesDetailModal from '../components/TokenSeriesDetailModal'
 import { parseImgUrl, prettyBalance } from '../utils/common'
 import ReactLinkify from 'react-linkify'
 
@@ -104,7 +104,7 @@ export default function Drops() {
 				/>
 			</Head>
 			<Nav />
-			<CardDetailModal tokens={[token]} />
+			<TokenSeriesDetailModal tokens={[token]} />
 			<div className="max-w-2xl m-auto py-12 min-h-full">
 				<div className="flex items-center justify-center m-4 md:m-0">
 					<div className="text-center">

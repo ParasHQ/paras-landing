@@ -118,7 +118,6 @@ const TokenSeriesTransferModal = ({
 									step="any"
 									value={receiverId}
 									onChange={(e) => setReceiverId(e.target.value)}
-									className="clear pr-2"
 									placeholder="Account ID (abc.near)"
 								/>
 							</div>
