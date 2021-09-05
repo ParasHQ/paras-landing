@@ -37,14 +37,21 @@ export const descriptionMaker = (activity, token) => {
 	}
 
 	if (type === 'resolve_purchase') {
-		return `${activity.from} bought from ${activity.to} for ${formatNearAmount(
-			activity.msg.params.price
-		)} Ⓝ`
+		const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+
+		return `${activity.from} bought  #${edition_id || 1} from ${
+			activity.to
+		} for ${formatNearAmount(activity.msg.params.price)} Ⓝ`
 	}
 
 	if (type === 'nft_transfer' && activity.from === null) {
 		const [series_id, edition_id] = activity.msg.params.token_id.split(':')
 
+		if (activity.price) {
+			return `${activity.to} bought #${edition_id || 1} for ${formatNearAmount(
+				activity.price
+			)} Ⓝ`
+		}
 		return `${activity.to} minted #${edition_id || 1}`
 	}
 
@@ -116,14 +123,35 @@ const Activity = ({ activity }) => {
 		)
 	}
 
+	// if (type === 'resolve_purchase') {
+	// 	const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+
+	// 	return `${activity.from} bought  #${edition_id || 1} from ${
+	// 		activity.to
+	// 	} for ${formatNearAmount(activity.msg.params.price)} Ⓝ`
+	// }
+
+	// if (type === 'nft_transfer' && activity.from === null) {
+	// 	const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+
+	// 	if (activity.price) {
+	// 		return `${activity.to} bought #${edition_id || 1} for ${formatNearAmount(
+	// 			activity.price
+	// 		)} Ⓝ`
+	// 	}
+	// 	return `${activity.to} minted #${edition_id || 1}`
+	// }
+
 	if (type === 'resolve_purchase') {
+		const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+
 		return (
 			<p>
 				<LinkToProfile
 					className="text-gray-100 hover:border-gray-100"
 					accountId={activity.from}
 				/>
-				<span> bought from </span>
+				<span> bought #{edition_id || 1} from </span>
 				<LinkToProfile
 					className="text-gray-100 hover:border-gray-100"
 					accountId={activity.to}
@@ -136,6 +164,19 @@ const Activity = ({ activity }) => {
 
 	if (type === 'nft_transfer' && activity.from === null) {
 		const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+
+		if (activity.price) {
+			return (
+				<p>
+					<LinkToProfile
+						className="text-gray-100 hover:border-gray-100"
+						accountId={activity.to}
+					/>
+					<span> bought #{edition_id || 1} for </span>
+					{formatNearAmount(activity.msg.params.price)} Ⓝ
+				</p>
+			)
+		}
 
 		return (
 			<p>
