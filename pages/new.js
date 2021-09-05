@@ -293,9 +293,9 @@ const NewPage = () => {
 			<Nav />
 			{showAlertErr && (
 				<Modal close={() => setShowAlertErr(false)}>
-					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
+					<div className="w-full max-w-xs p-4 m-auto bg-gray-800 rounded-md overflow-y-auto max-h-screen">
 						<div>
-							<div className="w-full">{showAlertErr}</div>
+							<div className="w-full text-white">{showAlertErr}</div>
 							<div>
 								<button
 									className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
@@ -343,57 +343,34 @@ const NewPage = () => {
 								<div className="text-white opacity-80">
 									{isOnSale && (
 										<>
-											<p className="text-sm mt-2">
-												Price:{' '}
-												{prettyBalance(
-													Number(getValues('amount', 0))
-														.toPrecision(4)
-														.toString(),
-													0,
-													6
-												)}{' '}
-												Ⓝ (~$
-												{prettyBalance(
-													Number(store.nearUsdPrice * getValues('amount', 0))
-														.toPrecision(4)
-														.toString(),
-													0,
-													6
-												)}
-												)
-											</p>
-											<p className="text-sm">
-												Receive:{' '}
-												{prettyBalance(
-													Number(
-														getValues('amount', 0) *
-															((95 - (formInput.royalty || 0)) / 100)
+											<div className="flex items-center justify-between text-sm mt-2">
+												<span>Price: </span>
+												<span>
+													{prettyBalance(
+														Number(getValues('amount', 0))
+															.toPrecision(4)
+															.toString(),
+														0,
+														6
+													)}{' '}
+													Ⓝ (~$
+													{prettyBalance(
+														Number(store.nearUsdPrice * getValues('amount', 0))
+															.toPrecision(4)
+															.toString(),
+														0,
+														6
+													)}
 													)
-														.toPrecision(4)
-														.toString(),
-													0,
-													6
-												)}{' '}
-												Ⓝ (~$
-												{prettyBalance(
-													Number(
-														store.nearUsdPrice *
-															getValues('amount', 0) *
-															((95 - (formInput.royalty || 0)) / 100)
-													)
-														.toPrecision(4)
-														.toString(),
-													0,
-													6
-												)}
-												)
-											</p>
-											{formInput.royalty !== 0 && (
-												<p className="text-sm">
-													Royalty:{' '}
+												</span>
+											</div>
+											<div className="flex items-center justify-between text-sm">
+												<span>Receive: </span>
+												<span>
 													{prettyBalance(
 														Number(
-															getValues('amount', 0) * (formInput.royalty / 100)
+															getValues('amount', 0) *
+																((95 - (formInput.royalty || 0)) / 100)
 														)
 															.toPrecision(4)
 															.toString(),
@@ -405,7 +382,7 @@ const NewPage = () => {
 														Number(
 															store.nearUsdPrice *
 																getValues('amount', 0) *
-																(formInput.royalty / 100)
+																((95 - (formInput.royalty || 0)) / 100)
 														)
 															.toPrecision(4)
 															.toString(),
@@ -413,29 +390,61 @@ const NewPage = () => {
 														6
 													)}
 													)
-												</p>
+												</span>
+											</div>
+											{formInput.royalty !== 0 && (
+												<div className="flex items-center justify-between text-sm">
+													<span>Royalty: </span>
+													<span>
+														{prettyBalance(
+															Number(
+																getValues('amount', 0) *
+																	(formInput.royalty / 100)
+															)
+																.toPrecision(4)
+																.toString(),
+															0,
+															6
+														)}{' '}
+														Ⓝ (~$
+														{prettyBalance(
+															Number(
+																store.nearUsdPrice *
+																	getValues('amount', 0) *
+																	(formInput.royalty / 100)
+															)
+																.toPrecision(4)
+																.toString(),
+															0,
+															6
+														)}
+														)
+													</span>
+												</div>
 											)}
-											<p className="text-sm">
-												Fee:{' '}
-												{prettyBalance(
-													Number(getValues('amount', 0) * 0.05)
-														.toPrecision(4)
-														.toString(),
-													0,
-													6
-												)}{' '}
-												Ⓝ (~$
-												{prettyBalance(
-													Number(
-														store.nearUsdPrice * getValues('amount', 0) * 0.05
+											<div className="flex items-center justify-between text-sm">
+												<span>Fee: </span>
+												<span>
+													{prettyBalance(
+														Number(getValues('amount', 0) * 0.05)
+															.toPrecision(4)
+															.toString(),
+														0,
+														6
+													)}{' '}
+													Ⓝ (~$
+													{prettyBalance(
+														Number(
+															store.nearUsdPrice * getValues('amount', 0) * 0.05
+														)
+															.toPrecision(4)
+															.toString(),
+														0,
+														6
+													)}
 													)
-														.toPrecision(4)
-														.toString(),
-													0,
-													6
-												)}
-												)
-											</p>
+												</span>
+											</div>
 										</>
 									)}
 								</div>
