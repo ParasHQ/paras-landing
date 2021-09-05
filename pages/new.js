@@ -18,6 +18,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { GAS_FEE, STORAGE_CREATE_SERIES_FEE } from 'config/constants'
 import Button from 'components/Common/Button'
 import { InputText, InputTextarea } from 'components/Common/form'
+import CreateCollectionModal from 'components/Collection/CreateCollectionModal'
 
 const LIMIT = 10
 
@@ -35,7 +36,8 @@ const NewPage = () => {
 	const [step, setStep] = useState(0)
 	const [isUploading, setIsUploading] = useState(false)
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
-	const [showCreatingModal, setShowCreatingModal] = useState(true)
+	const [showCreatingModal, setShowCreatingModal] = useState(false)
+	const [showCreateColl, setShowCreateColl] = useState(false)
 
 	const [showAlertErr, setShowAlertErr] = useState(false)
 	const [choosenCollection, setChoosenCollection] = useState({})
@@ -70,7 +72,7 @@ const NewPage = () => {
 
 		let resp
 		try {
-			resp = await axios.post(`${process.env.V1_API_URL}/uploads`, formData, {
+			resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 					authorization: await near.authToken(),
@@ -187,7 +189,7 @@ const NewPage = () => {
 	const _setImg = async (e) => {
 		if (e.target.files[0]) {
 			if (e.target.files[0].size > 20 * 1024 * 1024) {
-				setShowAlertErr('Maximum file size is 20 Mb')
+				setShowAlertErr('Maximum file size is 16 Mb')
 				return
 			} else {
 				const newImgUrl = await readFileAsUrl(e.target.files[0])
@@ -482,7 +484,7 @@ const NewPage = () => {
 							>
 								{isUploading === true
 									? 'In progress...'
-									: isUploading
+									: isUploading === 'success'
 									? 'Success'
 									: 'Try Again'}
 							</Button>
@@ -537,6 +539,14 @@ const NewPage = () => {
 					}}
 				/>
 			)}
+			<CreateCollectionModal
+				show={showCreateColl}
+				onClose={() => setShowCreateColl(!showCreateColl)}
+				onFinishCreate={(res) => {
+					setCollectionList([res, ...collectionList])
+					setShowCreateColl(false)
+				}}
+			/>
 			<div className="relative max-w-6xl m-auto py-12 px-4 text-white">
 				<div className="flex flex-wrap rounded-md overflow-hidden">
 					<div
@@ -617,7 +627,7 @@ const NewPage = () => {
 										scrollableTarget="collection::user"
 									>
 										<div
-											onClick={() => router.push('/new-collection')}
+											onClick={() => setShowCreateColl(!showCreateColl)}
 											className="bg-gray-800 mt-2 flex items-center rounded-md overflow-hidden cursor-pointer border-2 border-gray-800"
 										>
 											<div className="h-10 w-full flex items-center justify-center flex-shrink-0 text-sm text-center font-medium">
@@ -859,7 +869,7 @@ const NewPage = () => {
 									<div className="flex items-center mb-2">
 										<div className="pr-2">
 											<input
-												id="self-mint"
+												id="put-marketplace"
 												className="w-auto"
 												type="checkbox"
 												defaultChecked={isOnSale}
@@ -868,7 +878,9 @@ const NewPage = () => {
 												}}
 											/>
 										</div>
-										<label className="block text-sm">Put on Marketplace</label>
+										<label htmlFor="put-marketplace" className="block text-sm">
+											Put on Marketplace
+										</label>
 									</div>
 									{isOnSale && (
 										<>
@@ -885,7 +897,7 @@ const NewPage = () => {
 													placeholder="Card price per pcs"
 												/>
 												<div className="font-bold absolute right-0 top-0 bottom-0 flex items-center justify-center">
-													<div className="pr-4">%</div>
+													<div className="pr-4">Ⓝ</div>
 												</div>
 											</div>
 											<p>
