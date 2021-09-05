@@ -35,7 +35,7 @@ const NewPage = () => {
 	const [step, setStep] = useState(0)
 	const [isUploading, setIsUploading] = useState(false)
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
-	const [showCreatingModal, setShowCreatingModal] = useState(true)
+	const [showCreatingModal, setShowCreatingModal] = useState(false)
 
 	const [showAlertErr, setShowAlertErr] = useState(false)
 	const [choosenCollection, setChoosenCollection] = useState({})
