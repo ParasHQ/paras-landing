@@ -22,15 +22,26 @@ const FilterMarket = () => {
 		return () => {
 			document.body.removeEventListener('click', onClickEv)
 		}
-	})
+	}, [])
 
+	// update filter state based on query
 	useEffect(() => {
 		if (router.pathname === '/search') {
 			setSortBy(filter[0].key)
 			setMinPrice('')
 			setMaxPrice('')
+		} else {
+			if (router.query.sort) {
+				setSortBy(router.query.sort)
+			}
+			if (router.query.pmin) {
+				setMinPrice(router.query.pmin)
+			}
+			if (router.query.pmax) {
+				setMaxPrice(router.query.pmin)
+			}
 		}
-	}, [router.query.q])
+	}, [router.query])
 
 	const onClickApply = async () => {
 		router.push({
