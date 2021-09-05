@@ -70,7 +70,7 @@ const NewPage = () => {
 
 		let resp
 		try {
-			resp = await axios.post(`${process.env.V1_API_URL}/uploads`, formData, {
+			resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 					authorization: await near.authToken(),
@@ -187,7 +187,7 @@ const NewPage = () => {
 	const _setImg = async (e) => {
 		if (e.target.files[0]) {
 			if (e.target.files[0].size > 20 * 1024 * 1024) {
-				setShowAlertErr('Maximum file size is 20 Mb')
+				setShowAlertErr('Maximum file size is 16 Mb')
 				return
 			} else {
 				const newImgUrl = await readFileAsUrl(e.target.files[0])
@@ -482,7 +482,7 @@ const NewPage = () => {
 							>
 								{isUploading === true
 									? 'In progress...'
-									: isUploading
+									: isUploading === 'success'
 									? 'Success'
 									: 'Try Again'}
 							</Button>
