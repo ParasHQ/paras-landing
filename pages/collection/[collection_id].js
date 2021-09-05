@@ -1,5 +1,6 @@
 import axios from 'axios'
 import CardList from 'components/CardList'
+import CollectionLoader from 'components/Collection/CollectionLoader'
 import Button from 'components/Common/Button'
 import Footer from 'components/Footer'
 import Nav from 'components/Nav'
@@ -20,6 +21,8 @@ const CollectionPage = ({ collectionId }) => {
 	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
+
+	const [isFetchCollection, setIsFetchCollection] = useState(true)
 
 	const fetchData = async () => {
 		if (!hasMore || isFetching) {
@@ -54,12 +57,14 @@ const CollectionPage = ({ collectionId }) => {
 	}, [])
 
 	const fetchCollection = async () => {
+		setIsFetchCollection(true)
 		const resp = await axios.get(`${process.env.V2_API_URL}/collections`, {
 			params: {
 				collection_id: collectionId,
 			},
 		})
 		setCollection(resp.data.data.results[0])
+		setIsFetchCollection(false)
 	}
 
 	const editCollection = () => {
@@ -102,51 +107,53 @@ const CollectionPage = ({ collectionId }) => {
 			</Head>
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
-				<div className="flex items-center m-auto justify-center mb-4">
-					{collection && (
-						<div className="w-32 h-32 overflow-hidden bg-primary shadow-inner">
-							<img
-								src={parseImgUrl(collection?.media, null, {
-									width: `300`,
-								})}
-								className="w-full object-cover"
-							/>
-						</div>
-					)}
-				</div>
-				<h1 className="text-4xl font-bold text-gray-100 mx-4 text-center">
-					{collection?.collection}
-				</h1>
-				{collection && (
-					<div className="m-4 mt-0 text-center relative">
-						<h4 className="text-xl text-gray-300 self-center">
-							<span>
-								collection by{' '}
-								<span className="font-semibold">
-									<Link href={`/${collection?.creator_id}`}>
-										<a className="font-semibold text-white border-b-2 border-transparent hover:border-white">
-											{collection?.creator_id}
-										</a>
-									</Link>
-								</span>
-							</span>
-						</h4>
-						<p className="text-gray-200 mt-4 max-w-lg m-auto">
-							{collection?.description}
-						</p>
-						{currentUser === collection.creator_id && (
-							<div className="flex flex-col max-w-xs m-auto mt-4">
-								<Button
-									onClick={editCollection}
-									variant="secondary"
-									size="md"
-									className="w-40 m-auto"
-								>
-									Edit
-								</Button>
+				{isFetchCollection ? (
+					<CollectionLoader />
+				) : (
+					<>
+						<div className="flex items-center m-auto justify-center mb-4">
+							<div className="w-32 h-32 overflow-hidden bg-primary shadow-inner">
+								<img
+									src={parseImgUrl(collection?.media, null, {
+										width: `300`,
+									})}
+									className="w-full object-cover"
+								/>
 							</div>
-						)}
-					</div>
+						</div>
+						<h1 className="text-4xl font-bold text-gray-100 mx-4 text-center">
+							{collection?.collection}
+						</h1>
+						<div className="m-4 mt-0 text-center relative">
+							<h4 className="text-xl text-gray-300 self-center">
+								<span>
+									collection by{' '}
+									<span className="font-semibold">
+										<Link href={`/${collection?.creator_id}`}>
+											<a className="font-semibold text-white border-b-2 border-transparent hover:border-white">
+												{collection?.creator_id}
+											</a>
+										</Link>
+									</span>
+								</span>
+							</h4>
+							<p className="text-gray-200 mt-4 max-w-lg m-auto">
+								{collection?.description}
+							</p>
+							{currentUser === collection.creator_id && (
+								<div className="flex flex-col max-w-xs m-auto mt-4">
+									<Button
+										onClick={editCollection}
+										variant="secondary"
+										size="md"
+										className="w-40 m-auto"
+									>
+										Edit
+									</Button>
+								</div>
+							)}
+						</div>
+					</>
 				)}
 				<div className="mt-12 px-4">
 					<CardList
