@@ -93,7 +93,6 @@ const TokenSeriesBurnModal = ({
 								onChange={(e) =>
 									setBurnCopies(e.target.value.replace(/\D/, ''))
 								}
-								className="clear pr-2"
 								placeholder="Decrease copies by"
 							/>
 							{burnCopies > data.metadata.copies - data.in_circulation && (
