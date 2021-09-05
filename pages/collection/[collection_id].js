@@ -71,6 +71,10 @@ const CollectionPage = ({ collectionId }) => {
 		router.push(`/collection/edit/${collectionId}`)
 	}
 
+	const addCard = () => {
+		router.push('/new')
+	}
+
 	return (
 		<div className="min-h-screen bg-black">
 			<div
@@ -141,7 +145,10 @@ const CollectionPage = ({ collectionId }) => {
 								{collection?.description}
 							</p>
 							{currentUser === collection.creator_id && (
-								<div className="flex flex-col max-w-xs m-auto mt-4">
+								<div className="flex flex-row space-x-2 max-w-xs m-auto mt-4">
+									<Button onClick={addCard} size="md" className="w-40 m-auto">
+										Add Card
+									</Button>
 									<Button
 										onClick={editCollection}
 										variant="secondary"
