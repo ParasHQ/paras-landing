@@ -80,7 +80,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 				)}
 			</div>
 			<div className="bg-gray-800 text-gray-100  mt-3 p-3 rounded-md shadow-md">
-				<p className="text-sm text-white font-medium mb-2">Token Info</p>
+				<p className="text-sm text-white font-bold mb-2">Token Info</p>
 				<div className="flex justify-between text-sm">
 					<p>Smart Contract</p>
 					<TokenInfoCopy text={process.env.NFT_CONTRACT_ID} small />
