@@ -52,7 +52,12 @@ export const descriptionMaker = (activity, token) => {
 				activity.price
 			)} Ⓝ`
 		}
-		return `${activity.to} minted #${edition_id || 1}`
+
+		if (activity.to === activity.creator_id) {
+			return `${activity.to} minted #${edition_id || 1}`
+		}
+
+		return `${activity.creator_id} minted #${edition_id || 1} ${activity.to}`
 	}
 
 	if (type === 'nft_transfer' && activity.to === null) {
@@ -151,7 +156,12 @@ const Activity = ({ activity }) => {
 					className="text-gray-100 hover:border-gray-100"
 					accountId={activity.from}
 				/>
-				<span> bought #{edition_id || 1} from </span>
+				<span>
+					{' '}
+					bought <span className="font-semibold">
+						#{edition_id || 1}
+					</span> from{' '}
+				</span>
 				<LinkToProfile
 					className="text-gray-100 hover:border-gray-100"
 					accountId={activity.to}
@@ -172,8 +182,28 @@ const Activity = ({ activity }) => {
 						className="text-gray-100 hover:border-gray-100"
 						accountId={activity.to}
 					/>
-					<span> bought #{edition_id || 1} for </span>
+					<span>
+						{' '}
+						bought <span className="font-semibold">
+							#{edition_id || 1}
+						</span> for{' '}
+					</span>
 					{formatNearAmount(activity.msg.params.price)} Ⓝ
+				</p>
+			)
+		}
+
+		if (activity.to === activity.creator_id) {
+			return (
+				<p>
+					<LinkToProfile
+						className="text-gray-100 hover:border-gray-100"
+						accountId={activity.to}
+					/>
+					<span>
+						{' '}
+						minted <span className="font-semibold">#{edition_id || 1}</span>
+					</span>
 				</p>
 			)
 		}
@@ -182,9 +212,18 @@ const Activity = ({ activity }) => {
 			<p>
 				<LinkToProfile
 					className="text-gray-100 hover:border-gray-100"
+					accountId={activity.creator_id}
+				/>
+				<span>
+					{' '}
+					minted <span className="font-semibold">
+						#{edition_id || 1}
+					</span> to{' '}
+				</span>
+				<LinkToProfile
+					className="text-gray-100 hover:border-gray-100"
 					accountId={activity.to}
 				/>
-				<span> minted #{edition_id || 1}</span>
 			</p>
 		)
 	}
@@ -198,7 +237,10 @@ const Activity = ({ activity }) => {
 					className="text-gray-100 hover:border-gray-100"
 					accountId={activity.from}
 				/>
-				<span> burned #{edition_id || 1}</span>
+				<span>
+					{' '}
+					burned <span className="font-semibold">#{edition_id || 1}</span>
+				</span>
 			</p>
 		)
 	}

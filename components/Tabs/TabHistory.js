@@ -105,13 +105,66 @@ const Activity = ({ activity }) => {
 			)
 		}
 
+		// if (activity.price) {
+		// 	return (
+		// 		<p>
+		// 			<LinkToProfile
+		// 				className="text-gray-100 hover:border-gray-100"
+		// 				accountId={activity.to}
+		// 			/>
+		// 			<span>
+		// 				{' '}
+		// 				bought <span className="font-semibold">
+		// 					#{edition_id || 1}
+		// 				</span> for{' '}
+		// 			</span>
+		// 			{formatNearAmount(activity.msg.params.price)} Ⓝ
+		// 		</p>
+		// 	)
+		// }
+
+		// if (activity.to === activity.creator_id) {
+		// 	return (
+		// 		<p>
+		// 			<LinkToProfile
+		// 				className="text-gray-100 hover:border-gray-100"
+		// 				accountId={activity.to}
+		// 			/>
+		// 			<span>
+		// 				{' '}
+		// 				minted <span className="font-semibold">#{edition_id || 1}</span>
+		// 			</span>
+		// 		</p>
+		// 	)
+		// }
+
 		if (type === 'nft_transfer' && activity.from === null) {
 			const [series_id, edition_id] = activity.msg.params.token_id.split(':')
 
+			if (activity.price) {
+				return (
+					<p>
+						<LinkToProfile accountId={activity.to} />
+						<span> bought from </span>
+						<LinkToProfile accountId={activity.from} />{' '}
+						<span> for {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
+					</p>
+				)
+			}
+
+			if (activity.to === activity.creator_id) {
+				return (
+					<p>
+						<LinkToProfile accountId={activity.to} />
+						<span> minted #{edition_id || 1}</span>
+					</p>
+				)
+			}
+
 			return (
 				<p>
+					<span>minted by </span>
 					<LinkToProfile accountId={activity.to} />
-					<span> minted #{edition_id || 1}</span>
 				</p>
 			)
 		}
@@ -139,7 +192,8 @@ const Activity = ({ activity }) => {
 						<LinkToProfile
 							className="text-gray-100 hover:border-gray-100"
 							accountId={activity.from}
-						/>
+						/>{' '}
+						<span> for {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
 					</p>
 				)
 			}
