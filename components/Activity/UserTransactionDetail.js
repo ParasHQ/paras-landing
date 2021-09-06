@@ -168,7 +168,7 @@ const UserTransactionCard = ({ contract_token_id, setLocalToken }) => {
 				<Card
 					imgUrl={parseImgUrl(token.metadata.media, null, {
 						width: `600`,
-						useOriginal: process.env.APP_ENV === 'production' ? true : false,
+						useOriginal: process.env.APP_ENV === 'production' ? false : true,
 					})}
 					onClick={() => {
 						router.push(
