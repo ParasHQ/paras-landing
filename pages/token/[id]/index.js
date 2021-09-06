@@ -4,6 +4,11 @@ import Error from 'pages/404'
 import Nav from 'components/Nav'
 import TokenSeriesDetail from 'components/TokenSeriesDetail'
 import Footer from 'components/Footer'
+import { parseImgUrl } from 'utils/common'
+
+const getCreatorId = (token) => {
+	return token.metadata.creator_id || token.contract_id
+}
 
 const TokenSeriesPage = ({ errorCode, token }) => {
 	if (errorCode) {
@@ -25,7 +30,9 @@ const TokenSeriesPage = ({ errorCode, token }) => {
 				<title>{`${token.metadata.title} — Paras`}</title>
 				<meta
 					name="description"
-					content={`${token.metadata.title} from collection ${token.metadata.collection} by ${token.creator_id}. ${token.metadata.description}`}
+					content={`${token.metadata.title} from collection ${
+						token.metadata.collection
+					} by ${getCreatorId(token)}. ${token.metadata.description}`}
 				/>
 
 				<meta
@@ -36,11 +43,13 @@ const TokenSeriesPage = ({ errorCode, token }) => {
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta
 					name="twitter:description"
-					content={`${token.metadata.title} from collection ${token.metadata.collection} by ${token.creator_id}. ${token.metadata.description}`}
+					content={`${token.metadata.title} from collection ${
+						token.metadata.collection
+					} by ${getCreatorId(token)}. ${token.metadata.description}`}
 				/>
 				<meta
 					name="twitter:image"
-					content={`${process.env.API_URL}/socialCard/${token.tokenId}`}
+					content={`${parseImgUrl(token.metadata.media, null)}`}
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`${token.metadata.title} - Paras`} />
@@ -50,11 +59,13 @@ const TokenSeriesPage = ({ errorCode, token }) => {
 				/>
 				<meta
 					property="og:description"
-					content={`${token.metadata.title} from collection ${token.metadata.collection} by ${token.creator_id}. ${token.metadata.description}`}
+					content={`${token.metadata.title} from collection ${
+						token.metadata.collection
+					} by ${getCreatorId(token)}. ${token.metadata.description}`}
 				/>
 				<meta
 					property="og:image"
-					content={`${process.env.API_URL}/socialCard/${token.tokenId}`}
+					content={`${parseImgUrl(token.metadata.media, null)}`}
 				/>
 			</Head>
 			<Nav />
