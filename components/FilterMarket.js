@@ -34,11 +34,14 @@ const FilterMarket = () => {
 		} else {
 			if (router.query.sort) {
 				setSortBy(router.query.sort)
-			} else if (router.query.pmin) {
+			}
+			if (router.query.pmin) {
 				setMinPrice(router.query.pmin)
-			} else if (router.query.pmax) {
-				setMaxPrice(router.query.pmin)
-			} else {
+			}
+			if (router.query.pmax) {
+				setMaxPrice(router.query.pmax)
+			}
+			if (router.query === {}) {
 				setSortBy(filter[0].key)
 				setMinPrice('')
 				setMaxPrice('')
@@ -47,14 +50,23 @@ const FilterMarket = () => {
 	}, [router.query])
 
 	const onClickApply = async () => {
+		const query = {
+			...router.query,
+			sort: sortBy,
+			...(minPrice && { pmin: minPrice }),
+			...(maxPrice && { pmax: maxPrice }),
+			is_verified: isVerified,
+		}
+
+		if (minPrice === '') {
+			delete query.pmin
+		}
+		if (maxPrice === '') {
+			delete query.pmax
+		}
+
 		router.push({
-			query: {
-				...router.query,
-				sort: sortBy,
-				...(minPrice && { pmin: minPrice }),
-				...(maxPrice && { pmax: maxPrice }),
-				is_verified: isVerified,
-			},
+			query: query,
 		})
 		setShowFilterModal(false)
 	}
