@@ -42,11 +42,15 @@ const TopUser = ({ user, idx }) => {
 	const [profile, setProfile] = useState({})
 
 	useEffect(async () => {
-		const res = await axios(
-			`${process.env.V2_API_URL}/profiles?accountId=${user._id}`
-		)
+		const res = await axios(`${process.env.V2_API_URL}/profiles`, {
+			params: {
+				accountId: user.account_id,
+			},
+		})
 		setProfile(res.data.data.results[0])
 	}, [])
+
+	console.log(profile)
 
 	return (
 		<div className="my-3 flex items-center">

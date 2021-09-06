@@ -101,7 +101,12 @@ function MyApp({ Component, pageProps }) {
 		)
 		if (currentUser) {
 			const userProfileResp = await axios.get(
-				`${process.env.V2_API_URL}/profiles?accountId=${currentUser.accountId}`
+				`${process.env.V2_API_URL}/profiles`,
+				{
+					params: {
+						accountId: currentUser.accountId,
+					},
+				}
 			)
 			const userProfileResults = userProfileResp.data.data.results
 

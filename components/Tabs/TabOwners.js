@@ -183,7 +183,7 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 
 	const fetchOwnerProfile = async () => {
 		try {
-			const resp = await cachios.get(`${process.env.V1_API_URL}/profiles`, {
+			const resp = await cachios.get(`${process.env.V2_API_URL}/profiles`, {
 				params: {
 					accountId: token.owner_id,
 				},
