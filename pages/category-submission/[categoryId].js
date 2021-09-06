@@ -1,4 +1,4 @@
-import Axios from 'axios'
+import axios from 'axios'
 import Link from 'next/link'
 import router, { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -33,11 +33,11 @@ const CategorySubmission = () => {
 		const auth = await near.authToken()
 		if (categoryId) {
 			try {
-				const res = await Axios.get(
-					`${process.env.API_URL}/categories/tokens/submission`,
+				const res = await axios.get(
+					`${process.env.V2_API_URL}/categories/tokens/submission`,
 					{
 						params: {
-							categoryId: categoryId,
+							category_id: categoryId,
 							status: 'pending',
 						},
 						headers: {
@@ -89,9 +89,8 @@ const CategorySubmission = () => {
 				{submissions && submissions.length !== 0 ? (
 					<div className="md:grid md:grid-cols-2 md:gap-4">
 						{submissions.map((submission) => (
-							<div key={submission.id} className="text-white">
+							<div key={submission._id} className="text-white">
 								<SubmissionDetail
-									tokenId={submission.tokenId}
 									submission={submission}
 									updateData={updateSubmissionData}
 								/>
@@ -111,33 +110,44 @@ const CategorySubmission = () => {
 
 export default CategorySubmission
 
-const SubmissionDetail = ({ tokenId, submission, updateData }) => {
+const SubmissionDetail = ({ submission, updateData }) => {
 	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
 	const [showModal, setShowModal] = useState('')
+	const [localToken, setLocalToken] = useState(null)
 
-	const fetcher = async (key) => {
-		const resp = await Axios.get(`${process.env.API_URL}/${key}`)
+	useEffect(() => {
+		if (submission.contract_id && submission.token_series_id) {
+			fetchTokenSeries()
+		}
+	}, [submission])
+
+	const fetchTokenSeries = async () => {
+		const resp = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+			params: {
+				token_series_id: submission.token_series_id,
+				contract_id: submission.contract_id,
+			},
+		})
 		if (resp.data.data.results.length > 0) {
-			return resp.data.data.results[0]
-		} else {
-			return {}
+			setLocalToken(resp.data.data.results[0])
 		}
 	}
 
 	const onSubmitSubmission = async (type) => {
-		const query = {
-			categoryId: submission.categoryId,
-			tokenId: tokenId,
+		const params = {
+			category_id: submission.category_id,
+			token_series_id: submission.token_series_id,
+			contract_id: submission.contract_id,
 			msg: 'ok',
 		}
 
 		setIsLoading(true)
 
 		try {
-			await Axios.put(
-				`${process.env.API_URL}/categories/tokens/${type}`,
-				query,
+			await axios.put(
+				`${process.env.V2_API_URL}/categories/tokens/${type}`,
+				params,
 				{
 					headers: {
 						authorization: await near.authToken(),
@@ -153,8 +163,6 @@ const SubmissionDetail = ({ tokenId, submission, updateData }) => {
 		setIsLoading(false)
 	}
 
-	const { data: localToken } = useSWR(`tokens?tokenId=${tokenId}`, fetcher)
-
 	return (
 		<>
 			{showModal === 'accept' && (
@@ -168,9 +176,9 @@ const SubmissionDetail = ({ tokenId, submission, updateData }) => {
 						<div className="mb-6 m-auto text-gray-400">
 							<span>You are going to accept </span>
 							<span className="font-bold text-white">
-								{localToken.metadata.name}
+								{localToken.metadata.title}
 							</span>
-							<span> to {submission.categoryId} category</span>
+							<span> to {submission.category_id} category</span>
 						</div>
 						<button
 							disabled={isLoading}
@@ -194,9 +202,9 @@ const SubmissionDetail = ({ tokenId, submission, updateData }) => {
 						<div className="mb-6 m-auto text-gray-400">
 							<span>You are going to reject </span>
 							<span className="font-bold text-white">
-								{localToken.metadata.name}
+								{localToken.metadata.title}
 							</span>
-							<span> from {submission.categoryId} category</span>
+							<span> from {submission.category_id} category</span>
 						</div>
 						<button
 							disabled={isLoading}
@@ -215,24 +223,20 @@ const SubmissionDetail = ({ tokenId, submission, updateData }) => {
 			<div className="flex flex-wrap border-2 border-dashed border-gray-800 p-4 md:p-8 rounded-md items-center">
 				<div className="w-40 md:mr-6">
 					<Card
-						imgUrl={parseImgUrl(localToken?.metadata?.image, null, {
-							width: `300`,
+						imgUrl={parseImgUrl(localToken?.metadata.media, null, {
+							width: `600`,
+							useOriginal: true,
 						})}
-						imgBlur={localToken?.metadata?.blurhash}
+						imgBlur={localToken?.metadata.blurhash}
 						token={{
-							name: localToken?.metadata?.name,
-							collection: localToken?.metadata?.collection,
-							description: localToken?.metadata?.description,
-							creatorId: localToken?.creatorId,
-							supply: localToken?.supply,
-							tokenId: localToken?.tokenId,
-							createdAt: localToken?.createdAt,
+							title: localToken?.metadata.title,
+							edition_id: localToken?.edition_id,
+							collection:
+								localToken?.metadata.collection || localToken?.contract_id,
+							copies: localToken?.metadata.copies,
+							creatorId:
+								localToken?.metadata.creator_id || localToken?.contract_id,
 						}}
-						initialRotate={{
-							x: 0,
-							y: 0,
-						}}
-						disableFlip={true}
 					/>
 				</div>
 				<div className="mt-4">
@@ -242,19 +246,19 @@ const SubmissionDetail = ({ tokenId, submission, updateData }) => {
 								pathname: router.pathname,
 								query: {
 									...router.query,
-									...{ tokenId: localToken?.tokenId },
+									...{ tokenSeriesId: localToken?.token_series_id },
 									...{ prevAs: router.asPath },
 								},
 							}}
-							as={`/token/${localToken?.tokenId}`}
+							as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}`}
 							scroll={false}
 							shallow
 						>
 							<a
-								title={localToken?.metadata?.name}
+								title={localToken?.metadata?.title}
 								className="text-2xl font-bold border-b-2 border-transparent hover:border-gray-100"
 							>
-								{localToken?.metadata?.name}
+								{localToken?.metadata?.title}
 							</a>
 						</Link>
 					</div>
@@ -262,7 +266,7 @@ const SubmissionDetail = ({ tokenId, submission, updateData }) => {
 						{localToken?.metadata?.collection}
 					</p>
 					<p className="mt-2 text-sm opacity-50 mb-8">
-						{timeAgo.format(submission.createdAt)}
+						{timeAgo.format(submission.issued_at)}
 					</p>
 					<div className="space-x-4">
 						<button
