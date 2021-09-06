@@ -647,9 +647,10 @@ const NewPage = () => {
 											<div
 												key={item.collection_id}
 												onClick={() => setChoosenCollection(item)}
-												className={`bg-gray-800 mt-3 flex items-center rounded-md overflow-hidden cursor-pointer border-2 shadow-xl drop-shadow-xl border-gray-800 ${
-													item.collection_id ===
-														choosenCollection.collection_id && 'border-gray-900'
+												className={`bg-gray-800 mt-3 flex items-center rounded-md overflow-hidden cursor-pointer border-2 shadow-xl drop-shadow-xl  ${
+													item.collection_id === choosenCollection.collection_id
+														? 'border-white'
+														: `border-gray-800`
 												}`}
 											>
 												<div className="w-10 h-10 bg-primary flex-shrink-0">
