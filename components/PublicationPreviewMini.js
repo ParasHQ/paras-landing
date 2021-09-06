@@ -39,7 +39,7 @@ const PublicationPreviewList = ({ tokenId }) => {
 
 		setIsFetching(true)
 		const res = await Axios(
-			`${process.env.API_URL}/publications?tokenId=${tokenId}&__skip=${
+			`${process.env.V2_API_URL}/publications?tokenId=${tokenId}&__skip=${
 				page * 5
 			}&__limit=5&__view=simple`
 		)

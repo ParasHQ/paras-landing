@@ -42,11 +42,13 @@ const Publication = ({ userProfile, accountId }) => {
 		}
 
 		setIsFetching(true)
-		const res = await axios(
-			`${process.env.API_URL}/publications?authorId=${router.query.id}&__skip=${
-				_pubListPage * LIMIT
-			}&__limit=${LIMIT}`
-		)
+		const res = await axios.get(`${process.env.V2_API_URL}/publications`, {
+			params: {
+				author_id: router.query.id,
+				__skip: _pubListPage * LIMIT,
+				__limit: LIMIT,
+			},
+		})
 		const newData = await res.data.data
 
 		const newPubData = [..._pubList, ...newData.results]

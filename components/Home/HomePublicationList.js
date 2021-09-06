@@ -100,7 +100,7 @@ const PublicationList = ({ idx, data }) => {
 				<div className="w-full md:w-7/12 mt-2 lg:mt-0 px-2">
 					<div className="mt-2 lg:mt-0">
 						<LinkToProfile
-							accountId={data.authorId}
+							accountId={data.author_id}
 							className="text-gray-100 hover:border-white font-semibold"
 						/>
 					</div>
@@ -157,7 +157,7 @@ export const HomePublicationList = () => {
 	}
 
 	const fetchPubPost = async () => {
-		const resp = await axios.get(`${process.env.API_URL}/publications`, {
+		const resp = await axios.get(`${process.env.V2_API_URL}/publications`, {
 			params: {
 				__limit: 3,
 			},

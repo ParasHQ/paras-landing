@@ -67,7 +67,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 		setIsDeleting(true)
 		try {
 			await axios.delete(
-				`${process.env.API_URL}/publications/${pubDetail._id}`,
+				`${process.env.V2_API_URL}/publications/${pubDetail._id}`,
 				{
 					headers: {
 						authorization: await near.authToken(),
@@ -148,7 +148,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							>
 								Share to...
 							</div>
-							{store.currentUser === pubDetail.authorId && (
+							{store.currentUser === pubDetail.author_id && (
 								<Link href={`/publication/edit/${pubDetail._id}`}>
 									<div
 										className="py-2 cursor-pointer"
@@ -158,7 +158,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 									</div>
 								</Link>
 							)}
-							{store.currentUser === pubDetail.authorId && (
+							{store.currentUser === pubDetail.author_id && (
 								<div
 									className="py-2 cursor-pointer"
 									onClick={() => setShowModal('confirmDelete')}
@@ -250,10 +250,10 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 					<div className="m-auto max-w-3xl px-4 pt-8">
 						<div className="flex justify-between">
 							<div className="flex space-x-4">
-								<Link href={`/${pubDetail.authorId}`}>
+								<Link href={`/${pubDetail.author_id}`}>
 									<div className="w-16 h-16 rounded-full overflow-hidden bg-primary cursor-pointer">
 										<img
-											src={parseImgUrl(userProfile.imgUrl, null, {
+											src={parseImgUrl(userProfile?.imgUrl, null, {
 												width: `800`,
 											})}
 											className="object-cover"
@@ -262,11 +262,11 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 								</Link>
 								<div className="m-auto">
 									<LinkToProfile
-										accountId={pubDetail.authorId}
+										accountId={pubDetail.author_id}
 										className="text-white font-bold hover:border-white text-xl"
 									/>
 									<p className="text-white m-auto text-sm">
-										{parseDate(pubDetail.updatedAt)}
+										{parseDate(pubDetail.updated_at)}
 									</p>
 								</div>
 							</div>
@@ -312,29 +312,31 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							readOnly={true}
 						/>
 					</div>
-					{pubDetail.tokenIds.length !== 0 && (
-						<div className="max-w-4xl mx-auto px-4 pt-16">
-							<div className=" border-2 border-dashed border-gray-800 rounded-md p-4 md:p-8">
-								<h4 className="text-white font-semibold text-3xl md:mb-4 text-center">
-									Card Collectibles
-								</h4>
-								<div
-									className={`flex flex-wrap ${
-										pubDetail.tokenIds.length <= 3 && 'justify-center'
-									}`}
-								>
-									{pubDetail.tokenIds?.map((tokenId) => (
-										<div
-											key={tokenId}
-											className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8"
-										>
-											<EmbeddedCard key={tokenId} tokenId={tokenId} />
-										</div>
-									))}
+					{pubDetail.contract_token_ids &&
+						pubDetail.contract_token_ids.length !== 0 && (
+							<div className="max-w-4xl mx-auto px-4 pt-16">
+								<div className=" border-2 border-dashed border-gray-800 rounded-md p-4 md:p-8">
+									<h4 className="text-white font-semibold text-3xl md:mb-4 text-center">
+										Digital Collectibles
+									</h4>
+									<div
+										className={`flex flex-wrap ${
+											pubDetail.contract_token_ids.length <= 3 &&
+											'justify-center'
+										}`}
+									>
+										{pubDetail.contract_token_ids?.map((tokenId) => (
+											<div
+												key={tokenId}
+												className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8"
+											>
+												<EmbeddedCard key={tokenId} tokenId={tokenId} />
+											</div>
+										))}
+									</div>
 								</div>
 							</div>
-						</div>
-					)}
+						)}
 				</div>
 				<Footer />
 			</div>
@@ -348,15 +350,17 @@ export async function getServerSideProps({ params }) {
 	const slugName = id.slice(0, id.length - 1).join('-')
 
 	const resp = await axios(
-		`${process.env.API_URL}/publications?_id=${id[id.length - 1]}`
+		`${process.env.V2_API_URL}/publications?_id=${id[id.length - 1]}`
 	)
 
 	const pubDetail = (await resp.data?.data?.results[0]) || null
 
+	console.log(pubDetail)
+
 	const errorCode = pubDetail ? false : 404
 
 	const profileRes = await axios(
-		`${process.env.API_URL}/profiles?accountId=${pubDetail?.authorId}`
+		`${process.env.V2_API_URL}/profiles?accountId=${pubDetail?.author_id}`
 	)
 	const userProfile = (await profileRes.data.data.results[0]) || null
 
