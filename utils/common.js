@@ -133,7 +133,7 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
 			} else {
 				transformationList.push('tr:w-0.8')
 			}
-			return `https://cdn.paras.id/${transformationList.join(',')}/${path}`
+			return `https://cdn.paras.id/${transformationList.join(',')}/${cid}`
 		} catch (err) {
 			return url
 		}
