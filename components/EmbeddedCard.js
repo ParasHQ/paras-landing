@@ -58,7 +58,7 @@ const EmbeddedCard = ({ tokenId }) => {
 							imgUrl={parseImgUrl(token.metadata.media, null, {
 								width: `600`,
 								useOriginal:
-									process.env.APP_ENV === 'production' ? true : false,
+									process.env.APP_ENV === 'production' ? false : true,
 							})}
 							onClick={() => {
 								router.push(

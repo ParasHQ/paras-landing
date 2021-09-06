@@ -162,7 +162,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 							imgUrl={parseImgUrl(tokenData?.metadata.media, null, {
 								width: `600`,
 								useOriginal:
-									process.env.APP_ENV === 'production' ? true : false,
+									process.env.APP_ENV === 'production' ? false : true,
 							})}
 							imgBlur={tokenData?.metadata.blurhash}
 							token={{

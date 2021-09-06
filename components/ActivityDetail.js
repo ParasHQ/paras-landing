@@ -435,7 +435,7 @@ const ActivityDetail = ({ activity, token }) => {
 							imgUrl={parseImgUrl(localToken?.metadata.media, null, {
 								width: `600`,
 								useOriginal:
-									process.env.APP_ENV === 'production' ? true : false,
+									process.env.APP_ENV === 'production' ? false : true,
 							})}
 							imgBlur={localToken?.metadata.blurhash}
 							token={{
