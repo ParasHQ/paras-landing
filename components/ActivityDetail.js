@@ -434,7 +434,8 @@ const ActivityDetail = ({ activity, token }) => {
 						<Card
 							imgUrl={parseImgUrl(localToken?.metadata.media, null, {
 								width: `600`,
-								useOriginal: true,
+								useOriginal:
+									process.env.APP_ENV === 'production' ? true : false,
 							})}
 							imgBlur={localToken?.metadata.blurhash}
 							token={{

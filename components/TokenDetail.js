@@ -178,7 +178,8 @@ const TokenDetail = ({ token, className }) => {
 						<img
 							className="object-contain w-full h-full"
 							src={parseImgUrl(token.metadata.media, null, {
-								useOriginal: true,
+								useOriginal:
+									process.env.APP_ENV === 'production' ? true : false,
 							})}
 						/>
 					</div>

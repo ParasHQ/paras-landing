@@ -161,7 +161,8 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 						<Card
 							imgUrl={parseImgUrl(tokenData?.metadata.media, null, {
 								width: `600`,
-								useOriginal: true,
+								useOriginal:
+									process.env.APP_ENV === 'production' ? true : false,
 							})}
 							imgBlur={tokenData?.metadata.blurhash}
 							token={{

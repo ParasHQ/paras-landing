@@ -89,7 +89,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 					<p>Image Link</p>
 					<TokenInfoCopy
 						text={parseImgUrl(localToken.metadata.media, null, {
-							useOriginal: true,
+							useOriginal: process.env.APP_ENV === 'production' ? true : false,
 						})}
 					/>
 				</div>

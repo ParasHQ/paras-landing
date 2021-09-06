@@ -15,6 +15,7 @@ const FeaturedPost = ({ post = {} }) => {
 					<img
 						src={parseImgUrl(post.image, null, {
 							width: `800`,
+							useOriginal: process.env.APP_ENV === 'production' ? true : false,
 						})}
 						className="object-cover h-full w-full publication-card-img"
 					/>
@@ -90,6 +91,8 @@ const PublicationList = ({ idx, data }) => {
 										className="w-full h-40 lg:h-32 object-cover publication-card-img"
 										src={parseImgUrl(data.thumbnail, null, {
 											width: `400`,
+											useOriginal:
+												process.env.APP_ENV === 'production' ? true : false,
 										})}
 									/>
 								</div>

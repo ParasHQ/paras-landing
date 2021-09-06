@@ -111,7 +111,8 @@ const CardList = ({
 											<Card
 												imgUrl={parseImgUrl(token.metadata.media, null, {
 													width: `600`,
-													useOriginal: true,
+													useOriginal:
+														process.env.APP_ENV === 'production' ? true : false,
 												})}
 												onClick={() => {
 													router.push(
