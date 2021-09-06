@@ -185,7 +185,8 @@ const TokenSeriesDetail = ({ token, className }) => {
 						</div>
 					</Scrollbars>
 					<div className="p-3">
-						{token.is_non_mintable ? (
+						{token.is_non_mintable ||
+						token.total_mint === token.metadata.copies ? (
 							<div>
 								<Button
 									size="md"

@@ -1,4 +1,4 @@
-import Axios from 'axios'
+import axios from 'axios'
 import { useState } from 'react'
 import { useToast } from '../hooks/useToast'
 import near from '../lib/near'
@@ -8,12 +8,21 @@ import Card from './Card'
 import Modal from './Modal'
 
 const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
-	const [tokenId, setTokenId] = useState('')
+	const [tokenUrl, setTokenUrl] = useState('')
 	const [tokenData, setTokenData] = useState(null)
 	const [page, setPage] = useState(1)
 	const [isLoading, setIsLoading] = useState(false)
 	const toast = useToast()
-	const store = useStore()
+	const { currentUser } = useStore((state) => ({
+		currentUser: state.currentUser,
+	}))
+
+	const getCreatorId = () => {
+		if (!tokenData) {
+			return null
+		}
+		return tokenData.metadata.creator_id || tokenData.contract_id
+	}
 
 	const fetchToken = async () => {
 		if (isLoading) {
@@ -21,31 +30,54 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 		}
 
 		setIsLoading(true)
-		const res = await Axios(`${process.env.API_URL}/tokens?tokenId=${tokenId}`)
-		const token = res.data.data.results[0] || null
-		if (token && tokenId !== '') {
-			setTokenData(token)
-			setPage(2)
-		} else {
+
+		try {
+			const tokenUrlSplitted = tokenUrl.split('/')
+
+			const contract_token_id = tokenUrlSplitted[4]
+
+			if (!contract_token_id) {
+				throw new Error('Invalid URL')
+			}
+
+			const [contractId, tokenSeriesId] = contract_token_id.split('::')
+
+			const seriesResp = await axios.get(
+				`${process.env.V2_API_URL}/token-series`,
+				{
+					params: {
+						contract_id: contractId,
+						token_series_id: tokenSeriesId,
+					},
+				}
+			)
+
+			const series = seriesResp.data.data.results[0] || null
+			if (series) {
+				setTokenData(series)
+				setPage(2)
+			} else {
+				throw new Error('Token not found')
+			}
+		} catch (err) {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						Please enter correct Token ID
+						Please enter correct Token URL
 					</div>
 				),
 				type: 'error',
 				duration: 2500,
 			})
 		}
+
 		setIsLoading(false)
 	}
 
 	const submitCard = async () => {
 		setIsLoading(true)
-		if (
-			store.currentUser !== tokenData.creatorId &&
-			!curators.includes(store.currentUser)
-		) {
+
+		if (currentUser !== getCreatorId() && !curators.includes(currentUser)) {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
@@ -59,14 +91,18 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 			return
 		}
 
-		const query = {
-			accountId: store.currentUser,
-			tokenId: tokenId,
-			categoryId: categoryId,
+		// should always be true
+		const [contractId, tokenSeriesId] = tokenUrl.split('/')[4].split('::')
+
+		const params = {
+			account_id: currentUser,
+			contract_id: contractId,
+			token_series_id: tokenSeriesId,
+			category_id: categoryId,
 		}
 
 		try {
-			await Axios.post(`${process.env.API_URL}/categories/tokens`, query, {
+			await axios.post(`${process.env.V2_API_URL}/categories/tokens`, params, {
 				headers: {
 					authorization: await near.authToken(),
 				},
@@ -123,22 +159,19 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 				<div className="md:flex md:pl-2 md:space-x-4 md:space-x-6 pb-2 items-center">
 					<div className="w-1/2 mb-4 md:mb-0 md:w-1/3 h-full text-black">
 						<Card
-							imgUrl={parseImgUrl(tokenData?.metadata?.image, null, {
-								width: `300`,
+							imgUrl={parseImgUrl(tokenData?.metadata.media, null, {
+								width: `600`,
+								useOriginal: true,
 							})}
-							imgBlur={tokenData?.metadata?.blurhash || null}
+							imgBlur={tokenData?.metadata.blurhash}
 							token={{
-								name: tokenData?.metadata?.name || '',
-								collection: tokenData?.metadata?.collection || '',
-								description: tokenData?.metadata?.description || '',
-								creatorId: tokenData?.creatorId || '',
-								supply: tokenData?.supply || '',
-								tokenId: tokenData?.tokenId || '',
-								createdAt: tokenData?.createdAt || '',
-							}}
-							initialRotate={{
-								x: 0,
-								y: 0,
+								title: tokenData?.metadata.title,
+								edition_id: tokenData?.edition_id,
+								collection:
+									tokenData?.metadata.collection || tokenData?.contract_id,
+								copies: tokenData?.metadata.copies,
+								creatorId:
+									tokenData?.metadata.creator_id || tokenData?.contract_id,
 							}}
 						/>
 					</div>
@@ -147,18 +180,18 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 							<div>
 								<input
 									type="text"
-									name="Token"
-									onChange={(e) => setTokenId(e.target.value)}
-									value={tokenId}
+									name="token-url"
+									onChange={(e) => setTokenUrl(e.target.value)}
+									value={tokenUrl}
 									className={`resize-none h-auto focus:border-gray-100 mb-4 text-black`}
-									placeholder="Token ID"
+									placeholder="Token URL"
 								/>
 								<div className="opacity-75 mb-2 text-sm">
 									*Curators will review your card submission, please make sure
 									that the card is belong to this category.
 								</div>
 								<div className="opacity-75 mb-6 text-sm">
-									*Only the creator that allowed to submit their card
+									*Only the creator that allowed to submit their NFT
 								</div>
 								<button
 									type="button"
@@ -176,13 +209,15 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 						{page === 2 && (
 							<div>
 								<div className="text-2xl font-bold">
-									{tokenData?.metadata.name}
+									{tokenData?.metadata.title}
 								</div>
-								<div className="mb-6">{tokenData?.metadata.collection}</div>
+								<div className="mb-6">
+									{tokenData?.metadata.collection || tokenData?.contract_id}
+								</div>
 								<div className="mb-6">
 									<span className="opacity-75">You will add </span>
 									<span className="text-white font-bold opacity-100">
-										{tokenData?.metadata.name}
+										{tokenData?.metadata.title}
 									</span>
 									<span> to </span>
 									<span className="text-white font-bold opacity-100">

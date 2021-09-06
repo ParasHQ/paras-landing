@@ -57,7 +57,7 @@ export default function Category({ categoryList, _categoryDetail }) {
 			_fetchData(true)
 
 			const detail = cardCategory.find(
-				(category) => category.categoryId === categoryId
+				(category) => category.category_id === categoryId
 			)
 			if (detail) {
 				setCategoryDetail(detail)
@@ -86,7 +86,7 @@ export default function Category({ categoryList, _categoryDetail }) {
 	})
 
 	const getCategory = async () => {
-		const res = await axios(`${process.env.API_URL}/categories`)
+		const res = await axios.get(`${process.env.V2_API_URL}/categories`)
 		setCardCategory(res.data.data.results)
 	}
 
@@ -106,7 +106,7 @@ export default function Category({ categoryList, _categoryDetail }) {
 		}
 
 		setIsFetching(true)
-		const res = await axios(`${process.env.API_URL}/tokens`, {
+		const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
 			params: tokensParams(_page, router.query),
 		})
 		const newData = await res.data.data
@@ -259,7 +259,7 @@ export default function Category({ categoryList, _categoryDetail }) {
 					</h1>
 				</div>
 				<CategoryList
-					categoryId={categoryDetail?.categoryId || ''}
+					categoryId={categoryDetail?.category_id || ''}
 					listCategory={cardCategory}
 				/>
 				<div className="md:flex justify-between mt-8 px-4">
@@ -332,13 +332,6 @@ export default function Category({ categoryList, _categoryDetail }) {
 											>
 												Submit an existing cards
 											</h1>
-											<hr className="my-4 -mx-1" />
-											<h1
-												className="text-white font-medium cursor-pointer"
-												onClick={createCard}
-											>
-												Create a new card
-											</h1>
 										</div>
 									</div>
 								)}
@@ -368,8 +361,8 @@ export default function Category({ categoryList, _categoryDetail }) {
 
 const tokensParams = (_page = 0, query) => {
 	const params = {
-		categoryId: query.categoryId,
-		excludeTotalBurn: true,
+		category_id: query.categoryId,
+		exclude_total_burn: true,
 		__sort: parseSortQuery(query.sort),
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
@@ -380,10 +373,10 @@ const tokensParams = (_page = 0, query) => {
 }
 
 export async function getServerSideProps({ params }) {
-	const categoryListResp = await axios(`${process.env.API_URL}/categories`)
+	const categoryListResp = await axios(`${process.env.V2_API_URL}/categories`)
 	const categoryList = categoryListResp.data.data.results
 	const categoryDetail = categoryList.filter(
-		(category) => category.categoryId === params.categoryId
+		(category) => category.category_id === params.categoryId
 	)[0]
 
 	return {

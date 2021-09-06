@@ -30,13 +30,13 @@ const CategoryList = ({ listCategory, categoryId = '' }) => {
 						.filter((category) => !category.isHide)
 						.map((category) => (
 							<Link
-								key={category.categoryId}
-								href={`/market/${category.categoryId}`}
+								key={category.category_id}
+								href={`/market/${category.category_id}`}
 								shallow={true}
 							>
 								<a
 									className={`text-xl ${
-										category.categoryId === categoryId
+										category.category_id === categoryId
 											? 'text-gray-100'
 											: 'text-gray-600'
 									} font-semibold`}
