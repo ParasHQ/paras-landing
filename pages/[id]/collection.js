@@ -31,7 +31,6 @@ const collection = ({ userProfile, accountId }) => {
 		setIsFetching(true)
 		const res = await axios.get(`${process.env.V2_API_URL}/token`, {
 			params: {
-				exclude_total_burn: true,
 				owner_id: router.query.id,
 				__skip: page * LIMIT,
 				__limit: LIMIT,
