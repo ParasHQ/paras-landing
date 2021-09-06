@@ -63,7 +63,8 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						Please enter correct Token URL
+						<p>Please enter correct Token URL</p>
+						<p className="mt-2 italic">e.g https://paras.id/token/token_id</p>
 					</div>
 				),
 				type: 'error',
