@@ -152,12 +152,12 @@ export const HomePublicationList = () => {
 	}
 
 	const fetchFeaturedPost = async () => {
-		const resp = await axios.get(`${process.env.API_URL}/features`)
+		const resp = await axios.get(`${process.env.V2_API_URL}/features`)
 		setFeaturedPostList(resp.data.data.results)
 	}
 
 	const fetchPubPost = async () => {
-		const resp = await axios.get(`${process.env.API_URL}/publications`, {
+		const resp = await axios.get(`${process.env.V2_API_URL}/publications`, {
 			params: {
 				__limit: 3,
 			},

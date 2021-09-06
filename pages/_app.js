@@ -35,7 +35,7 @@ function MyApp({ Component, pageProps }) {
 		}
 		const authHeader = await near.authToken()
 		await axios.post(
-			`${process.env.API_URL}/analytics`,
+			`${process.env.V2_API_URL}/analytics`,
 			{
 				uid: uid,
 				page: url,

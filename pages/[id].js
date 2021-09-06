@@ -19,7 +19,7 @@ const ProfileDetail = ({ userProfile, accountId }) => {
 			userProfile?.bio || ''
 		}`,
 		image: userProfile?.imgUrl
-			? `${process.env.API_URL}/socialCard/avatar/${
+			? `${process.env.V2_API_URL}/socialCard/avatar/${
 					userProfile.imgUrl.split('://')[1]
 			  }`
 			: `https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png`,
@@ -62,7 +62,7 @@ const ProfileDetail = ({ userProfile, accountId }) => {
 
 export async function getServerSideProps({ params }) {
 	const profileRes = await axios(
-		`${process.env.API_URL}/profiles?accountId=${params.id}`
+		`${process.env.V2_API_URL}/profiles?accountId=${params.id}`
 	)
 
 	const userProfile = (await profileRes.data.data.results[0]) || null
