@@ -179,19 +179,9 @@ const TokenSeriesUpdatePriceModal = ({
 									Ⓝ
 								</div>
 							</div>
-							<p className="text-sm mt-2 text-gray-200">
-								Receive: {calculatePriceDistribution().receive}
-								{/* {prettyBalance(
-                  Number(
-                    watch('amount', 0) *
-                      (0.95 - (localToken.metadata.royalty || 0) / 100)
-                  )
-                    .toPrecision(4)
-                    .toString(),
-                  0,
-                  4
-                )}{' '} */}
-								Ⓝ (~$ 20
+							<div className="mt-2 text-gray-200 flex items-center justify-between">
+								<span>Receive:</span>
+								<span>{calculatePriceDistribution().receive} Ⓝ</span>
 								{/* {prettyBalance(
                   Number(
                     store.nearUsdPrice *
@@ -203,10 +193,10 @@ const TokenSeriesUpdatePriceModal = ({
                   0,
                   4
                 )} */}
-								)
-							</p>
-							<p className="text-sm text-gray-200">
-								Royalty: {calculatePriceDistribution().royalty}
+							</div>
+							<div className="text-gray-200 flex items-center justify-between">
+								<span>Royalty:</span>
+								<span>{calculatePriceDistribution().royalty} Ⓝ</span>
 								{/* {prettyBalance(
                   Number(
                     watch('amount', 0) *
@@ -230,9 +220,10 @@ const TokenSeriesUpdatePriceModal = ({
                   4
                 )}
                 ) */}
-							</p>
-							<p className="text-sm text-gray-200">
-								Fee: {calculatePriceDistribution().fee}
+							</div>
+							<div className="text-gray-200 flex items-center justify-between">
+								<span>Fee:</span>
+								<span> {calculatePriceDistribution().fee} Ⓝ</span>
 								{/* {prettyBalance(
                   Number(watch('amount', 0) * 0.05)
                     .toPrecision(4)
@@ -248,7 +239,7 @@ const TokenSeriesUpdatePriceModal = ({
                   0,
                   4
                 )} */}
-							</p>
+							</div>
 							<div className="mt-2 text-sm text-red-500">
 								{/* {errors.amount?.type === 'required' && `Sale price is required`}
                 {errors.amount?.type === 'min' && `Minimum 0`} */}
