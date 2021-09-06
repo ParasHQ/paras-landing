@@ -131,7 +131,7 @@ const Publication = () => {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/publications?${
+			`${process.env.V2_API_URL}/publications?${
 				router.query.type ? `type=${router.query.type}` : ``
 			}&__skip=${_page * LIMIT}&__limit=${LIMIT}`
 		)

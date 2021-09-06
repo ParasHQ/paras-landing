@@ -546,11 +546,11 @@ const Nav = () => {
 								<a>Activity</a>
 							</Link>
 						</div>
-						<div className="px-3 text-gray-100 hidden md:block">
+						{/* <div className="px-3 text-gray-100 hidden md:block">
 							<Link href="/activity/top-cards">
 								<a>Stats</a>
 							</Link>
-						</div>
+						</div> */}
 						<div className="px-3">
 							{store.currentUser ? (
 								<div className="flex items-center -mx-2">
@@ -607,11 +607,11 @@ const Nav = () => {
 									<a className="p-4 block w-full">Activity</a>
 								</Link>
 							</div>
-							<div className="text-gray-100">
+							{/* <div className="text-gray-100">
 								<Link href="/activity/top-cards">
 									<a className="p-4 block w-full">Stats</a>
 								</Link>
-							</div>
+							</div> */}
 						</div>
 					</div>
 				</div>

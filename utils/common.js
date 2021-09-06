@@ -187,3 +187,11 @@ export const parseSortQuery = (sort) => {
 		return 'lowest_price::1'
 	}
 }
+
+export const parseGetTokenIdfromUrl = (url) => {
+	const pathname = new URL(url).pathname.split('/')
+	return {
+		token_series_id: pathname[2],
+		token_id: pathname[3],
+	}
+}

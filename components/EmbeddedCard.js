@@ -12,73 +12,93 @@ import JSBI from 'jsbi'
 const EmbeddedCard = ({ tokenId }) => {
 	const store = useStore()
 	const router = useRouter()
-	const [localToken, setLocalToken] = useState(null)
+	const [token, setToken] = useState(null)
+
+	const price = token && (token.lowest_price || token.price)
 
 	useEffect(() => {
 		fetchToken()
 	}, [])
 
 	const fetchToken = async () => {
-		const res = await axios(`${process.env.API_URL}/tokens?tokenId=${tokenId}`)
-		const token = (await res.data.data.results[0]) || null
-		setLocalToken(token)
+		const [contractTokenId, token_id] = tokenId.split('/')
+		const [contractId, tokenSeriesId] = contractTokenId.split('::')
+
+		const url = process.env.V2_API_URL
+		const res = await axios({
+			url: url + (tokenId ? `/token-series` : `/token`),
+			method: 'GET',
+			params: token_id
+				? {
+						token_id: token_id,
+				  }
+				: {
+						contract_id: contractId,
+						token_series_id: tokenSeriesId,
+				  },
+		})
+
+		const _token = (await res.data.data.results[0]) || null
+		setToken(_token)
 	}
 
-	const _getLowestPrice = (ownerships = []) => {
-		const marketDataList = ownerships
-			.filter((ownership) => ownership.marketData)
-			.map((ownership) => ownership.marketData.amount)
-			.sort((a, b) => a - b)
-
-		return marketDataList[0]
-	}
+	if (!token) return null
 
 	return (
 		<Fragment>
-			<TokenSeriesDetailModal tokens={[localToken]} />
-			<div className="w-full m-auto">
-				<Card
-					imgUrl={parseImgUrl(localToken?.metadata?.image, null, {
-						width: `300`,
-					})}
-					imgBlur={localToken?.metadata?.blurhash}
-					token={{
-						name: localToken?.metadata?.name,
-						collection: localToken?.metadata?.collection,
-						description: localToken?.metadata?.description,
-						creatorId: localToken?.creatorId,
-						supply: localToken?.supply,
-						tokenId: localToken?.tokenId,
-						createdAt: localToken?.createdAt,
+			<TokenSeriesDetailModal tokens={[token]} />
+			<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
+				<a
+					onClick={(e) => {
+						e.preventDefault()
 					}}
-					initialRotate={{
-						x: 0,
-						y: 0,
-					}}
-				/>
-			</div>
+				>
+					<div className="w-full m-auto">
+						<Card
+							imgUrl={parseImgUrl(token.metadata.media, null, {
+								width: `600`,
+								useOriginal: true,
+							})}
+							onClick={() => {
+								router.push(
+									{
+										pathname: router.pathname,
+										query: {
+											...router.query,
+											...{ tokenSeriesId: token.token_series_id },
+											...{ prevAs: router.asPath },
+										},
+									},
+									`/token/${token.contract_id}::${token.token_series_id}`,
+									{
+										shallow: true,
+										scroll: false,
+									}
+								)
+							}}
+							imgBlur={token.metadata.blurhash}
+							token={{
+								title: token.metadata.title,
+								collection: token.metadata.collection || token.contract_id,
+								copies: token.metadata.copies,
+								creatorId: token.metadata.creator_id || token.contract_id,
+							}}
+						/>
+					</div>
+				</a>
+			</Link>
 			<div className="text-center">
-				<div className="mt-8">
-					<div className="p-2">
+				<div className="mt-4">
+					<div className="p-2 pb-4">
 						<p className="text-gray-400 text-xs">Start From</p>
-						<div className="text-gray-100 text-2xl">
-							{_getLowestPrice(localToken?.ownerships) ? (
+						<div className="text-gray-100 text-xl">
+							{price ? (
 								<div>
-									<div>
-										{prettyBalance(
-											_getLowestPrice(localToken?.ownerships),
-											24,
-											4
-										)}{' '}
-										Ⓝ
-									</div>
-									<div className="text-sm text-gray-400">
+									<div>{prettyBalance(price, 24, 4)} Ⓝ</div>
+									<div className="text-xs text-gray-400">
 										~ $
 										{prettyBalance(
-											JSBI.BigInt(
-												_getLowestPrice(localToken?.ownerships) *
-													store.nearUsdPrice
-											),
+											JSBI.BigInt(price * store.nearUsdPrice),
 											24,
 											4
 										)}
@@ -92,25 +112,6 @@ const EmbeddedCard = ({ tokenId }) => {
 						</div>
 					</div>
 				</div>
-			</div>
-			<div className="text-center mt-2 text-sm">
-				<Link
-					href={{
-						pathname: router.pathname,
-						query: {
-							...router.query,
-							...{ tokenId: localToken?.tokenId },
-							...{ prevAs: router.asPath },
-						},
-					}}
-					as={`/token/${localToken?.tokenId}`}
-					scroll={false}
-					shallow
-				>
-					<a className="inline-block text-gray-100 cursor-pointer font-semibold border-b-2 border-gray-100">
-						See Details
-					</a>
-				</Link>
 			</div>
 		</Fragment>
 	)

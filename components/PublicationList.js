@@ -55,7 +55,7 @@ const PublicationList = ({ data }) => {
 						</span>
 						<span className="px-2">|</span>
 						<LinkToProfile
-							accountId={data.authorId}
+							accountId={data.author_id}
 							className="text-white font-semibold hover:border-white"
 						/>
 					</p>

@@ -127,7 +127,7 @@ export default function MarketPage() {
 				<CategoryList listCategory={store.cardCategory} />
 				<div className="mt-4 px-4">
 					{isFiltering ? (
-						<div className="min-h-full border-2 border-dashed border-gray-800 rounded-md">
+						<div className="min-h-full">
 							<CardListLoader />
 						</div>
 					) : (

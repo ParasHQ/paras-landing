@@ -1,4 +1,4 @@
-const CONTRACT_NAME = process.env.CONTRACT_NAME
+const CONTRACT_NAME = process.env.MARKETPLACE_CONTRACT_ID
 
 function getConfig(env) {
 	switch (env) {

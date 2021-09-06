@@ -8,6 +8,7 @@ import { useToast } from '../hooks/useToast'
 import {
 	compressImg,
 	dataURLtoFile,
+	parseGetTokenIdfromUrl,
 	parseImgUrl,
 	readFileAsUrl,
 } from '../utils/common'
@@ -51,7 +52,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 
 	const fetchToken = async () => {
 		let token = []
-		pubDetail.tokenIds.map(async (tokenId) => {
+		pubDetail.contract_token_ids?.map(async (tokenId) => {
 			const res = await axios(
 				`${process.env.API_URL}/tokens?tokenId=${tokenId}`
 			)
@@ -61,24 +62,55 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	}
 
 	const getDataFromTokenId = async () => {
-		if (embeddedCards.some((card) => card.tokenId === searchToken)) {
-			showToast('You have embedded this card')
-			setSearchToken('')
+		const { token_id, token_series_id } = parseGetTokenIdfromUrl(searchToken)
+
+		if (token_id) {
+			const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+				params: {
+					token_id: token_id,
+				},
+			})
+
+			const token = (await res.data.data.results[0]) || null
+
+			if (token) {
+				setEmbeddedCards([...embeddedCards, token])
+				setShowModal(null)
+				setSearchToken('')
+			} else {
+				showToast('Please enter correct url')
+			}
 			return
 		}
 
-		const res = await axios(
-			`${process.env.API_URL}/tokens?tokenId=${searchToken}`
-		)
-		const token = (await res.data.data.results[0]) || null
+		if (token_series_id.split('::'[1])) {
+			const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+				params: {
+					token_series_id: token_series_id.split('::')[1],
+				},
+			})
 
-		if (token) {
-			setEmbeddedCards([...embeddedCards, token])
-			setShowModal(null)
-			setSearchToken('')
-		} else {
-			showToast('Please enter correct token id')
+			const token = (await res.data.data.results[0]) || null
+
+			if (token) {
+				setEmbeddedCards([...embeddedCards, token])
+				setShowModal(null)
+				setSearchToken('')
+			} else {
+				showToast('Please enter correct url')
+			}
+			return
 		}
+	}
+
+	const getTokenIds = () => {
+		return embeddedCards.map((token) => {
+			let tokenId = `${token.contract_id}::${token.token_series_id}`
+			if (token.token_id) {
+				tokenId += `/${token.token_id}`
+			}
+			return tokenId
+		})
 	}
 
 	const showToast = (msg, type = 'error') => {
@@ -127,11 +159,11 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				blocks: convertToRaw(content.getCurrentContent()).blocks,
 				entityMap: entityMap,
 			},
-			tokenIds: embeddedCards.map((card) => card.tokenId),
+			contract_token_ids: getTokenIds(),
 		}
 
 		try {
-			const url = `${process.env.API_URL}/publications`
+			const url = `${process.env.V2_API_URL}/publications`
 			const res = await axios({
 				url: isEdit ? url + `/${pubDetail._id}` : url,
 				method: isEdit ? 'put' : 'post',
@@ -168,12 +200,16 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			}
 		}
 
-		const resp = await axios.post(`${process.env.API_URL}/uploads`, formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data',
-				authorization: await near.authToken(),
-			},
-		})
+		const resp = await axios.post(
+			`${process.env.V2_API_URL}/uploads`,
+			formData,
+			{
+				headers: {
+					'Content-Type': 'multipart/form-data',
+					authorization: await near.authToken(),
+				},
+			}
+		)
 
 		let idx = 0
 		for (let key in entityMap) {
@@ -199,12 +235,16 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 		const formData = new FormData()
 		formData.append('files', dataURLtoFile(thumbnail), 'thumbnail')
 
-		const resp = await axios.post(`${process.env.API_URL}/uploads`, formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data',
-				authorization: await near.authToken(),
-			},
-		})
+		const resp = await axios.post(
+			`${process.env.V2_API_URL}/uploads`,
+			formData,
+			{
+				headers: {
+					'Content-Type': 'multipart/form-data',
+					authorization: await near.authToken(),
+				},
+			}
+		)
 
 		return resp.data.data[0]
 	}
@@ -263,11 +303,10 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 								onChange={(e) => setSearchToken(e.target.value)}
 								value={searchToken}
 								className={`resize-none h-auto focus:border-gray-100 mb-4`}
-								placeholder="Token ID"
+								placeholder="Url of the Token"
 							/>
 							<p className="text-gray-300 text-sm italic">
-								TokenID is your card id. You can find your TokenID at
-								https://paras.id/token/[TokenID]
+								Please input your token link
 							</p>
 							<button
 								className="font-semibold mt-4 py-3 w-full rounded-md bg-primary text-white"
@@ -528,33 +567,27 @@ const CardPublication = ({ localToken, deleteCard }) => {
 		<Fragment>
 			<div className="w-full m-auto">
 				<Card
-					imgUrl={parseImgUrl(localToken?.metadata?.image, null, {
-						width: `300`,
+					imgUrl={parseImgUrl(localToken.metadata.media, null, {
+						width: `600`,
+						useOriginal: true,
 					})}
-					imgBlur={localToken?.metadata?.blurhash}
+					imgBlur={localToken.metadata.blurhash}
 					token={{
-						name: localToken?.metadata?.name,
-						collection: localToken?.metadata?.collection,
-						description: localToken?.metadata?.description,
-						creatorId: localToken?.creatorId,
-						supply: localToken?.supply,
-						tokenId: localToken?.tokenId,
-						createdAt: localToken?.createdAt,
+						title: localToken.metadata.title,
+						collection:
+							localToken.metadata.collection || localToken.contract_id,
+						copies: localToken.metadata.copies,
+						creatorId: localToken.metadata.creator_id || localToken.contract_id,
 					}}
-					initialRotate={{
-						x: 0,
-						y: 0,
-					}}
-					disableFlip={true}
 				/>
 			</div>
 			<div className="text-gray-100 pt-4">
 				<div className=" overflow-hidden">
 					<p
-						title={localToken?.metadata?.name}
+						title={localToken?.metadata?.title}
 						className="text-2xl font-bold border-b-2 border-transparent truncate"
 					>
-						{localToken?.metadata?.name}
+						{localToken?.metadata?.title}
 					</p>
 				</div>
 				<p className="opacity-75 truncate">
