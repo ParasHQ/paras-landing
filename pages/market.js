@@ -32,7 +32,12 @@ export default function MarketPage() {
 
 	useEffect(() => {
 		updateFilter(router.query)
-	}, [router.query.sort, router.query.pmin, router.query.pmax])
+	}, [
+		router.query.sort,
+		router.query.pmin,
+		router.query.pmax,
+		router.query.is_verified,
+	])
 
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
@@ -151,6 +156,8 @@ const tokensParams = (_page = 0, query) => {
 		__sort: parseSortQuery(query.sort),
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
+		is_verified:
+			typeof query.is_verified !== 'undefined' ? query.is_verified : true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 	}

@@ -20,6 +20,11 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 					/>
 				</div>
 				<div className="mt-4 max-w-sm text-center overflow-hidden">
+					{userProfile.isCreator && (
+						<p className="text-white opacity-70 text-xs mb-1 mt-2">
+							Verified Creator
+						</p>
+					)}
 					<div className="flex items-center justify-center">
 						<h4
 							className="text-gray-100 font-bold truncate"
