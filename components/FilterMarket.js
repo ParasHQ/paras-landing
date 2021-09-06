@@ -31,14 +31,17 @@ const FilterMarket = () => {
 			setMinPrice('')
 			setMaxPrice('')
 		} else {
+			console.log(router.query)
 			if (router.query.sort) {
 				setSortBy(router.query.sort)
-			}
-			if (router.query.pmin) {
+			} else if (router.query.pmin) {
 				setMinPrice(router.query.pmin)
-			}
-			if (router.query.pmax) {
+			} else if (router.query.pmax) {
 				setMaxPrice(router.query.pmin)
+			} else {
+				setSortBy(filter[0].key)
+				setMinPrice('')
+				setMaxPrice('')
 			}
 		}
 	}, [router.query])
