@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { parseImgUrl } from 'utils/common'
 import Slider from 'react-slick'
 import LinkToProfile from 'components/LinkToProfile'
-import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import HomeFeaturedLoader from 'components/Home/Loaders/Featured'
 import HomePublicationLoader from 'components/Home/Loaders/PublicationList'
 
@@ -25,7 +24,7 @@ const FeaturedPost = ({ post = {} }) => {
 				<h1
 					className="text-white font-bold text-2xl overflow-hidden"
 					style={{
-						maxHeight: `4.8rem`,
+						maxHeight: `4.1rem`,
 					}}
 				>
 					{post.title}
