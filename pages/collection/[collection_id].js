@@ -158,7 +158,7 @@ export default CollectionPage
 export async function getServerSideProps({ params }) {
 	const resp = await axios.get(`${process.env.V2_API_URL}/collections`, {
 		params: {
-			collection_id: params.collectionId,
+			collection_id: params.collection_id,
 		},
 	})
 
