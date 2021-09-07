@@ -267,15 +267,15 @@ const NotificationList = () => {
 		currentUser.has_notification
 	)
 
-	useEffect(() => {
-		if (
-			currentUser &&
-			notificationList.length === 0 &&
-			notificationListHasMore
-		) {
-			_fetchData()
-		}
-	}, [currentUser, notificationList, notificationListHasMore])
+	// useEffect(() => {
+	// 	if (
+	// 		currentUser &&
+	// 		notificationList.length === 0 &&
+	// 		notificationListHasMore
+	// 	) {
+	// 		_fetchData()
+	// 	}
+	// }, [currentUser, notificationList, notificationListHasMore])
 
 	useEffect(() => {
 		const onClickEv = (e) => {
@@ -298,6 +298,7 @@ const NotificationList = () => {
 
 	useEffect(() => {
 		if (showAccountModal) {
+			_fetchData()
 			setHasNotification(false)
 		}
 	}, [showAccountModal, notificationUnreadList])
