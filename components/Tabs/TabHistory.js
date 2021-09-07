@@ -96,9 +96,9 @@ const Activity = ({ activity }) => {
 		if (type === 'resolve_purchase') {
 			return (
 				<p>
-					<LinkToProfile accountId={activity.from} />
-					<span> bought from </span>
 					<LinkToProfile accountId={activity.to} />
+					<span> bought from </span>
+					<LinkToProfile accountId={activity.from} />
 					<span> for </span>
 					{formatNearAmount(activity.msg.params.price)} Ⓝ
 				</p>

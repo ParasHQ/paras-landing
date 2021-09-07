@@ -154,7 +154,7 @@ const Activity = ({ activity }) => {
 			<p>
 				<LinkToProfile
 					className="text-gray-100 hover:border-gray-100"
-					accountId={activity.from}
+					accountId={activity.to}
 				/>
 				<span>
 					{' '}
@@ -164,7 +164,7 @@ const Activity = ({ activity }) => {
 				</span>
 				<LinkToProfile
 					className="text-gray-100 hover:border-gray-100"
-					accountId={activity.to}
+					accountId={activity.from}
 				/>
 				<span> for </span>
 				{formatNearAmount(activity.msg.params.price)} Ⓝ
