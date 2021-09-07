@@ -50,8 +50,6 @@ const TopUser = ({ user, idx }) => {
 		setProfile(res.data.data.results[0])
 	}, [])
 
-	console.log(profile)
-
 	return (
 		<div className="my-3 flex items-center">
 			<p className="text-base text-gray-100 opacity-50 mr-3">{idx + 1}</p>

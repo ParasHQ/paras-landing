@@ -355,8 +355,6 @@ export async function getServerSideProps({ params }) {
 
 	const pubDetail = (await resp.data?.data?.results[0]) || null
 
-	console.log(pubDetail)
-
 	const errorCode = pubDetail ? false : 404
 
 	const profileRes = await axios(

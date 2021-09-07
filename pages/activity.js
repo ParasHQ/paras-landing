@@ -101,8 +101,6 @@ const ActivityLog = ({ query }) => {
 				_filterQuery(fetchQuery?.filter) +
 				_filterMinMax(fetchQuery?.filter, fetchQuery?.pmin, fetchQuery?.pmax)
 
-			console.log(_filter)
-
 			const res = await axios.get(
 				`${process.env.V2_API_URL}/activities?${_filter}`,
 				{
