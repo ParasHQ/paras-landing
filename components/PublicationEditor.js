@@ -521,7 +521,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 										localToken={card}
 										deleteCard={() => {
 											const temp = embeddedCards.filter(
-												(x) => x.tokenId != card.tokenId
+												(x) => x.token_series_id != card.token_series_id
 											)
 											setEmbeddedCards(temp)
 										}}
