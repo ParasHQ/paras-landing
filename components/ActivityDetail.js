@@ -39,8 +39,8 @@ export const descriptionMaker = (activity, token) => {
 	if (type === 'resolve_purchase') {
 		const [series_id, edition_id] = activity.msg.params.token_id.split(':')
 
-		return `${activity.from} bought  #${edition_id || 1} from ${
-			activity.to
+		return `${activity.to} bought  #${edition_id || 1} from ${
+			activity.from
 		} for ${formatNearAmount(activity.msg.params.price)} Ⓝ`
 	}
 
