@@ -147,7 +147,7 @@ export default function SearchPage({ searchQuery }) {
 const tokensParams = (_page = 0, query) => {
 	const params = {
 		search: query.q,
-		excludeTotalBurn: true,
+		exclude_total_burn: true,
 		__sort: parseSortQuery(query.sort),
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
