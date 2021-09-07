@@ -32,6 +32,7 @@ const CollectionPage = ({ collectionId }) => {
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: {
 				collection_id: collectionId,
+				exclude_total_burn: true,
 				__skip: page * LIMIT,
 				__limit: LIMIT,
 			},
