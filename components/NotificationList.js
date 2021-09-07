@@ -247,6 +247,7 @@ const NotificationList = () => {
 		setNotificationListPage,
 		notificationListHasMore,
 		setNotificationListHasMore,
+		userProfile,
 	} = useStore((state) => ({
 		currentUser: state.currentUser,
 		notificationList: state.notificationList,
@@ -257,25 +258,20 @@ const NotificationList = () => {
 		setNotificationListPage: state.setNotificationListPage,
 		notificationListHasMore: state.notificationListHasMore,
 		setNotificationListHasMore: state.setNotificationListHasMore,
+		userProfile: state.userProfile,
 	}))
 
 	const accModalRef = useRef()
 
 	const [isFetching, setIsFetching] = useState(false)
 	const [showAccountModal, setShowAccountModal] = useState(false)
-	const [hasNotification, setHasNotification] = useState(
-		currentUser.has_notification
-	)
+	const [hasNotification, setHasNotification] = useState(false)
 
-	// useEffect(() => {
-	// 	if (
-	// 		currentUser &&
-	// 		notificationList.length === 0 &&
-	// 		notificationListHasMore
-	// 	) {
-	// 		_fetchData()
-	// 	}
-	// }, [currentUser, notificationList, notificationListHasMore])
+	useEffect(() => {
+		if (userProfile.has_notification) {
+			setHasNotification(true)
+		}
+	}, [userProfile])
 
 	useEffect(() => {
 		const onClickEv = (e) => {
@@ -299,7 +295,9 @@ const NotificationList = () => {
 	useEffect(() => {
 		if (showAccountModal) {
 			_fetchData()
-			setHasNotification(false)
+			if (hasNotification) {
+				setHasNotification(false)
+			}
 		}
 	}, [showAccountModal, notificationUnreadList])
 
@@ -355,7 +353,12 @@ const NotificationList = () => {
 						<div className="relative w-full h-full button-wrapper p-2">
 							{hasNotification && (
 								<div className="absolute right-0 top-0 p-2">
-									<div className="rounded-full bg-primary w-2 h-2"></div>
+									<div
+										className="rounded-full bg-primary w-2 h-2"
+										style={{
+											boxShadow: `rgb(83 97 255) 0px 0px 3px 2px`,
+										}}
+									></div>
 								</div>
 							)}
 							<svg
