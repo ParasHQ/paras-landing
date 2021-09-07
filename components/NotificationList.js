@@ -67,7 +67,7 @@ const Notification = ({ notif, currentUser }) => {
 									/>
 								</div>
 								<div className="pl-2 text-gray-300">
-									bought
+									bought{' '}
 									<span className="font-medium text-gray-100">
 										{token.metadata.title}
 									</span>{' '}
@@ -183,7 +183,7 @@ const Notification = ({ notif, currentUser }) => {
 										/>
 									</div>
 									<div className="pl-2 text-gray-300">
-										bought
+										bought{' '}
 										<span className="font-medium text-gray-100">
 											{token.metadata.title}
 										</span>{' '}
@@ -216,7 +216,7 @@ const Notification = ({ notif, currentUser }) => {
 									/>
 								</div>
 								<div className="pl-2 text-gray-300">
-									received
+									received{' '}
 									<span className="font-medium text-gray-100">
 										{token.metadata.title}
 									</span>{' '}

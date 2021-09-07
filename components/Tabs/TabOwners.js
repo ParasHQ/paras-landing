@@ -24,21 +24,14 @@ const TabOwners = ({ localToken }) => {
 	const [isFetching, setIsFetching] = useState(false)
 	const [activeToken, setActiveToken] = useState(null)
 	const [showModal, setShowModal] = useState(null)
-	const [needDeposit, setNeedDeposit] = useState(true)
 
-	const { currentUser } = useStore()
+	const { currentUser } = useStore((state) => ({
+		currentUser: state.currentUser,
+	}))
 
-	useEffect(() => {
-		if (currentUser) {
-			setTimeout(() => {
-				checkStorageBalance()
-			}, 250)
-		}
-	}, [currentUser])
-
-	const checkStorageBalance = async () => {
+	const hasStorageBalance = async (token) => {
 		try {
-			if (!localToken.approval_id) {
+			if (!token.approval_id) {
 				const currentStorage = await near.wallet
 					.account()
 					.viewFunction(
@@ -65,10 +58,11 @@ const TabOwners = ({ localToken }) => {
 				)
 
 				if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
-					setNeedDeposit(false)
+					return true
 				}
+				return false
 			} else {
-				setNeedDeposit(false)
+				return true
 			}
 		} catch (err) {
 			console.log(err)
@@ -108,6 +102,16 @@ const TabOwners = ({ localToken }) => {
 		setIsFetching(false)
 	}
 
+	const onUpdateListing = async (token) => {
+		setActiveToken(token)
+		const hasBalance = await hasStorageBalance(token)
+		if (hasBalance) {
+			setShowModal('update')
+		} else {
+			setShowModal('storage')
+		}
+	}
+
 	const onDismissModal = () => {
 		setActiveToken(null)
 		setShowModal(null)
@@ -135,12 +139,13 @@ const TabOwners = ({ localToken }) => {
 								setActiveToken(token)
 							}}
 							onUpdateListing={(token) => {
-								if (needDeposit) {
-									setShowModal('storage')
-								} else {
-									setShowModal('update')
-								}
-								setActiveToken(token)
+								onUpdateListing(token)
+								// if (needDeposit) {
+								// 	setShowModal('storage')
+								// } else {
+								// 	setShowModal('update')
+								// }
+								// setActiveToken(token)
 							}}
 						/>
 					))}
