@@ -274,6 +274,19 @@ const TokenDetail = ({ token, className }) => {
 								</Button>
 							</div>
 						)}
+						<div
+							className="mt-2 text-center text-white cursor-pointer hover:opacity-80 text-sm py-2"
+							size="md"
+							variant="ghosts"
+							onClick={() =>
+								router.push(
+									`/token/${token.contract_id}::${token.token_series_id}`
+								)
+							}
+							isFullWidth
+						>
+							See token series
+						</div>
 					</div>
 				</div>
 			</div>
