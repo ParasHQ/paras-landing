@@ -31,7 +31,7 @@ export default function MarketPage({ collectionName }) {
 		const res = await axios(
 			`${
 				process.env.API_URL
-			}/tokens?collection=${collectionName}&creatorId=${id}&excludeTotalBurn=true&__skip=${
+			}/tokens?collection=${collectionName}&creatorId=${id}&exclude_total_burn=true&__skip=${
 				page * LIMIT
 			}&__limit=${LIMIT}`
 		)

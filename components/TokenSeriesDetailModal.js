@@ -30,7 +30,6 @@ function TokenSeriesDetailModal({ tokens = [] }) {
 			const token = tokens.find(
 				(token) => token?.token_series_id === router.query.tokenSeriesId
 			)
-			console.log('masuk TokenSeriesDetailmodal')
 			setActiveToken(token)
 		} else {
 			setActiveToken(null)

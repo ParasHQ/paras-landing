@@ -20,7 +20,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 					/>
 				</div>
 				<div className="mt-4 max-w-sm text-center overflow-hidden">
-					{userProfile.isCreator && (
+					{userProfile?.isCreator && (
 						<p className="text-white text-xs mb-2 mt-2 p-1 bg-primary bg-opacity-75 rounded-md font-bold w-40 mx-auto">
 							Verified Creator
 						</p>
