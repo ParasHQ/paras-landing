@@ -9,7 +9,9 @@ const FilterMarket = () => {
 	const [sortBy, setSortBy] = useState(router.query.sort || filter[0].key)
 	const [minPrice, setMinPrice] = useState(router.query.pmin || '')
 	const [maxPrice, setMaxPrice] = useState(router.query.pmax || '')
-	const [isVerified, setIsVerified] = useState(router.query.isVerified || true)
+	const [isVerified, setIsVerified] = useState(
+		router.query.is_verified ? router.query.is_verified === 'true' : true
+	)
 
 	useEffect(() => {
 		const onClickEv = (e) => {
@@ -45,6 +47,9 @@ const FilterMarket = () => {
 				setSortBy(filter[0].key)
 				setMinPrice('')
 				setMaxPrice('')
+			}
+			if (router.query.is_verified) {
+				setIsVerified(router.query.is_verified === 'true')
 			}
 		}
 	}, [router.query])

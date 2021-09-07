@@ -110,7 +110,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 				style={{ background: '#202124' }}
 			>
 				<div className="w-full h-1/2 lg:h-full lg:w-3/5 relative">
-					{/* <div className="absolute inset-0 opacity-75 z-0">
+					<div className="absolute inset-0 opacity-75 z-0">
 						<Blurhash
 							hash={
 								token.metadata.blurhash ||
@@ -122,7 +122,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 							resolutionY={32}
 							punch={1}
 						/>
-					</div> */}
+					</div>
 					<div className="w-full h-full flex items-center justify-center p-2 lg:p-8 relative z-10">
 						<img
 							className="object-contain w-full h-full"
