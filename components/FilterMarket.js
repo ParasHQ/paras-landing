@@ -36,20 +36,23 @@ const FilterMarket = () => {
 		} else {
 			if (router.query.sort) {
 				setSortBy(router.query.sort)
+			} else {
+				setSortBy(filter[0].key)
 			}
 			if (router.query.pmin) {
 				setMinPrice(router.query.pmin)
+			} else {
+				setMinPrice('')
 			}
 			if (router.query.pmax) {
 				setMaxPrice(router.query.pmax)
-			}
-			if (router.query === {}) {
-				setSortBy(filter[0].key)
-				setMinPrice('')
+			} else {
 				setMaxPrice('')
 			}
 			if (router.query.is_verified) {
 				setIsVerified(router.query.is_verified === 'true')
+			} else {
+				setIsVerified(true)
 			}
 		}
 	}, [router.query])

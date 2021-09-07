@@ -13,7 +13,7 @@ import CategoryList from '../components/CategoryList'
 
 const LIMIT = 12
 
-export default function MarketPage() {
+function MarketPage({ serverQuery }) {
 	const store = useStore()
 	const router = useRouter()
 
@@ -42,7 +42,7 @@ export default function MarketPage() {
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(0, query),
+			params: tokensParams(0, query || serverQuery),
 		})
 		setPage(1)
 		setTokens(res.data.data.results)
@@ -65,7 +65,7 @@ export default function MarketPage() {
 		}
 		setIsFetching(true)
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(page, router.query),
+			params: tokensParams(page, router.query || serverQuery),
 		})
 		const newData = await res.data.data
 		const newTokens = [...tokens, ...newData.results]
@@ -163,3 +163,11 @@ const tokensParams = (_page = 0, query) => {
 	}
 	return params
 }
+
+export async function getServerSideProps({ query }) {
+	return {
+		props: { serverQuery: query },
+	}
+}
+
+export default MarketPage

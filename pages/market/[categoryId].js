@@ -15,7 +15,11 @@ import { useToast } from '../../hooks/useToast'
 
 const LIMIT = 12
 
-export default function Category({ categoryList, _categoryDetail }) {
+export default function Category({
+	serverQuery,
+	categoryList,
+	_categoryDetail,
+}) {
 	const {
 		categoryCardList,
 		setCategoryCardList,
@@ -26,12 +30,10 @@ export default function Category({ categoryList, _categoryDetail }) {
 		setPageCategoryCardList,
 		hasMoreCategoryCard,
 		setHasMoreCategoryCard,
-		userProfile,
 		currentUser,
 	} = useStore()
 	const router = useRouter()
 	const chooseSubmitRef = useRef()
-	const toast = useToast()
 
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(false)
@@ -66,10 +68,20 @@ export default function Category({ categoryList, _categoryDetail }) {
 	}, [categoryId])
 
 	useEffect(() => {
-		if (router.query.sort || router.query.pmin || router.query.pmax) {
+		if (
+			router.query.sort ||
+			router.query.pmin ||
+			router.query.pmax ||
+			router.query.is_verified
+		) {
 			updateFilter()
 		}
-	}, [router.query.sort, router.query.pmin, router.query.pmax])
+	}, [
+		router.query.sort,
+		router.query.pmin,
+		router.query.pmax,
+		router.query.is_verified,
+	])
 
 	useEffect(() => {
 		const onClickEv = (e) => {
@@ -107,7 +119,7 @@ export default function Category({ categoryList, _categoryDetail }) {
 
 		setIsFetching(true)
 		const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(_page, router.query),
+			params: tokensParams(_page, router.query || serverQuery),
 		})
 		const newData = await res.data.data
 		const newTokens = [..._tokens, ...newData.results]
@@ -335,13 +347,15 @@ const tokensParams = (_page = 0, query) => {
 		__sort: parseSortQuery(query.sort),
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
+		is_verified:
+			typeof query.is_verified !== 'undefined' ? query.is_verified : true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 	}
 	return params
 }
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params, query }) {
 	const categoryListResp = await axios(`${process.env.V2_API_URL}/categories`)
 	const categoryList = categoryListResp.data.data.results
 	const categoryDetail = categoryList.filter(
@@ -352,6 +366,7 @@ export async function getServerSideProps({ params }) {
 		props: {
 			categoryList: categoryList,
 			_categoryDetail: categoryDetail,
+			serverQuery: query,
 		},
 	}
 }
