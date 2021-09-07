@@ -92,7 +92,7 @@ const TabOwners = ({ localToken }) => {
 				token_series_id: localToken.token_series_id,
 				__skip: page * FETCH_TOKENS_LIMIT,
 				__limit: FETCH_TOKENS_LIMIT,
-				__sort: 'metadata.issued_at::1',
+				__sort: 'edition_id::1',
 			},
 			ttl: 30,
 		})
