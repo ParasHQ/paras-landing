@@ -11,7 +11,7 @@ import router from 'next/router'
 import { useEffect, useState } from 'react'
 import { parseImgUrl } from 'utils/common'
 
-const LIMIT = 12
+const LIMIT = 8
 
 const CollectionPage = ({ collectionId }) => {
 	const [collection, setCollection] = useState(null)
@@ -32,6 +32,8 @@ const CollectionPage = ({ collectionId }) => {
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: {
 				collection_id: collectionId,
+				__skip: page * LIMIT,
+				__limit: LIMIT,
 			},
 		})
 		const newData = await res.data.data
