@@ -98,7 +98,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			return
 		}
 
-		if (token_series_id.split('::'[1])) {
+		if (token_series_id.split('::')[1]) {
 			const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
 				params: {
 					token_series_id: token_series_id.split('::')[1],
@@ -116,6 +116,8 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			}
 			return
 		}
+
+		showToast('Please enter correct url')
 	}
 
 	const getTokenIds = () => {
@@ -321,7 +323,10 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 								placeholder="Url of the Token"
 							/>
 							<p className="text-gray-300 text-sm italic">
-								Please input your token link
+								Please input the link of your token
+							</p>
+							<p className="text-gray-300 text-sm italic">
+								https://paras.id/token/x.paras.near::1
 							</p>
 							<button
 								className="font-semibold mt-4 py-3 w-full rounded-md bg-primary text-white"
