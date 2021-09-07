@@ -53,10 +53,25 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	const fetchToken = async () => {
 		let token = []
 		pubDetail.contract_token_ids?.map(async (tokenId) => {
-			const res = await axios(
-				`${process.env.API_URL}/tokens?tokenId=${tokenId}`
-			)
-			token = [...token, res.data.data.results[0]]
+			const [contractTokenId, token_id] = tokenId.split('/')
+			const [contractId, tokenSeriesId] = contractTokenId.split('::')
+
+			const url = process.env.V2_API_URL
+			const res = await axios({
+				url: url + (tokenId ? `/token-series` : `/token`),
+				method: 'GET',
+				params: token_id
+					? {
+							token_id: token_id,
+					  }
+					: {
+							contract_id: contractId,
+							token_series_id: tokenSeriesId,
+					  },
+			})
+
+			const _token = (await res.data.data.results[0]) || null
+			token = [...token, _token]
 			setEmbeddedCards(token)
 		})
 	}
@@ -506,7 +521,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 										localToken={card}
 										deleteCard={() => {
 											const temp = embeddedCards.filter(
-												(x) => x.tokenId != card.tokenId
+												(x) => x.token_series_id != card.token_series_id
 											)
 											setEmbeddedCards(temp)
 										}}
