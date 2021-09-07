@@ -20,14 +20,14 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 					/>
 				</div>
 				<div className="mt-4 max-w-sm text-center overflow-hidden">
-					{userProfile.isCreator && (
-						<p className="text-white opacity-70 text-xs mb-1 mt-2">
+					{!userProfile.isCreator && (
+						<p className="text-white text-xs mb-2 mt-2 p-1 bg-primary bg-opacity-75 rounded-md font-bold">
 							Verified Creator
 						</p>
 					)}
-					<div className="flex items-center justify-center">
+					<div className="flex items-center justify-center mt-2">
 						<h4
-							className="text-gray-100 font-bold truncate"
+							className="text-gray-100 font-bold truncate pr-4"
 							title={router.query.id}
 						>
 							{' '}
@@ -35,7 +35,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 						</h4>
 						<div
 							title="Copy Account ID"
-							className="relative cursor-pointer pl-4 flex-grow-0"
+							className="relative cursor-pointer flex-grow-0"
 						>
 							<CopyLink
 								link={`${router.query.id}`}
