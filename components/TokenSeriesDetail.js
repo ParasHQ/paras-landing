@@ -159,7 +159,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 									<p className="mt-1 text-white">
 										by{' '}
 										<span className="font-semibold">
-											<Link href={`/${getCreatorId()}}`}>
+											<Link href={`/${getCreatorId()}`}>
 												<a className="text-white font-semibold border-b-2 border-transparent hover:border-white">
 													{getCreatorId()}
 												</a>
