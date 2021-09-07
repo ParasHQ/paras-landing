@@ -53,65 +53,11 @@ const User = () => {
 	}
 
 	const _createCard = () => {
-		if (process.env.APP_ENV !== 'production') {
-			router.push('/new')
-		} else if (store.userProfile.isCreator) {
-			router.push('/new')
-		} else {
-			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						<p>
-							Currently we only allow whitelisted Artist to create their digital
-							art card on Paras.
-						</p>
-						<p className="mt-2">Apply now using the link below:</p>
-						<div className="mt-2">
-							<a
-								href="https://forms.gle/QsZHqa2MKXpjckj98"
-								target="_blank"
-								className="cursor-pointer border-b-2 border-gray-900"
-							>
-								Apply as an Artist
-							</a>
-						</div>
-					</div>
-				),
-				type: 'info',
-				duration: null,
-			})
-		}
+		router.push('/new')
 	}
 
 	const _createColllection = () => {
-		if (process.env.APP_ENV !== 'production') {
-			router.push('/new-collection')
-		} else if (store.userProfile.isCreator) {
-			router.push('/new-collection')
-		} else {
-			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						<p>
-							Currently we only allow whitelisted Artist to create their digital
-							art card on Paras.
-						</p>
-						<p className="mt-2">Apply now using the link below:</p>
-						<div className="mt-2">
-							<a
-								href="https://forms.gle/QsZHqa2MKXpjckj98"
-								target="_blank"
-								className="cursor-pointer border-b-2 border-gray-900"
-							>
-								Apply as an Artist
-							</a>
-						</div>
-					</div>
-				),
-				type: 'info',
-				duration: null,
-			})
-		}
+		router.push('/new-collection')
 	}
 
 	const _createPublication = () => {
@@ -124,17 +70,16 @@ const User = () => {
 				text: (
 					<div className="font-semibold text-center text-sm">
 						<p>
-							Currently we only allow whitelisted Writer to create their digital
-							art card on Paras.
+							Currently we only allow verified creator to create publication.
 						</p>
-						<p className="mt-2">Apply now using the link below:</p>
+						<p className="mt-2">Visit our Discord channel to learn more:</p>
 						<div className="mt-2">
 							<a
-								href="https://forms.gle/QsZHqa2MKXpjckj98"
+								href="https://discord.paras.id"
 								target="_blank"
 								className="cursor-pointer border-b-2 border-gray-900"
 							>
-								Apply as an Writer
+								Join Paras Discord
 							</a>
 						</div>
 					</div>

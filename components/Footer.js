@@ -81,15 +81,6 @@ const Footer = () => {
 							Discord
 						</a>
 					</div>
-					<div className="flex items-center pt-2 px-2">
-						<a
-							href="https://forms.gle/QsZHqa2MKXpjckj98"
-							target="_blank"
-							className="flex cursor-pointer "
-						>
-							Apply as an Artist
-						</a>
-					</div>
 				</div>
 			</div>
 			<div className="py-2">
