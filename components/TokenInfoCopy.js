@@ -16,7 +16,7 @@ const TokenInfoCopy = ({ text, small = false }) => {
 			>
 				<div className="flex">
 					<p
-						className={`whitespace-no-wrap truncate text-gray-100 ${
+						className={`whitespace-no-wrap truncate text-gray-100 text-right ${
 							small ? 'w-32' : 'w-40'
 						}`}
 					>
