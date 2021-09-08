@@ -9,6 +9,8 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import Scrollbars from 'react-custom-scrollbars'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
+const LIMIT = 30
+
 const Notification = ({ notif, currentUser }) => {
 	const [token, setToken] = useState(null)
 
@@ -291,6 +293,8 @@ const NotificationList = () => {
 				{
 					params: {
 						account_id: currentUser,
+						__skip: notificationListPage * LIMIT,
+						__limit: LIMIT,
 					},
 					headers: {
 						authorization: await near.authToken(),
