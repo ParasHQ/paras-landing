@@ -188,11 +188,13 @@ const Notification = ({ notif, currentUser }) => {
 								/>
 							</div>
 							<div className="pl-2 text-gray-300">
-								bought{' '}
+								sold{' '}
 								<span className="font-medium text-gray-100">
 									{token.metadata.title}
-								</span>{' '}
-								for {formatNearAmount(notif.msg.params.price)} Ⓝ
+								</span>
+								{` to `}
+								<span className="font-semibold">{notif.to}</span> for{' '}
+								{formatNearAmount(notif.msg.params.price)} Ⓝ
 							</div>
 						</div>
 					</a>
