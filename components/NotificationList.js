@@ -3,14 +3,11 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 
 import near from '../lib/near'
 import useStore from '../lib/store'
-import { parseImgUrl, prettyBalance, prettyTruncate } from '../utils/common'
+import { parseImgUrl, prettyTruncate } from '../utils/common'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Scrollbars from 'react-custom-scrollbars'
-import useSWR from 'swr'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
-
-const LIMIT = 10
 
 const Notification = ({ notif, currentUser }) => {
 	const [token, setToken] = useState(null)
@@ -130,72 +127,11 @@ const Notification = ({ notif, currentUser }) => {
 		)
 	}
 
-	// gift or 2ndary marketplace
+	// transfer
 	if (notif.type === 'nft_transfer') {
 		const url = `/token/${notif.contract_id}::${notif.token_series_id}${
 			notif.token_id ? `/${notif.token_id}` : ''
 		}`
-
-		// if buy/sell
-		if (notif.price) {
-			// if sold
-			if (notif.from === currentUser) {
-				return (
-					<div>
-						<Link href={url}>
-							<a>
-								<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
-									<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-										<img
-											src={parseImgUrl(token.metadata.media, null, {
-												width: `300`,
-											})}
-										/>
-									</div>
-									<div className="pl-2 text-gray-300">
-										sold{' '}
-										<span className="font-medium text-gray-100">
-											{token.metadata.title}
-										</span>{' '}
-										for {formatNearAmount(notif.msg.params.price)} Ⓝ to
-										<span className="font-medium text-gray-100">
-											{prettyTruncate(notif.to, 12, 'address')}
-										</span>
-									</div>
-								</div>
-							</a>
-						</Link>
-					</div>
-				)
-			}
-			// if bought
-			if (notif.to === currentUser) {
-				return (
-					<div>
-						<Link href={url}>
-							<a>
-								<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
-									<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-										<img
-											src={parseImgUrl(token.metadata.media, null, {
-												width: `300`,
-											})}
-										/>
-									</div>
-									<div className="pl-2 text-gray-300">
-										bought{' '}
-										<span className="font-medium text-gray-100">
-											{token.metadata.title}
-										</span>{' '}
-										for {formatNearAmount(notif.msg.params.price)} Ⓝ
-									</div>
-								</div>
-							</a>
-						</Link>
-					</div>
-				)
-			}
-		}
 
 		// if transfer
 		if (notif.from === currentUser) {
@@ -233,6 +169,38 @@ const Notification = ({ notif, currentUser }) => {
 		}
 	}
 
+	// if buy/sell
+	if (notif.type === 'resolve_purchase') {
+		const url = `/token/${notif.contract_id}::${notif.token_series_id}${
+			notif.token_id ? `/${notif.token_id}` : ''
+		}`
+
+		return (
+			<div>
+				<Link href={url}>
+					<a>
+						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+							<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
+								<img
+									src={parseImgUrl(token.metadata.media, null, {
+										width: `300`,
+									})}
+								/>
+							</div>
+							<div className="pl-2 text-gray-300">
+								bought{' '}
+								<span className="font-medium text-gray-100">
+									{token.metadata.title}
+								</span>{' '}
+								for {formatNearAmount(notif.msg.params.price)} Ⓝ
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
 	return null
 }
 
@@ -248,6 +216,7 @@ const NotificationList = () => {
 		notificationListHasMore,
 		setNotificationListHasMore,
 		userProfile,
+		setUserProfile,
 	} = useStore((state) => ({
 		currentUser: state.currentUser,
 		notificationList: state.notificationList,
@@ -259,6 +228,7 @@ const NotificationList = () => {
 		notificationListHasMore: state.notificationListHasMore,
 		setNotificationListHasMore: state.setNotificationListHasMore,
 		userProfile: state.userProfile,
+		setUserProfile: state.setUserProfile,
 	}))
 
 	const accModalRef = useRef()
@@ -297,6 +267,8 @@ const NotificationList = () => {
 			_fetchData()
 			if (hasNotification) {
 				setHasNotification(false)
+				const newProfile = { ...userProfile, ...{ has_notification: false } }
+				setUserProfile(newProfile)
 			}
 		}
 	}, [showAccountModal, notificationUnreadList])
