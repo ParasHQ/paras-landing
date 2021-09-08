@@ -10,7 +10,7 @@ const ProfileDetail = ({ userProfile, accountId }) => {
 	const router = useRouter()
 
 	useEffect(() => {
-		router.replace(`${accountId}/collection`)
+		router.replace(`${accountId}/collectibles`)
 	}, [router.query.id])
 
 	const headMeta = {
