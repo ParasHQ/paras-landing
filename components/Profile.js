@@ -156,7 +156,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 				<div className="flex -mx-4">
 					<div
 						className="px-4 relative"
-						onClick={() => router.push(`/${router.query.id}/collection`)}
+						onClick={() => router.push(`/${router.query.id}/collectibles`)}
 					>
 						<h4 className="text-gray-100 font-bold cursor-pointer">
 							Collectibles
