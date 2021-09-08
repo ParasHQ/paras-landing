@@ -90,7 +90,7 @@ const Notification = ({ notif, currentUser }) => {
 								/>
 							</div>
 							<div className="pl-2 text-gray-300">
-								minted edition #{token.edition_id || 1}
+								Creator minted edition #{token.edition_id || 1} to {notif.to}
 							</div>
 						</div>
 					</a>
