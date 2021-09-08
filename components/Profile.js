@@ -159,7 +159,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 						onClick={() => router.push(`/${router.query.id}/collection`)}
 					>
 						<h4 className="text-gray-100 font-bold cursor-pointer">
-							Collection
+							Collectibles
 						</h4>
 						{activeTab === 'collection' && (
 							<div
