@@ -64,8 +64,8 @@ const CategorySubmission = () => {
 		}
 	}
 
-	const updateSubmissionData = (id) => {
-		const updatedData = submissions.filter((sbm) => sbm.id !== id)
+	const updateSubmissionData = (_id) => {
+		const updatedData = submissions.filter((sbm) => sbm._id !== _id)
 		setSubmissions(updatedData)
 	}
 
@@ -155,7 +155,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 				}
 			)
 			setShowModal('')
-			updateData(submission.id)
+			updateData(submission._id)
 		} catch (error) {
 			console.log(error.response)
 		}
