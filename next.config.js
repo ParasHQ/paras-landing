@@ -12,4 +12,13 @@ module.exports = {
 		MARKETPLACE_CONTRACT_ID: process.env.MARKETPLACE_CONTRACT_ID,
 		NFT_CONTRACT_ID: process.env.NFT_CONTRACT_ID,
 	},
+	async redirects() {
+		return [
+			{
+				source: '/:id/collection',
+				destination: '/:id/collectibles',
+				permanent: true,
+			},
+		]
+	},
 }
