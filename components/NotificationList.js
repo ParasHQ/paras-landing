@@ -70,7 +70,7 @@ const Notification = ({ notif, currentUser }) => {
 									<span className="font-medium text-gray-100">
 										{token.metadata.title}
 									</span>{' '}
-									for {formatNearAmount(notif.price)} Ⓝ
+									for {formatNearAmount(notif.msg.params.price)} Ⓝ
 								</div>
 							</div>
 						</a>
@@ -153,7 +153,7 @@ const Notification = ({ notif, currentUser }) => {
 									<span className="font-medium text-gray-100">
 										{token.metadata.title}
 									</span>{' '}
-									for {formatNearAmount(notif.price)} Ⓝ
+									for {formatNearAmount(notif.msg.params.price)} Ⓝ
 								</div>
 							</div>
 						</a>
