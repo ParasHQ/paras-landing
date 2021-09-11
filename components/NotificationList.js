@@ -135,6 +135,33 @@ const Notification = ({ notif, currentUser }) => {
 			notif.token_id ? `/${notif.token_id}` : ''
 		}`
 
+		if (notif.price && notif.from === currentUser) {
+			return (
+				<div>
+					<Link href={url}>
+						<a>
+							<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+								<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
+									<img
+										src={parseImgUrl(token.metadata.media, null, {
+											width: `300`,
+										})}
+									/>
+								</div>
+								<div className="pl-2 text-gray-300">
+									sold{' '}
+									<span className="font-medium text-gray-100">
+										{token.metadata.title}
+									</span>{' '}
+									for {formatNearAmount(notif.price)} Ⓝ
+								</div>
+							</div>
+						</a>
+					</Link>
+				</div>
+			)
+		}
+
 		// if transfer
 		if (notif.from === currentUser) {
 			return null
