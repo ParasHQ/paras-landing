@@ -258,6 +258,10 @@ const Activity = ({ activity }) => {
 						className="text-gray-100 hover:border-gray-100"
 						accountId={activity.from}
 					/>
+					<span> for </span>
+					{formatNearAmount(activity.msg.params.price) === '0'
+						? 'free'
+						: `${formatNearAmount(activity.msg.params.price)} Ⓝ`}
 				</p>
 			)
 		}
