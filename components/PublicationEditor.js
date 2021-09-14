@@ -58,7 +58,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 
 			const url = process.env.V2_API_URL
 			const res = await axios({
-				url: url + (tokenId ? `/token` : `/token-series`),
+				url: url + (token_id ? `/token` : `/token-series`),
 				method: 'GET',
 				params: token_id
 					? {
