@@ -7,7 +7,7 @@ import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
 import UserTransactionList from '../../components/Activity/UserTransactionDetail'
 
-const LIMIT = 5
+const LIMIT = 30
 
 const TopSellersPage = ({ topUser }) => {
 	const [usersData, setUsersData] = useState(topUser.sellers)
