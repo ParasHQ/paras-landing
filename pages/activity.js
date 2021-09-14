@@ -78,10 +78,10 @@ const ActivityLog = ({ query }) => {
 		}
 		let priceQuery = ''
 		if (min) {
-			priceQuery += `minPrice=${parseNearAmount(min)}&`
+			priceQuery += `min_price=${parseNearAmount(min)}&`
 		}
 		if (max) {
-			priceQuery += `maxPrice=${parseNearAmount(max)}&`
+			priceQuery += `max_price=${parseNearAmount(max)}&`
 		}
 		return priceQuery
 	}
