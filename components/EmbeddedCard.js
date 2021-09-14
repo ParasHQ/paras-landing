@@ -26,7 +26,7 @@ const EmbeddedCard = ({ tokenId }) => {
 
 		const url = process.env.V2_API_URL
 		const res = await axios({
-			url: url + (tokenId ? `/token-series` : `/token`),
+			url: url + (tokenId ? `/token` : `/token-series`),
 			method: 'GET',
 			params: token_id
 				? {

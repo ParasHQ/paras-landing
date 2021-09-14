@@ -325,12 +325,12 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 											'justify-center'
 										}`}
 									>
-										{pubDetail.contract_token_ids?.map((tokenId) => (
+										{pubDetail.contract_token_ids?.map((tokenId, index) => (
 											<div
-												key={tokenId}
+												key={index}
 												className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8"
 											>
-												<EmbeddedCard key={tokenId} tokenId={tokenId} />
+												<EmbeddedCard tokenId={tokenId} />
 											</div>
 										))}
 									</div>
