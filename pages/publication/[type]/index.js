@@ -30,7 +30,9 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const toast = useToast()
 	const textAreaRef = useRef(null)
 	const [content, setContent] = useState(
-		EditorState.createWithContent(convertFromRaw(pubDetail.content))
+		pubDetail?.content
+			? EditorState.createWithContent(convertFromRaw(pubDetail.content))
+			: null
 	)
 	const [showModal, setShowModal] = useState('')
 	const [isCopied, setIsCopied] = useState(false)
@@ -40,6 +42,12 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	useEffect(() => {
 		setIsComponentMounted(true)
 	}, [])
+
+	useEffect(() => {
+		if (errorCode) {
+			router.push('/publication')
+		}
+	}, [errorCode])
 
 	if (errorCode) {
 		return <Error />
@@ -304,13 +312,15 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 								</svg>
 							</div>
 						</div>
-						<TextEditor
-							title={createEditorStateWithText(pubDetail.title)}
-							hideTitle={true}
-							content={content}
-							setContent={setContent}
-							readOnly={true}
-						/>
+						{content && (
+							<TextEditor
+								title={createEditorStateWithText(pubDetail.title)}
+								hideTitle={true}
+								content={content}
+								setContent={setContent}
+								readOnly={true}
+							/>
+						)}
 					</div>
 					{pubDetail.contract_token_ids &&
 						pubDetail.contract_token_ids.length !== 0 && (

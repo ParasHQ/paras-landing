@@ -27,19 +27,27 @@ import { useToast } from '../../../hooks/useToast'
 const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const store = useStore()
 	const router = useRouter()
+	const toast = useToast()
 	const textAreaRef = useRef(null)
 	const [content, setContent] = useState(
-		EditorState.createWithContent(convertFromRaw(pubDetail.content))
+		pubDetail?.content
+			? EditorState.createWithContent(convertFromRaw(pubDetail.content))
+			: null
 	)
 	const [showModal, setShowModal] = useState('')
 	const [isCopied, setIsCopied] = useState(false)
 	const [isDeleting, setIsDeleting] = useState(false)
 	const [isComponentMounted, setIsComponentMounted] = useState(false)
-	const toast = useToast()
 
 	useEffect(() => {
 		setIsComponentMounted(true)
 	}, [])
+
+	useEffect(() => {
+		if (errorCode) {
+			router.push('/publication')
+		}
+	}, [errorCode])
 
 	if (errorCode) {
 		return <Error />
@@ -253,7 +261,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 								<Link href={`/${pubDetail.author_id}`}>
 									<div className="w-16 h-16 rounded-full overflow-hidden bg-primary cursor-pointer">
 										<img
-											src={parseImgUrl(userProfile.imgUrl, null, {
+											src={parseImgUrl(userProfile?.imgUrl, null, {
 												width: `800`,
 											})}
 											className="object-cover"
@@ -304,13 +312,15 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 								</svg>
 							</div>
 						</div>
-						<TextEditor
-							title={createEditorStateWithText(pubDetail.title)}
-							hideTitle={true}
-							content={content}
-							setContent={setContent}
-							readOnly={true}
-						/>
+						{content && (
+							<TextEditor
+								title={createEditorStateWithText(pubDetail.title)}
+								hideTitle={true}
+								content={content}
+								setContent={setContent}
+								readOnly={true}
+							/>
+						)}
 					</div>
 					{pubDetail.contract_token_ids &&
 						pubDetail.contract_token_ids.length !== 0 && (
@@ -325,12 +335,12 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 											'justify-center'
 										}`}
 									>
-										{pubDetail.contract_token_ids.map((tokenId) => (
+										{pubDetail.contract_token_ids?.map((tokenId, index) => (
 											<div
-												key={tokenId}
+												key={index}
 												className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8"
 											>
-												<EmbeddedCard key={tokenId} tokenId={tokenId} />
+												<EmbeddedCard tokenId={tokenId} />
 											</div>
 										))}
 									</div>
