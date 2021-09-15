@@ -15,6 +15,7 @@ export const HomeCardList = () => {
 	const fetchTokenList = async () => {
 		const resp = await axios.get(`${process.env.V2_API_URL}/token-series`, {
 			params: {
+				is_verified: true,
 				__sort: `_id::-1`,
 				__limit: 4,
 			},
