@@ -151,8 +151,8 @@ const tokensParams = (_page = 0, query) => {
 		__sort: parseSortQuery(query.sort),
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
-		...(query.pmin && { minPrice: parseNearAmount(query.pmin) }),
-		...(query.pmax && { maxPrice: parseNearAmount(query.pmax) }),
+		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
+		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 	}
 	return params
 }
