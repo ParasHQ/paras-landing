@@ -1,12 +1,12 @@
 import Link from 'next/link'
 import cachios from 'cachios'
 import { useEffect, useState } from 'react'
-import dynamic from 'next/dynamic'
 
-const ReactTooltip = dynamic(() => import('react-tooltip'), { ssr: false })
+import ReactTooltip from 'react-tooltip'
 
 const ArtistVerified = ({ token }) => {
 	const [artistData, setArtistData] = useState(null)
+	const [showTooltip, setShowTooltip] = useState(false)
 
 	useEffect(async () => {
 		if (token.metadata.creator_id) {
@@ -22,6 +22,7 @@ const ArtistVerified = ({ token }) => {
 			const userProfile = profileRes.data.data.results[0]
 			setArtistData(userProfile)
 		}
+		setShowTooltip(true)
 	}, [token])
 
 	const getCreatorId = () => {
@@ -30,7 +31,7 @@ const ArtistVerified = ({ token }) => {
 
 	return (
 		<>
-			<ReactTooltip place="right" type="dark" />
+			{showTooltip && <ReactTooltip place="right" type="dark" />}
 			<span className="font-semibold">
 				<Link href={`/${getCreatorId()}`}>
 					<a className="text-white font-semibold border-b-2 border-transparent hover:border-white">
