@@ -1,7 +1,9 @@
 import Link from 'next/link'
 import cachios from 'cachios'
 import { useEffect, useState } from 'react'
-import ReactTooltip from 'react-tooltip'
+import dynamic from 'next/dynamic'
+
+const ReactTooltip = dynamic(() => import('react-tooltip'), { ssr: false })
 
 const ArtistVerified = ({ token }) => {
 	const [artistData, setArtistData] = useState(null)
