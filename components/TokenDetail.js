@@ -23,6 +23,7 @@ import useStore from 'lib/store'
 import { STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import TabHistory from './Tabs/TabHistory'
 import LoginModal from './Modal/LoginModal'
+import ArtistVerified from './Common/ArtistVerified'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -204,16 +205,10 @@ const TokenDetail = ({ token, className }) => {
 									<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
 										{token.metadata.title}
 									</h1>
-									<p className="mt-1 text-white">
-										by{' '}
-										<span className="font-semibold">
-											<Link href={`/${getCreatorId()}`}>
-												<a className="text-white font-semibold border-b-2 border-transparent hover:border-white">
-													{getCreatorId()}
-												</a>
-											</Link>
-										</span>
-									</p>
+									<div className="mt-1 text-white flex">
+										<p className="mr-1">by</p>
+										<ArtistVerified token={token} />
+									</div>
 								</div>
 								<div>
 									<IconDots
