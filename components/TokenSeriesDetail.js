@@ -21,6 +21,7 @@ import TokenSeriesBurnModal from './Modal/TokenSeriesBurnModal'
 import { Blurhash } from 'react-blurhash'
 import LoginModal from './Modal/LoginModal'
 import ArtistVerified from './Common/ArtistVerified'
+import ArtistBanned from './Common/ArtistBanned'
 
 const TokenSeriesDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -100,10 +101,6 @@ const TokenSeriesDetail = ({ token, className }) => {
 		)
 	}
 
-	const getCreatorId = () => {
-		return token.metadata.creator_id || token.contract_id
-	}
-
 	return (
 		<div className={`m-auto rounded-lg overflow-hidden ${className}`}>
 			<div
@@ -133,6 +130,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 							})}
 						/>
 					</div>
+					<ArtistBanned creatorId={token.metadata.creator_id} />
 				</div>
 				<div className="h-1/2 lg:h-full flex flex-col w-full lg:w-2/5 lg:max-w-2xl bg-gray-700">
 					<Scrollbars
@@ -206,11 +204,26 @@ const TokenSeriesDetail = ({ token, className }) => {
 								</div>
 							</div>
 						) : token.price ? (
-							<Button size="md" onClick={onClickBuy} isFullWidth>
-								{token.price === '0'
-									? 'Free'
-									: `Buy for ${formatNearAmount(token.price)} Ⓝ`}
-							</Button>
+							<>
+								<Button size="md" onClick={onClickBuy} isFullWidth>
+									{token.price === '0'
+										? 'Free'
+										: `Buy for ${formatNearAmount(token.price)} Ⓝ`}
+								</Button>
+								{parseFloat(formatNearAmount(token.price)) >
+									parseFloat(formatNearAmount(token.lowest_price)) && (
+									<Button
+										size="md"
+										className="mt-2"
+										variant="secondary"
+										onClick={() => setActiveTab('owners')}
+										isFullWidth
+									>
+										Buy for {formatNearAmount(token.lowest_price)} Ⓝ on
+										Secondary Marketplace
+									</Button>
+								)}
+							</>
 						) : (
 							<Button size="md" isFullWidth>
 								Not for Sale
