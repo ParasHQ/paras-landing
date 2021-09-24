@@ -40,7 +40,7 @@ export default function SearchPage({ searchQuery }) {
 		}
 		setTokens(res.data.data.results)
 		setIsRefreshing(false)
-	}, [query.q, query.sort, query.pmin, query.pmax])
+	}, [query.q, query.sort, query.pmin, query.pmax, query.is_verified])
 
 	useEffect(() => {
 		return () => {
@@ -151,6 +151,8 @@ const tokensParams = (_page = 0, query) => {
 		__sort: parseSortQuery(query.sort),
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
+		is_verified:
+			typeof query.is_verified !== 'undefined' ? query.is_verified : true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 	}
