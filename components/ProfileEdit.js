@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useState } from 'react'
+import { strings } from 'utils/strings'
 import { useToast } from '../hooks/useToast'
 import near from '../lib/near'
 import useStore from '../lib/store'
@@ -30,7 +31,7 @@ const ProfileEdit = ({ close }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						Please enter valid website
+						{strings.HEADER.USER.EDIT_PROFILE.STATUS_MESSAGE.VALID_WEBSITE}
 					</div>
 				),
 				type: 'error',
@@ -67,7 +68,7 @@ const ProfileEdit = ({ close }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						Something went wrong, try again later
+						{strings.HEADER.USER.EDIT_PROFILE.STATUS_MESSAGE.WENT_WRONG}
 					</div>
 				),
 				type: 'error',
@@ -105,7 +106,7 @@ const ProfileEdit = ({ close }) => {
 			)}
 			<div className="m-auto">
 				<h1 className="text-2xl font-bold text-gray-100 tracking-tight">
-					Edit Profile
+					{strings.HEADER.EDIT_PROFILE.HEADING}
 				</h1>
 				<div className="mt-4 mx-auto relative cursor-pointer w-32 h-32 rounded-full overflow-hidden">
 					<input
@@ -136,7 +137,7 @@ const ProfileEdit = ({ close }) => {
 						value={bio}
 						onChange={(e) => setBio(e.target.value)}
 						className={`resize-none h-24 focus:border-gray-100`}
-						placeholder="Tell us about yourself"
+						placeholder={strings.HEADER.EDIT_PROFILE.ABOUT_PLACEHOLDER}
 					></textarea>
 				</div>
 				<div className="mt-2">
@@ -147,7 +148,7 @@ const ProfileEdit = ({ close }) => {
 						value={website}
 						onChange={(e) => setWebsite(e.target.value)}
 						className={`resize-none h-auto focus:border-gray-100`}
-						placeholder="Website"
+						placeholder={strings.HEADER.EDIT_PROFILE.WEBSITE_PLACEHOLDER}
 					/>
 				</div>
 				<div className="my-4 flex space-x-4">
@@ -159,7 +160,7 @@ const ProfileEdit = ({ close }) => {
 							value={instagram}
 							onChange={(e) => setInstagram(e.target.value)}
 							className={`resize-none h-auto focus:border-gray-100`}
-							placeholder="Username"
+							placeholder={strings.HEADER.EDIT_PROFILE.USERNAME_PLACEHOLDER}
 						/>
 					</div>
 					<div>
@@ -170,7 +171,7 @@ const ProfileEdit = ({ close }) => {
 							value={twitter}
 							onChange={(e) => setTwitter(e.target.value)}
 							className={`resize-none h-auto focus:border-gray-100`}
-							placeholder="Username"
+							placeholder={strings.HEADER.EDIT_PROFILE.USERNAME_PLACEHOLDER}
 						/>
 					</div>
 				</div>
@@ -180,13 +181,13 @@ const ProfileEdit = ({ close }) => {
 						className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 						onClick={_submit}
 					>
-						{!isSubmitting ? 'Save' : 'Saving...'}
+						{!isSubmitting ? strings.SAVE : strings.SAVING}
 					</button>
 					<button
 						className="w-full outline-none h-12 mt-4 rounded-md bg-gray-100 text-sm font-semibold border-2 px-4 py-2 text-primary"
 						onClick={close}
 					>
-						Cancel
+						{strings.HEADER.EDIT_PROFILE.CANCEL}
 					</button>
 				</div>
 			</div>

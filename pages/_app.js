@@ -17,11 +17,13 @@ import 'croppie/croppie.css'
 
 import ToastProvider from '../hooks/useToast'
 import { SWRConfig } from 'swr'
+import { getLocaleStrings, strings } from 'utils/strings'
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
 
 	const router = useRouter()
+	const { locale } = router
 
 	const counter = async (url) => {
 		// check cookie uid
@@ -158,6 +160,13 @@ function MyApp({ Component, pageProps }) {
 			}
 		}
 	}
+
+	useEffect(async () => {
+		const labels = await getLocaleStrings({ locale })
+		strings.setContent({ [locale]: labels })
+		strings.setLanguage(locale)
+		store.setLocale(locale)
+	}, [locale])
 
 	return (
 		<div>

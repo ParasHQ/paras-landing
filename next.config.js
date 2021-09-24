@@ -2,6 +2,10 @@ module.exports = {
 	experimental: {
 		scrollRestoration: true,
 	},
+	i18n: {
+		locales: ['en', 'cn'],
+		defaultLocale: 'en',
+	},
 	env: {
 		APP_ENV: process.env.APP_ENV,
 		CONTRACT_NAME: process.env.CONTRACT_NAME,

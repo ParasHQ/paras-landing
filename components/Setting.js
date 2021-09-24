@@ -1,5 +1,6 @@
 import Axios from 'axios'
 import { useEffect, useState } from 'react'
+import { strings } from 'utils/strings'
 import { useToast } from '../hooks/useToast'
 import near from '../lib/near'
 
@@ -45,8 +46,8 @@ const Setting = ({ close }) => {
 			const message = resp.data.data
 			const toastMessage =
 				message === 'verify-email'
-					? 'Add email success, please check your email address to verify'
-					: 'Update setting success'
+					? strings.SETTINGS.TOAST_MESSAGES.VERIFY_EMAIL
+					: strings.SETTINGS.TOAST_MESSAGES.UPDATE_SUCCESS
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
@@ -92,7 +93,7 @@ const Setting = ({ close }) => {
 				<div className="m-auto">
 					<div className="flex justify-between">
 						<h1 className="text-3xl font-bold text-gray-100 tracking-tight mb-4">
-							Setting
+							{strings.SETTINGS.HEADING}
 						</h1>
 						<div onClick={close}>
 							<svg
@@ -116,7 +117,7 @@ const Setting = ({ close }) => {
 						<>
 							<div>
 								<label className="font-bold text-xl my-2 text-gray-100">
-									Add Email
+									{strings.SETTINGS.ADD_EMAIL}
 								</label>
 								<input
 									type="text"
@@ -128,13 +129,21 @@ const Setting = ({ close }) => {
 								/>
 							</div>
 							<div className="text-gray-100 font-bold text-xl mt-4 my-2">
-								Notification preferences
+								{strings.SETTINGS.NOTIFICATION_PREFERENCE.HEADING}
 							</div>
 							<div className="text-gray-100 flex justify-between items-center my-2">
 								<div>
-									<div className="text-lg">Newsletters</div>
+									<div className="text-lg">
+										{
+											strings.SETTINGS.NOTIFICATION_PREFERENCE.NEWS_LETTERS
+												.LABEL
+										}
+									</div>
 									<div className="text-gray-100 opacity-75 text-sm">
-										Get first notified for any paras Info
+										{
+											strings.SETTINGS.NOTIFICATION_PREFERENCE.NEWS_LETTERS
+												.DESCRIPTION
+										}
 									</div>
 								</div>
 								<Toggle
@@ -145,9 +154,14 @@ const Setting = ({ close }) => {
 							</div>
 							<div className="text-gray-100 flex justify-between items-center my-2">
 								<div>
-									<div className="text-lg">NFT Drops</div>
+									<div className="text-lg">
+										{strings.SETTINGS.NOTIFICATION_PREFERENCE.NFT_DROPS.LABEL}
+									</div>
 									<div className="text-gray-100 opacity-75 text-sm">
-										Get first notified for upcoming drops!
+										{
+											strings.SETTINGS.NOTIFICATION_PREFERENCE.NFT_DROPS
+												.DESCRIPTION
+										}
 									</div>
 								</div>
 								<Toggle
@@ -158,9 +172,17 @@ const Setting = ({ close }) => {
 							</div>
 							<div className="text-gray-100 flex justify-between items-center my-2">
 								<div>
-									<div className="text-lg">Notification</div>
+									<div className="text-lg">
+										{
+											strings.SETTINGS.NOTIFICATION_PREFERENCE.NOTIFICATION
+												.LABEL
+										}
+									</div>
 									<div className="text-gray-100 opacity-75 text-sm">
-										Get notified for your transaction on Paras
+										{
+											strings.SETTINGS.NOTIFICATION_PREFERENCE.NOTIFICATION
+												.DESCRIPTION
+										}
 									</div>
 								</div>
 								<Toggle
@@ -172,7 +194,7 @@ const Setting = ({ close }) => {
 						</>
 					) : (
 						<div className="flex items-center justify-center h-64 text-gray-100">
-							Loading...
+							{strings.LOADING}...
 						</div>
 					)}
 					<button
@@ -180,7 +202,7 @@ const Setting = ({ close }) => {
 						className="outline-none h-12 w-full mt-4 rounded-md bg-transparent text-sm font-semibold border-none px-4 py-2 bg-primary text-gray-100"
 						onClick={updateEmail}
 					>
-						{isUpdating ? 'Saving...' : 'Save'}
+						{isUpdating ? strings.SAVING : strings.SAVE}
 					</button>
 				</div>
 			</div>

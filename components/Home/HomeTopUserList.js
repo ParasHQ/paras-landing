@@ -6,6 +6,7 @@ import LinkToProfile from 'components/LinkToProfile'
 import Scrollbars from 'react-custom-scrollbars'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import HomeTopUsersLoader from 'components/Home/Loaders/TopUsers'
+import { strings } from 'utils/strings'
 
 const renderThumb = ({ style, ...props }) => {
 	return (
@@ -91,10 +92,12 @@ export const HomeTopUserList = () => {
 		<div>
 			<div className="w-full mt-16">
 				<div className="flex items-center justify-between">
-					<p className="text-white font-semibold text-3xl">Top Buyers</p>
+					<p className="text-white font-semibold text-3xl">
+						{strings.TOP_BUYERS}
+					</p>
 					<Link href="/activity/top-buyers">
 						<a className="text-gray-400 hover:text-white cursor-pointer font-semibold flex items-center">
-							<span>More</span>
+							<span>{strings.MORE}</span>
 							<svg
 								width="24"
 								height="24"
@@ -143,10 +146,12 @@ export const HomeTopUserList = () => {
 			</div>
 			<div className="w-full mt-8">
 				<div className="flex items-center justify-between">
-					<p className="text-white font-semibold text-3xl">Top Sellers</p>
+					<p className="text-white font-semibold text-3xl">
+						{strings.TOP_SELLERS}
+					</p>
 					<Link href="/activity/top-sellers">
 						<a className="text-gray-400 hover:text-white cursor-pointer font-semibold flex items-center">
-							<span>More</span>
+							<span>{strings.MORE}</span>
 							<svg
 								width="24"
 								height="24"

@@ -3,6 +3,7 @@ import axios from 'axios'
 import Marquee from 'react-fast-marquee'
 import Link from 'next/link'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
+import { strings } from 'utils/strings'
 
 const ActivityMarquee = ({ token }) => {
 	return (
@@ -62,7 +63,7 @@ export const HomeMarqueeList = () => {
 				>
 					<div className="">
 						<div className="text-center py-1 px-4">
-							<p className="text-primary font-bold">Last Sold</p>
+							<p className="text-primary font-bold">{strings.LAST_SOLD}</p>
 						</div>
 					</div>
 				</div>

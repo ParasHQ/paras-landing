@@ -6,6 +6,7 @@ import Slider from 'react-slick'
 import LinkToProfile from 'components/LinkToProfile'
 import HomeFeaturedLoader from 'components/Home/Loaders/Featured'
 import HomePublicationLoader from 'components/Home/Loaders/PublicationList'
+import { strings } from 'utils/strings'
 
 const FeaturedPost = ({ post = {} }) => {
 	return (
@@ -171,7 +172,7 @@ export const HomePublicationList = () => {
 	return (
 		<div className="flex flex-wrap mt-8 -mx-4">
 			<div className="w-full lg:w-7/12 px-4">
-				<p className="text-white font-semibold text-3xl">Featured</p>
+				<p className="text-white font-semibold text-3xl">{strings.FEATURED}</p>
 				<div className="mt-4 h-96 mb-24">
 					{!isLoading ? (
 						<div className="border-2 border-dashed border-gray-800 rounded-md">
@@ -271,10 +272,10 @@ export const HomePublicationList = () => {
 			</div>
 			<div className="w-full lg:w-5/12 mt-8 lg:mt-0 px-4">
 				<div className="flex items-center justify-between">
-					<p className="text-white font-semibold text-3xl">Latest</p>
+					<p className="text-white font-semibold text-3xl">{strings.LATEST}</p>
 					<Link href="/publication">
 						<a className="text-gray-400 hover:text-white cursor-pointer font-semibold flex items-center">
-							<span>More</span>
+							<span>{strings.MORE}</span>
 							<svg
 								width="24"
 								height="24"

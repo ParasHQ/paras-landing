@@ -9,6 +9,7 @@ import JSBI from 'jsbi'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import TokenSeriesDetailModal from './TokenSeriesDetailModal'
 import CardListLoader from './CardListLoader'
+import { strings } from 'utils/strings'
 
 const CardList = ({
 	name = 'default',
@@ -75,7 +76,7 @@ const CardList = ({
 						<div className="w-40 m-auto">
 							<img src="/cardstack.png" className="opacity-75" />
 						</div>
-						<p className="mt-4">No Cards</p>
+						<p className="mt-4">{strings.NO_CARDS}</p>
 					</div>
 				</div>
 			)}
@@ -147,7 +148,9 @@ const CardList = ({
 								<div className="text-center">
 									<div className="mt-4">
 										<div className="p-2 pb-4">
-											<p className="text-gray-400 text-xs">Start From</p>
+											<p className="text-gray-400 text-xs">
+												{strings.START_FROM}
+											</p>
 											<div className="text-gray-100 text-xl">
 												{price ? (
 													<div>

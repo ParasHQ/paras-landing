@@ -9,40 +9,36 @@ import { HomeMarqueeList } from 'components/Home/HomeMarqueeList'
 import { HomePublicationList } from 'components/Home/HomePublicationList'
 import { HomeTopUserList } from 'components/Home/HomeTopUserList'
 import { HomeCardList } from 'components/Home/HomeCardList'
+import { strings } from 'utils/strings'
 
 export default function Home() {
 	const [showVideoModal, setShowVideoModal] = useState(false)
+	console.log({ stringsInINdex: strings, text: strings.ACTIVITY.HEADING })
 
 	return (
 		<div className="min-h-screen relative bg-black">
 			<Head>
-				<title>Paras — Digital Art Cards Market</title>
-				<meta
-					name="description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
-				/>
+				<title>{strings.HOMEPAGE.META.TITLE}</title>
+				<meta name="description" content={strings.HOMEPAGE.META.DESCRIPTION} />
 
-				<meta name="twitter:title" content="Paras — Digital Art Cards Market" />
+				<meta name="twitter:title" content={strings.HOMEPAGE.META.TITLE} />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
 				<meta
 					name="twitter:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content={strings.HOMEPAGE.META.DESCRIPTION}
 				/>
 				<meta
 					name="twitter:image"
 					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Paras — Digital Art Cards Market" />
-				<meta
-					property="og:site_name"
-					content="Paras — Digital Art Cards Market"
-				/>
+				<meta property="og:title" content={strings.HOMEPAGE.META.TITLE} />
+				<meta property="og:site_name" content={strings.HOMEPAGE.META.TITLE} />
 				<meta
 					property="og:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content={strings.HOMEPAGE.META.DESCRIPTION}
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta
@@ -105,7 +101,9 @@ export default function Home() {
 					<HomeCardList />
 					<div className="mt-8 w-full flex flex-wrap"></div>
 					<div className="mt-8">
-						<p className="text-white font-semibold text-3xl">How it Works</p>
+						<p className="text-white font-semibold text-3xl">
+							{strings.HOMEPAGE.WORKING.TITLE}
+						</p>
 						<div className="flex flex-wrap -mx-4">
 							<div className="w-full lg:w-2/3 relative mt-4 px-4">
 								<div className="absolute inset-0 flex items-center justify-center">
@@ -139,22 +137,18 @@ export default function Home() {
 							<div className="w-full lg:w-1/3 px-4">
 								<div className="w-full mt-8 lg:mt-4">
 									<h2 className="text-white font-bold text-2xl text-gradient">
-										For Collectors
+										{strings.HOMEPAGE.WORKING.COLLECTORS.TITLE}
 									</h2>
 									<p className="mt-4 text-gray-400">
-										Discover beautiful art cards and collect them on a
-										blockchain-based technology that prevents forgery and
-										provides provable ownership.
+										{strings.HOMEPAGE.WORKING.COLLECTORS.BODY}
 									</p>
 								</div>
 								<div className="mt-8">
 									<h2 className="text-white font-bold text-2xl text-gradient">
-										For Artists
+										{strings.HOMEPAGE.WORKING.ARTISTS.TITLE}
 									</h2>
 									<p className="mt-4 text-gray-400">
-										Create your digital art cards and sell them on the
-										marketplace in just a few clicks. Start earning with your
-										digital creation.
+										{strings.HOMEPAGE.WORKING.ARTISTS.BODY}
 									</p>
 								</div>
 							</div>

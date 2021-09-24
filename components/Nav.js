@@ -16,6 +16,7 @@ import useSWR from 'swr'
 import Setting from './Setting'
 import Cookies from 'js-cookie'
 import NotificationList from './NotificationList'
+import { locales as localesList, strings } from 'utils/strings'
 
 const LIMIT = 10
 
@@ -69,17 +70,15 @@ const User = () => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						<p>
-							Currently we only allow verified creator to create publication.
-						</p>
-						<p className="mt-2">Visit our Discord channel to learn more:</p>
+						<p>{strings.HEADER.USER.VERIFIED_CREATOR_NOTICE}</p>
+						<p className="mt-2">{strings.HEADER.USER.DISCORD_NUDGE}</p>
 						<div className="mt-2">
 							<a
 								href="https://discord.paras.id"
 								target="_blank"
 								className="cursor-pointer border-b-2 border-gray-900"
 							>
-								Join Paras Discord
+								{strings.HEADER.USER.DISCORD_CTA}
 							</a>
 						</div>
 					</div>
@@ -187,30 +186,30 @@ const User = () => {
 									href="https://wallet.near.org/"
 									target="_blank"
 								>
-									View on NEAR Wallet
+									{strings.HEADER.USER.VIEW_NEAR_WALLET}
 								</a>
 							</div>
 						</div>
 						<hr className="my-2" />
 						<div onClick={_createCard}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								Create Card
+								{strings.HEADER.USER.CREATE_CARD}
 							</a>
 						</div>
 						<div onClick={_createColllection}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								Create Collection
+								{strings.HEADER.USER.CREATE_COLLECTION}
 							</a>
 						</div>
 						<div onClick={_createPublication}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								Create Publication
+								{strings.HEADER.USER.CREATE_PUBLICATION}
 							</a>
 						</div>
 						<hr className="my-2" />
 						<Link href={`/${store.currentUser}`}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								My Profile
+								{strings.HEADER.USER.MY_PROFILE}
 							</a>
 						</Link>
 						<button
@@ -220,7 +219,7 @@ const User = () => {
 							}}
 							className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 						>
-							Edit Profile
+							{strings.HEADER.USER.EDIT_PROFILE}
 						</button>
 						{process.env.APP_ENV !== 'testnet' && (
 							<button
@@ -230,7 +229,7 @@ const User = () => {
 								}}
 								className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 							>
-								Settings
+								{strings.HEADER.USER.SETTINGS}
 							</button>
 						)}
 						<hr className="my-2" />
@@ -238,11 +237,48 @@ const User = () => {
 							onClick={_signOut}
 							className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 						>
-							Log out
+							{strings.HEADER.USER.LOGOUT}
 						</p>
 					</div>
 				</div>
 			)}
+		</div>
+	)
+}
+
+const LocalisationDropdown = () => {
+	const { locale: currentLocale, asPath, locales } = useRouter()
+	const [isDropdownOpen, toggleDropdown] = useState(false)
+
+	const localeOptions = (
+		<div className="absolute flex flex-col gap-1 top-full right-0 p-3 border-dark-primary-1 border-2 rounded-lg bg-dark-primary-1">
+			{locales.map((locale) => {
+				const { localeCode, displayName } = localesList[locale]
+				return (
+					<Link passHref key={localeCode} href={asPath} locale={localeCode}>
+						<a
+							onClick={() => toggleDropdown(false)}
+							className={`text-gray-100 ${
+								currentLocale === localeCode ? 'text-primary' : ''
+							}`}
+						>
+							{displayName}
+						</a>
+					</Link>
+				)
+			})}
+		</div>
+	)
+
+	return (
+		<div className="locale-wrapper">
+			<div
+				onClick={() => toggleDropdown(!isDropdownOpen)}
+				className="cursor-pointer text-gray-100"
+			>
+				{localesList[currentLocale].displayName}
+			</div>
+			{isDropdownOpen ? localeOptions : null}
 		</div>
 	)
 }
@@ -279,14 +315,8 @@ const Nav = () => {
 		toast.show({
 			text: (
 				<div className="text-sm text-gray-900">
-					<p>
-						Testnet is used for creators and collectors to try and experience
-						Paras without the need to spend real value cryptocurrency.
-					</p>
-					<p className="mt-2">
-						Creators can use Testnet to prevent any mistakes before publishing
-						on Mainnet.
-					</p>
+					<p>{strings.HEADER.NOTICE.TOAST.LINE1}</p>
+					<p className="mt-2">{strings.HEADER.NOTICE.TOAST.LINE2}</p>
 				</div>
 			),
 			type: 'info',
@@ -327,15 +357,18 @@ const Nav = () => {
 							store.showEmailWarning ? 'md:h-8' : 'h-0'
 						}`}
 					>
-						<div className="px-10 py-1 md:p-0 ">
-							Please add your email to be verified as Paras user{' '}
-							<span
-								onClick={() => setShowSettingModal(true)}
-								className="font-bold cursor-pointer hover:underline"
-							>
-								here
-							</span>
-						</div>
+						{strings.formatString(
+							strings.HEADER.EMAIL_WARNING.MESSAGE,
+							<div className="px-10 py-1 md:p-0 ">
+								{' '}
+								<span
+									onClick={() => setShowSettingModal(true)}
+									className="font-bold cursor-pointer hover:underline"
+								>
+									{strings.HEADER.EMAIL_WARNING.HERE}
+								</span>
+							</div>
+						)}
 
 						<svg
 							className={`absolute right-0 z-50 mr-2 cursor-pointer ${
@@ -362,15 +395,17 @@ const Nav = () => {
 					className={`relative text-white text-center overflow-hidden text-sm md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
 				>
 					<div className="px-10 py-1 md:p-0 ">
-						Our token is on sale at{' '}
-						<a
-							href="https://app.skyward.finance/sale/23"
-							target="_blank"
-							onClick={() => setShowSettingModal(true)}
-							className="font-bold cursor-pointer hover:underline"
-						>
-							Skyward
-						</a>
+						{strings.formatString(
+							strings.HEADER.NOTICE.LINE1,
+							<a
+								href="https://app.skyward.finance/sale/23"
+								target="_blank"
+								onClick={() => setShowSettingModal(true)}
+								className="font-bold cursor-pointer hover:underline"
+							>
+								{strings.HEADER.NOTICE.SKYWARD}
+							</a>
+						)}
 					</div>
 				</div>
 
@@ -380,13 +415,12 @@ const Nav = () => {
 						className="bg-primary relative z-50 text-white text-sm text-center p-1 px-2"
 					>
 						<p>
-							You are using Testnet. Everything here has no value. To use Paras,
-							please switch to{' '}
+							{strings.HEADER.TESTNET_BANNER.MESSAGE}
 							<a
 								className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100"
 								href="https://mainnet.paras.id"
 							>
-								Mainnet
+								{strings.HEADER.TESTNET_BANNER.MAINNET}
 							</a>
 							<svg
 								width="16"
@@ -475,7 +509,7 @@ const Nav = () => {
 										type="search"
 										value={searchQuery}
 										onChange={(event) => setSearchQuery(event.target.value)}
-										placeholder="Search by title, collection or artist"
+										placeholder={strings.SEARCH.PLACEHOLDER}
 										className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-sm font-medium"
 									/>
 								</div>
@@ -489,22 +523,22 @@ const Nav = () => {
 									className="cursor-pointer"
 									onClick={() => store.setMarketScrollPersist(0)}
 								>
-									Market
+									{strings.HEADER.MARKET}
 								</a>
 							) : (
 								<Link href="/market">
-									<a>Market</a>
+									<a>{strings.HEADER.MARKET}</a>
 								</Link>
 							)}
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block">
 							<Link href="/publication">
-								<a>Publication</a>
+								<a>{strings.HEADER.PUBLICATION}</a>
 							</Link>
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block">
 							<Link href="/activity">
-								<a>Activity</a>
+								<a>{strings.HEADER.ACTIVITY}</a>
 							</Link>
 						</div>
 						{/* <div className="px-3 text-gray-100 hidden md:block">
@@ -518,7 +552,7 @@ const Nav = () => {
 								target="_blank"
 								className="flex cursor-pointer "
 							>
-								Whitepaper
+								{strings.HEADER.WHITEPAPER}
 							</a>
 						</div>
 						<div className="px-3">
@@ -533,9 +567,12 @@ const Nav = () => {
 								</div>
 							) : (
 								<Link href="/login">
-									<a className="text-gray-100 ">Login</a>
+									<a className="text-gray-100 ">{strings.HEADER.LOGIN}</a>
 								</Link>
 							)}
+						</div>
+						<div className="px-3">
+							<LocalisationDropdown />
 						</div>
 					</div>
 				</div>
@@ -550,7 +587,7 @@ const Nav = () => {
 						<div className="text-center border-b-2 border-dashed border-gray-800">
 							<div className="text-gray-100 ">
 								<Link href="/">
-									<a className="p-4 block w-full">Home</a>
+									<a className="p-4 block w-full">{strings.HEADER.HOME}</a>
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
@@ -559,22 +596,24 @@ const Nav = () => {
 										className="cursor-pointer p-4 block w-full"
 										onClick={() => store.setMarketScrollPersist(0)}
 									>
-										Market
+										{strings.HEADER.MARKET}
 									</a>
 								) : (
 									<Link href="/market">
-										<a className="p-4 block w-full">Market</a>
+										<a className="p-4 block w-full">{strings.HEADER.MARKET}</a>
 									</Link>
 								)}
 							</div>
 							<div className="text-gray-100 ">
 								<Link href="/publication">
-									<a className="p-4 block w-full">Publication</a>
+									<a className="p-4 block w-full">
+										{strings.HEADER.PUBLICATION}
+									</a>
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
 								<Link href="/activity">
-									<a className="p-4 block w-full">Activity</a>
+									<a className="p-4 block w-full">{strings.HEADER.ACTIVITY}</a>
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
@@ -583,7 +622,7 @@ const Nav = () => {
 									target="_blank"
 									className="p-4 block w-full"
 								>
-									Whitepaper
+									{strings.HEADER.WHITEPAPER}
 								</a>
 							</div>
 							{/* <div className="text-gray-100">
