@@ -40,7 +40,7 @@ const TokenUpdatePriceModal = ({
 }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [newPrice, setNewPrice] = useState(
-		data.price ? formatNearAmount(data.price) : 0
+		data.price ? formatNearAmount(data.price) : '0'
 	)
 
 	const onUpdateListing = async (e) => {

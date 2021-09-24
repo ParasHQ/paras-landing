@@ -41,7 +41,7 @@ const TokenSeriesUpdatePriceModal = ({
 	},
 }) => {
 	const [showLogin, setShowLogin] = useState(false)
-	const [newPrice, setNewPrice] = useState(0)
+	const [newPrice, setNewPrice] = useState('0')
 
 	const onUpdateListing = async (e) => {
 		e.preventDefault()
