@@ -351,23 +351,6 @@ const Nav = () => {
 						</svg>
 					</div>
 				)}
-
-				<div
-					className={`relative text-white text-center overflow-hidden text-sm md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
-				>
-					<div className="px-10 py-1 md:p-0 ">
-						Our token is on sale at{' '}
-						<a
-							href="https://app.skyward.finance/sale/23"
-							target="_blank"
-							onClick={() => setShowSettingModal(true)}
-							className="font-bold cursor-pointer hover:underline"
-						>
-							Skyward
-						</a>
-					</div>
-				</div>
-
 				{process.env.APP_ENV !== 'production' && (
 					<div
 						ref={testnetBannerRef}
