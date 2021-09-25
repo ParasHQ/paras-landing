@@ -2,8 +2,9 @@ import Head from 'next/head'
 import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import CreateCollection from 'components/Collection/CreateCollection'
-
+import { useIntl } from "../hooks/useIntl"
 const NewCollection = () => {
+	const { localeLn } = useIntl()
 	return (
 		<div className="min-h-screen bg-black">
 			<div
@@ -16,7 +17,7 @@ const NewCollection = () => {
 				}}
 			></div>
 			<Head>
-				<title>Create New Collection — Paras</title>
+				<title>{localeLn("Create New Collection — Paras")}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."

@@ -5,10 +5,11 @@ import CategoryList from '../../components/CategoryList'
 import Footer from '../../components/Footer'
 import Nav from '../../components/Nav'
 import useStore from '../../lib/store'
+import { useIntl } from '../../hooks/useIntl'
 
 const AllCategory = () => {
 	const store = useStore()
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		getCategory()
 	}, [])
@@ -30,7 +31,7 @@ const AllCategory = () => {
 				}}
 			></div>
 			<Head>
-				<title>Category — Paras</title>
+				<title>{localeLn("Category — Paras")}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -65,7 +66,7 @@ const AllCategory = () => {
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="flex justify-center mb-4">
 					<h1 className="text-4xl font-bold text-gray-100 text-center">
-						Market
+						{localeLn("Market")}
 					</h1>
 				</div>
 				<CategoryList listCategory={store.cardCategory} />

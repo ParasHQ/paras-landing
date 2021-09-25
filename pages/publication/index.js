@@ -10,6 +10,7 @@ import PublicationCardListLoader from '../../components/Publication/PublicationC
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import useStore from '../../lib/store'
+import { useIntl } from "../../hooks/useIntl"
 
 const LIMIT = 6
 
@@ -32,6 +33,7 @@ const PublicationListContainer = ({ data, fetchData, hasMore }) => (
 
 const Publication = () => {
 	const router = useRouter()
+	const { localeLn } = useIntl()
 	const [isFetching, setIsFetching] = useState(false)
 	const {
 		pubList,
@@ -161,7 +163,7 @@ const Publication = () => {
 				}}
 			></div>
 			<Head>
-				<title>Publication — Paras</title>
+				<title>{localeLn("Publication — Paras")}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -198,11 +200,11 @@ const Publication = () => {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<h1 className="text-4xl font-bold text-gray-100 text-center">
-					Publication
+					{localeLn("Publication")}
 				</h1>
 				<div className="mt-4">
 					<p className="text-center text-xl text-gray-300">
-						Enhancing The Visuals through Stories
+						{localeLn("Enhancing The Visuals through Stories")}
 					</p>
 				</div>
 				<div className="mt-8">
@@ -213,7 +215,7 @@ const Publication = () => {
 									<span
 										className={!router.query.type ? 'text-gray-100' : undefined}
 									>
-										All
+										{localeLn("All")}
 									</span>
 								</a>
 							</Link>
@@ -228,7 +230,7 @@ const Publication = () => {
 												: undefined
 										}
 									>
-										Editorial
+										{localeLn("Editorial")}
 									</span>
 								</a>
 							</Link>
@@ -243,7 +245,7 @@ const Publication = () => {
 												: undefined
 										}
 									>
-										Community
+										{localeLn("Community")}
 									</span>
 								</a>
 							</Link>

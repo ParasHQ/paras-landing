@@ -6,7 +6,7 @@ import Head from 'next/head'
 import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
 import UserTransactionList from '../../components/Activity/UserTransactionDetail'
-
+import { useIntl } from "../../hooks/useIntl"
 const LIMIT = 30
 
 const TopBuyersPage = ({ topUser }) => {
@@ -14,7 +14,7 @@ const TopBuyersPage = ({ topUser }) => {
 	const [page, setPage] = useState(1)
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
-
+	const { localeLn } = useIntl()
 	const _fetchData = async () => {
 		if (!hasMore || isFetching) {
 			return
@@ -77,16 +77,16 @@ const TopBuyersPage = ({ topUser }) => {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="mx-4 flex items-baseline">
-					<h1 className="text-4xl font-bold text-gray-100">Top Buyers</h1>
-					<p className="ml-2 text-gray-400 text-lg">in 7 days</p>
+					<h1 className="text-4xl font-bold text-gray-100">{localeLn("Top Buyers")}</h1>
+					<p className="ml-2 text-gray-400 text-lg">{localeLn("in 7 days")}</p>
 				</div>
 				<p className="text-gray-400 text-lg mx-4">
-					see top sellers{' '}
+					{localeLn("see top sellers")}{' '}
 					<span
 						onClick={() => router.push('/activity/top-sellers')}
 						className="font-semibold hover:text-gray-100 cursor-pointer hover:border-gray-100 border-b-2 border-transparent"
 					>
-						here
+						{localeLn("here")}
 					</span>
 				</p>
 				<div className="mt-8 mx-4">

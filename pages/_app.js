@@ -4,6 +4,9 @@ import near from '../lib/near'
 import useStore from '../lib/store'
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import { IntlProvider } from "react-intl"
+import * as locales from '../content/locale'
+import { getLanguage } from '../content/locale'
 import * as gtag from '../lib/gtag'
 import cookie from '../lib/cookie'
 
@@ -22,9 +25,13 @@ import { sentryCaptureException } from 'lib/sentry'
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
-
 	const router = useRouter()
-
+	const { locale, defaultLocale, pathname } = router
+  	let localeCopy = locales[locale]
+	const defaultLocaleCopy = locales[defaultLocale]
+	localeCopy = localeCopy || defaultLocaleCopy
+	
+  	let messages = localeCopy[pathname] || localeCopy["defaultAll"] || defaultLocaleCopy[pathname] || defaultLocaleCopy["defaultAll"];
 	const counter = async (url) => {
 		// check cookie uid
 		let uid = cookie.get('uid')
@@ -86,6 +93,11 @@ function MyApp({ Component, pageProps }) {
 	}
 
 	useEffect(() => {
+		let lang = getLanguage()
+		if(locale != lang && pathname != "/languages"){
+			router.push("/"+lang)
+			return
+		}
 		_init()
 		const storage = globalThis?.sessionStorage
 		if (!storage) return
@@ -168,14 +180,20 @@ function MyApp({ Component, pageProps }) {
 			}
 		}
 	}
-
+	
 	return (
 		<div>
-			<SWRConfig value={{}}>
-				<ToastProvider>
-					<Component {...pageProps} />
-				</ToastProvider>
-			</SWRConfig>
+			<IntlProvider
+				locale={locale}
+				defaultLocale={defaultLocale}
+				messages={messages}
+				>
+				<SWRConfig value={{}}>
+					<ToastProvider>
+						<Component {...pageProps} />
+					</ToastProvider>
+				</SWRConfig>
+			</IntlProvider>
 		</div>
 	)
 }
