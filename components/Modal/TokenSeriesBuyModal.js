@@ -66,7 +66,6 @@ const TokenSeriesBuyModal = ({
 			})
 		} catch (err) {
 			sentryCaptureException(err)
-			console.log(err)
 		}
 	}
 

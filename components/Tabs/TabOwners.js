@@ -1,4 +1,3 @@
-import axios from 'axios'
 import cachios from 'cachios'
 import Avatar from 'components/Common/Avatar'
 import Button from 'components/Common/Button'
@@ -67,7 +66,6 @@ const TabOwners = ({ localToken }) => {
 			}
 		} catch (err) {
 			sentryCaptureException(err)
-			console.log(err)
 		}
 	}
 
@@ -200,7 +198,6 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 			setProfile(newData)
 		} catch (err) {
 			sentryCaptureException(err)
-			console.log(err)
 		}
 	}
 

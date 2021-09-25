@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
-import { Blurhash } from 'react-blurhash'
+// import { Blurhash } from 'react-blurhash'
 
 const Card = ({
 	imgUrl,
 	imgWidth = 640,
 	imgHeight = 890,
 	token,
-	imgBlur,
+	// imgBlur,
 	borderRadius = '10px',
 	onClick = () => {},
 }) => {

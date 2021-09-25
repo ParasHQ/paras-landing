@@ -39,7 +39,6 @@ const TokenUpdatePriceModal = ({
 		price: '0',
 	},
 }) => {
-	const [showLogin, setShowLogin] = useState(false)
 	const [newPrice, setNewPrice] = useState(
 		data.price ? formatNearAmount(data.price) : '0'
 	)
@@ -47,7 +46,6 @@ const TokenUpdatePriceModal = ({
 	const onUpdateListing = async (e) => {
 		e.preventDefault()
 		if (!near.currentUser) {
-			setShowLogin(true)
 			return
 		}
 
@@ -85,14 +83,12 @@ const TokenUpdatePriceModal = ({
 			}
 		} catch (err) {
 			sentryCaptureException(err)
-			console.log(err)
 		}
 	}
 
 	const onRemoveListing = async (e) => {
 		e.preventDefault()
 		if (!near.currentUser) {
-			setShowLogin(true)
 			return
 		}
 
@@ -110,7 +106,6 @@ const TokenUpdatePriceModal = ({
 			})
 		} catch (err) {
 			sentryCaptureException(err)
-			console.log(err)
 		}
 	}
 

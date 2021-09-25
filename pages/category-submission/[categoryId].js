@@ -2,7 +2,6 @@ import axios from 'axios'
 import Link from 'next/link'
 import router, { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import useSWR from 'swr'
 import Card from '../../components/Card'
 import TokenSeriesDetailModal from '../../components/TokenSeriesDetailModal'
 import Footer from '../../components/Footer'
@@ -160,7 +159,6 @@ const SubmissionDetail = ({ submission, updateData }) => {
 			updateData(submission._id)
 		} catch (error) {
 			sentryCaptureException(error)
-			console.log(error.response)
 		}
 
 		setIsLoading(false)

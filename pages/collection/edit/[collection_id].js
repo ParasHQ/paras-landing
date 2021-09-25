@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Button from 'components/Common/Button'
-import { InputText, InputTextarea } from 'components/Common/form'
+import { InputTextarea } from 'components/Common/form'
 import Footer from 'components/Footer'
 import ImgCrop from 'components/ImgCrop'
 import Nav from 'components/Nav'

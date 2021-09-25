@@ -50,7 +50,6 @@ const EditProfileModal = ({ userData = {}, setUserData, active, onClose }) => {
 			setCurrentUser(resp.data.data)
 		} catch (err) {
 			sentryCaptureException(err)
-			console.log(err)
 		} finally {
 			setIsSubmitting(false)
 			onClose()

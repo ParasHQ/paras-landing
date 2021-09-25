@@ -6,7 +6,7 @@ const ListModal = ({
 	list = [
 		{
 			name: 'Copy Link',
-			onClick: () => console.log('copy link'),
+			onClick: () => {},
 		},
 		{
 			name: 'Share to...',

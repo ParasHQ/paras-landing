@@ -2,12 +2,9 @@ import { useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import near from 'lib/near'
-import useStore from 'lib/store'
-import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
-import JSBI from 'jsbi'
-import { InputLabel, InputText } from 'components/Common/form'
-import TokenTransferModal from './TokenTransferModal'
+import { InputText } from 'components/Common/form'
 import { GAS_FEE, STORAGE_MINT_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { sentryCaptureException } from 'lib/sentry'
@@ -66,7 +63,6 @@ const TokenSeriesTransferModal = ({
 			})
 		} catch (err) {
 			sentryCaptureException(err)
-			console.log(err)
 		}
 	}
 
@@ -102,7 +98,7 @@ const TokenSeriesTransferModal = ({
 										className="w-auto"
 										type="checkbox"
 										defaultChecked={isSelfMint}
-										onChange={(e) => {
+										onChange={() => {
 											setIsSelfMint(!isSelfMint)
 										}}
 									/>

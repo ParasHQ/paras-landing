@@ -344,7 +344,6 @@ const NotificationList = () => {
 			}
 		} catch (err) {
 			sentryCaptureException(err)
-			console.log(err)
 		}
 		setIsFetching(false)
 	}

@@ -123,7 +123,6 @@ const ActivityLog = ({ query }) => {
 			}
 		} catch (err) {
 			sentryCaptureException(err)
-			console.log(err)
 		}
 		setIsFetching(false)
 	}

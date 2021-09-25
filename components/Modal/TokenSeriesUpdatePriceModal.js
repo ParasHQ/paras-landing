@@ -2,9 +2,7 @@ import { useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import near from 'lib/near'
-import useStore from 'lib/store'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
-import LoginModal from './LoginModal'
 import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE } from 'config/constants'
@@ -41,13 +39,11 @@ const TokenSeriesUpdatePriceModal = ({
 		price: '0',
 	},
 }) => {
-	const [showLogin, setShowLogin] = useState(false)
 	const [newPrice, setNewPrice] = useState('0')
 
 	const onUpdateListing = async (e) => {
 		e.preventDefault()
 		if (!near.currentUser) {
-			setShowLogin(true)
 			return
 		}
 		const params = {
@@ -65,14 +61,12 @@ const TokenSeriesUpdatePriceModal = ({
 			})
 		} catch (err) {
 			sentryCaptureException(err)
-			console.log(err)
 		}
 	}
 
 	const onRemoveListing = async (e) => {
 		e.preventDefault()
 		if (!near.currentUser) {
-			setShowLogin(true)
 			return
 		}
 
@@ -89,7 +83,6 @@ const TokenSeriesUpdatePriceModal = ({
 			})
 		} catch (err) {
 			sentryCaptureException(err)
-			console.log(err)
 		}
 	}
 

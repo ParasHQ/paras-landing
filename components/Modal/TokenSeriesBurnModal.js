@@ -61,7 +61,6 @@ const TokenSeriesBurnModal = ({
 			})
 		} catch (err) {
 			sentryCaptureException(err)
-			console.log(err)
 		}
 	}
 

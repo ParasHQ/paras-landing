@@ -2,10 +2,8 @@ import { useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import near from 'lib/near'
-import useStore from 'lib/store'
-import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
-import JSBI from 'jsbi'
 import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { sentryCaptureException } from 'lib/sentry'
@@ -41,7 +39,6 @@ const TokenStorageModal = ({
 	},
 }) => {
 	const [showLogin, setShowLogin] = useState(false)
-	const buyChapter = useStore((state) => state.buyChapter)
 
 	const onBuyToken = async () => {
 		if (!near.currentUser) {
@@ -51,34 +48,6 @@ const TokenStorageModal = ({
 		const params = {
 			receiver_id: near.currentUser.accountId,
 		}
-
-		// if (
-		// 	JSBI.lessThan(
-		// 		JSBI.BigInt(near.currentUser.balance.available),
-		// 		attachedDeposit
-		// 	)
-		// ) {
-		// 	get().setToastConfig({
-		// 		text: (
-		// 			<div className="font-semibold text-center text-sm">
-		// 				Insufficient Balance
-		// 				<p className="mt-2">
-		// 					Available
-		// 					{prettyBalance(near.getAccount().balance.available, 24, 4)} Ⓝ
-		// 				</p>
-		// 			</div>
-		// 		),
-		// 		type: 'error',
-		// 		duration: 2500,
-		// 	})
-		// 	return
-		// }
-
-		// nft_buy(
-		//   params,
-		//   '50000000000000',
-		//   attachedDeposit.toString()
-		// )
 
 		try {
 			await near.wallet.account().functionCall({
@@ -90,7 +59,6 @@ const TokenStorageModal = ({
 			})
 		} catch (err) {
 			sentryCaptureException(err)
-			console.log(err)
 		}
 	}
 

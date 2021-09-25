@@ -2,10 +2,8 @@ import { useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import near from 'lib/near'
-import useStore from 'lib/store'
-import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
-import JSBI from 'jsbi'
 import { GAS_FEE } from 'config/constants'
 import { sentryCaptureException } from 'lib/sentry'
 
@@ -47,33 +45,6 @@ const TokenBuyModal = ({
 			return
 		}
 
-		// if (
-		// 	JSBI.lessThan(
-		// 		JSBI.BigInt(near.currentUser.balance.available),
-		// 		attachedDeposit
-		// 	)
-		// ) {
-		// 	get().setToastConfig({
-		// 		text: (
-		// 			<div className="font-semibold text-center text-sm">
-		// 				Insufficient Balance
-		// 				<p className="mt-2">
-		// 					Available
-		// 					{prettyBalance(near.getAccount().balance.available, 24, 4)} Ⓝ
-		// 				</p>
-		// 			</div>
-		// 		),
-		// 		type: 'error',
-		// 		duration: 2500,
-		// 	})
-		// 	return
-		// }
-
-		// nft_buy(
-		//   params,
-		//   '50000000000000',
-		//   attachedDeposit.toString()
-		// )
 		try {
 			const params = {
 				token_id: data.token_id,
@@ -91,7 +62,6 @@ const TokenBuyModal = ({
 			})
 		} catch (err) {
 			sentryCaptureException(err)
-			console.log(err)
 		}
 	}
 

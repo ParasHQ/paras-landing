@@ -1,4 +1,3 @@
-import JSBI from 'jsbi'
 import { Fragment, useEffect, useState } from 'react'
 import Link from 'next/link'
 import {
@@ -14,14 +13,14 @@ import LinkToProfile from './LinkToProfile'
 import Modal from './Modal'
 
 import useStore from '../lib/store'
-import { parseImgUrl, prettyBalance, timeAgo } from '../utils/common'
+import { parseImgUrl, timeAgo } from '../utils/common'
 import TokenSeriesDetailModal from './TokenSeriesDetailModal'
 import { useRouter } from 'next/router'
 import CopyLink from './CopyLink'
 import TokenDetailModal from './TokenDetailModal'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
-export const descriptionMaker = (activity, token) => {
+export const descriptionMaker = (activity) => {
 	const type = activity.type
 
 	if (type === 'add_market_data' || type === 'update_market_data') {
@@ -37,7 +36,7 @@ export const descriptionMaker = (activity, token) => {
 	}
 
 	if (type === 'resolve_purchase') {
-		const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+		const [, edition_id] = activity.msg.params.token_id.split(':')
 
 		return `${activity.to} bought  #${edition_id || 1} from ${
 			activity.from
@@ -45,7 +44,7 @@ export const descriptionMaker = (activity, token) => {
 	}
 
 	if (type === 'nft_transfer' && activity.from === null) {
-		const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+		const [, edition_id] = activity.msg.params.token_id.split(':')
 
 		if (activity.price) {
 			return `${activity.to} bought #${edition_id || 1} for ${formatNearAmount(
@@ -61,7 +60,7 @@ export const descriptionMaker = (activity, token) => {
 	}
 
 	if (type === 'nft_transfer' && activity.to === null) {
-		const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+		const [, edition_id] = activity.msg.params.token_id.split(':')
 
 		return `${activity.from} burned #${edition_id || 1}`
 	}
@@ -129,7 +128,7 @@ const Activity = ({ activity }) => {
 	}
 
 	// if (type === 'resolve_purchase') {
-	// 	const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+	// 	const [, edition_id] = activity.msg.params.token_id.split(':')
 
 	// 	return `${activity.from} bought  #${edition_id || 1} from ${
 	// 		activity.to
@@ -137,7 +136,7 @@ const Activity = ({ activity }) => {
 	// }
 
 	// if (type === 'nft_transfer' && activity.from === null) {
-	// 	const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+	// 	const [, edition_id] = activity.msg.params.token_id.split(':')
 
 	// 	if (activity.price) {
 	// 		return `${activity.to} bought #${edition_id || 1} for ${formatNearAmount(
@@ -148,7 +147,7 @@ const Activity = ({ activity }) => {
 	// }
 
 	if (type === 'resolve_purchase') {
-		const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+		const [, edition_id] = activity.msg.params.token_id.split(':')
 
 		return (
 			<p>
@@ -173,7 +172,7 @@ const Activity = ({ activity }) => {
 	}
 
 	if (type === 'nft_transfer' && activity.from === null) {
-		const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+		const [, edition_id] = activity.msg.params.token_id.split(':')
 
 		if (activity.price) {
 			return (
@@ -229,7 +228,7 @@ const Activity = ({ activity }) => {
 	}
 
 	if (type === 'nft_transfer' && activity.to === null) {
-		const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+		const [, edition_id] = activity.msg.params.token_id.split(':')
 
 		return (
 			<p>
@@ -332,7 +331,7 @@ const Activity = ({ activity }) => {
 	return null
 }
 
-const ActivityDetail = ({ activity, token }) => {
+const ActivityDetail = ({ activity }) => {
 	const router = useRouter()
 	const [showModal, setShowModal] = useState(null)
 	const [isCopied, setIsCopied] = useState(false)

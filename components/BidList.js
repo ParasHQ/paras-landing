@@ -12,6 +12,7 @@ import JSBI from 'jsbi'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useToast } from '../hooks/useToast'
 import AcceptBidModal from './AcceptBidModal'
+import { sentryCaptureException } from 'lib/sentry'
 
 const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 	const store = useStore()
@@ -81,7 +82,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 			})
 			fetchBid()
 		} catch (err) {
-			console.log(err)
+			sentryCaptureException(err)
 			const msg =
 				err.response?.data?.message || 'Something went wrong, try again later.'
 
@@ -138,7 +139,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 				attachedDeposit.toString()
 			)
 		} catch (err) {
-			console.log(err)
+			sentryCaptureException(err)
 			const msg =
 				err.response?.data?.message || 'Something went wrong, try again later.'
 			toast.show({
@@ -172,7 +173,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 			const balance = await near.wallet.account().getAccountBalance()
 			store.setUserBalance(balance)
 		} catch (err) {
-			console.log(err)
+			sentryCaptureException(err)
 			const msg =
 				err.response?.data?.message || 'Something went wrong, try again later.'
 
