@@ -60,7 +60,7 @@ const ActivityDetailPage = ({ errorCode, activity, token }) => {
 
 export async function getServerSideProps({ params }) {
 	const activityResp = await axios.get(`${process.env.V2_API_URL}/activities`, {
-		paras: {
+		params: {
 			_id: params.id,
 		},
 	})

@@ -32,7 +32,7 @@ const TopUsers = ({ data = [], className, userType = 'buyer', linkTo }) => {
 				</Link>
 			</div>
 			{data?.map((user, idx) => (
-				<TopUser key={user._id} user={user} idx={idx} />
+				<TopUser key={idx} user={user} idx={idx} />
 			))}
 		</div>
 	)
