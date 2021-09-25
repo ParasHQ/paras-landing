@@ -74,7 +74,7 @@ const LanguagesPage = () => {
                         <div className="w-64 w-24 px-4 mb-12">
                             <div>English</div>
                             <div className="mt-2">
-                                <a onClick={() => setLang('')} className="underline text-2xl text-gray-100 font-bold" href="javascript:void(0)">
+                                <a onClick={() => setLang('')} className="underline text-2xl text-gray-100 font-bold pointer">
                                     English
                                 </a>
                             </div>
@@ -83,7 +83,7 @@ const LanguagesPage = () => {
 						<div className="w-64 px-4 mb-12">
                             <div>Simplified Chinese</div>
                             <div className="mt-2">
-                                <a onClick={() => setLang('zh')} className="underline text-2xl text-gray-100 font-bold" href="javascript:void(0)">
+                                <a onClick={() => setLang('zh')} className="underline text-2xl text-gray-100 font-bold pointer">
                                     简体中文
                                 </a>
                             </div>
