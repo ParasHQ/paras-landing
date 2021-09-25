@@ -5,6 +5,7 @@ import Footer from 'components/Footer'
 import Error from '../../404'
 import TokenDetail from 'components/TokenDetail'
 import { parseImgUrl } from 'utils/common'
+import { sentryCaptureException } from 'lib/sentry'
 
 const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.contract_id
@@ -92,7 +93,7 @@ export async function getServerSideProps({ params }) {
 
 		return { props: { token } }
 	} catch (err) {
-		console.log(err)
+		sentryCaptureException(err)
 		const errorCode = 404
 		return { props: { errorCode } }
 	}

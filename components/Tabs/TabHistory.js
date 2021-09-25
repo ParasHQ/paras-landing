@@ -139,7 +139,7 @@ const Activity = ({ activity }) => {
 		// }
 
 		if (type === 'nft_transfer' && activity.from === null) {
-			const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+			const [, edition_id] = activity.msg.params.token_id.split(':')
 
 			if (activity.price) {
 				return (
@@ -170,7 +170,7 @@ const Activity = ({ activity }) => {
 		}
 
 		if (type === 'nft_transfer' && activity.to === null) {
-			const [series_id, edition_id] = activity.msg.params.token_id.split(':')
+			const [, edition_id] = activity.msg.params.token_id.split(':')
 
 			return (
 				<p>

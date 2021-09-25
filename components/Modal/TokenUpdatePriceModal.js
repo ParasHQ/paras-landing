@@ -7,6 +7,7 @@ import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
+import { sentryCaptureException } from 'lib/sentry'
 
 const TokenUpdatePriceModal = ({
 	show,
@@ -38,7 +39,6 @@ const TokenUpdatePriceModal = ({
 		price: '0',
 	},
 }) => {
-	const [showLogin, setShowLogin] = useState(false)
 	const [newPrice, setNewPrice] = useState(
 		data.price ? formatNearAmount(data.price) : '0'
 	)
@@ -46,7 +46,6 @@ const TokenUpdatePriceModal = ({
 	const onUpdateListing = async (e) => {
 		e.preventDefault()
 		if (!near.currentUser) {
-			setShowLogin(true)
 			return
 		}
 
@@ -83,14 +82,13 @@ const TokenUpdatePriceModal = ({
 				})
 			}
 		} catch (err) {
-			console.log(err)
+			sentryCaptureException(err)
 		}
 	}
 
 	const onRemoveListing = async (e) => {
 		e.preventDefault()
 		if (!near.currentUser) {
-			setShowLogin(true)
 			return
 		}
 
@@ -107,7 +105,7 @@ const TokenUpdatePriceModal = ({
 				attachedDeposit: `1`,
 			})
 		} catch (err) {
-			console.log(err)
+			sentryCaptureException(err)
 		}
 	}
 

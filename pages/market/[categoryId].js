@@ -11,7 +11,6 @@ import { parseImgUrl, parseSortQuery } from '../../utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CategoryList from '../../components/CategoryList'
 import AddCategoryModal from '../../components/AddCategoryModal'
-import { useToast } from '../../hooks/useToast'
 
 const LIMIT = 12
 

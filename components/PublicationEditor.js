@@ -16,6 +16,7 @@ import TextEditor from './TextEditor'
 import Modal from './Modal'
 import Card from './Card'
 import usePreventRouteChangeIf from '../hooks/usePreventRouteChange'
+import { sentryCaptureException } from 'lib/sentry'
 
 let redirectUrl = null
 
@@ -195,6 +196,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				router.push(routerUrl)
 			}, 1000)
 		} catch (err) {
+			sentryCaptureException(err)
 			const msg =
 				err.response?.data?.message || `Something went wrong, try again later`
 			showToast(msg)

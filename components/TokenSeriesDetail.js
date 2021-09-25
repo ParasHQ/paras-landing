@@ -1,7 +1,6 @@
-import Link from 'next/link'
 import { useState } from 'react'
 import Scrollbars from 'react-custom-scrollbars'
-import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
 import Button from 'components/Common/Button'
 import { IconDots } from 'components/Icons'
@@ -225,7 +224,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 								)}
 							</>
 						) : (
-							<Button size="md" isFullWidth>
+							<Button size="md" isFullWidth isDisabled>
 								Not for Sale
 							</Button>
 						)}

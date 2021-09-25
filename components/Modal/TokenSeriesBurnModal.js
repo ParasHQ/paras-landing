@@ -6,6 +6,7 @@ import LoginModal from './LoginModal'
 import { GAS_FEE } from 'config/constants'
 import { InputText } from 'components/Common/form'
 import { IconX } from 'components/Icons'
+import { sentryCaptureException } from 'lib/sentry'
 
 const TokenSeriesBurnModal = ({
 	show,
@@ -59,7 +60,7 @@ const TokenSeriesBurnModal = ({
 				attachedDeposit: `1`,
 			})
 		} catch (err) {
-			console.log(err)
+			sentryCaptureException(err)
 		}
 	}
 

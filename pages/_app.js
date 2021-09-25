@@ -17,6 +17,8 @@ import 'croppie/croppie.css'
 
 import ToastProvider from '../hooks/useToast'
 import { SWRConfig } from 'swr'
+import * as Sentry from '@sentry/nextjs'
+import { sentryCaptureException } from 'lib/sentry'
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
@@ -99,6 +101,13 @@ function MyApp({ Component, pageProps }) {
 		const nearUsdPrice = await axios.get(
 			'https://api.coingecko.com/api/v3/simple/price?ids=NEAR&vs_currencies=USD'
 		)
+
+		Sentry.configureScope((scope) => {
+			const user = currentUser ? { id: currentUser.accountId } : null
+			scope.setUser(user)
+			scope.setTag('environment', process.env.APP_ENV)
+		})
+
 		if (currentUser) {
 			const userProfileResp = await axios.get(
 				`${process.env.V2_API_URL}/profiles`,
@@ -128,6 +137,7 @@ function MyApp({ Component, pageProps }) {
 					)
 					store.setUserProfile(resp.data.data)
 				} catch (err) {
+					sentryCaptureException(err)
 					store.setUserProfile({})
 				}
 			} else {

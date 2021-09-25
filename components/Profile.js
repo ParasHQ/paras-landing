@@ -31,7 +31,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 							title={router.query.id}
 						>
 							{' '}
-							{prettyTruncate(router.query.id, 12, 'address')}
+							{prettyTruncate(router.query.id, 20, 'address')}
 						</h4>
 						<div
 							title="Copy Account ID"

@@ -7,17 +7,11 @@ import near from '../lib/near'
 import useStore from '../lib/store'
 import Modal from './Modal'
 import ProfileEdit from './ProfileEdit'
-import { parseImgUrl, prettyBalance, prettyTruncate } from '../utils/common'
+import { parseImgUrl, prettyBalance } from '../utils/common'
 import { useToast } from '../hooks/useToast'
-import axios from 'axios'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import Scrollbars from 'react-custom-scrollbars'
-import useSWR from 'swr'
 import Setting from './Setting'
 import Cookies from 'js-cookie'
 import NotificationList from './NotificationList'
-
-const LIMIT = 10
 
 const User = () => {
 	const store = useStore()

@@ -24,6 +24,7 @@ import TabHistory from './Tabs/TabHistory'
 import LoginModal from './Modal/LoginModal'
 import ArtistVerified from './Common/ArtistVerified'
 import ArtistBanned from './Common/ArtistBanned'
+import { sentryCaptureException } from 'lib/sentry'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -80,7 +81,7 @@ const TokenDetail = ({ token, className }) => {
 				setNeedDeposit(false)
 			}
 		} catch (err) {
-			console.log(err)
+			sentryCaptureException(err)
 		}
 	}
 
@@ -131,14 +132,6 @@ const TokenDetail = ({ token, className }) => {
 		setShowModal('transfer')
 	}
 
-	const onClickMint = () => {
-		if (!currentUser) {
-			setShowModal('notLogin')
-			return
-		}
-		setShowModal('confirmMint')
-	}
-
 	const onClickBurn = () => {
 		if (!currentUser) {
 			setShowModal('notLogin')
@@ -152,10 +145,6 @@ const TokenDetail = ({ token, className }) => {
 			return false
 		}
 		return currentUser === token.owner_id
-	}
-
-	const getCreatorId = () => {
-		return token.metadata.creator_id || token.contract_id
 	}
 
 	return (
@@ -250,7 +239,7 @@ const TokenDetail = ({ token, className }) => {
 										Update Listing
 									</Button>
 								</div>
-								<div className="w-full flex-1 mt-4 lg:mt-0">
+								<div className="w-full flex-1">
 									<Button size="md" onClick={onClickTransfer} isFullWidth>
 										Transfer
 									</Button>

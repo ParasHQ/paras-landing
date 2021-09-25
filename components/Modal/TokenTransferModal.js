@@ -2,16 +2,14 @@ import { useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import near from 'lib/near'
-import useStore from 'lib/store'
-import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
-import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import getConfig from 'config/near'
 import Axios from 'axios'
 import { useToast } from 'hooks/useToast'
+import { sentryCaptureException } from 'lib/sentry'
 
 const TokenTransferModal = ({
 	show,
@@ -75,8 +73,8 @@ const TokenTransferModal = ({
 			if (resp.data.error) {
 				throw new Error(`Account ${receiverId} not exist`)
 			}
-			console.log(resp.data)
 		} catch (err) {
+			sentryCaptureException(err)
 			const message = err.message || 'Something went wrong, try again later'
 			toast.show({
 				text: (
@@ -97,7 +95,7 @@ const TokenTransferModal = ({
 				attachedDeposit: `1`,
 			})
 		} catch (err) {
-			console.log(err)
+			sentryCaptureException(err)
 		}
 	}
 

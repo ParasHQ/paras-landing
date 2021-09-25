@@ -23,6 +23,7 @@ import useStore from '../../../lib/store'
 import near from '../../../lib/near'
 import EmbeddedCard from '../../../components/EmbeddedCard'
 import { useToast } from '../../../hooks/useToast'
+import { sentryCaptureException } from 'lib/sentry'
 
 const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const store = useStore()
@@ -86,6 +87,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 				router.push('/publication')
 			}, 1000)
 		} catch (err) {
+			sentryCaptureException(err)
 			const msg =
 				err.response?.data?.message || 'Something went wrong, try again later.'
 			toast.show({

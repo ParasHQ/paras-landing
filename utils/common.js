@@ -119,7 +119,7 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
 	} else {
 		try {
 			const cid = new CID(url)
-			if (opts.useOriginal) {
+			if (opts.useOriginal || process.env.APP_ENV !== 'production') {
 				if (cid.version === 0) {
 					return `https://ipfs-gateway.paras.id/ipfs/${cid}`
 				} else if (cid.version === 1) {

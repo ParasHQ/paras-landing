@@ -1,6 +1,5 @@
 import axios from 'axios'
 import CardList from 'components/CardList'
-import CollectionLoader from 'components/Collection/CollectionLoader'
 import Button from 'components/Common/Button'
 import Footer from 'components/Footer'
 import Nav from 'components/Nav'

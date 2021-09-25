@@ -10,6 +10,7 @@ import { useRouter } from 'next/router'
 import TopUsers from '../components/TopUsers'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import FilterActivity from '../components/FilterActivity'
+import { sentryCaptureException } from 'lib/sentry'
 
 const FETCH_TOKENS_LIMIT = 10
 
@@ -121,7 +122,7 @@ const ActivityLog = ({ query }) => {
 				setActivityListHasMore(true)
 			}
 		} catch (err) {
-			console.log(err)
+			sentryCaptureException(err)
 		}
 		setIsFetching(false)
 	}

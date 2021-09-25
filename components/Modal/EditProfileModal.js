@@ -6,6 +6,7 @@ import ImgCrop from 'components/Common/ImgCrop'
 import Modal from 'components/Common/Modal'
 import { IconXCircle } from 'components/Icons'
 import IconCamera from 'components/Icons/component/IconX copy'
+import { sentryCaptureException } from 'lib/sentry'
 import useStore from 'lib/store'
 import { useState } from 'react'
 import { parseImgUrl } from 'utils/common'
@@ -48,7 +49,7 @@ const EditProfileModal = ({ userData = {}, setUserData, active, onClose }) => {
 			setUserData(resp.data.data)
 			setCurrentUser(resp.data.data)
 		} catch (err) {
-			console.log(err)
+			sentryCaptureException(err)
 		} finally {
 			setIsSubmitting(false)
 			onClose()

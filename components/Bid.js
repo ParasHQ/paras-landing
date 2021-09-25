@@ -13,6 +13,7 @@ import { useToast } from '../hooks/useToast'
 import near from '../lib/near'
 import useStore from '../lib/store'
 import { parseImgUrl, prettyBalance, timeAgo } from '../utils/common'
+import { sentryCaptureException } from 'lib/sentry'
 
 const Bid = ({ tokenId, data, updateBidData }) => {
 	const store = useStore()
@@ -137,7 +138,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 				attachedDeposit.toString()
 			)
 		} catch (err) {
-			console.log(err)
+			sentryCaptureException(err)
 		}
 	}
 

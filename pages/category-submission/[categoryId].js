@@ -2,7 +2,6 @@ import axios from 'axios'
 import Link from 'next/link'
 import router, { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import useSWR from 'swr'
 import Card from '../../components/Card'
 import TokenSeriesDetailModal from '../../components/TokenSeriesDetailModal'
 import Footer from '../../components/Footer'
@@ -12,6 +11,7 @@ import { useToast } from '../../hooks/useToast'
 import near from '../../lib/near'
 import useStore from '../../lib/store'
 import { parseImgUrl, timeAgo } from '../../utils/common'
+import { sentryCaptureException } from 'lib/sentry'
 
 const CategorySubmission = () => {
 	const [submissions, setSubmissions] = useState(null)
@@ -48,6 +48,7 @@ const CategorySubmission = () => {
 				)
 				setSubmissions(res.data.data.results)
 			} catch (error) {
+				sentryCaptureException(error)
 				if (error.response.status === 401) {
 					toast.show({
 						text: (
@@ -157,7 +158,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 			setShowModal('')
 			updateData(submission._id)
 		} catch (error) {
-			console.log(error.response)
+			sentryCaptureException(error)
 		}
 
 		setIsLoading(false)
