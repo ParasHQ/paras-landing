@@ -15,7 +15,6 @@ const LIMIT = 30
 
 const Notification = ({ notif, currentUser }) => {
 	const [token, setToken] = useState(null)
-	const { localeLn } = useIntl()
 	useEffect(() => {
 		fetchToken()
 	}, [])

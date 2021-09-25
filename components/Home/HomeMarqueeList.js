@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useIntl } from "../../hooks/useIntl"
 const ActivityMarquee = ({ token }) => {
-	const { localeLn } = useIntl()
 	return (
 		<div
 			style={{

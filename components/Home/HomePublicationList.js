@@ -8,7 +8,6 @@ import HomeFeaturedLoader from 'components/Home/Loaders/Featured'
 import HomePublicationLoader from 'components/Home/Loaders/PublicationList'
 import { useIntl } from "../../hooks/useIntl"
 const FeaturedPost = ({ post = {} }) => {
-	const { localeLn } = useIntl()
 	return (
 		<div className="publication-card">
 			<div className="bg-dark-primary-1 rounded-md overflow-hidden relative h-56 lg:h-64">
@@ -76,7 +75,6 @@ const FeaturedPost = ({ post = {} }) => {
 }
 
 const PublicationList = ({ idx, data }) => {
-	const { localeLn } = useIntl()
 	return (
 		<div className="publication-card">
 			<div

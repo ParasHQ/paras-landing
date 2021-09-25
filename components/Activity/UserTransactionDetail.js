@@ -15,7 +15,7 @@ import cachios from 'cachios'
 import TokenDetailModal from 'components/TokenDetailModal'
 
 const renderThumb = ({ style, ...props }) => {
-	const { localeLn } = useIntl()
+	
 	return (
 		<div
 			{...props}
@@ -31,7 +31,7 @@ const renderThumb = ({ style, ...props }) => {
 
 const UserTransactionList = ({ usersData, fetchData, hasMore, type }) => {
 	const [localToken, setLocalToken] = useState(null)
-
+	
 	return (
 		<>
 			<TokenDetailModal tokens={[localToken]} />
@@ -61,7 +61,7 @@ const UserTransactionDetail = ({
 	setLocalToken,
 }) => {
 	const [profile, setProfile] = useState({})
-
+	const { localeLn } = useIntl()
 	useEffect(async () => {
 		const res = await axios(`${process.env.V2_API_URL}/profiles`, {
 			params: {
@@ -136,7 +136,6 @@ const UserTransactionDetail = ({
 
 const UserTransactionCard = ({ contract_token_id, setLocalToken }) => {
 	const router = useRouter()
-
 	const [token, setToken] = useState(null)
 
 	const [contractId, tokenId] = contract_token_id.split('::')

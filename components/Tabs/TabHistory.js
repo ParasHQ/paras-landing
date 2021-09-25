@@ -71,6 +71,7 @@ const TabHistory = ({ localToken }) => {
 }
 
 const Activity = ({ activity }) => {
+	const { localeLn } = useIntl()
 	const TextActivity = ({ type }) => {
 		if (type === 'add_market_data' || type === 'update_market_data') {
 			return (

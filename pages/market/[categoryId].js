@@ -311,6 +311,8 @@ export default function Category({
 													setShowAddModal(true)
 												}}
 											>
+												{localeLn("Submit an existing cards")}
+											</h1>
 										</div>
 									</div>
 								)}

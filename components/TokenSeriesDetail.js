@@ -144,7 +144,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 								<div>
 									<div className="flex justify-between items-center">
 										<p className="text-gray-300">
-											{localeLn("SERIES")} //{' '}
+											({localeLn("SERIES")}) //{' '}
 											{token.metadata.copies
 												? `Edition of ${token.metadata.copies}`
 												: `Open Edition`}

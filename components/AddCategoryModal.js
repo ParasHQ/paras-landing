@@ -10,7 +10,7 @@ import Modal from './Modal'
 import { useIntl } from '../../hooks/useIntl'
 const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 	const { localeLn } = useIntl()
-	const [tokenId, setTokenId] = useState('')
+	const [tokenUrl, setTokenUrl] = useState('')
 	const [tokenData, setTokenData] = useState(null)
 	const [page, setPage] = useState(1)
 	const [isLoading, setIsLoading] = useState(false)
