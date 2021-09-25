@@ -37,7 +37,7 @@ const EditProfileModal = ({ userData = {}, setUserData, active, onClose }) => {
 
 		try {
 			const resp = await axios.put(
-				`${process.env.V1_API_URL}/profiles`,
+				`${process.env.V2_API_URL}/profiles`,
 				formData,
 				{
 					headers: {
