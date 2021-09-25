@@ -11,7 +11,7 @@ import { IconLogout } from 'components/Icons'
 import { parseImgUrl, prettyBalance } from 'utils/common'
 import useStore from 'lib/store'
 import LoginModal from 'components/Modal/LoginModal'
-
+import { useIntl } from "../../hooks/useIntl"
 const Nav = () => {
 	const profileModalRef = useRef()
 	const mobileMenuRef = useRef()
@@ -21,7 +21,7 @@ const Nav = () => {
 	const [showProfileModal, setShowProfileModal] = useState(false)
 	const [showHamburgerMenu, setShowHamburgerMenu] = useState(false)
 	const [showLoginModal, setShowLoginModal] = useState(false)
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		const onClickEv = (e) => {
 			if (profileModalRef && !profileModalRef?.current?.contains(e.target)) {
@@ -93,7 +93,7 @@ const Nav = () => {
 						className="mt-3"
 						onClick={onClickViewProfile}
 					>
-						View Profile
+						{localeLn("View Profile")}
 					</Button>
 					<hr className="opacity-10 -mx-2 my-3" />
 					<div
@@ -101,7 +101,7 @@ const Nav = () => {
 						onClick={() => near.signOut()}
 					>
 						<IconLogout size={18} className="text-white opacity-80" />
-						<p className="text-white opacity-80">Logout</p>
+						<p className="text-white opacity-80">{localeLn("Logout")}</p>
 					</div>
 				</div>
 			</div>
@@ -148,7 +148,7 @@ const Nav = () => {
 						<Link href="/">
 							<a className="block font-semibold hover:text-primary">
 								<span className={router.pathname === '/' ? `text-primary` : ''}>
-									Home
+									{localeLn('Home')}
 								</span>
 							</a>
 						</Link>
@@ -161,7 +161,7 @@ const Nav = () => {
 											: ''
 									}
 								>
-									Comics
+									{localeLn("Comics")}
 								</span>
 							</a>
 						</Link>
@@ -172,7 +172,7 @@ const Nav = () => {
 										router.pathname.includes('/market') ? `text-primary` : ''
 									}
 								>
-									Market
+									{localeLn("Market")}
 								</span>
 							</a>
 						</Link>
@@ -183,7 +183,7 @@ const Nav = () => {
 										router.pathname === '/partner-with-us' ? `text-primary` : ''
 									}
 								>
-									Partner
+									{localeLn("Partner")}
 								</span>
 							</a>
 						</Link>
@@ -224,7 +224,7 @@ const Nav = () => {
 							size="md"
 							onClick={() => setShowLoginModal(true)}
 						>
-							Login
+							{localeLn("Login")}
 						</Button>
 					)}
 				</div>
@@ -241,7 +241,7 @@ const Nav = () => {
 										<span
 											className={router.pathname === '/' ? `text-primary` : ''}
 										>
-											Home
+											{localeLn("Home")}
 										</span>
 									</a>
 								</Link>
@@ -256,7 +256,7 @@ const Nav = () => {
 													: ''
 											}
 										>
-											Comics
+											{localeLn("Comics")}
 										</span>
 									</a>
 								</Link>
@@ -271,7 +271,7 @@ const Nav = () => {
 													: ''
 											}
 										>
-											Market
+											{localeLn("Market")}
 										</span>
 									</a>
 								</Link>
@@ -286,7 +286,7 @@ const Nav = () => {
 													: ''
 											}
 										>
-											Partner
+											{localeLn("Partner")}
 										</span>
 									</a>
 								</Link>

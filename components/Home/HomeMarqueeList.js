@@ -3,8 +3,9 @@ import axios from 'axios'
 import Marquee from 'react-fast-marquee'
 import Link from 'next/link'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
-
+import { useIntl } from "../../hooks/useIntl"
 const ActivityMarquee = ({ token }) => {
+	const { localeLn } = useIntl()
 	return (
 		<div
 			style={{
@@ -34,7 +35,7 @@ const ActivityMarquee = ({ token }) => {
 export const HomeMarqueeList = () => {
 	const [marqueeList, setMarqueeList] = useState([])
 	const [isLoading, setIsLoading] = useState(true)
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		fetchMarqueeList()
 	}, [])
@@ -62,7 +63,7 @@ export const HomeMarqueeList = () => {
 				>
 					<div className="">
 						<div className="text-center py-1 px-4">
-							<p className="text-primary font-bold">Last Sold</p>
+							<p className="text-primary font-bold">{localeLn("Last Sold")}</p>
 						</div>
 					</div>
 				</div>

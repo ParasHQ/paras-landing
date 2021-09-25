@@ -8,13 +8,14 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Scrollbars from 'react-custom-scrollbars'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
+import { useIntl } from "../hooks/useIntl"
 import { sentryCaptureException } from 'lib/sentry'
 
 const LIMIT = 30
 
 const Notification = ({ notif, currentUser }) => {
 	const [token, setToken] = useState(null)
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		fetchToken()
 	}, [])
@@ -268,7 +269,7 @@ const NotificationList = () => {
 	const [isFetching, setIsFetching] = useState(false)
 	const [showAccountModal, setShowAccountModal] = useState(false)
 	const [hasNotification, setHasNotification] = useState(false)
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		if (userProfile.has_notification) {
 			setHasNotification(true)
@@ -417,7 +418,7 @@ const NotificationList = () => {
 						}}
 					>
 						<div className="p-2 shadow-inner bg-dark-primary-2 text-gray-100 rounded-md">
-							<h4 className="font-bold text-2xl px-2">Notifications</h4>
+							<h4 className="font-bold text-2xl px-2">{localeLn("Notifications")}</h4>
 							<Scrollbars
 								autoHeight
 								autoHeightMax={`24rem`}
@@ -426,7 +427,7 @@ const NotificationList = () => {
 								{notificationList.length === 0 && !notificationListHasMore ? (
 									<div className="p-2 opacity-75">
 										<div className="border-2 border-dashed rounded-md text-center">
-											<p className="text-gray-300 py-4">No Notifications</p>
+											<p className="text-gray-300 py-4">{localeLn("No Notifications")}</p>
 										</div>
 									</div>
 								) : (
@@ -434,7 +435,7 @@ const NotificationList = () => {
 										dataLength={notificationList.length}
 										next={_fetchData}
 										hasMore={notificationListHasMore}
-										loader={<h4 className="text-center p-2">Loading...</h4>}
+										loader={<h4 className="text-center p-2">{localeLn("Loading...")}</h4>}
 										scrollableTarget="scrollableDiv"
 									>
 										{notificationList.map((notif) => {

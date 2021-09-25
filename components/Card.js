@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useIntl } from "../hooks/useIntl"
 // import { Blurhash } from 'react-blurhash'
 
 const Card = ({
@@ -13,7 +14,7 @@ const Card = ({
 	const containerRef = useRef()
 	const [imgLoaded, setImgLoaded] = useState(null)
 	const [dimension, setDimension] = useState({ width: 0, height: 0 })
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		var img = new Image()
 		img.onload = function () {
@@ -135,8 +136,8 @@ const Card = ({
 											{token.edition_id
 												? `#${token.edition_id} of ${token.copies}`
 												: token.copies
-												? `Edition of ${token.copies}`
-												: `Open Edition`}
+												? `${localeLn("Edition of")} ${token.copies}`
+												: localeLn("Open Edition")}
 										</p>
 									</div>
 								</div>

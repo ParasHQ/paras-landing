@@ -9,6 +9,7 @@ import JSBI from 'jsbi'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import TokenSeriesDetailModal from './TokenSeriesDetailModal'
 import CardListLoader from './CardListLoader'
+import { useIntl } from "../hooks/useIntl"
 
 const CardList = ({
 	name = 'default',
@@ -21,6 +22,7 @@ const CardList = ({
 	const router = useRouter()
 	const containerRef = useRef()
 	const animValuesRef = useRef(store.marketScrollPersist[name])
+	const { localeLn } = useIntl()
 
 	useEffect(() => {
 		animValuesRef.current = store.marketScrollPersist[name]
@@ -75,7 +77,7 @@ const CardList = ({
 						<div className="w-40 m-auto">
 							<img src="/cardstack.png" className="opacity-75" />
 						</div>
-						<p className="mt-4">No Cards</p>
+						<p className="mt-4">{localeLn("No Cards")}</p>
 					</div>
 				</div>
 			)}
@@ -147,7 +149,7 @@ const CardList = ({
 								<div className="text-center">
 									<div className="mt-4">
 										<div className="p-2 pb-4">
-											<p className="text-gray-400 text-xs">Start From</p>
+											<p className="text-gray-400 text-xs">{localeLn("Start From")}</p>
 											<div className="text-gray-100 text-xl">
 												{price ? (
 													<div>
@@ -163,7 +165,7 @@ const CardList = ({
 													</div>
 												) : (
 													<div className="line-through text-red-600">
-														<span className="text-gray-100">SALE</span>
+														<span className="text-gray-100">{localeLn("SALE")}</span>
 													</div>
 												)}
 											</div>

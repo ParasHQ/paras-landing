@@ -7,9 +7,10 @@ import useStore from '../lib/store'
 import { parseImgUrl } from '../utils/common'
 import Card from './Card'
 import Modal from './Modal'
-
+import { useIntl } from '../../hooks/useIntl'
 const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
-	const [tokenUrl, setTokenUrl] = useState('')
+	const { localeLn } = useIntl()
+	const [tokenId, setTokenId] = useState('')
 	const [tokenData, setTokenData] = useState(null)
 	const [page, setPage] = useState(1)
 	const [isLoading, setIsLoading] = useState(false)
@@ -83,7 +84,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						You are not the creator of this card
+						{localeLn("You are not the creator of this card")}
 					</div>
 				),
 				type: 'error',
@@ -113,8 +114,8 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						<div>Thank you for your submission.</div>
-						<div>Submit card succeed.</div>
+						<div>{localeLn("Thank you for your submission.")}</div>
+						<div>{localeLn("Submit card succeed.")}</div>
 					</div>
 				),
 				type: 'success',
@@ -139,7 +140,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 			<div className="max-w-xl w-full m-auto bg-dark-primary-1 p-4 text-gray-100 rounded-md relative">
 				<div className="flex justify-between">
 					<div className="font-bold text-2xl mb-4">
-						Submit your card to {categoryName}
+						{localeLn("Submit your card to")} {categoryName}
 					</div>
 					<div onClick={onClose}>
 						<svg
@@ -191,8 +192,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 									placeholder="Token URL"
 								/>
 								<div className="opacity-75 mb-2 text-sm">
-									*Curators will review your card submission, please make sure
-									that the card is belong to this category.
+									{localeLn("*Curators will review your card submission, please make sure that the card is belong to this category.")}
 								</div>
 								<div className="opacity-75 mb-6 text-sm">
 									*Only the creator that allowed to submit their NFT
@@ -205,7 +205,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 										className="rounded-md py-1 font-bold text-lg mr-1"
 										onClick={fetchToken}
 									>
-										Next
+										{localeLn("Next")}
 									</div>
 								</button>
 							</div>
@@ -219,11 +219,11 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 									{tokenData?.metadata.collection || tokenData?.contract_id}
 								</div>
 								<div className="mb-6">
-									<span className="opacity-75">You will add </span>
+									<span className="opacity-75">{localeLn("You will add")} </span>
 									<span className="text-white font-bold opacity-100">
 										{tokenData?.metadata.title}
 									</span>
-									<span> to </span>
+									<span> {localeLn("to")} </span>
 									<span className="text-white font-bold opacity-100">
 										{categoryName}
 									</span>

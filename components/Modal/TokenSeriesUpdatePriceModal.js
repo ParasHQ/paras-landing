@@ -7,6 +7,7 @@ import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
+import { useIntl } from "../../hooks/useIntl"
 import { sentryCaptureException } from 'lib/sentry'
 
 const TokenSeriesUpdatePriceModal = ({
@@ -40,7 +41,7 @@ const TokenSeriesUpdatePriceModal = ({
 	},
 }) => {
 	const [newPrice, setNewPrice] = useState('0')
-
+	const { localeLn } = useIntl()
 	const onUpdateListing = async (e) => {
 		e.preventDefault()
 		if (!near.currentUser) {
@@ -144,14 +145,14 @@ const TokenSeriesUpdatePriceModal = ({
 				</div>
 				<div>
 					<h1 className="text-2xl font-bold text-white tracking-tight">
-						Series Listing
+						{localeLn('Series Listing')}
 					</h1>
 					<form onSubmit={onUpdateListing}>
 						<div className="mt-4">
 							<label className="block text-sm text-white mb-2">
-								New Price{' '}
+								{localeLn("New Price")}{' '}
 								{data.price &&
-									`(Current price: ${formatNearAmount(data.price)})`}
+									`(${localeLn("Current price")}: ${formatNearAmount(data.price)})`}
 							</label>
 							<div
 								className={`flex justify-between rounded-md border-transparent w-full relative ${
@@ -176,7 +177,7 @@ const TokenSeriesUpdatePriceModal = ({
 								</div>
 							</div>
 							<div className="mt-2 text-gray-200 flex items-center justify-between">
-								<span>Receive:</span>
+								<span>{localeLn("Receive")}:</span>
 								<span>{calculatePriceDistribution().receive} Ⓝ</span>
 								{/* {prettyBalance(
                   Number(
@@ -191,7 +192,7 @@ const TokenSeriesUpdatePriceModal = ({
                 )} */}
 							</div>
 							<div className="text-gray-200 flex items-center justify-between">
-								<span>Royalty:</span>
+								<span>{localeLn("Royalty")}:</span>
 								<span>{calculatePriceDistribution().royalty} Ⓝ</span>
 								{/* {prettyBalance(
                   Number(
@@ -218,7 +219,7 @@ const TokenSeriesUpdatePriceModal = ({
                 ) */}
 							</div>
 							<div className="text-gray-200 flex items-center justify-between">
-								<span>Fee:</span>
+								<span>{localeLn("Fee")}:</span>
 								<span> {calculatePriceDistribution().fee} Ⓝ</span>
 								{/* {prettyBalance(
                   Number(watch('amount', 0) * 0.05)
@@ -243,7 +244,7 @@ const TokenSeriesUpdatePriceModal = ({
 						</div>
 						<div className="mt-6">
 							<Button type="submit" size="md" isFullWidth>
-								Update Listing
+								{localeLn("Update Listing")}
 							</Button>
 							<Button
 								className="mt-4"
@@ -254,7 +255,7 @@ const TokenSeriesUpdatePriceModal = ({
 								onClick={onRemoveListing}
 								isDisabled={!data.price}
 							>
-								Remove Listing
+								{localeLn("Remove Listing")}
 							</Button>
 						</div>
 					</form>

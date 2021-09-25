@@ -8,12 +8,12 @@ import { useRouter } from 'next/router'
 import TokenSeriesDetailModal from './TokenSeriesDetailModal'
 import useStore from '../lib/store'
 import JSBI from 'jsbi'
-
+import { useIntl } from "../hooks/useIntl"
 const EmbeddedCard = ({ tokenId }) => {
 	const store = useStore()
 	const router = useRouter()
 	const [token, setToken] = useState(null)
-
+	const { localeLn } = useIntl()
 	const price = token && (token.lowest_price || token.price)
 
 	useEffect(() => {
@@ -91,7 +91,7 @@ const EmbeddedCard = ({ tokenId }) => {
 			<div className="text-center">
 				<div className="mt-4">
 					<div className="p-2 pb-4">
-						<p className="text-gray-400 text-xs">Start From</p>
+						<p className="text-gray-400 text-xs">{localeLn("Start From")}</p>
 						<div className="text-gray-100 text-xl">
 							{price ? (
 								<div>
@@ -107,7 +107,7 @@ const EmbeddedCard = ({ tokenId }) => {
 								</div>
 							) : (
 								<div className="line-through text-red-600">
-									<span className="text-gray-100">SALE</span>
+									<span className="text-gray-100">{localeLn("SALE")}</span>
 								</div>
 							)}
 						</div>

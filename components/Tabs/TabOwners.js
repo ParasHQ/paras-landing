@@ -14,7 +14,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
-
+import { useIntl } from "../../hooks/useIntl"
 const FETCH_TOKENS_LIMIT = 12
 
 const TabOwners = ({ localToken }) => {
@@ -24,7 +24,7 @@ const TabOwners = ({ localToken }) => {
 	const [isFetching, setIsFetching] = useState(false)
 	const [activeToken, setActiveToken] = useState(null)
 	const [showModal, setShowModal] = useState(null)
-
+	const { localeLn } = useIntl()
 	const { currentUser } = useStore((state) => ({
 		currentUser: state.currentUser,
 	}))
@@ -121,7 +121,7 @@ const TabOwners = ({ localToken }) => {
 		<div>
 			{!isFetching && !hasMore && tokens.length === 0 ? (
 				<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
-					<div className="text-white">No owners, become the first one!</div>
+					<div className="text-white">{localeLn("No owners, become the first one!")}</div>
 				</div>
 			) : (
 				<InfiniteScroll
@@ -179,7 +179,7 @@ const TabOwners = ({ localToken }) => {
 const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 	const [profile, setProfile] = useState({})
 	const { currentUser } = useStore()
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		if (token.owner_id) {
 			fetchOwnerProfile()
@@ -225,7 +225,7 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 							</Link>
 						</div>
 					) : (
-						<p className="ml-2 text-white font-semibold">Burned</p>
+						<p className="ml-2 text-white font-semibold">{localeLn("Burned")}</p>
 					)}
 				</div>
 				<div>
@@ -234,7 +234,7 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 					>
 						<a className="hover:opacity-80">
 							<p className="text-white font-semibold">
-								Edition #{token.edition_id}
+								{localeLn("Edition")} #{token.edition_id}
 							</p>
 						</a>
 					</Link>
@@ -244,10 +244,10 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 				<div className="flex items-center justify-between">
 					{token.price ? (
 						<p className="text-white">
-							On sale {formatNearAmount(token.price)} Ⓝ
+							{localeLn('On sale')} {formatNearAmount(token.price)} Ⓝ
 						</p>
 					) : (
-						<p className="text-white">Not for sale</p>
+						<p className="text-white">{localeLn("Not for sale")}</p>
 					)}
 					{token.owner_id === currentUser ? (
 						<div className="w-24">
@@ -256,14 +256,14 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 								size="sm"
 								isFullWidth
 							>
-								Update
+								{localeLn("Update")}
 							</Button>
 						</div>
 					) : (
 						token.price && (
 							<div className="w-24">
 								<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
-									Buy
+									{localeLn('Buy')}
 								</Button>
 							</div>
 						)

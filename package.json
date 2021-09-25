@@ -46,6 +46,7 @@
 		"react-hamburgers": "^1.0.0",
 		"react-hook-form": "^6.10.0",
 		"react-infinite-scroll-component": "^5.1.0",
+		"react-intl": "^5.9.2",
 		"react-linkify": "^1.0.0-alpha",
 		"react-share": "^4.3.1",
 		"react-slick": "^0.28.1",

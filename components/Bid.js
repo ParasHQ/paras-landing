@@ -13,6 +13,7 @@ import { useToast } from '../hooks/useToast'
 import near from '../lib/near'
 import useStore from '../lib/store'
 import { parseImgUrl, prettyBalance, timeAgo } from '../utils/common'
+import { useIntl } from "../hooks/useIntl"
 import { sentryCaptureException } from 'lib/sentry'
 
 const Bid = ({ tokenId, data, updateBidData }) => {
@@ -22,7 +23,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [token, setToken] = useState(null)
 	const [showModal, setShowModal] = useState('')
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		fetchData()
 	}, [])
@@ -54,7 +55,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						Please make sure that your card is not on sale to accept the bid
+						{localeLn("Please make sure that your card is not on sale to accept the bid")}
 					</div>
 				),
 				type: 'error',
@@ -74,7 +75,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						You successfully accepted the bid from {data.accountId}.
+						{localeLn("You successfully accepted the bid from")} {data.accountId}.
 					</div>
 				),
 				type: 'success',
@@ -116,9 +117,9 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						Insufficient Balance
+						{localeLn("Insufficient Balance")}
 						<p className="mt-2">
-							Available {prettyBalance(store.userBalance.available, 24, 6)} Ⓝ
+							{localeLn("Available")} {prettyBalance(store.userBalance.available, 24, 6)} Ⓝ
 						</p>
 					</div>
 				),
@@ -156,7 +157,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							Your bid has been deleted
+							{localeLn("Your bid has been deleted")}
 						</div>
 					),
 					type: 'success',
@@ -217,7 +218,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 					closeOnEscape={false}
 				>
 					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
-						<div className="w-full">Are you sure to delete your bids?</div>
+						<div className="w-full">{localeLn("Are you sure to delete your bids?")}</div>
 						<div className="flex space-x-4">
 							<button
 								disabled={isLoading}
@@ -231,7 +232,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 								className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-white text-primary"
 								onClick={() => setShowModal('')}
 							>
-								Cancel
+								{localeLn("Cancel")}
 							</button>
 						</div>
 					</div>
@@ -299,7 +300,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 									onClick={() => setShowModal('acceptBid')}
 									className="font-semibold w-32 rounded-md border-2 border-primary bg-primary text-white mb-2"
 								>
-									Accept
+									{localeLn("Accept")}
 								</button>
 							) : (
 								<>
@@ -307,13 +308,13 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 										onClick={() => setShowModal('updateBid')}
 										className="font-semibold w-32 rounded-md border-2 border-primary bg-primary text-white mb-2"
 									>
-										Update
+										{localeLn("Update")}
 									</button>
 									<button
 										className="font-semibold w-32 rounded-md border-2 bg-red-600 text-white border-red-600 mb-2"
 										onClick={() => setShowModal('cancelBid')}
 									>
-										Cancel
+										{localeLn("Cancel")}
 									</button>
 								</>
 							)}

@@ -6,11 +6,12 @@ import {
   TwitterIcon,
   TwitterShareButton,
 } from 'react-share'
-
+import { useIntl } from "../../hooks/useIntl"
 const ShareComponent = ({ title, shareUrl }) => {
+  const { localeLn } = useIntl()
   return (
     <div className="flex items-center space-x-2 justify-between">
-      <div className="text-white text-sm opacity-80 pr-4">Share Now</div>
+      <div className="text-white text-sm opacity-80 pr-4">{localeLn("Share Now")}</div>
       <div className="flex space-x-3">
         <FacebookShareButton
           url={shareUrl}

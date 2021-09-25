@@ -16,6 +16,7 @@ import TextEditor from './TextEditor'
 import Modal from './Modal'
 import Card from './Card'
 import usePreventRouteChangeIf from '../hooks/usePreventRouteChange'
+import { useIntl } from "../hooks/useIntl"
 import { sentryCaptureException } from 'lib/sentry'
 
 let redirectUrl = null
@@ -23,7 +24,7 @@ let redirectUrl = null
 const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	const toast = useToast()
 	const router = useRouter()
-
+	const { localeLn } = useIntl()
 	const [preventLeaving, setPreventLeaving] = useState(true)
 	const [showLeavingConfirmation, setShowLeavingConfirmation] = useState(false)
 
@@ -274,7 +275,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							Maximum file size 3MB
+							{localeLn("Maximum file size 3MB")}
 						</div>
 					),
 					type: 'error',
@@ -314,7 +315,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 					<div className="w-full max-w-md p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
 						<div className="m-auto">
 							<label className="mb-4 block text-white text-2xl font-bold">
-								Add card to your publication
+								{localeLn("Add card to your publication")}
 							</label>
 							<input
 								type="text"
@@ -335,7 +336,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 								disabled={!searchToken}
 								onClick={getDataFromTokenId}
 							>
-								Add Card
+								{localeLn("Add Card")}
 							</button>
 						</div>
 					</div>
@@ -373,7 +374,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 						<div className="flex flex-col md:flex-row -mx-2">
 							<div className="w-full md:w-1/2 px-2">
 								<h1 className="mb-2 block text-white text-md font-medium">
-									Thumbnail
+									{localeLn("Thumbnail")}
 								</h1>
 								<div className="bg-white h-64 mb-4 overflow-hidden relative rounded-md">
 									<div className="absolute inset-0 flex items-center justify-center">
@@ -395,7 +396,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 													/>
 												</svg>
 												<p className="text-white font-semibold ml-2 text-sm">
-													Update Thumbnail (Max. 3MB)
+													{localeLn("Update Thumbnail (Max. 3MB)")}
 												</p>
 											</div>
 										</div>
@@ -418,7 +419,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 							</div>
 							<div className="w-full md:w-1/2 px-2">
 								<h1 className="mb-2 block text-white text-md font-medium">
-									Title
+									{localeLn("Title")}
 								</h1>
 								<input
 									type="text"
@@ -429,7 +430,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 									placeholder="Preview Title"
 								/>
 								<h1 className="mt-3 mb-2 block text-white text-md font-medium">
-									Description
+									{localeLn("Description")}
 								</h1>
 								<textarea
 									type="text"
@@ -459,8 +460,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				>
 					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
 						<div className="w-full">
-							Are you sure to leave this page? You will lose any unpublished
-							changes
+							{localeLn("Are you sure to leave this page? You will lose any unpublished changes")}
 						</div>
 						<div className="flex space-x-4">
 							<button
@@ -479,7 +479,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 								className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-white text-primary"
 								onClick={() => setShowLeavingConfirmation(false)}
 							>
-								Cancel
+								{localeLn("Cancel")}
 							</button>
 						</div>
 					</div>
@@ -493,7 +493,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 							className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 							onClick={() => setShowAlertErr(false)}
 						>
-							OK
+							{localeLn("OK")}
 						</button>
 					</div>
 				</Modal>
@@ -512,7 +512,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				<div className="max-w-4xl mx-auto px-4 pt-16">
 					<div className=" border-2 border-dashed border-gray-800 rounded-md p-4 md:p-8">
 						<h4 className="text-white font-semibold text-3xl mb-4 text-center">
-							Card Collectibles
+							{localeLn("Card Collectibles")}
 						</h4>
 						<div
 							className={`md:flex md:flex-wrap ${
@@ -545,7 +545,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 					onClick={onPressContinue}
 					disabled={title === '' || !content.getCurrentContent().hasText()}
 				>
-					Continue
+					{localeLn("Continue")}
 				</button>
 			</div>
 		</div>
@@ -585,6 +585,7 @@ const convertTextToEditorState = (text = '') =>
 	)
 
 const CardPublication = ({ localToken, deleteCard }) => {
+	const { localeLn } = useIntl()
 	return (
 		<Fragment>
 			<div className="w-full m-auto">
@@ -617,7 +618,7 @@ const CardPublication = ({ localToken, deleteCard }) => {
 				</p>
 			</div>
 			<div className="text-red-600 text-sm cursor-pointer" onClick={deleteCard}>
-				Delete
+				{localeLn("Delete")}
 			</div>
 		</Fragment>
 	)

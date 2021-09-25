@@ -12,6 +12,7 @@ import JSBI from 'jsbi'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useToast } from '../hooks/useToast'
 import AcceptBidModal from './AcceptBidModal'
+import { useIntl } from "../hooks/useIntl"
 import { sentryCaptureException } from 'lib/sentry'
 
 const BidItem = ({ data, userOwnership, token, fetchBid }) => {
@@ -19,7 +20,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 	const toast = useToast()
 	const [showModal, setShowModal] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
-
+	const { localeLn } = useIntl()
 	const fetcher = async (key) => {
 		const resp = await Axios.get(`${process.env.API_URL}/${key}`)
 		if (resp.data.data.results.length > 0) {
@@ -53,7 +54,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						Please make sure that your card is not on sale to accept the bid
+						{localeLn("Please make sure that your card is not on sale to accept the bid")}
 					</div>
 				),
 				type: 'error',
@@ -74,7 +75,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						You successfully accepted the bid from {data.accountId}.
+						{localeLn("You successfully accepted the bid from")} {data.accountId}.
 					</div>
 				),
 				type: 'success',
@@ -117,9 +118,9 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						Insufficient Balance
+						{localeLn("Insufficient Balance")}
 						<p className="mt-2">
-							Available {prettyBalance(store.userBalance.available, 24, 6)} Ⓝ
+							{localeLn("Available")} {prettyBalance(store.userBalance.available, 24, 6)} Ⓝ
 						</p>
 					</div>
 				),
@@ -164,7 +165,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							Your bid has been deleted
+							{localeLn("Your bid has been deleted")}
 						</div>
 					),
 					type: 'success',
@@ -215,7 +216,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 					closeOnEscape={false}
 				>
 					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
-						<div className="w-full">Are you sure to delete your bids?</div>
+						<div className="w-full">{localeLn("Are you sure to delete your bids?")}</div>
 						<div className="flex space-x-4">
 							<button
 								disabled={isLoading}
@@ -229,7 +230,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 								className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-white text-primary"
 								onClick={() => setShowModal('')}
 							>
-								Cancel
+								{localeLn("Cancel")}
 							</button>
 						</div>
 					</div>
@@ -258,15 +259,15 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 				</div>
 				<div className="flex items-center justify-between mt-2">
 					<div>
-						<span>Bid {prettyBalance(data.bidMarketData.amount, 24, 4)} Ⓝ</span>
-						<span> for {data.bidMarketData.quantity} pcs</span>
+						<span>{localeLn("Bid")} {prettyBalance(data.bidMarketData.amount, 24, 4)} Ⓝ</span>
+						<span> {localeLn("for")} {data.bidMarketData.quantity} pcs</span>
 					</div>
 					{userOwnership && store.currentUser !== data.accountId && (
 						<button
 							className="font-semibold w-24 rounded-md bg-primary text-white"
 							onClick={() => setShowModal('acceptBid')}
 						>
-							Accept
+							{localeLn("Accept")}
 						</button>
 					)}
 					{store.currentUser === data.accountId && (
@@ -307,7 +308,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 const BidList = ({ userOwnership, token }) => {
 	const [bidList, setBidList] = useState([])
 	const [isFetching, setIsFetching] = useState(true)
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		_fetchData()
 	}, [])
@@ -326,12 +327,12 @@ const BidList = ({ userOwnership, token }) => {
 		<div>
 			{bidList.length === 0 && !isFetching && (
 				<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
-					<p className="text-gray-500 py-8 px-8">No bidding yet</p>
+					<p className="text-gray-500 py-8 px-8">{localeLn("No bidding yet")}</p>
 				</div>
 			)}
 			{isFetching && (
 				<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
-					<p className="my-2 text-center">Loading...</p>
+					<p className="my-2 text-center">{localeLn("Loading...")}</p>
 				</div>
 			)}
 			{bidList.length !== 0 &&

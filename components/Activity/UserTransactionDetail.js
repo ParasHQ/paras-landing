@@ -9,11 +9,13 @@ import LinkToProfile from '../LinkToProfile'
 
 import { parseImgUrl } from '../../utils/common'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { useIntl } from "../../hooks/useIntl"
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import cachios from 'cachios'
 import TokenDetailModal from 'components/TokenDetailModal'
 
 const renderThumb = ({ style, ...props }) => {
+	const { localeLn } = useIntl()
 	return (
 		<div
 			{...props}
@@ -102,7 +104,7 @@ const UserTransactionDetail = ({
 							{formatNearAmount(data.total_sum)} Ⓝ
 						</p>
 						<p className="text-base text-gray-400">
-							Card {type !== 'buyer' ? 'sold' : 'bought'}:{' '}
+							{localeLn("Card")} {type !== 'buyer' ? 'sold' : 'bought'}:{' '}
 							{data.contract_token_ids.length}
 						</p>
 					</div>

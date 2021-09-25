@@ -7,6 +7,7 @@ import LoginModal from './LoginModal'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE, STORAGE_MINT_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
+import { useIntl } from "../../hooks/useIntl"
 import { sentryCaptureException } from 'lib/sentry'
 
 const TokenSeriesTransferModal = ({
@@ -42,7 +43,7 @@ const TokenSeriesTransferModal = ({
 	const [showLogin, setShowLogin] = useState(false)
 	const [isSelfMint, setIsSelfMint] = useState(true)
 	const [receiverId, setReceiverId] = useState('')
-
+	const { localeLn } = useIntl()
 	const onTransfer = async () => {
 		if (!near.currentUser) {
 			setShowLogin(true)
@@ -82,10 +83,10 @@ const TokenSeriesTransferModal = ({
 					</div>
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
-							Confirm Mint
+							{localeLn("Confirm Mint")}
 						</h1>
 						<p className="text-white mt-2">
-							You are about to mint <b>{data.metadata.title}</b>
+							{localeLn("You are about to mint")} <b>{data.metadata.title}</b>
 						</p>
 						<div className="mt-4">
 							<div className="mt-2 text-sm text-red-500"></div>
@@ -104,7 +105,7 @@ const TokenSeriesTransferModal = ({
 									/>
 								</div>
 								<label htmlFor="self-mint" className="text-white">
-									Mint to myself
+									{localeLn("Mint to myself")}
 								</label>
 							</div>
 						</div>
@@ -123,7 +124,7 @@ const TokenSeriesTransferModal = ({
 						<div className="mt-4 text-center">
 							<div className="text-white my-1">
 								<div className="flex justify-between">
-									<div className="text-sm">Storage Fee</div>
+									<div className="text-sm">{localeLn("Storage Fee")}</div>
 									<div className="text">
 										{formatNearAmount(STORAGE_MINT_FEE)} Ⓝ
 									</div>
@@ -131,12 +132,11 @@ const TokenSeriesTransferModal = ({
 							</div>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							You will be redirected to NEAR Web Wallet to confirm your
-							transaction.
+							{localeLn("You will be redirected to NEAR Web Wallet to confirm your transaction.")}
 						</p>
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onTransfer}>
-								Mint
+								{localeLn("Mint")}
 							</Button>
 						</div>
 					</div>

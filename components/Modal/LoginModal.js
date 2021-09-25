@@ -2,10 +2,10 @@ import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import { IconXCircle } from 'components/Icons'
 import { useRouter } from 'next/router'
-
+import { useIntl } from "../../hooks/useIntl"
 const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 	const router = useRouter()
-
+	const { localeLn } = useIntl()
 	return (
 		<Modal isShow={show} close={onClose}>
 			<div className="max-w-sm m-4 md:m-auto w-full relative bg-gray-800 p-4 text-center rounded-md">
@@ -28,11 +28,11 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 				</div>
 				<h3 className="mb-4 text-2xl text-white font-semibold">{title}</h3>
 				<p className="mt-1 text-white opacity-80">
-					Collect NFT that you can truly own.
+					{localeLn("Collect NFT that you can truly own.")}
 				</p>
 				<div className="mt-6">
 					<p className="text-gray-400 text-sm mb-2 text-center">
-						You will be redirected to NEAR Wallet
+						{localeLn("You will be redirected to NEAR Wallet")}
 					</p>
 					<Button
 						className="mt-2 px-1"
@@ -40,7 +40,7 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 						isFullWidth
 						onClick={() => router.push('/login')}
 					>
-						Go to Login
+						{localeLn("Go to Login")}
 					</Button>
 				</div>
 				<div
