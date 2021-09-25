@@ -8,6 +8,7 @@ import TokenUpdatePriceModal from 'components/Modal/TokenUpdatePriceModal'
 import { STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import JSBI from 'jsbi'
 import near from 'lib/near'
+import { sentryCaptureException } from 'lib/sentry'
 import useStore from 'lib/store'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Link from 'next/link'
@@ -65,6 +66,7 @@ const TabOwners = ({ localToken }) => {
 				return true
 			}
 		} catch (err) {
+			sentryCaptureException(err)
 			console.log(err)
 		}
 	}
@@ -197,6 +199,7 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 			const newData = resp.data.data.results[0] || {}
 			setProfile(newData)
 		} catch (err) {
+			sentryCaptureException(err)
 			console.log(err)
 		}
 	}

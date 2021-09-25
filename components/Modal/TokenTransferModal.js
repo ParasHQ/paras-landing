@@ -12,6 +12,7 @@ import { IconX } from 'components/Icons'
 import getConfig from 'config/near'
 import Axios from 'axios'
 import { useToast } from 'hooks/useToast'
+import { sentryCaptureException } from 'lib/sentry'
 
 const TokenTransferModal = ({
 	show,
@@ -75,8 +76,8 @@ const TokenTransferModal = ({
 			if (resp.data.error) {
 				throw new Error(`Account ${receiverId} not exist`)
 			}
-			console.log(resp.data)
 		} catch (err) {
+			sentryCaptureException(err)
 			const message = err.message || 'Something went wrong, try again later'
 			toast.show({
 				text: (
@@ -97,7 +98,7 @@ const TokenTransferModal = ({
 				attachedDeposit: `1`,
 			})
 		} catch (err) {
-			console.log(err)
+			sentryCaptureException(err)
 		}
 	}
 

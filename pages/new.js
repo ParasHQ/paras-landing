@@ -19,6 +19,7 @@ import { GAS_FEE, STORAGE_CREATE_SERIES_FEE } from 'config/constants'
 import Button from 'components/Common/Button'
 import { InputText, InputTextarea } from 'components/Common/form'
 import CreateCollectionModal from 'components/Collection/CreateCollectionModal'
+import { sentryCaptureException } from 'lib/sentry'
 
 const LIMIT = 10
 
@@ -83,6 +84,7 @@ const NewPage = () => {
 
 			setIsUploading('success')
 		} catch (err) {
+			sentryCaptureException(err)
 			const msg =
 				err.response?.data?.message || `Something went wrong, try again later`
 			toast.show({
@@ -95,7 +97,7 @@ const NewPage = () => {
 		}
 	}
 
-	const creteSeriesNFT = () => {
+	const creteSeriesNFT = async () => {
 		try {
 			let params = {
 				creator_id: store.currentUser,
@@ -117,7 +119,7 @@ const NewPage = () => {
 				}
 			}
 
-			near.wallet.account().functionCall({
+			await near.wallet.account().functionCall({
 				contractId: process.env.NFT_CONTRACT_ID,
 				methodName: `nft_create_series`,
 				args: params,
@@ -125,6 +127,7 @@ const NewPage = () => {
 				attachedDeposit: STORAGE_CREATE_SERIES_FEE,
 			})
 		} catch (err) {
+			sentryCaptureException(err)
 			const msg =
 				err.response?.data?.message || `Something went wrong, try again later`
 			toast.show({
@@ -656,7 +659,13 @@ const NewPage = () => {
 												<div className="w-10 h-10 bg-primary flex-shrink-0">
 													{item.media && (
 														<img
-															src={parseImgUrl(item.media)}
+															src={parseImgUrl(item.media, null, {
+																width: `600`,
+																useOriginal:
+																	process.env.APP_ENV === 'production'
+																		? false
+																		: true,
+															})}
 															className="w-10 h-10"
 														/>
 													)}
@@ -714,7 +723,7 @@ const NewPage = () => {
 														fill="rgba(229, 231, 235, 0.5)"
 													/>
 												</svg>
-												<p className="text-gray-200 mt-4 truncate">
+												<p className="text-gray-200 mt-4 truncate text-center">
 													{imgFile.name}
 												</p>
 											</div>

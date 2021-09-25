@@ -6,6 +6,7 @@ import ImgCrop from 'components/ImgCrop'
 import Nav from 'components/Nav'
 import { useToast } from 'hooks/useToast'
 import near from 'lib/near'
+import { sentryCaptureException } from 'lib/sentry'
 import useStore from 'lib/store'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -86,6 +87,7 @@ const CollectionPageEdit = ({ collectionId }) => {
 				router.push(`/collection/${resp.data.data.collection.collection_id}`)
 			}
 		} catch (err) {
+			sentryCaptureException(err)
 			const msg =
 				err.response?.data?.message || 'Something went wrong, try again later.'
 			toast.show({

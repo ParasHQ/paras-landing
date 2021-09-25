@@ -9,6 +9,7 @@ import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
+import { sentryCaptureException } from 'lib/sentry'
 
 const TokenSeriesUpdatePriceModal = ({
 	show,
@@ -63,6 +64,7 @@ const TokenSeriesUpdatePriceModal = ({
 				attachedDeposit: `1`,
 			})
 		} catch (err) {
+			sentryCaptureException(err)
 			console.log(err)
 		}
 	}
@@ -86,6 +88,7 @@ const TokenSeriesUpdatePriceModal = ({
 				attachedDeposit: `1`,
 			})
 		} catch (err) {
+			sentryCaptureException(err)
 			console.log(err)
 		}
 	}

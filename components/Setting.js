@@ -1,4 +1,5 @@
 import Axios from 'axios'
+import { sentryCaptureException } from 'lib/sentry'
 import { useEffect, useState } from 'react'
 import { useToast } from '../hooks/useToast'
 import near from '../lib/near'
@@ -59,6 +60,7 @@ const Setting = ({ close }) => {
 			setIsUpdating(false)
 			fetchEmail()
 		} catch (err) {
+			sentryCaptureException(err)
 			const message = err.response.data.message
 			toast.show({
 				text: (

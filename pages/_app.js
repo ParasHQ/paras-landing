@@ -18,6 +18,7 @@ import 'croppie/croppie.css'
 import ToastProvider from '../hooks/useToast'
 import { SWRConfig } from 'swr'
 import * as Sentry from '@sentry/nextjs'
+import { sentryCaptureException } from 'lib/sentry'
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
@@ -136,6 +137,7 @@ function MyApp({ Component, pageProps }) {
 					)
 					store.setUserProfile(resp.data.data)
 				} catch (err) {
+					sentryCaptureException(err)
 					store.setUserProfile({})
 				}
 			} else {

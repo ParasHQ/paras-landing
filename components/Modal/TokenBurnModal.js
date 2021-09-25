@@ -7,6 +7,7 @@ import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import JSBI from 'jsbi'
 import { GAS_FEE } from 'config/constants'
+import { sentryCaptureException } from 'lib/sentry'
 
 const STORAGE_FEE = 8590000000000000000000
 
@@ -93,6 +94,7 @@ const TokenBurnModal = ({
 				attachedDeposit: `1`,
 			})
 		} catch (err) {
+			sentryCaptureException(err)
 			console.log(err)
 		}
 	}

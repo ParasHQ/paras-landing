@@ -24,6 +24,7 @@ import TabHistory from './Tabs/TabHistory'
 import LoginModal from './Modal/LoginModal'
 import ArtistVerified from './Common/ArtistVerified'
 import ArtistBanned from './Common/ArtistBanned'
+import { sentryCaptureException } from 'lib/sentry'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -80,6 +81,7 @@ const TokenDetail = ({ token, className }) => {
 				setNeedDeposit(false)
 			}
 		} catch (err) {
+			sentryCaptureException(err)
 			console.log(err)
 		}
 	}

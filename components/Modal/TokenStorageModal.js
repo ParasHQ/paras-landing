@@ -8,6 +8,7 @@ import LoginModal from './LoginModal'
 import JSBI from 'jsbi'
 import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
+import { sentryCaptureException } from 'lib/sentry'
 
 const TokenStorageModal = ({
 	show,
@@ -88,6 +89,7 @@ const TokenStorageModal = ({
 				attachedDeposit: STORAGE_ADD_MARKET_FEE,
 			})
 		} catch (err) {
+			sentryCaptureException(err)
 			console.log(err)
 		}
 	}

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { sentryCaptureException } from 'lib/sentry'
 import { useState } from 'react'
 import { useToast } from '../hooks/useToast'
 import near from '../lib/near'
@@ -64,6 +65,7 @@ const ProfileEdit = ({ close }) => {
 			store.setUserProfile(resp.data.data)
 			close()
 		} catch (err) {
+			sentryCaptureException(err)
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">

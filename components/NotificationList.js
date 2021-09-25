@@ -8,6 +8,7 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Scrollbars from 'react-custom-scrollbars'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
+import { sentryCaptureException } from 'lib/sentry'
 
 const LIMIT = 30
 
@@ -342,6 +343,7 @@ const NotificationList = () => {
 				setNotificationListHasMore(true)
 			}
 		} catch (err) {
+			sentryCaptureException(err)
 			console.log(err)
 		}
 		setIsFetching(false)

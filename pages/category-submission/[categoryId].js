@@ -12,6 +12,7 @@ import { useToast } from '../../hooks/useToast'
 import near from '../../lib/near'
 import useStore from '../../lib/store'
 import { parseImgUrl, timeAgo } from '../../utils/common'
+import { sentryCaptureException } from 'lib/sentry'
 
 const CategorySubmission = () => {
 	const [submissions, setSubmissions] = useState(null)
@@ -48,6 +49,7 @@ const CategorySubmission = () => {
 				)
 				setSubmissions(res.data.data.results)
 			} catch (error) {
+				sentryCaptureException(error)
 				if (error.response.status === 401) {
 					toast.show({
 						text: (
@@ -157,6 +159,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 			setShowModal('')
 			updateData(submission._id)
 		} catch (error) {
+			sentryCaptureException(error)
 			console.log(error.response)
 		}
 

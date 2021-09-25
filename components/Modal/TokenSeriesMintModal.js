@@ -10,6 +10,7 @@ import { InputLabel, InputText } from 'components/Common/form'
 import TokenTransferModal from './TokenTransferModal'
 import { GAS_FEE, STORAGE_MINT_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
+import { sentryCaptureException } from 'lib/sentry'
 
 const TokenSeriesTransferModal = ({
 	show,
@@ -64,6 +65,7 @@ const TokenSeriesTransferModal = ({
 				attachedDeposit: STORAGE_MINT_FEE,
 			})
 		} catch (err) {
+			sentryCaptureException(err)
 			console.log(err)
 		}
 	}

@@ -8,6 +8,7 @@ import Axios from 'axios'
 import near from 'lib/near'
 import { useToast } from 'hooks/useToast'
 import { useRouter } from 'next/router'
+import { sentryCaptureException } from 'lib/sentry'
 
 const CreateCollection = ({ onFinishCreate }) => {
 	const [showImgCrop, setShowImgCrop] = useState(false)
@@ -69,6 +70,7 @@ const CreateCollection = ({ onFinishCreate }) => {
 					: onFinishDefault(resp.data.data.collection.collection_id)
 			}
 		} catch (err) {
+			sentryCaptureException(err)
 			const msg =
 				err.response?.data?.message || 'Something went wrong, try again later.'
 			toast.show({
