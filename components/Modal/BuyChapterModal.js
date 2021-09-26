@@ -13,7 +13,7 @@ import { IconXCircle } from 'components/Icons'
 import { parseImgUrl } from 'utils/common'
 import LoginModal from 'components/Modal/LoginModal'
 import Link from 'next/link'
-
+import { useIntl } from '../../hooks/useIntl'
 const BuyChapterModal = ({
 	data = {
 		token_id: 'naruto-9:1',
@@ -51,7 +51,7 @@ const BuyChapterModal = ({
 	const router = useRouter()
 	const buyChapter = useStore((state) => state.buyChapter)
 	const [showLogin, setShowLogin] = useState(false)
-
+	const { localeLn } = useIntl()
 	const onClickReadNow = () => {
 		router.push({
 			pathname: `/viewer/${data.comic_id}/${data.chapter_id}`,
@@ -107,7 +107,7 @@ const BuyChapterModal = ({
 								<div className="-mt-16 md:mt-0 w-full relative p-4 md:p-6 flex flex-col justify-between md:h-96 overflow-y-auto">
 									<div className="w-full">
 										<p className="text-blueGray-400 text-lg">
-											Chapter {data.chapter_id}
+											{localeLn('Chapter')} {data.chapter_id}
 										</p>
 										<p className="text-2xl text-gray-50">
 											{data.metadata.subtitle}
@@ -126,13 +126,13 @@ const BuyChapterModal = ({
 															isFullWidth
 															onClick={onClickReadNow}
 														>
-															Read Now
+															{localeLn('Read Now')}
 														</Button>
 													</div>
 												) : (
 													<div>
 														<p className="text-blueGray-400 text-xs mb-2 text-center">
-															Small transaction fee is applied of 0.01832 Ⓝ
+															{localeLn('Small transaction fee is applied of')} 0.01832 Ⓝ
 														</p>
 														<Button
 															size="md"

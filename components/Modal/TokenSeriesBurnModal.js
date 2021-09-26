@@ -6,6 +6,7 @@ import LoginModal from './LoginModal'
 import { GAS_FEE } from 'config/constants'
 import { InputText } from 'components/Common/form'
 import { IconX } from 'components/Icons'
+import { useIntl } from '../../hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const TokenSeriesBurnModal = ({
@@ -40,7 +41,7 @@ const TokenSeriesBurnModal = ({
 }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [burnCopies, setBurnCopies] = useState('')
-
+	const { localeLn } = useIntl()
 	const onBurnToken = async () => {
 		if (!near.currentUser) {
 			setShowLogin(true)
@@ -80,10 +81,10 @@ const TokenSeriesBurnModal = ({
 					</div>
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
-							Burn Asset
+							{localeLn('Burn Asset')}
 						</h1>
 						<p className="text-white mt-2">
-							You are about to reduce the copies of {data.metadata.title}
+							{localeLn('You are about to reduce the copies of')} {data.metadata.title}
 						</p>
 						<div className="mt-4">
 							<InputText
@@ -94,18 +95,18 @@ const TokenSeriesBurnModal = ({
 								onChange={(e) =>
 									setBurnCopies(e.target.value.replace(/\D/, ''))
 								}
-								placeholder="Decrease copies by"
+								placeholder={localeLn('Decrease copies by')}
 							/>
 							{burnCopies > data.metadata.copies - data.in_circulation && (
 								<div className="mt-2 text-sm text-red-500">
-									<p>Cannot reduce more than current copies</p>
+									<p>{localeLn('Cannot reduce more than current copies')}</p>
 								</div>
 							)}
 						</div>
 						<div className="mt-4 text-center">
 							<div className="text-white my-1">
 								<div className="flex justify-between">
-									<div className="text-sm">Available Copies</div>
+									<div className="text-sm">{localeLn('Available Copies')}</div>
 									<div className="text">
 										{parseInt(data.metadata.copies || 0) -
 											parseInt(data.in_circulation || 0)}
@@ -114,14 +115,14 @@ const TokenSeriesBurnModal = ({
 							</div>
 							<div className="text-white my-1">
 								<div className="flex justify-between">
-									<div className="text-sm">Decrease Copies</div>
+									<div className="text-sm">{localeLn('Decrease Copies')}</div>
 									<div className="text">{parseInt(burnCopies || 0)}</div>
 								</div>
 							</div>
 							<hr />
 							<div className="text-white my-1">
 								<div className="flex justify-between">
-									<div className="text-sm">Total</div>
+									<div className="text-sm">{localeLn('Total')}</div>
 									<div className="text">
 										{parseInt(data.metadata.copies || 0) -
 											parseInt(data.in_circulation || 0) -
@@ -131,8 +132,7 @@ const TokenSeriesBurnModal = ({
 							</div>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							You will be redirected to NEAR Web Wallet to confirm your
-							transaction.
+							{localeLn('You will be redirected to NEAR Web Wallet to confirm your transaction.')}
 						</p>
 						<div className="mt-6">
 							<Button
@@ -144,7 +144,7 @@ const TokenSeriesBurnModal = ({
 									burnCopies > data.metadata.copies - data.in_circulation
 								}
 							>
-								Reduce
+								{localeLn('Reduce')}
 							</Button>
 						</div>
 					</div>

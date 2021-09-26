@@ -13,6 +13,7 @@ import FilterActivity from '../components/FilterActivity'
 import { sentryCaptureException } from 'lib/sentry'
 
 const FETCH_TOKENS_LIMIT = 10
+import { useIntl } from '../hooks/useIntl'
 
 const ActivityLog = ({ query }) => {
 	const {
@@ -30,7 +31,7 @@ const ActivityLog = ({ query }) => {
 	const [topUser, setTopUser] = useState([])
 	const [showModal, setShowModal] = useState(false)
 	const [activityType, setActivityType] = useState('activity')
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		const onClick = (e) => {
 			if (!modalRef.current.contains(e.target)) {
@@ -144,7 +145,7 @@ const ActivityLog = ({ query }) => {
 					}}
 				></div>
 				<Head>
-					<title>Activity — Paras</title>
+					<title>{localeLn('Activity — Paras')}</title>
 					<meta
 						name="description"
 						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -220,7 +221,7 @@ const ActivityLog = ({ query }) => {
 									`}
 											onClick={() => onClickType('activity')}
 										>
-											Activity
+											{localeLn('Activity')}
 										</p>
 										<p
 											className={`opacity-50 cursor-pointer select-none my-1
@@ -228,7 +229,7 @@ const ActivityLog = ({ query }) => {
 									`}
 											onClick={() => onClickType('top-users')}
 										>
-											Top Users
+											{localeLn('Top Users')}
 										</p>
 									</div>
 								)}
@@ -248,12 +249,12 @@ const ActivityLog = ({ query }) => {
 						>
 							{activityList.length === 0 && activityListHasMore && (
 								<div className="border-2 border-gray-800 border-dashed mt-4 p-2 rounded-md text-center">
-									<p className="text-gray-300 py-8">Loading</p>
+									<p className="text-gray-300 py-8">{localeLn('Loading')}</p>
 								</div>
 							)}
 							{activityList.length === 0 && !activityListHasMore && (
 								<div className="border-2 border-gray-800 border-dashed mt-4 p-2 rounded-md text-center">
-									<p className="text-gray-300 py-8">No Transactions</p>
+									<p className="text-gray-300 py-8">{localeLn('No Transactions')}</p>
 								</div>
 							)}
 							<InfiniteScroll

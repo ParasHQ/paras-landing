@@ -5,6 +5,7 @@ import near from 'lib/near'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import { GAS_FEE } from 'config/constants'
+import { useIntl } from '../../hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const TokenBuyModal = ({
@@ -38,7 +39,7 @@ const TokenBuyModal = ({
 	},
 }) => {
 	const [showLogin, setShowLogin] = useState(false)
-
+	const { localeLn } = useIntl()
 	const onBuyToken = async () => {
 		if (!near.currentUser) {
 			setShowLogin(true)
@@ -76,10 +77,10 @@ const TokenBuyModal = ({
 				<div className="max-w-sm w-full p-4 bg-gray-800 m-4 md:m-auto rounded-md">
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
-							Confirm Buy
+							{localeLn('Confirm Buy')}
 						</h1>
 						<p className="text-white mt-2">
-							You are about to purchase <b>{data.metadata.title}</b>
+							{localeLn('You are about to purchase')} <b>{data.metadata.title}</b>
 						</p>
 						<div className="mt-4">
 							<div className="mt-2 text-sm text-red-500"></div>
@@ -87,7 +88,7 @@ const TokenBuyModal = ({
 						<div className="mt-4 text-center">
 							<div className="text-white my-1">
 								<div className="flex justify-between">
-									<div className="text-sm">Total</div>
+									<div className="text-sm">{localeLn('Total')}</div>
 									<div className="text">
 										{data.price && `${formatNearAmount(data.price)} Ⓝ`}
 									</div>
@@ -95,12 +96,11 @@ const TokenBuyModal = ({
 							</div>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							You will be redirected to NEAR Web Wallet to confirm your
-							transaction.
+							{localeLn('You will be redirected to NEAR Web Wallet to confirm your transaction.')}
 						</p>
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onBuyToken}>
-								{data.price !== '0' ? 'Buy' : 'Get for Free'}
+								{data.price !== '0' ? localeLn('Buy') :localeLn('Get for Free')}
 							</Button>
 							<Button
 								variant="ghost"
@@ -109,7 +109,7 @@ const TokenBuyModal = ({
 								className="mt-4"
 								onClick={onClose}
 							>
-								Cancel
+								{localeLn('Cancel')}
 							</Button>
 						</div>
 					</div>

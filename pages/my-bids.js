@@ -8,7 +8,9 @@ import Footer from '../components/Footer'
 import Nav from '../components/Nav'
 import useStore from '../lib/store'
 
+import { useIntl } from '../hooks/useIntl'
 const MyBids = () => {
+	const { localeLn } = useIntl()
 	const store = useStore()
 	const [page, setPage] = useState(0)
 	const [type, setType] = useState('myBids')
@@ -79,7 +81,7 @@ const MyBids = () => {
 				}}
 			></div>
 			<Head>
-				<title>My Bids — Paras</title>
+				<title>{localeLn('My Bids — Paras')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -122,7 +124,7 @@ const MyBids = () => {
 							type === 'myBids' ? 'font-bold' : 'opacity-75'
 						}`}
 					>
-						My Bids
+						{localeLn('My Bids')}
 					</div>
 					<div
 						onClick={() => switchType('receivedBids')}
@@ -130,7 +132,7 @@ const MyBids = () => {
 							type === 'receivedBids' ? 'font-bold' : 'opacity-75'
 						}`}
 					>
-						Received Bids
+						{localeLn('Received Bids')}
 					</div>
 				</div>
 				<InfiniteScroll
@@ -139,7 +141,7 @@ const MyBids = () => {
 					hasMore={hasMore}
 					loader={
 						<div className="border-2 border-dashed my-4 p-2 rounded-md text-center border-gray-800">
-							<p className="my-2 text-center text-gray-200">Loading...</p>
+							<p className="my-2 text-center text-gray-200">{localeLn('Loading...')}</p>
 						</div>
 					}
 				>
@@ -155,13 +157,13 @@ const MyBids = () => {
 					{bidsData.length === 0 && !hasMore && (
 						<div className="border-2 border-dashed p-2 rounded-md text-center border-gray-800 my-4">
 							<p className="my-20 text-center text-gray-200">
-								You have no active bid
+								{localeLn('You have no active bid')}
 							</p>
 						</div>
 					)}
 					{bidsData.length === 0 && hasMore && (
 						<div className="border-2 border-dashed p-2 rounded-md text-center border-gray-800 my-4">
-							<p className="my-20 text-center text-gray-200">Loading...</p>
+							<p className="my-20 text-center text-gray-200">{localeLn('Loading...')}</p>
 						</div>
 					)}
 				</InfiniteScroll>

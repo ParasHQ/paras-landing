@@ -19,11 +19,13 @@ import { GAS_FEE, STORAGE_CREATE_SERIES_FEE } from 'config/constants'
 import Button from 'components/Common/Button'
 import { InputText, InputTextarea } from 'components/Common/form'
 import CreateCollectionModal from 'components/Collection/CreateCollectionModal'
+import { useIntl } from '../hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const LIMIT = 10
 
 const NewPage = () => {
+	const { localeLn } = useIntl()
 	const store = useStore()
 	const router = useRouter()
 	const toast = useToast()
@@ -262,7 +264,7 @@ const NewPage = () => {
 				}}
 			></div>
 			<Head>
-				<title>Create New Card — Paras</title>
+				<title>{localeLn('Create New Card — Paras')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -304,7 +306,7 @@ const NewPage = () => {
 									className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 									onClick={() => setShowAlertErr(false)}
 								>
-									OK
+									{localeLn('OK')}
 								</button>
 							</div>
 						</div>
@@ -341,7 +343,7 @@ const NewPage = () => {
 						<div className="w-full md:w-1/2 pl-0 md:pl-2 flex items-center">
 							<div className="w-full">
 								<h1 className="mt-4 text-2xl font-bold text-white tracking-tight">
-									Market Data
+									{localeLn('Market Data')}
 								</h1>
 								<div className="text-white opacity-80">
 									{isOnSale && (
@@ -368,7 +370,7 @@ const NewPage = () => {
 												</span>
 											</div>
 											<div className="flex items-center justify-between text-sm">
-												<span>Receive: </span>
+												<span>{localeLn('Receive')}: </span>
 												<span>
 													{prettyBalance(
 														Number(
@@ -397,7 +399,7 @@ const NewPage = () => {
 											</div>
 											{formInput.royalty !== 0 && (
 												<div className="flex items-center justify-between text-sm">
-													<span>Royalty: </span>
+													<span>{localeLn('Royalty')}: </span>
 													<span>
 														{prettyBalance(
 															Number(
@@ -426,7 +428,7 @@ const NewPage = () => {
 												</div>
 											)}
 											<div className="flex items-center justify-between text-sm">
-												<span>Fee: </span>
+												<span>{localeLn('Fee')}: </span>
 												<span>
 													{prettyBalance(
 														Number(getValues('amount', 0) * 0.05)
@@ -452,7 +454,7 @@ const NewPage = () => {
 									)}
 								</div>
 								<div className="mt-2 text-white opacity-80">
-									<p>Confirm card creation?</p>
+									<p>{localeLn('Confirm card creation')}?</p>
 								</div>
 								<div className="">
 									<Button
@@ -460,7 +462,7 @@ const NewPage = () => {
 										onClick={uploadImageMetadata}
 										isFullWidth
 									>
-										Create
+										{localeLn('Create')}
 									</Button>
 									<Button
 										variant="ghost"
@@ -468,7 +470,7 @@ const NewPage = () => {
 										className="mt-4"
 										onClick={() => setShowConfirmModal(false)}
 									>
-										Cancel
+										{localeLn('Cancel')}
 									</Button>
 								</div>
 							</div>
@@ -480,12 +482,12 @@ const NewPage = () => {
 				<Modal closeOnEscape={false} closeOnBgClick={false}>
 					<div className="max-w-xs m-auto p-4 bg-gray-800 rounded-md">
 						<div className="font-bold text-2xl mb-4 text-white">
-							Creating Card
+							{localeLn('Creating Card')}
 						</div>
 						<div>
-							<p className="text-gray-200 font-bold text-lg">Upload</p>
+							<p className="text-gray-200 font-bold text-lg">{localeLn('Upload')}</p>
 							<p className="text-gray-200 text-sm mb-2">
-								Uploading your image and meta data
+								{localeLn('Uploading your image and meta data')}
 							</p>
 							<Button
 								isFullWidth
@@ -502,12 +504,12 @@ const NewPage = () => {
 							</Button>
 						</div>
 						<div>
-							<p className="text-gray-200 font-bold text-lg">Confirmation</p>
+							<p className="text-gray-200 font-bold text-lg">{localeLn('Confirmation')}</p>
 							<p className="text-gray-200 text-sm">
-								Confirm your transaction on Near Wallet
+								{localeLn('Confirm your transaction on Near Wallet')}
 							</p>
 							<p className="text-gray-200 text-sm mb-2">
-								Small transaction fee is applied of 0.00854 Ⓝ
+								{localeLn('Small transaction fee is applied of')} 0.00854 Ⓝ
 							</p>
 							<Button
 								isDisabled={!(isUploading === 'success')}
@@ -527,7 +529,7 @@ const NewPage = () => {
 									setIsUploading(false)
 								}}
 							>
-								Cancel
+								{localeLn('Cancel')}
 							</Button>
 						</div>
 					</div>
@@ -596,7 +598,7 @@ const NewPage = () => {
 								style={{ width: 'calc(100% + 2rem)' }}
 							>
 								<div className="block text-sm text-white">
-									<span>You will submit card to </span>
+									<span>{localeLn('You will submit card to')} </span>
 									<span className="font-bold">
 										{formatCategoryId(router.query.categoryId)}
 									</span>
@@ -605,14 +607,14 @@ const NewPage = () => {
 						)}
 						<div>
 							<h1 className="text-2xl font-bold text-white tracking-tight">
-								Card Creation
+								{localeLn('Card Creation')}
 							</h1>
 						</div>
 						{step === 0 && (
 							<div>
 								<div className="flex justify-between py-2">
 									<button disabled={step === 0} onClick={_handleBack}>
-										Back
+										{localeLn('Back')}
 									</button>
 									<div>{step + 1}/4</div>
 									{step === 1 && (
@@ -620,14 +622,14 @@ const NewPage = () => {
 											disabled={!imgFile}
 											onClick={() => setStep(step + 1)}
 										>
-											Next
+											{localeLn('Next')}
 										</button>
 									)}
 									<button
 										disabled={!choosenCollection.collection_id}
 										onClick={() => setStep(step + 1)}
 									>
-										Next
+										{localeLn('Next')}
 									</button>
 								</div>
 								<div className="text-sm">Choose Collection</div>
@@ -643,7 +645,7 @@ const NewPage = () => {
 											className="bg-gray-800 mt-2 flex items-center rounded-md overflow-hidden cursor-pointer border-2 border-gray-800"
 										>
 											<div className="h-10 w-full flex items-center justify-center flex-shrink-0 text-sm text-center font-medium">
-												+ Create New Collection
+												+ {localeLn('Create New Collection')}
 											</div>
 										</div>
 										{collectionList.map((item) => (
@@ -683,14 +685,14 @@ const NewPage = () => {
 							<div>
 								<div>
 									<div className="flex justify-between py-2">
-										<button onClick={_handleBack}>Back</button>
+										<button onClick={_handleBack}>{localeLn('Back')}</button>
 										<div>{step + 1}/4</div>
 										{step === 1 && (
 											<button
 												disabled={!imgFile}
 												onClick={() => setStep(step + 1)}
 											>
-												Next
+												{localeLn('Next')}
 											</button>
 										)}
 									</div>
@@ -745,7 +747,7 @@ const NewPage = () => {
 													/>
 												</svg>
 												<p className="text-gray-200 mt-2 opacity-50">
-													Maximum size 16mb
+													{localeLn('Maximum size 16mb')}
 												</p>
 											</div>
 										)}
@@ -763,11 +765,11 @@ const NewPage = () => {
 											type="submit"
 											onClick={handleSubmit(_handleSubmitStep1)}
 										>
-											Next
+											{localeLn('Next')}
 										</button>
 									</div>
 									<div>
-										<label className="block text-sm">Name</label>
+										<label className="block text-sm">{localeLn('Name')}</label>
 										<InputText
 											autoComplete="off"
 											type="text"
@@ -784,7 +786,7 @@ const NewPage = () => {
 									</div>
 									<div className="mt-4">
 										<div className="flex items-center justify-between">
-											<label className="block text-sm">Description</label>
+											<label className="block text-sm">{localeLn('Description')}</label>
 											<div
 												className={`${
 													watch('description')?.length >= 600 && 'text-red-500'
@@ -817,7 +819,7 @@ const NewPage = () => {
 										</div>
 									</div>
 									<div className="mt-4">
-										<label className="block text-sm">Number of copies</label>
+										<label className="block text-sm">{localeLn('Number of copies')}</label>
 										<InputText
 											type="number"
 											name="supply"
@@ -853,11 +855,11 @@ const NewPage = () => {
 										type="submit"
 										onClick={handleSubmit(_handleSubmitStep2)}
 									>
-										Next
+										{localeLn('Next')}
 									</button>
 								</div>
 								<div>
-									<label className="block text-sm">Royalty</label>
+									<label className="block text-sm">{localeLn('Royalty')}</label>
 									<div className="relative">
 										<InputText
 											type="number"
@@ -898,12 +900,12 @@ const NewPage = () => {
 											/>
 										</div>
 										<label htmlFor="put-marketplace" className="block text-sm">
-											Put on Marketplace
+											{localeLn('Put on Marketplace')}
 										</label>
 									</div>
 									{isOnSale && (
 										<>
-											<label className="block text-sm">Sale price</label>
+											<label className="block text-sm">{localeLn('Sale price')}</label>
 											<div className="relative">
 												<InputText
 													type="number"

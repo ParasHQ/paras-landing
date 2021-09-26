@@ -1,6 +1,7 @@
 import Link from 'next/link'
-
+import { useIntl } from '../hooks/useIntl'
 export const PublicationType = ({ path }) => {
+	const { localeLn } = useIntl()
 	return (
 		<div className="flex flex-wrap -mx-4">
 			<Link href="/publication/editorial">
@@ -9,7 +10,7 @@ export const PublicationType = ({ path }) => {
 						path === '/publication/editorial' ? 'font-bold' : null
 					}`}
 				>
-					Editorial
+					{localeLn('Editorial')}
 				</h1>
 			</Link>
 			<Link href="/publication/community">
@@ -18,7 +19,7 @@ export const PublicationType = ({ path }) => {
 						path === '/publication/community' ? 'font-bold' : null
 					}`}
 				>
-					Community
+					{localeLn('Community')}
 				</h1>
 			</Link>
 		</div>

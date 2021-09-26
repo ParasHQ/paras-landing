@@ -6,11 +6,11 @@ import Card from '../Card'
 import TokenSeriesDetailModal from '../TokenSeriesDetailModal'
 import CardStatListLoader from './CardStatListLoader'
 import LinkToProfile from '../LinkToProfile'
-
+import { useIntl } from '../../hooks/useIntl'
 const CardStats = ({ cardsData, fetchData, hasMore }) => {
 	const [token, setToken] = useState(null)
 	const router = useRouter()
-
+	const { localeLn } = useIntl()
 	const onPressCard = (localToken) => {
 		setToken(localToken)
 		router.push(
@@ -39,25 +39,25 @@ const CardStats = ({ cardsData, fetchData, hasMore }) => {
 				<table className="text-white text-center">
 					<thead>
 						<tr>
-							<th className="md:w-2/12">Card</th>
-							<th className="md:w-3/12 text-left">Detail</th>
+							<th className="md:w-2/12">{localeLn('Card')}</th>
+							<th className="md:w-3/12 text-left">{localeLn('Detail')}</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">Supply</p>
+								<p className="mx-4">{localeLn('Supply')}</p>
 							</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">First Sale</p>
+								<p className="mx-4">{localeLn('First Sale')}</p>
 							</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">Last Sale</p>
+								<p className="mx-4">{localeLn('Last Sale')}</p>
 							</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">Avg. Sale</p>
+								<p className="mx-4">{localeLn('Avg. Sale')}</p>
 							</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">Total Sales</p>
+								<p className="mx-4">{localeLn('Total Sales')}</p>
 							</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">Total Volume</p>
+								<p className="mx-4">{localeLn('Total Volume')}</p>
 							</th>
 						</tr>
 					</thead>

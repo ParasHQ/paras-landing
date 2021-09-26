@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import useStore from '../lib/store'
 import { prettyBalance } from '../utils/common'
 import Modal from './Modal'
-
+import { useIntl } from '../hooks/useIntl'
 const PlaceBidModal = ({
 	localToken,
 	onSubmitForm,
@@ -12,6 +12,7 @@ const PlaceBidModal = ({
 	bidQuantity,
 	isUpdate = false,
 }) => {
+	const { localeLn } = useIntl()
 	const { errors, register, handleSubmit, watch } = useForm({
 		defaultValues: {
 			bidAmount,
@@ -28,12 +29,12 @@ const PlaceBidModal = ({
 						{isUpdate ? 'Update My Bid' : 'Place a Bid'}
 					</h1>
 					<p className="text-gray-900 mt-2">
-						You are about to bid <b>{localToken.metadata.name}</b>.
+						{localeLn('You are about to bid')} <b>{localToken.metadata.name}</b>.
 					</p>
 					<form onSubmit={handleSubmit(onSubmitForm)}>
 						<div className="mt-4 flex space-x-4">
 							<div className="w-1/2">
-								<label className="block text-sm">Quantity</label>
+								<label className="block text-sm">{localeLn('Quantity')}</label>
 								<input
 									type="number"
 									name="bidQuantity"
@@ -54,7 +55,7 @@ const PlaceBidModal = ({
 								</div>
 							</div>
 							<div className="w-1/2">
-								<label className="block text-sm">Amount in Ⓝ</label>
+								<label className="block text-sm">{localeLn('Amount in')} Ⓝ</label>
 								<input
 									name="bidAmount"
 									type="number"
@@ -79,7 +80,7 @@ const PlaceBidModal = ({
 								<div>{prettyBalance(store.userBalance.available, 24, 4)} Ⓝ</div>
 							</div>
 							<div className="flex justify-between">
-								<div className="text-sm">Total bid Amount</div>
+								<div className="text-sm">{localeLn('Total bid Amount')}</div>
 								<div>
 									{watch('bidQuantity', bidQuantity || 0) *
 										watch('bidAmount', bidAmount || 0)}{' '}
@@ -87,13 +88,12 @@ const PlaceBidModal = ({
 								</div>
 							</div>
 							<div className="flex justify-between">
-								<div className="text-sm">Service Fee</div>
+								<div className="text-sm">{localeLn('Service Fee')}</div>
 								<div>0.003 Ⓝ</div>
 							</div>
 						</div>
 						<p className="text-gray-900 mt-4 text-sm text-center">
-							You will be redirected to NEAR Web Wallet to confirm your
-							transaction
+							{localeLn('You will be redirected to NEAR Web Wallet to confirm your transaction')}
 						</p>
 						<div className="">
 							<button
@@ -101,14 +101,14 @@ const PlaceBidModal = ({
 								className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 								type="submit"
 							>
-								{isSubmitting ? 'Redirecting...' : 'Submit Bid'}
+								{isSubmitting ? localeLn('Redirecting...') : localeLn('Submit Bid')}
 							</button>
 							<button
 								disabled={isSubmitting}
 								className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
 								onClick={onCancel}
 							>
-								Cancel
+								{localeLn('Cancel')}
 							</button>
 						</div>
 					</form>

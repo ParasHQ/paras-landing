@@ -11,6 +11,7 @@ import { useToast } from '../../hooks/useToast'
 import near from '../../lib/near'
 import useStore from '../../lib/store'
 import { parseImgUrl, timeAgo } from '../../utils/common'
+import { useIntl } from '../../hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const CategorySubmission = () => {
@@ -18,7 +19,7 @@ const CategorySubmission = () => {
 	const { categoryId } = useRouter().query
 	const currentUser = useStore((state) => state.currentUser)
 	const toast = useToast()
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		getCategorySubmission()
 	}, [])
@@ -53,7 +54,7 @@ const CategorySubmission = () => {
 					toast.show({
 						text: (
 							<div className="font-semibold text-center text-sm">
-								You dont have permission
+								{localeLn('You dont have permission')}
 							</div>
 						),
 						type: 'error',
@@ -83,7 +84,7 @@ const CategorySubmission = () => {
 				}}
 			></div>
 			<div className="max-w-6xl relative m-auto p-4">
-				<div className="text-white text-2xl mt-8">Category submission</div>
+				<div className="text-white text-2xl mt-8">{localeLn('Category submission')}</div>
 				<div className="text-white font-bold text-4xl mb-8 capitalize">
 					{categoryId && categoryId.split('-').join(' ')}
 				</div>
@@ -100,7 +101,7 @@ const CategorySubmission = () => {
 					</div>
 				) : (
 					<div className="md:w-1/2 text-gray-100 border-2 border-dashed border-gray-800 rounded-md p-4 h-40 flex items-center justify-center">
-						<p>No Card Submission Found</p>
+						<p>{localeLn('No Card Submission Found')}</p>
 					</div>
 				)}
 			</div>
@@ -116,7 +117,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [showModal, setShowModal] = useState('')
 	const [localToken, setLocalToken] = useState(null)
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		if (submission.contract_id && submission.token_series_id) {
 			fetchTokenSeries()
@@ -179,7 +180,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 							<span className="font-bold text-white">
 								{localToken.metadata.title}
 							</span>
-							<span> to {submission.category_id} category</span>
+							<span> {localeLn('to {categoryId} category',{categoryId:submission.category_id})}</span>
 						</div>
 						<button
 							disabled={isLoading}
@@ -199,13 +200,13 @@ const SubmissionDetail = ({ submission, updateData }) => {
 					closeOnBgClick={true}
 				>
 					<div className="bg-dark-primary-1 w-full max-w-xs p-4 m-auto rounded-md text-center">
-						<div className="font-bold text-2xl mb-4">Reject the card</div>
+						<div className="font-bold text-2xl mb-4">{localeLn('Reject the card')}</div>
 						<div className="mb-6 m-auto text-gray-400">
-							<span>You are going to reject </span>
+							<span>{localeLn('You are going to reject')} </span>
 							<span className="font-bold text-white">
 								{localToken.metadata.title}
 							</span>
-							<span> from {submission.category_id} category</span>
+							<span> {localeLn('from {categoryId} category',{categoryId:submission.category_id})}</span>
 						</div>
 						<button
 							disabled={isLoading}
@@ -213,7 +214,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 							onClick={() => onSubmitSubmission('reject')}
 							type="button"
 						>
-							{isLoading ? 'Loading' : 'Reject'}
+							{isLoading ? localeLn('Loading') : localeLn('Reject')}
 						</button>
 					</div>
 				</Modal>
@@ -275,14 +276,14 @@ const SubmissionDetail = ({ submission, updateData }) => {
 							onClick={() => setShowModal('accept')}
 							type="button"
 						>
-							Accept
+							{localeLn('Accept')}
 						</button>
 						<button
 							className="font-semibold w-32 rounded-md border-2 bg-red-600 text-white border-red-600 mb-2"
 							onClick={() => setShowModal('reject')}
 							type="button"
 						>
-							Reject
+							{localeLn('Reject')}
 						</button>
 					</div>
 				</div>

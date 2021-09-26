@@ -21,12 +21,12 @@ import { Blurhash } from 'react-blurhash'
 import LoginModal from './Modal/LoginModal'
 import ArtistVerified from './Common/ArtistVerified'
 import ArtistBanned from './Common/ArtistBanned'
-
+import { useIntl } from '../hooks/useIntl'
 const TokenSeriesDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
 	const currentUser = useStore((state) => state.currentUser)
-
+	const { localeLn } = useIntl()
 	const changeActiveTab = (tab) => {
 		setActiveTab(tab)
 	}
@@ -144,7 +144,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 								<div>
 									<div className="flex justify-between items-center">
 										<p className="text-gray-300">
-											SERIES //{' '}
+											({localeLn('SERIES')}) //{' '}
 											{token.metadata.copies
 												? `Edition of ${token.metadata.copies}`
 												: `Open Edition`}
@@ -186,19 +186,19 @@ const TokenSeriesDetail = ({ token, className }) => {
 									onClick={() => changeActiveTab('owners')}
 									isFullWidth
 								>
-									Check Owners
+									{localeLn('Check Owners')}
 								</Button>
 							</div>
 						) : isCreator() ? (
 							<div className="flex flex-wrap space-x-4">
 								<div className="w-full flex-1">
 									<Button size="md" onClick={onClickMint} isFullWidth>
-										Mint
+										{localeLn('Mint')}
 									</Button>
 								</div>
 								<div className="w-full flex-1">
 									<Button size="md" onClick={onClickUpdatePrice} isFullWidth>
-										Update Price
+										{localeLn('Update Price')}
 									</Button>
 								</div>
 							</div>
@@ -218,14 +218,12 @@ const TokenSeriesDetail = ({ token, className }) => {
 										onClick={() => setActiveTab('owners')}
 										isFullWidth
 									>
-										Buy for {formatNearAmount(token.lowest_price)} Ⓝ on
-										Secondary Marketplace
 									</Button>
 								)}
 							</>
 						) : (
 							<Button size="md" isFullWidth isDisabled>
-								Not for Sale
+								{localeLn('Not for Sale')}
 							</Button>
 						)}
 					</div>

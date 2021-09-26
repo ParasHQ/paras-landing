@@ -1,7 +1,8 @@
 import Head from 'next/head'
 import Link from 'next/link'
-
+import { useIntl } from '../hooks/useIntl'
 const Custom404 = () => {
+	const { localeLn } = useIntl()
 	return (
 		<div className="h-screen bg-black">
 			<div
@@ -14,7 +15,7 @@ const Custom404 = () => {
 				}}
 			></div>
 			<Head>
-				<title>Not Found — Paras</title>
+				<title>{localeLn('Not Found — Paras')}</title>
 				<meta
 					name="description"
 					content="We could not find what you were looking for on Paras."
@@ -54,7 +55,7 @@ const Custom404 = () => {
 						<div className="mt-8">
 							<div className="px-4">
 								<h1 className="text-gray-100 mt-4 text-6xl">404</h1>
-								<h4 className="text-lg text-gray-300">PAGE NOT FOUND</h4>
+								<h4 className="text-lg text-gray-300">{localeLn('PAGE NOT FOUND')}</h4>
 								<div className="mt-16">
 									<Link href="/market">
 										<a className="flex items-center text-gray-100">
@@ -73,7 +74,7 @@ const Custom404 = () => {
 													d="M5.41412 7.00001H13.9999V9.00001H5.41412L8.70701 12.2929L7.2928 13.7071L1.58569 8.00001L7.2928 2.29291L8.70701 3.70712L5.41412 7.00001Z"
 												/>
 											</svg>
-											<p>Back to Market</p>
+											<p>{localeLn('Back to Market')}</p>
 										</a>
 									</Link>
 								</div>

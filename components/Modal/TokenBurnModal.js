@@ -5,6 +5,7 @@ import near from 'lib/near'
 import LoginModal from './LoginModal'
 import { GAS_FEE } from 'config/constants'
 import { sentryCaptureException } from 'lib/sentry'
+import { useIntl } from '../../hooks/useIntl'
 
 const TokenBurnModal = ({
 	show,
@@ -37,7 +38,7 @@ const TokenBurnModal = ({
 	},
 }) => {
 	const [showLogin, setShowLogin] = useState(false)
-
+	const { localeLn } = useIntl()
 	const onBurnToken = async () => {
 		if (!near.currentUser) {
 			setShowLogin(true)
@@ -71,21 +72,20 @@ const TokenBurnModal = ({
 				<div className="max-w-sm w-full p-4 bg-gray-800 m-4 md:m-auto rounded-md">
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
-							Burn Asset
+							{localeLn('Burn Asset')}
 						</h1>
 						<p className="text-white mt-2">
-							You are about to burn {data.metadata.title}
+							{localeLn('You are about to burn')} {data.metadata.title}
 						</p>
 						<div className="mt-4">
 							<div className="mt-2 text-sm text-red-500"></div>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							You will be redirected to NEAR Web Wallet to confirm your
-							transaction.
+							{localeLn('You will be redirected to NEAR Web Wallet to confirm your transaction.')}
 						</p>
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onBurnToken}>
-								Burn
+								{localeLn('Burn')}
 							</Button>
 							<Button
 								variant="ghost"
@@ -94,7 +94,7 @@ const TokenBurnModal = ({
 								className="mt-4"
 								onClick={onClose}
 							>
-								Cancel
+								{localeLn('Cancel')}
 							</Button>
 						</div>
 					</div>

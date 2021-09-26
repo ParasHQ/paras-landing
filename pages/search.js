@@ -11,10 +11,11 @@ import useStore from '../lib/store'
 import FilterMarket from '../components/FilterMarket'
 import { parseSortQuery } from '../utils/common'
 import CardListLoader from '../components/CardListLoader'
-
+import { useIntl } from '../hooks/useIntl'
 const LIMIT = 12
 
 export default function SearchPage({ searchQuery }) {
+	const { localeLn } = useIntl()
 	const store = useStore()
 	const router = useRouter()
 	const [tokens, setTokens] = useState([])
@@ -74,7 +75,7 @@ export default function SearchPage({ searchQuery }) {
 	}
 
 	const headMeta = {
-		title: `Search ${searchQuery} — Paras`,
+		title: localeLn('Search {searchQuery} — Paras',{searchQuery:searchQuery}),
 		description: `Explore and collect ${searchQuery} digital art cards on Paras. All-in-one social digital art card marketplace for creators and collectors.`,
 	}
 
@@ -115,9 +116,9 @@ export default function SearchPage({ searchQuery }) {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="text-center">
-					<h1 className="text-3xl font-bold text-gray-100">Search Result</h1>
+					<h1 className="text-3xl font-bold text-gray-100">{localeLn('Search Result')}</h1>
 					<h4 className="text-xl font-semibold text-gray-300">
-						<span className="opacity-75">for</span>{' '}
+						<span className="opacity-75">{localeLn('for')}</span>{' '}
 						<span className="border-b-2 border-gray-100">{searchQuery}</span>
 					</h4>
 				</div>

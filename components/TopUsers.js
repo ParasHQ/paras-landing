@@ -3,8 +3,9 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { parseImgUrl, prettyBalance } from '../utils/common'
 import LinkToProfile from './LinkToProfile'
-
+import { useIntl } from '../hooks/useIntl'
 const TopUsers = ({ data = [], className, userType = 'buyer', linkTo }) => {
+	const { localeLn } = useIntl()
 	return (
 		<div className={className}>
 			<div className="flex justify-between items-baseline">
@@ -13,7 +14,7 @@ const TopUsers = ({ data = [], className, userType = 'buyer', linkTo }) => {
 				</div>
 				<Link href={linkTo}>
 					<a className="text-gray-400 hover:text-white cursor-pointer font-semibold flex items-center">
-						<span>More</span>
+						<span>{localeLn('More')}</span>
 						<svg
 							width="24"
 							height="24"

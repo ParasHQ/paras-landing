@@ -11,7 +11,7 @@ import { parseImgUrl, parseSortQuery } from '../../utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CategoryList from '../../components/CategoryList'
 import AddCategoryModal from '../../components/AddCategoryModal'
-
+import { useIntl } from '../../hooks/useIntl'
 const LIMIT = 12
 
 export default function Category({
@@ -31,6 +31,7 @@ export default function Category({
 		setHasMoreCategoryCard,
 		currentUser,
 	} = useStore()
+    const { localeLn } = useIntl()
 	const router = useRouter()
 	const chooseSubmitRef = useRef()
 
@@ -235,7 +236,7 @@ export default function Category({
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="flex justify-center mb-4">
 					<h1 className="text-4xl font-bold text-gray-100 text-center">
-						Market
+						{localeLn('Market')}
 					</h1>
 				</div>
 				<CategoryList
@@ -258,11 +259,11 @@ export default function Category({
 							</div>
 							<div className="text-gray-100 md:w-1/3 my-4 relative">
 								<div className="flex justify-between mb-4">
-									<div>Status</div>
-									<div className="font-medium">Open</div>
+									<div>{localeLn('Status')}</div>
+									<div className="font-medium">{localeLn('Open')}</div>
 								</div>
 								<div className="flex justify-between mb-6">
-									<div>Curators</div>
+									<div>{localeLn('Curators')}</div>
 									<div className="text-right font-medium">
 										{categoryDetail.curators.map((curator, index) => (
 											<Fragment key={index}>
@@ -310,7 +311,7 @@ export default function Category({
 													setShowAddModal(true)
 												}}
 											>
-												Submit an existing cards
+												{localeLn('Submit an existing cards')}
 											</h1>
 										</div>
 									</div>

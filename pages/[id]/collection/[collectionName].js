@@ -6,11 +6,12 @@ import Head from 'next/head'
 import Footer from '../../../components/Footer'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-
+import { useIntl } from '../../../hooks/useIntl'
 const LIMIT = 12
 
 export default function MarketPage({ collectionName }) {
 	const router = useRouter()
+	const { localeLn } = useIntl()
 	const [tokens, setTokens] = useState([])
 	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
@@ -119,8 +120,8 @@ export default function MarketPage({ collectionName }) {
 							onChange={(e) => _changeFilter(e)}
 							value={router.query.filter}
 						>
-							<option value="showAll">Show All</option>
-							<option value="owned">Owned Cards</option>
+							<option value="showAll">{localeLn('Show All')}</option>
+							<option value="owned">{localeLn('Owned Cards')}</option>
 						</select>
 					</div>
 				</div>

@@ -1,16 +1,16 @@
 import Link from 'next/link'
 import { useToast } from '../hooks/useToast'
+import { useIntl } from '../hooks/useIntl'
 
 const Footer = () => {
 	const toast = useToast()
-
+	const { localeLn } = useIntl()
 	const _showBetaInfo = () => {
 		toast.show({
 			text: (
 				<div className="text-sm text-gray-900">
 					<p>
-						Paras' smart contract is not yet audited by well-known security
-						organization or firm. Use at your own risk!
+						{localeLn('Paras\' smart contract is not yet audited by well-known security organization or firm. Use at your own risk!')}
 					</p>
 				</div>
 			),
@@ -25,22 +25,22 @@ const Footer = () => {
 				<div className="flex flex-wrap justify-center md:justify-start -mx-2">
 					<div className="flex items-center pt-2 px-2">
 						<Link href="/market">
-							<a className="flex cursor-pointer ">Market</a>
+							<a className="flex cursor-pointer ">{localeLn('Market')}</a>
 						</Link>
 					</div>
 					<div className="flex items-center pt-2 px-2">
 						<Link href="/activity">
-							<a className="flex cursor-pointer ">Activity</a>
+							<a className="flex cursor-pointer ">{localeLn('Activity')}</a>
 						</Link>
 					</div>
 					<div className="flex items-center pt-2 px-2">
 						<Link href="/license">
-							<a className="flex cursor-pointer ">License</a>
+							<a className="flex cursor-pointer ">{localeLn('License')}</a>
 						</Link>
 					</div>
 					<div className="flex items-center pt-2 px-2">
 						<Link href="/faq">
-							<a className="flex cursor-pointer ">FAQ</a>
+							<a className="flex cursor-pointer ">{localeLn('FAQ')}</a>
 						</Link>
 					</div>
 				</div>
@@ -51,7 +51,7 @@ const Footer = () => {
 							target="_blank"
 							className="flex cursor-pointer "
 						>
-							Twitter
+							{localeLn('Twitter')}
 						</a>
 					</div>
 					<div className="flex items-center pt-2 px-2">
@@ -60,7 +60,7 @@ const Footer = () => {
 							target="_blank"
 							className="flex cursor-pointer "
 						>
-							Instagram
+							{localeLn('Instagram')}
 						</a>
 					</div>
 					<div className="flex items-center pt-2 px-2">
@@ -69,7 +69,7 @@ const Footer = () => {
 							target="_blank"
 							className="flex cursor-pointer "
 						>
-							Telegram
+							{localeLn('Telegram')}
 						</a>
 					</div>
 					<div className="flex items-center pt-2 px-2">
@@ -78,7 +78,7 @@ const Footer = () => {
 							target="_blank"
 							className="flex cursor-pointer "
 						>
-							Discord
+							{localeLn('Discord')}
 						</a>
 					</div>
 				</div>
@@ -86,7 +86,7 @@ const Footer = () => {
 			<div className="py-2">
 				<div className="flex items-center justify-center md:justify-start">
 					<div className="flex">
-						<p>This project is in public beta.</p>
+						<p>{localeLn('This project is in public beta.')}</p>
 						<svg
 							width="16"
 							height="16"
@@ -106,10 +106,10 @@ const Footer = () => {
 					</div>
 				</div>
 				<div className="mt-2 flex items-center">
-					<p>2021 Paras</p>
+					<p>{localeLn('2021 Paras')}</p>
 					<p className="mx-2">|</p>
 					<div className="flex items-center text-sm">
-						<p>Powered by</p>
+						<p>{localeLn('Powered by')}</p>
 						<a href="https://near.org" target="_blank">
 							<svg
 								className="mx-2"

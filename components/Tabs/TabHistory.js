@@ -4,7 +4,7 @@ import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
 import { timeAgo } from 'utils/common'
 import InfiniteScroll from 'react-infinite-scroll-component'
-
+import { useIntl } from '../../hooks/useIntl'
 const FETCH_TOKENS_LIMIT = 12
 
 const TabHistory = ({ localToken }) => {
@@ -12,7 +12,7 @@ const TabHistory = ({ localToken }) => {
 	const [page, setPage] = useState(0)
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		if (localToken.token_series_id) {
 			fetchHistory()
@@ -60,7 +60,7 @@ const TabHistory = ({ localToken }) => {
 				next={fetchHistory}
 				hasMore={hasMore}
 				scrollableTarget="TokenScroll"
-				loader={<div className="text-white h-20">Loading...</div>}
+				loader={<div className="text-white h-20">{localeLn('Loading...')}</div>}
 			>
 				{history.map((h) => (
 					<Activity key={h._id} activity={h} />
@@ -71,6 +71,7 @@ const TabHistory = ({ localToken }) => {
 }
 
 const Activity = ({ activity }) => {
+	const { localeLn } = useIntl()
 	const TextActivity = ({ type }) => {
 		if (type === 'add_market_data' || type === 'update_market_data') {
 			return (
@@ -78,7 +79,7 @@ const Activity = ({ activity }) => {
 					<LinkToProfile accountId={activity.msg.params.owner_id} />
 					<span>
 						{' '}
-						put on sale for {formatNearAmount(activity.msg.params.price)} Ⓝ
+						{localeLn('put on sale for')} {formatNearAmount(activity.msg.params.price)} Ⓝ
 					</span>
 				</p>
 			)
@@ -88,7 +89,7 @@ const Activity = ({ activity }) => {
 			return (
 				<p>
 					<LinkToProfile accountId={activity.msg.params.owner_id} />
-					<span> remove from sale</span>
+					<span> {localeLn('remove from sale')}</span>
 				</p>
 			)
 		}
@@ -97,9 +98,9 @@ const Activity = ({ activity }) => {
 			return (
 				<p>
 					<LinkToProfile accountId={activity.to} />
-					<span> bought from </span>
+					<span> {localeLn('bought from')} </span>
 					<LinkToProfile accountId={activity.from} />
-					<span> for </span>
+					<span> {localeLn('for')} </span>
 					{formatNearAmount(activity.msg.params.price)} Ⓝ
 				</p>
 			)
@@ -145,9 +146,9 @@ const Activity = ({ activity }) => {
 				return (
 					<p>
 						<LinkToProfile accountId={activity.to} />
-						<span> bought from </span>
+						<span> {localeLn('bought from')} </span>
 						<LinkToProfile accountId={activity.from} />{' '}
-						<span> for {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
+						<span> {localeLn('for')} {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
 					</p>
 				)
 			}
@@ -156,14 +157,14 @@ const Activity = ({ activity }) => {
 				return (
 					<p>
 						<LinkToProfile accountId={activity.to} />
-						<span> minted #{edition_id || 1}</span>
+						<span> {localeLn('minted')} #{edition_id || 1}</span>
 					</p>
 				)
 			}
 
 			return (
 				<p>
-					<span>minted by </span>
+					<span>{localeLn('minted by')} </span>
 					<LinkToProfile accountId={activity.to} />
 				</p>
 			)
@@ -175,7 +176,7 @@ const Activity = ({ activity }) => {
 			return (
 				<p>
 					<LinkToProfile accountId={activity.from} />
-					<span> burned #{edition_id || 1}</span>
+					<span> {localeLn('burned')} #{edition_id || 1}</span>
 				</p>
 			)
 		}
@@ -188,19 +189,19 @@ const Activity = ({ activity }) => {
 							className="text-gray-100 hover:border-gray-100"
 							accountId={activity.to}
 						/>
-						<span> bought from </span>
+						<span> {localeLn('bought from')} </span>
 						<LinkToProfile
 							className="text-gray-100 hover:border-gray-100"
 							accountId={activity.from}
 						/>{' '}
-						<span> for {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
+						<span> {localeLn('for')} {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
 					</p>
 				)
 			}
 			return (
 				<p>
 					<LinkToProfile accountId={activity.from} />
-					<span> transferred to </span>
+					<span> {localeLn('transferred to')} </span>
 					<LinkToProfile accountId={activity.to} />
 				</p>
 			)
@@ -209,7 +210,7 @@ const Activity = ({ activity }) => {
 		if (type === 'nft_create_series') {
 			return (
 				<p>
-					<span>Series created by </span>
+					<span>{localeLn('Series created by')} </span>
 					<LinkToProfile accountId={activity.msg.params.creator_id} />
 				</p>
 			)
@@ -219,14 +220,14 @@ const Activity = ({ activity }) => {
 			if (!activity.msg.params.price) {
 				return (
 					<p>
-						<span>Creator put the series to not for sale</span>
+						<span>{localeLn('Creator put the series to not for sale')}</span>
 					</p>
 				)
 			}
 			return (
 				<p>
 					<span>
-						Creator put the series on sale for{' '}
+						{localeLn('Creator put the series on sale for')}{' '}
 						{formatNearAmount(activity.msg.params.price)} Ⓝ
 					</span>
 				</p>
@@ -236,7 +237,7 @@ const Activity = ({ activity }) => {
 		if (type === 'nft_set_series_non_mintable') {
 			return (
 				<p>
-					<span>Creator put the series to non-mintable </span>
+					<span>{localeLn('Creator put the series to non-mintable')} </span>
 				</p>
 			)
 		}
@@ -245,7 +246,7 @@ const Activity = ({ activity }) => {
 			return (
 				<p>
 					<span>
-						Creator decrease the series copies to {activity.msg.params.copies}{' '}
+						{localeLn('Creator decrease the series copies to')} {activity.msg.params.copies}{' '}
 					</span>
 				</p>
 			)

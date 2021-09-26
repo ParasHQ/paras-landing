@@ -3,11 +3,11 @@ import axios from 'axios'
 import Link from 'next/link'
 import CardList from 'components/CardList'
 import CardListLoader from 'components/CardListLoader'
-
+import { useIntl } from '../../hooks/useIntl'
 export const HomeCardList = () => {
 	const [tokenList, setTokenList] = useState([])
 	const [isLoading, setIsLoading] = useState(true)
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		fetchTokenList()
 	}, [])
@@ -29,10 +29,10 @@ export const HomeCardList = () => {
 	return (
 		<div className="mt-8 w-full">
 			<div className="flex items-center justify-between">
-				<p className="text-white font-semibold text-3xl">Newest Cards</p>
+				<p className="text-white font-semibold text-3xl">{localeLn('Newest Cards')}</p>
 				<Link href="/market">
 					<a className="text-gray-400 hover:text-white cursor-pointer font-semibold flex items-center">
-						<span>More</span>
+						<span>{localeLn('More')}</span>
 						<svg
 							width="24"
 							height="24"

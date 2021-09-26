@@ -2,10 +2,10 @@ import { useRouter } from 'next/router'
 import { Fragment, useState } from 'react'
 import { parseImgUrl, prettyTruncate } from '../utils/common'
 import CopyLink from './CopyLink'
-
+import { useIntl } from '../hooks/useIntl'
 const Profile = ({ userProfile = {}, activeTab }) => {
 	const router = useRouter()
-
+	const { localeLn } = useIntl()
 	const [isCopied, setIsCopied] = useState(false)
 
 	return (
@@ -167,6 +167,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 					>
 						<h4 className="text-gray-100 font-bold cursor-pointer">
 							Collectibles
+							{localeLn('Collection')}
 						</h4>
 						{activeTab === 'collection' && (
 							<div
@@ -183,7 +184,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 						className="px-4 relative"
 						onClick={() => router.push(`/${router.query.id}/creation`)}
 					>
-						<h4 className="text-gray-100 font-bold cursor-pointer">Creation</h4>
+						<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Creation')}</h4>
 						{activeTab === 'creation' && (
 							<div
 								className="absolute left-0 right-0"
@@ -200,7 +201,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 						onClick={() => router.push(`/${router.query.id}/publication`)}
 					>
 						<h4 className="text-gray-100 font-bold cursor-pointer">
-							Publication
+							{localeLn('Publication')}
 						</h4>
 						{activeTab === 'publication' && (
 							<div

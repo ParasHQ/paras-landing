@@ -24,6 +24,7 @@ import TabHistory from './Tabs/TabHistory'
 import LoginModal from './Modal/LoginModal'
 import ArtistVerified from './Common/ArtistVerified'
 import ArtistBanned from './Common/ArtistBanned'
+import { useIntl } from '../hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const TokenDetail = ({ token, className }) => {
@@ -31,7 +32,7 @@ const TokenDetail = ({ token, className }) => {
 	const [showModal, setShowModal] = useState(null)
 	const [needDeposit, setNeedDeposit] = useState(true)
 	const currentUser = useStore((state) => state.currentUser)
-
+	const { localeLn } = useIntl()
 	const router = useRouter()
 
 	useEffect(() => {
@@ -196,7 +197,7 @@ const TokenDetail = ({ token, className }) => {
 										{token.metadata.title}
 									</h1>
 									<div className="mt-1 text-white flex">
-										<p className="mr-1">by</p>
+										<p className="mr-1">{localeLn('by')}</p>
 										<ArtistVerified token={token} />
 									</div>
 								</div>
@@ -236,12 +237,12 @@ const TokenDetail = ({ token, className }) => {
 										}}
 										isFullWidth
 									>
-										Update Listing
+										{localeLn('Update Listing')}
 									</Button>
 								</div>
 								<div className="w-full flex-1">
 									<Button size="md" onClick={onClickTransfer} isFullWidth>
-										Transfer
+										{localeLn('Transfer')}
 									</Button>
 								</div>
 							</div>
@@ -255,7 +256,7 @@ const TokenDetail = ({ token, className }) => {
 									}}
 									isFullWidth
 								>
-									Buy
+									{localeLn('Buy')}
 								</Button>
 							</div>
 						)}
@@ -270,7 +271,7 @@ const TokenDetail = ({ token, className }) => {
 							}
 							isFullWidth
 						>
-							See token series
+							{localeLn('See token series')}
 						</div>
 					</div>
 				</div>

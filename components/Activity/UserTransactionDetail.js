@@ -9,11 +9,13 @@ import LinkToProfile from '../LinkToProfile'
 
 import { parseImgUrl } from '../../utils/common'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { useIntl } from '../../hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import cachios from 'cachios'
 import TokenDetailModal from 'components/TokenDetailModal'
 
 const renderThumb = ({ style, ...props }) => {
+	
 	return (
 		<div
 			{...props}
@@ -29,7 +31,7 @@ const renderThumb = ({ style, ...props }) => {
 
 const UserTransactionList = ({ usersData, fetchData, hasMore, type }) => {
 	const [localToken, setLocalToken] = useState(null)
-
+	
 	return (
 		<>
 			<TokenDetailModal tokens={[localToken]} />
@@ -59,7 +61,7 @@ const UserTransactionDetail = ({
 	setLocalToken,
 }) => {
 	const [profile, setProfile] = useState({})
-
+	const { localeLn } = useIntl()
 	useEffect(async () => {
 		const res = await axios(`${process.env.V2_API_URL}/profiles`, {
 			params: {
@@ -102,7 +104,7 @@ const UserTransactionDetail = ({
 							{formatNearAmount(data.total_sum)} Ⓝ
 						</p>
 						<p className="text-base text-gray-400">
-							Card {type !== 'buyer' ? 'sold' : 'bought'}:{' '}
+							{localeLn('Card')} {type !== 'buyer' ? 'sold' : 'bought'}:{' '}
 							{data.contract_token_ids.length}
 						</p>
 					</div>
@@ -134,7 +136,6 @@ const UserTransactionDetail = ({
 
 const UserTransactionCard = ({ contract_token_id, setLocalToken }) => {
 	const router = useRouter()
-
 	const [token, setToken] = useState(null)
 
 	const [contractId, tokenId] = contract_token_id.split('::')

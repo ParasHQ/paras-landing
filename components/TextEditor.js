@@ -26,7 +26,7 @@ import {
 import { checkUrl, compressImg, readFileAsUrl } from '../utils/common'
 import { useToast } from '../hooks/useToast'
 import Modal from './Modal'
-
+import { useIntl } from '../hooks/useIntl'
 const TextEditor = ({
 	content,
 	readOnly = false,
@@ -36,6 +36,7 @@ const TextEditor = ({
 	showCardModal,
 	setContent = () => {},
 }) => {
+	const { localeLn } = useIntl()
 	const toast = useToast()
 	const editor = useRef(null)
 
@@ -54,7 +55,7 @@ const TextEditor = ({
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							Maximum file size 3MB
+							{localeLn('Maximum file size 3MB')}
 						</div>
 					),
 					type: 'error',
@@ -171,11 +172,12 @@ const TextEditor = ({
 }
 
 const ImageButton = ({ theme, onChange }) => {
+	const { localeLn } = useIntl()
 	return (
 		<div
 			className={`${theme.customButton} ${theme.button} relative overflow-hidden cursor-pointer px-2`}
 		>
-			Image
+			{localeLn('Image')}
 			<input
 				className="cursor-pointer w-full opacity-0 absolute inset-0"
 				type="file"
@@ -190,17 +192,19 @@ const ImageButton = ({ theme, onChange }) => {
 }
 
 const CardButton = ({ theme, onClick }) => {
+	const { localeLn } = useIntl()
 	return (
 		<button
 			className={`${theme.customButton} ${theme.button} px-2`}
 			onClick={onClick}
 		>
-			Card
+			{localeLn('Card')}
 		</button>
 	)
 }
 
 const VideoButton = ({ theme, onAddVideo }) => {
+	const { localeLn } = useIntl()
 	const [url, setUrl] = useState('')
 	const [showVideoModal, setShowVideoModal] = useState(false)
 
@@ -215,14 +219,14 @@ const VideoButton = ({ theme, onAddVideo }) => {
 				className={`${theme.customButton} ${theme.button} px-2`}
 				onClick={triggerModal}
 			>
-				Video
+				{localeLn('Video')}
 			</button>
 			{showVideoModal && (
 				<Modal close={triggerModal} closeOnBgClick={true} closeOnEscape={true}>
 					<div className="w-full max-w-md p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
 						<div className="m-auto">
 							<label className="mb-4 block text-white text-2xl font-bold">
-								Embedd video
+								{localeLn('Embedd video')}
 							</label>
 							<input
 								type="text"
@@ -233,7 +237,7 @@ const VideoButton = ({ theme, onAddVideo }) => {
 								placeholder="Video url"
 							/>
 							<p className="text-gray-300 text-sm italic">
-								Please enter link of youtube video
+								{localeLn('Please enter link of youtube video')}
 							</p>
 							<button
 								className="font-semibold mt-4 py-3 w-full rounded-md bg-primary text-white"
@@ -243,7 +247,7 @@ const VideoButton = ({ theme, onAddVideo }) => {
 									triggerModal()
 								}}
 							>
-								Add Video
+								{localeLn('Add Video')}
 							</button>
 						</div>
 					</div>
