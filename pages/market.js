@@ -124,7 +124,7 @@ function MarketPage({ serverQuery }) {
 				/>
 			</Head>
 			<Nav />
-			<div className="relative min-h-screen flex flex-col justify-between px-4 pb-24">
+			<div className="max-w-6xl relative m-auto py-12">
 				<div className="flex justify-center mb-4">
 					<h1 className="text-4xl font-bold text-gray-100 text-center">
 						{localeLn('Market')}
