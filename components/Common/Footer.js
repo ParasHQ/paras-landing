@@ -1,6 +1,6 @@
 import useStore from 'lib/store'
 import Link from 'next/link'
-import { useIntl } from "../../hooks/useIntl"
+import { useIntl } from '../../hooks/useIntl'
 const Footer = () => {
   const setToastConfig = useStore((state) => state.setToastConfig)
   const { localeLn } = useIntl()
@@ -9,7 +9,7 @@ const Footer = () => {
       text: (
         <div className="text-sm text-gray-900">
           <p>
-            {localeLn("Paras' smart contract is not yet audited by well-known security organization or firm. Use at your own risk!")}
+            {localeLn('Paras\' smart contract is not yet audited by well-known security organization or firm. Use at your own risk!')}
           </p>
         </div>
       ),
@@ -24,17 +24,17 @@ const Footer = () => {
         <div className="flex flex-wrap justify-center md:justify-start -mx-2">
           <div className="flex items-center pt-2 px-2">
             <Link href="/comics">
-              <a className="flex cursor-pointer ">{localeLn("Comics")}</a>
+              <a className="flex cursor-pointer ">{localeLn('Comics')}</a>
             </Link>
           </div>
           <div className="flex items-center pt-2 px-2">
             <Link href="/market">
-              <a className="flex cursor-pointer ">{localeLn("Market")}</a>
+              <a className="flex cursor-pointer ">{localeLn('Market')}</a>
             </Link>
           </div>
           <div className="flex items-center pt-2 px-2">
             <Link href="/faq">
-              <a className="flex cursor-pointer ">{localeLn("FAQ")}</a>
+              <a className="flex cursor-pointer ">{localeLn('FAQ')}</a>
             </Link>
           </div>
         </div>
@@ -84,7 +84,7 @@ const Footer = () => {
       <div className="py-2">
         <div className="flex items-center justify-center md:justify-start">
           <div className="flex">
-            <p>{localeLn("This project is in public beta.")}</p>
+            <p>{localeLn('This project is in public beta.')}</p>
             <svg
               width="16"
               height="16"
@@ -107,7 +107,7 @@ const Footer = () => {
           <p>{localeLn('2021 Paras')}</p>
           <p className="mx-2">|</p>
           <div className="flex items-center text-sm">
-            <p>{localeLn("Powered by")}</p>
+            <p>{localeLn('Powered by')}</p>
             <a href="https://near.org" target="_blank" rel="noreferrer">
               <svg
                 className="mx-2"

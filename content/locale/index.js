@@ -8,15 +8,15 @@ export * from './vi' */
 export function getLanguage() {
     let lang = navigator.language || navigator.userLanguage
     let localLang = getLocale(lang)
-    const localStorageLang = localStorage.getItem("lang")
+    const localStorageLang = localStorage.getItem('lang')
     const defaultLang = localStorageLang || localLang
     return defaultLang
 }
 /* export function changeHtmlLang(lang) {
-    return document.getElementById("lang").lang = lang;
+    return document.getElementById('lang').lang = lang;
 } */
 export function setLanguage(lang) {
-    const defaultLang = localStorage.setItem("lang", lang);
+    const defaultLang = localStorage.setItem('lang', lang);
     return defaultLang;
 }
 

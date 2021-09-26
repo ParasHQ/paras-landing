@@ -21,7 +21,7 @@ import { Blurhash } from 'react-blurhash'
 import LoginModal from './Modal/LoginModal'
 import ArtistVerified from './Common/ArtistVerified'
 import ArtistBanned from './Common/ArtistBanned'
-import { useIntl } from "../hooks/useIntl"
+import { useIntl } from '../hooks/useIntl'
 const TokenSeriesDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
@@ -144,7 +144,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 								<div>
 									<div className="flex justify-between items-center">
 										<p className="text-gray-300">
-											({localeLn("SERIES")}) //{' '}
+											({localeLn('SERIES')}) //{' '}
 											{token.metadata.copies
 												? `Edition of ${token.metadata.copies}`
 												: `Open Edition`}
@@ -186,19 +186,19 @@ const TokenSeriesDetail = ({ token, className }) => {
 									onClick={() => changeActiveTab('owners')}
 									isFullWidth
 								>
-									{localeLn("Check Owners")}
+									{localeLn('Check Owners')}
 								</Button>
 							</div>
 						) : isCreator() ? (
 							<div className="flex flex-wrap space-x-4">
 								<div className="w-full flex-1">
 									<Button size="md" onClick={onClickMint} isFullWidth>
-										{localeLn("Mint")}
+										{localeLn('Mint')}
 									</Button>
 								</div>
 								<div className="w-full flex-1">
 									<Button size="md" onClick={onClickUpdatePrice} isFullWidth>
-										{localeLn("Update Price")}
+										{localeLn('Update Price')}
 									</Button>
 								</div>
 							</div>
@@ -223,7 +223,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 							</>
 						) : (
 							<Button size="md" isFullWidth isDisabled>
-								{localeLn("Not for Sale")}
+								{localeLn('Not for Sale')}
 							</Button>
 						)}
 					</div>

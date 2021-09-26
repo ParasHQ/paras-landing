@@ -10,7 +10,7 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { parseSortQuery } from '../utils/common'
 import CardListLoader from '../components/CardListLoader'
 import CategoryList from '../components/CategoryList'
-import { useIntl } from "../hooks/useIntl"
+import { useIntl } from '../hooks/useIntl'
 
 const LIMIT = 12
 
@@ -92,7 +92,7 @@ function MarketPage({ serverQuery }) {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn("Market — Paras")}</title>
+				<title>{localeLn('Market — Paras')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -127,7 +127,7 @@ function MarketPage({ serverQuery }) {
 			<div className="relative min-h-screen flex flex-col justify-between px-4 pb-24">
 				<div className="flex justify-center mb-4">
 					<h1 className="text-4xl font-bold text-gray-100 text-center">
-						{localeLn("Market")}
+						{localeLn('Market')}
 					</h1>
 				</div>
 				<CategoryList listCategory={store.cardCategory} />

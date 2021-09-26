@@ -2,13 +2,13 @@ import React from 'react'
 import Head from 'next/head'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
-import { useIntl } from "../hooks/useIntl"
+import { useIntl } from '../hooks/useIntl'
 const LanguagesPage = () => {
 	const { localeLn } = useIntl()
 
 	const setLang = async (lang) =>{
-		localStorage.setItem("lang", lang)
-		window.location.href = location.origin + "/" +lang
+		localStorage.setItem('lang', lang)
+		window.location.href = location.origin + '/' +lang
 	}
 	return (
 		<div className="min-h-screen relative bg-black">
@@ -22,7 +22,7 @@ const LanguagesPage = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn("Languages — Paras")}</title>
+				<title>{localeLn('Languages — Paras')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -59,11 +59,11 @@ const LanguagesPage = () => {
 			<Nav />
 			<div className="max-w-6xl min-h-full relative m-auto py-12">
 				<h1 className="text-4xl font-bold text-gray-100 text-center">
-                    {localeLn("Languages")}
+                    {localeLn('Languages')}
 				</h1>
 				<div className="mt-8">
 					<p className="text-center text-xl text-gray-300">
-						{localeLn("Paras is available in the following languages:")}
+						{localeLn('Paras is available in the following languages:')}
 					</p>
 				</div>
                 <div>

@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import FaqsList from '../components/FaqList'
-import { useIntl } from "../hooks/useIntl"
+import { useIntl } from '../hooks/useIntl'
 const FaqPage = () => {
 	const { localeLn } = useIntl()
 	return (
@@ -17,7 +17,7 @@ const FaqPage = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn("Frequently Asked Questions — Paras")}</title>
+				<title>{localeLn('Frequently Asked Questions — Paras')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -54,7 +54,7 @@ const FaqPage = () => {
 			<Nav />
 			<div className="relative py-16 max-w-4xl mx-auto text-gray-100 px-4">
 				<h2 className="font-bold text-4xl text-center">
-					{localeLn("Frequently Asked Questions")}
+					{localeLn('Frequently Asked Questions')}
 				</h2>
 				<div className="mt-8">
 					<FaqsList />

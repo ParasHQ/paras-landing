@@ -236,7 +236,7 @@ export default function Category({
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="flex justify-center mb-4">
 					<h1 className="text-4xl font-bold text-gray-100 text-center">
-						{localeLn("Market")}
+						{localeLn('Market')}
 					</h1>
 				</div>
 				<CategoryList
@@ -259,11 +259,11 @@ export default function Category({
 							</div>
 							<div className="text-gray-100 md:w-1/3 my-4 relative">
 								<div className="flex justify-between mb-4">
-									<div>{localeLn("Status")}</div>
-									<div className="font-medium">{localeLn("Open")}</div>
+									<div>{localeLn('Status')}</div>
+									<div className="font-medium">{localeLn('Open')}</div>
 								</div>
 								<div className="flex justify-between mb-6">
-									<div>{localeLn("Curators")}</div>
+									<div>{localeLn('Curators')}</div>
 									<div className="text-right font-medium">
 										{categoryDetail.curators.map((curator, index) => (
 											<Fragment key={index}>
@@ -311,7 +311,7 @@ export default function Category({
 													setShowAddModal(true)
 												}}
 											>
-												{localeLn("Submit an existing cards")}
+												{localeLn('Submit an existing cards')}
 											</h1>
 										</div>
 									</div>

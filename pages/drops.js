@@ -11,7 +11,7 @@ import Card from '../components/Card'
 import TokenSeriesDetailModal from '../components/TokenSeriesDetailModal'
 import { parseImgUrl, prettyBalance } from '../utils/common'
 import ReactLinkify from 'react-linkify'
-import { useIntl } from "../hooks/useIntl"
+import { useIntl } from '../hooks/useIntl'
 
 export const specialTokenId = [
 	'bafybeihsd32maurfvj2w7bfl2ca2v5zb3fbxf6w7s5chjb5dtriegbvtxy',
@@ -33,22 +33,22 @@ export default function Drops() {
 			],
 		},
 		{
-			date: localeLn("June 16th"),
+			date: localeLn('June 16th'),
 			note: [
-				localeLn("NFT Drops for whitelisted account"),
-				localeLn("Drops will start on June 16th at 00.01 and will end at June 18th at 00.00 (2-days)"),
+				localeLn('NFT Drops for whitelisted account'),
+				localeLn('Drops will start on June 16th at 00.01 and will end at June 18th at 00.00 (2-days)'),
 			],
 		},
 		{
-			date: localeLn("June 19th"),
+			date: localeLn('June 19th'),
 			note: [
-				localeLn("NFT Drops for public (if still available)"),
-				localeLn("The remaining drops will start sale for public on June 19th at 00.01 and will end at June 24th at 00.00 (5 days)"),
+				localeLn('NFT Drops for public (if still available)'),
+				localeLn('The remaining drops will start sale for public on June 19th at 00.01 and will end at June 24th at 00.00 (5 days)'),
 			],
 		},
 		{
-			date: localeLn("June 25th"),
-			note: [localeLn("Burn all the remaining NFTs")],
+			date: localeLn('June 25th'),
+			note: [localeLn('Burn all the remaining NFTs')],
 		},
 	]
 	
@@ -74,7 +74,7 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>{localeLn("Paras X MTVRS - NFT Drops")}</title>
+				<title>{localeLn('Paras X MTVRS - NFT Drops')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -145,7 +145,7 @@ export default function Drops() {
 							</div>
 						</div>
 						<h1 className="text-white font-bold text-6xl mt-4 mb-2">
-							{localeLn("NFT Drops")}
+							{localeLn('NFT Drops')}
 						</h1>
 						<img
 							src={parseImgUrl(
@@ -154,10 +154,10 @@ export default function Drops() {
 						/>
 						<div className="max-w-xl m-auto">
 							<p className="text-gray-400 mb-4">
-								{localeLn("MTVRS (www.mtvrs.app) is a world of worlds and home to blockchain-powered games for players, creators and developers! MTVRS is designing a platform to create experiences and utility around blockchain assets.")}
+								{localeLn('MTVRS (www.mtvrs.app) is a world of worlds and home to blockchain-powered games for players, creators and developers! MTVRS is designing a platform to create experiences and utility around blockchain assets.')}
 							</p>
 							<p className="text-gray-400 mb-4">
-								{localeLn("This is MTVRS first NFT Drop, “The Architect’s Devices” a set of exclusive collectibles forged by the architects of the metaverse to empower them as they hop the infinite worlds.")}
+								{localeLn('This is MTVRS first NFT Drop, “The Architect’s Devices” a set of exclusive collectibles forged by the architects of the metaverse to empower them as they hop the infinite worlds.')}
 							</p>
 							<div className="my-8 flex justify-center space-x-8 items-center">
 								<p
@@ -169,14 +169,14 @@ export default function Drops() {
 										})
 									}
 								>
-									{localeLn("Register now")}
+									{localeLn('Register now')}
 								</p>
 								<a
 									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer mb-8"
 									target="_blank"
 									href="https://paras.id/publication/editorial/paras-x-mtvrs-nft-drops-the-architects-devices-60bf7208a537580686cbf237"
 								>
-									{localeLn("Find out more")}
+									{localeLn('Find out more')}
 								</a>
 							</div>
 						</div>
@@ -223,7 +223,7 @@ export default function Drops() {
 			</div>
 			<div>
 				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
-					{localeLn("Timeline")}
+					{localeLn('Timeline')}
 				</h1>
 				<div className="max-w-6xl m-auto md:flex">
 					{timeline.map((item, index) => (
@@ -247,10 +247,10 @@ export default function Drops() {
 			</div>
 			<div className="max-w-xl m-4 md:m-auto text-gray-100 ">
 				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
-					{localeLn("How to register")}
+					{localeLn('How to register')}
 				</h1>
 				<p className="mb-2 break-all">
-					{localeLn("How to registerSo let’s get started! In order to get a whitelist for Paras x MTVRS NFT Drops, please complete these tasks.")}
+					{localeLn('How to registerSo let’s get started! In order to get a whitelist for Paras x MTVRS NFT Drops, please complete these tasks.')}
 				</p>
 				<ReactLinkify
 					componentDecorator={(decoratedHref, decoratedText, key) => (
@@ -270,10 +270,10 @@ export default function Drops() {
 				</ReactLinkify>
 				<div className="text-center">
 					<h1 className="text-center text-gray-100 font-bold text-3xl mt-12 mb-2">
-						{localeLn("Read details")}
+						{localeLn('Read details')}
 					</h1>
 					<p className="text-gray-200">
-						{localeLn("You can read full information on Paras publication")}
+						{localeLn('You can read full information on Paras publication')}
 					</p>
 					<div className="flex justify-center my-8">
 						<a
@@ -281,7 +281,7 @@ export default function Drops() {
 							target="_blank"
 							href="https://paras.id/publication/editorial/paras-x-mtvrs-nft-drops-the-architects-devices-60bf7208a537580686cbf237"
 						>
-							{localeLn("Find out more")}
+							{localeLn('Find out more')}
 							<svg
 								width="12"
 								height="12"
@@ -415,7 +415,7 @@ const SpecialCard = ({
 					</div>
 					<div className="text-center">
 						<div>
-							<p className="text-gray-400">{localeLn("Price")}</p>
+							<p className="text-gray-400">{localeLn('Price')}</p>
 							<div className="mb-4 flex space-x-2 justify-center items-center">
 								<p
 									className="text-gray-100 text-xl font-bold line-through opacity-75"
@@ -433,7 +433,7 @@ const SpecialCard = ({
 							data-tip={`Total supply of the card`}
 						>
 							<div className="flex text-white justify-center">
-								<p className="text-gray-400 mr-1">{localeLn("Card Supply")}</p>
+								<p className="text-gray-400 mr-1">{localeLn('Card Supply')}</p>
 								<svg
 									width="16"
 									height="16"
@@ -451,7 +451,7 @@ const SpecialCard = ({
 								</svg>
 							</div>
 							<p className="text-gray-100 text-lg font-semibold">
-								{localToken?.supply || cardSupplyText} {localeLn("pcs")}
+								{localToken?.supply || cardSupplyText} {localeLn('pcs')}
 							</p>
 						</div>
 						<div
@@ -459,7 +459,7 @@ const SpecialCard = ({
 							data-tip={`Card available for purchase today`}
 						>
 							<div className="flex text-white justify-center">
-								<p className="text-gray-400 mr-1">{localeLn("Card Available")}</p>
+								<p className="text-gray-400 mr-1">{localeLn('Card Available')}</p>
 								<svg
 									width="16"
 									height="16"
@@ -500,7 +500,7 @@ const SpecialCard = ({
 										Ⓝ`}
 									</p>
 								) : (
-									<p>{localeLn("See Details")}</p>
+									<p>{localeLn('See Details')}</p>
 								)}
 							</button>
 						</div>

@@ -8,7 +8,7 @@ import useStore from '../lib/store'
 import Modal from './Modal'
 import ProfileEdit from './ProfileEdit'
 import { parseImgUrl, prettyBalance } from '../utils/common'
-import { useIntl } from "../hooks/useIntl"
+import { useIntl } from '../hooks/useIntl'
 import { useToast } from '../hooks/useToast'
 import Setting from './Setting'
 import Cookies from 'js-cookie'
@@ -65,16 +65,16 @@ const User = () => {
 				text: (
 					<div className="font-semibold text-center text-sm">
 						<p>
-							{localeLn("Currently we only allow verified creator to create publication.")}
+							{localeLn('Currently we only allow verified creator to create publication.')}
 						</p>
-						<p className="mt-2">{localeLn("Visit our Discord channel to learn more:")}</p>
+						<p className="mt-2">{localeLn('Visit our Discord channel to learn more:')}</p>
 						<div className="mt-2">
 							<a
 								href="https://discord.paras.id"
 								target="_blank"
 								className="cursor-pointer border-b-2 border-gray-900"
 							>
-								{localeLn("Join Paras Discord")}
+								{localeLn('Join Paras Discord')}
 							</a>
 						</div>
 					</div>
@@ -182,7 +182,7 @@ const User = () => {
 									href="https://wallet.near.org/"
 									target="_blank"
 								>
-									{localeLn("View on NEAR Wallet")}
+									{localeLn('View on NEAR Wallet')}
 								</a>
 							</div>
 						</div>
@@ -470,7 +470,7 @@ const Nav = () => {
 										type="search"
 										value={searchQuery}
 										onChange={(event) => setSearchQuery(event.target.value)}
-										placeholder={localeLn("Search by title, collection or artist")}
+										placeholder={localeLn('Search by title, collection or artist')}
 										className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-sm font-medium"
 									/>
 								</div>
@@ -481,7 +481,7 @@ const Nav = () => {
 										<path d="M0 0h24v24H0z" fill="none"></path>
 										<path d=" M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z "></path>
 									</svg> 
-									<span className="pl-2 hidden md:block">{localeLn("Languages")}</span>
+									<span className="pl-2 hidden md:block">{localeLn('Languages')}</span>
 								</a>
 							</div>
 						</div>
@@ -493,22 +493,22 @@ const Nav = () => {
 									className="cursor-pointer"
 									onClick={() => store.setMarketScrollPersist(0)}
 								>
-									{localeLn("Market")}
+									{localeLn('Market')}
 								</a>
 							) : (
 								<Link href="/market">
-									<a>{localeLn("Market")}</a>
+									<a>{localeLn('Market')}</a>
 								</Link>
 							)}
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block">
 							<Link href="/publication">
-								<a>{localeLn("Publication")}</a>
+								<a>{localeLn('Publication')}</a>
 							</Link>
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block">
 							<Link href="/activity">
-								<a>{localeLn("Activity")}</a>
+								<a>{localeLn('Activity')}</a>
 							</Link>
 						</div>
 						{/* <div className="px-3 text-gray-100 hidden md:block">
@@ -522,7 +522,7 @@ const Nav = () => {
 								target="_blank"
 								className="flex cursor-pointer "
 							>
-								{localeLn("Whitepaper")}
+								{localeLn('Whitepaper')}
 							</a>
 						</div>
 						<div className="px-3">
@@ -537,7 +537,7 @@ const Nav = () => {
 								</div>
 							) : (
 								<Link href="/login">
-									<a className="text-gray-100 ">{localeLn("Login")}</a>
+									<a className="text-gray-100 ">{localeLn('Login')}</a>
 								</Link>
 							)}
 						</div>
@@ -554,7 +554,7 @@ const Nav = () => {
 						<div className="text-center border-b-2 border-dashed border-gray-800">
 							<div className="text-gray-100 ">
 								<Link href="/">
-									<a className="p-4 block w-full">{localeLn("Home")}</a>
+									<a className="p-4 block w-full">{localeLn('Home')}</a>
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
@@ -563,22 +563,22 @@ const Nav = () => {
 										className="cursor-pointer p-4 block w-full"
 										onClick={() => store.setMarketScrollPersist(0)}
 									>
-										{localeLn("Market")}
+										{localeLn('Market')}
 									</a>
 								) : (
 									<Link href="/market">
-										<a className="p-4 block w-full">{localeLn("Market")}</a>
+										<a className="p-4 block w-full">{localeLn('Market')}</a>
 									</Link>
 								)}
 							</div>
 							<div className="text-gray-100 ">
 								<Link href="/publication">
-									<a className="p-4 block w-full">{localeLn("Publication")}</a>
+									<a className="p-4 block w-full">{localeLn('Publication')}</a>
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
 								<Link href="/activity">
-									<a className="p-4 block w-full">{localeLn("Activity")}</a>
+									<a className="p-4 block w-full">{localeLn('Activity')}</a>
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
@@ -587,7 +587,7 @@ const Nav = () => {
 									target="_blank"
 									className="p-4 block w-full"
 								>
-									{localeLn("Whitepaper")}
+									{localeLn('Whitepaper')}
 								</a>
 							</div>
 							{/* <div className="text-gray-100">

@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
 import PublicationEditor from '../../components/PublicationEditor'
-import { useIntl } from "../../hooks/useIntl"
+import { useIntl } from '../../hooks/useIntl'
 
 const CreatePublication = () => {
 	const { localeLn } = useIntl()
@@ -19,7 +19,7 @@ const CreatePublication = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn("Publication — Paras")}</title>
+				<title>{localeLn('Publication — Paras')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."

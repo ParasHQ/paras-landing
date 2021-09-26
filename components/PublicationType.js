@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { useIntl } from "../hooks/useIntl"
+import { useIntl } from '../hooks/useIntl'
 export const PublicationType = ({ path }) => {
 	const { localeLn } = useIntl()
 	return (
@@ -10,7 +10,7 @@ export const PublicationType = ({ path }) => {
 						path === '/publication/editorial' ? 'font-bold' : null
 					}`}
 				>
-					{localeLn("Editorial")}
+					{localeLn('Editorial')}
 				</h1>
 			</Link>
 			<Link href="/publication/community">
@@ -19,7 +19,7 @@ export const PublicationType = ({ path }) => {
 						path === '/publication/community' ? 'font-bold' : null
 					}`}
 				>
-					{localeLn("Community")}
+					{localeLn('Community')}
 				</h1>
 			</Link>
 		</div>

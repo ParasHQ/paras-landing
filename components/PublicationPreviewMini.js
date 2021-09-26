@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Axios from 'axios'
 import Link from 'next/link'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { useIntl } from "../hooks/useIntl"
+import { useIntl } from '../hooks/useIntl'
 const PublicationPreviewMini = ({ data }) => {
 	return (
 		<div className="m-auto border-2 border-dashed my-4 p-2 rounded-md">
@@ -62,7 +62,7 @@ const PublicationPreviewList = ({ tokenId }) => {
 			{publicationList.length === 0 && !hasMore && (
 				<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
 					<p className="text-gray-500 py-8 px-8">
-						{localeLn("Card not mentioned in any publication")}
+						{localeLn('Card not mentioned in any publication')}
 					</p>
 				</div>
 			)}
@@ -72,7 +72,7 @@ const PublicationPreviewList = ({ tokenId }) => {
 				hasMore={hasMore}
 				loader={
 					<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
-						<p className="my-2 text-center">{localeLn("Loading...")}</p>
+						<p className="my-2 text-center">{localeLn('Loading...')}</p>
 					</div>
 				}
 				scrollableTarget="publicationListScroll"

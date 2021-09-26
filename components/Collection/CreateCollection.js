@@ -8,7 +8,7 @@ import Axios from 'axios'
 import near from 'lib/near'
 import { useToast } from 'hooks/useToast'
 import { useRouter } from 'next/router'
-import { useIntl } from "../../hooks/useIntl"
+import { useIntl } from '../../hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const CreateCollection = ({ onFinishCreate }) => {
@@ -61,7 +61,7 @@ const CreateCollection = ({ onFinishCreate }) => {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							{localeLn("Create collection success")}
+							{localeLn('Create collection success')}
 						</div>
 					),
 					type: 'success',
@@ -109,8 +109,8 @@ const CreateCollection = ({ onFinishCreate }) => {
 				/>
 			)}
 			<div className="relative max-w-3xl m-auto p-4">
-				<div className="text-white font-bold text-4xl">{localeLn("Create collection")}</div>
-				<div className="text-white mt-4">{localeLn("Logo")}</div>
+				<div className="text-white font-bold text-4xl">{localeLn('Create collection')}</div>
+				<div className="text-white mt-4">{localeLn('Logo')}</div>
 				<div className="relative cursor-pointer w-32 h-32 overflow-hidden rounded-md mt-2">
 					<input
 						className="cursor-pointer w-full opacity-0 absolute inset-0"
@@ -132,7 +132,7 @@ const CreateCollection = ({ onFinishCreate }) => {
 						</div>
 					</div>
 				</div>
-				<div className="text-white mt-4">{localeLn("Name")}</div>
+				<div className="text-white mt-4">{localeLn('Name')}</div>
 				<InputText
 					type="text"
 					value={collectionName}
@@ -140,7 +140,7 @@ const CreateCollection = ({ onFinishCreate }) => {
 					className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
 					placeholder="Pillars of Paras"
 				/>
-				<div className="text-white mt-4">{localeLn("Description")}</div>
+				<div className="text-white mt-4">{localeLn('Description')}</div>
 				<InputTextarea
 					value={collectionDesc}
 					onChange={(e) => setCollectionDesc(e.target.value)}
@@ -156,7 +156,7 @@ const CreateCollection = ({ onFinishCreate }) => {
 					className="mt-8"
 					onClick={_submit}
 				>
-					{isSubmitting ? localeLn("Creating...") : localeLn("Create")}
+					{isSubmitting ? localeLn('Creating...') : localeLn('Create')}
 				</Button>
 			</div>
 		</>

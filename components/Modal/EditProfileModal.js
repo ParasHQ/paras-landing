@@ -10,7 +10,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import useStore from 'lib/store'
 import { useState } from 'react'
 import { parseImgUrl } from 'utils/common'
-import { useIntl } from "../../hooks/useIntl"
+import { useIntl } from '../../hooks/useIntl'
 const EditProfileModal = ({ userData = {}, setUserData, active, onClose }) => {
 	const { setCurrentUser } = useStore()
 	const [showImgCrop, setShowImgCrop] = useState(false)
@@ -110,7 +110,7 @@ const EditProfileModal = ({ userData = {}, setUserData, active, onClose }) => {
 						</div>
 					</div>
 					<div className="mt-4">
-						<label className="block font-bold text-gray-100">{localeLn("Bio")}</label>
+						<label className="block font-bold text-gray-100">{localeLn('Bio')}</label>
 						<InputTextarea
 							type="text"
 							name="description"
@@ -126,7 +126,7 @@ const EditProfileModal = ({ userData = {}, setUserData, active, onClose }) => {
 							isDisabled={isSubmitting}
 							onClick={_submit}
 						>
-							{localeLn("Save")}
+							{localeLn('Save')}
 						</Button>
 					</div>
 				</div>

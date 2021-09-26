@@ -9,7 +9,7 @@ import { IconX } from 'components/Icons'
 import getConfig from 'config/near'
 import Axios from 'axios'
 import { useToast } from 'hooks/useToast'
-import { useIntl } from "../../hooks/useIntl"
+import { useIntl } from '../../hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const TokenTransferModal = ({
@@ -116,10 +116,10 @@ const TokenTransferModal = ({
 					</div>
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
-							{localeLn("Confirm Transfer")}
+							{localeLn('Confirm Transfer')}
 						</h1>
 						<p className="text-white mt-2">
-							{localeLn("You are about to send")} <b>{data.metadata.title}</b> {localeLn("to")}:
+							{localeLn('You are about to send')} <b>{data.metadata.title}</b> {localeLn('to')}:
 						</p>
 						<div className="mt-4">
 							<div className="mt-2 text-sm text-red-500"></div>
@@ -139,11 +139,11 @@ const TokenTransferModal = ({
 							/>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							{localeLn("You will be redirected to NEAR Web Wallet to confirm your transaction.")}
+							{localeLn('You will be redirected to NEAR Web Wallet to confirm your transaction.')}
 						</p>
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onTransfer}>
-								{localeLn("Transfer")}
+								{localeLn('Transfer')}
 							</Button>
 						</div>
 					</div>

@@ -3,7 +3,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import { useEffect, useState } from 'react'
 import { useToast } from '../hooks/useToast'
 import near from '../lib/near'
-import { useIntl } from "../hooks/useIntl"
+import { useIntl } from '../hooks/useIntl'
 const Setting = ({ close }) => {
 	const { localeLn } = useIntl()
 	const toast = useToast()
@@ -95,7 +95,7 @@ const Setting = ({ close }) => {
 				<div className="m-auto">
 					<div className="flex justify-between">
 						<h1 className="text-3xl font-bold text-gray-100 tracking-tight mb-4">
-							{localeLn("Setting")}
+							{localeLn('Setting')}
 						</h1>
 						<div onClick={close}>
 							<svg
@@ -119,7 +119,7 @@ const Setting = ({ close }) => {
 						<>
 							<div>
 								<label className="font-bold text-xl my-2 text-gray-100">
-									{localeLn("Add Email")}
+									{localeLn('Add Email')}
 								</label>
 								<input
 									type="text"
@@ -131,13 +131,13 @@ const Setting = ({ close }) => {
 								/>
 							</div>
 							<div className="text-gray-100 font-bold text-xl mt-4 my-2">
-								{localeLn("Notification preferences")}
+								{localeLn('Notification preferences')}
 							</div>
 							<div className="text-gray-100 flex justify-between items-center my-2">
 								<div>
-									<div className="text-lg">{localeLn("Newsletters")}</div>
+									<div className="text-lg">{localeLn('Newsletters')}</div>
 									<div className="text-gray-100 opacity-75 text-sm">
-										{localeLn("Get first notified for any paras Info")}
+										{localeLn('Get first notified for any paras Info')}
 									</div>
 								</div>
 								<Toggle
@@ -148,9 +148,9 @@ const Setting = ({ close }) => {
 							</div>
 							<div className="text-gray-100 flex justify-between items-center my-2">
 								<div>
-									<div className="text-lg">{localeLn("NFT Drops")}</div>
+									<div className="text-lg">{localeLn('NFT Drops')}</div>
 									<div className="text-gray-100 opacity-75 text-sm">
-										{localeLn("Get first notified for upcoming drops!")}
+										{localeLn('Get first notified for upcoming drops!')}
 									</div>
 								</div>
 								<Toggle
@@ -161,9 +161,9 @@ const Setting = ({ close }) => {
 							</div>
 							<div className="text-gray-100 flex justify-between items-center my-2">
 								<div>
-									<div className="text-lg">{localeLn("Notification")}</div>
+									<div className="text-lg">{localeLn('Notification')}</div>
 									<div className="text-gray-100 opacity-75 text-sm">
-										{localeLn("Get notified for your transaction on Paras")}
+										{localeLn('Get notified for your transaction on Paras')}
 									</div>
 								</div>
 								<Toggle
@@ -175,7 +175,7 @@ const Setting = ({ close }) => {
 						</>
 					) : (
 						<div className="flex items-center justify-center h-64 text-gray-100">
-							{localeLn("Loading...")}
+							{localeLn('Loading...')}
 						</div>
 					)}
 					<button

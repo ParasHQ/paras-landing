@@ -11,7 +11,7 @@ import { IconLogout } from 'components/Icons'
 import { parseImgUrl, prettyBalance } from 'utils/common'
 import useStore from 'lib/store'
 import LoginModal from 'components/Modal/LoginModal'
-import { useIntl } from "../../hooks/useIntl"
+import { useIntl } from '../../hooks/useIntl'
 const Nav = () => {
 	const profileModalRef = useRef()
 	const mobileMenuRef = useRef()
@@ -93,7 +93,7 @@ const Nav = () => {
 						className="mt-3"
 						onClick={onClickViewProfile}
 					>
-						{localeLn("View Profile")}
+						{localeLn('View Profile')}
 					</Button>
 					<hr className="opacity-10 -mx-2 my-3" />
 					<div
@@ -101,7 +101,7 @@ const Nav = () => {
 						onClick={() => near.signOut()}
 					>
 						<IconLogout size={18} className="text-white opacity-80" />
-						<p className="text-white opacity-80">{localeLn("Logout")}</p>
+						<p className="text-white opacity-80">{localeLn('Logout')}</p>
 					</div>
 				</div>
 			</div>
@@ -161,7 +161,7 @@ const Nav = () => {
 											: ''
 									}
 								>
-									{localeLn("Comics")}
+									{localeLn('Comics')}
 								</span>
 							</a>
 						</Link>
@@ -172,7 +172,7 @@ const Nav = () => {
 										router.pathname.includes('/market') ? `text-primary` : ''
 									}
 								>
-									{localeLn("Market")}
+									{localeLn('Market')}
 								</span>
 							</a>
 						</Link>
@@ -183,7 +183,7 @@ const Nav = () => {
 										router.pathname === '/partner-with-us' ? `text-primary` : ''
 									}
 								>
-									{localeLn("Partner")}
+									{localeLn('Partner')}
 								</span>
 							</a>
 						</Link>
@@ -224,7 +224,7 @@ const Nav = () => {
 							size="md"
 							onClick={() => setShowLoginModal(true)}
 						>
-							{localeLn("Login")}
+							{localeLn('Login')}
 						</Button>
 					)}
 				</div>
@@ -241,7 +241,7 @@ const Nav = () => {
 										<span
 											className={router.pathname === '/' ? `text-primary` : ''}
 										>
-											{localeLn("Home")}
+											{localeLn('Home')}
 										</span>
 									</a>
 								</Link>
@@ -256,7 +256,7 @@ const Nav = () => {
 													: ''
 											}
 										>
-											{localeLn("Comics")}
+											{localeLn('Comics')}
 										</span>
 									</a>
 								</Link>
@@ -271,7 +271,7 @@ const Nav = () => {
 													: ''
 											}
 										>
-											{localeLn("Market")}
+											{localeLn('Market')}
 										</span>
 									</a>
 								</Link>
@@ -286,7 +286,7 @@ const Nav = () => {
 													: ''
 											}
 										>
-											{localeLn("Partner")}
+											{localeLn('Partner')}
 										</span>
 									</a>
 								</Link>

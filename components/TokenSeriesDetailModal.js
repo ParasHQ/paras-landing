@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 
 import Modal from './Modal'
 import TokenSeriesDetail from './TokenSeriesDetail'
-import { useIntl } from "../hooks/useIntl"
+import { useIntl } from '../hooks/useIntl'
 function TokenSeriesDetailModal({ tokens = [] }) {
 	const router = useRouter()
 	const { localeLn } = useIntl()
@@ -61,7 +61,7 @@ function TokenSeriesDetailModal({ tokens = [] }) {
 									/>
 								</svg>
 								<p className="pl-2 text-gray-100 cursor-pointer relative z-50">
-									{localeLn("Back")}
+									{localeLn('Back')}
 								</p>
 							</div>
 						</div>

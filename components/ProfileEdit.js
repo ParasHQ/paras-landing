@@ -6,7 +6,7 @@ import near from '../lib/near'
 import useStore from '../lib/store'
 import { checkUrl, parseImgUrl } from '../utils/common'
 import ImgCrop from './ImgCrop'
-import { useIntl } from "../hooks/useIntl"
+import { useIntl } from '../hooks/useIntl'
 const ProfileEdit = ({ close }) => {
 	const { localeLn } = useIntl()
 	const store = useStore()
@@ -32,7 +32,7 @@ const ProfileEdit = ({ close }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						{localeLn("Please enter valid website")}
+						{localeLn('Please enter valid website')}
 					</div>
 				),
 				type: 'error',
@@ -70,7 +70,7 @@ const ProfileEdit = ({ close }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						{localeLn("Something went wrong, try again later")}
+						{localeLn('Something went wrong, try again later')}
 					</div>
 				),
 				type: 'error',
@@ -108,7 +108,7 @@ const ProfileEdit = ({ close }) => {
 			)}
 			<div className="m-auto">
 				<h1 className="text-2xl font-bold text-gray-100 tracking-tight">
-					{localeLn("Edit Profile")}
+					{localeLn('Edit Profile')}
 				</h1>
 				<div className="mt-4 mx-auto relative cursor-pointer w-32 h-32 rounded-full overflow-hidden">
 					<input
@@ -132,7 +132,7 @@ const ProfileEdit = ({ close }) => {
 					</div>
 				</div>
 				<div className="mt-4">
-					<label className="block text-sm text-gray-100">{localeLn("Bio")}</label>
+					<label className="block text-sm text-gray-100">{localeLn('Bio')}</label>
 					<textarea
 						type="text"
 						name="description"
@@ -143,7 +143,7 @@ const ProfileEdit = ({ close }) => {
 					></textarea>
 				</div>
 				<div className="mt-2">
-					<label className="block text-sm text-gray-100">{localeLn("Website")}</label>
+					<label className="block text-sm text-gray-100">{localeLn('Website')}</label>
 					<input
 						type="text"
 						name="website"
@@ -155,7 +155,7 @@ const ProfileEdit = ({ close }) => {
 				</div>
 				<div className="my-4 flex space-x-4">
 					<div>
-						<label className="block text-sm text-gray-100">{localeLn("Instagram")}</label>
+						<label className="block text-sm text-gray-100">{localeLn('Instagram')}</label>
 						<input
 							type="text"
 							name="instagram"
@@ -166,7 +166,7 @@ const ProfileEdit = ({ close }) => {
 						/>
 					</div>
 					<div>
-						<label className="block text-sm text-gray-100">{localeLn("Twitter")}</label>
+						<label className="block text-sm text-gray-100">{localeLn('Twitter')}</label>
 						<input
 							type="text"
 							name="twitter"
@@ -189,7 +189,7 @@ const ProfileEdit = ({ close }) => {
 						className="w-full outline-none h-12 mt-4 rounded-md bg-gray-100 text-sm font-semibold border-2 px-4 py-2 text-primary"
 						onClick={close}
 					>
-						{localeLn("Cancel")}
+						{localeLn('Cancel')}
 					</button>
 				</div>
 			</div>

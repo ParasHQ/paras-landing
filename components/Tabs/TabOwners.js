@@ -14,7 +14,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
-import { useIntl } from "../../hooks/useIntl"
+import { useIntl } from '../../hooks/useIntl'
 const FETCH_TOKENS_LIMIT = 12
 
 const TabOwners = ({ localToken }) => {
@@ -121,7 +121,7 @@ const TabOwners = ({ localToken }) => {
 		<div>
 			{!isFetching && !hasMore && tokens.length === 0 ? (
 				<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
-					<div className="text-white">{localeLn("No owners, become the first one!")}</div>
+					<div className="text-white">{localeLn('No owners, become the first one!')}</div>
 				</div>
 			) : (
 				<InfiniteScroll
@@ -225,7 +225,7 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 							</Link>
 						</div>
 					) : (
-						<p className="ml-2 text-white font-semibold">{localeLn("Burned")}</p>
+						<p className="ml-2 text-white font-semibold">{localeLn('Burned')}</p>
 					)}
 				</div>
 				<div>
@@ -234,7 +234,7 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 					>
 						<a className="hover:opacity-80">
 							<p className="text-white font-semibold">
-								{localeLn("Edition")} #{token.edition_id}
+								{localeLn('Edition')} #{token.edition_id}
 							</p>
 						</a>
 					</Link>
@@ -247,7 +247,7 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 							{localeLn('On sale')} {formatNearAmount(token.price)} Ⓝ
 						</p>
 					) : (
-						<p className="text-white">{localeLn("Not for sale")}</p>
+						<p className="text-white">{localeLn('Not for sale')}</p>
 					)}
 					{token.owner_id === currentUser ? (
 						<div className="w-24">
@@ -256,7 +256,7 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 								size="sm"
 								isFullWidth
 							>
-								{localeLn("Update")}
+								{localeLn('Update')}
 							</Button>
 						</div>
 					) : (

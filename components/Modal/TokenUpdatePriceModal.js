@@ -7,7 +7,7 @@ import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
-import { useIntl } from "../../hooks/useIntl"
+import { useIntl } from '../../hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const TokenUpdatePriceModal = ({
@@ -168,14 +168,14 @@ const TokenUpdatePriceModal = ({
 				</div>
 				<div>
 					<h1 className="text-2xl font-bold text-white tracking-tight">
-						{localeLn("Card Listing")}
+						{localeLn('Card Listing')}
 					</h1>
 					<form>
 						<div className="mt-4">
 							<label className="block text-sm text-white mb-2">
-								{localeLn("New Price")}{' '}
+								{localeLn('New Price')}{' '}
 								{data.price &&
-									`(${localeLn("Current price")}: ${formatNearAmount(data.price)})`}
+									`(${localeLn('Current price')}: ${formatNearAmount(data.price)})`}
 							</label>
 							<div
 								className={`flex justify-between rounded-md border-transparent w-full relative ${
@@ -195,7 +195,7 @@ const TokenUpdatePriceModal = ({
 								</div>
 							</div>
 							<div className="mt-2 text-gray-200 flex items-center justify-between">
-								<span>{localeLn("Receive")}:</span>
+								<span>{localeLn('Receive')}:</span>
 								<span>{calculatePriceDistribution().receive} Ⓝ</span>
 								{/* {prettyBalance(
                   Number(
@@ -210,7 +210,7 @@ const TokenUpdatePriceModal = ({
                 )} */}
 							</div>
 							<div className="text-gray-200 flex items-center justify-between">
-								<span>{localeLn("Royalty")}:</span>
+								<span>{localeLn('Royalty')}:</span>
 								<span>{calculatePriceDistribution().royalty} Ⓝ</span>
 								{/* {prettyBalance(
                   Number(
@@ -237,7 +237,7 @@ const TokenUpdatePriceModal = ({
                 ) */}
 							</div>
 							<div className="text-gray-200 flex items-center justify-between">
-								<span>{localeLn("Fee")}:</span>
+								<span>{localeLn('Fee')}:</span>
 								<span> {calculatePriceDistribution().fee} Ⓝ</span>
 								{/* {prettyBalance(
                   Number(watch('amount', 0) * 0.05)
@@ -264,7 +264,7 @@ const TokenUpdatePriceModal = ({
 									<div className="mt-4 text-center">
 										<div className="text-white my-1">
 											<div className="flex justify-between">
-												<div className="text-sm">{localeLn("Storage Fee")}</div>
+												<div className="text-sm">{localeLn('Storage Fee')}</div>
 												<div className="text">
 													{formatNearAmount(STORAGE_APPROVE_FEE)} Ⓝ
 												</div>
@@ -275,7 +275,7 @@ const TokenUpdatePriceModal = ({
 							)}
 
 							<p className="text-white mt-4 text-sm text-center opacity-90">
-								{localeLn("You will be redirected to NEAR Web Wallet to confirm your transaction.")}
+								{localeLn('You will be redirected to NEAR Web Wallet to confirm your transaction.')}
 							</p>
 						</div>
 						<div className="mt-6">
@@ -285,7 +285,7 @@ const TokenUpdatePriceModal = ({
 								isFullWidth
 								onClick={onUpdateListing}
 							>
-								{localeLn("Update Listing")}
+								{localeLn('Update Listing')}
 							</Button>
 							<Button
 								className="mt-4"
@@ -296,7 +296,7 @@ const TokenUpdatePriceModal = ({
 								onClick={onRemoveListing}
 								isDisabled={!data.price}
 							>
-								{localeLn("Remove Listing")}
+								{localeLn('Remove Listing')}
 							</Button>
 						</div>
 					</form>

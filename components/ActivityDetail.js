@@ -17,7 +17,7 @@ import { parseImgUrl, timeAgo } from '../utils/common'
 import TokenSeriesDetailModal from './TokenSeriesDetailModal'
 import { useRouter } from 'next/router'
 import CopyLink from './CopyLink'
-import { useIntl } from "../hooks/useIntl"
+import { useIntl } from '../hooks/useIntl'
 import TokenDetailModal from './TokenDetailModal'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
@@ -259,7 +259,7 @@ const Activity = ({ activity }) => {
 						className="text-gray-100 hover:border-gray-100"
 						accountId={activity.from}
 					/>
-					<span> {localeLn("for")} </span>
+					<span> {localeLn('for')} </span>
 					{formatNearAmount(activity.msg.params.price) === '0'
 						? 'free'
 						: `${formatNearAmount(activity.msg.params.price)} Ⓝ`}
@@ -413,7 +413,7 @@ const ActivityDetail = ({ activity }) => {
 										fill: '#11111F',
 									}}
 								></TwitterIcon>
-								<p className="pl-2">{localeLn("Twitter")}</p>
+								<p className="pl-2">{localeLn('Twitter')}</p>
 							</TwitterShareButton>
 						</div>
 						<div className="py-2 cursor-pointer">
@@ -428,7 +428,7 @@ const ActivityDetail = ({ activity }) => {
 										fill: '#11111F',
 									}}
 								></FacebookIcon>
-								<p className="pl-2">{localeLn("Facebook")}</p>
+								<p className="pl-2">{localeLn('Facebook')}</p>
 							</FacebookShareButton>
 						</div>
 					</div>

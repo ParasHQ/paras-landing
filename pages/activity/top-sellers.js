@@ -6,7 +6,7 @@ import Head from 'next/head'
 import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
 import UserTransactionList from '../../components/Activity/UserTransactionDetail'
-import { useIntl } from "../../hooks/useIntl"
+import { useIntl } from '../../hooks/useIntl'
 const LIMIT = 30
 
 const TopSellersPage = ({ topUser }) => {
@@ -77,16 +77,16 @@ const TopSellersPage = ({ topUser }) => {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="mx-4 flex items-baseline">
-					<h1 className="text-4xl font-bold text-gray-100">{localeLn("Top Sellers")}</h1>
-					<p className="ml-2 text-gray-400 text-lg">{localeLn("in 7 days")}</p>
+					<h1 className="text-4xl font-bold text-gray-100">{localeLn('Top Sellers')}</h1>
+					<p className="ml-2 text-gray-400 text-lg">{localeLn('in 7 days')}</p>
 				</div>
 				<p className="text-gray-400 text-lg mx-4">
-					{localeLn("see top buyers")}{' '}
+					{localeLn('see top buyers')}{' '}
 					<span
 						onClick={() => router.push('/activity/top-buyers')}
 						className="font-semibold hover:text-gray-100 cursor-pointer hover:border-gray-100 border-b-2 border-transparent"
 					>
-						{localeLn("here")}
+						{localeLn('here')}
 					</span>
 				</p>
 				<div className="mt-8 mx-4">

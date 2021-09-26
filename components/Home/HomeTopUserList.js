@@ -6,7 +6,7 @@ import LinkToProfile from 'components/LinkToProfile'
 import Scrollbars from 'react-custom-scrollbars'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import HomeTopUsersLoader from 'components/Home/Loaders/TopUsers'
-import { useIntl } from "../../hooks/useIntl"
+import { useIntl } from '../../hooks/useIntl'
 const renderThumb = ({ style, ...props }) => {
 	return (
 		<div
@@ -92,10 +92,10 @@ export const HomeTopUserList = () => {
 		<div>
 			<div className="w-full mt-16">
 				<div className="flex items-center justify-between">
-					<p className="text-white font-semibold text-3xl">{localeLn("Top Buyers")}</p>
+					<p className="text-white font-semibold text-3xl">{localeLn('Top Buyers')}</p>
 					<Link href="/activity/top-buyers">
 						<a className="text-gray-400 hover:text-white cursor-pointer font-semibold flex items-center">
-							<span>{localeLn("More")}</span>
+							<span>{localeLn('More')}</span>
 							<svg
 								width="24"
 								height="24"
@@ -144,10 +144,10 @@ export const HomeTopUserList = () => {
 			</div>
 			<div className="w-full mt-8">
 				<div className="flex items-center justify-between">
-					<p className="text-white font-semibold text-3xl">{localeLn("Top Sellers")}</p>
+					<p className="text-white font-semibold text-3xl">{localeLn('Top Sellers')}</p>
 					<Link href="/activity/top-sellers">
 						<a className="text-gray-400 hover:text-white cursor-pointer font-semibold flex items-center">
-							<span>{localeLn("More")}</span>
+							<span>{localeLn('More')}</span>
 							<svg
 								width="24"
 								height="24"

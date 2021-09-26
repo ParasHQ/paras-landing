@@ -6,7 +6,7 @@ import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
-import { useIntl } from "../../hooks/useIntl"
+import { useIntl } from '../../hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const TokenStorageModal = ({
@@ -79,10 +79,10 @@ const TokenStorageModal = ({
 					</div>
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
-							{localeLn("Deposit Storage")}
+							{localeLn('Deposit Storage')}
 						</h1>
 						<p className="text-white mt-2">
-							{localeLn("Before you can list this asset to market, you need to deposit small amount of NEAR")}
+							{localeLn('Before you can list this asset to market, you need to deposit small amount of NEAR')}
 						</p>
 						<div className="mt-4">
 							<div className="mt-2 text-sm text-red-500"></div>
@@ -90,7 +90,7 @@ const TokenStorageModal = ({
 						<div className="mt-4 text-center">
 							<div className="text-white my-1">
 								<div className="flex justify-between">
-									<div className="text-sm">{localeLn("Storage Fee")}</div>
+									<div className="text-sm">{localeLn('Storage Fee')}</div>
 									<div className="text">
 										{formatNearAmount(STORAGE_ADD_MARKET_FEE)} Ⓝ
 									</div>
@@ -98,11 +98,11 @@ const TokenStorageModal = ({
 							</div>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							{localeLn("You will be redirected to NEAR Web Wallet to confirm your transaction.")}
+							{localeLn('You will be redirected to NEAR Web Wallet to confirm your transaction.')}
 						</p>
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onBuyToken}>
-								{localeLn("Deposit")}
+								{localeLn('Deposit')}
 							</Button>
 						</div>
 					</div>

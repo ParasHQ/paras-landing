@@ -7,7 +7,7 @@ import LoginModal from './LoginModal'
 import JSBI from 'jsbi'
 import { GAS_FEE, STORAGE_MINT_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
-import { useIntl } from "../../hooks/useIntl"
+import { useIntl } from '../../hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const TokenSeriesBuyModal = ({
@@ -86,10 +86,10 @@ const TokenSeriesBuyModal = ({
 					</div>
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
-							{localeLn("Confirm Buy")}
+							{localeLn('Confirm Buy')}
 						</h1>
 						<p className="text-white mt-2">
-							{localeLn("You are about to purchase")} <b>{data.metadata.title}</b>
+							{localeLn('You are about to purchase')} <b>{data.metadata.title}</b>
 						</p>
 						<div className="mt-4">
 							<div className="mt-2 text-sm text-red-500"></div>
@@ -97,13 +97,13 @@ const TokenSeriesBuyModal = ({
 						<div className="mt-4 text-center">
 							<div className="text-white my-1">
 								<div className="flex justify-between">
-									<div className="text-sm">{localeLn("Total")}</div>
+									<div className="text-sm">{localeLn('Total')}</div>
 									<div className="text">
 										{data.price && `${formatNearAmount(data.price)} Ⓝ`}
 									</div>
 								</div>
 								<div className="flex justify-between">
-									<div className="text-sm">{localeLn("Storage Fee")}</div>
+									<div className="text-sm">{localeLn('Storage Fee')}</div>
 									<div className="text">
 										{formatNearAmount(STORAGE_MINT_FEE)} Ⓝ
 									</div>
@@ -111,7 +111,7 @@ const TokenSeriesBuyModal = ({
 							</div>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							{localeLn("You will be redirected to NEAR Web Wallet to confirm your transaction.")}
+							{localeLn('You will be redirected to NEAR Web Wallet to confirm your transaction.')}
 						</p>
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onBuyToken}>

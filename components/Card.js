@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useIntl } from "../hooks/useIntl"
+import { useIntl } from '../hooks/useIntl'
 // import { Blurhash } from 'react-blurhash'
 
 const Card = ({
@@ -136,8 +136,8 @@ const Card = ({
 											{token.edition_id
 												? `#${token.edition_id} of ${token.copies}`
 												: token.copies
-												? `${localeLn("Edition of")} ${token.copies}`
-												: localeLn("Open Edition")}
+												? `${localeLn('Edition of')} ${token.copies}`
+												: localeLn('Open Edition')}
 										</p>
 									</div>
 								</div>

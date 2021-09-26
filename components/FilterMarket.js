@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
-import { useIntl } from "../hooks/useIntl"
+import { useIntl } from '../hooks/useIntl'
 const FilterMarket = () => {
 	const filterModalRef = useRef()
 	const router = useRouter()
@@ -100,7 +100,7 @@ const FilterMarket = () => {
 					></path>
 				</svg>
 				<h1 className="text-white font-semibold text-xl select-none hidden md:inline-block">
-					{localeLn("Filter")}
+					{localeLn('Filter')}
 				</h1>
 			</div>
 			{showFilterModal && (
@@ -111,7 +111,7 @@ const FilterMarket = () => {
 					}}
 				>
 					<div className="bg-dark-primary-2 rounded-md p-4">
-						<h1 className="text-white font-semibold text-xl">{localeLn("Sort by")}</h1>
+						<h1 className="text-white font-semibold text-xl">{localeLn('Sort by')}</h1>
 						<div>
 							{filter.map((item) => (
 								<button
@@ -125,7 +125,7 @@ const FilterMarket = () => {
 								</button>
 							))}
 						</div>
-						<h1 className="text-white font-semibold text-xl mt-2">{localeLn("Price")}</h1>
+						<h1 className="text-white font-semibold text-xl mt-2">{localeLn('Price')}</h1>
 						<form onSubmit={onClickApply} className={`flex w-full space-x-2`}>
 							<div className="flex w-1/2 bg-gray-300 p-2 rounded-md focus:bg-gray-100 ">
 								<input
@@ -167,7 +167,7 @@ const FilterMarket = () => {
 							onClick={onClickApply}
 							className="w-full outline-none mt-4 rounded-md bg-transparent text-sm font-semibold py-2 bg-primary text-gray-100"
 						>
-							{localeLn("Apply")}
+							{localeLn('Apply')}
 						</button>
 					</div>
 				</div>

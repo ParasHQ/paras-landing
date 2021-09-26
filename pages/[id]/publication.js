@@ -9,7 +9,7 @@ import Profile from '../../components/Profile'
 import PublicationCardListLoader from '../../components/Publication/PublicationCardListLoader'
 import PublicationList from '../../components/PublicationList'
 import useStore from '../../lib/store'
-import { useIntl } from "../hooks/useIntl"
+import { useIntl } from '../hooks/useIntl'
 const LIMIT = 6
 
 const Publication = ({ userProfile, accountId }) => {
@@ -121,7 +121,7 @@ const Publication = ({ userProfile, accountId }) => {
 							<div className="w-40 m-auto">
 								<img src="/cardstack.png" className="opacity-75" />
 							</div>
-							<p className="mt-4">{localeLn("No Publications")}</p>
+							<p className="mt-4">{localeLn('No Publications')}</p>
 						</div>
 					) : (
 						<div className="mt-4 -mx-2">

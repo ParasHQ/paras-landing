@@ -6,7 +6,7 @@ import Nav from '../../components/Nav'
 import Footer from '../../components/Footer'
 import CardStats from '../../components/Stats/CardStats'
 import { useEffect } from 'react'
-import { useIntl } from "../../hooks/useIntl"
+import { useIntl } from '../../hooks/useIntl'
 const LIMIT = 5
 
 const TopCardsPage = () => {
@@ -81,7 +81,7 @@ const TopCardsPage = () => {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="mx-4 flex items-baseline">
-					<h1 className="text-4xl font-bold text-gray-100">{localeLn("Card Statistics")}</h1>
+					<h1 className="text-4xl font-bold text-gray-100">{localeLn('Card Statistics')}</h1>
 				</div>
 				<div className="my-8">
 					<CardStats

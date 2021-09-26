@@ -600,7 +600,7 @@ const search = {
   "Search {searchQuery} — Paras": "查询 {searchQuery} — Paras",
   "Search Result": "查询结果"
 }
-import { config } from "./config.js"
+import { config } from './config.js'
 const data = {common,home,market,publication,drops,id,activity,login,categorySubmission,event,token,verify,faq,p404,license,languages,myBids,news,search,newCollection}
 
 export const zh = config(data)
