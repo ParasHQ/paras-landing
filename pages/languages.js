@@ -10,6 +10,7 @@ const LanguagesPage = () => {
 		localStorage.setItem('lang', lang)
 		window.location.href = location.origin + '/' + lang
 	}
+
 	return (
 		<div className="min-h-screen relative bg-black">
 			<div
@@ -64,7 +65,7 @@ const LanguagesPage = () => {
 				<div>
 					<hr className="my-8 border-gray-50 border-opacity-50 mx-4" />
 					<div className="flex flex-wrap text-gray-100 px-24 py-4 justify-start">
-						<div className="w-64 w-24 px-4 mb-12">
+						<div className="w-64 px-4 mb-12">
 							<div>English</div>
 							<div className="mt-2">
 								<a

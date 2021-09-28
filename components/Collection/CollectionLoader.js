@@ -9,6 +9,7 @@ const CollectionLoader = (props) => (
 				viewBox="0 0 128 128"
 				backgroundColor="#1d1d1d"
 				foregroundColor="#282828"
+				uniqueKey="collection-loader-1"
 				{...props}
 			>
 				<rect x="0" y="0" rx="4" ry="4" width="128" height="128" />
@@ -19,6 +20,7 @@ const CollectionLoader = (props) => (
 				speed={2}
 				viewBox="0 0 128 26"
 				backgroundColor="#1d1d1d"
+				uniqueKey="collection-loader-2"
 				foregroundColor="#282828"
 				{...props}
 			>
@@ -30,6 +32,7 @@ const CollectionLoader = (props) => (
 				speed={2}
 				viewBox="0 0 150 60"
 				backgroundColor="#1d1d1d"
+				uniqueKey="collection-loader-3"
 				foregroundColor="#282828"
 				{...props}
 			>

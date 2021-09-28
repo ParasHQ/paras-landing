@@ -6,7 +6,7 @@ const CardListLoader = ({ length = 12 }) => (
 			{[...Array(length).keys()].map((k) => {
 				return (
 					<div key={k} className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-4 relative ">
-						<CardLoader uniqueKey={k} />
+						<CardLoader uniqueKey={'card-loader-' + k} />
 					</div>
 				)
 			})}

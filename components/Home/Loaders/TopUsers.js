@@ -8,6 +8,7 @@ const TopUserLoader = (props) => (
 		viewBox="0 0 256 60"
 		backgroundColor="#1d1d1d"
 		foregroundColor="#282828"
+		uniqueKey="top-user-loader"
 		{...props}
 	>
 		<circle cx="40" cy="30" r="24" />

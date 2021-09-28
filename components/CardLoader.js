@@ -7,6 +7,7 @@ const CardLoader = (props) => (
 		width="100%"
 		height="100%"
 		viewBox="0 0 275 570"
+		uniqueKey="card-loader"
 		backgroundColor="#1D1D1D"
 		foregroundColor="#282828"
 		{...props}
