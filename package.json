@@ -7,7 +7,8 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"prepare": "husky install"
 	},
 	"dependencies": {
 		"@draft-js-plugins/anchor": "^4.1.1",
@@ -65,7 +66,7 @@
 		"eslint-config-next": "^11.0.1",
 		"eslint-config-prettier": "8.3.0",
 		"eslint-plugin-react-hooks": "^4.2.0",
-		"husky": "^7.0.2",
+		"husky": "^7.0.0",
 		"lint-staged": "^11.1.2",
 		"postcss-import": "^13.0.0",
 		"postcss-preset-env": "^6.7.0",
