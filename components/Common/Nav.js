@@ -78,9 +78,7 @@ const Nav = () => {
 							src={parseImgUrl(currentUser.imgUrl || '')}
 						/>
 						<div>
-							<p className="font-medium text-white">
-								{near.getAccount().accountId}
-							</p>
+							<p className="font-medium text-white">{near.getAccount().accountId}</p>
 							<p className="font-light text-sm text-white opacity-75">
 								{prettyBalance(near.getAccount().balance.available, 24, 4)} Ⓝ
 							</p>
@@ -154,35 +152,21 @@ const Nav = () => {
 						</Link>
 						<Link href="/comics">
 							<a className="block font-semibold hover:text-primary">
-								<span
-									className={
-										router.pathname.split('/')[1] === 'comics'
-											? `text-primary`
-											: ''
-									}
-								>
+								<span className={router.pathname.split('/')[1] === 'comics' ? `text-primary` : ''}>
 									{localeLn('Comics')}
 								</span>
 							</a>
 						</Link>
 						<Link href="/market">
 							<a className="block font-semibold hover:text-primary">
-								<span
-									className={
-										router.pathname.includes('/market') ? `text-primary` : ''
-									}
-								>
+								<span className={router.pathname.includes('/market') ? `text-primary` : ''}>
 									{localeLn('Market')}
 								</span>
 							</a>
 						</Link>
 						<Link href="/partner-with-us">
 							<a className="block font-semibold hover:text-primary">
-								<span
-									className={
-										router.pathname === '/partner-with-us' ? `text-primary` : ''
-									}
-								>
+								<span className={router.pathname === '/partner-with-us' ? `text-primary` : ''}>
 									{localeLn('Partner')}
 								</span>
 							</a>
@@ -219,11 +203,7 @@ const Nav = () => {
 							{showProfileModal && ProfileModal()}
 						</div>
 					) : (
-						<Button
-							variant="primary"
-							size="md"
-							onClick={() => setShowLoginModal(true)}
-						>
+						<Button variant="primary" size="md" onClick={() => setShowLoginModal(true)}>
 							{localeLn('Login')}
 						</Button>
 					)}
@@ -238,9 +218,7 @@ const Nav = () => {
 							<div className="p-3">
 								<Link href="/">
 									<a className="font-semibold hover:text-primary">
-										<span
-											className={router.pathname === '/' ? `text-primary` : ''}
-										>
+										<span className={router.pathname === '/' ? `text-primary` : ''}>
 											{localeLn('Home')}
 										</span>
 									</a>
@@ -249,13 +227,7 @@ const Nav = () => {
 							<div className="p-3">
 								<Link href="/comics">
 									<a className="font-semibold hover:text-primary">
-										<span
-											className={
-												router.pathname.includes('/comics')
-													? `text-primary`
-													: ''
-											}
-										>
+										<span className={router.pathname.includes('/comics') ? `text-primary` : ''}>
 											{localeLn('Comics')}
 										</span>
 									</a>
@@ -264,13 +236,7 @@ const Nav = () => {
 							<div className="p-3">
 								<Link href="/market">
 									<a className="font-semibold hover:text-primary">
-										<span
-											className={
-												router.pathname.includes('/market')
-													? `text-primary`
-													: ''
-											}
-										>
+										<span className={router.pathname.includes('/market') ? `text-primary` : ''}>
 											{localeLn('Market')}
 										</span>
 									</a>
@@ -279,13 +245,7 @@ const Nav = () => {
 							<div className="p-3">
 								<Link href="/partner-with-us">
 									<a className="font-semibold hover:text-primary">
-										<span
-											className={
-												router.pathname === '/partner-with-us'
-													? `text-primary`
-													: ''
-											}
-										>
+										<span className={router.pathname === '/partner-with-us' ? `text-primary` : ''}>
 											{localeLn('Partner')}
 										</span>
 									</a>

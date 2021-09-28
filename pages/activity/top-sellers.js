@@ -22,9 +22,7 @@ const TopSellersPage = ({ topUser }) => {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.V2_API_URL}/activities/top-users?__skip=${
-				page * LIMIT
-			}__limit=${LIMIT}`
+			`${process.env.V2_API_URL}/activities/top-users?__skip=${page * LIMIT}__limit=${LIMIT}`
 		)
 
 		const newUserData = [...usersData, ...res.data.data.sellers]
@@ -42,8 +40,7 @@ const TopSellersPage = ({ topUser }) => {
 	const headMeta = {
 		title: 'Top Sellers — Paras',
 		description: 'See top sellers at paras',
-		image:
-			'https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png',
+		image: 'https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png',
 	}
 
 	return (
@@ -104,9 +101,7 @@ const TopSellersPage = ({ topUser }) => {
 }
 
 export async function getServerSideProps() {
-	const res = await axios(
-		`${process.env.V2_API_URL}/activities/top-users?__limit=${LIMIT}`
-	)
+	const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=${LIMIT}`)
 	const topUser = res.data.data
 
 	return { props: { topUser } }

@@ -155,10 +155,7 @@ const TextEditor = ({
 								<OrderedListButton {...externalProps} />
 								<BlockquoteButton {...externalProps} />
 								<CodeBlockButton {...externalProps} />
-								<linkPlugin.LinkButton
-									{...externalProps}
-									onOverrideContent={() => {}}
-								/>
+								<linkPlugin.LinkButton {...externalProps} onOverrideContent={() => {}} />
 								<ImageButton {...externalProps} onChange={onAddLocalImage} />
 								<VideoButton {...externalProps} onAddVideo={onAddVideo} />
 								<CardButton {...externalProps} onClick={showCardModal} />
@@ -194,10 +191,7 @@ const ImageButton = ({ theme, onChange }) => {
 const CardButton = ({ theme, onClick }) => {
 	const { localeLn } = useIntl()
 	return (
-		<button
-			className={`${theme.customButton} ${theme.button} px-2`}
-			onClick={onClick}
-		>
+		<button className={`${theme.customButton} ${theme.button} px-2`} onClick={onClick}>
 			{localeLn('Card')}
 		</button>
 	)
@@ -215,10 +209,7 @@ const VideoButton = ({ theme, onAddVideo }) => {
 
 	return (
 		<>
-			<button
-				className={`${theme.customButton} ${theme.button} px-2`}
-				onClick={triggerModal}
-			>
+			<button className={`${theme.customButton} ${theme.button} px-2`} onClick={triggerModal}>
 				{localeLn('Video')}
 			</button>
 			{showVideoModal && (

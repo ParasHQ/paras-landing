@@ -19,9 +19,7 @@ const CategoryList = ({ listCategory, categoryId = '' }) => {
 					<Link href="/market" shallow={true}>
 						<a
 							className={`text-xl ${
-								router.pathname === '/market'
-									? 'text-gray-100'
-									: 'text-gray-600'
+								router.pathname === '/market' ? 'text-gray-100' : 'text-gray-600'
 							} font-semibold`}
 						>
 							{localeLn('All')}
@@ -37,9 +35,7 @@ const CategoryList = ({ listCategory, categoryId = '' }) => {
 							>
 								<a
 									className={`text-xl ${
-										category.category_id === categoryId
-											? 'text-gray-100'
-											: 'text-gray-600'
+										category.category_id === categoryId ? 'text-gray-100' : 'text-gray-600'
 									} font-semibold`}
 								>
 									<span>{category.name}</span>

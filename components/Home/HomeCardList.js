@@ -51,11 +51,7 @@ export const HomeCardList = () => {
 				</Link>
 			</div>
 			<div className="mt-4">
-				{!isLoading ? (
-					<CardList tokens={tokenList} />
-				) : (
-					<CardListLoader length={4} />
-				)}
+				{!isLoading ? <CardList tokens={tokenList} /> : <CardListLoader length={4} />}
 			</div>
 		</div>
 	)

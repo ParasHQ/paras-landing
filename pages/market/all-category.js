@@ -65,9 +65,7 @@ const AllCategory = () => {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="flex justify-center mb-4">
-					<h1 className="text-4xl font-bold text-gray-100 text-center">
-						{localeLn('Market')}
-					</h1>
+					<h1 className="text-4xl font-bold text-gray-100 text-center">{localeLn('Market')}</h1>
 				</div>
 				<CategoryList listCategory={store.cardCategory} />
 				<div className="md:flex justify-between mt-8 px-4">

@@ -64,37 +64,24 @@ const CardStats = ({ cardsData, fetchData, hasMore }) => {
 					<tbody>
 						{cardsData.map((card) => {
 							const localToken = card.token
-							const firstPrice =
-								parseFloat(prettyBalance(card.firstSale.amount, 24, 4)) || 0.1
-							const lastPrice =
-								parseFloat(prettyBalance(card.lastSale.amount, 24, 4)) || 0.1
+							const firstPrice = parseFloat(prettyBalance(card.firstSale.amount, 24, 4)) || 0.1
+							const lastPrice = parseFloat(prettyBalance(card.lastSale.amount, 24, 4)) || 0.1
 							const { totalSales } = card
 							const { supply } = localToken
 							const average = prettyBalance(card.average, 24, 4)
 							const total = prettyBalance(card.volume, 24, 4)
-							const changeLastPrice = parseInt(
-								((lastPrice - firstPrice) / firstPrice) * 100
-							)
-							const changeAveragePrice = parseInt(
-								((average - firstPrice) / firstPrice) * 100
-							)
+							const changeLastPrice = parseInt(((lastPrice - firstPrice) / firstPrice) * 100)
+							const changeAveragePrice = parseInt(((average - firstPrice) / firstPrice) * 100)
 
 							return (
 								<tr key={card._id}>
 									<td>
-										<div
-											className="p-4"
-											onClick={() => onPressCard(localToken)}
-										>
+										<div className="p-4" onClick={() => onPressCard(localToken)}>
 											<div className="w-32 md:w-48">
 												<Card
-													imgUrl={parseImgUrl(
-														localToken?.metadata?.image,
-														null,
-														{
-															width: `300`,
-														}
-													)}
+													imgUrl={parseImgUrl(localToken?.metadata?.image, null, {
+														width: `300`,
+													})}
 													imgBlur={localToken?.metadata?.blurhash}
 													token={{
 														name: localToken?.metadata?.name,
@@ -135,30 +122,14 @@ const CardStats = ({ cardsData, fetchData, hasMore }) => {
 									<td className="text-lg font-bold">{firstPrice} Ⓝ</td>
 									<td>
 										<p className="text-lg font-bold">{lastPrice} Ⓝ</p>
-										<p
-											className={
-												changeLastPrice > 0 ? 'text-green-400' : 'text-red-600'
-											}
-										>
-											{changeLastPrice > 0
-												? `+${changeLastPrice}`
-												: `${changeLastPrice}`}
-											%
+										<p className={changeLastPrice > 0 ? 'text-green-400' : 'text-red-600'}>
+											{changeLastPrice > 0 ? `+${changeLastPrice}` : `${changeLastPrice}`}%
 										</p>
 									</td>
 									<td>
 										<p className="text-lg font-bold">{average} Ⓝ</p>
-										<p
-											className={
-												changeAveragePrice > 0
-													? 'text-green-400'
-													: 'text-red-600'
-											}
-										>
-											{changeAveragePrice > 0
-												? `+${changeAveragePrice}`
-												: `${changeAveragePrice}`}
-											%
+										<p className={changeAveragePrice > 0 ? 'text-green-400' : 'text-red-600'}>
+											{changeAveragePrice > 0 ? `+${changeAveragePrice}` : `${changeAveragePrice}`}%
 										</p>
 									</td>
 									<td className="text-lg font-bold">{totalSales}</td>

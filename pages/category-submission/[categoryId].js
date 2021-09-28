@@ -34,19 +34,16 @@ const CategorySubmission = () => {
 		const auth = await near.authToken()
 		if (categoryId) {
 			try {
-				const res = await axios.get(
-					`${process.env.V2_API_URL}/categories/tokens/submission`,
-					{
-						params: {
-							category_id: categoryId,
-							status: 'pending',
-						},
-						headers: {
-							'Content-Type': 'application/x-www-form-urlencoded',
-							authorization: auth,
-						},
-					}
-				)
+				const res = await axios.get(`${process.env.V2_API_URL}/categories/tokens/submission`, {
+					params: {
+						category_id: categoryId,
+						status: 'pending',
+					},
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+						authorization: auth,
+					},
+				})
 				setSubmissions(res.data.data.results)
 			} catch (error) {
 				sentryCaptureException(error)
@@ -92,10 +89,7 @@ const CategorySubmission = () => {
 					<div className="md:grid md:grid-cols-2 md:gap-4">
 						{submissions.map((submission) => (
 							<div key={submission._id} className="text-white">
-								<SubmissionDetail
-									submission={submission}
-									updateData={updateSubmissionData}
-								/>
+								<SubmissionDetail submission={submission} updateData={updateSubmissionData} />
 							</div>
 						))}
 					</div>
@@ -147,15 +141,11 @@ const SubmissionDetail = ({ submission, updateData }) => {
 		setIsLoading(true)
 
 		try {
-			await axios.put(
-				`${process.env.V2_API_URL}/categories/tokens/${type}`,
-				params,
-				{
-					headers: {
-						authorization: await near.authToken(),
-					},
-				}
-			)
+			await axios.put(`${process.env.V2_API_URL}/categories/tokens/${type}`, params, {
+				headers: {
+					authorization: await near.authToken(),
+				},
+			})
 			setShowModal('')
 			updateData(submission._id)
 		} catch (error) {
@@ -168,19 +158,18 @@ const SubmissionDetail = ({ submission, updateData }) => {
 	return (
 		<>
 			{showModal === 'accept' && (
-				<Modal
-					close={() => setShowModal('')}
-					closeOnEscape={true}
-					closeOnBgClick={true}
-				>
+				<Modal close={() => setShowModal('')} closeOnEscape={true} closeOnBgClick={true}>
 					<div className="bg-dark-primary-1 w-full max-w-xs p-4 m-auto rounded-md text-center">
 						<div className="font-bold text-2xl mb-4">Accept the card</div>
 						<div className="mb-6 m-auto text-gray-400">
 							<span>You are going to accept </span>
-							<span className="font-bold text-white">
-								{localToken.metadata.title}
+							<span className="font-bold text-white">{localToken.metadata.title}</span>
+							<span>
+								{' '}
+								{localeLn('to {categoryId} category', {
+									categoryId: submission.category_id,
+								})}
 							</span>
-							<span> {localeLn('to {categoryId} category',{categoryId:submission.category_id})}</span>
 						</div>
 						<button
 							disabled={isLoading}
@@ -194,19 +183,18 @@ const SubmissionDetail = ({ submission, updateData }) => {
 				</Modal>
 			)}
 			{showModal === 'reject' && (
-				<Modal
-					close={() => setShowModal('')}
-					closeOnEscape={true}
-					closeOnBgClick={true}
-				>
+				<Modal close={() => setShowModal('')} closeOnEscape={true} closeOnBgClick={true}>
 					<div className="bg-dark-primary-1 w-full max-w-xs p-4 m-auto rounded-md text-center">
 						<div className="font-bold text-2xl mb-4">{localeLn('Reject the card')}</div>
 						<div className="mb-6 m-auto text-gray-400">
 							<span>{localeLn('You are going to reject')} </span>
-							<span className="font-bold text-white">
-								{localToken.metadata.title}
+							<span className="font-bold text-white">{localToken.metadata.title}</span>
+							<span>
+								{' '}
+								{localeLn('from {categoryId} category', {
+									categoryId: submission.category_id,
+								})}
 							</span>
-							<span> {localeLn('from {categoryId} category',{categoryId:submission.category_id})}</span>
 						</div>
 						<button
 							disabled={isLoading}
@@ -233,11 +221,9 @@ const SubmissionDetail = ({ submission, updateData }) => {
 						token={{
 							title: localToken?.metadata.title,
 							edition_id: localToken?.edition_id,
-							collection:
-								localToken?.metadata.collection || localToken?.contract_id,
+							collection: localToken?.metadata.collection || localToken?.contract_id,
 							copies: localToken?.metadata.copies,
-							creatorId:
-								localToken?.metadata.creator_id || localToken?.contract_id,
+							creatorId: localToken?.metadata.creator_id || localToken?.contract_id,
 						}}
 					/>
 				</div>
@@ -264,12 +250,8 @@ const SubmissionDetail = ({ submission, updateData }) => {
 							</a>
 						</Link>
 					</div>
-					<p className="opacity-75 truncate mb-4">
-						{localToken?.metadata?.collection}
-					</p>
-					<p className="mt-2 text-sm opacity-50 mb-8">
-						{timeAgo.format(submission.issued_at)}
-					</p>
+					<p className="opacity-75 truncate mb-4">{localToken?.metadata?.collection}</p>
+					<p className="mt-2 text-sm opacity-50 mb-8">{timeAgo.format(submission.issued_at)}</p>
 					<div className="space-x-4">
 						<button
 							className="font-semibold w-32 rounded-md border-2 border-primary bg-primary text-gray-100"

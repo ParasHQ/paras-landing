@@ -52,23 +52,15 @@ const TokenDetail = ({ token, className }) => {
 			if (!token.approval_id) {
 				const currentStorage = await near.wallet
 					.account()
-					.viewFunction(
-						process.env.MARKETPLACE_CONTRACT_ID,
-						`storage_balance_of`,
-						{
-							account_id: currentUser,
-						}
-					)
+					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `storage_balance_of`, {
+						account_id: currentUser,
+					})
 
 				const supplyPerOwner = await near.wallet
 					.account()
-					.viewFunction(
-						process.env.MARKETPLACE_CONTRACT_ID,
-						`get_supply_by_owner_id`,
-						{
-							account_id: currentUser,
-						}
-					)
+					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_supply_by_owner_id`, {
+						account_id: currentUser,
+					})
 
 				const usedStorage = JSBI.multiply(
 					JSBI.BigInt(parseInt(supplyPerOwner) + 1),
@@ -154,10 +146,7 @@ const TokenDetail = ({ token, className }) => {
 				<div className="w-full h-1/2 lg:h-full lg:w-3/5 relative bg-dark-primary-1 ">
 					<div className="absolute inset-0 opacity-75">
 						<Blurhash
-							hash={
-								token.metadata.blurhash ||
-								'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'
-							}
+							hash={token.metadata.blurhash || 'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'}
 							width={`100%`}
 							height={`100%`}
 							resolutionX={32}
@@ -169,8 +158,7 @@ const TokenDetail = ({ token, className }) => {
 						<img
 							className="object-contain w-full h-full"
 							src={parseImgUrl(token.metadata.media, null, {
-								useOriginal:
-									process.env.APP_ENV === 'production' ? false : true,
+								useOriginal: process.env.APP_ENV === 'production' ? false : true,
 							})}
 						/>
 					</div>
@@ -180,9 +168,7 @@ const TokenDetail = ({ token, className }) => {
 					<Scrollbars
 						className="h-full"
 						universal={true}
-						renderView={(props) => (
-							<div {...props} id="activityListScroll" className="p-4" />
-						)}
+						renderView={(props) => <div {...props} id="activityListScroll" className="p-4" />}
 					>
 						<div>
 							<div className="flex justify-between">
@@ -215,9 +201,7 @@ const TokenDetail = ({ token, className }) => {
 								{tabDetail('history')}
 							</div>
 
-							{activeTab === 'info' && (
-								<TabInfo localToken={token} isNFT={true} />
-							)}
+							{activeTab === 'info' && <TabInfo localToken={token} isNFT={true} />}
 							{activeTab === 'owners' && <TabOwners localToken={token} />}
 							{activeTab === 'history' && <TabHistory localToken={token} />}
 						</div>
@@ -264,11 +248,7 @@ const TokenDetail = ({ token, className }) => {
 							className="mt-2 text-center text-white cursor-pointer hover:opacity-80 text-sm py-2"
 							size="md"
 							variant="ghosts"
-							onClick={() =>
-								router.push(
-									`/token/${token.contract_id}::${token.token_series_id}`
-								)
-							}
+							onClick={() => router.push(`/token/${token.contract_id}::${token.token_series_id}`)}
 							isFullWidth
 						>
 							{localeLn('See token series')}
@@ -286,36 +266,16 @@ const TokenDetail = ({ token, className }) => {
 					isOwner() && { name: 'Burn Card', onClick: onClickBurn },
 				].filter((x) => x)}
 			/>
-			<TokenShareModal
-				show={showModal === 'share'}
-				onClose={onDismissModal}
-				tokenData={token}
-			/>
+			<TokenShareModal show={showModal === 'share'} onClose={onDismissModal} tokenData={token} />
 			<TokenUpdatePriceModal
 				show={showModal === 'updatePrice'}
 				onClose={onDismissModal}
 				data={token}
 			/>
-			<TokenStorageModal
-				show={showModal === 'storage'}
-				onClose={onDismissModal}
-				data={token}
-			/>
-			<TokenBurnModal
-				show={showModal === 'burn'}
-				onClose={onDismissModal}
-				data={token}
-			/>
-			<TokenBuyModal
-				show={showModal === 'buy'}
-				onClose={onDismissModal}
-				data={token}
-			/>
-			<TokenTransferModal
-				show={showModal === 'transfer'}
-				onClose={onDismissModal}
-				data={token}
-			/>
+			<TokenStorageModal show={showModal === 'storage'} onClose={onDismissModal} data={token} />
+			<TokenBurnModal show={showModal === 'burn'} onClose={onDismissModal} data={token} />
+			<TokenBuyModal show={showModal === 'buy'} onClose={onDismissModal} data={token} />
+			<TokenTransferModal show={showModal === 'transfer'} onClose={onDismissModal} data={token} />
 			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>
 	)

@@ -69,12 +69,7 @@ const TokenSeriesTransferModal = ({
 
 	return (
 		<>
-			<Modal
-				isShow={show}
-				closeOnBgClick={false}
-				closeOnEscape={false}
-				close={onClose}
-			>
+			<Modal isShow={show} closeOnBgClick={false} closeOnEscape={false} close={onClose}>
 				<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative">
 					<div className="absolute right-0 top-0 pr-4 pt-4">
 						<div className="cursor-pointer" onClick={onClose}>
@@ -125,9 +120,7 @@ const TokenSeriesTransferModal = ({
 							<div className="text-white my-1">
 								<div className="flex justify-between">
 									<div className="text-sm">{localeLn('Storage Fee')}</div>
-									<div className="text">
-										{formatNearAmount(STORAGE_MINT_FEE)} Ⓝ
-									</div>
+									<div className="text">{formatNearAmount(STORAGE_MINT_FEE)} Ⓝ</div>
 								</div>
 							</div>
 						</div>

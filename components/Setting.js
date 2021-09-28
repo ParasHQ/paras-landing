@@ -8,11 +8,7 @@ const Setting = ({ close }) => {
 	const { localeLn } = useIntl()
 	const toast = useToast()
 	const [email, setEmail] = useState('')
-	const [preferences, setPreferences] = useState([
-		'nft-drops',
-		'newsletter',
-		'notification',
-	])
+	const [preferences, setPreferences] = useState(['nft-drops', 'newsletter', 'notification'])
 	const [initialSetting, setInitialSetting] = useState(null)
 	const [isUpdating, setIsUpdating] = useState(false)
 	const [isLoading, setIsLoading] = useState(true)
@@ -50,11 +46,7 @@ const Setting = ({ close }) => {
 					? 'Add email success, please check your email address to verify'
 					: 'Update setting success'
 			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						{toastMessage}
-					</div>
-				),
+				text: <div className="font-semibold text-center text-sm">{toastMessage}</div>,
 				type: 'success',
 				duration: 5000,
 			})
@@ -64,9 +56,7 @@ const Setting = ({ close }) => {
 			sentryCaptureException(err)
 			const message = err.response.data.message
 			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">{message}</div>
-				),
+				text: <div className="font-semibold text-center text-sm">{message}</div>,
 				type: 'error',
 				duration: 2500,
 			})

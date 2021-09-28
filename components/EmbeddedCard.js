@@ -57,8 +57,7 @@ const EmbeddedCard = ({ tokenId }) => {
 						<Card
 							imgUrl={parseImgUrl(token.metadata.media, null, {
 								width: `600`,
-								useOriginal:
-									process.env.APP_ENV === 'production' ? false : true,
+								useOriginal: process.env.APP_ENV === 'production' ? false : true,
 							})}
 							onClick={() => {
 								router.push(
@@ -97,12 +96,7 @@ const EmbeddedCard = ({ tokenId }) => {
 								<div>
 									<div>{prettyBalance(price, 24, 4)} Ⓝ</div>
 									<div className="text-xs text-gray-400">
-										~ $
-										{prettyBalance(
-											JSBI.BigInt(price * store.nearUsdPrice),
-											24,
-											4
-										)}
+										~ ${prettyBalance(JSBI.BigInt(price * store.nearUsdPrice), 24, 4)}
 									</div>
 								</div>
 							) : (

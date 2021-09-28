@@ -26,12 +26,7 @@ const focusPlugin = createFocusPlugin({
 const linkifyPlugin = createLinkifyPlugin({
 	target: '_blank',
 	component(props) {
-		return (
-			<a
-				{...props}
-				className="mt-4 text-gray-200 hover:text-white font-semibold border-b-2"
-			/>
-		)
+		return <a {...props} className="mt-4 text-gray-200 hover:text-white font-semibold border-b-2" />
 	},
 })
 
@@ -42,11 +37,7 @@ const imagePlugin = createImagePlugin({
 		const { src } = entity.getData()
 
 		return (
-			<img
-				onClick={props.onClick}
-				src={parseImgUrl(src)}
-				className={`w-full ${props.className}`}
-			/>
+			<img onClick={props.onClick} src={parseImgUrl(src)} className={`w-full ${props.className}`} />
 		)
 	},
 })

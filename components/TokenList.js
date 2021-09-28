@@ -10,13 +10,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import CardListLoader from './CardListLoader'
 import TokenDetailModal from './TokenDetailModal'
 import { useIntl } from '../hooks/useIntl'
-const TokenList = ({
-	name = 'default',
-	tokens,
-	fetchData,
-	hasMore,
-	toggleOwnership = false,
-}) => {
+const TokenList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnership = false }) => {
 	const store = useStore()
 	const router = useRouter()
 	const containerRef = useRef()
@@ -111,8 +105,7 @@ const TokenList = ({
 											<Card
 												imgUrl={parseImgUrl(token.metadata.media, null, {
 													width: `600`,
-													useOriginal:
-														process.env.APP_ENV === 'production' ? false : true,
+													useOriginal: process.env.APP_ENV === 'production' ? false : true,
 												})}
 												onClick={() => {
 													router.push(
@@ -135,11 +128,9 @@ const TokenList = ({
 												token={{
 													title: token.metadata.title,
 													edition_id: token.edition_id,
-													collection:
-														token.metadata.collection || token.contract_id,
+													collection: token.metadata.collection || token.contract_id,
 													copies: token.metadata.copies,
-													creatorId:
-														token.metadata.creator_id || token.contract_id,
+													creatorId: token.metadata.creator_id || token.contract_id,
 												}}
 											/>
 										</div>
@@ -154,12 +145,7 @@ const TokenList = ({
 													<div>
 														<div>{prettyBalance(price, 24, 4)} Ⓝ</div>
 														<div className="text-xs text-gray-400">
-															~ $
-															{prettyBalance(
-																JSBI.BigInt(price * store.nearUsdPrice),
-																24,
-																4
-															)}
+															~ ${prettyBalance(JSBI.BigInt(price * store.nearUsdPrice), 24, 4)}
 														</div>
 													</div>
 												) : (

@@ -29,9 +29,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 	}, [])
 
 	const fetchData = async () => {
-		const resp = await Axios.get(
-			`${process.env.API_URL}/tokens?tokenId=${tokenId}`
-		)
+		const resp = await Axios.get(`${process.env.API_URL}/tokens?tokenId=${tokenId}`)
 		setToken(resp.data.data.results[0])
 	}
 
@@ -49,8 +47,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 
 		if (
 			userOwnership.marketData &&
-			quantity >
-				userOwnership.quantity - parseInt(userOwnership.marketData.quantity)
+			quantity > userOwnership.quantity - parseInt(userOwnership.marketData.quantity)
 		) {
 			toast.show({
 				text: (
@@ -83,8 +80,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			})
 			updateBidData(data.id)
 		} catch (err) {
-			const msg =
-				err.response?.data?.message || 'Something went wrong, try again later.'
+			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
 
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">{msg}</div>,
@@ -104,16 +100,11 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 		}
 
 		const attachedDeposit = JSBI.add(
-			JSBI.multiply(
-				JSBI.BigInt(data.bidQuantity),
-				JSBI.BigInt(parseNearAmount(data.bidAmount))
-			),
+			JSBI.multiply(JSBI.BigInt(data.bidQuantity), JSBI.BigInt(parseNearAmount(data.bidAmount))),
 			JSBI.BigInt(parseNearAmount('0.003'))
 		)
 
-		if (
-			JSBI.lessThan(JSBI.BigInt(store.userBalance.available), attachedDeposit)
-		) {
+		if (JSBI.lessThan(JSBI.BigInt(store.userBalance.available), attachedDeposit)) {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
@@ -133,11 +124,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 		setIsLoading(true)
 		await cancelBid(false)
 		try {
-			await near.contract.addBidMarketData(
-				params,
-				'50000000000000',
-				attachedDeposit.toString()
-			)
+			await near.contract.addBidMarketData(params, '50000000000000', attachedDeposit.toString())
 		} catch (err) {
 			sentryCaptureException(err)
 		}
@@ -166,8 +153,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			const balance = await near.wallet.account().getAccountBalance()
 			store.setUserBalance(balance)
 		} catch (err) {
-			const msg =
-				err.response?.data?.message || 'Something went wrong, try again later.'
+			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">{msg}</div>,
 				type: 'error',
@@ -179,9 +165,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 
 	const getUserOwnership = (userId) => {
 		if (token) {
-			const ownership = token.ownerships.find(
-				(ownership) => ownership.ownerId === userId
-			)
+			const ownership = token.ownerships.find((ownership) => ownership.ownerId === userId)
 			return ownership
 		}
 		return null
@@ -212,11 +196,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 				/>
 			)}
 			{showModal === 'cancelBid' && (
-				<Modal
-					close={() => setShowModal('')}
-					closeOnBgClick={false}
-					closeOnEscape={false}
-				>
+				<Modal close={() => setShowModal('')} closeOnBgClick={false} closeOnEscape={false}>
 					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
 						<div className="w-full">{localeLn('Are you sure to delete your bids?')}</div>
 						<div className="flex space-x-4">
@@ -277,25 +257,20 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 								scroll={false}
 								shallow
 							>
-								<div className="font-bold text-2xl">
-									{token?.metadata?.name}
-								</div>
+								<div className="font-bold text-2xl">{token?.metadata?.name}</div>
 							</Link>
 							<p className="opacity-75">{token?.metadata?.collection}</p>
 							<div className="mt-4 mb-6">
-								{`Bid ${prettyBalance(
-									data.bidMarketData.amount,
-									24,
-									4
-								)} Ⓝ for ${data.bidMarketData.quantity} pcs`}
+								{`Bid ${prettyBalance(data.bidMarketData.amount, 24, 4)} Ⓝ for ${
+									data.bidMarketData.quantity
+								} pcs`}
 							</div>
 							<p className="mt-2 text-sm opacity-50 mb-6 md:mb-0">
 								{token && timeAgo.format(data.createdAt)}
 							</p>
 						</div>
 						<div className="flex flex-col">
-							{getUserOwnership(store.currentUser) &&
-							store.currentUser !== data.accountId ? (
+							{getUserOwnership(store.currentUser) && store.currentUser !== data.accountId ? (
 								<button
 									onClick={() => setShowModal('acceptBid')}
 									className="font-semibold w-32 rounded-md border-2 border-primary bg-primary text-white mb-2"

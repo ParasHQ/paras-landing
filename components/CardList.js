@@ -11,13 +11,7 @@ import TokenSeriesDetailModal from './TokenSeriesDetailModal'
 import CardListLoader from './CardListLoader'
 import { useIntl } from '../hooks/useIntl'
 
-const CardList = ({
-	name = 'default',
-	tokens,
-	fetchData,
-	hasMore,
-	toggleOwnership = false,
-}) => {
+const CardList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnership = false }) => {
 	const store = useStore()
 	const router = useRouter()
 	const containerRef = useRef()
@@ -101,9 +95,7 @@ const CardList = ({
 									'opacity-25'
 								}`}
 							>
-								<Link
-									href={`/token/${token.contract_id}::${token.token_series_id}`}
-								>
+								<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
 									<a
 										onClick={(e) => {
 											e.preventDefault()
@@ -113,8 +105,7 @@ const CardList = ({
 											<Card
 												imgUrl={parseImgUrl(token.metadata.media, null, {
 													width: `600`,
-													useOriginal:
-														process.env.APP_ENV === 'production' ? false : true,
+													useOriginal: process.env.APP_ENV === 'production' ? false : true,
 												})}
 												onClick={() => {
 													router.push(
@@ -136,11 +127,9 @@ const CardList = ({
 												imgBlur={token.metadata.blurhash}
 												token={{
 													title: token.metadata.title,
-													collection:
-														token.metadata.collection || token.contract_id,
+													collection: token.metadata.collection || token.contract_id,
 													copies: token.metadata.copies,
-													creatorId:
-														token.metadata.creator_id || token.contract_id,
+													creatorId: token.metadata.creator_id || token.contract_id,
 												}}
 											/>
 										</div>
@@ -155,12 +144,7 @@ const CardList = ({
 													<div>
 														<div>{prettyBalance(price, 24, 4)} Ⓝ</div>
 														<div className="text-xs text-gray-400">
-															~ $
-															{prettyBalance(
-																JSBI.BigInt(price * store.nearUsdPrice),
-																24,
-																4
-															)}
+															~ ${prettyBalance(JSBI.BigInt(price * store.nearUsdPrice), 24, 4)}
 														</div>
 													</div>
 												) : (

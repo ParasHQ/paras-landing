@@ -17,9 +17,7 @@ const ProfileEdit = ({ close }) => {
 
 	const [bio, setBio] = useState(store.userProfile.bio || '')
 	const [website, setWebsite] = useState(store.userProfile.website || '')
-	const [instagram, setInstagram] = useState(
-		store.userProfile.instagramId || ''
-	)
+	const [instagram, setInstagram] = useState(store.userProfile.instagramId || '')
 	const [twitter, setTwitter] = useState(store.userProfile.twitterId || '')
 	const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -53,16 +51,12 @@ const ProfileEdit = ({ close }) => {
 		formData.append('instagramId', instagram)
 
 		try {
-			const resp = await axios.put(
-				`${process.env.V2_API_URL}/profiles`,
-				formData,
-				{
-					headers: {
-						'Content-Type': 'multipart/form-data',
-						authorization: await near.authToken(),
-					},
-				}
-			)
+			const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+					authorization: await near.authToken(),
+				},
+			})
 			store.setUserProfile(resp.data.data)
 			close()
 		} catch (err) {

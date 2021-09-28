@@ -36,10 +36,7 @@ const TokenPage = ({ errorCode, token }) => {
 					} by ${getCreatorId(token)}. ${token.metadata.description}`}
 				/>
 
-				<meta
-					name="twitter:title"
-					content={`${token.metadata.title} — Paras`}
-				/>
+				<meta name="twitter:title" content={`${token.metadata.title} — Paras`} />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta
@@ -48,26 +45,17 @@ const TokenPage = ({ errorCode, token }) => {
 						token.metadata.collection
 					} by ${getCreatorId(token)}. ${token.metadata.description}`}
 				/>
-				<meta
-					name="twitter:image"
-					content={`${parseImgUrl(token.metadata.media, null)}`}
-				/>
+				<meta name="twitter:image" content={`${parseImgUrl(token.metadata.media, null)}`} />
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`${token.metadata.title} - Paras`} />
-				<meta
-					property="og:site_name"
-					content={`${token.metadata.title} — Paras`}
-				/>
+				<meta property="og:site_name" content={`${token.metadata.title} — Paras`} />
 				<meta
 					property="og:description"
 					content={`${token.metadata.title} from collection ${
 						token.metadata.collection
 					} by ${getCreatorId(token)}. ${token.metadata.description}`}
 				/>
-				<meta
-					property="og:image"
-					content={`${parseImgUrl(token.metadata.media, null)}`}
-				/>
+				<meta property="og:image" content={`${parseImgUrl(token.metadata.media, null)}`} />
 			</Head>
 			<Nav />
 			<div className="relative max-w-6xl m-auto pt-16 px-4">

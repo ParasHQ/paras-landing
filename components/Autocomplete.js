@@ -41,9 +41,7 @@ const Autocomplete = ({
 
 	const filteredSuggestions =
 		value?.length > 0
-			? suggestions.filter(
-					(s) => value && s.toLowerCase().includes(value.toLowerCase())
-			  )
+			? suggestions.filter((s) => value && s.toLowerCase().includes(value.toLowerCase()))
 			: suggestions
 
 	return (
@@ -64,11 +62,7 @@ const Autocomplete = ({
 					/>
 				</div>
 			</div>
-			<div
-				className={`${
-					showSuggestions && filteredSuggestions.length > 0 ? 'block' : 'hidden'
-				}`}
-			>
+			<div className={`${showSuggestions && filteredSuggestions.length > 0 ? 'block' : 'hidden'}`}>
 				<div className="absolute w-full pt-2 z-30">
 					<div className="border bg-gray-100 rounded-md overflow-hidden">
 						<Scrollbars universal={true} autoHeight autoHeightMin={0} autoHeightMax={200}>

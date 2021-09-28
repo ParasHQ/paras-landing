@@ -7,7 +7,7 @@ import useStore from '../lib/store'
 import { parseImgUrl } from '../utils/common'
 import Card from './Card'
 import Modal from './Modal'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from '../hooks/useIntl'
 const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 	const { localeLn } = useIntl()
 	const [tokenUrl, setTokenUrl] = useState('')
@@ -44,15 +44,12 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 
 			const [contractId, tokenSeriesId] = contract_token_id.split('::')
 
-			const seriesResp = await axios.get(
-				`${process.env.V2_API_URL}/token-series`,
-				{
-					params: {
-						contract_id: contractId,
-						token_series_id: tokenSeriesId,
-					},
-				}
-			)
+			const seriesResp = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+				params: {
+					contract_id: contractId,
+					token_series_id: tokenSeriesId,
+				},
+			})
 
 			const series = seriesResp.data.data.results[0] || null
 			if (series) {
@@ -124,8 +121,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 			setIsLoading(false)
 		} catch (err) {
 			sentryCaptureException(err)
-			const msg =
-				err.response?.data?.message || 'Something went wrong, try again later.'
+			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">{msg}</div>,
 				type: 'error',
@@ -165,18 +161,15 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 						<Card
 							imgUrl={parseImgUrl(tokenData?.metadata.media, null, {
 								width: `600`,
-								useOriginal:
-									process.env.APP_ENV === 'production' ? false : true,
+								useOriginal: process.env.APP_ENV === 'production' ? false : true,
 							})}
 							imgBlur={tokenData?.metadata.blurhash}
 							token={{
 								title: tokenData?.metadata.title,
 								edition_id: tokenData?.edition_id,
-								collection:
-									tokenData?.metadata.collection || tokenData?.contract_id,
+								collection: tokenData?.metadata.collection || tokenData?.contract_id,
 								copies: tokenData?.metadata.copies,
-								creatorId:
-									tokenData?.metadata.creator_id || tokenData?.contract_id,
+								creatorId: tokenData?.metadata.creator_id || tokenData?.contract_id,
 							}}
 						/>
 					</div>
@@ -192,19 +185,15 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 									placeholder="Token URL"
 								/>
 								<div className="opacity-75 mb-2 text-sm">
-									{localeLn('*Curators will review your card submission, please make sure that the card is belong to this category.')}
+									{localeLn(
+										'*Curators will review your card submission, please make sure that the card is belong to this category.'
+									)}
 								</div>
 								<div className="opacity-75 mb-6 text-sm">
 									*Only the creator that allowed to submit their NFT
 								</div>
-								<button
-									type="button"
-									className="flex justify-end items-center pr-2 float-right"
-								>
-									<div
-										className="rounded-md py-1 font-bold text-lg mr-1"
-										onClick={fetchToken}
-									>
+								<button type="button" className="flex justify-end items-center pr-2 float-right">
+									<div className="rounded-md py-1 font-bold text-lg mr-1" onClick={fetchToken}>
 										{localeLn('Next')}
 									</div>
 								</button>
@@ -212,9 +201,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 						)}
 						{page === 2 && (
 							<div>
-								<div className="text-2xl font-bold">
-									{tokenData?.metadata.title}
-								</div>
+								<div className="text-2xl font-bold">{tokenData?.metadata.title}</div>
 								<div className="mb-6">
 									{tokenData?.metadata.collection || tokenData?.contract_id}
 								</div>
@@ -224,9 +211,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 										{tokenData?.metadata.title}
 									</span>
 									<span> {localeLn('to')} </span>
-									<span className="text-white font-bold opacity-100">
-										{categoryName}
-									</span>
+									<span className="text-white font-bold opacity-100">{categoryName}</span>
 								</div>
 								<button
 									className="rounded-md py-1 font-bold mr-1 w-32 border-2 border-primary bg-primary"

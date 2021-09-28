@@ -5,10 +5,7 @@ const CardListLoader = ({ length = 12 }) => (
 		<div className="hidden md:flex md:flex-wrap">
 			{[...Array(length).keys()].map((k) => {
 				return (
-					<div
-						key={k}
-						className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-4 relative "
-					>
+					<div key={k} className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-4 relative ">
 						<CardLoader uniqueKey={k} />
 					</div>
 				)

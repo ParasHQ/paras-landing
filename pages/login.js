@@ -53,10 +53,7 @@ const LoginPage = () => {
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras — Digital Art Cards Market" />
-				<meta
-					property="og:site_name"
-					content="Paras — Digital Art Cards Market"
-				/>
+				<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."

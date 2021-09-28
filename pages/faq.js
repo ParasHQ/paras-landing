@@ -37,10 +37,7 @@ const FaqPage = () => {
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras — Digital Art Cards Market" />
-				<meta
-					property="og:site_name"
-					content="Paras — Digital Art Cards Market"
-				/>
+				<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -53,9 +50,7 @@ const FaqPage = () => {
 			</Head>
 			<Nav />
 			<div className="relative py-16 max-w-4xl mx-auto text-gray-100 px-4">
-				<h2 className="font-bold text-4xl text-center">
-					{localeLn('Frequently Asked Questions')}
-				</h2>
+				<h2 className="font-bold text-4xl text-center">{localeLn('Frequently Asked Questions')}</h2>
 				<div className="mt-8">
 					<FaqsList />
 				</div>

@@ -119,9 +119,7 @@ const CollectionPage = ({ collectionId, collection }) => {
 							</span>
 						</span>
 					</h4>
-					<p className="text-gray-200 mt-4 max-w-lg m-auto">
-						{collection?.description}
-					</p>
+					<p className="text-gray-200 mt-4 max-w-lg m-auto">{collection?.description}</p>
 					{currentUser === collection.creator_id && (
 						<div className="flex flex-row space-x-2 max-w-xs m-auto mt-4">
 							<Button onClick={addCard} size="md" className="w-40 m-auto">
@@ -139,12 +137,7 @@ const CollectionPage = ({ collectionId, collection }) => {
 					)}
 				</div>
 				<div className="mt-12 px-4">
-					<CardList
-						name="market"
-						tokens={tokens}
-						fetchData={fetchData}
-						hasMore={hasMore}
-					/>
+					<CardList name="market" tokens={tokens} fetchData={fetchData} hasMore={hasMore} />
 				</div>
 			</div>
 			<Footer />

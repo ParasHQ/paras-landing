@@ -63,12 +63,7 @@ const TokenBurnModal = ({
 
 	return (
 		<>
-			<Modal
-				isShow={show}
-				closeOnBgClick={false}
-				closeOnEscape={false}
-				close={onClose}
-			>
+			<Modal isShow={show} closeOnBgClick={false} closeOnEscape={false} close={onClose}>
 				<div className="max-w-sm w-full p-4 bg-gray-800 m-4 md:m-auto rounded-md">
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
@@ -87,13 +82,7 @@ const TokenBurnModal = ({
 							<Button size="md" isFullWidth onClick={onBurnToken}>
 								{localeLn('Burn')}
 							</Button>
-							<Button
-								variant="ghost"
-								size="md"
-								isFullWidth
-								className="mt-4"
-								onClick={onClose}
-							>
+							<Button variant="ghost" size="md" isFullWidth className="mt-4" onClick={onClose}>
 								{localeLn('Cancel')}
 							</Button>
 						</div>

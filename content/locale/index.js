@@ -6,22 +6,21 @@ export * from './ko'
 export * from './vi' */
 
 export function getLanguage() {
-    let lang = navigator.language || navigator.userLanguage
-    let localLang = getLocale(lang)
-    const localStorageLang = localStorage.getItem('lang')
-    const defaultLang = localStorageLang || localLang
-    return defaultLang
+	let lang = navigator.language || navigator.userLanguage
+	let localLang = getLocale(lang)
+	const localStorageLang = localStorage.getItem('lang')
+	const defaultLang = localStorageLang || localLang
+	return defaultLang
 }
 /* export function changeHtmlLang(lang) {
     return document.getElementById('lang').lang = lang;
 } */
 export function setLanguage(lang) {
-    const defaultLang = localStorage.setItem('lang', lang);
-    return defaultLang;
+	const defaultLang = localStorage.setItem('lang', lang)
+	return defaultLang
 }
 
-
-	/* 
+/* 
 		["af", "sq", "ar-SA", "ar-IQ", "ar-EG", "ar-LY", "ar-DZ", "ar-MA", "ar-TN", "ar-OM", 
 		"ar-YE", "ar-SY", "ar-JO", "ar-LB", "ar-KW", "ar-AE", "ar-BH", "ar-QA", "eu", "bg", 
 		"be", "ca", "zh-TW", "zh-CN", "zh-HK", "zh-SG", "hr", "cs", "da", "nl", "nl-BE", "en", 
@@ -36,15 +35,15 @@ export function setLanguage(lang) {
 		"ji", "zu"]; 
 	*/
 function getLocale(lang) {
-    lang = lang.toLowerCase
-    switch (lang) {
-    case "en":
-        return "en";
-    case "zh":
-        return "zh";
-    case "zh-cn":
-        return "zh";
-    default:
-        return "en";
-    }
+	lang = lang.toLowerCase
+	switch (lang) {
+		case 'en':
+			return 'en'
+		case 'zh':
+			return 'zh'
+		case 'zh-cn':
+			return 'zh'
+		default:
+			return 'en'
+	}
 }

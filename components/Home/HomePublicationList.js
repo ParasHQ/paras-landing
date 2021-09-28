@@ -91,8 +91,7 @@ const PublicationList = ({ idx, data }) => {
 										className="w-full h-40 lg:h-32 object-cover publication-card-img"
 										src={parseImgUrl(data.thumbnail, null, {
 											width: `400`,
-											useOriginal:
-												process.env.APP_ENV === 'production' ? false : true,
+											useOriginal: process.env.APP_ENV === 'production' ? false : true,
 										})}
 									/>
 								</div>
@@ -205,9 +204,7 @@ export const HomePublicationList = () => {
 							<div className="flex items-center justify-between p-4 pt-0">
 								<div>
 									<p className="text-white">
-										<span className="text-3xl font-semibold">
-											{featuredSlideIdx + 1}
-										</span>
+										<span className="text-3xl font-semibold">{featuredSlideIdx + 1}</span>
 										<span className="px-2">/</span>
 										<span>{featuredPostList.length}</span>
 									</p>

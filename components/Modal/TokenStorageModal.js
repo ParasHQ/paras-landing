@@ -65,12 +65,7 @@ const TokenStorageModal = ({
 
 	return (
 		<>
-			<Modal
-				isShow={show}
-				closeOnBgClick={false}
-				closeOnEscape={false}
-				close={onClose}
-			>
+			<Modal isShow={show} closeOnBgClick={false} closeOnEscape={false} close={onClose}>
 				<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative">
 					<div className="absolute right-0 top-0 pr-4 pt-4">
 						<div className="cursor-pointer" onClick={onClose}>
@@ -82,7 +77,9 @@ const TokenStorageModal = ({
 							{localeLn('Deposit Storage')}
 						</h1>
 						<p className="text-white mt-2">
-							{localeLn('Before you can list this asset to market, you need to deposit small amount of NEAR')}
+							{localeLn(
+								'Before you can list this asset to market, you need to deposit small amount of NEAR'
+							)}
 						</p>
 						<div className="mt-4">
 							<div className="mt-2 text-sm text-red-500"></div>
@@ -91,9 +88,7 @@ const TokenStorageModal = ({
 							<div className="text-white my-1">
 								<div className="flex justify-between">
 									<div className="text-sm">{localeLn('Storage Fee')}</div>
-									<div className="text">
-										{formatNearAmount(STORAGE_ADD_MARKET_FEE)} Ⓝ
-									</div>
+									<div className="text">{formatNearAmount(STORAGE_ADD_MARKET_FEE)} Ⓝ</div>
 								</div>
 							</div>
 						</div>

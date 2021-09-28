@@ -26,17 +26,11 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 						</p>
 					)}
 					<div className="flex items-center justify-center mt-2">
-						<h4
-							className="text-gray-100 font-bold truncate pr-4"
-							title={router.query.id}
-						>
+						<h4 className="text-gray-100 font-bold truncate pr-4" title={router.query.id}>
 							{' '}
 							{prettyTruncate(router.query.id, 20, 'address')}
 						</h4>
-						<div
-							title="Copy Account ID"
-							className="relative cursor-pointer flex-grow-0"
-						>
+						<div title="Copy Account ID" className="relative cursor-pointer flex-grow-0">
 							<CopyLink
 								link={`${router.query.id}`}
 								afterCopy={() => {
@@ -94,12 +88,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 								className="mt-2 mb-4"
 								target="_blank"
 							>
-								<svg
-									width="18"
-									height="18"
-									viewBox="0 0 16 16"
-									xmlns="http://www.w3.org/2000/svg"
-								>
+								<svg width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
 									<path
 										fill="#cbd5e0"
 										fillRule="evenodd"
@@ -200,9 +189,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 						className="px-4 relative"
 						onClick={() => router.push(`/${router.query.id}/publication`)}
 					>
-						<h4 className="text-gray-100 font-bold cursor-pointer">
-							{localeLn('Publication')}
-						</h4>
+						<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Publication')}</h4>
 						{activeTab === 'publication' && (
 							<div
 								className="absolute left-0 right-0"

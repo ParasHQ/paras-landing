@@ -1,11 +1,6 @@
 import { Fragment, useEffect, useState } from 'react'
 import Link from 'next/link'
-import {
-	FacebookIcon,
-	FacebookShareButton,
-	TwitterIcon,
-	TwitterShareButton,
-} from 'react-share'
+import { FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton } from 'react-share'
 import cachios from 'cachios'
 
 import Card from './Card'
@@ -25,9 +20,7 @@ export const descriptionMaker = (activity) => {
 	const type = activity.type
 
 	if (type === 'add_market_data' || type === 'update_market_data') {
-		return `${
-			activity.msg.params.owner_id
-		} put on sale put on sale for ${formatNearAmount(
+		return `${activity.msg.params.owner_id} put on sale put on sale for ${formatNearAmount(
 			activity.msg.params.price
 		)} Ⓝ`
 	}
@@ -39,18 +32,16 @@ export const descriptionMaker = (activity) => {
 	if (type === 'resolve_purchase') {
 		const [, edition_id] = activity.msg.params.token_id.split(':')
 
-		return `${activity.to} bought  #${edition_id || 1} from ${
-			activity.from
-		} for ${formatNearAmount(activity.msg.params.price)} Ⓝ`
+		return `${activity.to} bought  #${edition_id || 1} from ${activity.from} for ${formatNearAmount(
+			activity.msg.params.price
+		)} Ⓝ`
 	}
 
 	if (type === 'nft_transfer' && activity.from === null) {
 		const [, edition_id] = activity.msg.params.token_id.split(':')
 
 		if (activity.price) {
-			return `${activity.to} bought #${edition_id || 1} for ${formatNearAmount(
-				activity.price
-			)} Ⓝ`
+			return `${activity.to} bought #${edition_id || 1} for ${formatNearAmount(activity.price)} Ⓝ`
 		}
 
 		if (activity.to === activity.creator_id) {
@@ -81,9 +72,7 @@ export const descriptionMaker = (activity) => {
 		if (!activity.msg.params.price) {
 			return `put the series to not for sale`
 		}
-		return `put the series on sale for ${formatNearAmount(
-			activity.msg.params.price
-		)} Ⓝ`
+		return `put the series on sale for ${formatNearAmount(activity.msg.params.price)} Ⓝ`
 	}
 
 	if (type === 'nft_set_series_non_mintable') {
@@ -109,10 +98,7 @@ const Activity = ({ activity }) => {
 					className="text-gray-100 hover:border-gray-100"
 					accountId={activity.msg.params.owner_id}
 				/>
-				<span>
-					{' '}
-					put on sale for {formatNearAmount(activity.msg.params.price)} Ⓝ
-				</span>
+				<span> put on sale for {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
 			</p>
 		)
 	}
@@ -153,20 +139,12 @@ const Activity = ({ activity }) => {
 
 		return (
 			<p>
-				<LinkToProfile
-					className="text-gray-100 hover:border-gray-100"
-					accountId={activity.to}
-				/>
+				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
 				<span>
 					{' '}
-					bought <span className="font-semibold">
-						#{edition_id || 1}
-					</span> from{' '}
+					bought <span className="font-semibold">#{edition_id || 1}</span> from{' '}
 				</span>
-				<LinkToProfile
-					className="text-gray-100 hover:border-gray-100"
-					accountId={activity.from}
-				/>
+				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.from} />
 				<span> for </span>
 				{formatNearAmount(activity.msg.params.price)} Ⓝ
 			</p>
@@ -179,15 +157,10 @@ const Activity = ({ activity }) => {
 		if (activity.price) {
 			return (
 				<p>
-					<LinkToProfile
-						className="text-gray-100 hover:border-gray-100"
-						accountId={activity.to}
-					/>
+					<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
 					<span>
 						{' '}
-						bought <span className="font-semibold">
-							#{edition_id || 1}
-						</span> for{' '}
+						bought <span className="font-semibold">#{edition_id || 1}</span> for{' '}
 					</span>
 					{formatNearAmount(activity.msg.params.price)} Ⓝ
 				</p>
@@ -197,10 +170,7 @@ const Activity = ({ activity }) => {
 		if (activity.to === activity.creator_id) {
 			return (
 				<p>
-					<LinkToProfile
-						className="text-gray-100 hover:border-gray-100"
-						accountId={activity.to}
-					/>
+					<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
 					<span>
 						{' '}
 						minted <span className="font-semibold">#{edition_id || 1}</span>
@@ -217,14 +187,9 @@ const Activity = ({ activity }) => {
 				/>
 				<span>
 					{' '}
-					minted <span className="font-semibold">
-						#{edition_id || 1}
-					</span> to{' '}
+					minted <span className="font-semibold">#{edition_id || 1}</span> to{' '}
 				</span>
-				<LinkToProfile
-					className="text-gray-100 hover:border-gray-100"
-					accountId={activity.to}
-				/>
+				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
 			</p>
 		)
 	}
@@ -234,10 +199,7 @@ const Activity = ({ activity }) => {
 
 		return (
 			<p>
-				<LinkToProfile
-					className="text-gray-100 hover:border-gray-100"
-					accountId={activity.from}
-				/>
+				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.from} />
 				<span>
 					{' '}
 					burned <span className="font-semibold">#{edition_id || 1}</span>
@@ -250,10 +212,7 @@ const Activity = ({ activity }) => {
 		if (activity.price) {
 			return (
 				<p>
-					<LinkToProfile
-						className="text-gray-100 hover:border-gray-100"
-						accountId={activity.to}
-					/>
+					<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
 					<span> bought from </span>
 					<LinkToProfile
 						className="text-gray-100 hover:border-gray-100"
@@ -268,15 +227,9 @@ const Activity = ({ activity }) => {
 		}
 		return (
 			<p>
-				<LinkToProfile
-					className="text-gray-100 hover:border-gray-100"
-					accountId={activity.from}
-				/>
+				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.from} />
 				<span> transferred to </span>
-				<LinkToProfile
-					className="text-gray-100 hover:border-gray-100"
-					accountId={activity.to}
-				/>
+				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
 			</p>
 		)
 	}
@@ -303,10 +256,7 @@ const Activity = ({ activity }) => {
 		}
 		return (
 			<p>
-				<span>
-					put the series on sale for{' '}
-					{formatNearAmount(activity.msg.params.price)} Ⓝ
-				</span>
+				<span>put the series on sale for {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
 			</p>
 		)
 	}
@@ -322,10 +272,7 @@ const Activity = ({ activity }) => {
 	if (type === 'nft_decrease_series_copies') {
 		return (
 			<p>
-				<span>
-					{' '}
-					decrease the series copies to {activity.msg.params.copies}{' '}
-				</span>
+				<span> decrease the series copies to {activity.msg.params.copies} </span>
 			</p>
 		)
 	}
@@ -417,10 +364,7 @@ const ActivityDetail = ({ activity }) => {
 							</TwitterShareButton>
 						</div>
 						<div className="py-2 cursor-pointer">
-							<FacebookShareButton
-								url={shareLink}
-								className="flex items-center w-full"
-							>
+							<FacebookShareButton url={shareLink} className="flex items-center w-full">
 								<FacebookIcon
 									size={24}
 									className="rounded-md"
@@ -440,18 +384,15 @@ const ActivityDetail = ({ activity }) => {
 						<Card
 							imgUrl={parseImgUrl(localToken?.metadata.media, null, {
 								width: `600`,
-								useOriginal:
-									process.env.APP_ENV === 'production' ? false : true,
+								useOriginal: process.env.APP_ENV === 'production' ? false : true,
 							})}
 							imgBlur={localToken?.metadata.blurhash}
 							token={{
 								title: localToken?.metadata.title,
 								edition_id: localToken?.edition_id,
-								collection:
-									localToken?.metadata.collection || localToken?.contract_id,
+								collection: localToken?.metadata.collection || localToken?.contract_id,
 								copies: localToken?.metadata.copies,
-								creatorId:
-									localToken?.metadata.creator_id || localToken?.contract_id,
+								creatorId: localToken?.metadata.creator_id || localToken?.contract_id,
 							}}
 						/>
 					</div>
@@ -475,9 +416,9 @@ const ActivityDetail = ({ activity }) => {
 													...{ prevAs: router.asPath },
 											  },
 									}}
-									as={`/token/${localToken?.contract_id}::${
-										localToken?.token_series_id
-									}${activity.token_id ? `/${localToken?.token_id}` : ''}`}
+									as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+										activity.token_id ? `/${localToken?.token_id}` : ''
+									}`}
 									scroll={false}
 									shallow
 								>

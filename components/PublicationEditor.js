@@ -36,9 +36,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	const [title, setTitle] = useState(convertTextToEditorState(pubDetail?.title))
 	const [subTitle, setSubTitle] = useState(pubDetail?.description || '')
 	const [thumbnail, setThumbnail] = useState(pubDetail?.thumbnail)
-	const [content, setContent] = useState(
-		generateEditorState(pubDetail?.content)
-	)
+	const [content, setContent] = useState(generateEditorState(pubDetail?.content))
 	const [showAlertErr, setShowAlertErr] = useState(false)
 	const [embeddedCards, setEmbeddedCards] = useState([])
 
@@ -141,9 +139,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	}
 
 	const showCardModal = () => {
-		embeddedCards.length === 6
-			? showToast('Maximum 6 cards')
-			: setShowModal('card')
+		embeddedCards.length === 6 ? showToast('Maximum 6 cards') : setShowModal('card')
 	}
 
 	const postPublication = async () => {
@@ -154,9 +150,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 
 			toast.show({
 				text: (
-					<div className="font-semibold text-center text-sm">
-						{error.join(' and ')} is required
-					</div>
+					<div className="font-semibold text-center text-sm">{error.join(' and ')} is required</div>
 				),
 				type: 'error',
 				duration: null,
@@ -198,8 +192,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			}, 1000)
 		} catch (err) {
 			sentryCaptureException(err)
-			const msg =
-				err.response?.data?.message || `Something went wrong, try again later`
+			const msg = err.response?.data?.message || `Something went wrong, try again later`
 			showToast(msg)
 			setIsSubmitting(false)
 			setPreventLeaving(true)
@@ -211,32 +204,22 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 
 		const formData = new FormData()
 		for (let key in entityMap) {
-			if (
-				entityMap[key].type === 'IMAGE' &&
-				!entityMap[key].data.src?.includes('ipfs://')
-			) {
+			if (entityMap[key].type === 'IMAGE' && !entityMap[key].data.src?.includes('ipfs://')) {
 				const file = dataURLtoFile(entityMap[key].data.src, key)
 				formData.append('files', file, key)
 			}
 		}
 
-		const resp = await axios.post(
-			`${process.env.V2_API_URL}/uploads`,
-			formData,
-			{
-				headers: {
-					'Content-Type': 'multipart/form-data',
-					authorization: await near.authToken(),
-				},
-			}
-		)
+		const resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				authorization: await near.authToken(),
+			},
+		})
 
 		let idx = 0
 		for (let key in entityMap) {
-			if (
-				entityMap[key].type === 'IMAGE' &&
-				!entityMap[key].data.src?.includes('ipfs://')
-			) {
+			if (entityMap[key].type === 'IMAGE' && !entityMap[key].data.src?.includes('ipfs://')) {
 				entityMap[key].data.src = resp.data.data[idx]
 				idx++
 			}
@@ -255,16 +238,12 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 		const formData = new FormData()
 		formData.append('files', dataURLtoFile(thumbnail), 'thumbnail')
 
-		const resp = await axios.post(
-			`${process.env.V2_API_URL}/uploads`,
-			formData,
-			{
-				headers: {
-					'Content-Type': 'multipart/form-data',
-					authorization: await near.authToken(),
-				},
-			}
-		)
+		const resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				authorization: await near.authToken(),
+			},
+		})
 
 		return resp.data.data[0]
 	}
@@ -307,11 +286,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	return (
 		<div className="py-16 min-h-screen">
 			{showModal === 'card' && (
-				<Modal
-					close={() => setShowModal(null)}
-					closeOnBgClick={true}
-					closeOnEscape={true}
-				>
+				<Modal close={() => setShowModal(null)} closeOnBgClick={true} closeOnEscape={true}>
 					<div className="w-full max-w-md p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
 						<div className="m-auto">
 							<label className="mb-4 block text-white text-2xl font-bold">
@@ -325,12 +300,8 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 								className={`resize-none h-auto focus:border-gray-100 mb-4`}
 								placeholder="Url of the Token"
 							/>
-							<p className="text-gray-300 text-sm italic">
-								Please input the link of your token
-							</p>
-							<p className="text-gray-300 text-sm italic">
-								https://paras.id/token/x.paras.near::1
-							</p>
+							<p className="text-gray-300 text-sm italic">Please input the link of your token</p>
+							<p className="text-gray-300 text-sm italic">https://paras.id/token/x.paras.near::1</p>
 							<button
 								className="font-semibold mt-4 py-3 w-full rounded-md bg-primary text-white"
 								disabled={!searchToken}
@@ -343,11 +314,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				</Modal>
 			)}
 			{showModal === 'final' && (
-				<Modal
-					close={() => setShowModal(null)}
-					closeOnBgClick={false}
-					closeOnEscape={false}
-				>
+				<Modal close={() => setShowModal(null)} closeOnBgClick={false} closeOnEscape={false}>
 					<div className="w-full max-h-screen max-w-3xl p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden overflow-y-auto">
 						<div className="flex justify-between">
 							<h1 className="mb-4 block text-white text-2xl font-bold">
@@ -418,9 +385,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 								</div>
 							</div>
 							<div className="w-full md:w-1/2 px-2">
-								<h1 className="mb-2 block text-white text-md font-medium">
-									{localeLn('Title')}
-								</h1>
+								<h1 className="mb-2 block text-white text-md font-medium">{localeLn('Title')}</h1>
 								<input
 									type="text"
 									name="Title"
@@ -453,11 +418,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				</Modal>
 			)}
 			{showLeavingConfirmation && (
-				<Modal
-					close={() => setShowLeavingConfirmation(false)}
-					closeOnBgClick
-					closeOnEscape
-				>
+				<Modal close={() => setShowLeavingConfirmation(false)} closeOnBgClick closeOnEscape>
 					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
 						<div className="w-full">
 							{localeLn('Are you sure to leave this page? You will lose any unpublished changes')}
@@ -515,15 +476,10 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 							{localeLn('Card Collectibles')}
 						</h4>
 						<div
-							className={`md:flex md:flex-wrap ${
-								embeddedCards.length <= 3 && 'justify-center'
-							}`}
+							className={`md:flex md:flex-wrap ${embeddedCards.length <= 3 && 'justify-center'}`}
 						>
 							{embeddedCards.map((card) => (
-								<div
-									key={card.tokenId}
-									className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8"
-								>
+								<div key={card.tokenId} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8">
 									<CardPublication
 										localToken={card}
 										deleteCard={() => {
@@ -597,8 +553,7 @@ const CardPublication = ({ localToken, deleteCard }) => {
 					imgBlur={localToken.metadata.blurhash}
 					token={{
 						title: localToken.metadata.title,
-						collection:
-							localToken.metadata.collection || localToken.contract_id,
+						collection: localToken.metadata.collection || localToken.contract_id,
 						copies: localToken.metadata.copies,
 						creatorId: localToken.metadata.creator_id || localToken.contract_id,
 					}}
@@ -613,9 +568,7 @@ const CardPublication = ({ localToken, deleteCard }) => {
 						{localToken?.metadata?.title}
 					</p>
 				</div>
-				<p className="opacity-75 truncate">
-					{localToken?.metadata?.collection}
-				</p>
+				<p className="opacity-75 truncate">{localToken?.metadata?.collection}</p>
 			</div>
 			<div className="text-red-600 text-sm cursor-pointer" onClick={deleteCard}>
 				{localeLn('Delete')}

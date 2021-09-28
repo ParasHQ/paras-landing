@@ -13,10 +13,7 @@ const Faq = (props) => {
 				<p>Q: {question}</p>
 			</div>
 
-			<div
-				className="mt-2"
-				style={isOpen ? { display: 'block' } : { display: 'none' }}
-			>
+			<div className="mt-2" style={isOpen ? { display: 'block' } : { display: 'none' }}>
 				<span>A: </span>
 				<span dangerouslySetInnerHTML={{ __html: answer }}></span>
 			</div>

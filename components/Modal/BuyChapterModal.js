@@ -85,11 +85,7 @@ const BuyChapterModal = ({
 					<div className="w-full md:flex bg-gray-800 rounded-lg overflow-hidden">
 						{isLoading ? (
 							<div className="mx-auto w-full h-96 flex items-center justify-center">
-								<BounceLoader
-									loading={true}
-									color={'rgb(107, 114, 128)'}
-									size={24}
-								/>
+								<BounceLoader loading={true} color={'rgb(107, 114, 128)'} size={24} />
 							</div>
 						) : (
 							<>
@@ -109,23 +105,15 @@ const BuyChapterModal = ({
 										<p className="text-blueGray-400 text-lg">
 											{localeLn('Chapter')} {data.chapter_id}
 										</p>
-										<p className="text-2xl text-gray-50">
-											{data.metadata.subtitle}
-										</p>
-										<p className="text-gray-200 mt-4 text-sm mb-6">
-											{data.metadata.description}
-										</p>
+										<p className="text-2xl text-gray-50">{data.metadata.subtitle}</p>
+										<p className="text-gray-200 mt-4 text-sm mb-6">{data.metadata.description}</p>
 									</div>
 									<div>
 										{!hideActionButton && (
 											<>
 												{data.status === 'read' ? (
 													<div>
-														<Button
-															size="md"
-															isFullWidth
-															onClick={onClickReadNow}
-														>
+														<Button size="md" isFullWidth onClick={onClickReadNow}>
 															{localeLn('Read Now')}
 														</Button>
 													</div>
@@ -134,11 +122,7 @@ const BuyChapterModal = ({
 														<p className="text-blueGray-400 text-xs mb-2 text-center">
 															{localeLn('Small transaction fee is applied of')} 0.01832 Ⓝ
 														</p>
-														<Button
-															size="md"
-															isFullWidth
-															onClick={onBuyChapter}
-														>
+														<Button size="md" isFullWidth onClick={onBuyChapter}>
 															{data.price === '0'
 																? 'Free'
 																: `Buy for ${formatNearAmount(data.price)} Ⓝ`}
@@ -148,9 +132,7 @@ const BuyChapterModal = ({
 												<div className="mt-2">
 													<div className="mt-2 w-full text-center">
 														<Link href={tokenCta.link}>
-															<a className="font-semibold text-white text-sm">
-																{tokenCta.text}
-															</a>
+															<a className="font-semibold text-white text-sm">{tokenCta.text}</a>
 														</Link>
 													</div>
 												</div>
@@ -158,10 +140,7 @@ const BuyChapterModal = ({
 										)}
 										<div className="flex flex-wrap items-center justify-between -mb-2 md:-mb-4">
 											<div className="mt-4 w-full">
-												<ShareComponent
-													title="Read this comic"
-													shareUrl={window.location.href}
-												/>
+												<ShareComponent title="Read this comic" shareUrl={window.location.href} />
 											</div>
 										</div>
 									</div>
@@ -169,13 +148,8 @@ const BuyChapterModal = ({
 							</>
 						)}
 					</div>
-					<div
-						className="absolute z-10 top-0 right-0 cursor-pointer"
-						onClick={onClose}
-					>
-						<div className="-mt-4 -mr-4">
-							{!hideCloseButton && <IconXCircle size={40} />}
-						</div>
+					<div className="absolute z-10 top-0 right-0 cursor-pointer" onClick={onClose}>
+						<div className="-mt-4 -mr-4">{!hideCloseButton && <IconXCircle size={40} />}</div>
 					</div>
 				</div>
 			</Modal>

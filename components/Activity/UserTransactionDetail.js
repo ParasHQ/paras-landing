@@ -15,7 +15,6 @@ import cachios from 'cachios'
 import TokenDetailModal from 'components/TokenDetailModal'
 
 const renderThumb = ({ style, ...props }) => {
-	
 	return (
 		<div
 			{...props}
@@ -31,15 +30,11 @@ const renderThumb = ({ style, ...props }) => {
 
 const UserTransactionList = ({ usersData, fetchData, hasMore, type }) => {
 	const [localToken, setLocalToken] = useState(null)
-	
+
 	return (
 		<>
 			<TokenDetailModal tokens={[localToken]} />
-			<InfiniteScroll
-				dataLength={usersData.length}
-				next={fetchData}
-				hasMore={hasMore}
-			>
+			<InfiniteScroll dataLength={usersData.length} next={fetchData} hasMore={hasMore}>
 				{usersData.map((user, idx) => (
 					<UserTransactionDetail
 						data={user}
@@ -54,12 +49,7 @@ const UserTransactionList = ({ usersData, fetchData, hasMore, type }) => {
 	)
 }
 
-const UserTransactionDetail = ({
-	data,
-	idx,
-	type = 'buyer',
-	setLocalToken,
-}) => {
+const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => {
 	const [profile, setProfile] = useState({})
 	const { localeLn } = useIntl()
 	useEffect(async () => {
@@ -72,14 +62,9 @@ const UserTransactionDetail = ({
 	}, [])
 
 	return (
-		<div
-			key={idx}
-			className="md:flex border-2 border-dashed border-gray-800 rounded-md my-4"
-		>
+		<div key={idx} className="md:flex border-2 border-dashed border-gray-800 rounded-md my-4">
 			<div className="flex items-center md:w-2/5 p-4">
-				<p className="text-base text-gray-100 opacity-50 mr-3 self-start">
-					{idx + 1}
-				</p>
+				<p className="text-base text-gray-100 opacity-50 mr-3 self-start">{idx + 1}</p>
 				<div className="flex self-start">
 					<Link href={`/${data.account_id}`}>
 						<div className="cursor-pointer w-20 h-20 rounded-full overflow-hidden bg-primary">
@@ -100,8 +85,7 @@ const UserTransactionDetail = ({
 							/>
 						)}
 						<p className="text-base text-gray-400">
-							Total {type !== 'buyer' ? 'sales' : 'purchase'}:{' '}
-							{formatNearAmount(data.total_sum)} Ⓝ
+							Total {type !== 'buyer' ? 'sales' : 'purchase'}: {formatNearAmount(data.total_sum)} Ⓝ
 						</p>
 						<p className="text-base text-gray-400">
 							{localeLn('Card')} {type !== 'buyer' ? 'sold' : 'bought'}:{' '}

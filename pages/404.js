@@ -16,10 +16,7 @@ const Custom404 = () => {
 			></div>
 			<Head>
 				<title>{localeLn('Not Found — Paras')}</title>
-				<meta
-					name="description"
-					content="We could not find what you were looking for on Paras."
-				/>
+				<meta name="description" content="We could not find what you were looking for on Paras." />
 
 				<meta name="twitter:title" content="Not Found — Paras" />
 				<meta name="twitter:card" content="summary_large_image" />

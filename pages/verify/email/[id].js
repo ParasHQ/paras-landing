@@ -5,8 +5,8 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Footer from '../../../components/Footer'
 import Nav from '../../../components/Nav'
-import { useIntl } from '../hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import { useIntl } from 'hooks/useIntl'
 
 const EmailVerification = () => {
 	const [emailVerified, setEmailVerified] = useState(false)
@@ -66,10 +66,7 @@ const EmailVerification = () => {
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras — Digital Art Cards Market" />
-				<meta
-					property="og:site_name"
-					content="Paras — Digital Art Cards Market"
-				/>
+				<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -135,9 +132,7 @@ const EmailVerification = () => {
 								fill="white"
 							/>
 						</svg>
-						<div className="text-2xl text-gray-100 font-bold">
-							{localeLn('Verification Error')}
-						</div>
+						<div className="text-2xl text-gray-100 font-bold">{localeLn('Verification Error')}</div>
 						{message === 'Token expired' && (
 							<div className="text-lg text-gray-100 mt-2">
 								{localeLn('Your link verification has expired')}

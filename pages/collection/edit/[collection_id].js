@@ -64,23 +64,15 @@ const CollectionPageEdit = ({ collectionId }) => {
 		formData.append('creator_id', currentUser)
 
 		try {
-			const resp = await axios.put(
-				`${process.env.V2_API_URL}/collections`,
-				formData,
-				{
-					headers: {
-						'Content-Type': 'multipart/form-data',
-						authorization: await near.authToken(),
-					},
-				}
-			)
+			const resp = await axios.put(`${process.env.V2_API_URL}/collections`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+					authorization: await near.authToken(),
+				},
+			})
 			if (resp) {
 				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							Update collection success
-						</div>
-					),
+					text: <div className="font-semibold text-center text-sm">Update collection success</div>,
 					type: 'success',
 					duration: 2500,
 				})
@@ -88,8 +80,7 @@ const CollectionPageEdit = ({ collectionId }) => {
 			}
 		} catch (err) {
 			sentryCaptureException(err)
-			const msg =
-				err.response?.data?.message || 'Something went wrong, try again later.'
+			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">{msg}</div>,
 				type: 'error',
@@ -160,9 +151,7 @@ const CollectionPageEdit = ({ collectionId }) => {
 				/>
 			)}
 			<div className="relative max-w-3xl m-auto py-12 px-4">
-				<div className="text-white font-bold text-4xl">
-					Edit collection {collectionName}
-				</div>
+				<div className="text-white font-bold text-4xl">Edit collection {collectionName}</div>
 				<div className="text-white mt-4">Logo</div>
 				<div className="relative cursor-pointer w-32 h-32 overflow-hidden rounded-md mt-2">
 					<input
@@ -193,10 +182,7 @@ const CollectionPageEdit = ({ collectionId }) => {
 				/>
 				<Button
 					isDisabled={
-						isSubmitting ||
-						imgUrl === '' ||
-						collectionName === '' ||
-						collectionDesc === ''
+						isSubmitting || imgUrl === '' || collectionName === '' || collectionDesc === ''
 					}
 					className="mt-8 w-40"
 					size="md"

@@ -12,10 +12,7 @@ const Share = ({ show, onClose, tokenData }) => {
 	const ShareList = [
 		{
 			name: (
-				<FacebookShareButton
-					url={window.location.href}
-					className="flex text-white"
-				>
+				<FacebookShareButton url={window.location.href} className="flex text-white">
 					<FacebookIcon size={24} round />
 					<p className="ml-3">Facebook</p>
 				</FacebookShareButton>
@@ -37,10 +34,7 @@ const Share = ({ show, onClose, tokenData }) => {
 		},
 		{
 			name: (
-				<TelegramShareButton
-					url={window.location.href}
-					className="flex text-white"
-				>
+				<TelegramShareButton url={window.location.href} className="flex text-white">
 					<TelegramIcon size={24} round />
 					<p className="ml-3">Telegram</p>
 				</TelegramShareButton>

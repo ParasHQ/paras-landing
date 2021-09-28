@@ -18,19 +18,13 @@ const Button = ({
 	let buttonVariantStyle
 	switch (variant) {
 		case 'primary':
-			buttonVariantStyle = `bg-primary text-gray-100 ${
-				!isDisabled && 'hover:bg-opacity-70'
-			}`
+			buttonVariantStyle = `bg-primary text-gray-100 ${!isDisabled && 'hover:bg-opacity-70'}`
 			break
 		case 'secondary':
-			buttonVariantStyle = `bg-gray-800 text-gray-200 ${
-				!isDisabled && 'hover:bg-opacity-70'
-			}`
+			buttonVariantStyle = `bg-gray-800 text-gray-200 ${!isDisabled && 'hover:bg-opacity-70'}`
 			break
 		case 'error':
-			buttonVariantStyle = `bg-red-500 text-gray-100 ${
-				!isDisabled && 'hover:bg-opacity-70'
-			}`
+			buttonVariantStyle = `bg-red-500 text-gray-100 ${!isDisabled && 'hover:bg-opacity-70'}`
 			break
 		case 'ghost':
 			buttonVariantStyle = `bg-transparent border border-white text-white ${
@@ -69,12 +63,7 @@ const Button = ({
 	}
 
 	return (
-		<button
-			disabled={isDisabled}
-			className={buttonStyle}
-			style={style}
-			onClick={onClick}
-		>
+		<button disabled={isDisabled} className={buttonStyle} style={style} onClick={onClick}>
 			{children}
 		</button>
 	)

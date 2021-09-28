@@ -41,9 +41,7 @@ const MyBids = () => {
 
 		setIsFetching(true)
 		const res = await Axios(
-			`${process.env.API_URL}/bids?accountId=${store.currentUser}&__skip=${
-				_page * 10
-			}${
+			`${process.env.API_URL}/bids?accountId=${store.currentUser}&__skip=${_page * 10}${
 				type === 'receivedBids' ? '&isReceived=true' : '&isReceived=false'
 			}&__limit=10`
 		)
@@ -101,10 +99,7 @@ const MyBids = () => {
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras — Digital Art Cards Market" />
-				<meta
-					property="og:site_name"
-					content="Paras — Digital Art Cards Market"
-				/>
+				<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -147,11 +142,7 @@ const MyBids = () => {
 				>
 					{bidsData.map((bid) => (
 						<div key={bid._id}>
-							<Bid
-								tokenId={bid.tokenId}
-								data={bid}
-								updateBidData={updateBidData}
-							/>
+							<Bid tokenId={bid.tokenId} data={bid} updateBidData={updateBidData} />
 						</div>
 					))}
 					{bidsData.length === 0 && !hasMore && (

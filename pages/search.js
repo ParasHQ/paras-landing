@@ -75,7 +75,9 @@ export default function SearchPage({ searchQuery }) {
 	}
 
 	const headMeta = {
-		title: localeLn('Search {searchQuery} — Paras',{searchQuery:searchQuery}),
+		title: localeLn('Search {searchQuery} — Paras', {
+			searchQuery: searchQuery,
+		}),
 		description: `Explore and collect ${searchQuery} digital art cards on Paras. All-in-one social digital art card marketplace for creators and collectors.`,
 	}
 
@@ -152,8 +154,7 @@ const tokensParams = (_page = 0, query) => {
 		__sort: parseSortQuery(query.sort),
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
-		is_verified:
-			typeof query.is_verified !== 'undefined' ? query.is_verified : true,
+		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 	}

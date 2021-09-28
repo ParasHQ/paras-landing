@@ -2,22 +2,14 @@ import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { prettyBalance } from '../utils/common'
 import Modal from './Modal'
 import { useIntl } from '../hooks/useIntl'
-const AcceptBidModal = ({
-	onClose,
-	token,
-	data,
-	userOwnership,
-	isLoading,
-	onSubmitForm,
-}) => {
+const AcceptBidModal = ({ onClose, token, data, userOwnership, isLoading, onSubmitForm }) => {
 	const { localeLn } = useIntl()
 	const bidTotalForUser =
 		formatNearAmount(data.bidMarketData.amount) *
 		(data.bidMarketData.quantity > userOwnership.quantity
 			? userOwnership.quantity
 			: data.bidMarketData.quantity)
-	const royaltyForArtist =
-		(parseInt(token.metadata.royalty) * bidTotalForUser) / 100
+	const royaltyForArtist = (parseInt(token.metadata.royalty) * bidTotalForUser) / 100
 	const serviceFee = bidTotalForUser * 0.05
 	const userWillGet = bidTotalForUser - royaltyForArtist - serviceFee
 
@@ -29,8 +21,8 @@ const AcceptBidModal = ({
 						{localeLn('Accept a Bid')}
 					</h1>
 					<p className="text-gray-900 mt-2">
-						{localeLn('You are about to accept bid for')} <b>{token.metadata.name}</b> {localeLn('from')}{' '}
-						<b>{data.accountId}</b>
+						{localeLn('You are about to accept bid for')} <b>{token.metadata.name}</b>{' '}
+						{localeLn('from')} <b>{data.accountId}</b>
 					</p>
 					<div className="text-gray-900 mt-4 text-2xl font-bold text-center">
 						{`${prettyBalance(data.bidMarketData.amount, 24, 4)} Ⓝ `}

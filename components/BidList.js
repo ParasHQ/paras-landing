@@ -30,10 +30,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 		}
 	}
 
-	const { data: profile } = useSWR(
-		`profiles?accountId=${data.accountId}`,
-		fetcher
-	)
+	const { data: profile } = useSWR(`profiles?accountId=${data.accountId}`, fetcher)
 
 	const acceptBid = async () => {
 		const quantity =
@@ -48,8 +45,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 
 		if (
 			userOwnership.marketData &&
-			quantity >
-				userOwnership.quantity - parseInt(userOwnership.marketData.quantity)
+			quantity > userOwnership.quantity - parseInt(userOwnership.marketData.quantity)
 		) {
 			toast.show({
 				text: (
@@ -84,8 +80,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 			fetchBid()
 		} catch (err) {
 			sentryCaptureException(err)
-			const msg =
-				err.response?.data?.message || 'Something went wrong, try again later.'
+			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
 
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">{msg}</div>,
@@ -105,16 +100,11 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 		}
 
 		const attachedDeposit = JSBI.add(
-			JSBI.multiply(
-				JSBI.BigInt(data.bidQuantity),
-				JSBI.BigInt(parseNearAmount(data.bidAmount))
-			),
+			JSBI.multiply(JSBI.BigInt(data.bidQuantity), JSBI.BigInt(parseNearAmount(data.bidAmount))),
 			JSBI.BigInt(parseNearAmount('0.003'))
 		)
 
-		if (
-			JSBI.lessThan(JSBI.BigInt(store.userBalance.available), attachedDeposit)
-		) {
+		if (JSBI.lessThan(JSBI.BigInt(store.userBalance.available), attachedDeposit)) {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
@@ -134,15 +124,10 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 		setIsLoading(true)
 		await cancelBid(false)
 		try {
-			await near.contract.addBidMarketData(
-				params,
-				'50000000000000',
-				attachedDeposit.toString()
-			)
+			await near.contract.addBidMarketData(params, '50000000000000', attachedDeposit.toString())
 		} catch (err) {
 			sentryCaptureException(err)
-			const msg =
-				err.response?.data?.message || 'Something went wrong, try again later.'
+			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">{msg}</div>,
 				type: 'error',
@@ -175,8 +160,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 			store.setUserBalance(balance)
 		} catch (err) {
 			sentryCaptureException(err)
-			const msg =
-				err.response?.data?.message || 'Something went wrong, try again later.'
+			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
 
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">{msg}</div>,
@@ -210,11 +194,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 				/>
 			)}
 			{showModal === 'cancelBid' && (
-				<Modal
-					close={() => setShowModal('')}
-					closeOnBgClick={false}
-					closeOnEscape={false}
-				>
+				<Modal close={() => setShowModal('')} closeOnBgClick={false} closeOnEscape={false}>
 					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
 						<div className="w-full">{localeLn('Are you sure to delete your bids?')}</div>
 						<div className="flex space-x-4">
@@ -259,8 +239,13 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 				</div>
 				<div className="flex items-center justify-between mt-2">
 					<div>
-						<span>{localeLn('Bid')} {prettyBalance(data.bidMarketData.amount, 24, 4)} Ⓝ</span>
-						<span> {localeLn('for')} {data.bidMarketData.quantity} pcs</span>
+						<span>
+							{localeLn('Bid')} {prettyBalance(data.bidMarketData.amount, 24, 4)} Ⓝ
+						</span>
+						<span>
+							{' '}
+							{localeLn('for')} {data.bidMarketData.quantity} pcs
+						</span>
 					</div>
 					{userOwnership && store.currentUser !== data.accountId && (
 						<button
@@ -314,9 +299,7 @@ const BidList = ({ userOwnership, token }) => {
 	}, [])
 
 	const _fetchData = async () => {
-		const res = await Axios(
-			`${process.env.API_URL}/bids?tokenId=${token.tokenId}`
-		)
+		const res = await Axios(`${process.env.API_URL}/bids?tokenId=${token.tokenId}`)
 		const newData = await res.data.data
 
 		setBidList(newData.results)

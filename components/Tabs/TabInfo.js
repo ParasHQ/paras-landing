@@ -41,9 +41,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 					<div>
 						<p className="text-sm text-white font-bold">{localeLn('Owner')}</p>
 						<Link href={`/${localToken.owner_id}`}>
-							<a className="text-gray-100 font-semibold hover:opacity-80">
-								{localToken.owner_id}
-							</a>
+							<a className="text-gray-100 font-semibold hover:opacity-80">{localToken.owner_id}</a>
 						</Link>
 					</div>
 				</div>
@@ -52,9 +50,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 				<div>
 					<p className="text-sm text-white font-bold">{localeLn('Collection')}</p>
 					<Link href={`/collection/${collection.id}`}>
-						<a className="text-gray-100 font-semibold hover:opacity-80">
-							{collection.name}
-						</a>
+						<a className="text-gray-100 font-semibold hover:opacity-80">{collection.name}</a>
 					</Link>
 				</div>
 			</div>
@@ -73,9 +69,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 					<div className="flex flex-1 bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 						<div>
 							<p className="text-sm text-white font-bold">{localeLn('Copies')}</p>
-							<p className="text-gray-100 font-semibold">
-								{localToken.metadata.copies}
-							</p>
+							<p className="text-gray-100 font-semibold">{localToken.metadata.copies}</p>
 						</div>
 					</div>
 				)}

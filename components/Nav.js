@@ -26,10 +26,7 @@ const User = () => {
 	const { localeLn } = useIntl()
 	useEffect(() => {
 		const onClickEv = (e) => {
-			if (
-				accModalRef.current?.contains &&
-				!accModalRef.current.contains(e.target)
-			) {
+			if (accModalRef.current?.contains && !accModalRef.current.contains(e.target)) {
 				setShowAccountModal(false)
 			}
 		}
@@ -64,9 +61,7 @@ const User = () => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						<p>
-							{localeLn('Currently we only allow verified creator to create publication.')}
-						</p>
+						<p>{localeLn('Currently we only allow verified creator to create publication.')}</p>
 						<p className="mt-2">{localeLn('Visit our Discord channel to learn more:')}</p>
 						<div className="mt-2">
 							<a
@@ -120,13 +115,7 @@ const User = () => {
 				<div className="cursor-pointer select-none overflow-hidden rounded-md bg-dark-primary-2">
 					<div className="flex items-center w-full h-full button-wrapper p-1">
 						<div className="w-8 h-8 rounded-full overflow-hidden bg-primary shadow-inner">
-							<img
-								src={
-									store.userProfile?.imgUrl
-										? parseImgUrl(store.userProfile.imgUrl)
-										: null
-								}
-							/>
+							<img src={store.userProfile?.imgUrl ? parseImgUrl(store.userProfile.imgUrl) : null} />
 						</div>
 						<div className="ml-1">
 							<svg
@@ -160,10 +149,7 @@ const User = () => {
 							xmlns="http://www.w3.org/2000/svg"
 							className="mx-auto"
 						>
-							<path
-								d="M16.1436 0L32.1436 16H0.143593L16.1436 0Z"
-								fill="#26222C"
-							/>
+							<path d="M16.1436 0L32.1436 16H0.143593L16.1436 0Z" fill="#26222C" />
 						</svg>
 					</div>
 				)}
@@ -173,9 +159,7 @@ const User = () => {
 					<div className="p-2 shadow-inner bg-dark-primary-2 rounded-md overflow-hidden">
 						<div className="px-2 text-gray-100">
 							<p className="truncate">{store.currentUser}</p>
-							<p className="text-lg">
-								{prettyBalance(store.userBalance.available, 24, 4)} Ⓝ
-							</p>
+							<p className="text-lg">{prettyBalance(store.userBalance.available, 24, 4)} Ⓝ</p>
 							<div>
 								<a
 									className="text-sm text-gray-100 hover:opacity-75"
@@ -275,12 +259,11 @@ const Nav = () => {
 			text: (
 				<div className="text-sm text-gray-900">
 					<p>
-						Testnet is used for creators and collectors to try and experience
-						Paras without the need to spend real value cryptocurrency.
+						Testnet is used for creators and collectors to try and experience Paras without the need
+						to spend real value cryptocurrency.
 					</p>
 					<p className="mt-2">
-						Creators can use Testnet to prevent any mistakes before publishing
-						on Mainnet.
+						Creators can use Testnet to prevent any mistakes before publishing on Mainnet.
 					</p>
 				</div>
 			),
@@ -358,8 +341,7 @@ const Nav = () => {
 						className="bg-primary relative z-50 text-white text-sm text-center p-1 px-2"
 					>
 						<p>
-							You are using Testnet. Everything here has no value. To use Paras,
-							please switch to{' '}
+							You are using Testnet. Everything here has no value. To use Paras, please switch to{' '}
 							<a
 								className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100"
 								href="https://mainnet.paras.id"
@@ -460,10 +442,16 @@ const Nav = () => {
 							</form>
 							<div>
 								<a className="flex items-center text-gray-100 text-sm" href="/languages">
-									<svg className="fill-current text-gray-100 ml-2" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+									<svg
+										className="fill-current text-gray-100 ml-2"
+										xmlns="http://www.w3.org/2000/svg"
+										width="20"
+										height="20"
+										viewBox="0 0 24 24"
+									>
 										<path d="M0 0h24v24H0z" fill="none"></path>
 										<path d=" M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z "></path>
-									</svg> 
+									</svg>
 									<span className="pl-2 hidden md:block">{localeLn('Languages')}</span>
 								</a>
 							</div>
@@ -472,10 +460,7 @@ const Nav = () => {
 					<div className="flex items-center -mx-4">
 						<div className="px-3 text-gray-100 hidden md:block">
 							{router.pathname === '/market' ? (
-								<a
-									className="cursor-pointer"
-									onClick={() => store.setMarketScrollPersist(0)}
-								>
+								<a className="cursor-pointer" onClick={() => store.setMarketScrollPersist(0)}>
 									{localeLn('Market')}
 								</a>
 							) : (

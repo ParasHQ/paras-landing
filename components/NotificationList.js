@@ -67,10 +67,7 @@ const Notification = ({ notif, currentUser }) => {
 									/>
 								</div>
 								<div className="pl-2 text-gray-300">
-									bought{' '}
-									<span className="font-medium text-gray-100">
-										{token.metadata.title}
-									</span>{' '}
+									bought <span className="font-medium text-gray-100">{token.metadata.title}</span>{' '}
 									for {formatNearAmount(notif.msg.params.price)} Ⓝ
 								</div>
 							</div>
@@ -120,9 +117,7 @@ const Notification = ({ notif, currentUser }) => {
 									})}
 								/>
 							</div>
-							<div className="pl-2 text-gray-300">
-								burned edition #{token.edition_id || 1}
-							</div>
+							<div className="pl-2 text-gray-300">burned edition #{token.edition_id || 1}</div>
 						</div>
 					</a>
 				</Link>
@@ -150,11 +145,8 @@ const Notification = ({ notif, currentUser }) => {
 									/>
 								</div>
 								<div className="pl-2 text-gray-300">
-									sold{' '}
-									<span className="font-medium text-gray-100">
-										{token.metadata.title}
-									</span>{' '}
-									for {formatNearAmount(notif.msg.params.price)} Ⓝ
+									sold <span className="font-medium text-gray-100">{token.metadata.title}</span> for{' '}
+									{formatNearAmount(notif.msg.params.price)} Ⓝ
 								</div>
 							</div>
 						</a>
@@ -182,10 +174,7 @@ const Notification = ({ notif, currentUser }) => {
 									/>
 								</div>
 								<div className="pl-2 text-gray-300">
-									received{' '}
-									<span className="font-medium text-gray-100">
-										{token.metadata.title}
-									</span>{' '}
+									received <span className="font-medium text-gray-100">{token.metadata.title}</span>{' '}
 									from{' '}
 									<span className="font-medium text-gray-100">
 										{prettyTruncate(notif.from, 12, 'address')}
@@ -218,10 +207,7 @@ const Notification = ({ notif, currentUser }) => {
 								/>
 							</div>
 							<div className="pl-2 text-gray-300">
-								sold{' '}
-								<span className="font-medium text-gray-100">
-									{token.metadata.title}
-								</span>
+								sold <span className="font-medium text-gray-100">{token.metadata.title}</span>
 								{` to `}
 								<span className="font-semibold">{notif.to}</span> for{' '}
 								{formatNearAmount(notif.msg.params.price)} Ⓝ
@@ -277,10 +263,7 @@ const NotificationList = () => {
 
 	useEffect(() => {
 		const onClickEv = (e) => {
-			if (
-				accModalRef.current?.contains &&
-				!accModalRef.current?.contains(e.target)
-			) {
+			if (accModalRef.current?.contains && !accModalRef.current?.contains(e.target)) {
 				setShowAccountModal(false)
 			}
 		}
@@ -316,19 +299,16 @@ const NotificationList = () => {
 
 		setIsFetching(true)
 		try {
-			const res = await axios.get(
-				`${process.env.V2_API_URL}/activities/notifications`,
-				{
-					params: {
-						account_id: currentUser,
-						__skip: notificationListPage * LIMIT,
-						__limit: LIMIT,
-					},
-					headers: {
-						authorization: await near.authToken(),
-					},
-				}
-			)
+			const res = await axios.get(`${process.env.V2_API_URL}/activities/notifications`, {
+				params: {
+					account_id: currentUser,
+					__skip: notificationListPage * LIMIT,
+					__limit: LIMIT,
+				},
+				headers: {
+					authorization: await near.authToken(),
+				},
+			})
 			const newData = await res.data.data
 
 			const newNotificationList = [...notificationList, ...newData.results]
@@ -400,10 +380,7 @@ const NotificationList = () => {
 							xmlns="http://www.w3.org/2000/svg"
 							className="mx-auto"
 						>
-							<path
-								d="M16.1436 0L32.1436 16H0.143593L16.1436 0Z"
-								fill="#26222C"
-							/>
+							<path d="M16.1436 0L32.1436 16H0.143593L16.1436 0Z" fill="#26222C" />
 						</svg>
 					</div>
 				)}
@@ -440,10 +417,7 @@ const NotificationList = () => {
 										{notificationList.map((notif) => {
 											return (
 												<div key={notif._id}>
-													<Notification
-														notif={notif}
-														currentUser={currentUser}
-													/>
+													<Notification notif={notif} currentUser={currentUser} />
 												</div>
 											)
 										})}

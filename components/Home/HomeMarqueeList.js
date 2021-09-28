@@ -11,9 +11,7 @@ const ActivityMarquee = ({ token }) => {
 				padding: '0.15rem 0rem',
 			}}
 		>
-			<Link
-				href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
-			>
+			<Link href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}>
 				<a>
 					<div className="bg-primary">
 						<div className="flex items-center px-2 py-1 border-0 border-r-2 border-white">
@@ -40,9 +38,7 @@ export const HomeMarqueeList = () => {
 	}, [])
 
 	const fetchMarqueeList = async () => {
-		const resp = await axios.get(
-			`${process.env.V2_API_URL}/activities/latest-transactions`
-		)
+		const resp = await axios.get(`${process.env.V2_API_URL}/activities/latest-transactions`)
 		setMarqueeList(resp.data.data.latest)
 		setIsLoading(false)
 	}
@@ -78,10 +74,7 @@ export const HomeMarqueeList = () => {
 			>
 				{marqueeList.map((token) => {
 					return (
-						<div
-							className="bg-white"
-							key={`${token.contract_id}::${token.token_id}`}
-						>
+						<div className="bg-white" key={`${token.contract_id}::${token.token_id}`}>
 							<ActivityMarquee token={token} />
 						</div>
 					)

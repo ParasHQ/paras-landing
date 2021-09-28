@@ -68,12 +68,7 @@ const TokenBuyModal = ({
 
 	return (
 		<>
-			<Modal
-				isShow={show}
-				closeOnBgClick={false}
-				closeOnEscape={false}
-				close={onClose}
-			>
+			<Modal isShow={show} closeOnBgClick={false} closeOnEscape={false} close={onClose}>
 				<div className="max-w-sm w-full p-4 bg-gray-800 m-4 md:m-auto rounded-md">
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
@@ -89,9 +84,7 @@ const TokenBuyModal = ({
 							<div className="text-white my-1">
 								<div className="flex justify-between">
 									<div className="text-sm">{localeLn('Total')}</div>
-									<div className="text">
-										{data.price && `${formatNearAmount(data.price)} Ⓝ`}
-									</div>
+									<div className="text">{data.price && `${formatNearAmount(data.price)} Ⓝ`}</div>
 								</div>
 							</div>
 						</div>
@@ -100,15 +93,9 @@ const TokenBuyModal = ({
 						</p>
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onBuyToken}>
-								{data.price !== '0' ? localeLn('Buy') :localeLn('Get for Free')}
+								{data.price !== '0' ? localeLn('Buy') : localeLn('Get for Free')}
 							</Button>
-							<Button
-								variant="ghost"
-								size="md"
-								isFullWidth
-								className="mt-4"
-								onClick={onClose}
-							>
+							<Button variant="ghost" size="md" isFullWidth className="mt-4" onClick={onClose}>
 								{localeLn('Cancel')}
 							</Button>
 						</div>

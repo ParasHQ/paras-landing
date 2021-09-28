@@ -33,12 +33,7 @@ function MarketPage({ serverQuery }) {
 
 	useEffect(() => {
 		updateFilter(router.query)
-	}, [
-		router.query.sort,
-		router.query.pmin,
-		router.query.pmax,
-		router.query.is_verified,
-	])
+	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.is_verified])
 
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
@@ -126,9 +121,7 @@ function MarketPage({ serverQuery }) {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="flex justify-center mb-4">
-					<h1 className="text-4xl font-bold text-gray-100 text-center">
-						{localeLn('Market')}
-					</h1>
+					<h1 className="text-4xl font-bold text-gray-100 text-center">{localeLn('Market')}</h1>
 				</div>
 				<CategoryList listCategory={store.cardCategory} />
 				<div className="mt-4 px-4">
@@ -137,12 +130,7 @@ function MarketPage({ serverQuery }) {
 							<CardListLoader />
 						</div>
 					) : (
-						<CardList
-							name="market"
-							tokens={tokens}
-							fetchData={_fetchData}
-							hasMore={hasMore}
-						/>
+						<CardList name="market" tokens={tokens} fetchData={_fetchData} hasMore={hasMore} />
 					)}
 				</div>
 			</div>
@@ -157,8 +145,7 @@ const tokensParams = (_page = 0, query) => {
 		__sort: parseSortQuery(query.sort),
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
-		is_verified:
-			typeof query.is_verified !== 'undefined' ? query.is_verified : true,
+		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 	}

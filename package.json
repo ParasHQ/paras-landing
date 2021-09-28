@@ -6,7 +6,8 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "next lint"
+		"lint": "next lint",
+		"format": "prettier --write ."
 	},
 	"dependencies": {
 		"@draft-js-plugins/anchor": "^4.1.1",
@@ -62,10 +63,30 @@
 		"autoprefixer": "^10.0.1",
 		"eslint": "^7.30.0",
 		"eslint-config-next": "^11.0.1",
+		"eslint-config-prettier": "8.3.0",
 		"eslint-plugin-react-hooks": "^4.2.0",
+		"husky": "^7.0.2",
+		"lint-staged": "^11.1.2",
 		"postcss-import": "^13.0.0",
 		"postcss-preset-env": "^6.7.0",
+		"prettier": "2.4.1",
 		"tailwindcss": "^2.2.9"
 	},
-	"license": "GPL-3.0"
+	"license": "GPL-3.0",
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged": {
+		"*.{js,jsx}": [
+			"prettier --write",
+			"eslint --fix",
+			"git add"
+		],
+		"*.{html,css,less,ejs}": [
+			"prettier --write",
+			"git add"
+		]
+	}
 }

@@ -47,11 +47,9 @@ const PlaceBidModal = ({
 									placeholder="Bid quantity"
 								/>
 								<div className="mt-2 text-sm text-red-500">
-									{errors.bidQuantity?.type === 'required' &&
-										`Bid quantity is required`}
+									{errors.bidQuantity?.type === 'required' && `Bid quantity is required`}
 									{errors.bidQuantity?.type === 'min' && `Minimum 1`}
-									{errors.bidQuantity?.type === 'max' &&
-										`Must be less than number of supply`}
+									{errors.bidQuantity?.type === 'max' && `Must be less than number of supply`}
 								</div>
 							</div>
 							<div className="w-1/2">
@@ -68,8 +66,7 @@ const PlaceBidModal = ({
 									placeholder="Place your bid"
 								/>
 								<div className="mt-2 text-sm text-red-500">
-									{errors.bidAmount?.type === 'required' &&
-										`Buy quantity is required`}
+									{errors.bidAmount?.type === 'required' && `Buy quantity is required`}
 									{errors.bidAmount?.type === 'min' && `Minimum 0.01 Ⓝ`}
 								</div>
 							</div>
@@ -82,9 +79,7 @@ const PlaceBidModal = ({
 							<div className="flex justify-between">
 								<div className="text-sm">{localeLn('Total bid Amount')}</div>
 								<div>
-									{watch('bidQuantity', bidQuantity || 0) *
-										watch('bidAmount', bidAmount || 0)}{' '}
-									Ⓝ
+									{watch('bidQuantity', bidQuantity || 0) * watch('bidAmount', bidAmount || 0)} Ⓝ
 								</div>
 							</div>
 							<div className="flex justify-between">

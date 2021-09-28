@@ -41,13 +41,7 @@ const FilterActivity = ({ onClickFilter }) => {
 				className="inline-flex cursor-pointer px-4 py-2 bg-dark-primary-2 button-wrapper rounded-md"
 				onClick={() => setShowFilterModal(!showFilterModal)}
 			>
-				<svg
-					viewBox="0 0 24 24"
-					width="24"
-					height="24"
-					fill="white"
-					className="inline-block mr-1"
-				>
+				<svg viewBox="0 0 24 24" width="24" height="24" fill="white" className="inline-block mr-1">
 					<path
 						fillRule="evenodd"
 						clipRule="evenodd"

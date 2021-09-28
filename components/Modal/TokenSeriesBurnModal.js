@@ -67,12 +67,7 @@ const TokenSeriesBurnModal = ({
 
 	return (
 		<>
-			<Modal
-				isShow={show}
-				closeOnBgClick={false}
-				closeOnEscape={false}
-				close={onClose}
-			>
+			<Modal isShow={show} closeOnBgClick={false} closeOnEscape={false} close={onClose}>
 				<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative">
 					<div className="absolute right-0 top-0 pr-4 pt-4">
 						<div className="cursor-pointer" onClick={onClose}>
@@ -92,9 +87,7 @@ const TokenSeriesBurnModal = ({
 								name="decrease-copies"
 								step="any"
 								value={burnCopies}
-								onChange={(e) =>
-									setBurnCopies(e.target.value.replace(/\D/, ''))
-								}
+								onChange={(e) => setBurnCopies(e.target.value.replace(/\D/, ''))}
 								placeholder={localeLn('Decrease copies by')}
 							/>
 							{burnCopies > data.metadata.copies - data.in_circulation && (
@@ -108,8 +101,7 @@ const TokenSeriesBurnModal = ({
 								<div className="flex justify-between">
 									<div className="text-sm">{localeLn('Available Copies')}</div>
 									<div className="text">
-										{parseInt(data.metadata.copies || 0) -
-											parseInt(data.in_circulation || 0)}
+										{parseInt(data.metadata.copies || 0) - parseInt(data.in_circulation || 0)}
 									</div>
 								</div>
 							</div>
@@ -139,10 +131,7 @@ const TokenSeriesBurnModal = ({
 								size="md"
 								isFullWidth
 								onClick={onBurnToken}
-								isDisabled={
-									!burnCopies ||
-									burnCopies > data.metadata.copies - data.in_circulation
-								}
+								isDisabled={!burnCopies || burnCopies > data.metadata.copies - data.in_circulation}
 							>
 								{localeLn('Reduce')}
 							</Button>

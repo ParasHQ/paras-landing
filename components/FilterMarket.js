@@ -86,13 +86,7 @@ const FilterMarket = () => {
 				className="mx-4 inline-flex cursor-pointer px-4 py-2 bg-dark-primary-2 button-wrapper rounded-md"
 				onClick={() => setShowFilterModal(!showFilterModal)}
 			>
-				<svg
-					viewBox="0 0 24 24"
-					width="24"
-					height="24"
-					fill="white"
-					className="inline-block mr-1"
-				>
+				<svg viewBox="0 0 24 24" width="24" height="24" fill="white" className="inline-block mr-1">
 					<path
 						fillRule="evenodd"
 						clipRule="evenodd"
@@ -150,9 +144,7 @@ const FilterMarket = () => {
 							<input type="submit" className="hidden" />
 						</form>
 						<div className="mt-2 flex items-center justify-between">
-							<h1 className="text-white font-semibold text-xl mt-2">
-								Verified Only
-							</h1>
+							<h1 className="text-white font-semibold text-xl mt-2">Verified Only</h1>
 							<input
 								id="put-marketplace"
 								className="w-auto"

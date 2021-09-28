@@ -72,9 +72,7 @@ const TopUser = ({ user, idx }) => {
 						className="text-gray-100 hover:border-gray-100 font-semibold text-lg"
 					/>
 				)}
-				<p className="text-base text-gray-400">
-					{prettyBalance(user.total_sum, 24, 6)} Ⓝ
-				</p>
+				<p className="text-base text-gray-400">{prettyBalance(user.total_sum, 24, 6)} Ⓝ</p>
 			</div>
 		</div>
 	)

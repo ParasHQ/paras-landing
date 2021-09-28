@@ -102,17 +102,11 @@ const TokenSeriesDetail = ({ token, className }) => {
 
 	return (
 		<div className={`m-auto rounded-lg overflow-hidden ${className}`}>
-			<div
-				className="flex flex-col lg:flex-row h-90vh lg:h-80vh"
-				style={{ background: '#202124' }}
-			>
+			<div className="flex flex-col lg:flex-row h-90vh lg:h-80vh" style={{ background: '#202124' }}>
 				<div className="w-full h-1/2 lg:h-full lg:w-3/5 relative">
 					<div className="absolute inset-0 opacity-75 z-0">
 						<Blurhash
-							hash={
-								token.metadata.blurhash ||
-								'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'
-							}
+							hash={token.metadata.blurhash || 'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'}
 							width={`100%`}
 							height={`100%`}
 							resolutionX={32}
@@ -124,8 +118,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 						<img
 							className="object-contain w-full h-full"
 							src={parseImgUrl(token.metadata.media, null, {
-								useOriginal:
-									process.env.APP_ENV === 'production' ? false : true,
+								useOriginal: process.env.APP_ENV === 'production' ? false : true,
 							})}
 						/>
 					</div>
@@ -135,9 +128,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 					<Scrollbars
 						className="h-full"
 						universal={true}
-						renderView={(props) => (
-							<div {...props} id="TokenScroll" className="p-4" />
-						)}
+						renderView={(props) => <div {...props} id="TokenScroll" className="p-4" />}
 					>
 						<div>
 							<div className="flex justify-between">
@@ -178,14 +169,9 @@ const TokenSeriesDetail = ({ token, className }) => {
 						</div>
 					</Scrollbars>
 					<div className="p-3">
-						{token.is_non_mintable ||
-						token.total_mint === token.metadata.copies ? (
+						{token.is_non_mintable || token.total_mint === token.metadata.copies ? (
 							<div>
-								<Button
-									size="md"
-									onClick={() => changeActiveTab('owners')}
-									isFullWidth
-								>
+								<Button size="md" onClick={() => changeActiveTab('owners')} isFullWidth>
 									{localeLn('Check Owners')}
 								</Button>
 							</div>
@@ -205,9 +191,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 						) : token.price ? (
 							<>
 								<Button size="md" onClick={onClickBuy} isFullWidth>
-									{token.price === '0'
-										? 'Free'
-										: `Buy for ${formatNearAmount(token.price)} Ⓝ`}
+									{token.price === '0' ? 'Free' : `Buy for ${formatNearAmount(token.price)} Ⓝ`}
 								</Button>
 								{parseFloat(formatNearAmount(token.price)) >
 									parseFloat(formatNearAmount(token.lowest_price)) && (
@@ -217,8 +201,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 										variant="secondary"
 										onClick={() => setActiveTab('owners')}
 										isFullWidth
-									>
-									</Button>
+									></Button>
 								)}
 							</>
 						) : (
@@ -260,16 +243,10 @@ const TokenSeriesDetail = ({ token, className }) => {
 				listModalItem={[
 					{ name: 'Share to...', onClick: onClickShare },
 					{ name: 'Transfer', onClick: onClickBuyerTransfer },
-					isCreator()
-						? { name: 'Reduce Copies', onClick: onClickDecreaseCopies }
-						: null,
+					isCreator() ? { name: 'Reduce Copies', onClick: onClickDecreaseCopies } : null,
 				].filter((x) => x)}
 			/>
-			<TokenShareModal
-				show={showModal === 'share'}
-				onClose={onDismissModal}
-				tokenData={token}
-			/>
+			<TokenShareModal show={showModal === 'share'} onClose={onDismissModal} tokenData={token} />
 			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>
 	)

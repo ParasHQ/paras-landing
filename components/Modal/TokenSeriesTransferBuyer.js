@@ -129,7 +129,9 @@ const TokenSeriesTransferBuyer = ({
 													<Link
 														href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
 													>
-														<a>{localeLn('Edition')} #{token.edition_id}</a>
+														<a>
+															{localeLn('Edition')} #{token.edition_id}
+														</a>
 													</Link>
 												</div>
 												<Button size="sm" onClick={() => setActiveData(token)}>
@@ -145,11 +147,7 @@ const TokenSeriesTransferBuyer = ({
 				</div>
 			</Modal>
 			{activeData && (
-				<TokenTransferModal
-					show={activeData}
-					onClose={onDismissModal}
-					data={activeData}
-				/>
+				<TokenTransferModal show={activeData} onClose={onDismissModal} data={activeData} />
 			)}
 		</>
 	)

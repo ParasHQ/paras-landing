@@ -54,9 +54,7 @@ const TopUser = ({ user, idx }) => {
 						className="text-gray-100 hover:border-gray-100 font-semibold text-lg"
 					/>
 				)}
-				<p className="text-base text-gray-400">
-					{formatNearAmount(user.total_sum)} Ⓝ
-				</p>
+				<p className="text-base text-gray-400">{formatNearAmount(user.total_sum)} Ⓝ</p>
 			</div>
 		</div>
 	)
@@ -73,14 +71,11 @@ export const HomeTopUserList = () => {
 	}, [])
 
 	const fetchTopUsers = async () => {
-		const resp = await axios.get(
-			`${process.env.V2_API_URL}/activities/top-users`,
-			{
-				params: {
-					__limit: 5,
-				},
-			}
-		)
+		const resp = await axios.get(`${process.env.V2_API_URL}/activities/top-users`, {
+			params: {
+				__limit: 5,
+			},
+		})
 		if (resp.data.data) {
 			setTopBuyerList(resp.data.data.buyers)
 			setTopSellerList(resp.data.data.sellers)

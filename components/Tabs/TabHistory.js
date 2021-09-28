@@ -148,7 +148,10 @@ const Activity = ({ activity }) => {
 						<LinkToProfile accountId={activity.to} />
 						<span> {localeLn('bought from')} </span>
 						<LinkToProfile accountId={activity.from} />{' '}
-						<span> {localeLn('for')} {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
+						<span>
+							{' '}
+							{localeLn('for')} {formatNearAmount(activity.msg.params.price)} Ⓝ
+						</span>
 					</p>
 				)
 			}
@@ -157,7 +160,10 @@ const Activity = ({ activity }) => {
 				return (
 					<p>
 						<LinkToProfile accountId={activity.to} />
-						<span> {localeLn('minted')} #{edition_id || 1}</span>
+						<span>
+							{' '}
+							{localeLn('minted')} #{edition_id || 1}
+						</span>
 					</p>
 				)
 			}
@@ -176,7 +182,10 @@ const Activity = ({ activity }) => {
 			return (
 				<p>
 					<LinkToProfile accountId={activity.from} />
-					<span> {localeLn('burned')} #{edition_id || 1}</span>
+					<span>
+						{' '}
+						{localeLn('burned')} #{edition_id || 1}
+					</span>
 				</p>
 			)
 		}
@@ -194,7 +203,10 @@ const Activity = ({ activity }) => {
 							className="text-gray-100 hover:border-gray-100"
 							accountId={activity.from}
 						/>{' '}
-						<span> {localeLn('for')} {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
+						<span>
+							{' '}
+							{localeLn('for')} {formatNearAmount(activity.msg.params.price)} Ⓝ
+						</span>
 					</p>
 				)
 			}
@@ -258,9 +270,7 @@ const Activity = ({ activity }) => {
 	return (
 		<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 			<TextActivity type={activity.type} />
-			<p className="mt-1 text-sm">
-				{timeAgo.format(new Date(activity.msg.datetime))}
-			</p>
+			<p className="mt-1 text-sm">{timeAgo.format(new Date(activity.msg.datetime))}</p>
 		</div>
 	)
 }

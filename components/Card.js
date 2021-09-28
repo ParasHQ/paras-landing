@@ -26,15 +26,13 @@ const Card = ({
 	useEffect(() => {
 		function updateSize() {
 			let w = containerRef.current.parentNode.offsetWidth
-			let h =
-				containerRef.current.parentNode.offsetWidth * (imgHeight / imgWidth)
+			let h = containerRef.current.parentNode.offsetWidth * (imgHeight / imgWidth)
 
 			if (
 				containerRef.current.parentNode.offsetHeight !== 0 &&
 				h > containerRef.current.parentNode.offsetHeight
 			) {
-				w =
-					(imgWidth * containerRef.current.parentNode.offsetHeight) / imgHeight
+				w = (imgWidth * containerRef.current.parentNode.offsetHeight) / imgHeight
 				h = containerRef.current.parentNode.offsetHeight
 			}
 
@@ -99,10 +97,7 @@ const Card = ({
 								</p>
 							</div>
 							<div className="card-content my-2 relative flex flex-grow h-0">
-								<img
-									className="mx-auto h-full object-contain relative z-10"
-									src={imgLoaded}
-								/>
+								<img className="mx-auto h-full object-contain relative z-10" src={imgLoaded} />
 								<div className="absolute inset-0 z-0">
 									{/* <Blurhash
 										hash={imgBlur || 'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'}
