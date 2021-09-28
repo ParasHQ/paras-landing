@@ -76,9 +76,10 @@ const TabOwners = ({ localToken }) => {
 		const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
 			params: {
 				token_series_id: localToken.token_series_id,
+				contract_id: localToken.contract_id,
 				__skip: page * FETCH_TOKENS_LIMIT,
 				__limit: FETCH_TOKENS_LIMIT,
-				__sort: 'edition_id::1',
+				__sort: 'token_id::1',
 			},
 			ttl: 30,
 		})
@@ -216,7 +217,9 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 					<Link href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}>
 						<a className="hover:opacity-80">
 							<p className="text-white font-semibold">
-								{localeLn('Edition')} #{token.edition_id}
+								{token.contract_id === process.env.NFT_CONTRACT_ID
+									? `${localeLn('Edition')} #${token.edition_id}`
+									: `#${token.token_id}`}
 							</p>
 						</a>
 					</Link>

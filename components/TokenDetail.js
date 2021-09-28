@@ -145,14 +145,16 @@ const TokenDetail = ({ token, className }) => {
 			<div className="flex flex-col lg:flex-row h-90vh lg:h-80vh">
 				<div className="w-full h-1/2 lg:h-full lg:w-3/5 relative bg-dark-primary-1 ">
 					<div className="absolute inset-0 opacity-75">
-						<Blurhash
-							hash={token.metadata.blurhash || 'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'}
-							width={`100%`}
-							height={`100%`}
-							resolutionX={32}
-							resolutionY={32}
-							punch={1}
-						/>
+						{token.metadata.blurhash && (
+							<Blurhash
+								hash={token.metadata.blurhash || ''}
+								width={`100%`}
+								height={`100%`}
+								resolutionX={32}
+								resolutionY={32}
+								punch={1}
+							/>
+						)}
 					</div>
 					<div className="w-full h-full flex items-center justify-center p-2 lg:p-8 relative">
 						<img
@@ -245,7 +247,7 @@ const TokenDetail = ({ token, className }) => {
 							</div>
 						)}
 						<div
-							className="mt-2 text-center text-white cursor-pointer hover:opacity-80 text-sm py-2"
+							className="mt-2 text-center text-white cursor-pointer hover:opacity-80 text-sm"
 							size="md"
 							variant="ghosts"
 							onClick={() => router.push(`/token/${token.contract_id}::${token.token_series_id}`)}

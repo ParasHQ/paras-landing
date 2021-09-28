@@ -164,6 +164,7 @@ const CardInfo = {
 	Description: 'Description',
 	View: 'View',
 	Collection: 'Collection',
+	Collectibles: 'Collectibles',
 	Publication: 'Publication',
 	History: 'History',
 	Bids: 'Bids',

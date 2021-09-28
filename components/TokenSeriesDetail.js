@@ -7,7 +7,7 @@ import { IconDots } from 'components/Icons'
 import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
-import { parseImgUrl } from '../utils/common'
+import { capitalize, parseImgUrl } from '../utils/common'
 import TokenSeriesTransferBuyer from './Modal/TokenSeriesTransferBuyer'
 import TokenSeriesUpdatePriceModal from './Modal/TokenSeriesUpdatePriceModal'
 import TokenSeriesBuyModal from './Modal/TokenSeriesBuyModal'
@@ -22,6 +22,7 @@ import LoginModal from './Modal/LoginModal'
 import ArtistVerified from './Common/ArtistVerified'
 import ArtistBanned from './Common/ArtistBanned'
 import { useIntl } from '../hooks/useIntl'
+
 const TokenSeriesDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
@@ -41,7 +42,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 				}`}
 				onClick={() => changeActiveTab(tab)}
 			>
-				<div className="capitalize">{tab}</div>
+				<div className="capitalize">{localeLn(capitalize(tab))}</div>
 			</div>
 		)
 	}
@@ -105,14 +106,16 @@ const TokenSeriesDetail = ({ token, className }) => {
 			<div className="flex flex-col lg:flex-row h-90vh lg:h-80vh" style={{ background: '#202124' }}>
 				<div className="w-full h-1/2 lg:h-full lg:w-3/5 relative">
 					<div className="absolute inset-0 opacity-75 z-0">
-						<Blurhash
-							hash={token.metadata.blurhash || 'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'}
-							width={`100%`}
-							height={`100%`}
-							resolutionX={32}
-							resolutionY={32}
-							punch={1}
-						/>
+						{token.metadata.blurhash && (
+							<Blurhash
+								hash={token.metadata.blurhash}
+								width={`100%`}
+								height={`100%`}
+								resolutionX={32}
+								resolutionY={32}
+								punch={1}
+							/>
+						)}
 					</div>
 					<div className="w-full h-full flex items-center justify-center p-2 lg:p-8 relative z-10">
 						<img
@@ -168,48 +171,50 @@ const TokenSeriesDetail = ({ token, className }) => {
 							{activeTab === 'history' && <TabHistory localToken={token} />}
 						</div>
 					</Scrollbars>
-					<div className="p-3">
-						{token.is_non_mintable || token.total_mint === token.metadata.copies ? (
-							<div>
-								<Button size="md" onClick={() => changeActiveTab('owners')} isFullWidth>
-									{localeLn('Check Owners')}
-								</Button>
-							</div>
-						) : isCreator() ? (
-							<div className="flex flex-wrap space-x-4">
-								<div className="w-full flex-1">
-									<Button size="md" onClick={onClickMint} isFullWidth>
-										{localeLn('Mint')}
+					{token.contract_id === process.env.NFT_CONTRACT_ID && (
+						<div className="p-3">
+							{token.is_non_mintable || token.total_mint === token.metadata.copies ? (
+								<div>
+									<Button size="md" onClick={() => changeActiveTab('owners')} isFullWidth>
+										{localeLn('Check Owners')}
 									</Button>
 								</div>
-								<div className="w-full flex-1">
-									<Button size="md" onClick={onClickUpdatePrice} isFullWidth>
-										{localeLn('Update Price')}
-									</Button>
+							) : isCreator() ? (
+								<div className="flex flex-wrap space-x-4">
+									<div className="w-full flex-1">
+										<Button size="md" onClick={onClickMint} isFullWidth>
+											{localeLn('Mint')}
+										</Button>
+									</div>
+									<div className="w-full flex-1">
+										<Button size="md" onClick={onClickUpdatePrice} isFullWidth>
+											{localeLn('Update Price')}
+										</Button>
+									</div>
 								</div>
-							</div>
-						) : token.price ? (
-							<>
-								<Button size="md" onClick={onClickBuy} isFullWidth>
-									{token.price === '0' ? 'Free' : `Buy for ${formatNearAmount(token.price)} Ⓝ`}
+							) : token.price ? (
+								<>
+									<Button size="md" onClick={onClickBuy} isFullWidth>
+										{token.price === '0' ? 'Free' : `Buy for ${formatNearAmount(token.price)} Ⓝ`}
+									</Button>
+									{parseFloat(formatNearAmount(token.price)) >
+										parseFloat(formatNearAmount(token.lowest_price)) && (
+										<Button
+											size="md"
+											className="mt-2"
+											variant="secondary"
+											onClick={() => setActiveTab('owners')}
+											isFullWidth
+										></Button>
+									)}
+								</>
+							) : (
+								<Button size="md" isFullWidth isDisabled>
+									{localeLn('Not for Sale')}
 								</Button>
-								{parseFloat(formatNearAmount(token.price)) >
-									parseFloat(formatNearAmount(token.lowest_price)) && (
-									<Button
-										size="md"
-										className="mt-2"
-										variant="secondary"
-										onClick={() => setActiveTab('owners')}
-										isFullWidth
-									></Button>
-								)}
-							</>
-						) : (
-							<Button size="md" isFullWidth isDisabled>
-								{localeLn('Not for Sale')}
-							</Button>
-						)}
-					</div>
+							)}
+						</div>
+					)}
 				</div>
 			</div>
 			<TokenSeriesBuyModal

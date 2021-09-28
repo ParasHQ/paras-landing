@@ -98,7 +98,10 @@ const Activity = ({ activity }) => {
 					className="text-gray-100 hover:border-gray-100"
 					accountId={activity.msg.params.owner_id}
 				/>
-				<span> put on sale for {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
+				<span>
+					{' '}
+					{localeLn('put on sale for')} {formatNearAmount(activity.msg.params.price)} Ⓝ
+				</span>
 			</p>
 		)
 	}

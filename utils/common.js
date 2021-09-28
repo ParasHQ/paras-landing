@@ -205,3 +205,7 @@ export const parseGetTokenIdfromUrl = (url) => {
 		token_id: pathname[3],
 	}
 }
+
+export const capitalize = (words) => {
+	return words[0].toUpperCase() + words.slice(1)
+}

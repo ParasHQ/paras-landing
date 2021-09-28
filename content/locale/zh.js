@@ -166,6 +166,7 @@ const CardInfo = {
 	Description: '描述',
 	View: '查看',
 	Collection: '收集',
+	Collectibles: '收集',
 	Publication: '出版',
 	History: '历史',
 	Bids: '竞价',
@@ -230,6 +231,7 @@ const publication = {
 }
 const profile = {
 	Creation: '作品',
+	Collectibles: '',
 	'Please enter valid website': '请输入有效的网站',
 	'Edit Profile': '编辑个人资料',
 	Bio: '简历',

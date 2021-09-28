@@ -178,7 +178,7 @@ const ActivityLog = ({ query }) => {
 							<div ref={modalRef}>
 								<div className="flex items-baseline" onClick={() => setShowModal(!showModal)}>
 									<h1 className="text-4xl font-bold text-gray-100 text-center mr-2 capitalize">
-										{activityType.split('-').join(' ')}
+										{activityType === 'activity' ? localeLn('Activity') : localeLn('Top Users')}
 									</h1>
 									<svg
 										viewBox="0 0 11 7"

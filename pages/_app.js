@@ -96,7 +96,7 @@ function MyApp({ Component, pageProps }) {
 	useEffect(() => {
 		let lang = getLanguage()
 		if (locale != lang && pathname != '/languages') {
-			router.push('/' + lang)
+			router.push('/' + lang + router.asPath)
 			return
 		}
 		_init()

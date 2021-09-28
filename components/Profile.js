@@ -154,10 +154,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 						className="px-4 relative"
 						onClick={() => router.push(`/${router.query.id}/collectibles`)}
 					>
-						<h4 className="text-gray-100 font-bold cursor-pointer">
-							Collectibles
-							{localeLn('Collection')}
-						</h4>
+						<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Collectibles')}</h4>
 						{activeTab === 'collection' && (
 							<div
 								className="absolute left-0 right-0"
