@@ -205,7 +205,11 @@ const TokenSeriesDetail = ({ token, className }) => {
 											variant="secondary"
 											onClick={() => setActiveTab('owners')}
 											isFullWidth
-										></Button>
+										>
+											{localeLn('Buy for {price} on Secondary Marketplace', {
+												price: formatNearAmount(token.lowest_price),
+											})}
+										</Button>
 									)}
 								</>
 							) : (

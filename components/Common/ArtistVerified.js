@@ -30,7 +30,13 @@ const ArtistVerified = ({ token }) => {
 		<>
 			{showTooltip && <ReactTooltip place="right" type="dark" />}
 			<span className="font-semibold">
-				<Link href={`/${getCreatorId()}`}>
+				<Link
+					href={
+						token.metadata.creator_id
+							? `/${getCreatorId()}/creation`
+							: `/collection/${getCreatorId()}`
+					}
+				>
 					<a className="text-white font-semibold border-b-2 border-transparent hover:border-white">
 						{getCreatorId()}
 					</a>
