@@ -111,7 +111,7 @@ const CollectionPage = ({ collectionId, collection }) => {
 						<span>
 							collection by{' '}
 							<span className="font-semibold">
-								<Link href={`/${collection?.creator_id}`}>
+								<Link href={`/${collection?.creator_id}/creation`}>
 									<a className="font-semibold text-white border-b-2 border-transparent hover:border-white">
 										{collection?.creator_id}
 									</a>
