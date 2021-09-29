@@ -49,37 +49,21 @@ const TokenUpdatePriceModal = ({
 		}
 
 		try {
-			if (data.approval_id) {
-				const params = {
-					token_id: data.token_id,
-					nft_contract_id: data.contract_id,
-					ft_token_id: `near`,
+			const params = {
+				token_id: data.token_id,
+				account_id: process.env.MARKETPLACE_CONTRACT_ID,
+				msg: JSON.stringify({
 					price: parseNearAmount(newPrice),
-				}
-				await near.wallet.account().functionCall({
-					contractId: process.env.MARKETPLACE_CONTRACT_ID,
-					methodName: `update_market_data`,
-					args: params,
-					gas: GAS_FEE,
-					attachedDeposit: `1`,
-				})
-			} else {
-				const params = {
-					token_id: data.token_id,
-					account_id: process.env.MARKETPLACE_CONTRACT_ID,
-					msg: JSON.stringify({
-						price: parseNearAmount(newPrice),
-						ft_token_id: `near`,
-					}),
-				}
-				await near.wallet.account().functionCall({
-					contractId: data.contract_id,
-					methodName: `nft_approve`,
-					args: params,
-					gas: GAS_FEE,
-					attachedDeposit: STORAGE_APPROVE_FEE,
-				})
+					ft_token_id: `near`,
+				}),
 			}
+			await near.wallet.account().functionCall({
+				contractId: data.contract_id,
+				methodName: `nft_approve`,
+				args: params,
+				gas: GAS_FEE,
+				attachedDeposit: data.approval_id ? `1` : STORAGE_APPROVE_FEE,
+			})
 		} catch (err) {
 			sentryCaptureException(err)
 		}
