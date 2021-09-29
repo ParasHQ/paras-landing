@@ -267,6 +267,10 @@ const Activity = ({ activity }) => {
 		return null
 	}
 
+	if (activity.type === 'resolve_purchase_fail') {
+		return null
+	}
+
 	return (
 		<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 			<TextActivity type={activity.type} />

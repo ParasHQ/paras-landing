@@ -319,6 +319,10 @@ const ActivityDetail = ({ activity }) => {
 		}, 1500)
 	}
 
+	if (activity.type === 'resolve_purchase_fail') {
+		return null
+	}
+
 	return (
 		<Fragment>
 			<TokenSeriesDetailModal tokens={[localToken]} />
