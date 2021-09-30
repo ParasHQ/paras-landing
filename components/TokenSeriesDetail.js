@@ -197,20 +197,21 @@ const TokenSeriesDetail = ({ token, className }) => {
 									<Button size="md" onClick={onClickBuy} isFullWidth>
 										{token.price === '0' ? 'Free' : `Buy for ${formatNearAmount(token.price)} Ⓝ`}
 									</Button>
-									{parseFloat(formatNearAmount(token.price)) >
-										parseFloat(formatNearAmount(token.lowest_price)) && (
-										<Button
-											size="md"
-											className="mt-2"
-											variant="secondary"
-											onClick={() => setActiveTab('owners')}
-											isFullWidth
-										>
-											{localeLn('Buy for {price} on Secondary Marketplace', {
-												price: formatNearAmount(token.lowest_price),
-											})}
-										</Button>
-									)}
+									{token.lowest_price &&
+										parseFloat(formatNearAmount(token.price)) >
+											parseFloat(formatNearAmount(token.lowest_price)) && (
+											<Button
+												size="md"
+												className="mt-2"
+												variant="secondary"
+												onClick={() => setActiveTab('owners')}
+												isFullWidth
+											>
+												{localeLn('Buy for {price} on Secondary Marketplace', {
+													price: formatNearAmount(token.lowest_price),
+												})}
+											</Button>
+										)}
 								</>
 							) : (
 								<Button size="md" isFullWidth isDisabled>
