@@ -1,5 +1,6 @@
+import { useIntl } from 'hooks/useIntl'
 import Link from 'next/link'
-import { useIntl } from '../hooks/useIntl'
+
 export const PublicationType = ({ path }) => {
 	const { localeLn } = useIntl()
 	return (

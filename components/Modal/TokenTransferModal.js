@@ -9,7 +9,7 @@ import { IconX } from 'components/Icons'
 import getConfig from 'config/near'
 import Axios from 'axios'
 import { useToast } from 'hooks/useToast'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const TokenTransferModal = ({ show, onClose, data }) => {

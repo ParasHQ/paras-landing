@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
+
 const Custom404 = () => {
 	const { localeLn } = useIntl()
 	return (

@@ -3,20 +3,20 @@ import axios from 'axios'
 import { convertFromRaw, convertToRaw, EditorState } from 'draft-js'
 import { useRouter } from 'next/router'
 
-import near from '../lib/near'
-import { useToast } from '../hooks/useToast'
+import near from 'lib/near'
+import { useToast } from 'hooks/useToast'
 import {
 	compressImg,
 	dataURLtoFile,
 	parseGetTokenIdfromUrl,
 	parseImgUrl,
 	readFileAsUrl,
-} from '../utils/common'
+} from 'utils/common'
 import TextEditor from './TextEditor'
-import Modal from './Modal'
-import Card from './Card'
-import usePreventRouteChangeIf from '../hooks/usePreventRouteChange'
-import { useIntl } from '../hooks/useIntl'
+import Modal from '../Modal'
+import Card from '../Card/Card'
+import usePreventRouteChangeIf from 'hooks/usePreventRouteChange'
+import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 let redirectUrl = null

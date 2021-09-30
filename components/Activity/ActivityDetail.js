@@ -3,17 +3,16 @@ import Link from 'next/link'
 import { FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton } from 'react-share'
 import cachios from 'cachios'
 
-import Card from './Card'
+import Card from './Card/Card'
 import LinkToProfile from './LinkToProfile'
 import Modal from './Modal'
 
-import useStore from '../lib/store'
-import { parseImgUrl, timeAgo } from '../utils/common'
-import TokenSeriesDetailModal from './TokenSeriesDetailModal'
+import { parseImgUrl, timeAgo } from 'utils/common'
+import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
+import TokenDetailModal from 'components/Token/TokenDetailModal'
 import { useRouter } from 'next/router'
-import CopyLink from './CopyLink'
-import { useIntl } from '../hooks/useIntl'
-import TokenDetailModal from './TokenDetailModal'
+import CopyLink from './Common/CopyLink'
+import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
 export const descriptionMaker = (activity) => {
@@ -88,7 +87,6 @@ export const descriptionMaker = (activity) => {
 
 const Activity = ({ activity }) => {
 	const { localeLn } = useIntl()
-	const { nearUsdPrice } = useStore()
 	const type = activity.type
 
 	if (type === 'add_market_data' || type === 'update_market_data') {

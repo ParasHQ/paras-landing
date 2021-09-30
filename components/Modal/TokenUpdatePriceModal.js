@@ -7,7 +7,7 @@ import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const TokenUpdatePriceModal = ({ show, onClose, data }) => {

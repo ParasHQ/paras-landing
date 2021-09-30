@@ -5,7 +5,7 @@ import near from 'lib/near'
 import LoginModal from './LoginModal'
 import { GAS_FEE } from 'config/constants'
 import { sentryCaptureException } from 'lib/sentry'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 
 const TokenBurnModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)

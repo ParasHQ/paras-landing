@@ -6,7 +6,7 @@ import {
 	TwitterIcon,
 	TwitterShareButton,
 } from 'react-share'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const ShareComponent = ({ title, shareUrl }) => {
 	const { localeLn } = useIntl()
 	return (

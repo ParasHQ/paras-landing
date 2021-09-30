@@ -1,12 +1,13 @@
 import axios from 'axios'
 import { sentryCaptureException } from 'lib/sentry'
 import { useState } from 'react'
-import { useToast } from '../hooks/useToast'
-import near from '../lib/near'
-import useStore from '../lib/store'
-import { checkUrl, parseImgUrl } from '../utils/common'
-import ImgCrop from './ImgCrop'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
+import useStore from 'lib/store'
+import { useToast } from 'hooks/useToast'
+import { checkUrl, parseImgUrl } from 'utils/common'
+import near from 'lib/near'
+import ImgCrop from 'components/ImgCrop'
+
 const ProfileEdit = ({ close }) => {
 	const { localeLn } = useIntl()
 	const store = useStore()

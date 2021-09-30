@@ -6,7 +6,7 @@ import LoginModal from './LoginModal'
 import { GAS_FEE } from 'config/constants'
 import { InputText } from 'components/Common/form'
 import { IconX } from 'components/Icons'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const TokenSeriesBurnModal = ({ show, onClose, data }) => {

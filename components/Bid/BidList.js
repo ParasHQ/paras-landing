@@ -1,40 +1,38 @@
+import { useEffect, useState } from 'react'
 import Axios from 'axios'
+import LinkToProfile from './LinkToProfile'
+import { parseImgUrl, prettyBalance, timeAgo } from 'utils/common'
+import useSWR from 'swr'
+import Link from 'next/link'
+import useStore from 'lib/store'
+import Modal from 'components/Modal'
+import near from 'lib/near'
+import PlaceBidModal from 'components/Modal/PlaceBidModal'
 import JSBI from 'jsbi'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
-import AcceptBidModal from '../components/AcceptBidModal'
-import Card from '../components/Card'
-import TokenSeriesDetailModal from '../components/TokenSeriesDetailModal'
-import Modal from '../components/Modal'
-import PlaceBidModal from '../components/PlaceBidModal'
-import { useToast } from '../hooks/useToast'
-import near from '../lib/near'
-import useStore from '../lib/store'
-import { parseImgUrl, prettyBalance, timeAgo } from '../utils/common'
-import { useIntl } from '../hooks/useIntl'
+import { useToast } from 'hooks/useToast'
+import AcceptBidModal from 'components/Modal/AcceptBidModal'
+import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
-const Bid = ({ tokenId, data, updateBidData }) => {
+const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 	const store = useStore()
 	const toast = useToast()
-	const router = useRouter()
-	const [isLoading, setIsLoading] = useState(false)
-	const [token, setToken] = useState(null)
 	const [showModal, setShowModal] = useState('')
+	const [isLoading, setIsLoading] = useState(false)
 	const { localeLn } = useIntl()
-	useEffect(() => {
-		fetchData()
-	}, [])
-
-	const fetchData = async () => {
-		const resp = await Axios.get(`${process.env.API_URL}/tokens?tokenId=${tokenId}`)
-		setToken(resp.data.data.results[0])
+	const fetcher = async (key) => {
+		const resp = await Axios.get(`${process.env.API_URL}/${key}`)
+		if (resp.data.data.results.length > 0) {
+			return resp.data.data.results[0]
+		} else {
+			return {}
+		}
 	}
 
+	const { data: profile } = useSWR(`profiles?accountId=${data.accountId}`, fetcher)
+
 	const acceptBid = async () => {
-		const userOwnership = getUserOwnership(store.currentUser)
 		const quantity =
 			data.bidMarketData.quantity > userOwnership.quantity
 				? userOwnership.quantity.toString()
@@ -64,6 +62,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 		setIsLoading(true)
 		try {
 			await near.contract.acceptBidMarketData(params, '50000000000000')
+
 			const balance = await near.wallet.account().getAccountBalance()
 			store.setUserBalance(balance)
 
@@ -78,8 +77,9 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 				type: 'success',
 				duration: 2500,
 			})
-			updateBidData(data.id)
+			fetchBid()
 		} catch (err) {
+			sentryCaptureException(err)
 			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
 
 			toast.show({
@@ -127,10 +127,16 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			await near.contract.addBidMarketData(params, '50000000000000', attachedDeposit.toString())
 		} catch (err) {
 			sentryCaptureException(err)
+			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{msg}</div>,
+				type: 'error',
+				duration: 2500,
+			})
 		}
 	}
 
-	const cancelBid = async (updateData = true) => {
+	const cancelBid = async (fetchAfterCancel = true) => {
 		const params = {
 			ownerId: data.accountId,
 			tokenId: token.tokenId,
@@ -138,9 +144,9 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 		setIsLoading(true)
 		try {
 			await near.contract.deleteBidMarketData(params, '50000000000000')
-			updateData && setIsLoading(false)
-			updateData && updateBidData(data.id)
-			updateData &&
+			fetchAfterCancel && setIsLoading(false)
+			fetchAfterCancel && fetchBid()
+			fetchAfterCancel &&
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
@@ -153,7 +159,9 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			const balance = await near.wallet.account().getAccountBalance()
 			store.setUserBalance(balance)
 		} catch (err) {
+			sentryCaptureException(err)
 			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
+
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">{msg}</div>,
 				type: 'error',
@@ -163,17 +171,8 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 		}
 	}
 
-	const getUserOwnership = (userId) => {
-		if (token) {
-			const ownership = token.ownerships.find((ownership) => ownership.ownerId === userId)
-			return ownership
-		}
-		return null
-	}
-
 	return (
 		<>
-			<TokenSeriesDetailModal tokens={[token]} />
 			{showModal === 'acceptBid' && (
 				<AcceptBidModal
 					data={data}
@@ -181,12 +180,11 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 					onClose={() => setShowModal('')}
 					onSubmitForm={acceptBid}
 					token={token}
-					userOwnership={getUserOwnership(store.currentUser)}
+					userOwnership={userOwnership}
 				/>
 			)}
 			{showModal === 'updateBid' && (
 				<PlaceBidModal
-					isUpdate={true}
 					bidAmount={prettyBalance(data.bidMarketData.amount, 24, 4)}
 					bidQuantity={data.bidMarketData.quantity}
 					isSubmitting={isLoading}
@@ -218,87 +216,122 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 					</div>
 				</Modal>
 			)}
-			<div className="border-2 border-dashed my-4 p-4 md:py-6 md:px-8 rounded-md border-gray-800">
-				<div className="flex items-center">
-					<div className="w-40 h-full">
-						<Card
-							imgUrl={parseImgUrl(token?.metadata?.image, null, {
-								width: `300`,
-							})}
-							imgBlur={token?.metadata?.blurhash}
-							token={{
-								name: token?.metadata?.name,
-								collection: token?.metadata?.collection,
-								description: token?.metadata?.description,
-								creatorId: token?.creatorId,
-								supply: token?.supply,
-								tokenId: token?.tokenId,
-								createdAt: token?.createdAt,
-							}}
-							initialRotate={{
-								x: 0,
-								y: 0,
-							}}
-							disableFlip={true}
-						/>
-					</div>
-					<div className="flex-1 md:flex ml-4 md:ml-6 justify-between items-center">
-						<div className="text-gray-100 truncate cursor-pointer">
-							<Link
-								href={{
-									pathname: router.pathname,
-									query: {
-										...router.query,
-										...{ tokenId: token?.tokenId },
-										...{ prevAs: router.asPath },
-									},
-								}}
-								as={`/token/${token?.tokenId}`}
-								scroll={false}
-								shallow
-							>
-								<div className="font-bold text-2xl">{token?.metadata?.name}</div>
-							</Link>
-							<p className="opacity-75">{token?.metadata?.collection}</p>
-							<div className="mt-4 mb-6">
-								{`Bid ${prettyBalance(data.bidMarketData.amount, 24, 4)} Ⓝ for ${
-									data.bidMarketData.quantity
-								} pcs`}
+			<div className="m-auto border-2 border-dashed my-4 p-2 rounded-md">
+				<div className="flex justify-between items-center">
+					<div className="flex items-center overflow-hidden">
+						<Link href={`/${data.accountId}`}>
+							<div className="w-8 h-8 flex-shrink-0 rounded-full overflow-hidden cursor-pointer bg-primary">
+								{profile && (
+									<img
+										className="object-cover"
+										src={parseImgUrl(profile.imgUrl, null, {
+											width: `300`,
+										})}
+									/>
+								)}
 							</div>
-							<p className="mt-2 text-sm opacity-50 mb-6 md:mb-0">
-								{token && timeAgo.format(data.createdAt)}
-							</p>
-						</div>
-						<div className="flex flex-col">
-							{getUserOwnership(store.currentUser) && store.currentUser !== data.accountId ? (
-								<button
-									onClick={() => setShowModal('acceptBid')}
-									className="font-semibold w-32 rounded-md border-2 border-primary bg-primary text-white mb-2"
-								>
-									{localeLn('Accept')}
-								</button>
-							) : (
-								<>
-									<button
-										onClick={() => setShowModal('updateBid')}
-										className="font-semibold w-32 rounded-md border-2 border-primary bg-primary text-white mb-2"
-									>
-										{localeLn('Update')}
-									</button>
-									<button
-										className="font-semibold w-32 rounded-md border-2 bg-red-600 text-white border-red-600 mb-2"
-										onClick={() => setShowModal('cancelBid')}
-									>
-										{localeLn('Cancel')}
-									</button>
-								</>
-							)}
+						</Link>
+						<div className="px-2">
+							<LinkToProfile accountId={data.accountId} len={20} />
 						</div>
 					</div>
+					<p className="mt-1 text-sm">{timeAgo.format(data.createdAt)}</p>
+				</div>
+				<div className="flex items-center justify-between mt-2">
+					<div>
+						<span>
+							{localeLn('Bid')} {prettyBalance(data.bidMarketData.amount, 24, 4)} Ⓝ
+						</span>
+						<span>
+							{' '}
+							{localeLn('for')} {data.bidMarketData.quantity} pcs
+						</span>
+					</div>
+					{userOwnership && store.currentUser !== data.accountId && (
+						<button
+							className="font-semibold w-24 rounded-md bg-primary text-white"
+							onClick={() => setShowModal('acceptBid')}
+						>
+							{localeLn('Accept')}
+						</button>
+					)}
+					{store.currentUser === data.accountId && (
+						<div className="flex space-x-1">
+							<button
+								onClick={() => setShowModal('updateBid')}
+								className="font-semibold w-24 rounded-md border-primary border-2 text-primary"
+							>
+								Update
+							</button>
+							<div
+								onClick={() => setShowModal('cancelBid')}
+								className="border-2 border-red-700 px-1 flex items-center justify-center rounded-md"
+							>
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 16 16"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										fillRule="evenodd"
+										clipRule="evenodd"
+										d="M8.00008 9.41423L3.70718 13.7071L2.29297 12.2929L6.58586 8.00001L2.29297 3.70712L3.70718 2.29291L8.00008 6.5858L12.293 2.29291L13.7072 3.70712L9.41429 8.00001L13.7072 12.2929L12.293 13.7071L8.00008 9.41423Z"
+										fill="#c53030"
+									/>
+								</svg>
+							</div>
+						</div>
+					)}
 				</div>
 			</div>
 		</>
 	)
 }
 
-export default Bid
+const BidList = ({ userOwnership, token }) => {
+	const [bidList, setBidList] = useState([])
+	const [isFetching, setIsFetching] = useState(true)
+	const { localeLn } = useIntl()
+	useEffect(() => {
+		_fetchData()
+	}, [])
+
+	const _fetchData = async () => {
+		const res = await Axios(`${process.env.API_URL}/bids?tokenId=${token.tokenId}`)
+		const newData = await res.data.data
+
+		setBidList(newData.results)
+		setIsFetching(false)
+	}
+
+	return (
+		<div>
+			{bidList.length === 0 && !isFetching && (
+				<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
+					<p className="text-gray-500 py-8 px-8">{localeLn('No bidding yet')}</p>
+				</div>
+			)}
+			{isFetching && (
+				<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
+					<p className="my-2 text-center">{localeLn('Loading...')}</p>
+				</div>
+			)}
+			{bidList.length !== 0 &&
+				bidList.map((bid) => {
+					return (
+						<BidItem
+							key={bid._id}
+							data={bid}
+							userOwnership={userOwnership}
+							token={token}
+							fetchBid={_fetchData}
+						/>
+					)
+				})}
+		</div>
+	)
+}
+
+export default BidList

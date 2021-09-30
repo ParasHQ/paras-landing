@@ -1,9 +1,9 @@
 import Head from 'next/head'
 
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import PublicationEditor from '../../components/PublicationEditor'
-import { useIntl } from '../../hooks/useIntl'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import PublicationEditor from 'components/Publication/PublicationEditor'
+import { useIntl } from 'hooks/useIntl'
 
 const CreatePublication = () => {
 	const { localeLn } = useIntl()

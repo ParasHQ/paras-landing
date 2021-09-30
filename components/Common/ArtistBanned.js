@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import cachios from 'cachios'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const ArtistBanned = ({ creatorId }) => {
 	const [artistData, setArtistData] = useState(null)
 	const { localeLn } = useIntl()

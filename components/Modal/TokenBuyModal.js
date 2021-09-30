@@ -5,8 +5,9 @@ import near from 'lib/near'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import { GAS_FEE } from 'config/constants'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import { event } from 'lib/gtag'
 
 const TokenBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
@@ -16,6 +17,12 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 			setShowLogin(true)
 			return
 		}
+
+		event({
+			action: 'confirm_purchase_nft',
+			category: 'token_detail',
+			label: data.token_id,
+		})
 
 		try {
 			const params = {

@@ -9,12 +9,12 @@ import createInlineToolbarPlugin from '@draft-js-plugins/inline-toolbar'
 import createLinkifyPlugin from '@draft-js-plugins/linkify'
 import createVideoPlugin from '@draft-js-plugins/video'
 
-import toolbarStyles from '../styles/toolbar.module.css'
-import inlineToolbarStyles from '../styles/inlinetoolbar.module.css'
-import linkStyles from '../styles/linkStyles.module.css'
-import buttonStyles from '../styles/button.module.css'
+import toolbarStyles from 'styles/toolbar.module.css'
+import inlineToolbarStyles from 'styles/inlinetoolbar.module.css'
+import linkStyles from 'styles/linkStyles.module.css'
+import buttonStyles from 'styles/button.module.css'
 
-import { parseImgUrl } from '../utils/common'
+import { parseImgUrl } from 'utils/common'
 
 const focusPlugin = createFocusPlugin({
 	theme: {

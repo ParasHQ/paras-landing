@@ -4,14 +4,14 @@ import { useRouter } from 'next/router'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import Head from 'next/head'
 
-import Nav from '../components/Nav'
-import CardList from '../components/CardList'
-import Footer from '../components/Footer'
-import useStore from '../lib/store'
-import FilterMarket from '../components/FilterMarket'
-import { parseSortQuery } from '../utils/common'
-import CardListLoader from '../components/CardListLoader'
-import { useIntl } from '../hooks/useIntl'
+import Nav from 'components/Nav'
+import CardList from 'components/TokenSeries/CardList'
+import Footer from 'components/Footer'
+import useStore from 'lib/store'
+import FilterMarket from 'components/Filter/FilterMarket'
+import { parseSortQuery } from 'utils/common'
+import CardListLoader from 'components/Card/CardListLoader'
+import { useIntl } from 'hooks/useIntl'
 const LIMIT = 12
 
 export default function SearchPage({ searchQuery }) {

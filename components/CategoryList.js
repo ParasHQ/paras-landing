@@ -1,12 +1,17 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import FilterMarket from './FilterMarket'
+import FilterMarket from 'components/Filter/FilterMarket'
 import Scrollbars from 'react-custom-scrollbars'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 
 const CategoryList = ({ listCategory, categoryId = '' }) => {
 	const router = useRouter()
 	const { localeLn } = useIntl()
+
+	if (listCategory.length === 0) {
+		return null
+	}
+
 	return (
 		<div className="mt-6 flex items-end justify-between">
 			<Scrollbars

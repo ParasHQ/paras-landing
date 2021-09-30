@@ -3,12 +3,12 @@ import Head from 'next/head'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import Bid from '../components/Bid'
-import Footer from '../components/Footer'
-import Nav from '../components/Nav'
-import useStore from '../lib/store'
+import Bid from 'components/Bid/Bid'
+import Footer from 'components/Footer'
+import Nav from 'components/Nav'
+import useStore from 'lib/store'
 
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const MyBids = () => {
 	const { localeLn } = useIntl()
 	const store = useStore()

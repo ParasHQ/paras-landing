@@ -2,13 +2,15 @@ import { Fragment, useEffect, useState } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
 
-import { parseImgUrl, prettyBalance } from '../utils/common'
-import Card from './Card'
+import { parseImgUrl, prettyBalance } from 'utils/common'
+import Card from 'components/Card/Card'
 import { useRouter } from 'next/router'
-import TokenSeriesDetailModal from './TokenSeriesDetailModal'
-import useStore from '../lib/store'
+
+import useStore from 'lib/store'
 import JSBI from 'jsbi'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
+import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
+
 const EmbeddedCard = ({ tokenId }) => {
 	const store = useStore()
 	const router = useRouter()

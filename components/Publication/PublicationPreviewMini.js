@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import Axios from 'axios'
 import Link from 'next/link'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
+
 const PublicationPreviewMini = ({ data }) => {
 	return (
 		<div className="m-auto border-2 border-dashed my-4 p-2 rounded-md">

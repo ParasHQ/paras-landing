@@ -14,7 +14,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const FETCH_TOKENS_LIMIT = 12
 
 const TabOwners = ({ localToken }) => {

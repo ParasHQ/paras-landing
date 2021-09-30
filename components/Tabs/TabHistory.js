@@ -4,7 +4,7 @@ import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
 import { timeAgo } from 'utils/common'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const FETCH_TOKENS_LIMIT = 12
 
 const TabHistory = ({ localToken }) => {

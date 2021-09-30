@@ -1,8 +1,9 @@
 import { useRouter } from 'next/router'
 import { Fragment, useState } from 'react'
-import { parseImgUrl, prettyTruncate } from '../utils/common'
-import CopyLink from './CopyLink'
-import { useIntl } from '../hooks/useIntl'
+import { parseImgUrl, prettyTruncate } from 'utils/common'
+import CopyLink from '../Common/CopyLink'
+import { useIntl } from 'hooks/useIntl'
+
 const Profile = ({ userProfile = {}, activeTab }) => {
 	const router = useRouter()
 	const { localeLn } = useIntl()

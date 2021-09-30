@@ -2,7 +2,7 @@ import TokenInfoCopy from 'components/TokenInfoCopy'
 import Link from 'next/link'
 import ReactLinkify from 'react-linkify'
 import { parseImgUrl } from 'utils/common'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const TabInfo = ({ localToken, isNFT }) => {
 	const { localeLn } = useIntl()
 	const collection = localToken.metadata.collection_id

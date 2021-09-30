@@ -6,7 +6,7 @@ import Slider from 'react-slick'
 import LinkToProfile from 'components/LinkToProfile'
 import HomeFeaturedLoader from 'components/Home/Loaders/Featured'
 import HomePublicationLoader from 'components/Home/Loaders/PublicationList'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const FeaturedPost = ({ post = {} }) => {
 	return (
 		<div className="publication-card">

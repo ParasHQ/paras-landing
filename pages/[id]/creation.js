@@ -2,10 +2,10 @@ import axios from 'axios'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import CardList from '../../components/CardList'
-import Footer from '../../components/Footer'
-import Nav from '../../components/Nav'
-import Profile from '../../components/Profile'
+import CardList from 'components/TokenSeries/CardList'
+import Footer from 'components/Footer'
+import Nav from 'components/Nav'
+import Profile from 'components/Profile/Profile'
 
 const LIMIT = 12
 

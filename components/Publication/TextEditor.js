@@ -23,10 +23,10 @@ import {
 	Toolbar,
 	videoPlugin,
 } from './TextEditorPlugin'
-import { checkUrl, compressImg, readFileAsUrl } from '../utils/common'
-import { useToast } from '../hooks/useToast'
-import Modal from './Modal'
-import { useIntl } from '../hooks/useIntl'
+import { checkUrl, compressImg, readFileAsUrl } from 'utils/common'
+import { useToast } from 'hooks/useToast'
+import Modal from '../Modal'
+import { useIntl } from 'hooks/useIntl'
 const TextEditor = ({
 	content,
 	readOnly = false,

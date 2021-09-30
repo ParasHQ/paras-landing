@@ -3,14 +3,14 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import PublicationList from '../../components/PublicationList'
-import PublicationCardListLoader from '../../components/Publication/PublicationCardListLoader'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import PublicationList from 'components/Publication/PublicationList'
+import PublicationCardListLoader from 'components/Publication/PublicationCardListLoader'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import useStore from '../../lib/store'
-import { useIntl } from '../../hooks/useIntl'
+import useStore from 'lib/store'
+import { useIntl } from 'hooks/useIntl'
 
 const LIMIT = 6
 

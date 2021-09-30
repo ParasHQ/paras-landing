@@ -1,13 +1,14 @@
 import axios from 'axios'
 import { sentryCaptureException } from 'lib/sentry'
 import { useState } from 'react'
-import { useToast } from '../hooks/useToast'
-import near from '../lib/near'
-import useStore from '../lib/store'
-import { parseImgUrl } from '../utils/common'
-import Card from './Card'
-import Modal from './Modal'
-import { useIntl } from '../hooks/useIntl'
+import { useToast } from 'hooks/useToast'
+import near from 'lib/near'
+import useStore from 'lib/store'
+import { parseImgUrl } from 'utils/common'
+import Card from 'components/Card/Card'
+import Modal from 'components/Modal'
+import { useIntl } from 'hooks/useIntl'
+
 const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 	const { localeLn } = useIntl()
 	const [tokenUrl, setTokenUrl] = useState('')

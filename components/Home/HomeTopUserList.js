@@ -6,7 +6,7 @@ import LinkToProfile from 'components/LinkToProfile'
 import Scrollbars from 'react-custom-scrollbars'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import HomeTopUsersLoader from 'components/Home/Loaders/TopUsers'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const renderThumb = ({ style, ...props }) => {
 	return (
 		<div

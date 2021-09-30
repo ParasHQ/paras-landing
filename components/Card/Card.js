@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 // import { Blurhash } from 'react-blurhash'
 
 const Card = ({

@@ -7,7 +7,7 @@ import LoginModal from './LoginModal'
 import JSBI from 'jsbi'
 import { GAS_FEE, STORAGE_MINT_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { event } from 'lib/gtag'
 

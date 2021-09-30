@@ -6,7 +6,7 @@ import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const TokenStorageModal = ({ show, onClose }) => {

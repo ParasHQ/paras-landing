@@ -1,9 +1,9 @@
 import axios from 'axios'
 import Head from 'next/head'
 
-import Nav from '../../../components/Nav'
-import Footer from '../../../components/Footer'
-import PublicationEditor from '../../../components/PublicationEditor'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import PublicationEditor from 'components/Publication/PublicationEditor'
 
 const Edit = ({ pubDetail }) => {
 	return (

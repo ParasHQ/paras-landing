@@ -1,8 +1,9 @@
 import { useForm } from 'react-hook-form'
-import useStore from '../lib/store'
-import { prettyBalance } from '../utils/common'
-import Modal from './Modal'
-import { useIntl } from '../hooks/useIntl'
+import useStore from 'lib/store'
+import { prettyBalance } from 'utils/common'
+import Modal from 'components/Modal'
+import { useIntl } from 'hooks/useIntl'
+
 const PlaceBidModal = ({
 	localToken,
 	onSubmitForm,

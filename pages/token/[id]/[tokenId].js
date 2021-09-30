@@ -3,7 +3,7 @@ import Nav from 'components/Nav'
 import Head from 'next/head'
 import Footer from 'components/Footer'
 import Error from '../../404'
-import TokenDetail from 'components/TokenDetail'
+import TokenDetail from 'components/Token/TokenDetail'
 import { parseImgUrl } from 'utils/common'
 import { sentryCaptureException } from 'lib/sentry'
 

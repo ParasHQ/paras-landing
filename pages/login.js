@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import near from '../lib/near'
-import Nav from '../components/Nav'
-import useStore from '../lib/store'
-import Footer from '../components/Footer'
-import { useIntl } from '../hooks/useIntl'
+import near from 'lib/near'
+import Nav from 'components/Nav'
+import useStore from 'lib/store'
+import Footer from 'components/Footer'
+import { useIntl } from 'hooks/useIntl'
 const LoginPage = () => {
 	const store = useStore()
 	const router = useRouter()

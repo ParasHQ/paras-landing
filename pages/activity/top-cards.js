@@ -2,11 +2,11 @@ import { useState } from 'react'
 import axios from 'axios'
 import Head from 'next/head'
 
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import CardStats from '../../components/Stats/CardStats'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import CardStats from 'components/Stats/CardStats'
 import { useEffect } from 'react'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const LIMIT = 5
 
 const TopCardsPage = () => {

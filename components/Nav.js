@@ -3,16 +3,16 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import Hamburger from 'react-hamburgers'
 
-import near from '../lib/near'
-import useStore from '../lib/store'
+import near from 'lib/near'
+import useStore from 'lib/store'
 import Modal from './Modal'
-import ProfileEdit from './ProfileEdit'
-import { parseImgUrl, prettyBalance } from '../utils/common'
-import { useIntl } from '../hooks/useIntl'
-import { useToast } from '../hooks/useToast'
+import ProfileEdit from './Profile/ProfileEdit'
+import { parseImgUrl, prettyBalance } from 'utils/common'
+import { useIntl } from 'hooks/useIntl'
+import { useToast } from 'hooks/useToast'
 import Setting from './Setting'
 import Cookies from 'js-cookie'
-import NotificationList from './NotificationList'
+import NotificationList from './Notification/NotificationList'
 
 const User = () => {
 	const store = useStore()

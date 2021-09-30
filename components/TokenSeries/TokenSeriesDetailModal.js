@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
-import Modal from './Modal'
 import TokenSeriesDetail from './TokenSeriesDetail'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
+import Modal from 'components/Modal'
+
 function TokenSeriesDetailModal({ tokens = [] }) {
 	const router = useRouter()
 	const { localeLn } = useIntl()

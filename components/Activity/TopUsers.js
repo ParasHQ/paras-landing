@@ -1,9 +1,10 @@
 import axios from 'axios'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { parseImgUrl, prettyBalance } from '../utils/common'
-import LinkToProfile from './LinkToProfile'
-import { useIntl } from '../hooks/useIntl'
+import { parseImgUrl, prettyBalance } from 'utils/common'
+import LinkToProfile from '../LinkToProfile'
+import { useIntl } from 'hooks/useIntl'
+
 const TopUsers = ({ data = [], className, userType = 'buyer', linkTo }) => {
 	const { localeLn } = useIntl()
 	return (

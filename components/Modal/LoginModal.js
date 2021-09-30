@@ -2,7 +2,7 @@ import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import { IconXCircle } from 'components/Icons'
 import { useRouter } from 'next/router'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 	const router = useRouter()
 	const { localeLn } = useIntl()

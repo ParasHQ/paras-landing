@@ -1,9 +1,9 @@
 import Axios from 'axios'
 import { sentryCaptureException } from 'lib/sentry'
 import { useEffect, useState } from 'react'
-import { useToast } from '../hooks/useToast'
-import near from '../lib/near'
-import { useIntl } from '../hooks/useIntl'
+import { useToast } from 'hooks/useToast'
+import near from 'lib/near'
+import { useIntl } from 'hooks/useIntl'
 const Setting = ({ close }) => {
 	const { localeLn } = useIntl()
 	const toast = useToast()

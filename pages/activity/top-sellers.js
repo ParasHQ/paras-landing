@@ -3,10 +3,10 @@ import axios from 'axios'
 import router from 'next/router'
 import Head from 'next/head'
 
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import UserTransactionList from '../../components/Activity/UserTransactionDetail'
-import { useIntl } from '../../hooks/useIntl'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import UserTransactionList from 'components/Activity/UserTransactionDetail'
+import { useIntl } from 'hooks/useIntl'
 const LIMIT = 30
 
 const TopSellersPage = ({ topUser }) => {

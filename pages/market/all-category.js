@@ -1,11 +1,11 @@
 import Axios from 'axios'
 import Head from 'next/head'
 import { useEffect } from 'react'
-import CategoryList from '../../components/CategoryList'
-import Footer from '../../components/Footer'
-import Nav from '../../components/Nav'
-import useStore from '../../lib/store'
-import { useIntl } from '../../hooks/useIntl'
+import CategoryList from 'components/CategoryList'
+import Footer from 'components/Footer'
+import Nav from 'components/Nav'
+import useStore from 'lib/store'
+import { useIntl } from 'hooks/useIntl'
 
 const AllCategory = () => {
 	const store = useStore()

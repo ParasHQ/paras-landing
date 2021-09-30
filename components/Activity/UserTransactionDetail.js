@@ -4,15 +4,15 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import Scrollbars from 'react-custom-scrollbars'
 
-import Card from '../Card'
+import Card from '../Card/Card'
 import LinkToProfile from '../LinkToProfile'
 
-import { parseImgUrl } from '../../utils/common'
+import { parseImgUrl } from 'utils/common'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import cachios from 'cachios'
-import TokenDetailModal from 'components/TokenDetailModal'
+import TokenDetailModal from 'components/Token/TokenDetailModal'
 
 const renderThumb = ({ style, ...props }) => {
 	return (

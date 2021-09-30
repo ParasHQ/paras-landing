@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { useToast } from '../hooks/useToast'
-import { useIntl } from '../hooks/useIntl'
+import { useToast } from 'hooks/useToast'
+import { useIntl } from 'hooks/useIntl'
 
 const Footer = () => {
 	const toast = useToast()

@@ -1,8 +1,10 @@
 import Head from 'next/head'
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
-import FaqsList from '../components/FaqList'
-import { useIntl } from '../hooks/useIntl'
+
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import FaqsList from 'components/Faq/FaqList'
+import { useIntl } from 'hooks/useIntl'
+
 const FaqPage = () => {
 	const { localeLn } = useIntl()
 	return (

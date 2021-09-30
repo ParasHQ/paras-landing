@@ -1,14 +1,14 @@
 import Link from 'next/link'
 import { Fragment, useEffect, useRef, useState } from 'react'
 
-import near from '../lib/near'
-import useStore from '../lib/store'
-import { parseImgUrl, prettyTruncate } from '../utils/common'
+import near from 'lib/near'
+import useStore from 'lib/store'
+import { parseImgUrl, prettyTruncate } from 'utils/common'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Scrollbars from 'react-custom-scrollbars'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const LIMIT = 30

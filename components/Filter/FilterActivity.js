@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const FilterActivity = ({ onClickFilter }) => {
 	const filterModalRef = useRef()
 	const router = useRouter()

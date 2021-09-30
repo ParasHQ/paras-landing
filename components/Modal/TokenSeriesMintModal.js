@@ -7,7 +7,7 @@ import LoginModal from './LoginModal'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE, STORAGE_MINT_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const TokenSeriesTransferModal = ({ show, onClose, data }) => {

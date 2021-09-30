@@ -3,7 +3,7 @@ import axios from 'axios'
 import Marquee from 'react-fast-marquee'
 import Link from 'next/link'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const ActivityMarquee = ({ token }) => {
 	return (
 		<div

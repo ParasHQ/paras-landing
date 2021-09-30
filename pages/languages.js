@@ -1,8 +1,8 @@
 import React from 'react'
 import Head from 'next/head'
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
-import { useIntl } from '../hooks/useIntl'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import { useIntl } from 'hooks/useIntl'
 const LanguagesPage = () => {
 	const { localeLn } = useIntl()
 

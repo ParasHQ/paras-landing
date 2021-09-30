@@ -1,21 +1,24 @@
 import { animated } from 'react-spring'
 import { useEffect, useRef } from 'react'
-import Card from '../components/Card'
-import { parseImgUrl, prettyBalance } from '../utils/common'
+import Card from 'components/Card/Card'
+import { parseImgUrl, prettyBalance } from 'utils/common'
 import Link from 'next/link'
-import useStore from '../lib/store'
+import useStore from 'lib/store'
 import { useRouter } from 'next/router'
 import JSBI from 'jsbi'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import CardListLoader from './CardListLoader'
-import TokenDetailModal from './TokenDetailModal'
-import { useIntl } from '../hooks/useIntl'
-const TokenList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnership = false }) => {
+
+import { useIntl } from 'hooks/useIntl'
+import TokenSeriesDetailModal from './TokenSeriesDetailModal'
+import CardListLoader from 'components/Card/CardListLoader'
+
+const CardList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnership = false }) => {
 	const store = useStore()
 	const router = useRouter()
 	const containerRef = useRef()
 	const animValuesRef = useRef(store.marketScrollPersist[name])
 	const { localeLn } = useIntl()
+
 	useEffect(() => {
 		animValuesRef.current = store.marketScrollPersist[name]
 	}, [store.marketScrollPersist[name]])
@@ -62,7 +65,7 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnersh
 
 	return (
 		<div ref={containerRef} className="rounded-md p-4 md:p-0">
-			<TokenDetailModal tokens={tokens} />
+			<TokenSeriesDetailModal tokens={tokens} />
 			{tokens.length === 0 && !hasMore && (
 				<div className="w-full">
 					<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">
@@ -82,20 +85,18 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnersh
 			>
 				<animated.div className="flex flex-wrap select-none">
 					{tokens.map((token) => {
-						const price = token.price
+						const price = token.lowest_price || token.price
 
 						return (
 							<div
-								key={token.token_id}
+								key={token.token_series_id}
 								className={`w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-4 relative ${
 									toggleOwnership &&
 									!_getUserOwnership(store.currentUser, token.ownerships) &&
 									'opacity-25'
 								}`}
 							>
-								<Link
-									href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
-								>
+								<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
 									<a
 										onClick={(e) => {
 											e.preventDefault()
@@ -113,11 +114,11 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnersh
 															pathname: router.pathname,
 															query: {
 																...router.query,
-																...{ tokenId: token.token_id },
+																...{ tokenSeriesId: token.token_series_id },
 																...{ prevAs: router.asPath },
 															},
 														},
-														`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`,
+														`/token/${token.contract_id}::${token.token_series_id}`,
 														{
 															shallow: true,
 															scroll: false,
@@ -127,7 +128,6 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnersh
 												imgBlur={token.metadata.blurhash}
 												token={{
 													title: token.metadata.title,
-													edition_id: token.edition_id,
 													collection: token.metadata.collection || token.contract_id,
 													copies: token.metadata.copies,
 													creatorId: token.metadata.creator_id || token.contract_id,
@@ -139,7 +139,7 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnersh
 								<div className="text-center">
 									<div className="mt-4">
 										<div className="p-2 pb-4">
-											<p className="text-gray-400 text-xs">{localeLn('On sale')}</p>
+											<p className="text-gray-400 text-xs">{localeLn('Start From')}</p>
 											<div className="text-gray-100 text-xl">
 												{price ? (
 													<div>
@@ -166,4 +166,4 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnersh
 	)
 }
 
-export default TokenList
+export default CardList

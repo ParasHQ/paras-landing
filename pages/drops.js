@@ -5,13 +5,13 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Blurhash } from 'react-blurhash'
 
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
-import Card from '../components/Card'
-import TokenSeriesDetailModal from '../components/TokenSeriesDetailModal'
-import { parseImgUrl, prettyBalance } from '../utils/common'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import Card from 'components/Card/Card'
+import { parseImgUrl, prettyBalance } from 'utils/common'
 import ReactLinkify from 'react-linkify'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
+import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 
 export const specialTokenId = [
 	'bafybeihsd32maurfvj2w7bfl2ca2v5zb3fbxf6w7s5chjb5dtriegbvtxy',

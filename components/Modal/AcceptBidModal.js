@@ -1,7 +1,8 @@
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
-import { prettyBalance } from '../utils/common'
-import Modal from './Modal'
-import { useIntl } from '../hooks/useIntl'
+import { prettyBalance } from 'utils/common'
+import Modal from 'components/Modal'
+import { useIntl } from 'hooks/useIntl'
+
 const AcceptBidModal = ({ onClose, token, data, userOwnership, isLoading, onSubmitForm }) => {
 	const { localeLn } = useIntl()
 	const bidTotalForUser =

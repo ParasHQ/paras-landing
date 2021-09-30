@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import Head from 'next/head'
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
-import Modal from '../components/Modal'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import Modal from 'components/Modal'
 import YouTube from 'react-youtube'
 import { HomeMarqueeList } from 'components/Home/HomeMarqueeList'
 import { HomePublicationList } from 'components/Home/HomePublicationList'
 import { HomeTopUserList } from 'components/Home/HomeTopUserList'
 import { HomeCardList } from 'components/Home/HomeCardList'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 
 export default function Home() {
 	const [showVideoModal, setShowVideoModal] = useState(false)

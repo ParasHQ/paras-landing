@@ -1,15 +1,15 @@
 import axios from 'axios'
+import PublicationList from 'components/Publication/PublicationList'
 import { useIntl } from 'hooks/useIntl'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import Footer from '../../components/Footer'
-import Nav from '../../components/Nav'
-import Profile from '../../components/Profile'
-import PublicationCardListLoader from '../../components/Publication/PublicationCardListLoader'
-import PublicationList from '../../components/PublicationList'
-import useStore from '../../lib/store'
+import Footer from 'components/Footer'
+import Nav from 'components/Nav'
+import Profile from 'components/Profile/Profile'
+import PublicationCardListLoader from 'components/Publication/PublicationCardListLoader'
+import useStore from 'lib/store'
 const LIMIT = 6
 
 const Publication = ({ userProfile, accountId }) => {

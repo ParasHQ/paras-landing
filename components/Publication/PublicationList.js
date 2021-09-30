@@ -1,6 +1,6 @@
+import LinkToProfile from 'components/LinkToProfile'
 import Link from 'next/link'
-import { parseImgUrl } from '../utils/common'
-import LinkToProfile from './LinkToProfile'
+import { parseImgUrl } from 'utils/common'
 
 const PublicationList = ({ data }) => {
 	return (

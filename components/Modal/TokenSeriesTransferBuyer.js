@@ -9,7 +9,7 @@ import useStore from 'lib/store'
 import Link from 'next/link'
 import Button from 'components/Common/Button'
 import { IconX } from 'components/Icons'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const FETCH_TOKENS_LIMIT = 12
 
 const TokenSeriesTransferBuyer = ({ show, onClose, data }) => {

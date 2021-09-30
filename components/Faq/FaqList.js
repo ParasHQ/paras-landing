@@ -1,7 +1,8 @@
 import React from 'react'
 
 import Faq from './Faq'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
+
 // this data could come from anywhere
 
 const FaqsList = () => {

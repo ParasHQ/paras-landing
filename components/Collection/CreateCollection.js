@@ -8,7 +8,7 @@ import Axios from 'axios'
 import near from 'lib/near'
 import { useToast } from 'hooks/useToast'
 import { useRouter } from 'next/router'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const CreateCollection = ({ onFinishCreate }) => {

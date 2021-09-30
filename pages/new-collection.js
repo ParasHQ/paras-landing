@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import CreateCollection from 'components/Collection/CreateCollection'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const NewCollection = () => {
 	const { localeLn } = useIntl()
 	return (

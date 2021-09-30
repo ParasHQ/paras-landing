@@ -2,18 +2,18 @@ import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Head from 'next/head'
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
-import useStore from '../lib/store'
-import ActivityDetail from '../components/ActivityDetail'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import useStore from 'lib/store'
+import ActivityDetail from 'components/ActivityDetail'
 import { useRouter } from 'next/router'
-import TopUsers from '../components/TopUsers'
+import TopUsers from 'components/Activity/TopUsers'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
-import FilterActivity from '../components/FilterActivity'
+import FilterActivity from 'components/Filter/FilterActivity'
 import { sentryCaptureException } from 'lib/sentry'
 
 const FETCH_TOKENS_LIMIT = 10
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 
 const ActivityLog = ({ query }) => {
 	const {

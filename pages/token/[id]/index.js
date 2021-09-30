@@ -2,7 +2,7 @@ import axios from 'axios'
 import Head from 'next/head'
 import Error from 'pages/404'
 import Nav from 'components/Nav'
-import TokenSeriesDetail from 'components/TokenSeriesDetail'
+import TokenSeriesDetail from 'components/TokenSeries/TokenSeriesDetail'
 import Footer from 'components/Footer'
 import { parseImgUrl } from 'utils/common'
 

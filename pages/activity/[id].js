@@ -1,8 +1,8 @@
 import axios from 'axios'
 import Head from 'next/head'
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import ActivityDetail, { descriptionMaker } from '../../components/ActivityDetail'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import ActivityDetail, { descriptionMaker } from 'components/ActivityDetail'
 import Error from '../404'
 import { parseImgUrl } from 'utils/common'
 

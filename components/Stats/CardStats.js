@@ -1,12 +1,13 @@
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { parseImgUrl, prettyBalance } from '../../utils/common'
-import Card from '../Card'
-import TokenSeriesDetailModal from '../TokenSeriesDetailModal'
+import { parseImgUrl, prettyBalance } from 'utils/common'
+import Card from '../Card/Card'
+
 import CardStatListLoader from './CardStatListLoader'
 import LinkToProfile from '../LinkToProfile'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
+import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 const CardStats = ({ cardsData, fetchData, hasMore }) => {
 	const [token, setToken] = useState(null)
 	const router = useRouter()
