@@ -12,38 +12,7 @@ import { IconX } from 'components/Icons'
 import { useIntl } from '../../hooks/useIntl'
 const FETCH_TOKENS_LIMIT = 12
 
-const TokenSeriesTransferBuyer = ({
-	show,
-	onClose,
-	data = {
-		token_id: 'paradigm-1:2',
-		comic_id: 'paradigm',
-		chapter_id: 1,
-		edition_id: 2,
-		metadata: {
-			title: 'Paradigm Ch.1 : The Metaverse #2',
-			description:
-				"While waiting for the hackathon's final stage, Abee got transferred into an unknown world",
-			media: 'bafybeih4vvtevzfxtwsq2oadkvg6rtpspih4pyqqegtocwklcmnhe7p5mi',
-			media_hash: null,
-			copies: null,
-			issued_at: '2021-08-21T16:33:28.475Z',
-			expires_at: null,
-			starts_at: null,
-			updated_at: null,
-			extra: null,
-			reference: 'bafybeiaqaxyw2x6yx6vnbntg3dpdqzv2hpq2byffcrbit7dygcksauv3ta',
-			reference_hash: null,
-			blurhash: 'UCQ0XJ~qxu~q00IUayM{00M{M{M{00ayofWB',
-			author_ids: ['afiq.testnet'],
-			page_count: 12,
-			collection: 'Paradigm',
-			subtitle: 'The Metaverse',
-		},
-		owner_id: 'ahnaf.testnet',
-		token_type: 'paradigm-1',
-	},
-}) => {
+const TokenSeriesTransferBuyer = ({ show, onClose, data }) => {
 	const [activeData, setActiveData] = useState(null)
 	const [tokens, setTokens] = useState([])
 	const [page, setPage] = useState(0)
