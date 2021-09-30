@@ -10,7 +10,7 @@ import TabOwners from 'components/Tabs/TabOwners'
 
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
 import near from 'lib/near'
-import { parseImgUrl } from '../utils/common'
+import { capitalize, parseImgUrl } from '../utils/common'
 import TokenMoreModal from './Modal/TokenMoreModal'
 import TokenShareModal from './Modal/TokenShareModal'
 import TokenUpdatePriceModal from './Modal/TokenUpdatePriceModal'
@@ -92,7 +92,7 @@ const TokenDetail = ({ token, className }) => {
 				}`}
 				onClick={() => changeActiveTab(tab)}
 			>
-				<div className="capitalize">{tab}</div>
+				<div className="capitalize">{localeLn(capitalize(tab))}</div>
 			</div>
 		)
 	}

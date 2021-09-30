@@ -62,8 +62,7 @@ const LanguagesPage = () => {
 						{localeLn('Paras is available in the following languages:')}
 					</p>
 				</div>
-				<div>
-					<hr className="my-8 border-gray-50 border-opacity-50 mx-4" />
+				<div className="mt-8">
 					<div className="flex flex-wrap text-gray-100 px-24 py-4 justify-start">
 						<div className="w-64 px-4 mb-12">
 							<div>English</div>
@@ -89,7 +88,7 @@ const LanguagesPage = () => {
 							</div>
 						</div>
 
-						<div className="w-64 px-4 mb-12">
+						<div className="w-64 px-4 mb-12 opacity-50">
 							<div>
 								French <span className="text-xs">(Needs Contributors)</span>
 							</div>
@@ -100,7 +99,7 @@ const LanguagesPage = () => {
 							</div>
 						</div>
 
-						<div className="w-64 px-4 mb-12">
+						<div className="w-64 px-4 mb-12 opacity-50">
 							<div>
 								Korean <span className="text-xs">(Needs Contributors)</span>
 							</div>
@@ -111,7 +110,7 @@ const LanguagesPage = () => {
 							</div>
 						</div>
 
-						<div className="w-64 px-4 mb-12">
+						<div className="w-64 px-4 mb-12 opacity-50">
 							<div>
 								Russian <span className="text-xs">(Needs Contributors)</span>
 							</div>
@@ -122,7 +121,7 @@ const LanguagesPage = () => {
 							</div>
 						</div>
 
-						<div className="w-64 px-4 mb-12">
+						<div className="w-64 px-4 mb-12 opacity-50">
 							<div>
 								Vietnamese <span className="text-xs">(Needs Contributors)</span>
 							</div>
