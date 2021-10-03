@@ -256,7 +256,7 @@ const NotificationList = () => {
 	const [hasNotification, setHasNotification] = useState(false)
 	const { localeLn } = useIntl()
 	useEffect(() => {
-		if (userProfile.has_notification) {
+		if (userProfile?.has_notification) {
 			setHasNotification(true)
 		}
 	}, [userProfile])
