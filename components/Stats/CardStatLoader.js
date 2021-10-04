@@ -8,6 +8,7 @@ const CardStatLoader = (props) => (
 		viewBox="0 0 1200 260"
 		backgroundColor="#1D1D1D"
 		foregroundColor="#282828"
+		uniqueKey="card-stat-loader"
 		{...props}
 	>
 		<rect x="0" y="0" rx="8" ry="8" width="200" height="260" />

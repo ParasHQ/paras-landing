@@ -1,4 +1,4 @@
-const CONTRACT_NAME = process.env.CONTRACT_NAME
+const CONTRACT_NAME = process.env.MARKETPLACE_CONTRACT_ID
 
 function getConfig(env) {
 	switch (env) {
@@ -60,9 +60,7 @@ function getConfig(env) {
 				masterAccount: 'test.near',
 			}
 		default:
-			throw Error(
-				`Unconfigured environment '${env}'. Can be configured in src/config.js.`
-			)
+			throw Error(`Unconfigured environment '${env}'. Can be configured in src/config.js.`)
 	}
 }
 

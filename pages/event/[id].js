@@ -4,14 +4,14 @@ import { useRouter } from 'next/router'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import Head from 'next/head'
 
-import Nav from '../../components/Nav'
-import CardList from '../../components/CardList'
-import Footer from '../../components/Footer'
-import useStore from '../../store'
-import FilterMarket from '../../components/FilterMarket'
-import { parseSortQuery } from '../../utils/common'
+import Nav from 'components/Nav'
+import CardList from 'components/TokenSeries/CardList'
+import Footer from 'components/Footer'
+import useStore from 'lib/store'
+import FilterMarket from 'components/Filter/FilterMarket'
+import { parseSortQuery } from 'utils/common'
 import capitalize from 'capitalize'
-import CardListLoader from '../../components/CardListLoader'
+import CardListLoader from 'components/Card/CardListLoader'
 
 const LIMIT = 12
 
@@ -142,12 +142,12 @@ export default function SearchPage({ collectionName }) {
 const tokensParams = (_page = 0, collectionName, query = {}) => {
 	const params = {
 		collectionSearch: collectionName,
-		excludeTotalBurn: true,
+		exclude_total_burn: true,
 		__sort: parseSortQuery(query.sort),
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
-		...(query.pmin && { minPrice: parseNearAmount(query.pmin) }),
-		...(query.pmax && { maxPrice: parseNearAmount(query.pmax) }),
+		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
+		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 	}
 	return params
 }

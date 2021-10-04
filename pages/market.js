@@ -1,19 +1,20 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import Nav from '../components/Nav'
-import CardList from '../components/CardList'
+import Nav from 'components/Nav'
+import CardList from 'components/TokenSeries/CardList'
 import Head from 'next/head'
-import Footer from '../components/Footer'
-import useStore from '../store'
+import Footer from 'components/Footer'
+import useStore from 'lib/store'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
-import { parseSortQuery } from '../utils/common'
-import CardListLoader from '../components/CardListLoader'
-import CategoryList from '../components/CategoryList'
+import { parseSortQuery } from 'utils/common'
+import CardListLoader from 'components/Card/CardListLoader'
+import CategoryList from 'components/CategoryList'
+import { useIntl } from 'hooks/useIntl'
 
 const LIMIT = 12
 
-export default function MarketPage() {
+function MarketPage({ serverQuery }) {
 	const store = useStore()
 	const router = useRouter()
 
@@ -22,7 +23,7 @@ export default function MarketPage() {
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(true)
 	const [hasMore, setHasMore] = useState(true)
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		getCategory()
 		return () => {
@@ -32,21 +33,25 @@ export default function MarketPage() {
 
 	useEffect(() => {
 		updateFilter(router.query)
-	}, [router.query.sort, router.query.pmin, router.query.pmax])
+	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.is_verified])
 
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
-		const res = await axios(`${process.env.API_URL}/tokens`, {
-			params: tokensParams(0, query),
+		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
+			params: tokensParams(0, query || serverQuery),
 		})
 		setPage(1)
 		setTokens(res.data.data.results)
-		setHasMore(true)
+		if (res.data.data.results.length < LIMIT) {
+			setHasMore(false)
+		} else {
+			setHasMore(true)
+		}
 		setIsFiltering(false)
 	}
 
 	const getCategory = async () => {
-		const res = await axios(`${process.env.API_URL}/categories`)
+		const res = await axios(`${process.env.V2_API_URL}/categories`)
 		store.setCardCategory(res.data.data.results)
 	}
 
@@ -55,8 +60,8 @@ export default function MarketPage() {
 			return
 		}
 		setIsFetching(true)
-		const res = await axios(`${process.env.API_URL}/tokens`, {
-			params: tokensParams(page, router.query),
+		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
+			params: tokensParams(page, router.query || serverQuery),
 		})
 		const newData = await res.data.data
 		const newTokens = [...tokens, ...newData.results]
@@ -82,7 +87,7 @@ export default function MarketPage() {
 				}}
 			></div>
 			<Head>
-				<title>Market — Paras</title>
+				<title>{localeLn('Market — Paras')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -116,23 +121,16 @@ export default function MarketPage() {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="flex justify-center mb-4">
-					<h1 className="text-4xl font-bold text-gray-100 text-center">
-						Market
-					</h1>
+					<h1 className="text-4xl font-bold text-gray-100 text-center">{localeLn('Market')}</h1>
 				</div>
 				<CategoryList listCategory={store.cardCategory} />
 				<div className="mt-4 px-4">
 					{isFiltering ? (
-						<div className="min-h-full border-2 border-dashed border-gray-800 rounded-md">
+						<div className="min-h-full">
 							<CardListLoader />
 						</div>
 					) : (
-						<CardList
-							name="market"
-							tokens={tokens}
-							fetchData={_fetchData}
-							hasMore={hasMore}
-						/>
+						<CardList name="market" tokens={tokens} fetchData={_fetchData} hasMore={hasMore} />
 					)}
 				</div>
 			</div>
@@ -143,12 +141,21 @@ export default function MarketPage() {
 
 const tokensParams = (_page = 0, query) => {
 	const params = {
-		excludeTotalBurn: true,
+		exclude_total_burn: true,
 		__sort: parseSortQuery(query.sort),
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
-		...(query.pmin && { minPrice: parseNearAmount(query.pmin) }),
-		...(query.pmax && { maxPrice: parseNearAmount(query.pmax) }),
+		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
+		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
+		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 	}
 	return params
 }
+
+export async function getServerSideProps({ query }) {
+	return {
+		props: { serverQuery: query },
+	}
+}
+
+export default MarketPage

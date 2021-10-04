@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { readFileAsUrl } from '../utils/common'
-
+import { readFileAsUrl } from 'utils/common'
+import { useIntl } from 'hooks/useIntl'
 let cropper = null
 let height = 0
 
@@ -18,7 +18,7 @@ const ImgCrop = ({
 	const containerRef = useRef(null)
 	const [imgUrl, setImgUrl] = useState('')
 	const [firstLoad, setFirstLoad] = useState(true)
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		const readImg = async () => {
 			const imgUrl = await readFileAsUrl(input)
@@ -110,7 +110,7 @@ const ImgCrop = ({
 							</button>
 						</div>
 						<div className="flex-auto overflow-hidden px-2 font-bold text-2xl">
-							Edit Image
+							{localeLn('Edit Image')}
 						</div>
 						<div className="w-8 flex items-center justify-end">
 							<button>

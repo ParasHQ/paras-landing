@@ -1,11 +1,10 @@
 import axios from 'axios'
 import Head from 'next/head'
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import ActivityDetail, {
-	descriptionMaker,
-} from '../../components/ActivityDetail'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import ActivityDetail, { descriptionMaker } from 'components/Activity/ActivityDetail'
 import Error from '../404'
+import { parseImgUrl } from 'utils/common'
 
 const ActivityDetailPage = ({ errorCode, activity, token }) => {
 	if (errorCode) {
@@ -15,7 +14,7 @@ const ActivityDetailPage = ({ errorCode, activity, token }) => {
 	const headMeta = {
 		title: 'Activity — Paras',
 		description: descriptionMaker(activity, token),
-		image: `${process.env.API_URL}/socialCard/${token.tokenId}`,
+		image: `${parseImgUrl(token.metadata.media)}`,
 	}
 
 	return (
@@ -58,13 +57,32 @@ const ActivityDetailPage = ({ errorCode, activity, token }) => {
 }
 
 export async function getServerSideProps({ params }) {
-	const activityResp = await axios(
-		`${process.env.API_URL}/activities?_id=${params.id}`
-	)
+	const activityResp = await axios.get(`${process.env.V2_API_URL}/activities`, {
+		params: {
+			_id: params.id,
+		},
+	})
+
 	const activity = (await activityResp.data.data.results[0]) || null
-	const tokenResp = await axios(
-		`${process.env.API_URL}/tokens?tokenId=${activity.tokenId}`
-	)
+
+	const query = activity.token_id
+		? {
+				url: `${process.env.V2_API_URL}/token`,
+				params: {
+					token_id: activity.token_id,
+				},
+		  }
+		: {
+				url: `${process.env.V2_API_URL}/token-series`,
+				params: {
+					token_series_id: activity.token_series_id,
+				},
+		  }
+
+	const tokenResp = await axios(query.url, {
+		params: query.params,
+	})
+
 	const token = (await tokenResp.data.data.results[0]) || null
 
 	const errorCode = activity && token ? false : 404

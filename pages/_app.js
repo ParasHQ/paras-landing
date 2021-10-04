@@ -1,11 +1,14 @@
 import { useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import near from '../lib/near'
-import useStore from '../store'
+import near from 'lib/near'
+import useStore from 'lib/store'
 import axios from 'axios'
 import { useRouter } from 'next/router'
-import * as gtag from '../lib/gtag'
-import cookie from '../lib/cookie'
+import { IntlProvider } from 'react-intl'
+import * as locales from '../content/locale'
+import { getLanguage } from '../content/locale'
+import * as gtag from 'lib/gtag'
+import cookie from 'lib/cookie'
 
 import '../styles/font.css'
 import '../styles/tailwind.css'
@@ -15,14 +18,24 @@ import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import 'croppie/croppie.css'
 
-import ToastProvider from '../hooks/useToast'
+import ToastProvider from 'hooks/useToast'
 import { SWRConfig } from 'swr'
+import * as Sentry from '@sentry/nextjs'
+import { sentryCaptureException } from 'lib/sentry'
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
-
 	const router = useRouter()
+	const { locale, defaultLocale, pathname } = router
+	let localeCopy = locales[locale]
+	const defaultLocaleCopy = locales[defaultLocale]
+	localeCopy = localeCopy || defaultLocaleCopy
 
+	let messages =
+		localeCopy[pathname] ||
+		localeCopy['defaultAll'] ||
+		defaultLocaleCopy[pathname] ||
+		defaultLocaleCopy['defaultAll']
 	const counter = async (url) => {
 		// check cookie uid
 		let uid = cookie.get('uid')
@@ -35,7 +48,7 @@ function MyApp({ Component, pageProps }) {
 		}
 		const authHeader = await near.authToken()
 		await axios.post(
-			`${process.env.API_URL}/analytics`,
+			`${process.env.V2_API_URL}/analytics`,
 			{
 				uid: uid,
 				page: url,
@@ -77,20 +90,19 @@ function MyApp({ Component, pageProps }) {
 		if (prevPath) {
 			storage.setItem('prevPath', prevPath)
 		}
-		storage.setItem(
-			'currentPath',
-			`${globalThis.location.pathname}${globalThis.location.search}`
-		)
+		storage.setItem('currentPath', `${globalThis.location.pathname}${globalThis.location.search}`)
 	}
 
 	useEffect(() => {
+		let lang = getLanguage()
+		if (locale != lang && pathname != '/languages') {
+			router.push('/' + lang + router.asPath)
+			return
+		}
 		_init()
 		const storage = globalThis?.sessionStorage
 		if (!storage) return
-		storage.setItem(
-			'currentPath',
-			`${globalThis.location.pathname}${globalThis.location.search}`
-		)
+		storage.setItem('currentPath', `${globalThis.location.pathname}${globalThis.location.search}`)
 	}, [])
 
 	const _init = async () => {
@@ -99,10 +111,19 @@ function MyApp({ Component, pageProps }) {
 		const nearUsdPrice = await axios.get(
 			'https://api.coingecko.com/api/v3/simple/price?ids=NEAR&vs_currencies=USD'
 		)
+
+		Sentry.configureScope((scope) => {
+			const user = currentUser ? { id: currentUser.accountId } : null
+			scope.setUser(user)
+			scope.setTag('environment', process.env.APP_ENV)
+		})
+
 		if (currentUser) {
-			const userProfileResp = await axios.get(
-				`${process.env.API_URL}/profiles?accountId=${currentUser.accountId}`
-			)
+			const userProfileResp = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+				params: {
+					accountId: currentUser.accountId,
+				},
+			})
 			const userProfileResults = userProfileResp.data.data.results
 
 			if (userProfileResults.length === 0) {
@@ -111,18 +132,15 @@ function MyApp({ Component, pageProps }) {
 				formData.append('accountId', currentUser.accountId)
 
 				try {
-					const resp = await axios.put(
-						`${process.env.API_URL}/profiles`,
-						formData,
-						{
-							headers: {
-								'Content-Type': 'multipart/form-data',
-								authorization: await near.authToken(),
-							},
-						}
-					)
+					const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
+						headers: {
+							'Content-Type': 'multipart/form-data',
+							authorization: await near.authToken(),
+						},
+					})
 					store.setUserProfile(resp.data.data)
 				} catch (err) {
+					sentryCaptureException(err)
 					store.setUserProfile({})
 				}
 			} else {
@@ -156,11 +174,13 @@ function MyApp({ Component, pageProps }) {
 
 	return (
 		<div>
-			<SWRConfig value={{}}>
-				<ToastProvider>
-					<Component {...pageProps} />
-				</ToastProvider>
-			</SWRConfig>
+			<IntlProvider locale={locale} defaultLocale={defaultLocale} messages={messages}>
+				<SWRConfig value={{}}>
+					<ToastProvider>
+						<Component {...pageProps} />
+					</ToastProvider>
+				</SWRConfig>
+			</IntlProvider>
 		</div>
 	)
 }

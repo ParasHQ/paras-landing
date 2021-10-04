@@ -12,6 +12,13 @@ module.exports = {
 			opacity: {
 				15: '0.15',
 			},
+			height: {
+				'100vh': '100vh',
+				'90vh': '90vh',
+				'80vh': '80vh',
+				'70vh': '70vh',
+				'60vh': '60vh',
+			},
 			colors: {
 				primary: '#1300BA',
 				'light-primary-1': '#efe6fa',
@@ -42,7 +49,7 @@ module.exports = {
 	},
 	variants: {
 		extend: {
-			transitionProperty: { height: ['responsive', 'hover', 'focus'] },
+			transitionProperty: ['responsive', 'hover', 'focus'],
 		},
 	},
 	plugins: [require('@tailwindcss/line-clamp')],

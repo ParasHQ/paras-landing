@@ -8,6 +8,7 @@ const PublicationCardLoader = (props) => (
 		viewBox="0 0 612 509"
 		backgroundColor="#1D1D1D"
 		foregroundColor="#282828"
+		uniqueKey="publication-card-loader"
 		{...props}
 	>
 		<rect x="0" y="0" rx="4" ry="4" width="4" height="509" />

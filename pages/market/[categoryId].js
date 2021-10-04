@@ -1,21 +1,20 @@
 import axios from 'axios'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
-import Nav from '../../components/Nav'
+import Nav from 'components/Nav'
 import Head from 'next/head'
-import Footer from '../../components/Footer'
-import useStore from '../../store'
-import CardList from '../../components/CardList'
-import CardListLoader from '../../components/CardListLoader'
-import { parseImgUrl, parseSortQuery } from '../../utils/common'
+import Footer from 'components/Footer'
+import useStore from 'lib/store'
+import CardList from 'components/TokenSeries/CardList'
+import CardListLoader from 'components/Card/CardListLoader'
+import { parseImgUrl, parseSortQuery } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
-import CategoryList from '../../components/CategoryList'
-import AddCategoryModal from '../../components/AddCategoryModal'
-import { useToast } from '../../hooks/useToast'
-
+import CategoryList from 'components/CategoryList'
+import AddCategoryModal from 'components/Modal/AddCategoryModal'
+import { useIntl } from 'hooks/useIntl'
 const LIMIT = 12
 
-export default function Category({ categoryList, _categoryDetail }) {
+export default function Category({ serverQuery, categoryList, _categoryDetail }) {
 	const {
 		categoryCardList,
 		setCategoryCardList,
@@ -26,12 +25,11 @@ export default function Category({ categoryList, _categoryDetail }) {
 		setPageCategoryCardList,
 		hasMoreCategoryCard,
 		setHasMoreCategoryCard,
-		userProfile,
 		currentUser,
 	} = useStore()
+	const { localeLn } = useIntl()
 	const router = useRouter()
 	const chooseSubmitRef = useRef()
-	const toast = useToast()
 
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(false)
@@ -56,9 +54,7 @@ export default function Category({ categoryList, _categoryDetail }) {
 		if (categoryId) {
 			_fetchData(true)
 
-			const detail = cardCategory.find(
-				(category) => category.categoryId === categoryId
-			)
+			const detail = cardCategory.find((category) => category.category_id === categoryId)
 			if (detail) {
 				setCategoryDetail(detail)
 			}
@@ -66,10 +62,10 @@ export default function Category({ categoryList, _categoryDetail }) {
 	}, [categoryId])
 
 	useEffect(() => {
-		if (router.query.sort || router.query.pmin || router.query.pmax) {
+		if (router.query.sort || router.query.pmin || router.query.pmax || router.query.is_verified) {
 			updateFilter()
 		}
-	}, [router.query.sort, router.query.pmin, router.query.pmax])
+	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.is_verified])
 
 	useEffect(() => {
 		const onClickEv = (e) => {
@@ -86,7 +82,7 @@ export default function Category({ categoryList, _categoryDetail }) {
 	})
 
 	const getCategory = async () => {
-		const res = await axios(`${process.env.API_URL}/categories`)
+		const res = await axios.get(`${process.env.V2_API_URL}/categories`)
 		setCardCategory(res.data.data.results)
 	}
 
@@ -106,8 +102,8 @@ export default function Category({ categoryList, _categoryDetail }) {
 		}
 
 		setIsFetching(true)
-		const res = await axios(`${process.env.API_URL}/tokens`, {
-			params: tokensParams(_page, router.query),
+		const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+			params: tokensParams(_page, router.query || serverQuery),
 		})
 		const newData = await res.data.data
 		const newTokens = [..._tokens, ...newData.results]
@@ -139,37 +135,6 @@ export default function Category({ categoryList, _categoryDetail }) {
 		router.push(`/category-submission/${categoryId}`)
 	}
 
-	const createCard = () => {
-		if (process.env.APP_ENV !== 'production') {
-			router.push(`/new?categoryId=${categoryId}`)
-		} else if (userProfile.isCreator) {
-			router.push(`/new?categoryId=${categoryId}`)
-		} else {
-			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						<p>
-							Currently we only allow whitelisted Artist to create their digital
-							art card on Paras.
-						</p>
-						<p className="mt-2">Apply now using the link below:</p>
-						<div className="mt-2">
-							<a
-								href="https://forms.gle/QsZHqa2MKXpjckj98"
-								target="_blank"
-								className="cursor-pointer border-b-2 border-gray-900"
-							>
-								Apply as an Artist
-							</a>
-						</div>
-					</div>
-				),
-				type: 'info',
-				duration: null,
-			})
-		}
-	}
-
 	return (
 		<div className="min-h-screen bg-black">
 			<div
@@ -182,9 +147,7 @@ export default function Category({ categoryList, _categoryDetail }) {
 				}}
 			></div>
 			<Head>
-				<title>
-					{categoryDetail ? categoryDetail.name : _categoryDetail.name} — Paras
-				</title>
+				<title>{categoryDetail ? categoryDetail.name : _categoryDetail.name} — Paras</title>
 				<meta
 					name="description"
 					content={`Create, trade, and collect ${(categoryDetail
@@ -195,9 +158,7 @@ export default function Category({ categoryList, _categoryDetail }) {
 
 				<meta
 					name="twitter:title"
-					content={`${
-						categoryDetail ? categoryDetail.name : _categoryDetail.name
-					} — Paras`}
+					content={`${categoryDetail ? categoryDetail.name : _categoryDetail.name} — Paras`}
 				/>
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
@@ -211,22 +172,16 @@ export default function Category({ categoryList, _categoryDetail }) {
 				/>
 				<meta
 					name="twitter:image"
-					content={parseImgUrl(
-						categoryDetail ? categoryDetail.coverImg : _categoryDetail.coverImg
-					)}
+					content={parseImgUrl(categoryDetail ? categoryDetail.coverImg : _categoryDetail.coverImg)}
 				/>
 				<meta property="og:type" content="website" />
 				<meta
 					property="og:title"
-					content={`${
-						categoryDetail ? categoryDetail.name : _categoryDetail.name
-					} — Paras`}
+					content={`${categoryDetail ? categoryDetail.name : _categoryDetail.name} — Paras`}
 				/>
 				<meta
 					property="og:site_name"
-					content={`${
-						categoryDetail ? categoryDetail.name : _categoryDetail.name
-					} — Paras`}
+					content={`${categoryDetail ? categoryDetail.name : _categoryDetail.name} — Paras`}
 				/>
 				<meta
 					property="og:description"
@@ -238,9 +193,7 @@ export default function Category({ categoryList, _categoryDetail }) {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content={parseImgUrl(
-						categoryDetail ? categoryDetail.coverImg : _categoryDetail.coverImg
-					)}
+					content={parseImgUrl(categoryDetail ? categoryDetail.coverImg : _categoryDetail.coverImg)}
 				/>
 			</Head>
 			<Nav />
@@ -254,21 +207,14 @@ export default function Category({ categoryList, _categoryDetail }) {
 			)}
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="flex justify-center mb-4">
-					<h1 className="text-4xl font-bold text-gray-100 text-center">
-						Market
-					</h1>
+					<h1 className="text-4xl font-bold text-gray-100 text-center">{localeLn('Market')}</h1>
 				</div>
-				<CategoryList
-					categoryId={categoryDetail?.categoryId || ''}
-					listCategory={cardCategory}
-				/>
+				<CategoryList categoryId={categoryDetail?.category_id || ''} listCategory={cardCategory} />
 				<div className="md:flex justify-between mt-8 px-4">
 					{categoryDetail && (
 						<>
 							<div className="mb-8 md:mb-0">
-								<h1 className="text-gray-100 font-bold text-4xl mb-4">
-									{categoryDetail.name}
-								</h1>
+								<h1 className="text-gray-100 font-bold text-4xl mb-4">{categoryDetail.name}</h1>
 								<div
 									className="category-description text-gray-200 max-w-lg"
 									dangerouslySetInnerHTML={{
@@ -278,23 +224,18 @@ export default function Category({ categoryList, _categoryDetail }) {
 							</div>
 							<div className="text-gray-100 md:w-1/3 my-4 relative">
 								<div className="flex justify-between mb-4">
-									<div>Status</div>
-									<div className="font-medium">Open</div>
+									<div>{localeLn('Status')}</div>
+									<div className="font-medium">{localeLn('Open')}</div>
 								</div>
 								<div className="flex justify-between mb-6">
-									<div>Curators</div>
+									<div>{localeLn('Curators')}</div>
 									<div className="text-right font-medium">
 										{categoryDetail.curators.map((curator, index) => (
 											<Fragment key={index}>
-												<span
-													className="cursor-pointer"
-													onClick={() => router.push(`/${curator}`)}
-												>
+												<span className="cursor-pointer" onClick={() => router.push(`/${curator}`)}>
 													{curator}
 												</span>
-												{index !== categoryDetail.curators.length - 1 && (
-													<span>, </span>
-												)}
+												{index !== categoryDetail.curators.length - 1 && <span>, </span>}
 											</Fragment>
 										))}
 									</div>
@@ -330,14 +271,7 @@ export default function Category({ categoryList, _categoryDetail }) {
 													setShowAddModal(true)
 												}}
 											>
-												Submit an existing cards
-											</h1>
-											<hr className="my-4 -mx-1" />
-											<h1
-												className="text-white font-medium cursor-pointer"
-												onClick={createCard}
-											>
-												Create a new card
+												{localeLn('Submit an existing cards')}
 											</h1>
 										</div>
 									</div>
@@ -368,28 +302,30 @@ export default function Category({ categoryList, _categoryDetail }) {
 
 const tokensParams = (_page = 0, query) => {
 	const params = {
-		categoryId: query.categoryId,
-		excludeTotalBurn: true,
+		category_id: query.categoryId,
+		exclude_total_burn: true,
 		__sort: parseSortQuery(query.sort),
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
-		...(query.pmin && { minPrice: parseNearAmount(query.pmin) }),
-		...(query.pmax && { maxPrice: parseNearAmount(query.pmax) }),
+		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
+		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
+		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 	}
 	return params
 }
 
-export async function getServerSideProps({ params }) {
-	const categoryListResp = await axios(`${process.env.API_URL}/categories`)
+export async function getServerSideProps({ params, query }) {
+	const categoryListResp = await axios(`${process.env.V2_API_URL}/categories`)
 	const categoryList = categoryListResp.data.data.results
 	const categoryDetail = categoryList.filter(
-		(category) => category.categoryId === params.categoryId
+		(category) => category.category_id === params.categoryId
 	)[0]
 
 	return {
 		props: {
 			categoryList: categoryList,
 			_categoryDetail: categoryDetail,
+			serverQuery: query,
 		},
 	}
 }

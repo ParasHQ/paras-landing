@@ -1,9 +1,12 @@
 import Head from 'next/head'
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
-import FaqsList from '../components/FaqList'
+
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import FaqsList from 'components/Faq/FaqList'
+import { useIntl } from 'hooks/useIntl'
 
 const FaqPage = () => {
+	const { localeLn } = useIntl()
 	return (
 		<div className="min-h-screen relative bg-black">
 			<div
@@ -16,7 +19,7 @@ const FaqPage = () => {
 				}}
 			></div>
 			<Head>
-				<title>Frequently Asked Questions — Paras</title>
+				<title>{localeLn('Frequently Asked Questions — Paras')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -36,10 +39,7 @@ const FaqPage = () => {
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras — Digital Art Cards Market" />
-				<meta
-					property="og:site_name"
-					content="Paras — Digital Art Cards Market"
-				/>
+				<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -52,9 +52,7 @@ const FaqPage = () => {
 			</Head>
 			<Nav />
 			<div className="relative py-16 max-w-4xl mx-auto text-gray-100 px-4">
-				<h2 className="font-bold text-4xl text-center">
-					Frequently Asked Questions
-				</h2>
+				<h2 className="font-bold text-4xl text-center">{localeLn('Frequently Asked Questions')}</h2>
 				<div className="mt-8">
 					<FaqsList />
 				</div>

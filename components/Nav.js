@@ -3,20 +3,16 @@ import { Fragment, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import Hamburger from 'react-hamburgers'
 
-import near from '../lib/near'
-import useStore from '../store'
+import near from 'lib/near'
+import useStore from 'lib/store'
 import Modal from './Modal'
-import ProfileEdit from './ProfileEdit'
-import { parseImgUrl, prettyBalance, prettyTruncate } from '../utils/common'
-import { useToast } from '../hooks/useToast'
-import axios from 'axios'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import Scrollbars from 'react-custom-scrollbars'
-import useSWR from 'swr'
+import ProfileEdit from './Profile/ProfileEdit'
+import { parseImgUrl, prettyBalance } from 'utils/common'
+import { useIntl } from 'hooks/useIntl'
+import { useToast } from 'hooks/useToast'
 import Setting from './Setting'
 import Cookies from 'js-cookie'
-
-const LIMIT = 10
+import NotificationList from './Notification/NotificationList'
 
 const User = () => {
 	const store = useStore()
@@ -27,10 +23,10 @@ const User = () => {
 	const [showAccountModal, setShowAccountModal] = useState(false)
 	const [showEditAccountModal, setShowEditAccountModal] = useState(false)
 	const [showSettingModal, setShowSettingModal] = useState(false)
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		const onClickEv = (e) => {
-			if (!accModalRef.current.contains(e.target)) {
+			if (accModalRef.current?.contains && !accModalRef.current.contains(e.target)) {
 				setShowAccountModal(false)
 			}
 		}
@@ -49,34 +45,11 @@ const User = () => {
 	}
 
 	const _createCard = () => {
-		if (process.env.APP_ENV !== 'production') {
-			router.push('/new')
-		} else if (store.userProfile.isCreator) {
-			router.push('/new')
-		} else {
-			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						<p>
-							Currently we only allow whitelisted Artist to create their digital
-							art card on Paras.
-						</p>
-						<p className="mt-2">Apply now using the link below:</p>
-						<div className="mt-2">
-							<a
-								href="https://forms.gle/QsZHqa2MKXpjckj98"
-								target="_blank"
-								className="cursor-pointer border-b-2 border-gray-900"
-							>
-								Apply as an Artist
-							</a>
-						</div>
-					</div>
-				),
-				type: 'info',
-				duration: null,
-			})
-		}
+		router.push('/new')
+	}
+
+	const _createColllection = () => {
+		router.push('/new-collection')
 	}
 
 	const _createPublication = () => {
@@ -88,18 +61,15 @@ const User = () => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						<p>
-							Currently we only allow whitelisted Writer to create their digital
-							art card on Paras.
-						</p>
-						<p className="mt-2">Apply now using the link below:</p>
+						<p>{localeLn('Currently we only allow verified creator to create publication.')}</p>
+						<p className="mt-2">{localeLn('Visit our Discord channel to learn more:')}</p>
 						<div className="mt-2">
 							<a
-								href="https://forms.gle/QsZHqa2MKXpjckj98"
+								href="https://discord.paras.id"
 								target="_blank"
 								className="cursor-pointer border-b-2 border-gray-900"
 							>
-								Apply as an Writer
+								{localeLn('Join Paras Discord')}
 							</a>
 						</div>
 					</div>
@@ -145,13 +115,7 @@ const User = () => {
 				<div className="cursor-pointer select-none overflow-hidden rounded-md bg-dark-primary-2">
 					<div className="flex items-center w-full h-full button-wrapper p-1">
 						<div className="w-8 h-8 rounded-full overflow-hidden bg-primary shadow-inner">
-							<img
-								src={
-									store.userProfile?.imgUrl
-										? parseImgUrl(store.userProfile.imgUrl)
-										: null
-								}
-							/>
+							<img src={store.userProfile?.imgUrl ? parseImgUrl(store.userProfile.imgUrl) : null} />
 						</div>
 						<div className="ml-1">
 							<svg
@@ -185,10 +149,7 @@ const User = () => {
 							xmlns="http://www.w3.org/2000/svg"
 							className="mx-auto"
 						>
-							<path
-								d="M16.1436 0L32.1436 16H0.143593L16.1436 0Z"
-								fill="#26222C"
-							/>
+							<path d="M16.1436 0L32.1436 16H0.143593L16.1436 0Z" fill="#26222C" />
 						</svg>
 					</div>
 				)}
@@ -198,39 +159,37 @@ const User = () => {
 					<div className="p-2 shadow-inner bg-dark-primary-2 rounded-md overflow-hidden">
 						<div className="px-2 text-gray-100">
 							<p className="truncate">{store.currentUser}</p>
-							<p className="text-lg">
-								{prettyBalance(store.userBalance.available, 24, 4)} Ⓝ
-							</p>
+							<p className="text-lg">{prettyBalance(store.userBalance.available, 24, 4)} Ⓝ</p>
 							<div>
 								<a
 									className="text-sm text-gray-100 hover:opacity-75"
 									href="https://wallet.near.org/"
 									target="_blank"
 								>
-									View on NEAR Wallet
+									{localeLn('View on NEAR Wallet')}
 								</a>
 							</div>
 						</div>
 						<hr className="my-2" />
 						<div onClick={_createCard}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								Create Card
+								{localeLn('Create Card')}
+							</a>
+						</div>
+						<div onClick={_createColllection}>
+							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
+								{localeLn('Create Collection')}
 							</a>
 						</div>
 						<div onClick={_createPublication}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								Create Publication
+								{localeLn('Create Publication')}
 							</a>
 						</div>
 						<hr className="my-2" />
 						<Link href={`/${store.currentUser}`}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								My Profile
-							</a>
-						</Link>
-						<Link href={`/my-bids`}>
-							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								My Bids
+								{localeLn('My Profile')}
 							</a>
 						</Link>
 						<button
@@ -240,7 +199,7 @@ const User = () => {
 							}}
 							className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 						>
-							Edit Profile
+							{localeLn('Edit Profile')}
 						</button>
 						{process.env.APP_ENV !== 'testnet' && (
 							<button
@@ -250,7 +209,7 @@ const User = () => {
 								}}
 								className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 							>
-								Settings
+								{localeLn('Settings')}
 							</button>
 						)}
 						<hr className="my-2" />
@@ -258,423 +217,10 @@ const User = () => {
 							onClick={_signOut}
 							className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 						>
-							Log out
+							{localeLn('Log out')}
 						</p>
 					</div>
 				</div>
-			)}
-		</div>
-	)
-}
-
-const Notification = ({ notif }) => {
-	const fetcher = async (key) => {
-		const resp = await axios.get(`${process.env.API_URL}/${key}`)
-		if (resp.data.data.results.length > 0) {
-			return resp.data.data.results[0]
-		} else {
-			return {}
-		}
-	}
-
-	const { data: token } = useSWR(
-		`tokens?tokenId=${notif.payload.tokenId}`,
-		fetcher
-	)
-
-	if (notif.type === 'onBuy') {
-		return (
-			<div>
-				<Link href={`/token/${notif.payload.tokenId}`}>
-					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
-						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-							<img
-								src={parseImgUrl(token?.metadata?.image, null, {
-									width: `300`,
-								})}
-							/>
-						</div>
-						<div className="pl-2 text-gray-300">
-							<span className="font-medium text-gray-100">
-								{prettyTruncate(notif.payload.buyer, 12, 'address')}
-							</span>{' '}
-							bought {notif.payload.quantity}pcs of{' '}
-							<span className="font-medium text-gray-100">
-								{token?.metadata?.name}
-							</span>{' '}
-							for {prettyBalance(notif.payload.amount, 24, 4)} Ⓝ
-						</div>
-					</div>
-				</Link>
-			</div>
-		)
-	}
-	if (notif.type === 'onBuyRoyalty') {
-		return (
-			<div>
-				<Link href={`/token/${notif.payload.tokenId}`}>
-					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
-						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-							<img
-								src={parseImgUrl(token?.metadata?.image, null, {
-									width: `300`,
-								})}
-							/>
-						</div>
-						<div className="pl-2 text-gray-300">
-							received royalty{' '}
-							{prettyBalance(
-								(notif.payload.amount *
-									notif.payload.quantity *
-									notif.payload.royalty) /
-									100,
-								24,
-								4
-							)}{' '}
-							Ⓝ
-						</div>
-					</div>
-				</Link>
-			</div>
-		)
-	}
-	if (notif.type === 'onBidAdd') {
-		return (
-			<div>
-				<Link href={`/token/${notif.payload.tokenId}?tab=bids`}>
-					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
-						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-							<img
-								src={parseImgUrl(token?.metadata?.image, null, {
-									width: `300`,
-								})}
-							/>
-						</div>
-						<div className="pl-2 text-gray-300">
-							received new bid from{' '}
-							<span className="font-medium text-gray-100">
-								{prettyTruncate(notif.payload.accountId, 12, 'address')}
-							</span>{' '}
-							for {prettyBalance(notif.payload.amount, 24, 4)} Ⓝ
-						</div>
-					</div>
-				</Link>
-			</div>
-		)
-	}
-	if (notif.type === 'onBidAccept') {
-		return (
-			<div>
-				<Link href={`/token/${notif.payload.tokenId}?tab=bids`}>
-					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
-						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-							<img
-								src={parseImgUrl(token?.metadata?.image, null, {
-									width: `300`,
-								})}
-							/>
-						</div>
-						<div className="pl-2 text-gray-300">
-							<span className="font-medium text-gray-100">
-								{prettyTruncate(notif.payload.seller, 12, 'address')}
-							</span>{' '}
-							accept your bid and send you {notif.payload.quantity}pcs of{' '}
-							<span className="font-medium text-gray-100">
-								{token?.metadata?.name}
-							</span>
-						</div>
-					</div>
-				</Link>
-			</div>
-		)
-	}
-	if (notif.type === 'onTokenCategoryAccepted') {
-		return (
-			<div>
-				<Link href={`/token/${notif.payload.tokenId}?tab=bids`}>
-					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
-						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-							<img
-								src={parseImgUrl(token?.metadata?.image, null, {
-									width: `300`,
-								})}
-							/>
-						</div>
-						<div className="pl-2 text-gray-300">
-							<span className="font-medium text-gray-100">
-								{token?.metadata?.name}
-							</span>
-							<span> is accepted to </span>
-							<span className="font-medium text-gray-100">
-								{notif.payload.categoryId.replace(/-/g, ' ')}
-							</span>
-							<span> category</span>
-						</div>
-					</div>
-				</Link>
-			</div>
-		)
-	}
-	if (notif.type === 'onTokenCategoryRejected') {
-		return (
-			<div>
-				<Link href={`/token/${notif.payload.tokenId}?tab=bids`}>
-					<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
-						<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-							<img
-								src={parseImgUrl(token?.metadata?.image, null, {
-									width: `300`,
-								})}
-							/>
-						</div>
-						<div className="pl-2 text-gray-300">
-							<span className="font-medium text-gray-100">
-								{token?.metadata?.name}
-							</span>
-							<span> is rejected from </span>
-							<span className="font-medium text-gray-100">
-								{notif.payload.categoryId.replace(/-/g, ' ')}
-							</span>
-							<span> category</span>
-						</div>
-					</div>
-				</Link>
-			</div>
-		)
-	}
-	return (
-		<div>
-			<Link href={`/token/${notif.payload.tokenId}`}>
-				<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
-					<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-						<img
-							src={parseImgUrl(token?.metadata?.image, null, {
-								width: `300`,
-							})}
-						/>
-					</div>
-					<div className="pl-2 text-gray-300">
-						<span className="font-medium text-gray-100">
-							{prettyTruncate(notif.payload.from, 12, 'address')}
-						</span>{' '}
-						send you {notif.payload.quantity}pcs of{' '}
-						<span className="font-medium text-gray-100">
-							{token?.metadata?.name}
-						</span>
-					</div>
-				</div>
-			</Link>
-		</div>
-	)
-}
-
-const NotificationList = () => {
-	const {
-		currentUser,
-		notificationList,
-		setNotificationList,
-		notificationUnreadList,
-		setNotificationUnreadList,
-		notificationListPage,
-		setNotificationListPage,
-		notificationListHasMore,
-		setNotificationListHasMore,
-	} = useStore()
-
-	const accModalRef = useRef()
-
-	const [isFetching, setIsFetching] = useState(false)
-	const [showAccountModal, setShowAccountModal] = useState(false)
-
-	useEffect(() => {
-		if (
-			currentUser &&
-			notificationList.length === 0 &&
-			notificationListHasMore
-		) {
-			_fetchData()
-		}
-	}, [currentUser, notificationList, notificationListHasMore])
-
-	useEffect(() => {
-		const onClickEv = (e) => {
-			if (!accModalRef.current.contains(e.target)) {
-				setShowAccountModal(false)
-			}
-		}
-
-		if (showAccountModal) {
-			document.body.addEventListener('click', onClickEv)
-		}
-
-		return () => {
-			document.body.removeEventListener('click', onClickEv)
-		}
-	}, [showAccountModal])
-
-	useEffect(() => {
-		if (showAccountModal && notificationUnreadList.length > 0) {
-			_readNotificationList()
-		}
-	}, [showAccountModal, notificationUnreadList])
-
-	const toggleAccountModal = () => {
-		setShowAccountModal(!showAccountModal)
-	}
-
-	const _readNotificationList = async () => {
-		try {
-			await axios.put(
-				`${process.env.API_URL}/notifications/read`,
-				{
-					accountId: currentUser,
-					notificationIds: notificationUnreadList.map((n) => n._id),
-				},
-				{
-					headers: {
-						authorization: await near.authToken(),
-					},
-				}
-			)
-			setNotificationUnreadList([])
-		} catch (err) {
-			console.log(err)
-		}
-	}
-
-	const _fetchData = async () => {
-		if (!notificationListHasMore || isFetching) {
-			return
-		}
-
-		setIsFetching(true)
-		try {
-			const res = await axios.get(
-				`${process.env.API_URL}/notifications?accountId=${currentUser}&__skip=${
-					notificationListPage * LIMIT
-				}&__limit=${LIMIT}`,
-				{
-					headers: {
-						authorization: await near.authToken(),
-					},
-				}
-			)
-			const newData = await res.data.data
-
-			const newNotificationList = [...notificationList, ...newData.results]
-			const unreadList = res.data.data.results.filter((notif) => !notif.isRead)
-			setNotificationUnreadList(unreadList)
-			setNotificationList(newNotificationList)
-
-			setNotificationListPage(notificationListPage + 1)
-			if (newData.results.length === 0) {
-				setNotificationListHasMore(false)
-			} else {
-				setNotificationListHasMore(true)
-			}
-		} catch (err) {
-			console.log(err)
-		}
-		setIsFetching(false)
-	}
-
-	return (
-		<div ref={accModalRef}>
-			<div className="relative flex items-center justify-end text-gray-100">
-				<div
-					onClick={toggleAccountModal}
-					className="cursor-pointer select-none flex items-center overflow-hidden rounded-full"
-				>
-					<div className="bg-dark-primary-2">
-						<div className="relative w-full h-full button-wrapper p-2">
-							{notificationUnreadList.length > 0 && (
-								<div className="absolute right-0 top-0 p-2">
-									<div className="rounded-full bg-primary w-2 h-2"></div>
-								</div>
-							)}
-							<svg
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									fillRule="evenodd"
-									clipRule="evenodd"
-									d="M19 10C19 5.94082 16.7616 3.1235 13.8654 2.27771C13.7605 2.00636 13.5948 1.7541 13.3695 1.54243C12.5997 0.81919 11.4003 0.81919 10.6305 1.54243C10.4057 1.75364 10.2402 2.00525 10.1353 2.27592C7.23535 3.11803 5 5.92919 5 10C5 12.6339 4.46898 14.1098 3.48596 15.1793C3.32161 15.3582 2.87632 15.7678 2.57468 16.0453L2.57465 16.0453L2.57465 16.0453L2.5745 16.0454C2.43187 16.1766 2.32138 16.2783 2.28796 16.3119L2 16.604V20.0141H8.08798C8.29384 21.0761 8.87009 21.7867 9.9122 22.4226C11.1941 23.2049 12.8059 23.2049 14.0878 22.4226C15.0075 21.8614 15.6241 20.9989 15.8743 20.0141H22V16.604L21.712 16.3119C21.6817 16.2812 21.5757 16.1834 21.437 16.0555C21.1363 15.7781 20.6823 15.3592 20.5154 15.1769C19.5317 14.1024 19 12.6246 19 10ZM13.7367 20.0141H10.1786C10.3199 20.2769 10.5607 20.4754 10.954 20.7154C11.5963 21.1073 12.4037 21.1073 13.046 20.7154C13.3434 20.5339 13.5758 20.2937 13.7367 20.0141ZM19.0402 16.5274C19.2506 16.7573 19.7016 17.1774 20 17.4519V18.0141H4V17.4524C4.29607 17.1811 4.74843 16.7613 4.95849 16.5327C6.29422 15.0794 7 13.1178 7 10C7 6.21989 9.33277 4.01238 12 4.01238C14.6597 4.01238 17 6.23129 17 10C17 13.1078 17.706 15.07 19.0402 16.5274Z"
-									fill="#e2e8f0"
-								/>
-							</svg>
-						</div>
-					</div>
-				</div>
-				{showAccountModal && (
-					<div
-						className="absolute bottom-0 right-0 z-20"
-						style={{
-							bottom: `-20px`,
-							left: `0px`,
-						}}
-					>
-						<svg
-							width="33"
-							height="16"
-							viewBox="0 0 33 16"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-							className="mx-auto"
-						>
-							<path
-								d="M16.1436 0L32.1436 16H0.143593L16.1436 0Z"
-								fill="#26222C"
-							/>
-						</svg>
-					</div>
-				)}
-			</div>
-			{showAccountModal && (
-				<Fragment>
-					<div
-						className="absolute right-0 p-4 z-10 max-w-full md:max-w-none"
-						style={{
-							width: `24rem`,
-						}}
-					>
-						<div className="p-2 shadow-inner bg-dark-primary-2 text-gray-100 rounded-md">
-							<h4 className="font-bold text-2xl px-2">Notifications</h4>
-							<Scrollbars
-								autoHeight
-								autoHeightMax={`24rem`}
-								renderView={(props) => <div {...props} id="scrollableDiv" />}
-							>
-								{notificationList.length === 0 && !notificationListHasMore ? (
-									<div className="p-2 opacity-75">
-										<div className="border-2 border-dashed rounded-md text-center">
-											<p className="text-gray-300 py-4">No Notifications</p>
-										</div>
-									</div>
-								) : (
-									<InfiniteScroll
-										dataLength={notificationList.length}
-										next={_fetchData}
-										hasMore={notificationListHasMore}
-										loader={<h4 className="text-center p-2">Loading...</h4>}
-										scrollableTarget="scrollableDiv"
-									>
-										{notificationList.map((notif) => {
-											return (
-												<div key={notif._id}>
-													<Notification notif={notif} />
-												</div>
-											)
-										})}
-									</InfiniteScroll>
-								)}
-							</Scrollbars>
-						</div>
-					</div>
-				</Fragment>
 			)}
 		</div>
 	)
@@ -691,10 +237,10 @@ const Nav = () => {
 
 	const [showSettingModal, setShowSettingModal] = useState(false)
 	const [searchQuery, setSearchQuery] = useState(router.query.q || '')
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		const onClickEv = (e) => {
-			if (!mobileNavRef.current.contains(e.target)) {
+			if (mobileNavRef && !mobileNavRef.current.contains(e.target)) {
 				setShowMobileNav(false)
 			}
 		}
@@ -713,12 +259,11 @@ const Nav = () => {
 			text: (
 				<div className="text-sm text-gray-900">
 					<p>
-						Testnet is used for creators and collectors to try and experience
-						Paras without the need to spend real value cryptocurrency.
+						Testnet is used for creators and collectors to try and experience Paras without the need
+						to spend real value cryptocurrency.
 					</p>
 					<p className="mt-2">
-						Creators can use Testnet to prevent any mistakes before publishing
-						on Mainnet.
+						Creators can use Testnet to prevent any mistakes before publishing on Mainnet.
 					</p>
 				</div>
 			),
@@ -790,15 +335,13 @@ const Nav = () => {
 						</svg>
 					</div>
 				)}
-
 				{process.env.APP_ENV !== 'production' && (
 					<div
 						ref={testnetBannerRef}
 						className="bg-primary relative z-50 text-white text-sm text-center p-1 px-2"
 					>
 						<p>
-							You are using Testnet. Everything here has no value. To use Paras,
-							please switch to{' '}
+							You are using Testnet. Everything here has no value. To use Paras, please switch to{' '}
 							<a
 								className="text-gray-100 font-semibold border-b-2 border-transparent hover:border-gray-100"
 								href="https://mainnet.paras.id"
@@ -870,7 +413,7 @@ const Nav = () => {
 						</Link>
 					</div>
 					<div className="flex-1 pr-4">
-						<div className="max-w-sm mr-auto">
+						<div className="max-w-sm mr-auto flex items-center">
 							<form action="/search" method="get" onSubmit={_handleSubmit}>
 								<div className="flex border-dark-primary-1 border-2 rounded-lg bg-dark-primary-1">
 									<svg
@@ -892,47 +435,69 @@ const Nav = () => {
 										type="search"
 										value={searchQuery}
 										onChange={(event) => setSearchQuery(event.target.value)}
-										placeholder="Search by title, collection or artist"
+										placeholder={localeLn('Search by title, collection or artist')}
 										className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-sm font-medium"
 									/>
 								</div>
 							</form>
+							<div>
+								<Link
+									href={{
+										pathname: '/languages',
+									}}
+								>
+									<a className="flex items-center text-gray-100 text-sm">
+										<svg
+											className="fill-current text-gray-100 ml-2"
+											xmlns="http://www.w3.org/2000/svg"
+											width="20"
+											height="20"
+											viewBox="0 0 24 24"
+										>
+											<path d="M0 0h24v24H0z" fill="none"></path>
+											<path d=" M12.87 15.07l-2.54-2.51.03-.03c1.74-1.94 2.98-4.17 3.71-6.53H17V4h-7V2H8v2H1v1.99h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11.76-2.04zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2l-4.5-12zm-2.62 7l1.62-4.33L19.12 17h-3.24z "></path>
+										</svg>
+										<span className="pl-2 hidden md:block">{localeLn('Languages')}</span>
+									</a>
+								</Link>
+							</div>
 						</div>
 					</div>
 					<div className="flex items-center -mx-4">
-						<div className="px-3 text-gray-100 hidden md:block fireText">
-							<Link href="/drops">
-								<a>Drops</a>
-							</Link>
-						</div>
 						<div className="px-3 text-gray-100 hidden md:block">
 							{router.pathname === '/market' ? (
-								<a
-									className="cursor-pointer"
-									onClick={() => store.setMarketScrollPersist(0)}
-								>
-									Market
+								<a className="cursor-pointer" onClick={() => store.setMarketScrollPersist(0)}>
+									{localeLn('Market')}
 								</a>
 							) : (
 								<Link href="/market">
-									<a>Market</a>
+									<a>{localeLn('Market')}</a>
 								</Link>
 							)}
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block">
 							<Link href="/publication">
-								<a>Publication</a>
+								<a>{localeLn('Publication')}</a>
 							</Link>
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block">
 							<Link href="/activity">
-								<a>Activity</a>
+								<a>{localeLn('Activity')}</a>
 							</Link>
 						</div>
-						<div className="px-3 text-gray-100 hidden md:block">
+						{/* <div className="px-3 text-gray-100 hidden md:block">
 							<Link href="/activity/top-cards">
 								<a>Stats</a>
 							</Link>
+						</div> */}
+						<div className="px-3 text-gray-100 hidden md:block">
+							<a
+								href="https://ipfs.fleek.co/ipfs/bafybeihu6atdada45rmx4sszny6sahrzas4tuzrpuufdcpe6b63r6ugdce"
+								target="_blank"
+								className="flex cursor-pointer "
+							>
+								{localeLn('Whitepaper')}
+							</a>
 						</div>
 						<div className="px-3">
 							{store.currentUser ? (
@@ -946,7 +511,7 @@ const Nav = () => {
 								</div>
 							) : (
 								<Link href="/login">
-									<a className="text-gray-100 ">Login</a>
+									<a className="text-gray-100 ">{localeLn('Login')}</a>
 								</Link>
 							)}
 						</div>
@@ -955,18 +520,15 @@ const Nav = () => {
 				<div className="relative">
 					<div
 						ref={mobileNavRef}
-						className={`absolute bg-black top-0 left-0 right-0 z-30 transform transition-transform duration-200`}
-						style={{ '--transform-translate-y': !showMobileNav && '-200%' }}
+						className="absolute bg-black top-0 left-0 right-0 z-30 transform-gpu transition-transform duration-200"
+						style={{
+							'--tw-translate-y': showMobileNav ? `0%` : `-200%`,
+						}}
 					>
 						<div className="text-center border-b-2 border-dashed border-gray-800">
 							<div className="text-gray-100 ">
 								<Link href="/">
-									<a className="p-4 block w-full">Home</a>
-								</Link>
-							</div>
-							<div className="text-gray-100 ">
-								<Link href="/drops">
-									<a className="p-4 block w-full fireText">Drops</a>
+									<a className="p-4 block w-full">{localeLn('Home')}</a>
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
@@ -975,29 +537,38 @@ const Nav = () => {
 										className="cursor-pointer p-4 block w-full"
 										onClick={() => store.setMarketScrollPersist(0)}
 									>
-										Market
+										{localeLn('Market')}
 									</a>
 								) : (
 									<Link href="/market">
-										<a className="p-4 block w-full">Market</a>
+										<a className="p-4 block w-full">{localeLn('Market')}</a>
 									</Link>
 								)}
 							</div>
 							<div className="text-gray-100 ">
 								<Link href="/publication">
-									<a className="p-4 block w-full">Publication</a>
+									<a className="p-4 block w-full">{localeLn('Publication')}</a>
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
 								<Link href="/activity">
-									<a className="p-4 block w-full">Activity</a>
+									<a className="p-4 block w-full">{localeLn('Activity')}</a>
 								</Link>
 							</div>
-							<div className="text-gray-100">
+							<div className="text-gray-100 ">
+								<a
+									href="https://ipfs.fleek.co/ipfs/bafybeihu6atdada45rmx4sszny6sahrzas4tuzrpuufdcpe6b63r6ugdce"
+									target="_blank"
+									className="p-4 block w-full"
+								>
+									{localeLn('Whitepaper')}
+								</a>
+							</div>
+							{/* <div className="text-gray-100">
 								<Link href="/activity/top-cards">
 									<a className="p-4 block w-full">Stats</a>
 								</Link>
-							</div>
+							</div> */}
 						</div>
 					</div>
 				</div>

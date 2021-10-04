@@ -95,26 +95,49 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
 	if (!url) {
 		return defaultValue
 	}
-	const [protocol, path] = url.split('://')
-	if (protocol === 'ipfs') {
-		if (opts.useOriginal || process.env.APP_ENV !== 'production') {
-			const cid = new CID(path)
-			if (cid.version === 0) {
-				return `https://ipfs-gateway.paras.id/ipfs/${path}`
-			} else {
-				return `https://ipfs.fleek.co/ipfs/${path}`
+	if (url.includes('://')) {
+		const [protocol, path] = url.split('://')
+		if (protocol === 'ipfs') {
+			if (opts.useOriginal || process.env.APP_ENV !== 'production') {
+				const cid = new CID(path)
+				if (cid.version === 0) {
+					return `https://ipfs-gateway.paras.id/ipfs/${path}`
+				} else {
+					return `https://ipfs.fleek.co/ipfs/${path}`
+				}
 			}
-		}
 
-		let transformationList = []
-		if (opts.width) {
-			transformationList.push(`tr:w-${opts.width}`)
-		} else {
-			transformationList.push('tr:w-0.8')
+			let transformationList = []
+			if (opts.width) {
+				transformationList.push(`tr:w-${opts.width}`)
+			} else {
+				transformationList.push('tr:w-0.8')
+			}
+			return `https://cdn.paras.id/${transformationList.join(',')}/${path}`
 		}
-		return `https://cdn.paras.id/${transformationList.join(',')}/${path}`
+		return url
+	} else {
+		try {
+			const cid = new CID(url)
+			if (opts.useOriginal || process.env.APP_ENV !== 'production') {
+				if (cid.version === 0) {
+					return `https://ipfs-gateway.paras.id/ipfs/${cid}`
+				} else if (cid.version === 1) {
+					return `https://ipfs.fleek.co/ipfs/${cid}`
+				}
+			}
+
+			let transformationList = []
+			if (opts.width) {
+				transformationList.push(`tr:w-${opts.width}`)
+			} else {
+				transformationList.push('tr:w-0.8')
+			}
+			return `https://cdn.paras.id/${transformationList.join(',')}/${cid}`
+		} catch (err) {
+			return url
+		}
 	}
-	return url
 }
 
 export const dataURLtoFile = (dataurl, filename) => {
@@ -161,16 +184,28 @@ export const checkUrl = (str) => {
 
 export const parseSortQuery = (sort) => {
 	if (!sort || sort === 'marketupdate') {
-		return 'updatedAt_-1'
+		return 'updated_at::-1'
 	} else if (sort === 'marketupdateasc') {
-		return 'updatedAt_1'
+		return 'updated_at::1'
 	} else if (sort === 'cardcreate') {
-		return 'createdAt_-1'
+		return '_id::-1'
 	} else if (sort === 'cardcreateasc') {
-		return 'createdAt_1'
+		return '_id::1'
 	} else if (sort === 'pricedesc') {
-		return 'minPriceDecimal_-1'
+		return 'lowest_price::-1'
 	} else if (sort === 'priceasc') {
-		return 'minPriceDecimal_1'
+		return 'lowest_price::1'
 	}
+}
+
+export const parseGetTokenIdfromUrl = (url) => {
+	const pathname = new URL(url).pathname.split('/')
+	return {
+		token_series_id: pathname[2],
+		token_id: pathname[3],
+	}
+}
+
+export const capitalize = (words) => {
+	return words[0].toUpperCase() + words.slice(1)
 }
