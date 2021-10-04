@@ -9,6 +9,7 @@ import { GAS_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import { trackRemoveListingTokenSeries, trackUpdateListingTokenSeries } from 'lib/ga'
 
 const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState('0')
@@ -22,6 +23,8 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 			token_series_id: data.token_series_id,
 			price: parseNearAmount(newPrice),
 		}
+
+		trackUpdateListingTokenSeries(data.token_series_id)
 
 		try {
 			await near.wallet.account().functionCall({
@@ -41,6 +44,8 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 		if (!near.currentUser) {
 			return
 		}
+
+		trackRemoveListingTokenSeries(data.token_series_id)
 
 		try {
 			const params = {
@@ -111,7 +116,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 						<div className="mt-4">
 							<label className="block text-sm text-white mb-2">
 								{localeLn('New Price')}{' '}
-								{data.price && `(${localeLn('Current price')}: ${formatNearAmount(data.price)})`}
+								{data.price && `(${localeLn('Current price')}: ${formatNearAmount(data.price)} Ⓝ)`}
 							</label>
 							<div
 								className={`flex justify-between rounded-md border-transparent w-full relative ${

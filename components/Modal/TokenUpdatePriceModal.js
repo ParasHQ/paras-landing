@@ -9,6 +9,7 @@ import { GAS_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import { trackRemoveListingToken, trackUpdateListingToken } from 'lib/ga'
 
 const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '0')
@@ -18,6 +19,8 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 		if (!near.currentUser) {
 			return
 		}
+
+		trackUpdateListingToken(data.token_id)
 
 		try {
 			const params = {
@@ -45,6 +48,8 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 		if (!near.currentUser) {
 			return
 		}
+
+		trackRemoveListingToken(data.token_id)
 
 		try {
 			const params = {
@@ -116,7 +121,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 						<div className="mt-4">
 							<label className="block text-sm text-white mb-2">
 								{localeLn('New Price')}{' '}
-								{data.price && `(${localeLn('Current price')}: ${formatNearAmount(data.price)})`}
+								{data.price && `(${localeLn('Current price')}: ${formatNearAmount(data.price)} Ⓝ)`}
 							</label>
 							<div
 								className={`flex justify-between rounded-md border-transparent w-full relative ${

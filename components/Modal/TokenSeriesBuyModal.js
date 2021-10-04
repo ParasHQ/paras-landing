@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import near from 'lib/near'
@@ -9,11 +9,18 @@ import { GAS_FEE, STORAGE_MINT_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
-import { event } from 'lib/gtag'
+import { trackBuyTokenSeries, trackBuyTokenSeriesImpression } from 'lib/ga'
 
 const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const { localeLn } = useIntl()
+
+	useEffect(() => {
+		if (show) {
+			trackBuyTokenSeriesImpression(data.token_series_id)
+		}
+	}, [show])
+
 	const onBuyToken = async () => {
 		if (!near.currentUser) {
 			setShowLogin(true)
@@ -26,11 +33,7 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 
 		const attachedDeposit = JSBI.add(JSBI.BigInt(data.price), JSBI.BigInt(STORAGE_MINT_FEE))
 
-		event({
-			action: 'confirm_purchase_series',
-			category: 'token_series_detail',
-			label: data.token_series_id,
-		})
+		trackBuyTokenSeries(data.token_series_id)
 
 		try {
 			await near.wallet.account().functionCall({

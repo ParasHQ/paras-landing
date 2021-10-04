@@ -11,6 +11,7 @@ import Axios from 'axios'
 import { useToast } from 'hooks/useToast'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import { trackTransferToken } from 'lib/ga'
 
 const TokenTransferModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
@@ -55,6 +56,8 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 			})
 			return
 		}
+
+		trackTransferToken(data.token_id)
 
 		try {
 			await near.wallet.account().functionCall({

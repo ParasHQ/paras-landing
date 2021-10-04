@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import near from 'lib/near'
@@ -7,22 +7,25 @@ import LoginModal from './LoginModal'
 import { GAS_FEE } from 'config/constants'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
-import { event } from 'lib/gtag'
+import { trackBuyToken, trackBuyTokenImpression } from 'lib/ga'
 
 const TokenBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const { localeLn } = useIntl()
+
+	useEffect(() => {
+		if (show) {
+			trackBuyTokenImpression(data.token_id)
+		}
+	}, [show])
+
 	const onBuyToken = async () => {
 		if (!near.currentUser) {
 			setShowLogin(true)
 			return
 		}
 
-		event({
-			action: 'confirm_purchase_nft',
-			category: 'token_detail',
-			label: data.token_id,
-		})
+		trackBuyToken(data.token_id)
 
 		try {
 			const params = {

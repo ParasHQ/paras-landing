@@ -6,6 +6,7 @@ import LoginModal from './LoginModal'
 import { GAS_FEE } from 'config/constants'
 import { sentryCaptureException } from 'lib/sentry'
 import { useIntl } from 'hooks/useIntl'
+import { trackBurnToken } from 'lib/ga'
 
 const TokenBurnModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
@@ -16,6 +17,7 @@ const TokenBurnModal = ({ show, onClose, data }) => {
 			return
 		}
 
+		trackBurnToken(data.token_id)
 		try {
 			const params = {
 				token_id: data.token_id,
