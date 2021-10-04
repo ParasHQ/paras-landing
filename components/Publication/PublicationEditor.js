@@ -479,7 +479,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 							className={`md:flex md:flex-wrap ${embeddedCards.length <= 3 && 'justify-center'}`}
 						>
 							{embeddedCards.map((card) => (
-								<div key={card.tokenId} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8">
+								<div key={card._id} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8">
 									<CardPublication
 										localToken={card}
 										deleteCard={() => {
