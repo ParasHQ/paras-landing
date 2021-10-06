@@ -1,12 +1,12 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
-import Nav from '../../../components/Nav'
-import CardList from '../../../components/CardList'
+import Nav from 'components/Nav'
+import CardList from 'components/TokenSeries/CardList'
 import Head from 'next/head'
-import Footer from '../../../components/Footer'
+import Footer from 'components/Footer'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { useIntl } from '../../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const LIMIT = 12
 
 export default function MarketPage({ collectionName }) {

@@ -3,8 +3,8 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import Head from 'next/head'
 
-import Footer from '../components/Footer'
-import Nav from '../components/Nav'
+import Footer from 'components/Footer'
+import Nav from 'components/Nav'
 
 const ProfileDetail = ({ userProfile, accountId }) => {
 	const router = useRouter()
@@ -19,9 +19,7 @@ const ProfileDetail = ({ userProfile, accountId }) => {
 			userProfile?.bio || ''
 		}`,
 		image: userProfile?.imgUrl
-			? `${process.env.V2_API_URL}/socialCard/avatar/${
-					userProfile.imgUrl.split('://')[1]
-			  }`
+			? `${process.env.V2_API_URL}/socialCard/avatar/${userProfile.imgUrl.split('://')[1]}`
 			: `https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png`,
 	}
 
@@ -61,9 +59,7 @@ const ProfileDetail = ({ userProfile, accountId }) => {
 }
 
 export async function getServerSideProps({ params }) {
-	const profileRes = await axios(
-		`${process.env.V2_API_URL}/profiles?accountId=${params.id}`
-	)
+	const profileRes = await axios(`${process.env.V2_API_URL}/profiles?accountId=${params.id}`)
 
 	const userProfile = (await profileRes.data.data.results[0]) || null
 	const accountId = params.id

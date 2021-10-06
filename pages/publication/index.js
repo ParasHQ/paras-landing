@@ -3,14 +3,14 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import PublicationList from '../../components/PublicationList'
-import PublicationCardListLoader from '../../components/Publication/PublicationCardListLoader'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import PublicationList from 'components/Publication/PublicationList'
+import PublicationCardListLoader from 'components/Publication/PublicationCardListLoader'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import useStore from '../../lib/store'
-import { useIntl } from '../../hooks/useIntl'
+import useStore from 'lib/store'
+import { useIntl } from 'hooks/useIntl'
 
 const LIMIT = 6
 
@@ -114,15 +114,7 @@ const Publication = () => {
 		}
 	}
 
-	const _fetchData = async (
-		initial = false,
-		list,
-		setList,
-		hasMore,
-		setHasMore,
-		page,
-		setPage
-	) => {
+	const _fetchData = async (initial = false, list, setList, hasMore, setHasMore, page, setPage) => {
 		const _pubList = initial ? [] : list
 		const _hasMore = initial ? true : hasMore
 		const _page = initial ? 0 : page
@@ -183,10 +175,7 @@ const Publication = () => {
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras — Digital Art Cards Market" />
-				<meta
-					property="og:site_name"
-					content="Paras — Digital Art Cards Market"
-				/>
+				<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -199,9 +188,7 @@ const Publication = () => {
 			</Head>
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
-				<h1 className="text-4xl font-bold text-gray-100 text-center">
-					{localeLn('Publication')}
-				</h1>
+				<h1 className="text-4xl font-bold text-gray-100 text-center">{localeLn('Publication')}</h1>
 				<div className="mt-4">
 					<p className="text-center text-xl text-gray-300">
 						{localeLn('Enhancing The Visuals through Stories')}
@@ -212,9 +199,7 @@ const Publication = () => {
 						<div className="px-4">
 							<Link href="/publication">
 								<a className="text-xl text-gray-600 font-semibold">
-									<span
-										className={!router.query.type ? 'text-gray-100' : undefined}
-									>
+									<span className={!router.query.type ? 'text-gray-100' : undefined}>
 										{localeLn('All')}
 									</span>
 								</a>
@@ -223,13 +208,7 @@ const Publication = () => {
 						<div className="px-4">
 							<Link href="/publication?type=editorial" shallow={true}>
 								<a className="text-xl text-gray-600 font-semibold">
-									<span
-										className={
-											router.query.type === 'editorial'
-												? 'text-gray-100'
-												: undefined
-										}
-									>
+									<span className={router.query.type === 'editorial' ? 'text-gray-100' : undefined}>
 										{localeLn('Editorial')}
 									</span>
 								</a>
@@ -238,13 +217,7 @@ const Publication = () => {
 						<div className="px-4">
 							<Link href="/publication?type=community" shallow={true}>
 								<a className="text-xl text-gray-600 font-semibold">
-									<span
-										className={
-											router.query.type === 'community'
-												? 'text-gray-100'
-												: undefined
-										}
-									>
+									<span className={router.query.type === 'community' ? 'text-gray-100' : undefined}>
 										{localeLn('Community')}
 									</span>
 								</a>

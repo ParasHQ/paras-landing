@@ -1,12 +1,17 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import FilterMarket from './FilterMarket'
+import FilterMarket from 'components/Filter/FilterMarket'
 import Scrollbars from 'react-custom-scrollbars'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 
 const CategoryList = ({ listCategory, categoryId = '' }) => {
 	const router = useRouter()
 	const { localeLn } = useIntl()
+
+	if (listCategory.length === 0) {
+		return null
+	}
+
 	return (
 		<div className="mt-6 flex items-end justify-between">
 			<Scrollbars
@@ -19,9 +24,7 @@ const CategoryList = ({ listCategory, categoryId = '' }) => {
 					<Link href="/market" shallow={true}>
 						<a
 							className={`text-xl ${
-								router.pathname === '/market'
-									? 'text-gray-100'
-									: 'text-gray-600'
+								router.pathname === '/market' ? 'text-gray-100' : 'text-gray-600'
 							} font-semibold`}
 						>
 							{localeLn('All')}
@@ -37,9 +40,7 @@ const CategoryList = ({ listCategory, categoryId = '' }) => {
 							>
 								<a
 									className={`text-xl ${
-										category.category_id === categoryId
-											? 'text-gray-100'
-											: 'text-gray-600'
+										category.category_id === categoryId ? 'text-gray-100' : 'text-gray-600'
 									} font-semibold`}
 								>
 									<span>{category.name}</span>

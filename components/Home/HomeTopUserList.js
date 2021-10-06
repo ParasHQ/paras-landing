@@ -6,7 +6,7 @@ import LinkToProfile from 'components/LinkToProfile'
 import Scrollbars from 'react-custom-scrollbars'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import HomeTopUsersLoader from 'components/Home/Loaders/TopUsers'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const renderThumb = ({ style, ...props }) => {
 	return (
 		<div
@@ -54,9 +54,7 @@ const TopUser = ({ user, idx }) => {
 						className="text-gray-100 hover:border-gray-100 font-semibold text-lg"
 					/>
 				)}
-				<p className="text-base text-gray-400">
-					{formatNearAmount(user.total_sum)} Ⓝ
-				</p>
+				<p className="text-base text-gray-400">{formatNearAmount(user.total_sum)} Ⓝ</p>
 			</div>
 		</div>
 	)
@@ -73,14 +71,11 @@ export const HomeTopUserList = () => {
 	}, [])
 
 	const fetchTopUsers = async () => {
-		const resp = await axios.get(
-			`${process.env.V2_API_URL}/activities/top-users`,
-			{
-				params: {
-					__limit: 5,
-				},
-			}
-		)
+		const resp = await axios.get(`${process.env.V2_API_URL}/activities/top-users`, {
+			params: {
+				__limit: 5,
+			},
+		})
 		if (resp.data.data) {
 			setTopBuyerList(resp.data.data.buyers)
 			setTopSellerList(resp.data.data.sellers)

@@ -1,15 +1,15 @@
 import axios from 'axios'
+import PublicationList from 'components/Publication/PublicationList'
+import { useIntl } from 'hooks/useIntl'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import Footer from '../../components/Footer'
-import Nav from '../../components/Nav'
-import Profile from '../../components/Profile'
-import PublicationCardListLoader from '../../components/Publication/PublicationCardListLoader'
-import PublicationList from '../../components/PublicationList'
-import useStore from '../../lib/store'
-import { useIntl } from '../hooks/useIntl'
+import Footer from 'components/Footer'
+import Nav from 'components/Nav'
+import Profile from 'components/Profile/Profile'
+import PublicationCardListLoader from 'components/Publication/PublicationCardListLoader'
+import useStore from 'lib/store'
 const LIMIT = 6
 
 const Publication = ({ userProfile, accountId }) => {
@@ -73,9 +73,7 @@ const Publication = ({ userProfile, accountId }) => {
 			userProfile?.bio || ''
 		}`,
 		image: userProfile?.imgUrl
-			? `${process.env.API_URL}/socialCard/avatar/${
-					userProfile.imgUrl.split('://')[1]
-			  }`
+			? `${process.env.API_URL}/socialCard/avatar/${userProfile.imgUrl.split('://')[1]}`
 			: `https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png`,
 	}
 	const { localeLn } = useIntl()
@@ -115,8 +113,7 @@ const Publication = ({ userProfile, accountId }) => {
 						<div className="mt-4 -mx-2">
 							<PublicationCardListLoader />
 						</div>
-					) : usersPublicationList[router.query.id]?.length === 0 &&
-					  !isFetching ? (
+					) : usersPublicationList[router.query.id]?.length === 0 && !isFetching ? (
 						<div className="mt-8 text-2xl text-gray-600 font-semibold py-32 text-center overflow-x-hidden border-2 border-dashed border-gray-800 rounded-md">
 							<div className="w-40 m-auto">
 								<img src="/cardstack.png" className="opacity-75" />

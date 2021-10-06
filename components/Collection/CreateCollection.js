@@ -8,7 +8,7 @@ import Axios from 'axios'
 import near from 'lib/near'
 import { useToast } from 'hooks/useToast'
 import { useRouter } from 'next/router'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const CreateCollection = ({ onFinishCreate }) => {
@@ -47,16 +47,12 @@ const CreateCollection = ({ onFinishCreate }) => {
 		formData.append('creator_id', currentUser)
 
 		try {
-			const resp = await Axios.post(
-				`${process.env.V2_API_URL}/collections`,
-				formData,
-				{
-					headers: {
-						'Content-Type': 'multipart/form-data',
-						authorization: await near.authToken(),
-					},
-				}
-			)
+			const resp = await Axios.post(`${process.env.V2_API_URL}/collections`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+					authorization: await near.authToken(),
+				},
+			})
 			if (resp) {
 				toast.show({
 					text: (
@@ -73,8 +69,7 @@ const CreateCollection = ({ onFinishCreate }) => {
 			}
 		} catch (err) {
 			sentryCaptureException(err)
-			const msg =
-				err.response?.data?.message || 'Something went wrong, try again later.'
+			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">{msg}</div>,
 				type: 'error',
@@ -148,10 +143,7 @@ const CreateCollection = ({ onFinishCreate }) => {
 				/>
 				<Button
 					isDisabled={
-						isSubmitting ||
-						imgUrl === '' ||
-						collectionName === '' ||
-						collectionDesc === ''
+						isSubmitting || imgUrl === '' || collectionName === '' || collectionDesc === ''
 					}
 					className="mt-8"
 					onClick={_submit}

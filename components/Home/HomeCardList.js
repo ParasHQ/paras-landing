@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
-import CardList from 'components/CardList'
-import CardListLoader from 'components/CardListLoader'
-import { useIntl } from '../../hooks/useIntl'
+import CardList from 'components/TokenSeries/CardList'
+import CardListLoader from 'components/Card/CardListLoader'
+import { useIntl } from 'hooks/useIntl'
 export const HomeCardList = () => {
 	const [tokenList, setTokenList] = useState([])
 	const [isLoading, setIsLoading] = useState(true)
@@ -51,11 +51,7 @@ export const HomeCardList = () => {
 				</Link>
 			</div>
 			<div className="mt-4">
-				{!isLoading ? (
-					<CardList tokens={tokenList} />
-				) : (
-					<CardListLoader length={4} />
-				)}
+				{!isLoading ? <CardList tokens={tokenList} /> : <CardListLoader length={4} />}
 			</div>
 		</div>
 	)

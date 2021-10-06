@@ -7,39 +7,11 @@ import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import { trackRemoveListingTokenSeries, trackUpdateListingTokenSeries } from 'lib/ga'
 
-const TokenSeriesUpdatePriceModal = ({
-	show,
-	onClose,
-	data = {
-		token_type: 'paradigm-1',
-		comic_id: 'paradigm',
-		chapter_id: 1,
-		metadata: {
-			title: 'Paradigm Ch.1 : The Metaverse',
-			description:
-				"While waiting for the hackathon's final stage, Abee got transferred into an unknown world",
-			media: 'bafybeih4vvtevzfxtwsq2oadkvg6rtpspih4pyqqegtocwklcmnhe7p5mi',
-			media_hash: null,
-			copies: null,
-			issued_at: '2021-08-21T16:33:28.475Z',
-			expires_at: null,
-			starts_at: null,
-			updated_at: null,
-			extra: null,
-			reference: 'bafybeiaqaxyw2x6yx6vnbntg3dpdqzv2hpq2byffcrbit7dygcksauv3ta',
-			reference_hash: null,
-			blurhash: 'UCQ0XJ~qxu~q00IUayM{00M{M{M{00ayofWB',
-			author_ids: ['afiq.testnet'],
-			page_count: 12,
-			collection: 'Paradigm',
-			subtitle: 'The Metaverse',
-		},
-		price: '0',
-	},
-}) => {
+const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState('0')
 	const { localeLn } = useIntl()
 	const onUpdateListing = async (e) => {
@@ -51,6 +23,8 @@ const TokenSeriesUpdatePriceModal = ({
 			token_series_id: data.token_series_id,
 			price: parseNearAmount(newPrice),
 		}
+
+		trackUpdateListingTokenSeries(data.token_series_id)
 
 		try {
 			await near.wallet.account().functionCall({
@@ -71,6 +45,8 @@ const TokenSeriesUpdatePriceModal = ({
 			return
 		}
 
+		trackRemoveListingTokenSeries(data.token_series_id)
+
 		try {
 			const params = {
 				token_series_id: data.token_series_id,
@@ -88,10 +64,7 @@ const TokenSeriesUpdatePriceModal = ({
 	}
 
 	const calculatePriceDistribution = () => {
-		if (
-			newPrice &&
-			JSBI.greaterThan(JSBI.BigInt(parseNearAmount(newPrice)), JSBI.BigInt(0))
-		) {
+		if (newPrice && JSBI.greaterThan(JSBI.BigInt(parseNearAmount(newPrice)), JSBI.BigInt(0))) {
 			let fee = JSBI.BigInt(500)
 
 			const calcRoyalty =
@@ -112,10 +85,7 @@ const TokenSeriesUpdatePriceModal = ({
 
 			const cut = JSBI.add(calcRoyalty, calcFee)
 
-			const calcReceive = JSBI.subtract(
-				JSBI.BigInt(parseNearAmount(newPrice)),
-				cut
-			)
+			const calcReceive = JSBI.subtract(JSBI.BigInt(parseNearAmount(newPrice)), cut)
 
 			return {
 				receive: formatNearAmount(calcReceive.toString()),
@@ -131,12 +101,7 @@ const TokenSeriesUpdatePriceModal = ({
 	}
 
 	return (
-		<Modal
-			isShow={show}
-			closeOnBgClick={false}
-			closeOnEscape={false}
-			close={onClose}
-		>
+		<Modal isShow={show} closeOnBgClick={false} closeOnEscape={false} close={onClose}>
 			<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative">
 				<div className="absolute right-0 top-0 pr-4 pt-4">
 					<div className="cursor-pointer" onClick={onClose}>
@@ -151,8 +116,7 @@ const TokenSeriesUpdatePriceModal = ({
 						<div className="mt-4">
 							<label className="block text-sm text-white mb-2">
 								{localeLn('New Price')}{' '}
-								{data.price &&
-									`(${localeLn('Current price')}: ${formatNearAmount(data.price)})`}
+								{data.price && `(${localeLn('Current price')}: ${formatNearAmount(data.price)} Ⓝ)`}
 							</label>
 							<div
 								className={`flex justify-between rounded-md border-transparent w-full relative ${
@@ -172,9 +136,7 @@ const TokenSeriesUpdatePriceModal = ({
 									// className="clear pr-2"
 									placeholder="Card price per pcs"
 								/>
-								<div className="absolute inset-y-0 right-3 flex items-center text-white">
-									Ⓝ
-								</div>
+								<div className="absolute inset-y-0 right-3 flex items-center text-white">Ⓝ</div>
 							</div>
 							<div className="mt-2 text-gray-200 flex items-center justify-between">
 								<span>{localeLn('Receive')}:</span>

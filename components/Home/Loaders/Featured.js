@@ -6,6 +6,7 @@ const HomeFeaturedLoader = (props) => (
 		speed={2}
 		width="100%"
 		viewBox="0 0 600 500"
+		uniqueKey="home-feature-loader"
 		backgroundColor="#1d1d1d"
 		foregroundColor="#282828"
 		{...props}

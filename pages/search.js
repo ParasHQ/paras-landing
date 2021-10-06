@@ -4,14 +4,14 @@ import { useRouter } from 'next/router'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import Head from 'next/head'
 
-import Nav from '../components/Nav'
-import CardList from '../components/CardList'
-import Footer from '../components/Footer'
-import useStore from '../lib/store'
-import FilterMarket from '../components/FilterMarket'
-import { parseSortQuery } from '../utils/common'
-import CardListLoader from '../components/CardListLoader'
-import { useIntl } from '../hooks/useIntl'
+import Nav from 'components/Nav'
+import CardList from 'components/TokenSeries/CardList'
+import Footer from 'components/Footer'
+import useStore from 'lib/store'
+import FilterMarket from 'components/Filter/FilterMarket'
+import { parseSortQuery } from 'utils/common'
+import CardListLoader from 'components/Card/CardListLoader'
+import { useIntl } from 'hooks/useIntl'
 const LIMIT = 12
 
 export default function SearchPage({ searchQuery }) {
@@ -75,7 +75,9 @@ export default function SearchPage({ searchQuery }) {
 	}
 
 	const headMeta = {
-		title: localeLn('Search {searchQuery} — Paras',{searchQuery:searchQuery}),
+		title: localeLn('Search {searchQuery} — Paras', {
+			searchQuery: searchQuery,
+		}),
 		description: `Explore and collect ${searchQuery} digital art cards on Paras. All-in-one social digital art card marketplace for creators and collectors.`,
 	}
 
@@ -152,8 +154,7 @@ const tokensParams = (_page = 0, query) => {
 		__sort: parseSortQuery(query.sort),
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
-		is_verified:
-			typeof query.is_verified !== 'undefined' ? query.is_verified : true,
+		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 	}

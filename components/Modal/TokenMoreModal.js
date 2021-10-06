@@ -12,9 +12,9 @@ const TokenMoreModal = ({ show, onClose, listModalItem }) => {
 		}, 3000)
 	}
 
-	const _listModalItem = [
-		{ name: copyLink ? 'Copied' : 'Copy Link', onClick: onClickCopy },
-	].concat(listModalItem)
+	const _listModalItem = [{ name: copyLink ? 'Copied' : 'Copy Link', onClick: onClickCopy }].concat(
+		listModalItem
+	)
 
 	return <ListModal list={_listModalItem} show={show} onClose={onClose} />
 }

@@ -2,18 +2,18 @@ import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Head from 'next/head'
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
-import useStore from '../lib/store'
-import ActivityDetail from '../components/ActivityDetail'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import useStore from 'lib/store'
+import ActivityDetail from 'components/Activity/ActivityDetail'
 import { useRouter } from 'next/router'
-import TopUsers from '../components/TopUsers'
+import TopUsers from 'components/Activity/TopUsers'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
-import FilterActivity from '../components/FilterActivity'
+import FilterActivity from 'components/Filter/FilterActivity'
 import { sentryCaptureException } from 'lib/sentry'
 
 const FETCH_TOKENS_LIMIT = 10
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 
 const ActivityLog = ({ query }) => {
 	const {
@@ -52,9 +52,7 @@ const ActivityLog = ({ query }) => {
 		} else {
 			_fetchData({}, true)
 		}
-		const res = await axios(
-			`${process.env.V2_API_URL}/activities/top-users?__limit=5`
-		)
+		const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=5`)
 		setTopUser(res.data.data)
 	}, [])
 
@@ -103,15 +101,12 @@ const ActivityLog = ({ query }) => {
 				_filterQuery(fetchQuery?.filter) +
 				_filterMinMax(fetchQuery?.filter, fetchQuery?.pmin, fetchQuery?.pmax)
 
-			const res = await axios.get(
-				`${process.env.V2_API_URL}/activities?${_filter}`,
-				{
-					params: {
-						__skip: _activityListPage * FETCH_TOKENS_LIMIT,
-						__limit: FETCH_TOKENS_LIMIT,
-					},
-				}
-			)
+			const res = await axios.get(`${process.env.V2_API_URL}/activities?${_filter}`, {
+				params: {
+					__skip: _activityListPage * FETCH_TOKENS_LIMIT,
+					__limit: FETCH_TOKENS_LIMIT,
+				},
+			})
 			const newData = await res.data.data
 
 			const newActivityList = [..._activityList, ...newData.results]
@@ -151,10 +146,7 @@ const ActivityLog = ({ query }) => {
 						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 					/>
 
-					<meta
-						name="twitter:title"
-						content="Paras — Digital Art Cards Market"
-					/>
+					<meta name="twitter:title" content="Paras — Digital Art Cards Market" />
 					<meta name="twitter:card" content="summary_large_image" />
 					<meta name="twitter:site" content="@ParasHQ" />
 					<meta name="twitter:url" content="https://paras.id" />
@@ -167,14 +159,8 @@ const ActivityLog = ({ query }) => {
 						content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 					/>
 					<meta property="og:type" content="website" />
-					<meta
-						property="og:title"
-						content="Paras — Digital Art Cards Market"
-					/>
-					<meta
-						property="og:site_name"
-						content="Paras — Digital Art Cards Market"
-					/>
+					<meta property="og:title" content="Paras — Digital Art Cards Market" />
+					<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
 					<meta
 						property="og:description"
 						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -190,12 +176,9 @@ const ActivityLog = ({ query }) => {
 					<div className="md:w-2/3 max-w-2xl relative mx-auto">
 						<div className="px-4 flex flex-wrap items-center justify-between">
 							<div ref={modalRef}>
-								<div
-									className="flex items-baseline"
-									onClick={() => setShowModal(!showModal)}
-								>
+								<div className="flex items-baseline" onClick={() => setShowModal(!showModal)}>
 									<h1 className="text-4xl font-bold text-gray-100 text-center mr-2 capitalize">
-										{activityType.split('-').join(' ')}
+										{activityType === 'activity' ? localeLn('Activity') : localeLn('Top Users')}
 									</h1>
 									<svg
 										viewBox="0 0 11 7"
@@ -234,11 +217,7 @@ const ActivityLog = ({ query }) => {
 									</div>
 								)}
 							</div>
-							<div
-								className={`${
-									activityType === 'top-users' && 'hidden'
-								} md:block`}
-							>
+							<div className={`${activityType === 'top-users' && 'hidden'} md:block`}>
 								<FilterActivity onClickFilter={onClickFilter} />
 							</div>
 						</div>
@@ -277,11 +256,7 @@ const ActivityLog = ({ query }) => {
 							activityType === 'activity' && 'hidden'
 						} md:block`}
 					>
-						<TopUsers
-							data={topUser.buyers}
-							userType={'buyer'}
-							linkTo="/activity/top-buyers"
-						/>
+						<TopUsers data={topUser.buyers} userType={'buyer'} linkTo="/activity/top-buyers" />
 						<TopUsers
 							data={topUser.sellers}
 							userType={'seller'}

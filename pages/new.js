@@ -1,25 +1,25 @@
 import axios from 'axios'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
-import Card from '../components/Card'
-import ImgCrop from '../components/ImgCrop'
-import Nav from '../components/Nav'
-import useStore from '../lib/store'
+import Card from 'components/Card/Card'
+import ImgCrop from 'components/ImgCrop'
+import Nav from 'components/Nav'
+import useStore from 'lib/store'
 import { useForm } from 'react-hook-form'
-import Modal from '../components/Modal'
+import Modal from 'components/Modal'
 import { useRouter } from 'next/router'
-import near from '../lib/near'
+import near from 'lib/near'
 import Head from 'next/head'
-import { useToast } from '../hooks/useToast'
-import Footer from '../components/Footer'
-import { parseImgUrl, prettyBalance, readFileAsUrl } from '../utils/common'
+import { useToast } from 'hooks/useToast'
+import Footer from 'components/Footer'
+import { parseImgUrl, prettyBalance, readFileAsUrl } from 'utils/common'
 import { encodeImageToBlurhash } from 'lib/blurhash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { GAS_FEE, STORAGE_CREATE_SERIES_FEE } from 'config/constants'
 import Button from 'components/Common/Button'
 import { InputText, InputTextarea } from 'components/Common/form'
 import CreateCollectionModal from 'components/Collection/CreateCollectionModal'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
 const LIMIT = 10
@@ -30,8 +30,7 @@ const NewPage = () => {
 	const router = useRouter()
 	const toast = useToast()
 	const [formInput, setFormInput] = useState({})
-	const { errors, register, handleSubmit, watch, setValue, getValues } =
-		useForm()
+	const { errors, register, handleSubmit, watch, setValue, getValues } = useForm()
 
 	const [showImgCrop, setShowImgCrop] = useState(false)
 	const [imgFile, setImgFile] = useState('')
@@ -87,8 +86,7 @@ const NewPage = () => {
 			setIsUploading('success')
 		} catch (err) {
 			sentryCaptureException(err)
-			const msg =
-				err.response?.data?.message || `Something went wrong, try again later`
+			const msg = err.response?.data?.message || `Something went wrong, try again later`
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">{msg}</div>,
 				type: 'error',
@@ -130,8 +128,7 @@ const NewPage = () => {
 			})
 		} catch (err) {
 			sentryCaptureException(err)
-			const msg =
-				err.response?.data?.message || `Something went wrong, try again later`
+			const msg = err.response?.data?.message || `Something went wrong, try again later`
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">{msg}</div>,
 				type: 'error',
@@ -352,9 +349,7 @@ const NewPage = () => {
 												<span>Price: </span>
 												<span>
 													{prettyBalance(
-														Number(getValues('amount', 0))
-															.toPrecision(4)
-															.toString(),
+														Number(getValues('amount', 0)).toPrecision(4).toString(),
 														0,
 														6
 													)}{' '}
@@ -373,10 +368,7 @@ const NewPage = () => {
 												<span>{localeLn('Receive')}: </span>
 												<span>
 													{prettyBalance(
-														Number(
-															getValues('amount', 0) *
-																((95 - (formInput.royalty || 0)) / 100)
-														)
+														Number(getValues('amount', 0) * ((95 - (formInput.royalty || 0)) / 100))
 															.toPrecision(4)
 															.toString(),
 														0,
@@ -402,10 +394,7 @@ const NewPage = () => {
 													<span>{localeLn('Royalty')}: </span>
 													<span>
 														{prettyBalance(
-															Number(
-																getValues('amount', 0) *
-																	(formInput.royalty / 100)
-															)
+															Number(getValues('amount', 0) * (formInput.royalty / 100))
 																.toPrecision(4)
 																.toString(),
 															0,
@@ -439,9 +428,7 @@ const NewPage = () => {
 													)}{' '}
 													Ⓝ (~$
 													{prettyBalance(
-														Number(
-															store.nearUsdPrice * getValues('amount', 0) * 0.05
-														)
+														Number(store.nearUsdPrice * getValues('amount', 0) * 0.05)
 															.toPrecision(4)
 															.toString(),
 														0,
@@ -457,11 +444,7 @@ const NewPage = () => {
 									<p>{localeLn('Confirm card creation')}?</p>
 								</div>
 								<div className="">
-									<Button
-										className="mt-4"
-										onClick={uploadImageMetadata}
-										isFullWidth
-									>
+									<Button className="mt-4" onClick={uploadImageMetadata} isFullWidth>
 										{localeLn('Create')}
 									</Button>
 									<Button
@@ -481,9 +464,7 @@ const NewPage = () => {
 			{showCreatingModal && (
 				<Modal closeOnEscape={false} closeOnBgClick={false}>
 					<div className="max-w-xs m-auto p-4 bg-gray-800 rounded-md">
-						<div className="font-bold text-2xl mb-4 text-white">
-							{localeLn('Creating Card')}
-						</div>
+						<div className="font-bold text-2xl mb-4 text-white">{localeLn('Creating Card')}</div>
 						<div>
 							<p className="text-gray-200 font-bold text-lg">{localeLn('Upload')}</p>
 							<p className="text-gray-200 text-sm mb-2">
@@ -599,9 +580,7 @@ const NewPage = () => {
 							>
 								<div className="block text-sm text-white">
 									<span>{localeLn('You will submit card to')} </span>
-									<span className="font-bold">
-										{formatCategoryId(router.query.categoryId)}
-									</span>
+									<span className="font-bold">{formatCategoryId(router.query.categoryId)}</span>
 								</div>
 							</div>
 						)}
@@ -618,10 +597,7 @@ const NewPage = () => {
 									</button>
 									<div>{step + 1}/4</div>
 									{step === 1 && (
-										<button
-											disabled={!imgFile}
-											onClick={() => setStep(step + 1)}
-										>
+										<button disabled={!imgFile} onClick={() => setStep(step + 1)}>
 											{localeLn('Next')}
 										</button>
 									)}
@@ -663,18 +639,13 @@ const NewPage = () => {
 														<img
 															src={parseImgUrl(item.media, null, {
 																width: `600`,
-																useOriginal:
-																	process.env.APP_ENV === 'production'
-																		? false
-																		: true,
+																useOriginal: process.env.APP_ENV === 'production' ? false : true,
 															})}
 															className="w-10 h-10"
 														/>
 													)}
 												</div>
-												<div className="ml-3 text-sm truncate">
-													{item.collection}
-												</div>
+												<div className="ml-3 text-sm truncate">{item.collection}</div>
 											</div>
 										))}
 									</InfiniteScroll>
@@ -688,10 +659,7 @@ const NewPage = () => {
 										<button onClick={_handleBack}>{localeLn('Back')}</button>
 										<div>{step + 1}/4</div>
 										{step === 1 && (
-											<button
-												disabled={!imgFile}
-												onClick={() => setStep(step + 1)}
-											>
+											<button disabled={!imgFile} onClick={() => setStep(step + 1)}>
 												{localeLn('Next')}
 											</button>
 										)}
@@ -725,9 +693,7 @@ const NewPage = () => {
 														fill="rgba(229, 231, 235, 0.5)"
 													/>
 												</svg>
-												<p className="text-gray-200 mt-4 truncate text-center">
-													{imgFile.name}
-												</p>
+												<p className="text-gray-200 mt-4 truncate text-center">{imgFile.name}</p>
 											</div>
 										) : (
 											<div className="text-center">
@@ -761,10 +727,7 @@ const NewPage = () => {
 									<div className="flex justify-between py-2">
 										<button onClick={_handleBack}>Back</button>
 										<div>{step + 1}/4</div>
-										<button
-											type="submit"
-											onClick={handleSubmit(_handleSubmitStep1)}
-										>
+										<button type="submit" onClick={handleSubmit(_handleSubmitStep1)}>
 											{localeLn('Next')}
 										</button>
 									</div>
@@ -787,14 +750,8 @@ const NewPage = () => {
 									<div className="mt-4">
 										<div className="flex items-center justify-between">
 											<label className="block text-sm">{localeLn('Description')}</label>
-											<div
-												className={`${
-													watch('description')?.length >= 600 && 'text-red-500'
-												}`}
-											>
-												<p className="text-sm">
-													{watch('description')?.length || 0}/600
-												</p>
+											<div className={`${watch('description')?.length >= 600 && 'text-red-500'}`}>
+												<p className="text-sm">{watch('description')?.length || 0}/600</p>
 											</div>
 										</div>
 										<InputTextarea
@@ -804,14 +761,11 @@ const NewPage = () => {
 												required: true,
 												maxLength: 600,
 											})}
-											className={`${
-												errors.description && 'error'
-											} resize-none h-24`}
+											className={`${errors.description && 'error'} resize-none h-24`}
 											placeholder="Card description"
 										/>
 										<div className="text-sm text-red-500">
-											{errors.description?.type === 'required' &&
-												'Description is required'}
+											{errors.description?.type === 'required' && 'Description is required'}
 										</div>
 										<div className="text-sm text-red-500">
 											{errors.description?.type === 'maxLength' &&
@@ -832,15 +786,13 @@ const NewPage = () => {
 											placeholder="Number of copies"
 										/>
 										<div className="mt-2 text-sm text-red-500">
-											{errors.supply?.type === 'required' &&
-												'Number of copies is required'}
+											{errors.supply?.type === 'required' && 'Number of copies is required'}
 										</div>
 										<div className="mt-2 text-sm text-red-500">
 											{errors.supply?.type === 'min' && 'Minimum 1 copy'}
 										</div>
 										<div className="mt-2 text-sm text-red-500">
-											{errors.supply?.type === 'validate' &&
-												'Only use rounded number'}
+											{errors.supply?.type === 'validate' && 'Only use rounded number'}
 										</div>
 									</div>
 								</div>
@@ -851,10 +803,7 @@ const NewPage = () => {
 								<div className="flex justify-between py-2">
 									<button onClick={_handleBack}>Back</button>
 									<div>{step + 1}/4</div>
-									<button
-										type="submit"
-										onClick={handleSubmit(_handleSubmitStep2)}
-									>
+									<button type="submit" onClick={handleSubmit(_handleSubmitStep2)}>
 										{localeLn('Next')}
 									</button>
 								</div>
@@ -878,12 +827,10 @@ const NewPage = () => {
 										</div>
 									</div>
 									<div className="mt-2 text-sm text-red-500">
-										{errors.royalty?.type === 'required' &&
-											`Royalty is required`}
+										{errors.royalty?.type === 'required' && `Royalty is required`}
 										{errors.royalty?.type === 'min' && `Minimum 0`}
 										{errors.royalty?.type === 'max' && `Maximum 90`}
-										{errors.royalty?.type === 'validate' &&
-											'Only use rounded number'}
+										{errors.royalty?.type === 'validate' && 'Only use rounded number'}
 									</div>
 								</div>
 								<div className="mt-4">
@@ -923,15 +870,10 @@ const NewPage = () => {
 											</div>
 											<p>
 												~$
-												{prettyBalance(
-													store.nearUsdPrice * watch('amount'),
-													0,
-													6
-												)}
+												{prettyBalance(store.nearUsdPrice * watch('amount'), 0, 6)}
 											</p>
 											<div className="mt-2 text-sm text-red-500">
-												{errors.amount?.type === 'required' &&
-													`Sale price is required`}
+												{errors.amount?.type === 'required' && `Sale price is required`}
 												{errors.amount?.type === 'min' && `Minimum 0`}
 											</div>
 										</>

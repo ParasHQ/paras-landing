@@ -8,10 +8,7 @@ import { useRouter } from 'next/router'
  * @param {boolean} shouldPreventRouteChange Whether to prevent all Next.js route changes or not.
  * @param {Function} [onRouteChangePrevented] Callback function called when route change was prevented (optional).
  */
-function usePreventRouteChangeIf(
-	shouldPreventRouteChange,
-	onRouteChangePrevented
-) {
+function usePreventRouteChangeIf(shouldPreventRouteChange, onRouteChangePrevented) {
 	const router = useRouter()
 
 	useEffect(() => {
@@ -32,12 +29,7 @@ function usePreventRouteChangeIf(
 		return () => {
 			router.events.off('routeChangeStart', routeChangeStart)
 		}
-	}, [
-		onRouteChangePrevented,
-		router.asPath,
-		router.events,
-		shouldPreventRouteChange,
-	])
+	}, [onRouteChangePrevented, router.asPath, router.events, shouldPreventRouteChange])
 }
 
 export default usePreventRouteChangeIf

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import CardList from 'components/CardList'
+import CardList from 'components/TokenSeries/CardList'
 import Button from 'components/Common/Button'
 import Footer from 'components/Footer'
 import Nav from 'components/Nav'
@@ -111,7 +111,7 @@ const CollectionPage = ({ collectionId, collection }) => {
 						<span>
 							collection by{' '}
 							<span className="font-semibold">
-								<Link href={`/${collection?.creator_id}`}>
+								<Link href={`/${collection?.creator_id}/creation`}>
 									<a className="font-semibold text-white border-b-2 border-transparent hover:border-white">
 										{collection?.creator_id}
 									</a>
@@ -119,9 +119,7 @@ const CollectionPage = ({ collectionId, collection }) => {
 							</span>
 						</span>
 					</h4>
-					<p className="text-gray-200 mt-4 max-w-lg m-auto">
-						{collection?.description}
-					</p>
+					<p className="text-gray-200 mt-4 max-w-lg m-auto">{collection?.description}</p>
 					{currentUser === collection.creator_id && (
 						<div className="flex flex-row space-x-2 max-w-xs m-auto mt-4">
 							<Button onClick={addCard} size="md" className="w-40 m-auto">
@@ -139,12 +137,7 @@ const CollectionPage = ({ collectionId, collection }) => {
 					)}
 				</div>
 				<div className="mt-12 px-4">
-					<CardList
-						name="market"
-						tokens={tokens}
-						fetchData={fetchData}
-						hasMore={hasMore}
-					/>
+					<CardList name="market" tokens={tokens} fetchData={fetchData} hasMore={hasMore} />
 				</div>
 			</div>
 			<Footer />

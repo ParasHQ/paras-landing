@@ -10,7 +10,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import useStore from 'lib/store'
 import { useState } from 'react'
 import { parseImgUrl } from 'utils/common'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const EditProfileModal = ({ userData = {}, setUserData, active, onClose }) => {
 	const { setCurrentUser } = useStore()
 	const [showImgCrop, setShowImgCrop] = useState(false)
@@ -36,15 +36,11 @@ const EditProfileModal = ({ userData = {}, setUserData, active, onClose }) => {
 		formData.append('instagramId', userData.instagramId)
 
 		try {
-			const resp = await axios.put(
-				`${process.env.V2_API_URL}/profiles`,
-				formData,
-				{
-					headers: {
-						'Content-Type': 'multipart/form-data',
-					},
-				}
-			)
+			const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			})
 
 			setUserData(resp.data.data)
 			setCurrentUser(resp.data.data)
@@ -121,19 +117,12 @@ const EditProfileModal = ({ userData = {}, setUserData, active, onClose }) => {
 						></InputTextarea>
 					</div>
 					<div className="mt-8">
-						<Button
-							className="w-full"
-							isDisabled={isSubmitting}
-							onClick={_submit}
-						>
+						<Button className="w-full" isDisabled={isSubmitting} onClick={_submit}>
 							{localeLn('Save')}
 						</Button>
 					</div>
 				</div>
-				<div
-					className="absolute z-10 top-0 right-0 cursor-pointer"
-					onClick={onClose}
-				>
+				<div className="absolute z-10 top-0 right-0 cursor-pointer" onClick={onClose}>
 					<div className="-mt-4 -mr-4">
 						<IconXCircle size={40} />
 					</div>

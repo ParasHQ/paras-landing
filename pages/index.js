@@ -1,18 +1,19 @@
 import { useState } from 'react'
 import Head from 'next/head'
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
-import Modal from '../components/Modal'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import Modal from 'components/Modal'
 import YouTube from 'react-youtube'
 import { HomeMarqueeList } from 'components/Home/HomeMarqueeList'
 import { HomePublicationList } from 'components/Home/HomePublicationList'
 import { HomeTopUserList } from 'components/Home/HomeTopUserList'
 import { HomeCardList } from 'components/Home/HomeCardList'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 
 export default function Home() {
 	const [showVideoModal, setShowVideoModal] = useState(false)
 	const { localeLn } = useIntl()
+
 	return (
 		<div className="min-h-screen relative bg-black">
 			<Head>
@@ -36,10 +37,7 @@ export default function Home() {
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras — Digital Art Cards Market" />
-				<meta
-					property="og:site_name"
-					content="Paras — Digital Art Cards Market"
-				/>
+				<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -131,18 +129,17 @@ export default function Home() {
 										</svg>
 									</div>
 								</div>
-								<img
-									className="rounded-md overflow-hidden"
-									src="/thumbnail.jpg"
-								/>
+								<img className="rounded-md overflow-hidden" src="/thumbnail.jpg" />
 							</div>
 							<div className="w-full lg:w-1/3 px-4">
 								<div className="w-full mt-8 lg:mt-4">
 									<h2 className="text-white font-bold text-2xl text-gradient">
-									{localeLn('For Collectors')}
+										{localeLn('For Collectors')}
 									</h2>
 									<p className="mt-4 text-gray-400">
-									{localeLn('Discover beautiful art cards and collect them on a blockchain-based technology that prevents forgery and provides provable ownership.')}
+										{localeLn(
+											'Discover beautiful art cards and collect them on a blockchain-based technology that prevents forgery and provides provable ownership.'
+										)}
 									</p>
 								</div>
 								<div className="mt-8">
@@ -150,7 +147,9 @@ export default function Home() {
 										{localeLn('For Artists')}
 									</h2>
 									<p className="mt-4 text-gray-400">
-										{localeLn(`Create your digital art cards and sell them on the marketplace in just a few clicks. Start earning with your digital creation.`)}
+										{localeLn(
+											`Create your digital art cards and sell them on the marketplace in just a few clicks. Start earning with your digital creation.`
+										)}
 									</p>
 								</div>
 							</div>

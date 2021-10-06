@@ -2,10 +2,10 @@ import axios from 'axios'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import CardList from '../../components/CardList'
-import Footer from '../../components/Footer'
-import Nav from '../../components/Nav'
-import Profile from '../../components/Profile'
+import CardList from 'components/TokenSeries/CardList'
+import Footer from 'components/Footer'
+import Nav from 'components/Nav'
+import Profile from 'components/Profile/Profile'
 
 const LIMIT = 12
 
@@ -56,9 +56,7 @@ const creation = ({ userProfile, accountId }) => {
 			userProfile?.bio || ''
 		}`,
 		image: userProfile?.imgUrl
-			? `${process.env.V2_API_URL}/socialCard/avatar/${
-					userProfile.imgUrl.split('://')[1]
-			  }`
+			? `${process.env.V2_API_URL}/socialCard/avatar/${userProfile.imgUrl.split('://')[1]}`
 			: `https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png`,
 	}
 

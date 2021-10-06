@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { readFileAsUrl } from '../utils/common'
-import { useIntl } from '../hooks/useIntl'
+import { readFileAsUrl } from 'utils/common'
+import { useIntl } from 'hooks/useIntl'
 let cropper = null
 let height = 0
 

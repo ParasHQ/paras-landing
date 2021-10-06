@@ -14,7 +14,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const FETCH_TOKENS_LIMIT = 12
 
 const TabOwners = ({ localToken }) => {
@@ -34,23 +34,15 @@ const TabOwners = ({ localToken }) => {
 			if (!token.approval_id) {
 				const currentStorage = await near.wallet
 					.account()
-					.viewFunction(
-						process.env.MARKETPLACE_CONTRACT_ID,
-						`storage_balance_of`,
-						{
-							account_id: currentUser,
-						}
-					)
+					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `storage_balance_of`, {
+						account_id: currentUser,
+					})
 
 				const supplyPerOwner = await near.wallet
 					.account()
-					.viewFunction(
-						process.env.MARKETPLACE_CONTRACT_ID,
-						`get_supply_by_owner_id`,
-						{
-							account_id: currentUser,
-						}
-					)
+					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_supply_by_owner_id`, {
+						account_id: currentUser,
+					})
 
 				const usedStorage = JSBI.multiply(
 					JSBI.BigInt(parseInt(supplyPerOwner) + 1),
@@ -84,9 +76,10 @@ const TabOwners = ({ localToken }) => {
 		const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
 			params: {
 				token_series_id: localToken.token_series_id,
+				contract_id: localToken.contract_id,
 				__skip: page * FETCH_TOKENS_LIMIT,
 				__limit: FETCH_TOKENS_LIMIT,
-				__sort: 'edition_id::1',
+				__sort: 'token_id::1',
 			},
 			ttl: 30,
 		})
@@ -152,11 +145,7 @@ const TabOwners = ({ localToken }) => {
 				</InfiniteScroll>
 			)}
 			{showModal === 'buy' && (
-				<TokenBuyModal
-					show={showModal === 'buy'}
-					onClose={onDismissModal}
-					data={activeToken}
-				/>
+				<TokenBuyModal show={showModal === 'buy'} onClose={onDismissModal} data={activeToken} />
 			)}
 			{showModal === 'update' && (
 				<TokenUpdatePriceModal
@@ -207,11 +196,7 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 				<div className="flex items-center">
 					<Link href={`/${token.owner_id}`}>
 						<a className="hover:opacity-80">
-							<Avatar
-								size="md"
-								src={parseImgUrl(profile.imgUrl)}
-								className="align-bottom"
-							/>
+							<Avatar size="md" src={parseImgUrl(profile.imgUrl)} className="align-bottom" />
 						</a>
 					</Link>
 					{token.owner_id ? (
@@ -229,12 +214,12 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 					)}
 				</div>
 				<div>
-					<Link
-						href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
-					>
+					<Link href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}>
 						<a className="hover:opacity-80">
 							<p className="text-white font-semibold">
-								{localeLn('Edition')} #{token.edition_id}
+								{token.contract_id === process.env.NFT_CONTRACT_ID
+									? `${localeLn('Edition')} #${token.edition_id}`
+									: `#${token.token_id}`}
 							</p>
 						</a>
 					</Link>
@@ -251,11 +236,7 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 					)}
 					{token.owner_id === currentUser ? (
 						<div className="w-24">
-							<Button
-								onClick={() => onUpdateListing(token)}
-								size="sm"
-								isFullWidth
-							>
+							<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>
 								{localeLn('Update')}
 							</Button>
 						</div>

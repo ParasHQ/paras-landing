@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
+
 const Custom404 = () => {
 	const { localeLn } = useIntl()
 	return (
@@ -16,10 +17,7 @@ const Custom404 = () => {
 			></div>
 			<Head>
 				<title>{localeLn('Not Found — Paras')}</title>
-				<meta
-					name="description"
-					content="We could not find what you were looking for on Paras."
-				/>
+				<meta name="description" content="We could not find what you were looking for on Paras." />
 
 				<meta name="twitter:title" content="Not Found — Paras" />
 				<meta name="twitter:card" content="summary_large_image" />

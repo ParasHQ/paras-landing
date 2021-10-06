@@ -1,9 +1,9 @@
 import Head from 'next/head'
 
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import PublicationEditor from '../../components/PublicationEditor'
-import { useIntl } from '../../hooks/useIntl'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import PublicationEditor from 'components/Publication/PublicationEditor'
+import { useIntl } from 'hooks/useIntl'
 
 const CreatePublication = () => {
 	const { localeLn } = useIntl()
@@ -38,10 +38,7 @@ const CreatePublication = () => {
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras — Digital Art Cards Market" />
-				<meta
-					property="og:site_name"
-					content="Paras — Digital Art Cards Market"
-				/>
+				<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."

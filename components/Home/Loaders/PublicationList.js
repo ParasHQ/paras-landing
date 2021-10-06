@@ -8,6 +8,7 @@ const HomePublicationLoader = (props) => (
 		viewBox="0 0 400 480"
 		backgroundColor="#1d1d1d"
 		foregroundColor="#282828"
+		uniqueKey="home-publication-loader"
 		{...props}
 	>
 		<rect x="16" y="16" rx="4" ry="4" width="150" height="120" />

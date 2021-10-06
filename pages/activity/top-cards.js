@@ -2,11 +2,11 @@ import { useState } from 'react'
 import axios from 'axios'
 import Head from 'next/head'
 
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import CardStats from '../../components/Stats/CardStats'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import CardStats from 'components/Stats/CardStats'
 import { useEffect } from 'react'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const LIMIT = 5
 
 const TopCardsPage = () => {
@@ -26,9 +26,7 @@ const TopCardsPage = () => {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/activities/topCards?__skip=${
-				page * LIMIT
-			}&__limit=${LIMIT}`
+			`${process.env.API_URL}/activities/topCards?__skip=${page * LIMIT}&__limit=${LIMIT}`
 		)
 
 		const newCardsData = [...cardsData, ...res.data.data.results]
@@ -46,8 +44,7 @@ const TopCardsPage = () => {
 	const headMeta = {
 		title: 'Top Cards — Paras',
 		description: 'See top cards at paras',
-		image:
-			'https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png',
+		image: 'https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png',
 	}
 
 	return (
@@ -84,11 +81,7 @@ const TopCardsPage = () => {
 					<h1 className="text-4xl font-bold text-gray-100">{localeLn('Card Statistics')}</h1>
 				</div>
 				<div className="my-8">
-					<CardStats
-						cardsData={cardsData}
-						fetchData={_fetchData}
-						hasMore={hasMore}
-					/>
+					<CardStats cardsData={cardsData} fetchData={_fetchData} hasMore={hasMore} />
 				</div>
 			</div>
 			<Footer />

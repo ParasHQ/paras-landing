@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { prettyTruncate } from '../utils/common'
+import { prettyTruncate } from 'utils/common'
 
 const LinkToProfile = ({ className, accountId, len = 24 }) => {
 	return (

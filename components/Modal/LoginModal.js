@@ -2,7 +2,7 @@ import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import { IconXCircle } from 'components/Icons'
 import { useRouter } from 'next/router'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 	const router = useRouter()
 	const { localeLn } = useIntl()
@@ -34,19 +34,11 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 					<p className="text-gray-400 text-sm mb-2 text-center">
 						{localeLn('You will be redirected to NEAR Wallet')}
 					</p>
-					<Button
-						className="mt-2 px-1"
-						size="md"
-						isFullWidth
-						onClick={() => router.push('/login')}
-					>
+					<Button className="mt-2 px-1" size="md" isFullWidth onClick={() => router.push('/login')}>
 						{localeLn('Go to Login')}
 					</Button>
 				</div>
-				<div
-					className="absolute -top-4 -right-4 cursor-pointer"
-					onClick={onClose}
-				>
+				<div className="absolute -top-4 -right-4 cursor-pointer" onClick={onClose}>
 					<IconXCircle size={32} />
 				</div>
 			</div>

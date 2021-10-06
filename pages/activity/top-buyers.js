@@ -3,10 +3,10 @@ import axios from 'axios'
 import router from 'next/router'
 import Head from 'next/head'
 
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import UserTransactionList from '../../components/Activity/UserTransactionDetail'
-import { useIntl } from '../../hooks/useIntl'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import UserTransactionList from 'components/Activity/UserTransactionDetail'
+import { useIntl } from 'hooks/useIntl'
 const LIMIT = 30
 
 const TopBuyersPage = ({ topUser }) => {
@@ -22,9 +22,7 @@ const TopBuyersPage = ({ topUser }) => {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.V2_API_URL}/activities/top-users?__skip=${
-				page * LIMIT
-			}__limit=${LIMIT}`
+			`${process.env.V2_API_URL}/activities/top-users?__skip=${page * LIMIT}__limit=${LIMIT}`
 		)
 
 		const newUserData = [...usersData, ...res.data.data.buyers]
@@ -42,8 +40,7 @@ const TopBuyersPage = ({ topUser }) => {
 	const headMeta = {
 		title: 'Top User — Paras',
 		description: 'See top users at paras',
-		image:
-			'https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png',
+		image: 'https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png',
 	}
 
 	return (
@@ -104,9 +101,7 @@ const TopBuyersPage = ({ topUser }) => {
 }
 
 export async function getServerSideProps() {
-	const res = await axios(
-		`${process.env.V2_API_URL}/activities/top-users?__limit=${LIMIT}`
-	)
+	const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=${LIMIT}`)
 	const topUser = res.data.data
 
 	return { props: { topUser } }

@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { useToast } from '../hooks/useToast'
-import { useIntl } from '../hooks/useIntl'
+import { useToast } from 'hooks/useToast'
+import { useIntl } from 'hooks/useIntl'
 
 const Footer = () => {
 	const toast = useToast()
@@ -10,7 +10,9 @@ const Footer = () => {
 			text: (
 				<div className="text-sm text-gray-900">
 					<p>
-						{localeLn('Paras\' smart contract is not yet audited by well-known security organization or firm. Use at your own risk!')}
+						{localeLn(
+							"Paras' smart contract is not yet audited by well-known security organization or firm. Use at your own risk!"
+						)}
 					</p>
 				</div>
 			),
@@ -46,11 +48,7 @@ const Footer = () => {
 				</div>
 				<div className="flex flex-wrap justify-center -mx-2">
 					<div className="flex items-center pt-2 px-2">
-						<a
-							href="https://twitter.com/ParasHQ"
-							target="_blank"
-							className="flex cursor-pointer "
-						>
+						<a href="https://twitter.com/ParasHQ" target="_blank" className="flex cursor-pointer ">
 							{localeLn('Twitter')}
 						</a>
 					</div>
@@ -64,11 +62,7 @@ const Footer = () => {
 						</a>
 					</div>
 					<div className="flex items-center pt-2 px-2">
-						<a
-							href="https://t.me/parashq"
-							target="_blank"
-							className="flex cursor-pointer "
-						>
+						<a href="https://t.me/parashq" target="_blank" className="flex cursor-pointer ">
 							{localeLn('Telegram')}
 						</a>
 					</div>
@@ -163,11 +157,7 @@ const Footer = () => {
 									d="M10.9272 1.4458L3.39254 5.79608C3.4076 5.92988 3.4076 6.06492 3.39254 6.19871L10.9277 10.549C11.563 10.0802 12.4297 10.0802 13.0651 10.549L20.6002 6.19866C20.5852 6.06487 20.5851 5.92989 20.6002 5.7961L13.0655 1.44582C12.4301 1.91462 11.5634 1.91462 10.928 1.44582L10.9272 1.4458ZM21.3236 7.40033L13.7805 11.7991C13.8688 12.5837 13.4355 13.3343 12.7118 13.6501L12.7203 22.3023C12.8437 22.3562 12.9606 22.4237 13.0689 22.5036L20.6041 18.1534C20.5158 17.3687 20.9491 16.6181 21.6728 16.3023V7.6018C21.5494 7.54795 21.4324 7.48046 21.3241 7.40052L21.3236 7.40033ZM2.67629 7.44868C2.56796 7.52862 2.45104 7.59618 2.32764 7.65003V16.3505C3.05129 16.6663 3.48465 17.4169 3.39634 18.2015L10.931 22.5518C11.0394 22.4719 11.1564 22.4043 11.2797 22.3505V13.65C10.5561 13.3342 10.1227 12.5836 10.211 11.799L2.67636 7.4485L2.67629 7.44868Z"
 									className="fill-current"
 								/>
-								<path
-									d="M12 24L22.3922 18V6L12 12V24Z"
-									fill="black"
-									fillOpacity="0.25098"
-								/>
+								<path d="M12 24L22.3922 18V6L12 12V24Z" fill="black" fillOpacity="0.25098" />
 								<path
 									d="M12.0001 24V12L1.60791 6V18L12.0001 24Z"
 									fill="black"

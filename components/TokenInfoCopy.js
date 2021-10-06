@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import CopyLink from './CopyLink'
+import CopyLink from './Common/CopyLink'
 
 const TokenInfoCopy = ({ text, small = false }) => {
 	const [isCopied, setIsCopied] = useState(false)

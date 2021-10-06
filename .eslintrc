@@ -4,7 +4,7 @@
 		"browser": true,
 		"es2020": true
 	},
-	"extends": ["next", "eslint:recommended"],
+	"extends": ["next", "eslint:recommended", "prettier"],
 	"plugins": ["react-hooks"],
 	"rules": {
 		"semi": 0,

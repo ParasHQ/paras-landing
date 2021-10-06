@@ -4,25 +4,20 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { EditorState, convertFromRaw } from 'draft-js'
 import { createEditorStateWithText } from '@draft-js-plugins/editor'
-import {
-	FacebookIcon,
-	FacebookShareButton,
-	TwitterIcon,
-	TwitterShareButton,
-} from 'react-share'
+import { FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton } from 'react-share'
 import { useRouter } from 'next/router'
 
-import Nav from '../../../components/Nav'
-import Footer from '../../../components/Footer'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
 import Error from '../../404'
-import TextEditor from '../../../components/TextEditor'
-import LinkToProfile from '../../../components/LinkToProfile'
-import { parseDate, parseImgUrl } from '../../../utils/common'
-import Modal from '../../../components/Modal'
-import useStore from '../../../lib/store'
-import near from '../../../lib/near'
-import EmbeddedCard from '../../../components/EmbeddedCard'
-import { useToast } from '../../../hooks/useToast'
+import TextEditor from 'components/Publication/TextEditor'
+import LinkToProfile from 'components/LinkToProfile'
+import { parseDate, parseImgUrl } from 'utils/common'
+import Modal from 'components/Modal'
+import useStore from 'lib/store'
+import near from 'lib/near'
+import EmbeddedCard from 'components/Publication/EmbeddedCard'
+import { useToast } from 'hooks/useToast'
 import { sentryCaptureException } from 'lib/sentry'
 
 const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
@@ -31,9 +26,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const toast = useToast()
 	const textAreaRef = useRef(null)
 	const [content, setContent] = useState(
-		pubDetail?.content
-			? EditorState.createWithContent(convertFromRaw(pubDetail.content))
-			: null
+		pubDetail?.content ? EditorState.createWithContent(convertFromRaw(pubDetail.content)) : null
 	)
 	const [showModal, setShowModal] = useState('')
 	const [isCopied, setIsCopied] = useState(false)
@@ -75,21 +68,17 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const _deletePublication = async () => {
 		setIsDeleting(true)
 		try {
-			await axios.delete(
-				`${process.env.V2_API_URL}/publications/${pubDetail._id}`,
-				{
-					headers: {
-						authorization: await near.authToken(),
-					},
-				}
-			)
+			await axios.delete(`${process.env.V2_API_URL}/publications/${pubDetail._id}`, {
+				headers: {
+					authorization: await near.authToken(),
+				},
+			})
 			setTimeout(() => {
 				router.push('/publication')
 			}, 1000)
 		} catch (err) {
 			sentryCaptureException(err)
-			const msg =
-				err.response?.data?.message || `Something went wrong, try again later`
+			const msg = err.response?.data?.message || `Something went wrong, try again later`
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">{msg}</div>,
 				type: 'error',
@@ -136,12 +125,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							top: `-1000`,
 						}}
 					>
-						<input
-							ref={textAreaRef}
-							readOnly
-							type="text"
-							value={window.location.href}
-						/>
+						<input ref={textAreaRef} readOnly type="text" value={window.location.href} />
 					</div>
 				)}
 				{showModal === 'options' && (
@@ -169,10 +153,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 								</Link>
 							)}
 							{store.currentUser === pubDetail.author_id && (
-								<div
-									className="py-2 cursor-pointer"
-									onClick={() => setShowModal('confirmDelete')}
-								>
+								<div className="py-2 cursor-pointer" onClick={() => setShowModal('confirmDelete')}>
 									Delete
 								</div>
 							)}
@@ -180,15 +161,9 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 					</Modal>
 				)}
 				{showModal === 'confirmDelete' && (
-					<Modal
-						close={() => setShowModal('')}
-						closeOnBgClick={true}
-						closeOnEscape={true}
-					>
+					<Modal close={() => setShowModal('')} closeOnBgClick={true} closeOnEscape={true}>
 						<div className="max-w-sm w-full p-4 bg-gray-100 m-auto rounded-md">
-							<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-								Confirm Delete
-							</h1>
+							<h1 className="text-2xl font-bold text-gray-900 tracking-tight">Confirm Delete</h1>
 							<p className="text-gray-900 mt-2">
 								You are about to delete <b>{pubDetail.title}</b>
 							</p>
@@ -247,9 +222,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 						</Link>
 						{' > '}
 						<Link href={`/publication?type=${pubDetail.type}`}>
-							<span className="cursor-pointer capitalize">
-								{pubDetail.type}
-							</span>
+							<span className="cursor-pointer capitalize">{pubDetail.type}</span>
 						</Link>
 						{' > '}
 						<span className="font-semibold text-white">{pubDetail.title}</span>
@@ -275,9 +248,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 										accountId={pubDetail.author_id}
 										className="text-white font-bold hover:border-white text-xl"
 									/>
-									<p className="text-white m-auto text-sm">
-										{parseDate(pubDetail.updated_at)}
-									</p>
+									<p className="text-white m-auto text-sm">{parseDate(pubDetail.updated_at)}</p>
 								</div>
 							</div>
 							<div>
@@ -324,31 +295,26 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							/>
 						)}
 					</div>
-					{pubDetail.contract_token_ids &&
-						pubDetail.contract_token_ids.length !== 0 && (
-							<div className="max-w-4xl mx-auto px-4 pt-16">
-								<div className=" border-2 border-dashed border-gray-800 rounded-md p-4 md:p-8">
-									<h4 className="text-white font-semibold text-3xl md:mb-4 text-center">
-										Digital Collectibles
-									</h4>
-									<div
-										className={`flex flex-wrap ${
-											pubDetail.contract_token_ids.length <= 3 &&
-											'justify-center'
-										}`}
-									>
-										{pubDetail.contract_token_ids?.map((tokenId, index) => (
-											<div
-												key={index}
-												className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8"
-											>
-												<EmbeddedCard tokenId={tokenId} />
-											</div>
-										))}
-									</div>
+					{pubDetail.contract_token_ids && pubDetail.contract_token_ids.length !== 0 && (
+						<div className="max-w-4xl mx-auto px-4 pt-16">
+							<div className=" border-2 border-dashed border-gray-800 rounded-md p-4 md:p-8">
+								<h4 className="text-white font-semibold text-3xl md:mb-4 text-center">
+									Digital Collectibles
+								</h4>
+								<div
+									className={`flex flex-wrap ${
+										pubDetail.contract_token_ids.length <= 3 && 'justify-center'
+									}`}
+								>
+									{pubDetail.contract_token_ids?.map((tokenId, index) => (
+										<div key={index} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-8">
+											<EmbeddedCard tokenId={tokenId} />
+										</div>
+									))}
 								</div>
 							</div>
-						)}
+						</div>
+					)}
 				</div>
 				<Footer />
 			</div>
@@ -361,9 +327,7 @@ export async function getServerSideProps({ params }) {
 	const id = type.split('-')
 	const slugName = id.slice(0, id.length - 1).join('-')
 
-	const resp = await axios(
-		`${process.env.V2_API_URL}/publications?_id=${id[id.length - 1]}`
-	)
+	const resp = await axios(`${process.env.V2_API_URL}/publications?_id=${id[id.length - 1]}`)
 
 	const pubDetail = (await resp.data?.data?.results[0]) || null
 

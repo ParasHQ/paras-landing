@@ -7,42 +7,12 @@ import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
-import { useIntl } from '../../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import { trackRemoveListingToken, trackUpdateListingToken } from 'lib/ga'
 
-const TokenUpdatePriceModal = ({
-	show,
-	onClose,
-	data = {
-		token_type: 'paradigm-1',
-		comic_id: 'paradigm',
-		chapter_id: 1,
-		metadata: {
-			title: 'Paradigm Ch.1 : The Metaverse',
-			description:
-				"While waiting for the hackathon's final stage, Abee got transferred into an unknown world",
-			media: 'bafybeih4vvtevzfxtwsq2oadkvg6rtpspih4pyqqegtocwklcmnhe7p5mi',
-			media_hash: null,
-			copies: null,
-			issued_at: '2021-08-21T16:33:28.475Z',
-			expires_at: null,
-			starts_at: null,
-			updated_at: null,
-			extra: null,
-			reference: 'bafybeiaqaxyw2x6yx6vnbntg3dpdqzv2hpq2byffcrbit7dygcksauv3ta',
-			reference_hash: null,
-			blurhash: 'UCQ0XJ~qxu~q00IUayM{00M{M{M{00ayofWB',
-			author_ids: ['afiq.testnet'],
-			page_count: 12,
-			collection: 'Paradigm',
-			subtitle: 'The Metaverse',
-		},
-		price: '0',
-	},
-}) => {
-	const [newPrice, setNewPrice] = useState(
-		data.price ? formatNearAmount(data.price) : '0'
-	)
+const TokenUpdatePriceModal = ({ show, onClose, data }) => {
+	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '0')
 	const { localeLn } = useIntl()
 	const onUpdateListing = async (e) => {
 		e.preventDefault()
@@ -50,38 +20,24 @@ const TokenUpdatePriceModal = ({
 			return
 		}
 
+		trackUpdateListingToken(data.token_id)
+
 		try {
-			if (data.approval_id) {
-				const params = {
-					token_id: data.token_id,
-					nft_contract_id: data.contract_id,
-					ft_token_id: `near`,
+			const params = {
+				token_id: data.token_id,
+				account_id: process.env.MARKETPLACE_CONTRACT_ID,
+				msg: JSON.stringify({
 					price: parseNearAmount(newPrice),
-				}
-				await near.wallet.account().functionCall({
-					contractId: process.env.MARKETPLACE_CONTRACT_ID,
-					methodName: `update_market_data`,
-					args: params,
-					gas: GAS_FEE,
-					attachedDeposit: `1`,
-				})
-			} else {
-				const params = {
-					token_id: data.token_id,
-					account_id: process.env.MARKETPLACE_CONTRACT_ID,
-					msg: JSON.stringify({
-						price: parseNearAmount(newPrice),
-						ft_token_id: `near`,
-					}),
-				}
-				await near.wallet.account().functionCall({
-					contractId: data.contract_id,
-					methodName: `nft_approve`,
-					args: params,
-					gas: GAS_FEE,
-					attachedDeposit: STORAGE_APPROVE_FEE,
-				})
+					ft_token_id: `near`,
+				}),
 			}
+			await near.wallet.account().functionCall({
+				contractId: data.contract_id,
+				methodName: `nft_approve`,
+				args: params,
+				gas: GAS_FEE,
+				attachedDeposit: data.approval_id ? `1` : STORAGE_APPROVE_FEE,
+			})
 		} catch (err) {
 			sentryCaptureException(err)
 		}
@@ -92,6 +48,8 @@ const TokenUpdatePriceModal = ({
 		if (!near.currentUser) {
 			return
 		}
+
+		trackRemoveListingToken(data.token_id)
 
 		try {
 			const params = {
@@ -111,10 +69,7 @@ const TokenUpdatePriceModal = ({
 	}
 
 	const calculatePriceDistribution = () => {
-		if (
-			newPrice &&
-			JSBI.greaterThan(JSBI.BigInt(parseNearAmount(newPrice)), JSBI.BigInt(0))
-		) {
+		if (newPrice && JSBI.greaterThan(JSBI.BigInt(parseNearAmount(newPrice)), JSBI.BigInt(0))) {
 			let fee = JSBI.BigInt(500)
 
 			const calcRoyalty =
@@ -135,10 +90,7 @@ const TokenUpdatePriceModal = ({
 
 			const cut = JSBI.add(calcRoyalty, calcFee)
 
-			const calcReceive = JSBI.subtract(
-				JSBI.BigInt(parseNearAmount(newPrice)),
-				cut
-			)
+			const calcReceive = JSBI.subtract(JSBI.BigInt(parseNearAmount(newPrice)), cut)
 
 			return {
 				receive: formatNearAmount(calcReceive.toString()),
@@ -154,12 +106,7 @@ const TokenUpdatePriceModal = ({
 	}
 
 	return (
-		<Modal
-			isShow={show}
-			closeOnBgClick={false}
-			closeOnEscape={false}
-			close={onClose}
-		>
+		<Modal isShow={show} closeOnBgClick={false} closeOnEscape={false} close={onClose}>
 			<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative">
 				<div className="absolute right-0 top-0 pr-4 pt-4">
 					<div className="cursor-pointer" onClick={onClose}>
@@ -174,8 +121,7 @@ const TokenUpdatePriceModal = ({
 						<div className="mt-4">
 							<label className="block text-sm text-white mb-2">
 								{localeLn('New Price')}{' '}
-								{data.price &&
-									`(${localeLn('Current price')}: ${formatNearAmount(data.price)})`}
+								{data.price && `(${localeLn('Current price')}: ${formatNearAmount(data.price)} Ⓝ)`}
 							</label>
 							<div
 								className={`flex justify-between rounded-md border-transparent w-full relative ${
@@ -190,9 +136,7 @@ const TokenUpdatePriceModal = ({
 									onChange={(e) => setNewPrice(e.target.value)}
 									placeholder="Card price per pcs"
 								/>
-								<div className="absolute inset-y-0 right-3 flex items-center text-white">
-									Ⓝ
-								</div>
+								<div className="absolute inset-y-0 right-3 flex items-center text-white">Ⓝ</div>
 							</div>
 							<div className="mt-2 text-gray-200 flex items-center justify-between">
 								<span>{localeLn('Receive')}:</span>
@@ -265,9 +209,7 @@ const TokenUpdatePriceModal = ({
 										<div className="text-white my-1">
 											<div className="flex justify-between">
 												<div className="text-sm">{localeLn('Storage Fee')}</div>
-												<div className="text">
-													{formatNearAmount(STORAGE_APPROVE_FEE)} Ⓝ
-												</div>
+												<div className="text">{formatNearAmount(STORAGE_APPROVE_FEE)} Ⓝ</div>
 											</div>
 										</div>
 									</div>
@@ -279,12 +221,7 @@ const TokenUpdatePriceModal = ({
 							</p>
 						</div>
 						<div className="mt-6">
-							<Button
-								type="submit"
-								size="md"
-								isFullWidth
-								onClick={onUpdateListing}
-							>
+							<Button type="submit" size="md" isFullWidth onClick={onUpdateListing}>
 								{localeLn('Update Listing')}
 							</Button>
 							<Button

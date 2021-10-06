@@ -5,13 +5,13 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Blurhash } from 'react-blurhash'
 
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
-import Card from '../components/Card'
-import TokenSeriesDetailModal from '../components/TokenSeriesDetailModal'
-import { parseImgUrl, prettyBalance } from '../utils/common'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import Card from 'components/Card/Card'
+import { parseImgUrl, prettyBalance } from 'utils/common'
 import ReactLinkify from 'react-linkify'
-import { useIntl } from '../hooks/useIntl'
+import { useIntl } from 'hooks/useIntl'
+import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 
 export const specialTokenId = [
 	'bafybeihsd32maurfvj2w7bfl2ca2v5zb3fbxf6w7s5chjb5dtriegbvtxy',
@@ -28,22 +28,24 @@ export default function Drops() {
 	const timeline = [
 		{
 			date: localeLn('June 9th'),
-			note: [
-				localeLn('Open registration for user to get early access (whitelist) to buy NFT'),
-			],
+			note: [localeLn('Open registration for user to get early access (whitelist) to buy NFT')],
 		},
 		{
 			date: localeLn('June 16th'),
 			note: [
 				localeLn('NFT Drops for whitelisted account'),
-				localeLn('Drops will start on June 16th at 00.01 and will end at June 18th at 00.00 (2-days)'),
+				localeLn(
+					'Drops will start on June 16th at 00.01 and will end at June 18th at 00.00 (2-days)'
+				),
 			],
 		},
 		{
 			date: localeLn('June 19th'),
 			note: [
 				localeLn('NFT Drops for public (if still available)'),
-				localeLn('The remaining drops will start sale for public on June 19th at 00.01 and will end at June 24th at 00.00 (5 days)'),
+				localeLn(
+					'The remaining drops will start sale for public on June 19th at 00.01 and will end at June 24th at 00.00 (5 days)'
+				),
 			],
 		},
 		{
@@ -51,11 +53,13 @@ export default function Drops() {
 			note: [localeLn('Burn all the remaining NFTs')],
 		},
 	]
-	
+
 	const tasks = [
 		localeLn('Fill the Form of Eligibility: https://tripetto.app/run/2OGYWACAC6'),
 		localeLn('Follow MTVRS on Twitter (https://twitter.com/themtvrs)'),
-		localeLn('Retweet, like, tag your friends to this pinned tweet about the NFT Drops (https://twitter.com/ParasHQ/status/1402264239927185422)'),
+		localeLn(
+			'Retweet, like, tag your friends to this pinned tweet about the NFT Drops (https://twitter.com/ParasHQ/status/1402264239927185422)'
+		),
 		localeLn('Join the MTVRS Telegram group (https://t.me/themtvrs)'),
 		localeLn('Join the  MTVRS Discord channel (https://discord.com/invite/wSNk3ktahF)'),
 		localeLn('Follow Paras on Twitter (https://twitter.com/ParasHQ)'),
@@ -140,13 +144,9 @@ export default function Drops() {
 									fill="white"
 								/>
 							</svg>
-							<div className="text-gray-100 ml-2 font-bold text-2xl">
-								{'x MTVRS'}
-							</div>
+							<div className="text-gray-100 ml-2 font-bold text-2xl">{'x MTVRS'}</div>
 						</div>
-						<h1 className="text-white font-bold text-6xl mt-4 mb-2">
-							{localeLn('NFT Drops')}
-						</h1>
+						<h1 className="text-white font-bold text-6xl mt-4 mb-2">{localeLn('NFT Drops')}</h1>
 						<img
 							src={parseImgUrl(
 								'ipfs://bafybeih3l32jyqm732bxol4ic2qsgxvas6fee57vrs3e6tpgjzt4kcvady'
@@ -154,10 +154,14 @@ export default function Drops() {
 						/>
 						<div className="max-w-xl m-auto">
 							<p className="text-gray-400 mb-4">
-								{localeLn('MTVRS (www.mtvrs.app) is a world of worlds and home to blockchain-powered games for players, creators and developers! MTVRS is designing a platform to create experiences and utility around blockchain assets.')}
+								{localeLn(
+									'MTVRS (www.mtvrs.app) is a world of worlds and home to blockchain-powered games for players, creators and developers! MTVRS is designing a platform to create experiences and utility around blockchain assets.'
+								)}
 							</p>
 							<p className="text-gray-400 mb-4">
-								{localeLn('This is MTVRS first NFT Drop, “The Architect’s Devices” a set of exclusive collectibles forged by the architects of the metaverse to empower them as they hop the infinite worlds.')}
+								{localeLn(
+									'This is MTVRS first NFT Drop, “The Architect’s Devices” a set of exclusive collectibles forged by the architects of the metaverse to empower them as they hop the infinite worlds.'
+								)}
 							</p>
 							<div className="my-8 flex justify-center space-x-8 items-center">
 								<p
@@ -183,10 +187,7 @@ export default function Drops() {
 					</div>
 				</div>
 			</div>
-			<div
-				ref={detail}
-				className="md:flex justify-center md:space-x-8 max-w-6xl m-auto"
-			>
+			<div ref={detail} className="md:flex justify-center md:space-x-8 max-w-6xl m-auto">
 				<SpecialCard
 					tokenId={specialTokenId[0]}
 					onClick={setToken}
@@ -231,9 +232,7 @@ export default function Drops() {
 							key={index}
 							className="border-2 border-dashed border-gray-800 rounded-md p-4 m-4 md:w-1/3"
 						>
-							<p className="font-semibold text-lg text-center mb-2 text-gray-200">
-								{item.date}
-							</p>
+							<p className="font-semibold text-lg text-center mb-2 text-gray-200">{item.date}</p>
 							<ul className="list-disc ml-4">
 								{item.note.map((note, index) => (
 									<li key={index} className="text-gray-200">
@@ -250,7 +249,9 @@ export default function Drops() {
 					{localeLn('How to register')}
 				</h1>
 				<p className="mb-2 break-all">
-					{localeLn('How to registerSo let’s get started! In order to get a whitelist for Paras x MTVRS NFT Drops, please complete these tasks.')}
+					{localeLn(
+						'How to registerSo let’s get started! In order to get a whitelist for Paras x MTVRS NFT Drops, please complete these tasks.'
+					)}
 				</p>
 				<ReactLinkify
 					componentDecorator={(decoratedHref, decoratedText, key) => (
@@ -259,10 +260,7 @@ export default function Drops() {
 						</a>
 					)}
 				>
-					<ol
-						className="text-gray-100 ml-8 break-all"
-						style={{ listStyleType: 'decimal' }}
-					>
+					<ol className="text-gray-100 ml-8 break-all" style={{ listStyleType: 'decimal' }}>
 						{tasks.map((task, index) => (
 							<li key={index}>{task}</li>
 						))}
@@ -367,10 +365,7 @@ const SpecialCard = ({
 	const { localeLn } = useIntl()
 	return (
 		<div className="relative m-4 md:m-0 md:w-1/3">
-			<ReactTooltip
-				effect={'solid'}
-				className="bg-dark-primary-1 text-white px-2 py-4 max-w-sm"
-			/>
+			<ReactTooltip effect={'solid'} className="bg-dark-primary-1 text-white px-2 py-4 max-w-sm" />
 			<div className="absolute inset-0 m-auto overflow-hidden rounded-xl opacity-50">
 				<Blurhash
 					hash={blurhash}
@@ -390,11 +385,7 @@ const SpecialCard = ({
 						<div className="w-full m-auto">
 							<Card
 								special
-								imgUrl={
-									localToken
-										? parseImgUrl(localToken.metadata.image)
-										: parseImgUrl(imgUrl)
-								}
+								imgUrl={localToken ? parseImgUrl(localToken.metadata.image) : parseImgUrl(imgUrl)}
 								imgBlur={blurhash}
 								disableFlip
 								token={{
@@ -423,9 +414,7 @@ const SpecialCard = ({
 								>
 									{priceOriginal}
 								</p>
-								<p className="text-gray-100 text-4xl font-bold">
-									{`${price} Ⓝ`}
-								</p>
+								<p className="text-gray-100 text-4xl font-bold">{`${price} Ⓝ`}</p>
 							</div>
 						</div>
 						<div
@@ -478,14 +467,10 @@ const SpecialCard = ({
 							</div>
 							{localToken ? (
 								<p className="text-gray-100 text-lg font-semibold">
-									{`${getCardAvailable(localToken.ownerships) || '0'} / ${
-										localToken.supply
-									}`}
+									{`${getCardAvailable(localToken.ownerships) || '0'} / ${localToken.supply}`}
 								</p>
 							) : (
-								<p className="text-gray-100 text-lg font-semibold">
-									{cardAvailableText}
-								</p>
+								<p className="text-gray-100 text-lg font-semibold">{cardAvailableText}</p>
 							)}
 						</div>
 						<div className="mx-8 mt-8">
