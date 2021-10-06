@@ -36,7 +36,7 @@ export function setLanguage(lang) {
 		"ji", "zu"]; 
 	*/
 function getLocale(lang) {
-    lang = lang.toLowerCase
+    lang = lang.toLowerCase()
     switch (lang) {
     case "en":
         return "en";
