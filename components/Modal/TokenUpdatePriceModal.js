@@ -28,6 +28,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 				account_id: process.env.MARKETPLACE_CONTRACT_ID,
 				msg: JSON.stringify({
 					price: parseNearAmount(newPrice),
+					market_type: 'sale',
 					ft_token_id: `near`,
 				}),
 			}
