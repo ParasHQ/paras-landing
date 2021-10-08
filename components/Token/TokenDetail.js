@@ -224,7 +224,7 @@ const TokenDetail = ({ token, className }) => {
 						</div>
 					</Scrollbars>
 					<div className="p-3">
-						{token.owner_id === currentUser && (
+						{token.owner_id === currentUser ? (
 							<div className="flex flex-wrap space-x-4">
 								<div className="w-full flex-1">
 									<Button
@@ -247,8 +247,12 @@ const TokenDetail = ({ token, className }) => {
 									</Button>
 								</div>
 							</div>
+						) : (
+							<Button size="md" onClick={onClickOffer} isFullWidth>
+								{`Place an offer`}
+							</Button>
 						)}
-						{token.owner_id !== currentUser && token.price ? (
+						{token.owner_id !== currentUser && token.price && (
 							<div className="flex space-x-2">
 								<Button size="md" onClick={onClickBuy} isFullWidth>
 									{localeLn('Buy')}
@@ -257,10 +261,6 @@ const TokenDetail = ({ token, className }) => {
 									{`Place an offer`}
 								</Button>
 							</div>
-						) : (
-							<Button size="md" onClick={onClickOffer} isFullWidth>
-								{`Place an offer`}
-							</Button>
 						)}
 						<div
 							className="mt-2 text-center text-white cursor-pointer hover:opacity-80 text-sm"
