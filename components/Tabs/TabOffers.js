@@ -8,7 +8,13 @@ import useStore from 'lib/store'
 import Button from 'components/Common/Button'
 import { sentryCaptureException } from 'lib/sentry'
 import near from 'lib/near'
-import { GAS_FEE_150, GAS_FEE_200, STORAGE_APPROVE_FEE, STORAGE_MINT_FEE } from 'config/constants'
+import {
+	GAS_FEE,
+	GAS_FEE_150,
+	GAS_FEE_200,
+	STORAGE_APPROVE_FEE,
+	STORAGE_MINT_FEE,
+} from 'config/constants'
 import JSBI from 'jsbi'
 import { parseImgUrl, timeAgo } from 'utils/common'
 import Avatar from 'components/Common/Avatar'
@@ -18,6 +24,9 @@ const FETCH_TOKENS_LIMIT = 12
 
 const Offer = ({ data, onAcceptOffer, hideButton }) => {
 	const [profile, setProfile] = useState({})
+	const { currentUser } = useStore((state) => ({
+		currentUser: state.currentUser,
+	}))
 
 	useEffect(() => {
 		if (data.buyer_id) {
@@ -37,6 +46,25 @@ const Offer = ({ data, onAcceptOffer, hideButton }) => {
 			setProfile(newData)
 		} catch (err) {
 			sentryCaptureException(err)
+		}
+	}
+
+	const deleteOffer = async () => {
+		const params = {
+			nft_contract_id: data.contract_id,
+			...(data.token_id ? { token_id: data.token_id } : { token_series_id: data.token_series_id }),
+		}
+
+		try {
+			await near.wallet.account().functionCall({
+				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				methodName: `delete_offer`,
+				args: params,
+				gas: GAS_FEE,
+				attachedDeposit: '1',
+			})
+		} catch (error) {
+			sentryCaptureException(error)
 		}
 	}
 
@@ -71,6 +99,13 @@ const Offer = ({ data, onAcceptOffer, hideButton }) => {
 							hideButton={hideButton}
 						>
 							Accept
+						</Button>
+					</div>
+				)}
+				{data.buyer_id === currentUser && (
+					<div>
+						<Button size="sm" className="w-full" onClick={deleteOffer} hideButton={hideButton}>
+							Delete
 						</Button>
 					</div>
 				)}

@@ -8,28 +8,21 @@ import { InputText } from 'components/Common/form'
 import near from 'lib/near'
 import { sentryCaptureException } from 'lib/sentry'
 import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
-import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import { transactions } from 'near-api-js'
 import JSBI from 'jsbi'
 import { IconX } from 'components/Icons'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
-const PlaceBidModal = ({
-	data,
-	show,
-	onClose,
-	isSubmitting,
-	bidAmount,
-	bidQuantity,
-	isUpdate = false,
-}) => {
+const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuantity }) => {
 	const { localeLn } = useIntl()
-	const { errors, register, handleSubmit, watch } = useForm({
+	const { errors, register, handleSubmit, watch, setValue } = useForm({
 		defaultValues: {
 			bidAmount,
 			bidQuantity,
 		},
 	})
+	const [hasBid, setHasBid] = useState(false)
 	const { currentUser, userBalance } = useStore((state) => ({
 		currentUser: state.currentUser,
 		userBalance: state.userBalance,
@@ -45,12 +38,13 @@ const PlaceBidModal = ({
 						? { token_id: data.token_id }
 						: { token_series_id: data.token_series_id }),
 				}
-				const tet = await near.wallet
+				const bidData = await near.wallet
 					.account()
 					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_offer`, params)
-				console.log('has been offered', tet)
+				setHasBid(true)
+				setValue('bidAmount', formatNearAmount(bidData.price))
 			} catch (err) {
-				sentryCaptureException(err)
+				console.log('object')
 			}
 		}
 	}, [show])
@@ -141,7 +135,7 @@ const PlaceBidModal = ({
 				</div>
 				<div>
 					<h1 className="text-2xl font-bold text-white tracking-tight">
-						{isUpdate ? 'Update My Bid' : 'Place an Offer'}
+						{hasBid ? 'Update Offer' : 'Place an Offer'}
 					</h1>
 					<p className="text-white mt-2">
 						{localeLn('You are about to bid')} <b>{data.metadata.title}</b>.
@@ -161,10 +155,10 @@ const PlaceBidModal = ({
 									max: parseFloat(prettyBalance(userBalance.available, 24, 4)),
 								})}
 								className={`${errors.bidAmount && 'error'}`}
-								placeholder="Place your bid"
+								placeholder="Place your Offer"
 							/>
 							<div className="mt-2 text-sm text-red-500">
-								{errors.bidAmount?.type === 'required' && `Bid mmount is required`}
+								{errors.bidAmount?.type === 'required' && `Offer amount is required`}
 								{errors.bidAmount?.type === 'min' && `Minimum 0.01 Ⓝ`}
 								{errors.bidAmount?.type === 'max' && `You don't have enough balance`}
 							</div>
@@ -175,7 +169,7 @@ const PlaceBidModal = ({
 								<div>{prettyBalance(userBalance.available, 24, 4)} Ⓝ</div>
 							</div>
 							<div className="flex justify-between">
-								<div className="text-sm">{localeLn('Total bid Amount')}</div>
+								<div className="text-sm">{localeLn('Total Offer')}</div>
 								<div>{watch('bidAmount', bidAmount || 0)} Ⓝ</div>
 							</div>
 						</div>
@@ -184,7 +178,7 @@ const PlaceBidModal = ({
 						</p>
 						<div className="">
 							<Button disabled={isSubmitting} className="mt-4" isFullWidth type="submit" size="md">
-								{isSubmitting ? localeLn('Redirecting...') : localeLn('Submit Bid')}
+								{hasBid ? 'Update' : localeLn('Submit offer')}
 							</Button>
 						</div>
 					</form>
