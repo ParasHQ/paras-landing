@@ -94,51 +94,6 @@ const Activity = ({ activity }) => {
 			)
 		}
 
-		if (type === 'resolve_purchase') {
-			return (
-				<p>
-					<LinkToProfile accountId={activity.to} />
-					<span> {localeLn('bought from')} </span>
-					<LinkToProfile accountId={activity.from} />
-					<span> {localeLn('for')} </span>
-					{formatNearAmount(activity.msg.params.price)} Ⓝ
-				</p>
-			)
-		}
-
-		// if (activity.price) {
-		// 	return (
-		// 		<p>
-		// 			<LinkToProfile
-		// 				className="text-gray-100 hover:border-gray-100"
-		// 				accountId={activity.to}
-		// 			/>
-		// 			<span>
-		// 				{' '}
-		// 				bought <span className="font-semibold">
-		// 					#{edition_id || 1}
-		// 				</span> for{' '}
-		// 			</span>
-		// 			{formatNearAmount(activity.msg.params.price)} Ⓝ
-		// 		</p>
-		// 	)
-		// }
-
-		// if (activity.to === activity.creator_id) {
-		// 	return (
-		// 		<p>
-		// 			<LinkToProfile
-		// 				className="text-gray-100 hover:border-gray-100"
-		// 				accountId={activity.to}
-		// 			/>
-		// 			<span>
-		// 				{' '}
-		// 				minted <span className="font-semibold">#{edition_id || 1}</span>
-		// 			</span>
-		// 		</p>
-		// 	)
-		// }
-
 		if (type === 'nft_transfer' && activity.from === null) {
 			const [, edition_id] = activity.msg.params.token_id.split(':')
 
@@ -190,8 +145,27 @@ const Activity = ({ activity }) => {
 			)
 		}
 
-		if (type === 'nft_transfer') {
+		if (type === 'resolve_purchase' || type === 'nft_transfer') {
 			if (activity.price) {
+				if (activity.is_offer) {
+					return (
+						<p>
+							<LinkToProfile
+								className="text-gray-100 hover:border-gray-100"
+								accountId={activity.from}
+							/>
+							<span> {localeLn('accepted offer from')} </span>
+							<LinkToProfile
+								className="text-gray-100 hover:border-gray-100"
+								accountId={activity.to}
+							/>{' '}
+							<span>
+								{' '}
+								{localeLn('for')} {formatNearAmount(activity.msg.params.price)} Ⓝ
+							</span>
+						</p>
+					)
+				}
 				return (
 					<p>
 						<LinkToProfile
@@ -259,6 +233,41 @@ const Activity = ({ activity }) => {
 				<p>
 					<span>
 						{localeLn('Creator decrease the series copies to')} {activity.msg.params.copies}{' '}
+					</span>
+				</p>
+			)
+		}
+
+		if (type === 'nft_decrease_series_copies') {
+			return (
+				<p>
+					<span>
+						{localeLn('Creator decrease the series copies to')} {activity.msg.params.copies}{' '}
+					</span>
+				</p>
+			)
+		}
+
+		if (type === 'add_offer') {
+			return (
+				<p>
+					<span>
+						<LinkToProfile accountId={activity.from} />
+					</span>
+					<span> {localeLn('add offer for')}</span>
+					<span> {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
+				</p>
+			)
+		}
+
+		if (type === 'delete_offer') {
+			return (
+				<p>
+					<span>
+						<span>
+							<LinkToProfile accountId={activity.from} />
+						</span>
+						<span> {localeLn('removed offer')}</span>
 					</span>
 				</p>
 			)
