@@ -35,17 +35,17 @@ export function setLanguage(lang) {
 		"ji", "zu"]; 
 	*/
 function getLocale(lang) {
-    lang = lang.toLowerCase()
-    switch (lang) {
-    case "en":
-        return "en";
-    case "zh":
-        return "zh";
-    case "zh-cn":
-        return "zh";
-    default:
-        return "en";
-    }
+	lang = lang.toLowerCase()
+	switch (lang) {
+		case 'en':
+			return 'en'
+		case 'zh':
+			return 'zh'
+		case 'zh-cn':
+			return 'zh'
+		default:
+			return 'en'
+	}
 }
 
 const isPlainObject = obj => {
