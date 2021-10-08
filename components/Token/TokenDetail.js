@@ -26,6 +26,7 @@ import ArtistVerified from '../Common/ArtistVerified'
 import ArtistBanned from '../Common/ArtistBanned'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import TabOffers from 'components/Tabs/TabOffers'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -204,11 +205,13 @@ const TokenDetail = ({ token, className }) => {
 								{tabDetail('info')}
 								{tabDetail('owners')}
 								{tabDetail('history')}
+								{tabDetail('offers')}
 							</div>
 
 							{activeTab === 'info' && <TabInfo localToken={token} isNFT={true} />}
 							{activeTab === 'owners' && <TabOwners localToken={token} />}
 							{activeTab === 'history' && <TabHistory localToken={token} />}
+							{activeTab === 'offers' && <TabOffers localToken={token} />}
 						</div>
 					</Scrollbars>
 					<div className="p-3">

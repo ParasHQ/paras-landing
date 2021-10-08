@@ -22,6 +22,7 @@ import LoginModal from '../Modal/LoginModal'
 import ArtistVerified from '../Common/ArtistVerified'
 import ArtistBanned from '../Common/ArtistBanned'
 import { useIntl } from 'hooks/useIntl'
+import TabOffers from 'components/Tabs/TabOffers'
 
 const TokenSeriesDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -165,10 +166,12 @@ const TokenSeriesDetail = ({ token, className }) => {
 								{tabDetail('info')}
 								{tabDetail('owners')}
 								{tabDetail('history')}
+								{tabDetail('offers')}
 							</div>
 							{activeTab === 'info' && <TabInfo localToken={token} />}
 							{activeTab === 'owners' && <TabOwners localToken={token} />}
 							{activeTab === 'history' && <TabHistory localToken={token} />}
+							{activeTab === 'offers' && <TabOffers localToken={token} />}
 						</div>
 					</Scrollbars>
 					{token.contract_id === process.env.NFT_CONTRACT_ID && (

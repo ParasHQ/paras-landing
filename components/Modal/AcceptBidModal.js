@@ -2,72 +2,95 @@ import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { prettyBalance } from 'utils/common'
 import Modal from 'components/Modal'
 import { useIntl } from 'hooks/useIntl'
+import JSBI from 'jsbi'
+import Button from 'components/Common/Button'
 
-const AcceptBidModal = ({ onClose, token, data, userOwnership, isLoading, onSubmitForm }) => {
+const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitForm }) => {
 	const { localeLn } = useIntl()
-	const bidTotalForUser =
-		formatNearAmount(data.bidMarketData.amount) *
-		(data.bidMarketData.quantity > userOwnership.quantity
-			? userOwnership.quantity
-			: data.bidMarketData.quantity)
-	const royaltyForArtist = (parseInt(token.metadata.royalty) * bidTotalForUser) / 100
-	const serviceFee = bidTotalForUser * 0.05
-	const userWillGet = bidTotalForUser - royaltyForArtist - serviceFee
+	const royaltyForArtist =
+		Object.keys(token.royalty).length === 0
+			? 0
+			: JSBI.divide(
+					JSBI.multiply(JSBI.BigInt(Object.values(token.royalty)[0]), JSBI.BigInt(data.price)),
+					JSBI.BigInt(10000)
+			  ).toString()
+
+	const serviceFee = JSBI.divide(
+		JSBI.multiply(JSBI.BigInt(500), JSBI.BigInt(data.price)),
+		JSBI.BigInt(10000)
+	).toString()
+
+	const userWillGet = JSBI.subtract(
+		JSBI.BigInt(data.price),
+		JSBI.add(JSBI.BigInt(royaltyForArtist), JSBI.BigInt(serviceFee))
+	).toString()
 
 	return (
 		<Modal closeOnBgClick={false} closeOnEscape={false} close={onClose}>
-			<div className="max-w-sm w-full p-4 bg-gray-100 m-auto rounded-md">
+			<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative">
 				<div>
-					<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
+					<h1 className="text-2xl font-bold text-white tracking-tight">
 						{localeLn('Accept a Bid')}
 					</h1>
-					<p className="text-gray-900 mt-2">
+					<p className="text-white mt-2">
 						{localeLn('You are about to accept bid for')} <b>{token.metadata.name}</b>{' '}
-						{localeLn('from')} <b>{data.accountId}</b>
+						{localeLn('from')} <b>{data.buyer_id}</b>
 					</p>
-					<div className="text-gray-900 mt-4 text-2xl font-bold text-center">
-						{`${prettyBalance(data.bidMarketData.amount, 24, 4)} Ⓝ `}
-						<span className="font-normal text-base">{localeLn('for')} </span>
-						{`${
-							data.bidMarketData.quantity > userOwnership.quantity
-								? userOwnership.quantity
-								: data.bidMarketData.quantity
-						} pcs`}
+					<div className="text-white mt-4 text-2xl font-bold text-center">
+						{`${prettyBalance(data.price, 24, 4)} Ⓝ `}
 					</div>
 					<div className="mt-4 text-center">
 						<div className="flex justify-between">
 							<div className="text-sm">
-								{localeLn('Royalty for Artist')} ({token.metadata.royalty}%)
+								{localeLn('Royalty for Artist')} (
+								{Object.keys(token.royalty).length === 0
+									? `None`
+									: `${Object.values(token.royalty)[0] / 100}%`}
+								)
 							</div>
-							<div>{royaltyForArtist}</div>
+							<div>{formatNearAmount(royaltyForArtist)} Ⓝ</div>
 						</div>
 						<div className="flex justify-between">
 							<div className="text-sm">{localeLn('Service Fee')} (5%)</div>
-							<div>{serviceFee} Ⓝ</div>
+							<div>{formatNearAmount(serviceFee)} Ⓝ</div>
 						</div>
 						<div className="flex justify-between">
 							<div className="text-sm">{localeLn('You will get')}</div>
-							<div>{userWillGet} Ⓝ</div>
+							<div>{formatNearAmount(userWillGet)} Ⓝ</div>
 						</div>
 					</div>
-					<p className="text-gray-900 mt-4 text-sm text-center">
-						{localeLn('Please make sure that your card is not on sale to accept the bid')}
+					<div className="mt-4 text-center">
+						<div className="text-white my-1">
+							<div className="flex justify-between">
+								<div className="text-sm">{localeLn('Storage Fee')}</div>
+								<div className="text">{formatNearAmount(storageFee)} Ⓝ</div>
+							</div>
+						</div>
+					</div>
+					<p className="text-white mt-4 text-sm text-center opacity-90">
+						{localeLn('You will be redirected to NEAR Web Wallet to confirm your transaction.')}
 					</p>
+
 					<div className="">
-						<button
+						<Button
+							size="md"
+							isFullWidth
 							disabled={isLoading}
 							className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 							onClick={onSubmitForm}
 						>
 							{isLoading ? 'Accepting...' : 'Accept Bid'}
-						</button>
-						<button
-							disabled={isLoading}
-							className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
+						</Button>
+						<Button
+							className="mt-4"
+							variant="ghost"
+							size="md"
+							isFullWidth
 							onClick={onClose}
+							isDisabled={isLoading}
 						>
 							{localeLn('Cancel')}
-						</button>
+						</Button>
 					</div>
 				</div>
 			</div>
