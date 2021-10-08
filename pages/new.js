@@ -783,7 +783,7 @@ const NewPage = () => {
 												validate: (value) => Number.isInteger(Number(value)),
 											})}
 											className={`${errors.supply && 'error'}`}
-											placeholder="Number_Of_Copies"
+											placeholder="Number of copies"
 										/>
 										<div className="mt-2 text-sm text-red-500">
 											{errors.supply?.type === 'required' && 'Number of copies is required'}

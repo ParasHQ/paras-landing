@@ -265,7 +265,7 @@ const TokenDetail = ({ token, className }) => {
 				show={showModal === 'more'}
 				onClose={onDismissModal}
 				listModalItem={[
-					{ name: 'Share_To', onClick: onClickShare },
+					{ name: 'Share to...', onClick: onClickShare },
 					isOwner() && { name: 'Update Listing', onClick: onClickUpdate },
 					isOwner() && { name: 'Transfer', onClick: onClickTransfer },
 					isOwner() && { name: 'Burn Card', onClick: onClickBurn },

@@ -48,7 +48,7 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 			}
 		} catch (err) {
 			sentryCaptureException(err)
-			const message = err.message || Something_Went_Wrong
+			const message = err.message || 'Something went wrong, try again later'
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">{message}</div>,
 				type: 'error',

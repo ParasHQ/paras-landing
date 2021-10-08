@@ -141,7 +141,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 											({localeLn('SERIES')}) //{' '}
 											{token.metadata.copies
 												? `Edition of ${token.metadata.copies}`
-												: `Open_Edition`}
+												: `Open Edition`}
 										</p>
 									</div>
 
@@ -251,7 +251,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 				show={showModal === 'more'}
 				onClose={onDismissModal}
 				listModalItem={[
-					{ name: 'Share_To', onClick: onClickShare },
+					{ name: 'Share to...', onClick: onClickShare },
 					{ name: 'Transfer', onClick: onClickBuyerTransfer },
 					isCreator() ? { name: 'Reduce Copies', onClick: onClickDecreaseCopies } : null,
 				].filter((x) => x)}

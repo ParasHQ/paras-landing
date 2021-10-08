@@ -19,13 +19,13 @@ export const descriptionMaker = (activity) => {
 	const type = activity.type
 
 	if (type === 'add_market_data' || type === 'update_market_data') {
-		return `${activity.msg.params.owner_id} put on sale Put_On_Sale_For ${formatNearAmount(
+		return `${activity.msg.params.owner_id} put on sale put on sale for ${formatNearAmount(
 			activity.msg.params.price
 		)} Ⓝ`
 	}
 
 	if (type === 'delete_market_data') {
-		return `${activity.msg.params.owner_id} Remove_From_Sale`
+		return `${activity.msg.params.owner_id} remove from sale`
 	}
 
 	if (type === 'resolve_purchase') {
