@@ -29,7 +29,7 @@ export const HomeCardList = () => {
 	return (
 		<div className="mt-8 w-full">
 			<div className="flex items-center justify-between">
-				<p className="text-white font-semibold text-3xl">{localeLn('Newest Cards')}</p>
+				<p className="text-white font-semibold text-3xl">{localeLn('Newest_Cards')}</p>
 				<Link href="/market">
 					<a className="text-gray-400 hover:text-white cursor-pointer font-semibold flex items-center">
 						<span>{localeLn('More')}</span>

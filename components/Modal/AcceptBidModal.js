@@ -22,7 +22,7 @@ const AcceptBidModal = ({ onClose, token, data, userOwnership, isLoading, onSubm
 						{localeLn('Accept a Bid')}
 					</h1>
 					<p className="text-gray-900 mt-2">
-						{localeLn('You are about to accept bid for')} <b>{token.metadata.name}</b>{' '}
+						{localeLn('About_To_Accept_Bid')} <b>{token.metadata.name}</b>{' '}
 						{localeLn('from')} <b>{data.accountId}</b>
 					</p>
 					<div className="text-gray-900 mt-4 text-2xl font-bold text-center">
@@ -37,21 +37,21 @@ const AcceptBidModal = ({ onClose, token, data, userOwnership, isLoading, onSubm
 					<div className="mt-4 text-center">
 						<div className="flex justify-between">
 							<div className="text-sm">
-								{localeLn('Royalty for Artist')} ({token.metadata.royalty}%)
+								{localeLn('Royalty_For_Artist')} ({token.metadata.royalty}%)
 							</div>
 							<div>{royaltyForArtist}</div>
 						</div>
 						<div className="flex justify-between">
-							<div className="text-sm">{localeLn('Service Fee')} (5%)</div>
+							<div className="text-sm">{localeLn('Service_Fee')} (5%)</div>
 							<div>{serviceFee} Ⓝ</div>
 						</div>
 						<div className="flex justify-between">
-							<div className="text-sm">{localeLn('You will get')}</div>
+							<div className="text-sm">{localeLn('You_Will_Get')}</div>
 							<div>{userWillGet} Ⓝ</div>
 						</div>
 					</div>
 					<p className="text-gray-900 mt-4 text-sm text-center">
-						{localeLn('Please make sure that your card is not on sale to accept the bid')}
+						{localeLn('Make_Sure_Not_On_Sale')}
 					</p>
 					<div className="">
 						<button

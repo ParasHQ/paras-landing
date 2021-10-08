@@ -46,19 +46,19 @@ const CardStats = ({ cardsData, fetchData, hasMore }) => {
 								<p className="mx-4">{localeLn('Supply')}</p>
 							</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">{localeLn('First Sale')}</p>
+								<p className="mx-4">{localeLn('First_Sale')}</p>
 							</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">{localeLn('Last Sale')}</p>
+								<p className="mx-4">{localeLn('Last_Sale')}</p>
 							</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">{localeLn('Avg. Sale')}</p>
+								<p className="mx-4">{localeLn('Avg_Sale')}</p>
 							</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">{localeLn('Total Sales')}</p>
+								<p className="mx-4">{localeLn('Total_Sales')}</p>
 							</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">{localeLn('Total Volume')}</p>
+								<p className="mx-4">{localeLn('Total_Volume')}</p>
 							</th>
 						</tr>
 					</thead>

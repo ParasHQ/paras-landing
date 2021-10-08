@@ -30,7 +30,7 @@ const PlaceBidModal = ({
 						{isUpdate ? 'Update My Bid' : 'Place a Bid'}
 					</h1>
 					<p className="text-gray-900 mt-2">
-						{localeLn('You are about to bid')} <b>{localToken.metadata.name}</b>.
+						{localeLn('About_To_Bid:')} <b>{localToken.metadata.name}</b>.
 					</p>
 					<form onSubmit={handleSubmit(onSubmitForm)}>
 						<div className="mt-4 flex space-x-4">
@@ -54,7 +54,7 @@ const PlaceBidModal = ({
 								</div>
 							</div>
 							<div className="w-1/2">
-								<label className="block text-sm">{localeLn('Amount in')} Ⓝ</label>
+								<label className="block text-sm">{localeLn('Amount_In')} Ⓝ</label>
 								<input
 									name="bidAmount"
 									type="number"
@@ -78,18 +78,18 @@ const PlaceBidModal = ({
 								<div>{prettyBalance(store.userBalance.available, 24, 4)} Ⓝ</div>
 							</div>
 							<div className="flex justify-between">
-								<div className="text-sm">{localeLn('Total bid Amount')}</div>
+								<div className="text-sm">{localeLn('Total_Bid_Amount')}</div>
 								<div>
 									{watch('bidQuantity', bidQuantity || 0) * watch('bidAmount', bidAmount || 0)} Ⓝ
 								</div>
 							</div>
 							<div className="flex justify-between">
-								<div className="text-sm">{localeLn('Service Fee')}</div>
+								<div className="text-sm">{localeLn('Service_Fee')}</div>
 								<div>0.003 Ⓝ</div>
 							</div>
 						</div>
 						<p className="text-gray-900 mt-4 text-sm text-center">
-							{localeLn('You will be redirected to NEAR Web Wallet to confirm your transaction')}
+							{localeLn('You_Will_Redirected_To')}
 						</p>
 						<div className="">
 							<button
@@ -97,7 +97,7 @@ const PlaceBidModal = ({
 								className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 								type="submit"
 							>
-								{isSubmitting ? localeLn('Redirecting...') : localeLn('Submit Bid')}
+								{isSubmitting ? localeLn('Redirecting') : localeLn('Submit_Bid')}
 							</button>
 							<button
 								disabled={isSubmitting}

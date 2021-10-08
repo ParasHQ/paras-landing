@@ -110,13 +110,13 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 				</div>
 				<div>
 					<h1 className="text-2xl font-bold text-white tracking-tight">
-						{localeLn('Series Listing')}
+						{localeLn('Series_Listing')}
 					</h1>
 					<form onSubmit={onUpdateListing}>
 						<div className="mt-4">
 							<label className="block text-sm text-white mb-2">
-								{localeLn('New Price')}{' '}
-								{data.price && `(${localeLn('Current price')}: ${formatNearAmount(data.price)} Ⓝ)`}
+								{localeLn('New_Price')}{' '}
+								{data.price && `(${localeLn('Current_Price')}: ${formatNearAmount(data.price)} Ⓝ)`}
 							</label>
 							<div
 								className={`flex justify-between rounded-md border-transparent w-full relative ${
@@ -206,7 +206,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 						</div>
 						<div className="mt-6">
 							<Button type="submit" size="md" isFullWidth>
-								{localeLn('Update Listing')}
+								{localeLn('Update_Listing')}
 							</Button>
 							<Button
 								className="mt-4"
@@ -217,7 +217,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 								onClick={onRemoveListing}
 								isDisabled={!data.price}
 							>
-								{localeLn('Remove Listing')}
+								{localeLn('Remove_Listing')}
 							</Button>
 						</div>
 					</form>

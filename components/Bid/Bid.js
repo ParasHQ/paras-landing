@@ -53,7 +53,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						{localeLn('Please make sure that your card is not on sale to accept the bid')}
+						{localeLn('Make_Sure_Not_On_Sale')}
 					</div>
 				),
 				type: 'error',
@@ -73,7 +73,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						{localeLn('You successfully accepted the bid from')} {data.accountId}.
+						{localeLn('Successfully_Accepted_Bid')} {data.accountId}.
 					</div>
 				),
 				type: 'success',
@@ -109,7 +109,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						{localeLn('Insufficient Balance')}
+						{localeLn('Insufficient_Balance')}
 						<p className="mt-2">
 							{localeLn('Available')} {prettyBalance(store.userBalance.available, 24, 6)} Ⓝ
 						</p>
@@ -145,7 +145,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							{localeLn('Your bid has been deleted')}
+							{localeLn('Bid_Has_Deleted')}
 						</div>
 					),
 					type: 'success',
@@ -199,7 +199,7 @@ const Bid = ({ tokenId, data, updateBidData }) => {
 			{showModal === 'cancelBid' && (
 				<Modal close={() => setShowModal('')} closeOnBgClick={false} closeOnEscape={false}>
 					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
-						<div className="w-full">{localeLn('Are you sure to delete your bids?')}</div>
+						<div className="w-full">{localeLn('Are_Sure_Delete_Bids')}</div>
 						<div className="flex space-x-4">
 							<button
 								disabled={isLoading}

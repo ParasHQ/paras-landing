@@ -78,7 +78,7 @@ const TopCardsPage = () => {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="mx-4 flex items-baseline">
-					<h1 className="text-4xl font-bold text-gray-100">{localeLn('Card Statistics')}</h1>
+					<h1 className="text-4xl font-bold text-gray-100">{localeLn('Card_Statistics')}</h1>
 				</div>
 				<div className="my-8">
 					<CardStats cardsData={cardsData} fetchData={_fetchData} hasMore={hasMore} />

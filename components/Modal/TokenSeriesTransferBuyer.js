@@ -75,7 +75,7 @@ const TokenSeriesTransferBuyer = ({ show, onClose, data }) => {
 							</div>
 							{!isFetching && !hasMore && tokens.length === 0 ? (
 								<div className="mt-4">
-									<p className="text-gray-200">{localeLn('No Tokens Owned')}</p>
+									<p className="text-gray-200">{localeLn('No_Tokens_Owned')}</p>
 								</div>
 							) : (
 								<InfiniteScroll
@@ -84,7 +84,7 @@ const TokenSeriesTransferBuyer = ({ show, onClose, data }) => {
 									hasMore={hasMore}
 									loader={
 										<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
-											<p className="my-2 text-center">{localeLn('Loading...')}</p>
+											<p className="my-2 text-center">{localeLn('Loading_Loading')}</p>
 										</div>
 									}
 								>

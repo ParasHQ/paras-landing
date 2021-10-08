@@ -19,13 +19,13 @@ export const descriptionMaker = (activity) => {
 	const type = activity.type
 
 	if (type === 'add_market_data' || type === 'update_market_data') {
-		return `${activity.msg.params.owner_id} put on sale put on sale for ${formatNearAmount(
+		return `${activity.msg.params.owner_id} put on sale Put_On_Sale_For ${formatNearAmount(
 			activity.msg.params.price
 		)} Ⓝ`
 	}
 
 	if (type === 'delete_market_data') {
-		return `${activity.msg.params.owner_id} remove from sale`
+		return `${activity.msg.params.owner_id} Remove_From_Sale`
 	}
 
 	if (type === 'resolve_purchase') {
@@ -98,7 +98,7 @@ const Activity = ({ activity }) => {
 				/>
 				<span>
 					{' '}
-					{localeLn('put on sale for')} {formatNearAmount(activity.msg.params.price)} Ⓝ
+					{localeLn('Put_On_Sale_For')} {formatNearAmount(activity.msg.params.price)} Ⓝ
 				</span>
 			</p>
 		)
@@ -111,7 +111,7 @@ const Activity = ({ activity }) => {
 					className="text-gray-100 hover:border-gray-100"
 					accountId={activity.msg.params.owner_id}
 				/>
-				<span> remove from sale</span>
+				<span> {localeLn('Remove_From_Sale')}</span>
 			</p>
 		)
 	}

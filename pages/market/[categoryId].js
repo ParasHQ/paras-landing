@@ -271,7 +271,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 													setShowAddModal(true)
 												}}
 											>
-												{localeLn('Submit an existing cards')}
+												{localeLn('Submit_Existing_Cards')}
 											</h1>
 										</div>
 									</div>

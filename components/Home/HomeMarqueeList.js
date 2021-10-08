@@ -58,7 +58,7 @@ export const HomeMarqueeList = () => {
 				>
 					<div className="">
 						<div className="text-center py-1 px-4">
-							<p className="text-primary font-bold">{localeLn('Last Sold')}</p>
+							<p className="text-primary font-bold">{localeLn('Last_Sold')}</p>
 						</div>
 					</div>
 				</div>

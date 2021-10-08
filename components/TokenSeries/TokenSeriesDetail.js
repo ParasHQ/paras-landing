@@ -141,7 +141,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 											({localeLn('SERIES')}) //{' '}
 											{token.metadata.copies
 												? `Edition of ${token.metadata.copies}`
-												: `Open Edition`}
+												: `Open_Edition`}
 										</p>
 									</div>
 
@@ -176,7 +176,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 							{token.is_non_mintable || token.total_mint === token.metadata.copies ? (
 								<div>
 									<Button size="md" onClick={() => changeActiveTab('owners')} isFullWidth>
-										{localeLn('Check Owners')}
+										{localeLn('Check_Owners')}
 									</Button>
 								</div>
 							) : isCreator() ? (
@@ -188,7 +188,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 									</div>
 									<div className="w-full flex-1">
 										<Button size="md" onClick={onClickUpdatePrice} isFullWidth>
-											{localeLn('Update Price')}
+											{localeLn('Update_Price')}
 										</Button>
 									</div>
 								</div>
@@ -207,7 +207,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 												onClick={() => setActiveTab('owners')}
 												isFullWidth
 											>
-												{localeLn('Buy for {price} on Secondary Marketplace', {
+												{localeLn('Buy_For_{price}_On', {
 													price: formatNearAmount(token.lowest_price),
 												})}
 											</Button>
@@ -215,7 +215,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 								</>
 							) : (
 								<Button size="md" isFullWidth isDisabled>
-									{localeLn('Not for Sale')}
+									{localeLn('Not_For_Sale')}
 								</Button>
 							)}
 						</div>
@@ -251,7 +251,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 				show={showModal === 'more'}
 				onClose={onDismissModal}
 				listModalItem={[
-					{ name: 'Share to...', onClick: onClickShare },
+					{ name: 'Share_To', onClick: onClickShare },
 					{ name: 'Transfer', onClick: onClickBuyerTransfer },
 					isCreator() ? { name: 'Reduce Copies', onClick: onClickDecreaseCopies } : null,
 				].filter((x) => x)}

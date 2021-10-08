@@ -120,8 +120,8 @@ export default function MarketPage({ collectionName }) {
 							onChange={(e) => _changeFilter(e)}
 							value={router.query.filter}
 						>
-							<option value="showAll">{localeLn('Show All')}</option>
-							<option value="owned">{localeLn('Owned Cards')}</option>
+							<option value="showAll">{localeLn('Show_All')}</option>
+							<option value="owned">{localeLn('Owned_Cards')}</option>
 						</select>
 					</div>
 				</div>

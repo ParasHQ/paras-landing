@@ -48,7 +48,7 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 			}
 		} catch (err) {
 			sentryCaptureException(err)
-			const message = err.message || 'Something went wrong, try again later'
+			const message = err.message || Something_Went_Wrong
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">{message}</div>,
 				type: 'error',
@@ -86,7 +86,7 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 							{localeLn('Confirm Transfer')}
 						</h1>
 						<p className="text-white mt-2">
-							{localeLn('You are about to send')} <b>{data.metadata.title}</b> {localeLn('to')}:
+							{localeLn('Are_About_To_Send')} <b>{data.metadata.title}</b> {localeLn('To')}:
 						</p>
 						<div className="mt-4">
 							<div className="mt-2 text-sm text-red-500"></div>
@@ -106,7 +106,7 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 							/>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							{localeLn('You will be redirected to NEAR Web Wallet to confirm your transaction.')}
+							{localeLn('Redirected_To_confirm')}
 						</p>
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onTransfer}>

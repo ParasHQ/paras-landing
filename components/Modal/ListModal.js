@@ -9,7 +9,7 @@ const ListModal = ({
 			onClick: () => {},
 		},
 		{
-			name: 'Share to...',
+			name: 'Share_To',
 			onClick: () => {},
 		},
 		{

@@ -33,7 +33,7 @@ const LoginPage = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn('Login — Paras')}</title>
+				<title>{localeLn('Login_Paras')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -72,10 +72,10 @@ const LoginPage = () => {
 							<div>
 								<div>
 									<h3 className="text-4xl text-gray-100 font-bold">
-										{localeLn('Create and Collect')}
+										{localeLn('Create_And_Collect')}
 									</h3>
 									<h3 className="text-xl text-gray-300 font-semibold">
-										{localeLn('Start your journey with digital art cards on blockchain')}
+										{localeLn('Start_Journey_Cards')}
 									</h3>
 								</div>
 							</div>
@@ -85,7 +85,7 @@ const LoginPage = () => {
 								onClick={() => _signIn()}
 								className="outline-none h-12 w-full mt-4 rounded-md bg-transparent font-semibold px-4 py-2 bg-primary text-gray-100 "
 							>
-								{localeLn('Login with NEAR')}
+								{localeLn('Login_With_NEAR')}
 							</button>
 						</div>
 						<div className="mt-8 text-center">
@@ -94,7 +94,7 @@ const LoginPage = () => {
 								target="_blank"
 								className="text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer text-sm"
 							>
-								{localeLn('Create free NEAR account with Metamask')}
+								{localeLn('Create_Free_NEAR_Account')}
 							</a>
 						</div>
 					</div>

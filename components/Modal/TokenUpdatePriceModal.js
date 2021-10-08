@@ -115,13 +115,13 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 				</div>
 				<div>
 					<h1 className="text-2xl font-bold text-white tracking-tight">
-						{localeLn('Card Listing')}
+						{localeLn('Card_Listing')}
 					</h1>
 					<form>
 						<div className="mt-4">
 							<label className="block text-sm text-white mb-2">
-								{localeLn('New Price')}{' '}
-								{data.price && `(${localeLn('Current price')}: ${formatNearAmount(data.price)} Ⓝ)`}
+								{localeLn('New_Price')}{' '}
+								{data.price && `(${localeLn('Current_Price')}: ${formatNearAmount(data.price)} Ⓝ)`}
 							</label>
 							<div
 								className={`flex justify-between rounded-md border-transparent w-full relative ${
@@ -208,7 +208,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 									<div className="mt-4 text-center">
 										<div className="text-white my-1">
 											<div className="flex justify-between">
-												<div className="text-sm">{localeLn('Storage Fee')}</div>
+												<div className="text-sm">{localeLn('Storage_Fee')}</div>
 												<div className="text">{formatNearAmount(STORAGE_APPROVE_FEE)} Ⓝ</div>
 											</div>
 										</div>
@@ -217,12 +217,12 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 							)}
 
 							<p className="text-white mt-4 text-sm text-center opacity-90">
-								{localeLn('You will be redirected to NEAR Web Wallet to confirm your transaction.')}
+								{localeLn('Redirected_To_confirm')}
 							</p>
 						</div>
 						<div className="mt-6">
 							<Button type="submit" size="md" isFullWidth onClick={onUpdateListing}>
-								{localeLn('Update Listing')}
+								{localeLn('Update_Listing')}
 							</Button>
 							<Button
 								className="mt-4"
@@ -233,7 +233,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 								onClick={onRemoveListing}
 								isDisabled={!data.price}
 							>
-								{localeLn('Remove Listing')}
+								{localeLn('Remove_Listing')}
 							</Button>
 						</div>
 					</form>

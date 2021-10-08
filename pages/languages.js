@@ -23,7 +23,7 @@ const LanguagesPage = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn('Languages — Paras')}</title>
+				<title>{localeLn('Languages_Paras')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -59,7 +59,7 @@ const LanguagesPage = () => {
 				<h1 className="text-4xl font-bold text-gray-100 text-center">{localeLn('Languages')}</h1>
 				<div className="mt-8">
 					<p className="text-center text-xl text-gray-300">
-						{localeLn('Paras is available in the following languages:')}
+						{localeLn('Available_In_Following_Lang')}
 					</p>
 				</div>
 				<div className="mt-8">

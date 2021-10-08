@@ -87,7 +87,7 @@ function MarketPage({ serverQuery }) {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn('Market — Paras')}</title>
+				<title>{localeLn('Market_Paras')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."

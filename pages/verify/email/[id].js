@@ -98,7 +98,7 @@ const EmailVerification = () => {
 							/>
 						</svg>
 						<div className="text-2xl text-gray-100 font-bold">
-							{localeLn('Your Email is verified')}
+							{localeLn('Email_Is_Verified')}
 						</div>
 					</>
 				)}
@@ -132,10 +132,10 @@ const EmailVerification = () => {
 								fill="white"
 							/>
 						</svg>
-						<div className="text-2xl text-gray-100 font-bold">{localeLn('Verification Error')}</div>
+						<div className="text-2xl text-gray-100 font-bold">{localeLn('Verification_Error')}</div>
 						{message === 'Token expired' && (
 							<div className="text-lg text-gray-100 mt-2">
-								{localeLn('Your link verification has expired')}
+								{localeLn('Link_Verification_Expired')}
 							</div>
 						)}
 					</>
@@ -143,7 +143,7 @@ const EmailVerification = () => {
 				<div className="mt-8">
 					<Link href="/market">
 						<a className="text-lg text-gray-100 border-b-2 border-transparent hover:border-gray-100 opacity-75">
-							{localeLn('back to market')}
+							{localeLn('Back_To_Market')}
 						</a>
 					</Link>
 				</div>

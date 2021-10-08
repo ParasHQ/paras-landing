@@ -92,7 +92,7 @@ const EmbeddedCard = ({ tokenId }) => {
 			<div className="text-center">
 				<div className="mt-4">
 					<div className="p-2 pb-4">
-						<p className="text-gray-400 text-xs">{localeLn('Start From')}</p>
+						<p className="text-gray-400 text-xs">{localeLn('Start_From')}</p>
 						<div className="text-gray-100 text-xl">
 							{price ? (
 								<div>

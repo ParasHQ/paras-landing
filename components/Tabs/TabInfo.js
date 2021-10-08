@@ -75,13 +75,13 @@ const TabInfo = ({ localToken, isNFT }) => {
 				)}
 			</div>
 			<div className="bg-gray-800 text-gray-100  mt-3 p-3 rounded-md shadow-md">
-				<p className="text-sm text-white font-bold mb-2">{localeLn('Token Info')}</p>
+				<p className="text-sm text-white font-bold mb-2">{localeLn('Token_Info')}</p>
 				<div className="flex justify-between text-sm">
 					<p>Smart Contract</p>
 					<TokenInfoCopy text={localToken.contract_id} small />
 				</div>
 				<div className="flex justify-between text-sm">
-					<p>{localeLn('Image Link')}</p>
+					<p>{localeLn('Image_Link')}</p>
 					<TokenInfoCopy
 						text={parseImgUrl(localToken.metadata.media, null, {
 							useOriginal: process.env.APP_ENV === 'production' ? true : false,

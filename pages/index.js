@@ -103,7 +103,7 @@ export default function Home() {
 					<HomeCardList />
 					<div className="mt-8 w-full flex flex-wrap"></div>
 					<div className="mt-8">
-						<p className="text-white font-semibold text-3xl">{localeLn('How it Works')}</p>
+						<p className="text-white font-semibold text-3xl">{localeLn('How_Works')}</p>
 						<div className="flex flex-wrap -mx-4">
 							<div className="w-full lg:w-2/3 relative mt-4 px-4">
 								<div className="absolute inset-0 flex items-center justify-center">
@@ -134,21 +134,21 @@ export default function Home() {
 							<div className="w-full lg:w-1/3 px-4">
 								<div className="w-full mt-8 lg:mt-4">
 									<h2 className="text-white font-bold text-2xl text-gradient">
-										{localeLn('For Collectors')}
+										{localeLn('For_Collectors')}
 									</h2>
 									<p className="mt-4 text-gray-400">
 										{localeLn(
-											'Discover beautiful art cards and collect them on a blockchain-based technology that prevents forgery and provides provable ownership.'
+											'Discover_Beautiful_Cards'
 										)}
 									</p>
 								</div>
 								<div className="mt-8">
 									<h2 className="text-white font-bold text-2xl text-gradient">
-										{localeLn('For Artists')}
+										{localeLn('For_Artists')}
 									</h2>
 									<p className="mt-4 text-gray-400">
 										{localeLn(
-											`Create your digital art cards and sell them on the marketplace in just a few clicks. Start earning with your digital creation.`
+											'Create_Digital_Cards'
 										)}
 									</p>
 								</div>

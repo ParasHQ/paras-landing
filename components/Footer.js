@@ -10,9 +10,7 @@ const Footer = () => {
 			text: (
 				<div className="text-sm text-gray-900">
 					<p>
-						{localeLn(
-							"Paras' smart contract is not yet audited by well-known security organization or firm. Use at your own risk!"
-						)}
+						{localeLn('Use_Own_Risk')}
 					</p>
 				</div>
 			),
@@ -80,7 +78,7 @@ const Footer = () => {
 			<div className="py-2">
 				<div className="flex items-center justify-center md:justify-start">
 					<div className="flex">
-						<p>{localeLn('This project is in public beta.')}</p>
+						<p>{localeLn('Footer_Beta')}</p>
 						<svg
 							width="16"
 							height="16"
@@ -100,10 +98,10 @@ const Footer = () => {
 					</div>
 				</div>
 				<div className="mt-2 flex items-center">
-					<p>{localeLn('2021 Paras')}</p>
+					<p>{localeLn('Paras_2021')}</p>
 					<p className="mx-2">|</p>
 					<div className="flex items-center text-sm">
-						<p>{localeLn('Powered by')}</p>
+						<p>{localeLn('Powered_By')}</p>
 						<a href="https://near.org" target="_blank">
 							<svg
 								className="mx-2"
