@@ -16,7 +16,7 @@ import AcceptBidModal from 'components/Modal/AcceptBidModal'
 
 const FETCH_TOKENS_LIMIT = 12
 
-const Offer = ({ data, onAcceptOffer, isDisabled }) => {
+const Offer = ({ data, onAcceptOffer, hideButton }) => {
 	const [profile, setProfile] = useState({})
 
 	useEffect(() => {
@@ -62,16 +62,18 @@ const Offer = ({ data, onAcceptOffer, isDisabled }) => {
 				<div>
 					<p>Offer {formatNearAmount(data.price)} Ⓝ</p>
 				</div>
-				<div>
-					<Button
-						size="sm"
-						className="w-full"
-						onClick={() => onAcceptOffer(data)}
-						isDisabled={isDisabled}
-					>
-						Accept
-					</Button>
-				</div>
+				{!hideButton && (
+					<div>
+						<Button
+							size="sm"
+							className="w-full"
+							onClick={() => onAcceptOffer(data)}
+							hideButton={hideButton}
+						>
+							Accept
+						</Button>
+					</div>
+				)}
 			</div>
 		</div>
 	)
@@ -247,7 +249,7 @@ const TabOffers = ({ localToken }) => {
 			>
 				{offers.map((x) => (
 					<div key={x._id}>
-						<Offer data={x} onAcceptOffer={() => onAcceptOffer(x)} isDisabled={!isOwned} />
+						<Offer data={x} onAcceptOffer={() => onAcceptOffer(x)} hideButton={!isOwned} />
 					</div>
 				))}
 			</InfiniteScroll>
