@@ -13,6 +13,7 @@ const TabHistory = ({ localToken }) => {
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 	const { localeLn } = useIntl()
+
 	useEffect(() => {
 		if (localToken.token_series_id) {
 			fetchHistory()
@@ -254,7 +255,7 @@ const Activity = ({ activity }) => {
 					<span>
 						<LinkToProfile accountId={activity.from} />
 					</span>
-					<span> {localeLn('add offer for')}</span>
+					<span> {localeLn('added offer for')}</span>
 					<span> {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
 				</p>
 			)
