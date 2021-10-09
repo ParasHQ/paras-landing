@@ -203,6 +203,7 @@ const TabOffers = ({ localToken }) => {
 			const ownershipResp = await cachios.get(`${process.env.V2_API_URL}/token`, {
 				params: {
 					token_id: localToken.token_id,
+					contract_id: localToken.contract_id,
 					owner_id: store.userProfile.accountId,
 					__limit: 1,
 				},
@@ -218,6 +219,7 @@ const TabOffers = ({ localToken }) => {
 			const ownershipResp = await cachios.get(`${process.env.V2_API_URL}/token`, {
 				params: {
 					token_series_id: localToken.token_series_id,
+					contract_id: localToken.contract_id,
 					owner_id: store.userProfile.accountId,
 					__limit: 1,
 				},

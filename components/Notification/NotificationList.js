@@ -25,12 +25,14 @@ const Notification = ({ notif, currentUser }) => {
 					url: `${process.env.V2_API_URL}/token`,
 					params: {
 						token_id: notif.token_id,
+						contract_id: notif.contract_id,
 					},
 			  }
 			: {
 					url: `${process.env.V2_API_URL}/token-series`,
 					params: {
 						token_series_id: notif.token_series_id,
+						contract_id: notif.contract_id,
 					},
 			  }
 

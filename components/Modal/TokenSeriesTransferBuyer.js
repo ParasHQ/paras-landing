@@ -36,6 +36,7 @@ const TokenSeriesTransferBuyer = ({ show, onClose, data }) => {
 		const resp = await axios.get(`${process.env.V2_API_URL}/token`, {
 			params: {
 				token_series_id: data.token_series_id,
+				contract_id: data.contract_id,
 				owner_id: store.currentUser,
 				__skip: page * FETCH_TOKENS_LIMIT,
 				__limit: FETCH_TOKENS_LIMIT,
