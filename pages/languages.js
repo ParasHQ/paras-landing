@@ -1,8 +1,9 @@
-import React from 'react'
-import Head from 'next/head'
-import Nav from 'components/Nav'
 import Footer from 'components/Footer'
+import Nav from 'components/Nav'
 import { useIntl } from 'hooks/useIntl'
+import Head from 'next/head'
+import React from 'react'
+
 const LanguagesPage = () => {
 	const { localeLn } = useIntl()
 
@@ -84,6 +85,18 @@ const LanguagesPage = () => {
 									className="underline text-2xl text-gray-100 font-bold pointer"
 								>
 									简体中文
+								</a>
+							</div>
+						</div>
+
+						<div className="w-64 px-4 mb-12">
+							<div>Spanish</div>
+							<div className="mt-2">
+								<a
+									onClick={() => setLang('es')}
+									className="underline text-2xl text-gray-100 font-bold pointer" /* href="/ko" */
+								>
+									Español
 								</a>
 							</div>
 						</div>
