@@ -61,7 +61,11 @@ const TabHistory = ({ localToken }) => {
 				next={fetchHistory}
 				hasMore={hasMore}
 				scrollableTarget="TokenScroll"
-				loader={<div className="text-white h-20">{localeLn('Loading...')}</div>}
+				loader={
+					<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
+						<div className="text-white text-center">{localeLn('Loading...')}</div>
+					</div>
+				}
 			>
 				{history.map((h) => (
 					<Activity key={h._id} activity={h} />
