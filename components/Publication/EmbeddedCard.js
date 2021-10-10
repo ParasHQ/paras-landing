@@ -33,6 +33,7 @@ const EmbeddedCard = ({ tokenId }) => {
 			params: token_id
 				? {
 						token_id: token_id,
+						contract_id: contractId,
 				  }
 				: {
 						contract_id: contractId,

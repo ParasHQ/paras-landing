@@ -13,6 +13,7 @@ const TabHistory = ({ localToken }) => {
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 	const { localeLn } = useIntl()
+
 	useEffect(() => {
 		if (localToken.token_series_id) {
 			fetchHistory()
@@ -33,8 +34,10 @@ const TabHistory = ({ localToken }) => {
 
 		if (localToken.token_id) {
 			params.token_id = localToken.token_id
+			params.contract_id = localToken.contract_id
 		} else {
 			params.token_series_id = localToken.token_series_id
+			params.contract_id = localToken.contract_id
 		}
 
 		const resp = await cachios.get(`${process.env.V2_API_URL}/activities`, {
@@ -60,7 +63,11 @@ const TabHistory = ({ localToken }) => {
 				next={fetchHistory}
 				hasMore={hasMore}
 				scrollableTarget="TokenScroll"
-				loader={<div className="text-white h-20">{localeLn('Loading...')}</div>}
+				loader={
+					<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
+						<div className="text-white text-center">{localeLn('Loading...')}</div>
+					</div>
+				}
 			>
 				{history.map((h) => (
 					<Activity key={h._id} activity={h} />
@@ -93,51 +100,6 @@ const Activity = ({ activity }) => {
 				</p>
 			)
 		}
-
-		if (type === 'resolve_purchase') {
-			return (
-				<p>
-					<LinkToProfile accountId={activity.to} />
-					<span> {localeLn('bought from')} </span>
-					<LinkToProfile accountId={activity.from} />
-					<span> {localeLn('for')} </span>
-					{formatNearAmount(activity.msg.params.price)} Ⓝ
-				</p>
-			)
-		}
-
-		// if (activity.price) {
-		// 	return (
-		// 		<p>
-		// 			<LinkToProfile
-		// 				className="text-gray-100 hover:border-gray-100"
-		// 				accountId={activity.to}
-		// 			/>
-		// 			<span>
-		// 				{' '}
-		// 				bought <span className="font-semibold">
-		// 					#{edition_id || 1}
-		// 				</span> for{' '}
-		// 			</span>
-		// 			{formatNearAmount(activity.msg.params.price)} Ⓝ
-		// 		</p>
-		// 	)
-		// }
-
-		// if (activity.to === activity.creator_id) {
-		// 	return (
-		// 		<p>
-		// 			<LinkToProfile
-		// 				className="text-gray-100 hover:border-gray-100"
-		// 				accountId={activity.to}
-		// 			/>
-		// 			<span>
-		// 				{' '}
-		// 				minted <span className="font-semibold">#{edition_id || 1}</span>
-		// 			</span>
-		// 		</p>
-		// 	)
-		// }
 
 		if (type === 'nft_transfer' && activity.from === null) {
 			const [, edition_id] = activity.msg.params.token_id.split(':')
@@ -190,8 +152,27 @@ const Activity = ({ activity }) => {
 			)
 		}
 
-		if (type === 'nft_transfer') {
+		if (type === 'resolve_purchase' || type === 'nft_transfer') {
 			if (activity.price) {
+				if (activity.is_offer) {
+					return (
+						<p>
+							<LinkToProfile
+								className="text-gray-100 hover:border-gray-100"
+								accountId={activity.from}
+							/>
+							<span> {localeLn('accepted offer from')} </span>
+							<LinkToProfile
+								className="text-gray-100 hover:border-gray-100"
+								accountId={activity.to}
+							/>{' '}
+							<span>
+								{' '}
+								{localeLn('for')} {formatNearAmount(activity.msg.params.price)} Ⓝ
+							</span>
+						</p>
+					)
+				}
 				return (
 					<p>
 						<LinkToProfile
@@ -264,10 +245,45 @@ const Activity = ({ activity }) => {
 			)
 		}
 
+		if (type === 'nft_decrease_series_copies') {
+			return (
+				<p>
+					<span>
+						{localeLn('Creator decrease the series copies to')} {activity.msg.params.copies}{' '}
+					</span>
+				</p>
+			)
+		}
+
+		if (type === 'add_offer') {
+			return (
+				<p>
+					<span>
+						<LinkToProfile accountId={activity.from} />
+					</span>
+					<span> {localeLn('added offer for')}</span>
+					<span> {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
+				</p>
+			)
+		}
+
+		if (type === 'delete_offer') {
+			return (
+				<p>
+					<span>
+						<span>
+							<LinkToProfile accountId={activity.from} />
+						</span>
+						<span> {localeLn('removed offer')}</span>
+					</span>
+				</p>
+			)
+		}
+
 		return null
 	}
 
-	if (activity.type === 'resolve_purchase_fail') {
+	if (activity.type === 'resolve_purchase_fail' || activity.type === 'notification_add_offer') {
 		return null
 	}
 

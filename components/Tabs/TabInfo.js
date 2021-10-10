@@ -59,9 +59,9 @@ const TabInfo = ({ localToken, isNFT }) => {
 					<div>
 						<p className="text-sm text-white font-bold">{localeLn('Royalty')}</p>
 						<p className="text-gray-100 font-semibold">
-							{Object.keys(localToken.royalty).length === 0
-								? `None`
-								: `${Object.values(localToken.royalty)[0] / 100} %`}
+							{localToken.royalty && Object.keys(localToken.royalty).length !== 0
+								? `${Object.values(localToken.royalty)[0] / 100} %`
+								: `None`}
 						</p>
 					</div>
 				</div>

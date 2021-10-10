@@ -234,20 +234,24 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 					) : (
 						<p className="text-white">{localeLn('Not for sale')}</p>
 					)}
-					{token.owner_id === currentUser ? (
-						<div className="w-24">
-							<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>
-								{localeLn('Update')}
-							</Button>
-						</div>
-					) : (
-						token.price && (
-							<div className="w-24">
-								<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
-									{localeLn('Buy')}
-								</Button>
-							</div>
-						)
+					{currentUser && (
+						<>
+							{token.owner_id === currentUser ? (
+								<div className="w-24">
+									<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>
+										{localeLn('Update')}
+									</Button>
+								</div>
+							) : (
+								token.price && (
+									<div className="w-24">
+										<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
+											{localeLn('Buy')}
+										</Button>
+									</div>
+								)
+							)}
+						</>
 					)}
 				</div>
 			</div>

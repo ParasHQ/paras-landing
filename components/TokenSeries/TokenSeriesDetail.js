@@ -22,6 +22,8 @@ import LoginModal from '../Modal/LoginModal'
 import ArtistVerified from '../Common/ArtistVerified'
 import ArtistBanned from '../Common/ArtistBanned'
 import { useIntl } from 'hooks/useIntl'
+import TabOffers from 'components/Tabs/TabOffers'
+import PlaceBidModal from 'components/Modal/PlaceBidModal'
 
 const TokenSeriesDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -89,6 +91,14 @@ const TokenSeriesDetail = ({ token, className }) => {
 			return
 		}
 		setShowModal('buyerTransfer')
+	}
+
+	const onClickOffer = () => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+		setShowModal('placeoffer')
 	}
 
 	const isCreator = () => {
@@ -165,10 +175,12 @@ const TokenSeriesDetail = ({ token, className }) => {
 								{tabDetail('info')}
 								{tabDetail('owners')}
 								{tabDetail('history')}
+								{tabDetail('offers')}
 							</div>
 							{activeTab === 'info' && <TabInfo localToken={token} />}
 							{activeTab === 'owners' && <TabOwners localToken={token} />}
 							{activeTab === 'history' && <TabHistory localToken={token} />}
+							{activeTab === 'offers' && <TabOffers localToken={token} />}
 						</div>
 					</Scrollbars>
 					{token.contract_id === process.env.NFT_CONTRACT_ID && (
@@ -194,9 +206,14 @@ const TokenSeriesDetail = ({ token, className }) => {
 								</div>
 							) : token.price ? (
 								<>
-									<Button size="md" onClick={onClickBuy} isFullWidth>
-										{token.price === '0' ? 'Free' : `Buy for ${formatNearAmount(token.price)} Ⓝ`}
-									</Button>
+									<div className="flex space-x-2">
+										<Button size="md" onClick={onClickBuy} isFullWidth>
+											{token.price === '0' ? 'Free' : `Buy for ${formatNearAmount(token.price)} Ⓝ`}
+										</Button>
+										<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
+											{`Place an offer`}
+										</Button>
+									</div>
 									{token.lowest_price &&
 										parseFloat(formatNearAmount(token.price)) >
 											parseFloat(formatNearAmount(token.lowest_price)) && (
@@ -214,8 +231,8 @@ const TokenSeriesDetail = ({ token, className }) => {
 										)}
 								</>
 							) : (
-								<Button size="md" isFullWidth isDisabled>
-									{localeLn('Not for Sale')}
+								<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
+									{`Place an offer`}
 								</Button>
 							)}
 						</div>
@@ -257,6 +274,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 				].filter((x) => x)}
 			/>
 			<TokenShareModal show={showModal === 'share'} onClose={onDismissModal} tokenData={token} />
+			<PlaceBidModal show={showModal === 'placeoffer'} data={token} onClose={onDismissModal} />
 			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>
 	)

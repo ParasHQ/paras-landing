@@ -28,14 +28,6 @@ export const descriptionMaker = (activity) => {
 		return `${activity.msg.params.owner_id} remove from sale`
 	}
 
-	if (type === 'resolve_purchase') {
-		const [, edition_id] = activity.msg.params.token_id.split(':')
-
-		return `${activity.to} bought  #${edition_id || 1} from ${activity.from} for ${formatNearAmount(
-			activity.msg.params.price
-		)} Ⓝ`
-	}
-
 	if (type === 'nft_transfer' && activity.from === null) {
 		const [, edition_id] = activity.msg.params.token_id.split(':')
 
@@ -56,8 +48,13 @@ export const descriptionMaker = (activity) => {
 		return `${activity.from} burned #${edition_id || 1}`
 	}
 
-	if (type === 'nft_transfer') {
+	if (type === 'nft_transfer' || type === 'resolve_purchase') {
 		if (activity.price) {
+			if (activity.is_offer) {
+				return `${activity.from} ${'accepted offer from'} ${activity.to} for ${formatNearAmount(
+					activity.msg.params.price
+				)} Ⓝ`
+			}
 			return `${activity.to} bought from ${activity.from}`
 		}
 		return `${activity.from} transferred to ${activity.to}`
@@ -80,6 +77,14 @@ export const descriptionMaker = (activity) => {
 
 	if (type === 'nft_decrease_series_copies') {
 		return `decrease the series copies to ${activity.msg.params.copies}`
+	}
+
+	if (type === 'add_offer') {
+		return `${activity.from} 'added offer for' ${formatNearAmount(activity.msg.params.price)} Ⓝ}`
+	}
+
+	if (type === 'delete_offer') {
+		return `${activity.from} 'removed offer' ${formatNearAmount(activity.msg.params.price)} Ⓝ`
 	}
 
 	return ``
@@ -112,42 +117,6 @@ const Activity = ({ activity }) => {
 					accountId={activity.msg.params.owner_id}
 				/>
 				<span> remove from sale</span>
-			</p>
-		)
-	}
-
-	// if (type === 'resolve_purchase') {
-	// 	const [, edition_id] = activity.msg.params.token_id.split(':')
-
-	// 	return `${activity.from} bought  #${edition_id || 1} from ${
-	// 		activity.to
-	// 	} for ${formatNearAmount(activity.msg.params.price)} Ⓝ`
-	// }
-
-	// if (type === 'nft_transfer' && activity.from === null) {
-	// 	const [, edition_id] = activity.msg.params.token_id.split(':')
-
-	// 	if (activity.price) {
-	// 		return `${activity.to} bought #${edition_id || 1} for ${formatNearAmount(
-	// 			activity.price
-	// 		)} Ⓝ`
-	// 	}
-	// 	return `${activity.to} minted #${edition_id || 1}`
-	// }
-
-	if (type === 'resolve_purchase') {
-		const [, edition_id] = activity.msg.params.token_id.split(':')
-
-		return (
-			<p>
-				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
-				<span>
-					{' '}
-					bought <span className="font-semibold">#{edition_id || 1}</span> from{' '}
-				</span>
-				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.from} />
-				<span> for </span>
-				{formatNearAmount(activity.msg.params.price)} Ⓝ
 			</p>
 		)
 	}
@@ -209,8 +178,27 @@ const Activity = ({ activity }) => {
 		)
 	}
 
-	if (type === 'nft_transfer') {
+	if (type === 'nft_transfer' || type === 'resolve_purchase') {
 		if (activity.price) {
+			if (activity.is_offer) {
+				return (
+					<p>
+						<LinkToProfile
+							className="text-gray-100 hover:border-gray-100"
+							accountId={activity.from}
+						/>
+						<span> {localeLn('accepted offer from')} </span>
+						<LinkToProfile
+							className="text-gray-100 hover:border-gray-100"
+							accountId={activity.to}
+						/>{' '}
+						<span>
+							{' '}
+							{localeLn('for')} {formatNearAmount(activity.msg.params.price)} Ⓝ
+						</span>
+					</p>
+				)
+			}
 			return (
 				<p>
 					<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
@@ -278,6 +266,37 @@ const Activity = ({ activity }) => {
 		)
 	}
 
+	if (type === 'add_offer') {
+		return (
+			<p>
+				<span>
+					<LinkToProfile
+						className="text-gray-100 hover:border-gray-100"
+						accountId={activity.from}
+					/>
+				</span>
+				<span> {localeLn('add offer for')}</span>
+				<span> {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
+			</p>
+		)
+	}
+
+	if (type === 'delete_offer') {
+		return (
+			<p>
+				<span>
+					<span>
+						<LinkToProfile
+							className="text-gray-100 hover:border-gray-100"
+							accountId={activity.from}
+						/>
+					</span>
+					<span> {localeLn('removed offer')}</span>
+				</span>
+			</p>
+		)
+	}
+
 	return null
 }
 
@@ -317,7 +336,7 @@ const ActivityDetail = ({ activity }) => {
 		}, 1500)
 	}
 
-	if (activity.type === 'resolve_purchase_fail') {
+	if (activity.type === 'resolve_purchase_fail' || activity.type === 'notification_add_offer') {
 		return null
 	}
 

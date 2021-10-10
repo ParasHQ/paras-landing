@@ -26,6 +26,8 @@ import ArtistVerified from '../Common/ArtistVerified'
 import ArtistBanned from '../Common/ArtistBanned'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import TabOffers from 'components/Tabs/TabOffers'
+import PlaceBidModal from 'components/Modal/PlaceBidModal'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -133,6 +135,14 @@ const TokenDetail = ({ token, className }) => {
 		setShowModal('burn')
 	}
 
+	const onClickOffer = () => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+		setShowModal('placeoffer')
+	}
+
 	const isOwner = () => {
 		if (!currentUser) {
 			return false
@@ -204,11 +214,13 @@ const TokenDetail = ({ token, className }) => {
 								{tabDetail('info')}
 								{tabDetail('owners')}
 								{tabDetail('history')}
+								{tabDetail('offers')}
 							</div>
 
 							{activeTab === 'info' && <TabInfo localToken={token} isNFT={true} />}
 							{activeTab === 'owners' && <TabOwners localToken={token} />}
 							{activeTab === 'history' && <TabHistory localToken={token} />}
+							{activeTab === 'offers' && <TabOffers localToken={token} />}
 						</div>
 					</Scrollbars>
 					<div className="p-3">
@@ -237,17 +249,19 @@ const TokenDetail = ({ token, className }) => {
 							</div>
 						)}
 						{token.owner_id !== currentUser && token.price && (
-							<div className="flex">
-								<Button
-									size="md"
-									onClick={() => {
-										onClickBuy()
-									}}
-									isFullWidth
-								>
+							<div className="flex space-x-2">
+								<Button size="md" onClick={onClickBuy} isFullWidth>
 									{localeLn('Buy')}
 								</Button>
+								<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
+									{`Place an offer`}
+								</Button>
 							</div>
+						)}
+						{token.owner_id !== currentUser && !token.price && (
+							<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
+								{`Place an offer`}
+							</Button>
 						)}
 						<div
 							className="mt-2 text-center text-white cursor-pointer hover:opacity-80 text-sm"
@@ -281,6 +295,7 @@ const TokenDetail = ({ token, className }) => {
 			<TokenBurnModal show={showModal === 'burn'} onClose={onDismissModal} data={token} />
 			<TokenBuyModal show={showModal === 'buy'} onClose={onDismissModal} data={token} />
 			<TokenTransferModal show={showModal === 'transfer'} onClose={onDismissModal} data={token} />
+			<PlaceBidModal show={showModal === 'placeoffer'} data={token} onClose={onDismissModal} />
 			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>
 	)

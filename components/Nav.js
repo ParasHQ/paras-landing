@@ -192,6 +192,11 @@ const User = () => {
 								{localeLn('My Profile')}
 							</a>
 						</Link>
+						<Link href="/my-bids">
+							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
+								{localeLn('My Bids')}
+							</a>
+						</Link>
 						<button
 							onClick={() => {
 								setShowEditAccountModal(true)

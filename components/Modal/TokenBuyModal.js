@@ -4,7 +4,7 @@ import Modal from 'components/Common/Modal'
 import near from 'lib/near'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
-import { GAS_FEE } from 'config/constants'
+import { GAS_FEE_150 } from 'config/constants'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackBuyToken, trackBuyTokenImpression } from 'lib/ga'
@@ -39,7 +39,7 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 				contractId: process.env.MARKETPLACE_CONTRACT_ID,
 				methodName: `buy`,
 				args: params,
-				gas: GAS_FEE,
+				gas: GAS_FEE_150,
 				attachedDeposit: data.price,
 			})
 		} catch (err) {
