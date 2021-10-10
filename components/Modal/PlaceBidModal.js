@@ -94,7 +94,6 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 				...(data.token_id
 					? { token_id: data.token_id }
 					: { token_series_id: data.token_series_id }),
-				token_series_id: data.token_series_id,
 				ft_token_id: 'near',
 				price: parseNearAmount(bidAmount),
 			}
