@@ -44,7 +44,7 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 				setHasBid(true)
 				setValue('bidAmount', formatNearAmount(bidData.price))
 			} catch (err) {
-				console.log('object')
+				console.log(err)
 			}
 		}
 	}, [show])
