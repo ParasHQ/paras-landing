@@ -336,7 +336,7 @@ const ActivityDetail = ({ activity }) => {
 		}, 1500)
 	}
 
-	if (activity.type === 'resolve_purchase_fail') {
+	if (activity.type === 'resolve_purchase_fail' || activity.type === 'notification_add_offer') {
 		return null
 	}
 
