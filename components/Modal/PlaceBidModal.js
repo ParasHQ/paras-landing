@@ -30,18 +30,22 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 
 	useEffect(async () => {
 		if (show) {
-			const params = {
-				nft_contract_id: data.contract_id,
-				buyer_id: currentUser,
-				...(data.token_id
-					? { token_id: data.token_id }
-					: { token_series_id: data.token_series_id }),
+			try {
+				const params = {
+					nft_contract_id: data.contract_id,
+					buyer_id: currentUser,
+					...(data.token_id
+						? { token_id: data.token_id }
+						: { token_series_id: data.token_series_id }),
+				}
+				const bidData = await near.wallet
+					.account()
+					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_offer`, params)
+				setHasBid(true)
+				setValue('bidAmount', formatNearAmount(bidData.price))
+			} catch (error) {
+				// if doesn't have offer
 			}
-			const bidData = await near.wallet
-				.account()
-				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_offer`, params)
-			setHasBid(true)
-			setValue('bidAmount', formatNearAmount(bidData.price))
 		}
 	}, [show])
 
