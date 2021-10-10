@@ -167,6 +167,9 @@ const TabOffers = ({ localToken }) => {
 					market_type: 'accept_offer_paras_series',
 					buyer_id: activeOffer.buyer_id,
 				})
+				if (tokenId) {
+					params.token_id = tokenId
+				}
 			}
 
 			// accept offer

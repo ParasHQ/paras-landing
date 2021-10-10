@@ -95,6 +95,7 @@ const Bid = ({ data, type }) => {
 				params: {
 					token_series_id: data.token_series_id,
 					contract_id: data.contract_id,
+					owner_id: store.userProfile.accountId,
 					__limit: 1,
 				},
 				ttl: 30,
@@ -134,6 +135,9 @@ const Bid = ({ data, type }) => {
 					market_type: 'accept_offer_paras_series',
 					buyer_id: data.buyer_id,
 				})
+				if (tokenId) {
+					params.token_id = tokenId
+				}
 			}
 
 			// accept offer
