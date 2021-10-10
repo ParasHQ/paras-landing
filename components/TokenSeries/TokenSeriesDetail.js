@@ -24,6 +24,7 @@ import ArtistBanned from '../Common/ArtistBanned'
 import { useIntl } from 'hooks/useIntl'
 import TabOffers from 'components/Tabs/TabOffers'
 import PlaceBidModal from 'components/Modal/PlaceBidModal'
+import TabPublication from 'components/Tabs/TabPublication'
 
 const TokenSeriesDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -37,7 +38,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 	const tabDetail = (tab) => {
 		return (
 			<div
-				className={`cursor-pointer relative text-center overflow-hidden ${
+				className={`cursor-pointer relative text-center ${
 					activeTab === tab
 						? 'text-gray-100 border-b-2 border-white font-semibold'
 						: 'hover:bg-opacity-15 text-gray-100'
@@ -171,16 +172,18 @@ const TokenSeriesDetail = ({ token, className }) => {
 									/>
 								</div>
 							</div>
-							<div className="flex mt-3 space-x-4">
+							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative overflow-scroll flex-nowrap disable-scrollbars -mb-4">
 								{tabDetail('info')}
 								{tabDetail('owners')}
 								{tabDetail('history')}
 								{tabDetail('offers')}
+								{tabDetail('publication')}
 							</div>
 							{activeTab === 'info' && <TabInfo localToken={token} />}
 							{activeTab === 'owners' && <TabOwners localToken={token} />}
 							{activeTab === 'history' && <TabHistory localToken={token} />}
 							{activeTab === 'offers' && <TabOffers localToken={token} />}
+							{activeTab === 'publication' && <TabPublication localToken={token} />}
 						</div>
 					</Scrollbars>
 					{token.contract_id === process.env.NFT_CONTRACT_ID && (
