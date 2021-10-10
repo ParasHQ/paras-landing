@@ -90,7 +90,7 @@ const Offer = ({ data, onAcceptOffer, hideButton }) => {
 				<div>
 					<p>Offer {formatNearAmount(data.price)} Ⓝ</p>
 				</div>
-				{!hideButton && (
+				{!hideButton && data.buyer_id !== currentUser && (
 					<div>
 						<Button
 							size="sm"
