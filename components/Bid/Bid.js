@@ -21,6 +21,7 @@ import {
 	STORAGE_MINT_FEE,
 } from 'config/constants'
 import CancelBid from 'components/Modal/CancelBid'
+import TokenDetailModal from 'components/Token/TokenDetailModal'
 
 const Bid = ({ data, type }) => {
 	const store = useStore()
@@ -192,6 +193,7 @@ const Bid = ({ data, type }) => {
 	return (
 		<>
 			<TokenSeriesDetailModal tokens={[token]} />
+			<TokenDetailModal tokens={[token]} />
 			{showModal === 'acceptBid' && (
 				<AcceptBidModal
 					data={data}
