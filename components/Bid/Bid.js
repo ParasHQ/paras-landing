@@ -35,10 +35,14 @@ const Bid = ({ data, type }) => {
 
 	useEffect(() => {
 		fetchTokenData()
-		if (type === 'receivedBids') {
+	}, [data])
+
+	useEffect(() => {
+		// check user ownership
+		if (type === 'receivedBids' && token) {
 			fetchOwnership()
 		}
-	}, [data])
+	}, [token])
 
 	const fetchTokenData = async () => {
 		if (data.token_id) {
@@ -91,17 +95,12 @@ const Bid = ({ data, type }) => {
 				params: {
 					token_series_id: data.token_series_id,
 					contract_id: data.contract_id,
-					owner_id: store.userProfile.accountId,
 					__limit: 1,
 				},
 				ttl: 30,
 			})
 
-			console.log('ownership resp', ownershipResp.data.data.results[0])
-
-			const creatorId =
-				ownershipResp.data.data.results[0].metadata.creator_id ||
-				ownershipResp.data.data.results[0].contract_id
+			const creatorId = token.metadata.creator_id || token.contract_id
 
 			if (ownershipResp.data.data.results[0]) {
 				setIsOwned(`owner::series::${ownershipResp.data.data.results[0].token_id}`)
@@ -272,7 +271,11 @@ const Bid = ({ data, type }) => {
 								<div className="font-bold text-2xl">{token?.metadata?.title}</div>
 							</Link>
 							<p className="opacity-75">{token?.metadata?.collection}</p>
-							<div className="mt-4 mb-6">{`You offer ${prettyBalance(data.price, 24, 4)} Ⓝ`}</div>
+							<div className="mt-4 mb-6">
+								{store.currentUser !== data.buyer_id
+									? `You received ${prettyBalance(data.price, 24, 4)} Ⓝ offer from ${data.buyer_id}`
+									: `You offer ${prettyBalance(data.price, 24, 4)} Ⓝ`}
+							</div>
 							<p className="mt-2 text-sm opacity-50 mb-6 md:mb-0">
 								{token && timeAgo.format(data.issued_at)}
 							</p>

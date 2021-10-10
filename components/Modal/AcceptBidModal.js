@@ -39,7 +39,7 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 					<div className="text-white mt-4 text-2xl font-bold text-center">
 						{`${prettyBalance(data.price, 24, 4)} Ⓝ `}
 					</div>
-					<div className="mt-4 text-center">
+					<div className="mt-4 text-center text-white opacity-90">
 						<div className="flex justify-between">
 							<div className="text-sm">
 								{localeLn('Royalty for Artist')} (
