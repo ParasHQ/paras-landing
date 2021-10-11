@@ -129,12 +129,14 @@ const Bid = ({ data, type }) => {
 				params.msg = JSON.stringify({
 					market_type: 'accept_offer',
 					buyer_id: data.buyer_id,
+					price: data.price,
 				})
 			} else {
 				params.token_series_id = data.token_series_id
 				params.msg = JSON.stringify({
 					market_type: 'accept_offer_paras_series',
 					buyer_id: data.buyer_id,
+					price: data.price,
 				})
 				if (tokenId) {
 					params.token_id = tokenId
