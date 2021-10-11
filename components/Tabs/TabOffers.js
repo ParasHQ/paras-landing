@@ -160,12 +160,14 @@ const TabOffers = ({ localToken }) => {
 				params.msg = JSON.stringify({
 					market_type: 'accept_offer',
 					buyer_id: activeOffer.buyer_id,
+					price: activeOffer.price,
 				})
 			} else {
 				params.token_series_id = activeOffer.token_series_id
 				params.msg = JSON.stringify({
 					market_type: 'accept_offer_paras_series',
 					buyer_id: activeOffer.buyer_id,
+					price: activeOffer.price,
 				})
 				if (tokenId) {
 					params.token_id = tokenId
