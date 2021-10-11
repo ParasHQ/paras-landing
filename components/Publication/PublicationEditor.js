@@ -83,6 +83,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			const res = await axios.get(`${process.env.V2_API_URL}/token`, {
 				params: {
 					token_id: token_id,
+					contract_id: token_series_id.split('::')[0],
 				},
 			})
 
@@ -102,6 +103,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
 				params: {
 					token_series_id: token_series_id.split('::')[1],
+					contract_id: token_series_id.split('::')[0],
 				},
 			})
 
