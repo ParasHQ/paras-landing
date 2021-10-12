@@ -2,16 +2,18 @@ import { useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Head from 'next/head'
-import Nav from '../components/Nav'
-import Footer from '../components/Footer'
-import useStore from '../store'
-import ActivityDetail from '../components/ActivityDetail'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import useStore from 'lib/store'
+import ActivityDetail from 'components/Activity/ActivityDetail'
 import { useRouter } from 'next/router'
-import TopUsers from '../components/TopUsers'
+import TopUsers from 'components/Activity/TopUsers'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
-import FilterActivity from '../components/FilterActivity'
+import FilterActivity from 'components/Filter/FilterActivity'
+import { sentryCaptureException } from 'lib/sentry'
 
-const LIMIT = 10
+const FETCH_TOKENS_LIMIT = 10
+import { useIntl } from 'hooks/useIntl'
 
 const ActivityLog = ({ query }) => {
 	const {
@@ -29,7 +31,7 @@ const ActivityLog = ({ query }) => {
 	const [topUser, setTopUser] = useState([])
 	const [showModal, setShowModal] = useState(false)
 	const [activityType, setActivityType] = useState('activity')
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		const onClick = (e) => {
 			if (!modalRef.current.contains(e.target)) {
@@ -50,9 +52,7 @@ const ActivityLog = ({ query }) => {
 		} else {
 			_fetchData({}, true)
 		}
-		const res = await axios(
-			`${process.env.API_URL}/activities/topUsers?__limit=5`
-		)
+		const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=5`)
 		setTopUser(res.data.data)
 	}, [])
 
@@ -69,12 +69,6 @@ const ActivityLog = ({ query }) => {
 		if (!filter || filter === 'showAll') {
 			return ``
 		}
-		if (filter === 'mint') {
-			return `type=transfer&from=root&`
-		}
-		if (filter === 'burn') {
-			return `type=transfer&to=root&`
-		}
 		return `type=${filter}&`
 	}
 
@@ -84,10 +78,10 @@ const ActivityLog = ({ query }) => {
 		}
 		let priceQuery = ''
 		if (min) {
-			priceQuery += `minPrice=${parseNearAmount(min)}&`
+			priceQuery += `min_price=${parseNearAmount(min)}&`
 		}
 		if (max) {
-			priceQuery += `maxPrice=${parseNearAmount(max)}&`
+			priceQuery += `max_price=${parseNearAmount(max)}&`
 		}
 		return priceQuery
 	}
@@ -106,11 +100,13 @@ const ActivityLog = ({ query }) => {
 			const _filter =
 				_filterQuery(fetchQuery?.filter) +
 				_filterMinMax(fetchQuery?.filter, fetchQuery?.pmin, fetchQuery?.pmax)
-			const res = await axios.get(
-				`${process.env.API_URL}/activities?${_filter}__skip=${
-					_activityListPage * LIMIT
-				}&__limit=${LIMIT}`
-			)
+
+			const res = await axios.get(`${process.env.V2_API_URL}/activities?${_filter}`, {
+				params: {
+					__skip: _activityListPage * FETCH_TOKENS_LIMIT,
+					__limit: FETCH_TOKENS_LIMIT,
+				},
+			})
 			const newData = await res.data.data
 
 			const newActivityList = [..._activityList, ...newData.results]
@@ -122,7 +118,7 @@ const ActivityLog = ({ query }) => {
 				setActivityListHasMore(true)
 			}
 		} catch (err) {
-			console.log(err)
+			sentryCaptureException(err)
 		}
 		setIsFetching(false)
 	}
@@ -144,16 +140,13 @@ const ActivityLog = ({ query }) => {
 					}}
 				></div>
 				<Head>
-					<title>Activity — Paras</title>
+					<title>{localeLn('Activity — Paras')}</title>
 					<meta
 						name="description"
 						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 					/>
 
-					<meta
-						name="twitter:title"
-						content="Paras — Digital Art Cards Market"
-					/>
+					<meta name="twitter:title" content="Paras — Digital Art Cards Market" />
 					<meta name="twitter:card" content="summary_large_image" />
 					<meta name="twitter:site" content="@ParasHQ" />
 					<meta name="twitter:url" content="https://paras.id" />
@@ -166,14 +159,8 @@ const ActivityLog = ({ query }) => {
 						content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 					/>
 					<meta property="og:type" content="website" />
-					<meta
-						property="og:title"
-						content="Paras — Digital Art Cards Market"
-					/>
-					<meta
-						property="og:site_name"
-						content="Paras — Digital Art Cards Market"
-					/>
+					<meta property="og:title" content="Paras — Digital Art Cards Market" />
+					<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
 					<meta
 						property="og:description"
 						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -189,12 +176,9 @@ const ActivityLog = ({ query }) => {
 					<div className="md:w-2/3 max-w-2xl relative mx-auto">
 						<div className="px-4 flex flex-wrap items-center justify-between">
 							<div ref={modalRef}>
-								<div
-									className="flex items-baseline"
-									onClick={() => setShowModal(!showModal)}
-								>
+								<div className="flex items-baseline" onClick={() => setShowModal(!showModal)}>
 									<h1 className="text-4xl font-bold text-gray-100 text-center mr-2 capitalize">
-										{activityType.split('-').join(' ')}
+										{activityType === 'activity' ? localeLn('Activity') : localeLn('Top Users')}
 									</h1>
 									<svg
 										viewBox="0 0 11 7"
@@ -220,7 +204,7 @@ const ActivityLog = ({ query }) => {
 									`}
 											onClick={() => onClickType('activity')}
 										>
-											Activity
+											{localeLn('Activity')}
 										</p>
 										<p
 											className={`opacity-50 cursor-pointer select-none my-1
@@ -228,16 +212,12 @@ const ActivityLog = ({ query }) => {
 									`}
 											onClick={() => onClickType('top-users')}
 										>
-											Top Users
+											{localeLn('Top Users')}
 										</p>
 									</div>
 								)}
 							</div>
-							<div
-								className={`${
-									activityType === 'top-users' && 'hidden'
-								} md:block`}
-							>
+							<div className={`${activityType === 'top-users' && 'hidden'} md:block`}>
 								<FilterActivity onClickFilter={onClickFilter} />
 							</div>
 						</div>
@@ -248,12 +228,12 @@ const ActivityLog = ({ query }) => {
 						>
 							{activityList.length === 0 && activityListHasMore && (
 								<div className="border-2 border-gray-800 border-dashed mt-4 p-2 rounded-md text-center">
-									<p className="text-gray-300 py-8">Loading</p>
+									<p className="text-gray-300 py-8">{localeLn('Loading')}</p>
 								</div>
 							)}
 							{activityList.length === 0 && !activityListHasMore && (
 								<div className="border-2 border-gray-800 border-dashed mt-4 p-2 rounded-md text-center">
-									<p className="text-gray-300 py-8">No Transactions</p>
+									<p className="text-gray-300 py-8">{localeLn('No Transactions')}</p>
 								</div>
 							)}
 							<InfiniteScroll
@@ -276,11 +256,7 @@ const ActivityLog = ({ query }) => {
 							activityType === 'activity' && 'hidden'
 						} md:block`}
 					>
-						<TopUsers
-							data={topUser.buyers}
-							userType={'buyer'}
-							linkTo="/activity/top-buyers"
-						/>
+						<TopUsers data={topUser.buyers} userType={'buyer'} linkTo="/activity/top-buyers" />
 						<TopUsers
 							data={topUser.sellers}
 							userType={'seller'}

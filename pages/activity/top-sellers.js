@@ -3,18 +3,18 @@ import axios from 'axios'
 import router from 'next/router'
 import Head from 'next/head'
 
-import Nav from '../../components/Nav'
-import Footer from '../../components/Footer'
-import UserTransactionList from '../../components/Activity/UserTransactionDetail'
-
-const LIMIT = 5
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import UserTransactionList from 'components/Activity/UserTransactionDetail'
+import { useIntl } from 'hooks/useIntl'
+const LIMIT = 30
 
 const TopSellersPage = ({ topUser }) => {
 	const [usersData, setUsersData] = useState(topUser.sellers)
 	const [page, setPage] = useState(1)
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
-
+	const { localeLn } = useIntl()
 	const _fetchData = async () => {
 		if (!hasMore || isFetching) {
 			return
@@ -22,9 +22,7 @@ const TopSellersPage = ({ topUser }) => {
 
 		setIsFetching(true)
 		const res = await axios(
-			`${process.env.API_URL}/activities/topUsers?__skip=${
-				page * LIMIT
-			}__limit=${LIMIT}`
+			`${process.env.V2_API_URL}/activities/top-users?__skip=${page * LIMIT}__limit=${LIMIT}`
 		)
 
 		const newUserData = [...usersData, ...res.data.data.sellers]
@@ -42,8 +40,7 @@ const TopSellersPage = ({ topUser }) => {
 	const headMeta = {
 		title: 'Top Sellers — Paras',
 		description: 'See top sellers at paras',
-		image:
-			'https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png',
+		image: 'https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png',
 	}
 
 	return (
@@ -77,16 +74,16 @@ const TopSellersPage = ({ topUser }) => {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="mx-4 flex items-baseline">
-					<h1 className="text-4xl font-bold text-gray-100">Top Sellers</h1>
-					<p className="ml-2 text-gray-400 text-lg">in 7 days</p>
+					<h1 className="text-4xl font-bold text-gray-100">{localeLn('Top Sellers')}</h1>
+					<p className="ml-2 text-gray-400 text-lg">{localeLn('in 7 days')}</p>
 				</div>
 				<p className="text-gray-400 text-lg mx-4">
-					see top buyers{' '}
+					{localeLn('see top buyers')}{' '}
 					<span
 						onClick={() => router.push('/activity/top-buyers')}
 						className="font-semibold hover:text-gray-100 cursor-pointer hover:border-gray-100 border-b-2 border-transparent"
 					>
-						here
+						{localeLn('here')}
 					</span>
 				</p>
 				<div className="mt-8 mx-4">
@@ -104,9 +101,7 @@ const TopSellersPage = ({ topUser }) => {
 }
 
 export async function getServerSideProps() {
-	const res = await axios(
-		`${process.env.API_URL}/activities/topUsers?__limit=${LIMIT}`
-	)
+	const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=${LIMIT}`)
 	const topUser = res.data.data
 
 	return { props: { topUser } }

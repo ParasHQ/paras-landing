@@ -114,20 +114,17 @@ input.clear {
 	@apply mx-auto;
 }
 .card-wrap:hover .card-bg {
-	-webkit-transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1),
-		opacity 5s cubic-bezier(0.23, 1, 0.32, 1);
-	transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1),
-		opacity 5s cubic-bezier(0.23, 1, 0.32, 1);
+	-webkit-transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 5s cubic-bezier(0.23, 1, 0.32, 1);
+	transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 5s cubic-bezier(0.23, 1, 0.32, 1);
 	opacity: 0.8;
 }
 .card-wrap:hover .card {
 	-webkit-transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1),
 		box-shadow 2s cubic-bezier(0.23, 1, 0.32, 1);
-	transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1),
-		box-shadow 2s cubic-bezier(0.23, 1, 0.32, 1);
+	transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1), box-shadow 2s cubic-bezier(0.23, 1, 0.32, 1);
 
-	box-shadow: rgba(255, 255, 255, 0.2) 0 0 40px 5px, white 0 0 0 1px,
-		rgba(0, 0, 0, 0.66) 0 30px 60px 0;
+	box-shadow: rgba(255, 255, 255, 0.2) 0 0 10px 5px, white 0 0 0 1px,
+		rgba(0, 0, 0, 0.66) 0 20px 30px 0;
 }
 
 .card {
@@ -241,8 +238,7 @@ input.clear {
 	transition: top 0.075s 0.12s ease, opacity 0.075s ease;
 }
 .hamburger--squeeze .hamburger-inner::after {
-	transition: bottom 0.075s 0.12s ease,
-		transform 0.075s cubic-bezier(0.55, 0.055, 0.675, 0.19);
+	transition: bottom 0.075s 0.12s ease, transform 0.075s cubic-bezier(0.55, 0.055, 0.675, 0.19);
 }
 
 .hamburger--squeeze.is-active .hamburger-inner {
@@ -258,8 +254,7 @@ input.clear {
 .hamburger--squeeze.is-active .hamburger-inner::after {
 	bottom: 0;
 	transform: rotate(-90deg);
-	transition: bottom 0.075s ease,
-		transform 0.075s 0.12s cubic-bezier(0.215, 0.61, 0.355, 1);
+	transition: bottom 0.075s ease, transform 0.075s 0.12s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
 @layer utilities {
@@ -352,10 +347,9 @@ input.clear {
 }
 
 .fireText {
-	text-shadow: 0 0 20px #c9d1fe, -19px -20px 40px #0011ff,
-		-1px -9px 20px #0c2eec, -20px -60px 60px #06afcd, 1px -19px 70px #1f1697,
-		1px -14px 80px #0e1445, 0px 0 8px rgb(0, 89, 255), 0 0 8px rgb(0, 195, 255),
-		0 0 5px #1300ba;
+	text-shadow: 0 0 20px #c9d1fe, -19px -20px 40px #0011ff, -1px -9px 20px #0c2eec,
+		-20px -60px 60px #06afcd, 1px -19px 70px #1f1697, 1px -14px 80px #0e1445,
+		0px 0 8px rgb(0, 89, 255), 0 0 8px rgb(0, 195, 255), 0 0 5px #1300ba;
 }
 
 @media (max-width: 768px) {
@@ -388,7 +382,7 @@ input.clear {
 }
 
 .form-switch-label:before {
-	@apply absolute block bg-white .inset-y-0 w-6 border rounded-full -ml-1;
+	@apply absolute block bg-white inset-y-0 w-6 border rounded-full -ml-1;
 	right: 50%;
 	content: '';
 	transition: all 0.2s ease-in;
@@ -402,7 +396,7 @@ input.clear {
 }
 
 .form-switch-checkbox:checked + .form-switch-label:before {
-	@apply .right-0;
+	@apply right-0;
 }
 
 .disable-scrollbars::-webkit-scrollbar {
@@ -413,4 +407,7 @@ input.clear {
 .disable-scrollbars {
 	scrollbar-width: none; /* Firefox */
 	-ms-overflow-style: none; /* IE 10+ */
+}
+.pointer {
+	cursor: pointer;
 }

@@ -1,16 +1,17 @@
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { parseImgUrl, prettyBalance } from '../../utils/common'
-import Card from '../Card'
-import CardDetailModal from '../CardDetailModal'
+import { parseImgUrl, prettyBalance } from 'utils/common'
+import Card from '../Card/Card'
+
 import CardStatListLoader from './CardStatListLoader'
 import LinkToProfile from '../LinkToProfile'
-
+import { useIntl } from 'hooks/useIntl'
+import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 const CardStats = ({ cardsData, fetchData, hasMore }) => {
 	const [token, setToken] = useState(null)
 	const router = useRouter()
-
+	const { localeLn } = useIntl()
 	const onPressCard = (localToken) => {
 		setToken(localToken)
 		router.push(
@@ -29,7 +30,7 @@ const CardStats = ({ cardsData, fetchData, hasMore }) => {
 
 	return (
 		<div>
-			<CardDetailModal tokens={[token]} />
+			<TokenSeriesDetailModal tokens={[token]} />
 			<InfiniteScroll
 				dataLength={cardsData.length}
 				next={fetchData}
@@ -39,62 +40,49 @@ const CardStats = ({ cardsData, fetchData, hasMore }) => {
 				<table className="text-white text-center">
 					<thead>
 						<tr>
-							<th className="md:w-2/12">Card</th>
-							<th className="md:w-3/12 text-left">Detail</th>
+							<th className="md:w-2/12">{localeLn('Card')}</th>
+							<th className="md:w-3/12 text-left">{localeLn('Detail')}</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">Supply</p>
+								<p className="mx-4">{localeLn('Supply')}</p>
 							</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">First Sale</p>
+								<p className="mx-4">{localeLn('First Sale')}</p>
 							</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">Last Sale</p>
+								<p className="mx-4">{localeLn('Last Sale')}</p>
 							</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">Avg. Sale</p>
+								<p className="mx-4">{localeLn('Avg. Sale')}</p>
 							</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">Total Sales</p>
+								<p className="mx-4">{localeLn('Total Sales')}</p>
 							</th>
 							<th className="md:w-1/12">
-								<p className="mx-4">Total Volume</p>
+								<p className="mx-4">{localeLn('Total Volume')}</p>
 							</th>
 						</tr>
 					</thead>
 					<tbody>
 						{cardsData.map((card) => {
 							const localToken = card.token
-							const firstPrice =
-								parseFloat(prettyBalance(card.firstSale.amount, 24, 4)) || 0.1
-							const lastPrice =
-								parseFloat(prettyBalance(card.lastSale.amount, 24, 4)) || 0.1
+							const firstPrice = parseFloat(prettyBalance(card.firstSale.amount, 24, 4)) || 0.1
+							const lastPrice = parseFloat(prettyBalance(card.lastSale.amount, 24, 4)) || 0.1
 							const { totalSales } = card
 							const { supply } = localToken
 							const average = prettyBalance(card.average, 24, 4)
 							const total = prettyBalance(card.volume, 24, 4)
-							const changeLastPrice = parseInt(
-								((lastPrice - firstPrice) / firstPrice) * 100
-							)
-							const changeAveragePrice = parseInt(
-								((average - firstPrice) / firstPrice) * 100
-							)
+							const changeLastPrice = parseInt(((lastPrice - firstPrice) / firstPrice) * 100)
+							const changeAveragePrice = parseInt(((average - firstPrice) / firstPrice) * 100)
 
 							return (
 								<tr key={card._id}>
 									<td>
-										<div
-											className="p-4"
-											onClick={() => onPressCard(localToken)}
-										>
+										<div className="p-4" onClick={() => onPressCard(localToken)}>
 											<div className="w-32 md:w-48">
 												<Card
-													imgUrl={parseImgUrl(
-														localToken?.metadata?.image,
-														null,
-														{
-															width: `300`,
-														}
-													)}
+													imgUrl={parseImgUrl(localToken?.metadata?.image, null, {
+														width: `300`,
+													})}
 													imgBlur={localToken?.metadata?.blurhash}
 													token={{
 														name: localToken?.metadata?.name,
@@ -135,30 +123,14 @@ const CardStats = ({ cardsData, fetchData, hasMore }) => {
 									<td className="text-lg font-bold">{firstPrice} Ⓝ</td>
 									<td>
 										<p className="text-lg font-bold">{lastPrice} Ⓝ</p>
-										<p
-											className={
-												changeLastPrice > 0 ? 'text-green-400' : 'text-red-600'
-											}
-										>
-											{changeLastPrice > 0
-												? `+${changeLastPrice}`
-												: `${changeLastPrice}`}
-											%
+										<p className={changeLastPrice > 0 ? 'text-green-400' : 'text-red-600'}>
+											{changeLastPrice > 0 ? `+${changeLastPrice}` : `${changeLastPrice}`}%
 										</p>
 									</td>
 									<td>
 										<p className="text-lg font-bold">{average} Ⓝ</p>
-										<p
-											className={
-												changeAveragePrice > 0
-													? 'text-green-400'
-													: 'text-red-600'
-											}
-										>
-											{changeAveragePrice > 0
-												? `+${changeAveragePrice}`
-												: `${changeAveragePrice}`}
-											%
+										<p className={changeAveragePrice > 0 ? 'text-green-400' : 'text-red-600'}>
+											{changeAveragePrice > 0 ? `+${changeAveragePrice}` : `${changeAveragePrice}`}%
 										</p>
 									</td>
 									<td className="text-lg font-bold">{totalSales}</td>

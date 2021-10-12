@@ -4,17 +4,18 @@ import { useRouter } from 'next/router'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import Head from 'next/head'
 
-import Nav from '../components/Nav'
-import CardList from '../components/CardList'
-import Footer from '../components/Footer'
-import useStore from '../store'
-import FilterMarket from '../components/FilterMarket'
-import { parseSortQuery } from '../utils/common'
-import CardListLoader from '../components/CardListLoader'
-
+import Nav from 'components/Nav'
+import CardList from 'components/TokenSeries/CardList'
+import Footer from 'components/Footer'
+import useStore from 'lib/store'
+import FilterMarket from 'components/Filter/FilterMarket'
+import { parseSortQuery } from 'utils/common'
+import CardListLoader from 'components/Card/CardListLoader'
+import { useIntl } from 'hooks/useIntl'
 const LIMIT = 12
 
 export default function SearchPage({ searchQuery }) {
+	const { localeLn } = useIntl()
 	const store = useStore()
 	const router = useRouter()
 	const [tokens, setTokens] = useState([])
@@ -28,7 +29,7 @@ export default function SearchPage({ searchQuery }) {
 	useEffect(async () => {
 		setIsRefreshing(true)
 		window.scrollTo(0, 0)
-		const res = await axios(`${process.env.API_URL}/tokens`, {
+		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: tokensParams(0, {
 				...query,
 				search: encodeURIComponent(query.q),
@@ -40,7 +41,7 @@ export default function SearchPage({ searchQuery }) {
 		}
 		setTokens(res.data.data.results)
 		setIsRefreshing(false)
-	}, [query.q, query.sort, query.pmin, query.pmax])
+	}, [query.q, query.sort, query.pmin, query.pmax, query.is_verified])
 
 	useEffect(() => {
 		return () => {
@@ -54,7 +55,7 @@ export default function SearchPage({ searchQuery }) {
 		}
 
 		setIsFetching(true)
-		const res = await axios(`${process.env.API_URL}/tokens`, {
+		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: tokensParams(page, {
 				...query,
 				search: encodeURIComponent(query.q),
@@ -74,7 +75,9 @@ export default function SearchPage({ searchQuery }) {
 	}
 
 	const headMeta = {
-		title: `Search ${searchQuery} — Paras`,
+		title: localeLn('Search {searchQuery} — Paras', {
+			searchQuery: searchQuery,
+		}),
 		description: `Explore and collect ${searchQuery} digital art cards on Paras. All-in-one social digital art card marketplace for creators and collectors.`,
 	}
 
@@ -115,9 +118,9 @@ export default function SearchPage({ searchQuery }) {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="text-center">
-					<h1 className="text-3xl font-bold text-gray-100">Search Result</h1>
+					<h1 className="text-3xl font-bold text-gray-100">{localeLn('Search Result')}</h1>
 					<h4 className="text-xl font-semibold text-gray-300">
-						<span className="opacity-75">for</span>{' '}
+						<span className="opacity-75">{localeLn('for')}</span>{' '}
 						<span className="border-b-2 border-gray-100">{searchQuery}</span>
 					</h4>
 				</div>
@@ -147,12 +150,13 @@ export default function SearchPage({ searchQuery }) {
 const tokensParams = (_page = 0, query) => {
 	const params = {
 		search: query.q,
-		excludeTotalBurn: true,
+		exclude_total_burn: true,
 		__sort: parseSortQuery(query.sort),
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
-		...(query.pmin && { minPrice: parseNearAmount(query.pmin) }),
-		...(query.pmax && { maxPrice: parseNearAmount(query.pmax) }),
+		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
+		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
+		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 	}
 	return params
 }

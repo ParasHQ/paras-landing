@@ -1,9 +1,9 @@
 import axios from 'axios'
 import Head from 'next/head'
 
-import Nav from '../../../components/Nav'
-import Footer from '../../../components/Footer'
-import PublicationEditor from '../../../components/PublicationEditor'
+import Nav from 'components/Nav'
+import Footer from 'components/Footer'
+import PublicationEditor from 'components/Publication/PublicationEditor'
 
 const Edit = ({ pubDetail }) => {
 	return (
@@ -38,10 +38,7 @@ const Edit = ({ pubDetail }) => {
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras — Digital Art Cards Market" />
-				<meta
-					property="og:site_name"
-					content="Paras — Digital Art Cards Market"
-				/>
+				<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -63,7 +60,7 @@ const Edit = ({ pubDetail }) => {
 
 export async function getServerSideProps({ params }) {
 	const { pubId } = params
-	const resp = await axios(`${process.env.API_URL}/publications?_id=${pubId}`)
+	const resp = await axios(`${process.env.V2_API_URL}/publications?_id=${pubId}`)
 	const pubDetail = (await resp.data?.data?.results[0]) || null
 
 	return { props: { pubDetail } }

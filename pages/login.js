@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import near from '../lib/near'
-import Nav from '../components/Nav'
-import useStore from '../store'
-import Footer from '../components/Footer'
-
+import near from 'lib/near'
+import Nav from 'components/Nav'
+import useStore from 'lib/store'
+import Footer from 'components/Footer'
+import { useIntl } from 'hooks/useIntl'
 const LoginPage = () => {
 	const store = useStore()
 	const router = useRouter()
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		if (store.currentUser) {
 			router.replace('/market')
@@ -33,7 +33,7 @@ const LoginPage = () => {
 				}}
 			></div>
 			<Head>
-				<title>Login — Paras</title>
+				<title>{localeLn('Login — Paras')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -53,10 +53,7 @@ const LoginPage = () => {
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras — Digital Art Cards Market" />
-				<meta
-					property="og:site_name"
-					content="Paras — Digital Art Cards Market"
-				/>
+				<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -75,10 +72,10 @@ const LoginPage = () => {
 							<div>
 								<div>
 									<h3 className="text-4xl text-gray-100 font-bold">
-										Create and Collect
+										{localeLn('Create and Collect')}
 									</h3>
 									<h3 className="text-xl text-gray-300 font-semibold">
-										Start your journey with digital art cards on blockchain
+										{localeLn('Start your journey with digital art cards on blockchain')}
 									</h3>
 								</div>
 							</div>
@@ -88,7 +85,7 @@ const LoginPage = () => {
 								onClick={() => _signIn()}
 								className="outline-none h-12 w-full mt-4 rounded-md bg-transparent font-semibold px-4 py-2 bg-primary text-gray-100 "
 							>
-								Login with NEAR
+								{localeLn('Login with NEAR')}
 							</button>
 						</div>
 						<div className="mt-8 text-center">
@@ -97,7 +94,7 @@ const LoginPage = () => {
 								target="_blank"
 								className="text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer text-sm"
 							>
-								Create free NEAR account with Metamask
+								{localeLn('Create free NEAR account with Metamask')}
 							</a>
 						</div>
 					</div>

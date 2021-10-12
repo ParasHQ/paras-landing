@@ -3,15 +3,17 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import Footer from '../../../components/Footer'
-import Nav from '../../../components/Nav'
+import Footer from 'components/Footer'
+import Nav from 'components/Nav'
+import { sentryCaptureException } from 'lib/sentry'
+import { useIntl } from 'hooks/useIntl'
 
 const EmailVerification = () => {
 	const [emailVerified, setEmailVerified] = useState(false)
 	const [isLoading, setIsLoading] = useState(true)
 	const [message, setMessage] = useState('')
 	const router = useRouter()
-
+	const { localeLn } = useIntl()
 	useEffect(() => {
 		if (router.query.id) {
 			verifyEmail()
@@ -20,12 +22,13 @@ const EmailVerification = () => {
 
 	const verifyEmail = async () => {
 		try {
-			await Axios.put(`${process.env.API_URL}/credentials/mail/verify`, {
+			await Axios.put(`${process.env.V2_API_URL}/credentials/mail/verify`, {
 				token: router.query.id,
 			})
 			setEmailVerified(true)
 			setIsLoading(false)
 		} catch (error) {
+			sentryCaptureException(error)
 			setMessage(error.response.data.message)
 			setIsLoading(false)
 		}
@@ -43,7 +46,7 @@ const EmailVerification = () => {
 				}}
 			></div>
 			<Head>
-				<title>Paras — Digital Art Cards Market</title>
+				<title>{localeLn('Paras — Digital Art Cards Market')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -63,10 +66,7 @@ const EmailVerification = () => {
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras — Digital Art Cards Market" />
-				<meta
-					property="og:site_name"
-					content="Paras — Digital Art Cards Market"
-				/>
+				<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -98,7 +98,7 @@ const EmailVerification = () => {
 							/>
 						</svg>
 						<div className="text-2xl text-gray-100 font-bold">
-							Your Email is verified
+							{localeLn('Your Email is verified')}
 						</div>
 					</>
 				)}
@@ -132,12 +132,10 @@ const EmailVerification = () => {
 								fill="white"
 							/>
 						</svg>
-						<div className="text-2xl text-gray-100 font-bold">
-							Verification Error
-						</div>
+						<div className="text-2xl text-gray-100 font-bold">{localeLn('Verification Error')}</div>
 						{message === 'Token expired' && (
 							<div className="text-lg text-gray-100 mt-2">
-								Your link verification has expired
+								{localeLn('Your link verification has expired')}
 							</div>
 						)}
 					</>
@@ -145,7 +143,7 @@ const EmailVerification = () => {
 				<div className="mt-8">
 					<Link href="/market">
 						<a className="text-lg text-gray-100 border-b-2 border-transparent hover:border-gray-100 opacity-75">
-							back to market
+							{localeLn('back to market')}
 						</a>
 					</Link>
 				</div>

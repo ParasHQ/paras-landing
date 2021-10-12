@@ -2,10 +2,10 @@ import axios from 'axios'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import CardList from '../../components/CardList'
-import Footer from '../../components/Footer'
-import Nav from '../../components/Nav'
-import Profile from '../../components/Profile'
+import CardList from 'components/TokenSeries/CardList'
+import Footer from 'components/Footer'
+import Nav from 'components/Nav'
+import Profile from 'components/Profile/Profile'
 
 const LIMIT = 12
 
@@ -29,11 +29,14 @@ const creation = ({ userProfile, accountId }) => {
 		}
 
 		setIsFetching(true)
-		const res = await axios(
-			`${process.env.API_URL}/tokens?excludeTotalBurn=true&creatorId=${
-				router.query.id
-			}&__skip=${page * LIMIT}&__limit=${LIMIT}`
-		)
+		const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+			params: {
+				exclude_total_burn: true,
+				creator_id: router.query.id,
+				__skip: page * LIMIT,
+				__limit: LIMIT,
+			},
+		})
 		const newData = await res.data.data
 
 		const newTokens = [...(tokens || []), ...newData.results]
@@ -53,9 +56,7 @@ const creation = ({ userProfile, accountId }) => {
 			userProfile?.bio || ''
 		}`,
 		image: userProfile?.imgUrl
-			? `${process.env.API_URL}/socialCard/avatar/${
-					userProfile.imgUrl.split('://')[1]
-			  }`
+			? `${process.env.V2_API_URL}/socialCard/avatar/${userProfile.imgUrl.split('://')[1]}`
 			: `https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png`,
 	}
 
@@ -107,9 +108,11 @@ const creation = ({ userProfile, accountId }) => {
 export default creation
 
 export async function getServerSideProps({ params }) {
-	const profileRes = await axios(
-		`${process.env.API_URL}/profiles?accountId=${params.id}`
-	)
+	const profileRes = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+		params: {
+			accountId: params.id,
+		},
+	})
 	const userProfile = (await profileRes.data.data.results[0]) || null
 
 	return {

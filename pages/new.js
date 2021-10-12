@@ -1,98 +1,148 @@
 import axios from 'axios'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
-import Card from '../components/Card'
-import ImgCrop from '../components/ImgCrop'
-import Nav from '../components/Nav'
-import useStore from '../store'
-import { Controller, useForm } from 'react-hook-form'
-import Modal from '../components/Modal'
+import Card from 'components/Card/Card'
+import ImgCrop from 'components/ImgCrop'
+import Nav from 'components/Nav'
+import useStore from 'lib/store'
+import { useForm } from 'react-hook-form'
+import Modal from 'components/Modal'
 import { useRouter } from 'next/router'
-import near from '../lib/near'
+import near from 'lib/near'
 import Head from 'next/head'
-import { useToast } from '../hooks/useToast'
-import Footer from '../components/Footer'
-import {
-	parseImgUrl,
-	prettyBalance,
-	readFileAsUrl,
-	readFileDimension,
-} from '../utils/common'
-import Autocomplete from '../components/Autocomplete'
+import { useToast } from 'hooks/useToast'
+import Footer from 'components/Footer'
+import { parseImgUrl, prettyBalance, readFileAsUrl } from 'utils/common'
+import { encodeImageToBlurhash } from 'lib/blurhash'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { GAS_FEE, STORAGE_CREATE_SERIES_FEE } from 'config/constants'
+import Button from 'components/Common/Button'
+import { InputText, InputTextarea } from 'components/Common/form'
+import CreateCollectionModal from 'components/Collection/CreateCollectionModal'
+import { useIntl } from 'hooks/useIntl'
+import { sentryCaptureException } from 'lib/sentry'
+
+const LIMIT = 10
 
 const NewPage = () => {
+	const { localeLn } = useIntl()
 	const store = useStore()
 	const router = useRouter()
 	const toast = useToast()
 	const [formInput, setFormInput] = useState({})
-	const {
-		control,
-		errors,
-		register,
-		handleSubmit,
-		watch,
-		setValue,
-		getValues,
-	} = useForm()
+	const { errors, register, handleSubmit, watch, setValue, getValues } = useForm()
 
 	const [showImgCrop, setShowImgCrop] = useState(false)
 	const [imgFile, setImgFile] = useState('')
 	const [imgUrl, setImgUrl] = useState('')
 	const [step, setStep] = useState(0)
-	const [isSubmitting, setIsSubmitting] = useState(false)
+	const [isUploading, setIsUploading] = useState(false)
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
-	const [showFront, setShowFront] = useState(true)
-	const [showAlertErr, setShowAlertErr] = useState(false)
+	const [showCreatingModal, setShowCreatingModal] = useState(false)
+	const [showCreateColl, setShowCreateColl] = useState(false)
 
-	const _submit = async () => {
-		setIsSubmitting(true)
+	const [showAlertErr, setShowAlertErr] = useState(false)
+	const [choosenCollection, setChoosenCollection] = useState({})
+
+	const [collectionList, setCollectionList] = useState([])
+	const [page, setPage] = useState(0)
+	const [hasMore, setHasMore] = useState(true)
+	const [isFetching, setIsFetching] = useState(false)
+
+	const [blurhash, setBlurhash] = useState('')
+	const [isOnSale, setIsOnSale] = useState(false)
+
+	const [mediaHash, setMediaHash] = useState(null)
+	const [referenceHash, setReferenceHash] = useState(null)
+
+	const uploadImageMetadata = async () => {
+		setIsUploading(true)
+		setShowCreatingModal(true)
+
+		const reference = JSON.stringify({
+			description: formInput.description,
+			collection: choosenCollection.collection,
+			collection_id: choosenCollection.collection_id,
+			creator_id: store.currentUser,
+			blurhash: blurhash,
+		})
+		const blob = new Blob([reference], { type: 'text/plain' })
 
 		const formData = new FormData()
-		formData.append('file', imgFile)
-		formData.append('ownerId', store.currentUser)
-		formData.append('supply', formInput.supply)
-		formData.append('quantity', formInput.quantity)
-		formData.append('amount', parseNearAmount(formInput.amount))
-		formData.append('name', formInput.name)
-		formData.append('description', formInput.description)
-		formData.append('collection', formInput.collection)
-		formData.append('royalty', formInput.royalty)
-		router.query.categoryId &&
-			formData.append('categoryId', router.query.categoryId)
+		formData.append('files', imgFile)
+		formData.append('files', blob)
 
+		let resp
 		try {
-			await axios.post(`${process.env.API_URL}/tokens`, formData, {
+			resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 					authorization: await near.authToken(),
 				},
 			})
-			setTimeout(() => {
-				router.push('/market')
-			}, 1000)
+			setMediaHash(resp.data.data[0].split('://')[1])
+			setReferenceHash(resp.data.data[1].split('://')[1])
+
+			setIsUploading('success')
 		} catch (err) {
-			const msg =
-				err.response?.data?.message || `Something went wrong, try again later`
+			sentryCaptureException(err)
+			const msg = err.response?.data?.message || `Something went wrong, try again later`
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">{msg}</div>,
 				type: 'error',
 				duration: 2500,
 			})
-			setIsSubmitting(false)
+			setIsUploading('fail')
+			return
+		}
+	}
+
+	const creteSeriesNFT = async () => {
+		try {
+			let params = {
+				creator_id: store.currentUser,
+				token_metadata: {
+					title: formInput.name,
+					media: mediaHash,
+					reference: referenceHash,
+					copies: parseInt(formInput.supply),
+				},
+				price: parseNearAmount(formInput.amount || 0),
+			}
+
+			if (formInput.royalty !== 0) {
+				params = {
+					...params,
+					royalty: {
+						[store.currentUser]: parseInt(formInput.royalty) * 100,
+					},
+				}
+			}
+
+			await near.wallet.account().functionCall({
+				contractId: process.env.NFT_CONTRACT_ID,
+				methodName: `nft_create_series`,
+				args: params,
+				gas: GAS_FEE,
+				attachedDeposit: STORAGE_CREATE_SERIES_FEE,
+			})
+		} catch (err) {
+			sentryCaptureException(err)
+			const msg = err.response?.data?.message || `Something went wrong, try again later`
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{msg}</div>,
+				type: 'error',
+				duration: 2500,
+			})
+			setIsUploading(false)
 		}
 	}
 
 	useEffect(() => {
-		if (store.initialized) {
-			if (
-				process.env.APP_ENV === 'production' &&
-				!store.userProfile.isCreator
-			) {
-				router.push('/new')
-			}
-			getNewCollectionList('')
+		if (router.query.transactionHashes) {
+			router.push('/market')
 		}
-	}, [store.initialized])
+	}, [router.query.transactionHashes])
 
 	useEffect(() => {
 		setValue('name', formInput.name)
@@ -102,14 +152,6 @@ const NewPage = () => {
 		setValue('quantity', formInput.quantity)
 		setValue('amount', formInput.amount)
 		setValue('royalty', formInput.royalty)
-
-		if (step === 0 || step === 2) {
-			setShowFront(true)
-		}
-
-		if (step === 1) {
-			setShowFront(false)
-		}
 	}, [step])
 
 	const _updateValues = () => {
@@ -149,42 +191,52 @@ const NewPage = () => {
 	const _setImg = async (e) => {
 		if (e.target.files[0]) {
 			if (e.target.files[0].size > 20 * 1024 * 1024) {
-				setShowAlertErr('Maximum file size is 20 Mb')
+				setShowAlertErr('Maximum file size is 16 Mb')
 				return
-			}
-			if (e.target.files[0].type === 'image/gif') {
-				const dimension = await readFileDimension(e.target.files[0])
-
-				if (dimension.width / dimension.height === 64 / 89) {
-					const imgUrl = await readFileAsUrl(e.target.files[0])
-					setImgFile(e.target.files[0])
-					setImgUrl(imgUrl)
-				} else {
-					const msg = `The submitted gif is not in ratio of 64 : 89 (Found gif with dimension ${dimension.width} x ${dimension.height})`
-					toast.show({
-						text: (
-							<div className="font-semibold text-center text-sm">{msg}</div>
-						),
-						type: 'error',
-						duration: null,
-					})
-				}
 			} else {
+				const newImgUrl = await readFileAsUrl(e.target.files[0])
 				setImgFile(e.target.files[0])
-				setShowImgCrop(true)
+				setImgUrl(newImgUrl)
+
+				encodeBlurhash(newImgUrl)
 			}
 		}
 	}
 
-	const [collectionList, setCollectionList] = useState([])
+	const encodeBlurhash = async (imgUrl) => {
+		const _blurhash = await encodeImageToBlurhash(imgUrl)
+		setBlurhash(_blurhash)
+	}
 
-	const getNewCollectionList = async (val) => {
-		const resp = await axios.get(
-			`${process.env.API_URL}/collections?creatorId=${store.currentUser}&collection=${val}`
-		)
-		if (resp.data.data) {
-			setCollectionList(resp.data.data.results.map((res) => res.collection))
+	useEffect(() => {
+		if (store.initialized && store.currentUser) {
+			fetchCollectionUser()
 		}
+	}, [store.initialized])
+
+	const fetchCollectionUser = async () => {
+		if (!hasMore || isFetching) {
+			return
+		}
+
+		setIsFetching(true)
+		const res = await axios.get(`${process.env.V2_API_URL}/collections`, {
+			params: {
+				creator_id: store.currentUser,
+				__skip: page * LIMIT,
+				__limit: LIMIT,
+			},
+		})
+		const newData = await res.data.data
+		const newCollections = [...collectionList, ...newData.results]
+		setCollectionList(newCollections)
+		setPage(page + 1)
+		if (newData.results.length < LIMIT) {
+			setHasMore(false)
+		} else {
+			setHasMore(true)
+		}
+		setIsFetching(false)
 	}
 
 	const formatCategoryId = (categoryId) => {
@@ -209,7 +261,7 @@ const NewPage = () => {
 				}}
 			></div>
 			<Head>
-				<title>Create New Card — Paras</title>
+				<title>{localeLn('Create New Card — Paras')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -243,15 +295,15 @@ const NewPage = () => {
 			<Nav />
 			{showAlertErr && (
 				<Modal close={() => setShowAlertErr(false)}>
-					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
+					<div className="w-full max-w-xs p-4 m-auto bg-gray-800 rounded-md overflow-y-auto max-h-screen">
 						<div>
-							<div className="w-full">{showAlertErr}</div>
+							<div className="w-full text-white">{showAlertErr}</div>
 							<div>
 								<button
 									className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 									onClick={() => setShowAlertErr(false)}
 								>
-									OK
+									{localeLn('OK')}
 								</button>
 							</div>
 						</div>
@@ -264,21 +316,19 @@ const NewPage = () => {
 					closeOnEscape={false}
 					closeOnBgClick={false}
 				>
-					<div className="w-full flex flex-wrap max-w-lg p-4 m-auto bg-gray-100 rounded-md overflow-x-hidden overflow-y-auto max-h-full">
+					<div className="w-full flex flex-wrap max-w-xl p-4 m-auto bg-gray-800 rounded-md overflow-x-hidden overflow-y-auto max-h-full">
 						<div className="w-full md:w-1/2 px-4">
-							<div className="w-full">
+							<div className="w-full bg-dark-primary-2 rounded-md">
 								<Card
 									imgWidth={640}
 									imgHeight={890}
+									imgBlur={blurhash}
 									imgUrl={parseImgUrl(imgUrl)}
 									token={{
-										name: formInput.name,
+										title: formInput.name,
 										collection: formInput.collection,
-										description: formInput.description,
 										creatorId: store.currentUser,
-										supply: formInput.supply,
-										tokenId: 'ID',
-										createdAt: new Date().getTime(),
+										copies: formInput.supply,
 									}}
 									initialRotate={{
 										x: 0,
@@ -289,112 +339,179 @@ const NewPage = () => {
 						</div>
 						<div className="w-full md:w-1/2 pl-0 md:pl-2 flex items-center">
 							<div className="w-full">
-								<h1 className="mt-4 text-2xl font-bold text-gray-900 tracking-tight">
-									Market Data
+								<h1 className="mt-4 text-2xl font-bold text-white tracking-tight">
+									{localeLn('Market Data')}
 								</h1>
-								<p className="text-sm mt-2">
-									Price:{' '}
-									{prettyBalance(
-										Number(getValues('amount', 0)).toPrecision(4).toString(),
-										0,
-										6
-									)}{' '}
-									Ⓝ (~$
-									{prettyBalance(
-										Number(store.nearUsdPrice * getValues('amount', 0))
-											.toPrecision(4)
-											.toString(),
-										0,
-										6
+								<div className="text-white opacity-80">
+									{isOnSale && (
+										<>
+											<div className="flex items-center justify-between text-sm mt-2">
+												<span>Price: </span>
+												<span>
+													{prettyBalance(
+														Number(getValues('amount', 0)).toPrecision(4).toString(),
+														0,
+														6
+													)}{' '}
+													Ⓝ (~$
+													{prettyBalance(
+														Number(store.nearUsdPrice * getValues('amount', 0))
+															.toPrecision(4)
+															.toString(),
+														0,
+														6
+													)}
+													)
+												</span>
+											</div>
+											<div className="flex items-center justify-between text-sm">
+												<span>{localeLn('Receive')}: </span>
+												<span>
+													{prettyBalance(
+														Number(getValues('amount', 0) * ((95 - (formInput.royalty || 0)) / 100))
+															.toPrecision(4)
+															.toString(),
+														0,
+														6
+													)}{' '}
+													Ⓝ (~$
+													{prettyBalance(
+														Number(
+															store.nearUsdPrice *
+																getValues('amount', 0) *
+																((95 - (formInput.royalty || 0)) / 100)
+														)
+															.toPrecision(4)
+															.toString(),
+														0,
+														6
+													)}
+													)
+												</span>
+											</div>
+											{formInput.royalty !== 0 && (
+												<div className="flex items-center justify-between text-sm">
+													<span>{localeLn('Royalty')}: </span>
+													<span>
+														{prettyBalance(
+															Number(getValues('amount', 0) * (formInput.royalty / 100))
+																.toPrecision(4)
+																.toString(),
+															0,
+															6
+														)}{' '}
+														Ⓝ (~$
+														{prettyBalance(
+															Number(
+																store.nearUsdPrice *
+																	getValues('amount', 0) *
+																	(formInput.royalty / 100)
+															)
+																.toPrecision(4)
+																.toString(),
+															0,
+															6
+														)}
+														)
+													</span>
+												</div>
+											)}
+											<div className="flex items-center justify-between text-sm">
+												<span>{localeLn('Fee')}: </span>
+												<span>
+													{prettyBalance(
+														Number(getValues('amount', 0) * 0.05)
+															.toPrecision(4)
+															.toString(),
+														0,
+														6
+													)}{' '}
+													Ⓝ (~$
+													{prettyBalance(
+														Number(store.nearUsdPrice * getValues('amount', 0) * 0.05)
+															.toPrecision(4)
+															.toString(),
+														0,
+														6
+													)}
+													)
+												</span>
+											</div>
+										</>
 									)}
-									)
-								</p>
-								<p className="text-sm">
-									Receive:{' '}
-									{prettyBalance(
-										Number(
-											getValues('amount', 0) * ((95 - formInput.royalty) / 100)
-										)
-											.toPrecision(4)
-											.toString(),
-										0,
-										6
-									)}{' '}
-									Ⓝ (~$
-									{prettyBalance(
-										Number(
-											store.nearUsdPrice *
-												getValues('amount', 0) *
-												((95 - formInput.royalty) / 100)
-										)
-											.toPrecision(4)
-											.toString(),
-										0,
-										6
-									)}
-									)
-								</p>
-								<p className="text-sm">
-									Royalty:{' '}
-									{prettyBalance(
-										Number(getValues('amount', 0) * (formInput.royalty / 100))
-											.toPrecision(4)
-											.toString(),
-										0,
-										6
-									)}{' '}
-									Ⓝ (~$
-									{prettyBalance(
-										Number(
-											store.nearUsdPrice *
-												getValues('amount', 0) *
-												(formInput.royalty / 100)
-										)
-											.toPrecision(4)
-											.toString(),
-										0,
-										6
-									)}
-									)
-								</p>
-								<p className="text-sm">
-									Fee:{' '}
-									{prettyBalance(
-										Number(getValues('amount', 0) * 0.05)
-											.toPrecision(4)
-											.toString(),
-										0,
-										6
-									)}{' '}
-									Ⓝ (~$
-									{prettyBalance(
-										Number(store.nearUsdPrice * getValues('amount', 0) * 0.05)
-											.toPrecision(4)
-											.toString(),
-										0,
-										6
-									)}
-									)
-								</p>
-								<div className="mt-2">
-									<p>Confirm card creation?</p>
+								</div>
+								<div className="mt-2 text-white opacity-80">
+									<p>{localeLn('Confirm card creation')}?</p>
 								</div>
 								<div className="">
-									<button
-										disabled={isSubmitting}
-										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
-										onClick={_submit}
-									>
-										{!isSubmitting ? 'Create' : 'Creating...'}
-									</button>
-									<button
-										className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary text-primary"
+									<Button className="mt-4" onClick={uploadImageMetadata} isFullWidth>
+										{localeLn('Create')}
+									</Button>
+									<Button
+										variant="ghost"
+										isFullWidth
+										className="mt-4"
 										onClick={() => setShowConfirmModal(false)}
 									>
-										Cancel
-									</button>
+										{localeLn('Cancel')}
+									</Button>
 								</div>
 							</div>
+						</div>
+					</div>
+				</Modal>
+			)}
+			{showCreatingModal && (
+				<Modal closeOnEscape={false} closeOnBgClick={false}>
+					<div className="max-w-xs m-auto p-4 bg-gray-800 rounded-md">
+						<div className="font-bold text-2xl mb-4 text-white">{localeLn('Creating Card')}</div>
+						<div>
+							<p className="text-gray-200 font-bold text-lg">{localeLn('Upload')}</p>
+							<p className="text-gray-200 text-sm mb-2">
+								{localeLn('Uploading your image and meta data')}
+							</p>
+							<Button
+								isFullWidth
+								size="md"
+								isDisabled={!(isUploading === 'fail')}
+								onClick={uploadImageMetadata}
+								className="mb-6"
+							>
+								{isUploading === true
+									? 'In progress...'
+									: isUploading === 'success'
+									? 'Success'
+									: 'Try Again'}
+							</Button>
+						</div>
+						<div>
+							<p className="text-gray-200 font-bold text-lg">{localeLn('Confirmation')}</p>
+							<p className="text-gray-200 text-sm">
+								{localeLn('Confirm your transaction on Near Wallet')}
+							</p>
+							<p className="text-gray-200 text-sm mb-2">
+								{localeLn('Small transaction fee is applied of')} 0.00854 Ⓝ
+							</p>
+							<Button
+								isDisabled={!(isUploading === 'success')}
+								isFullWidth
+								size="md"
+								onClick={creteSeriesNFT}
+							>
+								Confirm
+							</Button>
+							<Button
+								isFullWidth
+								size="md"
+								variant="ghost"
+								className="mt-3"
+								onClick={() => {
+									setShowCreatingModal(false)
+									setIsUploading(false)
+								}}
+							>
+								{localeLn('Cancel')}
+							</Button>
 						</div>
 					</div>
 				</Modal>
@@ -417,9 +534,20 @@ const NewPage = () => {
 					}}
 				/>
 			)}
-			<div className="relative max-w-6xl m-auto py-12 px-4">
+			<CreateCollectionModal
+				show={showCreateColl}
+				onClose={() => setShowCreateColl(!showCreateColl)}
+				onFinishCreate={(res) => {
+					setCollectionList([res, ...collectionList])
+					setShowCreateColl(false)
+				}}
+			/>
+			<div className="relative max-w-6xl m-auto py-12 px-4 text-white">
 				<div className="flex flex-wrap rounded-md overflow-hidden">
-					<div className="w-full lg:w-2/3 py-16 px-4 flex justify-center items-center bg-dark-primary-2 ">
+					<div
+						className="w-full lg:w-2/3 py-16 px-8 flex justify-center items-center bg-dark-primary-2 "
+						style={{ background: '#202124' }}
+					>
 						<div
 							className="w-full"
 							style={{
@@ -430,78 +558,114 @@ const NewPage = () => {
 								imgWidth={640}
 								imgHeight={890}
 								imgUrl={parseImgUrl(imgUrl)}
+								imgBlur={blurhash}
 								token={{
-									name: watch('name', formInput.name),
-									collection: watch('collection', formInput.collection),
-									description: watch('description', formInput.description),
+									title: watch('name', formInput.name) || 'Name',
+									collection: choosenCollection.collection || 'Collection',
 									creatorId: store.currentUser,
-									supply: watch('supply', formInput.supply),
-									tokenId: 'ID',
-									createdAt: new Date().getTime(),
+									copies: watch('supply', formInput.supply),
 								}}
 								initialRotate={{
 									x: 0,
 									y: 0,
 								}}
-								isShowFront={showFront}
-								setIsShowFront={setShowFront}
 							/>
 						</div>
 					</div>
-					<div className="w-full lg:w-1/3 bg-gray-100 p-4">
+					<div className="w-full lg:w-1/3 bg-gray-700 p-4">
 						{router.query.categoryId && (
 							<div
 								className="w-full bg-primary px-4 py-1 text-center -m-4 mb-4 shadow-md"
 								style={{ width: 'calc(100% + 2rem)' }}
 							>
 								<div className="block text-sm text-white">
-									<span>You will submit card to </span>
-									<span className="font-bold">
-										{formatCategoryId(router.query.categoryId)}
-									</span>
+									<span>{localeLn('You will submit card to')} </span>
+									<span className="font-bold">{formatCategoryId(router.query.categoryId)}</span>
 								</div>
 							</div>
 						)}
 						<div>
-							<h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-								Card Creation
+							<h1 className="text-2xl font-bold text-white tracking-tight">
+								{localeLn('Card Creation')}
 							</h1>
 						</div>
 						{step === 0 && (
 							<div>
+								<div className="flex justify-between py-2">
+									<button disabled={step === 0} onClick={_handleBack}>
+										{localeLn('Back')}
+									</button>
+									<div>{step + 1}/4</div>
+									{step === 1 && (
+										<button disabled={!imgFile} onClick={() => setStep(step + 1)}>
+											{localeLn('Next')}
+										</button>
+									)}
+									<button
+										disabled={!choosenCollection.collection_id}
+										onClick={() => setStep(step + 1)}
+									>
+										{localeLn('Next')}
+									</button>
+								</div>
+								<div className="text-sm">Choose Collection</div>
+								<div id="collection::user" className="h-60vh overflow-auto">
+									<InfiniteScroll
+										dataLength={collectionList.length}
+										next={fetchCollectionUser}
+										hasMore={hasMore}
+										scrollableTarget="collection::user"
+									>
+										<div
+											onClick={() => setShowCreateColl(!showCreateColl)}
+											className="bg-gray-800 mt-2 flex items-center rounded-md overflow-hidden cursor-pointer border-2 border-gray-800"
+										>
+											<div className="h-10 w-full flex items-center justify-center flex-shrink-0 text-sm text-center font-medium">
+												+ {localeLn('Create New Collection')}
+											</div>
+										</div>
+										{collectionList.map((item) => (
+											<div
+												key={item.collection_id}
+												onClick={() => setChoosenCollection(item)}
+												className={`bg-gray-800 mt-3 flex items-center rounded-md overflow-hidden cursor-pointer border-2 shadow-xl drop-shadow-xl  ${
+													item.collection_id === choosenCollection.collection_id
+														? 'border-white'
+														: `border-gray-800`
+												}`}
+											>
+												<div className="w-10 h-10 bg-primary flex-shrink-0">
+													{item.media && (
+														<img
+															src={parseImgUrl(item.media, null, {
+																width: `600`,
+																useOriginal: process.env.APP_ENV === 'production' ? false : true,
+															})}
+															className="w-10 h-10"
+														/>
+													)}
+												</div>
+												<div className="ml-3 text-sm truncate">{item.collection}</div>
+											</div>
+										))}
+									</InfiniteScroll>
+								</div>
+							</div>
+						)}
+						{step === 1 && (
+							<div>
 								<div>
 									<div className="flex justify-between py-2">
-										<button disabled={step === 0} onClick={_handleBack}>
-											Back
-										</button>
-										<div>{step + 1}/3</div>
-										{step === 0 && (
-											<button
-												disabled={!imgFile}
-												onClick={() => setStep(step + 1)}
-											>
-												Next
-											</button>
-										)}
+										<button onClick={_handleBack}>{localeLn('Back')}</button>
+										<div>{step + 1}/4</div>
 										{step === 1 && (
-											<button
-												disabled={
-													errors.name ||
-													errors.collection ||
-													errors.description ||
-													errors.supply
-												}
-												onClick={() => setStep(step + 1)}
-											>
-												Next
+											<button disabled={!imgFile} onClick={() => setStep(step + 1)}>
+												{localeLn('Next')}
 											</button>
-										)}
-										{step === 2 && (
-											<button onClick={() => _submit()}>Submit</button>
 										)}
 									</div>
 								</div>
-								<div className="mt-4 relative border-2 h-56 border-dashed rounded-md cursor-pointer overflow-hidden">
+								<div className="mt-4 relative border-2 h-56 border-dashed rounded-md cursor-pointer overflow-hidden border-gray-400">
 									<input
 										className="cursor-pointer w-full opacity-0 absolute inset-0"
 										type="file"
@@ -526,12 +690,10 @@ const NewPage = () => {
 														fillRule="evenodd"
 														clipRule="evenodd"
 														d="M4 2H20C21.1046 2 22 2.89543 22 4V20C22 21.1046 21.1046 22 20 22H4C2.89543 22 2 21.1046 2 20V4C2 2.89543 2.89543 2 4 2ZM4 4V15.5858L8 11.5858L11.5 15.0858L18 8.58579L20 10.5858V4H4ZM4 20V18.4142L8 14.4142L13.5858 20H4ZM20 20H16.4142L12.9142 16.5L18 11.4142L20 13.4142V20ZM14 8C14 6.34315 12.6569 5 11 5C9.34315 5 8 6.34315 8 8C8 9.65685 9.34315 11 11 11C12.6569 11 14 9.65685 14 8ZM10 8C10 7.44772 10.4477 7 11 7C11.5523 7 12 7.44772 12 8C12 8.55228 11.5523 9 11 9C10.4477 9 10 8.55228 10 8Z"
-														fill="black"
+														fill="rgba(229, 231, 235, 0.5)"
 													/>
 												</svg>
-												<p className="text-gray-700 mt-4 truncate">
-													{imgFile.name}
-												</p>
+												<p className="text-gray-200 mt-4 truncate text-center">{imgFile.name}</p>
 											</div>
 										) : (
 											<div className="text-center">
@@ -547,37 +709,31 @@ const NewPage = () => {
 														fillRule="evenodd"
 														clipRule="evenodd"
 														d="M4 2H20C21.1046 2 22 2.89543 22 4V20C22 21.1046 21.1046 22 20 22H4C2.89543 22 2 21.1046 2 20V4C2 2.89543 2.89543 2 4 2ZM4 4V15.5858L8 11.5858L11.5 15.0858L18 8.58579L20 10.5858V4H4ZM4 20V18.4142L8 14.4142L13.5858 20H4ZM20 20H16.4142L12.9142 16.5L18 11.4142L20 13.4142V20ZM14 8C14 6.34315 12.6569 5 11 5C9.34315 5 8 6.34315 8 8C8 9.65685 9.34315 11 11 11C12.6569 11 14 9.65685 14 8ZM10 8C10 7.44772 10.4477 7 11 7C11.5523 7 12 7.44772 12 8C12 8.55228 11.5523 9 11 9C10.4477 9 10 8.55228 10 8Z"
-														fill="rgba(0,0,0,0.8)"
+														fill="rgba(229, 231, 235, 0.5)"
 													/>
 												</svg>
-												<p className="text-gray-700 mt-4">
-													Recommended ratio 64 : 89
+												<p className="text-gray-200 mt-2 opacity-50">
+													{localeLn('Maximum size 16mb')}
 												</p>
-												<p className="text-gray-700 mt-2">Maximum size 16mb</p>
 											</div>
 										)}
 									</div>
 								</div>
 							</div>
 						)}
-						{step === 1 && (
+						{step === 2 && (
 							<form onSubmit={handleSubmit(_handleSubmitStep1)}>
 								<div>
 									<div className="flex justify-between py-2">
-										<button disabled={step === 0} onClick={_handleBack}>
-											Back
-										</button>
-										<div>{step + 1}/3</div>
-										<button
-											type="submit"
-											onClick={handleSubmit(_handleSubmitStep1)}
-										>
-											Next
+										<button onClick={_handleBack}>Back</button>
+										<div>{step + 1}/4</div>
+										<button type="submit" onClick={handleSubmit(_handleSubmitStep1)}>
+											{localeLn('Next')}
 										</button>
 									</div>
 									<div>
-										<label className="block text-sm">Name</label>
-										<input
+										<label className="block text-sm">{localeLn('Name')}</label>
+										<InputText
 											autoComplete="off"
 											type="text"
 											name="name"
@@ -592,57 +748,24 @@ const NewPage = () => {
 										</div>
 									</div>
 									<div className="mt-4">
-										<label className="block text-sm">Collection</label>
-										<Controller
-											render={({ onChange, onBlur, value, ref }) => (
-												<Autocomplete
-													onBlur={onBlur}
-													onChange={onChange}
-													value={value}
-													inputRef={ref}
-													placeholder="Card Collection"
-													suggestions={collectionList}
-													getNewSuggestions={getNewCollectionList}
-													inputClassName={`${errors.collection && 'error'}`}
-													errors={errors}
-												/>
-											)}
-											name="collection"
-											control={control}
-											rules={{ required: true }}
-										/>
-										<div className="mt-2 text-sm text-red-500">
-											{errors.collection && 'Collection is required'}
-										</div>
-									</div>
-									<div className="mt-4">
 										<div className="flex items-center justify-between">
-											<label className="block text-sm">Description</label>
-											<div
-												className={`${
-													watch('description')?.length >= 600 && 'text-red-500'
-												}`}
-											>
-												<p className="text-sm">
-													{watch('description')?.length || 0}/600
-												</p>
+											<label className="block text-sm">{localeLn('Description')}</label>
+											<div className={`${watch('description')?.length >= 600 && 'text-red-500'}`}>
+												<p className="text-sm">{watch('description')?.length || 0}/600</p>
 											</div>
 										</div>
-										<textarea
+										<InputTextarea
 											type="text"
 											name="description"
 											ref={register({
 												required: true,
 												maxLength: 600,
 											})}
-											className={`${
-												errors.description && 'error'
-											} resize-none h-24`}
+											className={`${errors.description && 'error'} resize-none h-24`}
 											placeholder="Card description"
-										></textarea>
+										/>
 										<div className="text-sm text-red-500">
-											{errors.description?.type === 'required' &&
-												'Description is required'}
+											{errors.description?.type === 'required' && 'Description is required'}
 										</div>
 										<div className="text-sm text-red-500">
 											{errors.description?.type === 'maxLength' &&
@@ -650,8 +773,8 @@ const NewPage = () => {
 										</div>
 									</div>
 									<div className="mt-4">
-										<label className="block text-sm">Number of copies</label>
-										<input
+										<label className="block text-sm">{localeLn('Number of copies')}</label>
+										<InputText
 											type="number"
 											name="supply"
 											ref={register({
@@ -663,42 +786,31 @@ const NewPage = () => {
 											placeholder="Number of copies"
 										/>
 										<div className="mt-2 text-sm text-red-500">
-											{errors.supply?.type === 'required' &&
-												'Number of copies is required'}
+											{errors.supply?.type === 'required' && 'Number of copies is required'}
 										</div>
 										<div className="mt-2 text-sm text-red-500">
 											{errors.supply?.type === 'min' && 'Minimum 1 copy'}
 										</div>
 										<div className="mt-2 text-sm text-red-500">
-											{errors.supply?.type === 'validate' &&
-												'Only use rounded number'}
+											{errors.supply?.type === 'validate' && 'Only use rounded number'}
 										</div>
 									</div>
 								</div>
 							</form>
 						)}
-						{step === 2 && (
+						{step === 3 && (
 							<form onSubmit={handleSubmit(_handleSubmitStep2)}>
 								<div className="flex justify-between py-2">
-									<button disabled={step === 0} onClick={_handleBack}>
-										Back
-									</button>
-									<div>{step + 1}/3</div>
-									<button
-										type="submit"
-										onClick={handleSubmit(_handleSubmitStep2)}
-									>
-										Next
+									<button onClick={_handleBack}>Back</button>
+									<div>{step + 1}/4</div>
+									<button type="submit" onClick={handleSubmit(_handleSubmitStep2)}>
+										{localeLn('Next')}
 									</button>
 								</div>
 								<div>
-									<label className="block text-sm">Royalty</label>
-									<div
-										className={`flex justify-between bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full ${
-											errors.royalty && 'error'
-										}`}
-									>
-										<input
+									<label className="block text-sm">{localeLn('Royalty')}</label>
+									<div className="relative">
+										<InputText
 											type="number"
 											name="royalty"
 											ref={register({
@@ -707,78 +819,65 @@ const NewPage = () => {
 												max: 90,
 												validate: (value) => Number.isInteger(Number(value)),
 											})}
-											className="clear pr-2"
+											className={errors.royalty && 'error'}
 											placeholder="Royalty"
 										/>
-										<div className="font-bold inline-block">%</div>
+										<div className="font-bold absolute right-0 top-0 bottom-0 flex items-center justify-center">
+											<div className="pr-4">%</div>
+										</div>
 									</div>
 									<div className="mt-2 text-sm text-red-500">
-										{errors.royalty?.type === 'required' &&
-											`Royalty is required`}
+										{errors.royalty?.type === 'required' && `Royalty is required`}
 										{errors.royalty?.type === 'min' && `Minimum 0`}
 										{errors.royalty?.type === 'max' && `Maximum 90`}
-										{errors.royalty?.type === 'validate' &&
-											'Only use rounded number'}
+										{errors.royalty?.type === 'validate' && 'Only use rounded number'}
 									</div>
 								</div>
 								<div className="mt-4">
-									<label className="block text-sm">Sale quantity</label>
-									<input
-										type="number"
-										name="quantity"
-										ref={register({
-											required: true,
-											min: 0,
-											max: formInput.supply,
-											validate: (value) => Number.isInteger(Number(value)),
-										})}
-										className={`${errors.quantity && 'error'}`}
-										placeholder="Number of card on sale"
-									/>
-									<div className="mt-2 text-sm text-red-500">
-										{errors.quantity?.type === 'required' &&
-											`Sale quantity is required`}
-										{errors.quantity?.type === 'min' && `Minimum 0`}
-										{errors.quantity?.type === 'max' &&
-											`Must be less than number of copies`}
-										{errors.quantity?.type === 'validate' &&
-											'Only use rounded number'}
+									<div className="flex items-center mb-2">
+										<div className="pr-2">
+											<input
+												id="put-marketplace"
+												className="w-auto"
+												type="checkbox"
+												defaultChecked={isOnSale}
+												onChange={() => {
+													setIsOnSale(!isOnSale)
+												}}
+											/>
+										</div>
+										<label htmlFor="put-marketplace" className="block text-sm">
+											{localeLn('Put on Marketplace')}
+										</label>
 									</div>
-								</div>
-								<div className="mt-2">
-									<p className="text-gray-600 text-sm">
-										Set sale quantity to <b>0</b> if you only want to create
-										card without selling
-									</p>
-								</div>
-								<div className="mt-4">
-									<label className="block text-sm">Sale price</label>
-									<div
-										className={`flex justify-between bg-gray-300 p-2 rounded-md focus:bg-gray-100 border-2 border-transparent focus:border-dark-primary-1 w-full ${
-											errors.amount && 'error'
-										}`}
-									>
-										<input
-											type="number"
-											name="amount"
-											ref={register({
-												required: true,
-												min: 0,
-											})}
-											className="clear pr-2"
-											placeholder="Card price per pcs"
-										/>
-										<div className="inline-block">Ⓝ</div>
-									</div>
-									<p>
-										~$
-										{prettyBalance(store.nearUsdPrice * watch('amount'), 0, 6)}
-									</p>
-									<div className="mt-2 text-sm text-red-500">
-										{errors.amount?.type === 'required' &&
-											`Sale price is required`}
-										{errors.amount?.type === 'min' && `Minimum 0`}
-									</div>
+									{isOnSale && (
+										<>
+											<label className="block text-sm">{localeLn('Sale price')}</label>
+											<div className="relative">
+												<InputText
+													type="number"
+													name="amount"
+													ref={register({
+														required: true,
+														min: 0,
+													})}
+													className={errors.amount && 'error'}
+													placeholder="Card price per pcs"
+												/>
+												<div className="font-bold absolute right-0 top-0 bottom-0 flex items-center justify-center">
+													<div className="pr-4">Ⓝ</div>
+												</div>
+											</div>
+											<p>
+												~$
+												{prettyBalance(store.nearUsdPrice * watch('amount'), 0, 6)}
+											</p>
+											<div className="mt-2 text-sm text-red-500">
+												{errors.amount?.type === 'required' && `Sale price is required`}
+												{errors.amount?.type === 'min' && `Minimum 0`}
+											</div>
+										</>
+									)}
 								</div>
 							</form>
 						)}

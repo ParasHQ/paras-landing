@@ -3,14 +3,16 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import Scrollbars from 'react-custom-scrollbars'
-import useSWR from 'swr'
 
-import Card from '../Card'
-import CardDetailModal from '../CardDetailModal'
+import Card from '../Card/Card'
 import LinkToProfile from '../LinkToProfile'
 
-import { parseImgUrl, prettyBalance } from '../../utils/common'
+import { parseImgUrl } from 'utils/common'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import { useIntl } from 'hooks/useIntl'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
+import cachios from 'cachios'
+import TokenDetailModal from 'components/Token/TokenDetailModal'
 
 const renderThumb = ({ style, ...props }) => {
 	return (
@@ -28,18 +30,15 @@ const renderThumb = ({ style, ...props }) => {
 
 const UserTransactionList = ({ usersData, fetchData, hasMore, type }) => {
 	const [localToken, setLocalToken] = useState(null)
+
 	return (
 		<>
-			<CardDetailModal tokens={[localToken]} />
-			<InfiniteScroll
-				dataLength={usersData.length}
-				next={fetchData}
-				hasMore={hasMore}
-			>
+			<TokenDetailModal tokens={[localToken]} />
+			<InfiniteScroll dataLength={usersData.length} next={fetchData} hasMore={hasMore}>
 				{usersData.map((user, idx) => (
 					<UserTransactionDetail
 						data={user}
-						key={user._id}
+						key={user.account_id}
 						idx={idx}
 						type={type}
 						setLocalToken={setLocalToken}
@@ -50,29 +49,24 @@ const UserTransactionList = ({ usersData, fetchData, hasMore, type }) => {
 	)
 }
 
-const UserTransactionDetail = ({
-	data,
-	idx,
-	type = 'buyer',
-	setLocalToken,
-}) => {
+const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => {
 	const [profile, setProfile] = useState({})
-
+	const { localeLn } = useIntl()
 	useEffect(async () => {
-		const res = await axios(
-			`${process.env.API_URL}/profiles?accountId=${data._id}`
-		)
+		const res = await axios(`${process.env.V2_API_URL}/profiles`, {
+			params: {
+				accountId: data.account_id,
+			},
+		})
 		setProfile(res.data.data.results[0])
 	}, [])
 
 	return (
-		<div className="md:flex border-2 border-dashed border-gray-800 rounded-md my-4">
+		<div key={idx} className="md:flex border-2 border-dashed border-gray-800 rounded-md my-4">
 			<div className="flex items-center md:w-2/5 p-4">
-				<p className="text-base text-gray-100 opacity-50 mr-3 self-start">
-					{idx + 1}
-				</p>
+				<p className="text-base text-gray-100 opacity-50 mr-3 self-start">{idx + 1}</p>
 				<div className="flex self-start">
-					<Link href={`/${data._id}`}>
+					<Link href={`/${data.account_id}`}>
 						<div className="cursor-pointer w-20 h-20 rounded-full overflow-hidden bg-primary">
 							<img
 								src={parseImgUrl(profile?.imgUrl, null, {
@@ -83,18 +77,19 @@ const UserTransactionDetail = ({
 						</div>
 					</Link>
 					<div className="ml-4">
-						<LinkToProfile
-							accountId={data._id}
-							len={16}
-							className="text-gray-100 hover:border-gray-100 font-bold text-lg md:text-2xl"
-						/>
+						{data.account_id && (
+							<LinkToProfile
+								accountId={data.account_id}
+								len={16}
+								className="text-gray-100 hover:border-gray-100 font-bold text-lg md:text-2xl"
+							/>
+						)}
 						<p className="text-base text-gray-400">
-							Total {type !== 'buyer' ? 'sales' : 'purchase'}:{' '}
-							{prettyBalance(data.total, 24, 6)} Ⓝ
+							Total {type !== 'buyer' ? 'sales' : 'purchase'}: {formatNearAmount(data.total_sum)} Ⓝ
 						</p>
 						<p className="text-base text-gray-400">
-							Card {type !== 'buyer' ? 'sold' : 'bought'}:{' '}
-							{data.txList.map((tx) => tx.quantity).reduce((a, b) => a + b, 0)}{' '}
+							{localeLn('Card')} {type !== 'buyer' ? 'sold' : 'bought'}:{' '}
+							{data.contract_token_ids.length}
 						</p>
 					</div>
 				</div>
@@ -108,18 +103,14 @@ const UserTransactionDetail = ({
 					universal={true}
 					renderThumbHorizontal={renderThumb}
 				>
-					<div className="py-2">
-						{data.txList
-							.filter(
-								(v, i, a) => a.findIndex((t) => t.tokenId === v.tokenId) === i
-							)
-							.map((tx) => (
-								<UserTransactionCard
-									key={tx._id}
-									tokenId={tx.tokenId}
-									setLocalToken={setLocalToken}
-								/>
-							))}
+					<div className="flex py-2">
+						{data.contract_token_ids.map((contract_token_id, idx) => (
+							<UserTransactionCard
+								key={idx}
+								contract_token_id={contract_token_id}
+								setLocalToken={setLocalToken}
+							/>
+						))}
 					</div>
 				</Scrollbars>
 			</div>
@@ -127,60 +118,67 @@ const UserTransactionDetail = ({
 	)
 }
 
-const UserTransactionCard = ({ tokenId, setLocalToken }) => {
+const UserTransactionCard = ({ contract_token_id, setLocalToken }) => {
 	const router = useRouter()
+	const [token, setToken] = useState(null)
 
-	const fetcher = async (key) => {
-		const resp = await axios.get(`${process.env.API_URL}/${key}`)
-		if (resp.data.data.results.length > 0) {
-			return resp.data.data.results[0]
-		} else {
-			return {}
+	const [contractId, tokenId] = contract_token_id.split('::')
+
+	useEffect(() => {
+		fetchData()
+	}, [])
+
+	const fetchData = async () => {
+		const params = {
+			contract_id: contractId,
+			token_id: tokenId,
 		}
+		const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
+			params: params,
+			ttl: 60,
+		})
+		setToken(resp.data.data.results[0])
 	}
 
-	const { data: localToken } = useSWR(`tokens?tokenId=${tokenId}`, fetcher)
+	if (!token) {
+		return null
+	}
 
 	return (
 		<div
-			className="w-1/3 md:w-1/5 px-2 inline-block m-auto whitespace-normal overflow-visible"
-			onClick={() => {
-				setLocalToken(localToken)
-				router.push(
-					{
-						pathname: router.pathname,
-						query: {
-							...router.query,
-							...{ tokenId: localToken?.tokenId },
-							...{ prevAs: router.asPath },
-						},
-					},
-					`/token/${localToken?.tokenId}`,
-					{ shallow: true }
-				)
-			}}
+			id={contract_token_id}
+			className="w-1/3 md:w-1/5 px-2 inline-block whitespace-normal overflow-visible flex-shrink-0"
 		>
-			<div className="w-full m-auto">
+			<div className="w-full m-auto" onClick={() => setLocalToken(token)}>
 				<Card
-					imgUrl={parseImgUrl(localToken?.metadata?.image, null, {
-						width: `300`,
+					imgUrl={parseImgUrl(token.metadata.media, null, {
+						width: `600`,
+						useOriginal: process.env.APP_ENV === 'production' ? false : true,
 					})}
-					imgBlur={localToken?.metadata?.blurhash}
+					onClick={() => {
+						router.push(
+							{
+								pathname: router.pathname,
+								query: {
+									...router.query,
+									...{ tokenId: token.token_id },
+									...{ prevAs: router.asPath },
+								},
+							},
+							`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`,
+							{
+								shallow: true,
+								scroll: false,
+							}
+						)
+					}}
+					imgBlur={token.metadata.blurhash}
 					token={{
-						name: localToken?.metadata?.name,
-						collection: localToken?.metadata?.collection,
-						description: localToken?.metadata?.description,
-						creatorId: localToken?.creatorId,
-						supply: localToken?.supply,
-						tokenId: localToken?.tokenId,
-						createdAt: localToken?.createdAt,
+						title: token.metadata.title,
+						collection: token.metadata.collection || token.contract_id,
+						copies: token.metadata.copies,
+						creatorId: token.metadata.creator_id || token.contract_id,
 					}}
-					initialRotate={{
-						x: 0,
-						y: 0,
-					}}
-					disableFlip={true}
-					borderRadius={'5px'}
 				/>
 			</div>
 		</div>

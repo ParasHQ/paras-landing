@@ -1,16 +1,14 @@
 import Axios from 'axios'
+import { sentryCaptureException } from 'lib/sentry'
 import { useEffect, useState } from 'react'
-import { useToast } from '../hooks/useToast'
-import near from '../lib/near'
-
+import { useToast } from 'hooks/useToast'
+import near from 'lib/near'
+import { useIntl } from 'hooks/useIntl'
 const Setting = ({ close }) => {
+	const { localeLn } = useIntl()
 	const toast = useToast()
 	const [email, setEmail] = useState('')
-	const [preferences, setPreferences] = useState([
-		'nft-drops',
-		'newsletter',
-		'notification',
-	])
+	const [preferences, setPreferences] = useState(['nft-drops', 'newsletter', 'notification'])
 	const [initialSetting, setInitialSetting] = useState(null)
 	const [isUpdating, setIsUpdating] = useState(false)
 	const [isLoading, setIsLoading] = useState(true)
@@ -20,7 +18,7 @@ const Setting = ({ close }) => {
 	}, [])
 
 	const fetchEmail = async () => {
-		const resp = await Axios.get(`${process.env.API_URL}/credentials/mail`, {
+		const resp = await Axios.get(`${process.env.V2_API_URL}/credentials/mail`, {
 			headers: {
 				authorization: await near.authToken(),
 			},
@@ -38,7 +36,7 @@ const Setting = ({ close }) => {
 		setIsUpdating(true)
 		try {
 			const resp = await Axios.put(
-				`${process.env.API_URL}/credentials/mail`,
+				`${process.env.V2_API_URL}/credentials/mail`,
 				{ email, preferences },
 				{ headers: { authorization: await near.authToken() } }
 			)
@@ -48,22 +46,17 @@ const Setting = ({ close }) => {
 					? 'Add email success, please check your email address to verify'
 					: 'Update setting success'
 			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						{toastMessage}
-					</div>
-				),
+				text: <div className="font-semibold text-center text-sm">{toastMessage}</div>,
 				type: 'success',
 				duration: 5000,
 			})
 			setIsUpdating(false)
 			fetchEmail()
 		} catch (err) {
+			sentryCaptureException(err)
 			const message = err.response.data.message
 			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">{message}</div>
-				),
+				text: <div className="font-semibold text-center text-sm">{message}</div>,
 				type: 'error',
 				duration: 2500,
 			})
@@ -92,7 +85,7 @@ const Setting = ({ close }) => {
 				<div className="m-auto">
 					<div className="flex justify-between">
 						<h1 className="text-3xl font-bold text-gray-100 tracking-tight mb-4">
-							Setting
+							{localeLn('Setting')}
 						</h1>
 						<div onClick={close}>
 							<svg
@@ -116,7 +109,7 @@ const Setting = ({ close }) => {
 						<>
 							<div>
 								<label className="font-bold text-xl my-2 text-gray-100">
-									Add Email
+									{localeLn('Add Email')}
 								</label>
 								<input
 									type="text"
@@ -128,13 +121,13 @@ const Setting = ({ close }) => {
 								/>
 							</div>
 							<div className="text-gray-100 font-bold text-xl mt-4 my-2">
-								Notification preferences
+								{localeLn('Notification preferences')}
 							</div>
 							<div className="text-gray-100 flex justify-between items-center my-2">
 								<div>
-									<div className="text-lg">Newsletters</div>
+									<div className="text-lg">{localeLn('Newsletters')}</div>
 									<div className="text-gray-100 opacity-75 text-sm">
-										Get first notified for any paras Info
+										{localeLn('Get first notified for any paras Info')}
 									</div>
 								</div>
 								<Toggle
@@ -145,9 +138,9 @@ const Setting = ({ close }) => {
 							</div>
 							<div className="text-gray-100 flex justify-between items-center my-2">
 								<div>
-									<div className="text-lg">NFT Drops</div>
+									<div className="text-lg">{localeLn('NFT Drops')}</div>
 									<div className="text-gray-100 opacity-75 text-sm">
-										Get first notified for upcoming drops!
+										{localeLn('Get first notified for upcoming drops!')}
 									</div>
 								</div>
 								<Toggle
@@ -158,9 +151,9 @@ const Setting = ({ close }) => {
 							</div>
 							<div className="text-gray-100 flex justify-between items-center my-2">
 								<div>
-									<div className="text-lg">Notification</div>
+									<div className="text-lg">{localeLn('Notification')}</div>
 									<div className="text-gray-100 opacity-75 text-sm">
-										Get notified for your transaction on Paras
+										{localeLn('Get notified for your transaction on Paras')}
 									</div>
 								</div>
 								<Toggle
@@ -172,7 +165,7 @@ const Setting = ({ close }) => {
 						</>
 					) : (
 						<div className="flex items-center justify-center h-64 text-gray-100">
-							Loading...
+							{localeLn('Loading...')}
 						</div>
 					)}
 					<button
@@ -180,7 +173,7 @@ const Setting = ({ close }) => {
 						className="outline-none h-12 w-full mt-4 rounded-md bg-transparent text-sm font-semibold border-none px-4 py-2 bg-primary text-gray-100"
 						onClick={updateEmail}
 					>
-						{isUpdating ? 'Saving...' : 'Save'}
+						{isUpdating ? localeLn('Saving...') : localeLn('Save')}
 					</button>
 				</div>
 			</div>
