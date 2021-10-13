@@ -41,9 +41,11 @@ const MyBids = () => {
 
 		setIsFetching(true)
 		const res = await Axios(
-			`${process.env.API_URL}/bids?accountId=${store.currentUser}&__skip=${_page * 10}${
-				type === 'receivedBids' ? '&isReceived=true' : '&isReceived=false'
-			}&__limit=10`
+			`${process.env.V2_API_URL}/offers?${
+				type === 'receivedBids'
+					? `receiver_id=${store.currentUser}`
+					: `buyer_id=${store.currentUser}`
+			}&__limit=10&__skip=${_page * 10}`
 		)
 		const newData = await res.data.data
 
@@ -56,11 +58,6 @@ const MyBids = () => {
 			setHasMore(true)
 		}
 		setIsFetching(false)
-	}
-
-	const updateBidData = (bidId) => {
-		const updatedData = bidsData.filter((bid) => bid.id !== bidId)
-		setBidsData(updatedData)
 	}
 
 	const switchType = (_type) => {
@@ -142,7 +139,7 @@ const MyBids = () => {
 				>
 					{bidsData.map((bid) => (
 						<div key={bid._id}>
-							<Bid tokenId={bid.tokenId} data={bid} updateBidData={updateBidData} />
+							<Bid data={bid} type={type} />
 						</div>
 					))}
 					{bidsData.length === 0 && !hasMore && (

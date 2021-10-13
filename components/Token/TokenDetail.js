@@ -26,6 +26,9 @@ import ArtistVerified from '../Common/ArtistVerified'
 import ArtistBanned from '../Common/ArtistBanned'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import TabOffers from 'components/Tabs/TabOffers'
+import PlaceBidModal from 'components/Modal/PlaceBidModal'
+import TabPublication from 'components/Tabs/TabPublication'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -85,7 +88,7 @@ const TokenDetail = ({ token, className }) => {
 	const tabDetail = (tab) => {
 		return (
 			<div
-				className={`cursor-pointer relative text-center overflow-hidden ${
+				className={`cursor-pointer relative text-center ${
 					activeTab === tab
 						? 'text-gray-100 border-b-2 border-white font-semibold'
 						: 'hover:bg-opacity-15 text-gray-100'
@@ -131,6 +134,14 @@ const TokenDetail = ({ token, className }) => {
 			return
 		}
 		setShowModal('burn')
+	}
+
+	const onClickOffer = () => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+		setShowModal('placeoffer')
 	}
 
 	const isOwner = () => {
@@ -200,15 +211,19 @@ const TokenDetail = ({ token, className }) => {
 									/>
 								</div>
 							</div>
-							<div className="flex mt-3 space-x-4">
+							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative overflow-scroll flex-nowrap disable-scrollbars -mb-4">
 								{tabDetail('info')}
 								{tabDetail('owners')}
 								{tabDetail('history')}
+								{tabDetail('offers')}
+								{tabDetail('publication')}
 							</div>
 
 							{activeTab === 'info' && <TabInfo localToken={token} isNFT={true} />}
 							{activeTab === 'owners' && <TabOwners localToken={token} />}
 							{activeTab === 'history' && <TabHistory localToken={token} />}
+							{activeTab === 'offers' && <TabOffers localToken={token} />}
+							{activeTab === 'publication' && <TabPublication localToken={token} />}
 						</div>
 					</Scrollbars>
 					<div className="p-3">
@@ -237,17 +252,19 @@ const TokenDetail = ({ token, className }) => {
 							</div>
 						)}
 						{token.owner_id !== currentUser && token.price && (
-							<div className="flex">
-								<Button
-									size="md"
-									onClick={() => {
-										onClickBuy()
-									}}
-									isFullWidth
-								>
+							<div className="flex space-x-2">
+								<Button size="md" onClick={onClickBuy} isFullWidth>
 									{localeLn('Buy')}
 								</Button>
+								<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
+									{`Place an offer`}
+								</Button>
 							</div>
+						)}
+						{token.owner_id !== currentUser && !token.price && (
+							<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
+								{`Place an offer`}
+							</Button>
 						)}
 						<div
 							className="mt-2 text-center text-white cursor-pointer hover:opacity-80 text-sm"
@@ -281,6 +298,7 @@ const TokenDetail = ({ token, className }) => {
 			<TokenBurnModal show={showModal === 'burn'} onClose={onDismissModal} data={token} />
 			<TokenBuyModal show={showModal === 'buy'} onClose={onDismissModal} data={token} />
 			<TokenTransferModal show={showModal === 'transfer'} onClose={onDismissModal} data={token} />
+			<PlaceBidModal show={showModal === 'placeoffer'} data={token} onClose={onDismissModal} />
 			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>
 	)

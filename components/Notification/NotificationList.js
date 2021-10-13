@@ -25,12 +25,14 @@ const Notification = ({ notif, currentUser }) => {
 					url: `${process.env.V2_API_URL}/token`,
 					params: {
 						token_id: notif.token_id,
+						contract_id: notif.contract_id,
 					},
 			  }
 			: {
 					url: `${process.env.V2_API_URL}/token-series`,
 					params: {
 						token_series_id: notif.token_series_id,
+						contract_id: notif.contract_id,
 					},
 			  }
 
@@ -194,6 +196,10 @@ const Notification = ({ notif, currentUser }) => {
 			notif.token_id ? `/${notif.token_id}` : ''
 		}`
 
+		if (notif.to === currentUser) {
+			return null
+		}
+
 		return (
 			<div>
 				<Link href={url}>
@@ -210,6 +216,41 @@ const Notification = ({ notif, currentUser }) => {
 								sold <span className="font-medium text-gray-100">{token.metadata.title}</span>
 								{` to `}
 								<span className="font-semibold">{notif.to}</span> for{' '}
+								{formatNearAmount(notif.msg.params.price)} Ⓝ
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
+	// if received offer
+	if (notif.type === 'notification_add_offer') {
+		const url = `/token/${notif.contract_id}::${notif.token_series_id}${
+			notif.token_id ? `/${notif.token_id}` : ''
+		}`
+
+		if (notif.from === currentUser) {
+			return null
+		}
+
+		return (
+			<div>
+				<Link href={url}>
+					<a>
+						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+							<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
+								<img
+									src={parseImgUrl(token.metadata.media, null, {
+										width: `300`,
+									})}
+								/>
+							</div>
+							<div className="pl-2 text-gray-300">
+								<span className="font-semibold">{notif.from}</span> offer{' '}
+								<span className="font-medium text-gray-100">{token.metadata.title}</span>
+								{` for `}
 								{formatNearAmount(notif.msg.params.price)} Ⓝ
 							</div>
 						</div>
