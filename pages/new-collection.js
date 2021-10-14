@@ -17,7 +17,7 @@ const NewCollection = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn('Create_New_Collection_Paras')}</title>
+				<title>{localeLn('CreateNewCollectionParas')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."

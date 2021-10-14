@@ -145,7 +145,7 @@ const Profile = ({ userProfile = {}, activeTab }) => {
 			{userProfile?.isBanned && (
 				<div>
 					<p className="text-white text-sm mb-2 mt-2 p-1 bg-red-600 rounded-md font-bold w-full mx-auto px-8 text-center max-w-2xl">
-						{localeLn('Flagged_By_PARAS_Stealing')}
+						{localeLn('FlaggedByPARASStealing')}
 					</p>
 				</div>
 			)}

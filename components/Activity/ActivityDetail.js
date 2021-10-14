@@ -103,7 +103,7 @@ const Activity = ({ activity }) => {
 				/>
 				<span>
 					{' '}
-					{localeLn('Put_On_Sale_For')} {formatNearAmount(activity.msg.params.price)} Ⓝ
+					{localeLn('PutOnSaleFor')} {formatNearAmount(activity.msg.params.price)} Ⓝ
 				</span>
 			</p>
 		)
@@ -116,7 +116,7 @@ const Activity = ({ activity }) => {
 					className="text-gray-100 hover:border-gray-100"
 					accountId={activity.msg.params.owner_id}
 				/>
-				<span> {localeLn('Remove_From_Sale')}</span>
+				<span> {localeLn('RemoveFromSale')}</span>
 			</p>
 		)
 	}

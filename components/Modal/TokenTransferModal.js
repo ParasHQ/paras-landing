@@ -86,7 +86,7 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 							{localeLn('Confirm Transfer')}
 						</h1>
 						<p className="text-white mt-2">
-							{localeLn('Are_About_To_Send')} <b>{data.metadata.title}</b> {localeLn('To')}:
+							{localeLn('AreAboutToSend')} <b>{data.metadata.title}</b> {localeLn('To')}:
 						</p>
 						<div className="mt-4">
 							<div className="mt-2 text-sm text-red-500"></div>
@@ -106,7 +106,7 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 							/>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							{localeLn('Redirected_To_confirm')}
+							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onTransfer}>

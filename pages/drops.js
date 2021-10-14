@@ -27,45 +27,45 @@ export default function Drops() {
 	const { localeLn } = useIntl()
 	const timeline = [
 		{
-			date: localeLn('June_9th'),
-			note: [localeLn('Open_Registration_For')],
+			date: localeLn('June9th'),
+			note: [localeLn('OpenRegistrationFor')],
 		},
 		{
-			date: localeLn('June_16th'),
+			date: localeLn('June16th'),
 			note: [
-				localeLn('NFT_Drops_For'),
+				localeLn('NFTDropsFor'),
 				localeLn(
 					'Drops_Will_Start_On'
 				),
 			],
 		},
 		{
-			date: localeLn('June_19th'),
+			date: localeLn('June19th'),
 			note: [
-				localeLn('NFT_Drops_Public'),
+				localeLn('NFTDropsPublic'),
 				localeLn(
 					'Remaining_Drops_Will_Start'
 				),
 			],
 		},
 		{
-			date: localeLn('June_25th'),
-			note: [localeLn('Burn_Remaining_NFTs')],
+			date: localeLn('June25th'),
+			note: [localeLn('BurnRemainingNFTs')],
 		},
 	]
 
 	const tasks = [
-		localeLn('Fill_The_Form_Of'),
+		localeLn('FillTheFormOf'),
 		localeLn('Follow MTVRS on Twitter (https://twitter.com/themtvrs)'),
 		localeLn(
 			'Retweet_Like_Tag'
 		),
-		localeLn('Join_MTVRS_Telegram'),
-		localeLn('Join_MTVRS_Discord'),
-		localeLn('Follow_Paras_On_Twitter'),
-		localeLn('Follow_Paras_On_Instagram'),
-		localeLn('Join_Paras_Telegram_Group'),
-		localeLn('Join_Paras_Discord_Server'),
+		localeLn('JoinMTVRSTelegram'),
+		localeLn('JoinMTVRSDiscord'),
+		localeLn('FollowParasOnTwitter'),
+		localeLn('FollowParasOnInstagram'),
+		localeLn('JoinParasTelegramGroup'),
+		localeLn('JoinParasDiscordServer'),
 	]
 	const [token, setToken] = useState(null)
 	const detail = useRef(null)
@@ -78,7 +78,7 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>{localeLn('Paras_X_MTVRS')}</title>
+				<title>{localeLn('ParasXMTVRS')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -146,7 +146,7 @@ export default function Drops() {
 							</svg>
 							<div className="text-gray-100 ml-2 font-bold text-2xl">{'x MTVRS'}</div>
 						</div>
-						<h1 className="text-white font-bold text-6xl mt-4 mb-2">{localeLn('NFT_Drops')}</h1>
+						<h1 className="text-white font-bold text-6xl mt-4 mb-2">{localeLn('NFTDrops')}</h1>
 						<img
 							src={parseImgUrl(
 								'ipfs://bafybeih3l32jyqm732bxol4ic2qsgxvas6fee57vrs3e6tpgjzt4kcvady'
@@ -173,14 +173,14 @@ export default function Drops() {
 										})
 									}
 								>
-									{localeLn('Register_Now')}
+									{localeLn('RegisterNow')}
 								</p>
 								<a
 									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer mb-8"
 									target="_blank"
 									href="https://paras.id/publication/editorial/paras-x-mtvrs-nft-drops-the-architects-devices-60bf7208a537580686cbf237"
 								>
-									{localeLn('Find_Out_More')}
+									{localeLn('FindOutMore')}
 								</a>
 							</div>
 						</div>
@@ -246,7 +246,7 @@ export default function Drops() {
 			</div>
 			<div className="max-w-xl m-4 md:m-auto text-gray-100 ">
 				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
-					{localeLn('How_To_Register')}
+					{localeLn('HowToRegister')}
 				</h1>
 				<p className="mb-2 break-all">
 					{localeLn(
@@ -268,10 +268,10 @@ export default function Drops() {
 				</ReactLinkify>
 				<div className="text-center">
 					<h1 className="text-center text-gray-100 font-bold text-3xl mt-12 mb-2">
-						{localeLn('Read_Details')}
+						{localeLn('ReadDetails')}
 					</h1>
 					<p className="text-gray-200">
-						{localeLn('Read_Full_Information')}
+						{localeLn('ReadFullInformation')}
 					</p>
 					<div className="flex justify-center my-8">
 						<a
@@ -279,7 +279,7 @@ export default function Drops() {
 							target="_blank"
 							href="https://paras.id/publication/editorial/paras-x-mtvrs-nft-drops-the-architects-devices-60bf7208a537580686cbf237"
 						>
-							{localeLn('Find_Out_More')}
+							{localeLn('FindOutMore')}
 							<svg
 								width="12"
 								height="12"
@@ -422,7 +422,7 @@ const SpecialCard = ({
 							data-tip={`Total supply of the card`}
 						>
 							<div className="flex text-white justify-center">
-								<p className="text-gray-400 mr-1">{localeLn('Card_Supply')}</p>
+								<p className="text-gray-400 mr-1">{localeLn('CardSupply')}</p>
 								<svg
 									width="16"
 									height="16"
@@ -448,7 +448,7 @@ const SpecialCard = ({
 							data-tip={`Card available for purchase today`}
 						>
 							<div className="flex text-white justify-center">
-								<p className="text-gray-400 mr-1">{localeLn('Card_Available')}</p>
+								<p className="text-gray-400 mr-1">{localeLn('CardAvailable')}</p>
 								<svg
 									width="16"
 									height="16"
@@ -485,7 +485,7 @@ const SpecialCard = ({
 										Ⓝ`}
 									</p>
 								) : (
-									<p>{localeLn('See_Details')}</p>
+									<p>{localeLn('SeeDetails')}</p>
 								)}
 							</button>
 						</div>

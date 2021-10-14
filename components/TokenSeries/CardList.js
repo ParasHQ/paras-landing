@@ -72,7 +72,7 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnershi
 						<div className="w-40 m-auto">
 							<img src="/cardstack.png" className="opacity-75" />
 						</div>
-						<p className="mt-4">{localeLn('No_Cards')}</p>
+						<p className="mt-4">{localeLn('NoCards')}</p>
 					</div>
 				</div>
 			)}
@@ -139,7 +139,7 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnershi
 								<div className="text-center">
 									<div className="mt-4">
 										<div className="p-2 pb-4">
-											<p className="text-gray-400 text-xs">{localeLn('Start_From')}</p>
+											<p className="text-gray-400 text-xs">{localeLn('StartFrom')}</p>
 											<div className="text-gray-100 text-xl">
 												{price ? (
 													<div>

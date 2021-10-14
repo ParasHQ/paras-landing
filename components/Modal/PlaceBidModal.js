@@ -137,12 +137,12 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 						{hasBid ? 'Update Offer' : 'Place an Offer'}
 					</h1>
 					<p className="text-white mt-2">
-						{localeLn('About_To_Bid')} <b>{data.metadata.title}</b>.
+						{localeLn('AboutToBid')} <b>{data.metadata.title}</b>.
 					</p>
 					<form onSubmit={handleSubmit(onPlaceBid)}>
 						<div className="mt-4 ">
 							<label className="block text-sm mb-2 text-white opacity-90">
-								{localeLn('Amount_In')} Ⓝ
+								{localeLn('AmountIn')} Ⓝ
 							</label>
 							<InputText
 								name="bidAmount"
@@ -173,7 +173,7 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 							</div>
 						</div>
 						<p className="text-white opacity-80 mt-4 text-sm text-center">
-							{localeLn('You_Will_Redirected_To')}
+							{localeLn('YouWillRedirectedTo')}
 						</p>
 						<div className="">
 							<Button disabled={isSubmitting} className="mt-4" isFullWidth type="submit" size="md">

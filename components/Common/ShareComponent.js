@@ -11,7 +11,7 @@ const ShareComponent = ({ title, shareUrl }) => {
 	const { localeLn } = useIntl()
 	return (
 		<div className="flex items-center space-x-2 justify-between">
-			<div className="text-white text-sm opacity-80 pr-4">{localeLn('Share_Now')}</div>
+			<div className="text-white text-sm opacity-80 pr-4">{localeLn('ShareNow')}</div>
 			<div className="flex space-x-3">
 				<FacebookShareButton
 					url={shareUrl}

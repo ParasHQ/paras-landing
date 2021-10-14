@@ -76,7 +76,7 @@ const MyBids = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn('My_Bids_Paras')}</title>
+				<title>{localeLn('MyBidsParas')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -116,7 +116,7 @@ const MyBids = () => {
 							type === 'myBids' ? 'font-bold' : 'opacity-75'
 						}`}
 					>
-						{localeLn('My_Bids')}
+						{localeLn('MyBids')}
 					</div>
 					<div
 						onClick={() => switchType('receivedBids')}
@@ -124,7 +124,7 @@ const MyBids = () => {
 							type === 'receivedBids' ? 'font-bold' : 'opacity-75'
 						}`}
 					>
-						{localeLn('Received_Bids')}
+						{localeLn('ReceivedBids')}
 					</div>
 				</div>
 				<InfiniteScroll
@@ -133,7 +133,7 @@ const MyBids = () => {
 					hasMore={hasMore}
 					loader={
 						<div className="border-2 border-dashed my-4 p-2 rounded-md text-center border-gray-800">
-							<p className="my-2 text-center text-gray-200">{localeLn('Loading_Loading')}</p>
+							<p className="my-2 text-center text-gray-200">{localeLn('LoadingLoading')}</p>
 						</div>
 					}
 				>
@@ -145,13 +145,13 @@ const MyBids = () => {
 					{bidsData.length === 0 && !hasMore && (
 						<div className="border-2 border-dashed p-2 rounded-md text-center border-gray-800 my-4">
 							<p className="my-20 text-center text-gray-200">
-								{localeLn('No_Active_Bid')}
+								{localeLn('NoActiveBid')}
 							</p>
 						</div>
 					)}
 					{bidsData.length === 0 && hasMore && (
 						<div className="border-2 border-dashed p-2 rounded-md text-center border-gray-800 my-4">
-							<p className="my-20 text-center text-gray-200">{localeLn('Loading_Loading')}</p>
+							<p className="my-20 text-center text-gray-200">{localeLn('LoadingLoading')}</p>
 						</div>
 					)}
 				</InfiniteScroll>

@@ -19,7 +19,7 @@ const CreatePublication = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn('Publication_Paras')}</title>
+				<title>{localeLn('PublicationParas')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."

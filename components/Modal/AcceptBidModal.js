@@ -33,7 +33,7 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 						{localeLn('Accept a Bid')}
 					</h1>
 					<p className="text-white mt-2">
-						{localeLn('About_To_Accept_Bid')} <b>{token.metadata.name}</b>{' '}
+						{localeLn('AboutToAcceptBid')} <b>{token.metadata.name}</b>{' '}
 						{localeLn('From')} <b>{data.buyer_id}</b>
 					</p>
 					<div className="text-white mt-4 text-2xl font-bold text-center">
@@ -42,7 +42,7 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 					<div className="mt-4 text-center text-white opacity-90">
 						<div className="flex justify-between">
 							<div className="text-sm">
-								{localeLn('Royalty_For_Artist')} (
+								{localeLn('RoyaltyForArtist')} (
 								{Object.keys(token.royalty).length === 0
 									? `None`
 									: `${Object.values(token.royalty)[0] / 100}%`}
@@ -51,24 +51,24 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 							<div>{formatNearAmount(royaltyForArtist)} Ⓝ</div>
 						</div>
 						<div className="flex justify-between">
-							<div className="text-sm">{localeLn('Service_Fee')} (5%)</div>
+							<div className="text-sm">{localeLn('ServiceFee')} (5%)</div>
 							<div>{formatNearAmount(serviceFee)} Ⓝ</div>
 						</div>
 						<div className="flex justify-between">
-							<div className="text-sm">{localeLn('You_Will_Get')}</div>
+							<div className="text-sm">{localeLn('YouWillGet')}</div>
 							<div>{formatNearAmount(userWillGet)} Ⓝ</div>
 						</div>
 					</div>
 					<div className="mt-4 text-center">
 						<div className="text-white my-1">
 							<div className="flex justify-between">
-								<div className="text-sm">{localeLn('Storage_Fee')}</div>
+								<div className="text-sm">{localeLn('StorageFee')}</div>
 								<div className="text">{formatNearAmount(storageFee)} Ⓝ</div>
 							</div>
 						</div>
 					</div>
 					<p className="text-white mt-4 text-sm text-center opacity-90">
-						{localeLn('Redirected_To_confirm')}
+						{localeLn('RedirectedToconfirm')}
 					</p>
 
 					<div className="">

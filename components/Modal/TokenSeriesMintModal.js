@@ -52,10 +52,10 @@ const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 					</div>
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
-							{localeLn('Confirm_Mint')}
+							{localeLn('ConfirmMint')}
 						</h1>
 						<p className="text-white mt-2">
-							{localeLn('Are_About_To_Mint')} <b>{data.metadata.title}</b>
+							{localeLn('AreAboutToMint')} <b>{data.metadata.title}</b>
 						</p>
 						<div className="mt-4">
 							<div className="mt-2 text-sm text-red-500"></div>
@@ -74,7 +74,7 @@ const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 									/>
 								</div>
 								<label htmlFor="self-mint" className="text-white">
-									{localeLn('Mint_To_Myself')}
+									{localeLn('MintToMyself')}
 								</label>
 							</div>
 						</div>
@@ -93,13 +93,13 @@ const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 						<div className="mt-4 text-center">
 							<div className="text-white my-1">
 								<div className="flex justify-between">
-									<div className="text-sm">{localeLn('Storage_Fee')}</div>
+									<div className="text-sm">{localeLn('StorageFee')}</div>
 									<div className="text">{formatNearAmount(STORAGE_MINT_FEE)} Ⓝ</div>
 								</div>
 							</div>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							{localeLn('Redirected_To_confirm')}
+							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onTransfer}>

@@ -74,11 +74,11 @@ const TopSellersPage = ({ topUser }) => {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="mx-4 flex items-baseline">
-					<h1 className="text-4xl font-bold text-gray-100">{localeLn('Top_Sellers')}</h1>
-					<p className="ml-2 text-gray-400 text-lg">{localeLn('In_7_Days')}</p>
+					<h1 className="text-4xl font-bold text-gray-100">{localeLn('TopSellers')}</h1>
+					<p className="ml-2 text-gray-400 text-lg">{localeLn('In7Days')}</p>
 				</div>
 				<p className="text-gray-400 text-lg mx-4">
-					{localeLn('See_Top_Buyers')}{' '}
+					{localeLn('SeeTopBuyers')}{' '}
 					<span
 						onClick={() => router.push('/activity/top-buyers')}
 						className="font-semibold hover:text-gray-100 cursor-pointer hover:border-gray-100 border-b-2 border-transparent"

@@ -114,7 +114,7 @@ const TabOwners = ({ localToken }) => {
 		<div>
 			{!isFetching && !hasMore && tokens.length === 0 ? (
 				<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
-					<div className="text-white">{localeLn('No_Owners_Become')}</div>
+					<div className="text-white">{localeLn('NoOwnersBecome')}</div>
 				</div>
 			) : (
 				<InfiniteScroll
@@ -229,10 +229,10 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 				<div className="flex items-center justify-between">
 					{token.price ? (
 						<p className="text-white">
-							{localeLn('On_Sale')} {formatNearAmount(token.price)} Ⓝ
+							{localeLn('OnSale')} {formatNearAmount(token.price)} Ⓝ
 						</p>
 					) : (
-						<p className="text-white">{localeLn('Not_For_Sale')}</p>
+						<p className="text-white">{localeLn('NotForSale')}</p>
 					)}
 					{currentUser && (
 						<>

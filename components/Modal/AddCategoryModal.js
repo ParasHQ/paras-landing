@@ -82,7 +82,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						{localeLn('Not_Creator_Of_Card')}
+						{localeLn('NotCreatorOfCard')}
 					</div>
 				),
 				type: 'error',
@@ -112,8 +112,8 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						<div>{localeLn('Thank_For_submission')}</div>
-						<div>{localeLn('Submit_Succeed')}</div>
+						<div>{localeLn('ThankForsubmission')}</div>
+						<div>{localeLn('SubmitSucceed')}</div>
 					</div>
 				),
 				type: 'success',
@@ -137,7 +137,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 			<div className="max-w-xl w-full m-auto bg-dark-primary-1 p-4 text-gray-100 rounded-md relative">
 				<div className="flex justify-between">
 					<div className="font-bold text-2xl mb-4">
-						{localeLn('Submit_Card_To')} {categoryName}
+						{localeLn('SubmitCardTo')} {categoryName}
 					</div>
 					<div onClick={onClose}>
 						<svg
@@ -207,7 +207,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 									{tokenData?.metadata.collection || tokenData?.contract_id}
 								</div>
 								<div className="mb-6">
-									<span className="opacity-75">{localeLn('You_Will_Add')} </span>
+									<span className="opacity-75">{localeLn('YouWillAdd')} </span>
 									<span className="text-white font-bold opacity-100">
 										{tokenData?.metadata.title}
 									</span>

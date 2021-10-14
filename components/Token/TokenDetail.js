@@ -241,7 +241,7 @@ const TokenDetail = ({ token, className }) => {
 										}}
 										isFullWidth
 									>
-										{localeLn('Update_Listing')}
+										{localeLn('UpdateListing')}
 									</Button>
 								</div>
 								<div className="w-full flex-1">
@@ -273,7 +273,7 @@ const TokenDetail = ({ token, className }) => {
 							onClick={() => router.push(`/token/${token.contract_id}::${token.token_series_id}`)}
 							isFullWidth
 						>
-							{localeLn('See_Token_Series')}
+							{localeLn('SeeTokenSeries')}
 						</div>
 					</div>
 				</div>

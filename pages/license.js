@@ -15,16 +15,16 @@ const LicenseOverview = () => {
 					)}
 				</p>
 				<ul className="list-disc mt-2 pl-4">
-					<li>{localeLn('License_Protecting_Creators')}</li>
+					<li>{localeLn('LicenseProtectingCreators')}</li>
 					<li>
 						{localeLn(
 							'License_Granting_Owners'
 						)}
 					</li>
 				</ul>
-				<p className="mt-2">{localeLn('License_Any_NFT')}</p>
+				<p className="mt-2">{localeLn('LicenseAnyNFT')}</p>
 			</div>
-			<p className="font-medium mt-4">{localeLn('License_Content_Is_Yours')}</p>
+			<p className="font-medium mt-4">{localeLn('LicenseContentIsYours')}</p>
 			<p className="mt-2 opacity-75">
 				{localeLn(
 					'License_Artists_Own_Rights'
@@ -36,7 +36,7 @@ const LicenseOverview = () => {
 				)}
 			</p>
 			<p className="font-medium mt-4">
-				{localeLn('License_What_Am_I')}
+				{localeLn('LicenseWhatAmI')}
 			</p>
 			<p className="mt-2 opacity-75">
 				{localeLn(
@@ -44,7 +44,7 @@ const LicenseOverview = () => {
 				)}
 			</p>
 			<ul className="list-disc mt-2 opacity-75 pl-4">
-				<li>{localeLn('License_Use_DAC')}</li>
+				<li>{localeLn('LicenseUseDAC')}</li>
 				<li>
 					{localeLn(
 						'License_Use_DAC_When'
@@ -57,7 +57,7 @@ const LicenseOverview = () => {
 				</li>
 			</ul>
 			<p className="font-medium mt-4">
-				{localeLn('License_Art_Associated')}
+				{localeLn('LicenseArtAssociated')}
 			</p>
 			<p className="mt-2 opacity-75">
 				{localeLn(
@@ -65,13 +65,13 @@ const LicenseOverview = () => {
 				)}
 			</p>
 			<ul className="list-disc mt-2 opacity-75 pl-4">
-				<li>{localeLn('License_Modifying_Art')}</li>
+				<li>{localeLn('LicenseModifyingArt')}</li>
 				<li>
 					{localeLn(
 						'License_Using_For_Commercialize'
 					)}
 				</li>
-				<li>{localeLn('License_Sell_Third_Party')}</li>
+				<li>{localeLn('LicenseSellThirdParty')}</li>
 				<li>
 					{localeLn(
 						'License_Images_Hatred'
@@ -91,15 +91,15 @@ const LicenseDetail = () => {
 	const { localeLn } = useIntl()
 	return (
 		<div>
-			<p className="font-medium">{localeLn('Version_1_0')}</p>
-			<p className="font-medium mt-4">{localeLn('License_Definitions')}</p>
+			<p className="font-medium">{localeLn('Version10')}</p>
+			<p className="font-medium mt-4">{localeLn('LicenseDefinitions')}</p>
 			<p className="mt-2 opacity-75">
 				{localeLn(
 					'License_Art_Means'
 				)}
 			</p>
 			<p className="mt-2 opacity-75">
-				{localeLn('License_NFT_Means')}
+				{localeLn('LicenseNFTMeans')}
 			</p>
 			<p className="mt-2 opacity-75">
 				{localeLn(
@@ -116,13 +116,13 @@ const LicenseDetail = () => {
 					'License_Third_Party_IP'
 				)}
 			</p>
-			<p className="font-medium mt-4">{localeLn('License_Ownership')}</p>
+			<p className="font-medium mt-4">{localeLn('LicenseOwnership')}</p>
 			<p className="mt-2 opacity-75">
 				{localeLn(
 					'License_You_Acknowledge'
 				)}
 			</p>
-			<p className="font-medium mt-4">{localeLn('License_License')}</p>
+			<p className="font-medium mt-4">{localeLn('LicenseLicense')}</p>
 			<ul
 				className="mt-2 opacity-75 pl-4"
 				style={{
@@ -139,7 +139,7 @@ const LicenseDetail = () => {
 							listStyleType: `lower-roman`,
 						}}
 					>
-						<li>{localeLn('License_For_Your_Personal')}</li>
+						<li>{localeLn('LicenseForYourPersonal')}</li>
 						<li>
 							{localeLn(
 								'License_As_Part_Marketplace'
@@ -158,7 +158,7 @@ const LicenseDetail = () => {
 					)}
 				</li>
 			</ul>
-			<p className="font-medium mt-4">{localeLn('License_Restrictions')}</p>
+			<p className="font-medium mt-4">{localeLn('LicenseRestrictions')}</p>
 			<p className="mt-2 opacity-75">
 				{localeLn(
 					'License_You_Agree'
@@ -176,7 +176,7 @@ const LicenseDetail = () => {
 						'License_Have_Right_To'
 					)}{' '}
 				</li>
-				<li>{localeLn('License_In_Section_3')}</li>
+				<li>{localeLn('LicenseInSection3')}</li>
 				<li>
 					{localeLn(
 						'License_Depending_On'
@@ -189,7 +189,7 @@ const LicenseDetail = () => {
 				</li>
 			</ol>
 
-			<p className="font-medium mt-4">{localeLn('License_Terms_Of')}</p>
+			<p className="font-medium mt-4">{localeLn('LicenseTermsOf')}</p>
 			<p className="mt-2 opacity-75">
 				{localeLn(
 					'License_The_License_Granted'
@@ -214,7 +214,7 @@ const License = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn('License_Paras')}</title>
+				<title>{localeLn('LicenseParas')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -248,7 +248,7 @@ const License = () => {
 			<div>
 				<Nav />
 				<div className="relative py-16 max-w-4xl mx-auto text-gray-100 px-4">
-					<h2 className="font-bold text-4xl text-center">{localeLn('NFT_License')}</h2>
+					<h2 className="font-bold text-4xl text-center">{localeLn('NFTLicense')}</h2>
 					<div className="flex mt-6 justify-between items-center">
 						<div className="w-1/2 text-center">
 							<h3

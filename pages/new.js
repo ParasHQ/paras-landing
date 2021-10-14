@@ -261,7 +261,7 @@ const NewPage = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn('Create_New_Card_Paras')}</title>
+				<title>{localeLn('CreateNewCardParas')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -340,7 +340,7 @@ const NewPage = () => {
 						<div className="w-full md:w-1/2 pl-0 md:pl-2 flex items-center">
 							<div className="w-full">
 								<h1 className="mt-4 text-2xl font-bold text-white tracking-tight">
-									{localeLn('Market_Data')}
+									{localeLn('MarketData')}
 								</h1>
 								<div className="text-white opacity-80">
 									{isOnSale && (
@@ -441,7 +441,7 @@ const NewPage = () => {
 									)}
 								</div>
 								<div className="mt-2 text-white opacity-80">
-									<p>{localeLn('Confirm_Card_Creation')}?</p>
+									<p>{localeLn('ConfirmCardCreation')}?</p>
 								</div>
 								<div className="">
 									<Button className="mt-4" onClick={uploadImageMetadata} isFullWidth>
@@ -464,11 +464,11 @@ const NewPage = () => {
 			{showCreatingModal && (
 				<Modal closeOnEscape={false} closeOnBgClick={false}>
 					<div className="max-w-xs m-auto p-4 bg-gray-800 rounded-md">
-						<div className="font-bold text-2xl mb-4 text-white">{localeLn('Creating_Card')}</div>
+						<div className="font-bold text-2xl mb-4 text-white">{localeLn('CreatingCard')}</div>
 						<div>
 							<p className="text-gray-200 font-bold text-lg">{localeLn('Upload')}</p>
 							<p className="text-gray-200 text-sm mb-2">
-								{localeLn('Uploading_Image_Meta')}
+								{localeLn('UploadingImageMeta')}
 							</p>
 							<Button
 								isFullWidth
@@ -490,7 +490,7 @@ const NewPage = () => {
 								{localeLn('Confirm your transaction on Near Wallet')}
 							</p>
 							<p className="text-gray-200 text-sm mb-2">
-								{localeLn('Small_Transaction_Fee')} 0.00854 Ⓝ
+								{localeLn('SmallTransactionFee')} 0.00854 Ⓝ
 							</p>
 							<Button
 								isDisabled={!(isUploading === 'success')}
@@ -579,14 +579,14 @@ const NewPage = () => {
 								style={{ width: 'calc(100% + 2rem)' }}
 							>
 								<div className="block text-sm text-white">
-									<span>{localeLn('Will_Submit_Card_To')} </span>
+									<span>{localeLn('WillSubmitCardTo')} </span>
 									<span className="font-bold">{formatCategoryId(router.query.categoryId)}</span>
 								</div>
 							</div>
 						)}
 						<div>
 							<h1 className="text-2xl font-bold text-white tracking-tight">
-								{localeLn('Card_Creation')}
+								{localeLn('CardCreation')}
 							</h1>
 						</div>
 						{step === 0 && (
@@ -621,7 +621,7 @@ const NewPage = () => {
 											className="bg-gray-800 mt-2 flex items-center rounded-md overflow-hidden cursor-pointer border-2 border-gray-800"
 										>
 											<div className="h-10 w-full flex items-center justify-center flex-shrink-0 text-sm text-center font-medium">
-												+ {localeLn('Create_New_Collection')}
+												+ {localeLn('CreateNewCollection')}
 											</div>
 										</div>
 										{collectionList.map((item) => (
@@ -713,7 +713,7 @@ const NewPage = () => {
 													/>
 												</svg>
 												<p className="text-gray-200 mt-2 opacity-50">
-													{localeLn('Maximum_16mb')}
+													{localeLn('Maximum16mb')}
 												</p>
 											</div>
 										)}
@@ -773,7 +773,7 @@ const NewPage = () => {
 										</div>
 									</div>
 									<div className="mt-4">
-										<label className="block text-sm">{localeLn('Number_Of_Copies')}</label>
+										<label className="block text-sm">{localeLn('NumberOfCopies')}</label>
 										<InputText
 											type="number"
 											name="supply"
@@ -847,12 +847,12 @@ const NewPage = () => {
 											/>
 										</div>
 										<label htmlFor="put-marketplace" className="block text-sm">
-											{localeLn('Put_On_Marketplace')}
+											{localeLn('PutOnMarketplace')}
 										</label>
 									</div>
 									{isOnSale && (
 										<>
-											<label className="block text-sm">{localeLn('Sale_Price')}</label>
+											<label className="block text-sm">{localeLn('SalePrice')}</label>
 											<div className="relative">
 												<InputText
 													type="number"

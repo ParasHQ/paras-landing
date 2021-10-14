@@ -59,10 +59,10 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 					</div>
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
-							{localeLn('Confirm_Buy')}
+							{localeLn('ConfirmBuy')}
 						</h1>
 						<p className="text-white mt-2">
-							{localeLn('Are_About_To_Purchase')} <b>{data.metadata.title}</b>
+							{localeLn('AreAboutToPurchase')} <b>{data.metadata.title}</b>
 						</p>
 						<div className="mt-4">
 							<div className="mt-2 text-sm text-red-500"></div>
@@ -74,13 +74,13 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 									<div className="text">{data.price && `${formatNearAmount(data.price)} Ⓝ`}</div>
 								</div>
 								<div className="flex justify-between">
-									<div className="text-sm">{localeLn('Storage_Fee')}</div>
+									<div className="text-sm">{localeLn('StorageFee')}</div>
 									<div className="text">{formatNearAmount(STORAGE_MINT_FEE)} Ⓝ</div>
 								</div>
 							</div>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							{localeLn('Redirected_To_confirm')}
+							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onBuyToken}>

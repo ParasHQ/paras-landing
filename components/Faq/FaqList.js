@@ -9,7 +9,7 @@ const FaqsList = () => {
 	const { localeLn } = useIntl()
 	const faqsData = [
 		{
-			question: localeLn('What_Is_Paras'),
+			question: localeLn('WhatIsParas'),
 			answer: localeLn(
 				'Digital_Card_Marketplace'
 			),
@@ -21,31 +21,31 @@ const FaqsList = () => {
 			),
 		},
 		{
-			question: localeLn('What_Is_Cryptocurrency'),
+			question: localeLn('WhatIsCryptocurrency'),
 			answer: localeLn(
 				'Both_Cryptocurrency_Digital'
 			),
 		},
 		{
-			question: localeLn('How_Do_Start_Collecting'),
+			question: localeLn('HowDoStartCollecting'),
 			answer: localeLn(
 				'You_Need_NEAR_Account'
 			),
 		},
 		{
-			question: localeLn('Where_Can_Get_NEAR'),
+			question: localeLn('WhereCanGetNEAR'),
 			answer: localeLn(
 				'Can_Get_NEAR_From'
 			),
 		},
 		{
-			question: localeLn('How_Do_Become_Artist'),
+			question: localeLn('HowDoBecomeArtist'),
 			answer: localeLn(
 				'Can_Start_Applying'
 			),
 		},
 		{
-			question: localeLn('How_Do_Make_Card'),
+			question: localeLn('HowDoMakeCard'),
 			answer: localeLn(
 				'A_Digital_Card_On_Paras'
 			),

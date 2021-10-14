@@ -28,14 +28,14 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 				</div>
 				<h3 className="mb-4 text-2xl text-white font-semibold">{title}</h3>
 				<p className="mt-1 text-white opacity-80">
-					{localeLn('Collect_NFT_Truly_Own')}
+					{localeLn('CollectNFTTrulyOwn')}
 				</p>
 				<div className="mt-6">
 					<p className="text-gray-400 text-sm mb-2 text-center">
-						{localeLn('Will_Be_Redirected_To')}
+						{localeLn('WillBeRedirectedTo')}
 					</p>
 					<Button className="mt-2 px-1" size="md" isFullWidth onClick={() => router.push('/login')}>
-						{localeLn('Go_To_Login')}
+						{localeLn('GoToLogin')}
 					</Button>
 				</div>
 				<div className="absolute -top-4 -right-4 cursor-pointer" onClick={onClose}>

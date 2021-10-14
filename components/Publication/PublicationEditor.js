@@ -256,7 +256,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							{localeLn('Maximum_Size_3MB')}
+							{localeLn('MaximumSize3MB')}
 						</div>
 					),
 					type: 'error',
@@ -292,7 +292,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 					<div className="w-full max-w-md p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
 						<div className="m-auto">
 							<label className="mb-4 block text-white text-2xl font-bold">
-								{localeLn('Add_Card_To_Publication')}
+								{localeLn('AddCardToPublication')}
 							</label>
 							<input
 								type="text"
@@ -309,7 +309,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 								disabled={!searchToken}
 								onClick={getDataFromTokenId}
 							>
-								{localeLn('Add_Card')}
+								{localeLn('AddCard')}
 							</button>
 						</div>
 					</div>
@@ -365,7 +365,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 													/>
 												</svg>
 												<p className="text-white font-semibold ml-2 text-sm">
-													{localeLn('Update_Thumbnail_3MB')}
+													{localeLn('UpdateThumbnail3MB')}
 												</p>
 											</div>
 										</div>
@@ -423,7 +423,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				<Modal close={() => setShowLeavingConfirmation(false)} closeOnBgClick closeOnEscape>
 					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
 						<div className="w-full">
-							{localeLn('Sure_To_Leave_page')}
+							{localeLn('SureToLeavepage')}
 						</div>
 						<div className="flex space-x-4">
 							<button
@@ -475,7 +475,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				<div className="max-w-4xl mx-auto px-4 pt-16">
 					<div className=" border-2 border-dashed border-gray-800 rounded-md p-4 md:p-8">
 						<h4 className="text-white font-semibold text-3xl mb-4 text-center">
-							{localeLn('Card_Collectibles')}
+							{localeLn('CardCollectibles')}
 						</h4>
 						<div
 							className={`md:flex md:flex-wrap ${embeddedCards.length <= 3 && 'justify-center'}`}

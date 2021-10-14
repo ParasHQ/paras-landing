@@ -103,7 +103,7 @@ export default function Home() {
 					<HomeCardList />
 					<div className="mt-8 w-full flex flex-wrap"></div>
 					<div className="mt-8">
-						<p className="text-white font-semibold text-3xl">{localeLn('How_Works')}</p>
+						<p className="text-white font-semibold text-3xl">{localeLn('HowWorks')}</p>
 						<div className="flex flex-wrap -mx-4">
 							<div className="w-full lg:w-2/3 relative mt-4 px-4">
 								<div className="absolute inset-0 flex items-center justify-center">
@@ -134,7 +134,7 @@ export default function Home() {
 							<div className="w-full lg:w-1/3 px-4">
 								<div className="w-full mt-8 lg:mt-4">
 									<h2 className="text-white font-bold text-2xl text-gradient">
-										{localeLn('For_Collectors')}
+										{localeLn('ForCollectors')}
 									</h2>
 									<p className="mt-4 text-gray-400">
 										{localeLn(
@@ -144,7 +144,7 @@ export default function Home() {
 								</div>
 								<div className="mt-8">
 									<h2 className="text-white font-bold text-2xl text-gradient">
-										{localeLn('For_Artists')}
+										{localeLn('ForArtists')}
 									</h2>
 									<p className="mt-4 text-gray-400">
 										{localeLn(

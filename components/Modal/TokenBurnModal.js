@@ -40,16 +40,16 @@ const TokenBurnModal = ({ show, onClose, data }) => {
 				<div className="max-w-sm w-full p-4 bg-gray-800 m-4 md:m-auto rounded-md">
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
-							{localeLn('Burn_Asset')}
+							{localeLn('BurnAsset')}
 						</h1>
 						<p className="text-white mt-2">
-							{localeLn('Are_About_To_Burn')} {data.metadata.title}
+							{localeLn('AreAboutToBurn')} {data.metadata.title}
 						</p>
 						<div className="mt-4">
 							<div className="mt-2 text-sm text-red-500"></div>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							{localeLn('Redirected_To_confirm')}
+							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onBurnToken}>

@@ -31,7 +31,7 @@ const ProfileEdit = ({ close }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						{localeLn('Enter_Valid_Website')}
+						{localeLn('EnterValidWebsite')}
 					</div>
 				),
 				type: 'error',
@@ -103,7 +103,7 @@ const ProfileEdit = ({ close }) => {
 			)}
 			<div className="m-auto">
 				<h1 className="text-2xl font-bold text-gray-100 tracking-tight">
-					{localeLn('Edit_Profile')}
+					{localeLn('EditProfile')}
 				</h1>
 				<div className="mt-4 mx-auto relative cursor-pointer w-32 h-32 rounded-full overflow-hidden">
 					<input

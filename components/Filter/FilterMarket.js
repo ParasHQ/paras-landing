@@ -105,7 +105,7 @@ const FilterMarket = () => {
 					}}
 				>
 					<div className="bg-dark-primary-2 rounded-md p-4">
-						<h1 className="text-white font-semibold text-xl">{localeLn('Sort_By')}</h1>
+						<h1 className="text-white font-semibold text-xl">{localeLn('SortBy')}</h1>
 						<div>
 							{filter.map((item) => (
 								<button

@@ -48,10 +48,10 @@ const TokenStorageModal = ({ show, onClose }) => {
 					</div>
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
-							{localeLn('Deposit_Storage')}
+							{localeLn('DepositStorage')}
 						</h1>
 						<p className="text-white mt-2">
-							{localeLn('To_Deposit_Small_Amount')}
+							{localeLn('ToDepositSmallAmount')}
 						</p>
 						<div className="mt-4">
 							<div className="mt-2 text-sm text-red-500"></div>
@@ -59,13 +59,13 @@ const TokenStorageModal = ({ show, onClose }) => {
 						<div className="mt-4 text-center">
 							<div className="text-white my-1">
 								<div className="flex justify-between">
-									<div className="text-sm">{localeLn('Storage_Fee')}</div>
+									<div className="text-sm">{localeLn('StorageFee')}</div>
 									<div className="text">{formatNearAmount(STORAGE_ADD_MARKET_FEE)} Ⓝ</div>
 								</div>
 							</div>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							{localeLn('Redirected_To_confirm')}
+							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onBuyToken}>

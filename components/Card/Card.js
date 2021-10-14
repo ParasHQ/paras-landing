@@ -131,8 +131,8 @@ const Card = ({
 											{token.edition_id
 												? `#${token.edition_id} of ${token.copies}`
 												: token.copies
-												? `${localeLn('Edition_Of')} ${token.copies}`
-												: localeLn('Open_Edition')}
+												? `${localeLn('EditionOf')} ${token.copies}`
+												: localeLn('OpenEdition')}
 										</p>
 									</div>
 								</div>

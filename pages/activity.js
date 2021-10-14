@@ -140,7 +140,7 @@ const ActivityLog = ({ query }) => {
 					}}
 				></div>
 				<Head>
-					<title>{localeLn('Activity_Paras')}</title>
+					<title>{localeLn('ActivityParas')}</title>
 					<meta
 						name="description"
 						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -178,7 +178,7 @@ const ActivityLog = ({ query }) => {
 							<div ref={modalRef}>
 								<div className="flex items-baseline" onClick={() => setShowModal(!showModal)}>
 									<h1 className="text-4xl font-bold text-gray-100 text-center mr-2 capitalize">
-										{activityType === 'activity' ? localeLn('Activity') : localeLn('Top_Users')}
+										{activityType === 'activity' ? localeLn('Activity') : localeLn('TopUsers')}
 									</h1>
 									<svg
 										viewBox="0 0 11 7"
@@ -212,7 +212,7 @@ const ActivityLog = ({ query }) => {
 									`}
 											onClick={() => onClickType('top-users')}
 										>
-											{localeLn('Top_Users')}
+											{localeLn('TopUsers')}
 										</p>
 									</div>
 								)}
@@ -233,7 +233,7 @@ const ActivityLog = ({ query }) => {
 							)}
 							{activityList.length === 0 && !activityListHasMore && (
 								<div className="border-2 border-gray-800 border-dashed mt-4 p-2 rounded-md text-center">
-									<p className="text-gray-300 py-8">{localeLn('No_Transactions')}</p>
+									<p className="text-gray-300 py-8">{localeLn('NoTransactions')}</p>
 								</div>
 							)}
 							<InfiniteScroll
