@@ -35,6 +35,10 @@ const TokenSeriesDetail = ({ token, className }) => {
 		setActiveTab(tab)
 	}
 
+	const isShowButton =
+		token.contract_id === process.env.NFT_CONTRACT_ID ||
+		process.env.WHITELIST_CONTRACT_ID.includes(token.contract_id)
+
 	const tabDetail = (tab) => {
 		return (
 			<div
@@ -186,7 +190,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 							{activeTab === 'publication' && <TabPublication localToken={token} />}
 						</div>
 					</Scrollbars>
-					{token.contract_id === process.env.NFT_CONTRACT_ID && (
+					{isShowButton && (
 						<div className="p-3">
 							{token.is_non_mintable || token.total_mint === token.metadata.copies ? (
 								<div>

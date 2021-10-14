@@ -65,7 +65,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 						</p>
 					</div>
 				</div>
-				{!isNFT && (
+				{!isNFT && localToken.metadata.copies && (
 					<div className="flex flex-1 bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 						<div>
 							<p className="text-sm text-white font-bold">{localeLn('Copies')}</p>
