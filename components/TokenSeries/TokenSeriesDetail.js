@@ -37,7 +37,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 
 	const isShowButton =
 		token.contract_id === process.env.NFT_CONTRACT_ID ||
-		process.env.WHITELIST_CONTRACT_ID.includes(token.contract_id)
+		process.env.WHITELIST_CONTRACT_ID.split(',').includes(token.contract_id)
 
 	const tabDetail = (tab) => {
 		return (
