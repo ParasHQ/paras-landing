@@ -87,7 +87,7 @@ export const HomeTopUserList = () => {
 		<div>
 			<div className="w-full mt-16">
 				<div className="flex items-center justify-between">
-					<p className="text-white font-semibold text-3xl">{localeLn('Top Buyers')}</p>
+					<p className="text-white font-semibold text-3xl">{localeLn('TopBuyers')}</p>
 					<Link href="/activity/top-buyers">
 						<a className="text-gray-400 hover:text-white cursor-pointer font-semibold flex items-center">
 							<span>{localeLn('More')}</span>
@@ -139,7 +139,7 @@ export const HomeTopUserList = () => {
 			</div>
 			<div className="w-full mt-8">
 				<div className="flex items-center justify-between">
-					<p className="text-white font-semibold text-3xl">{localeLn('Top Sellers')}</p>
+					<p className="text-white font-semibold text-3xl">{localeLn('TopSellers')}</p>
 					<Link href="/activity/top-sellers">
 						<a className="text-gray-400 hover:text-white cursor-pointer font-semibold flex items-center">
 							<span>{localeLn('More')}</span>

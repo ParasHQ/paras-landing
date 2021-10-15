@@ -52,7 +52,7 @@ const CategorySubmission = () => {
 					toast.show({
 						text: (
 							<div className="font-semibold text-center text-sm">
-								{localeLn('You dont have permission')}
+								{localeLn('DontHavePermission')}
 							</div>
 						),
 						type: 'error',
@@ -82,7 +82,7 @@ const CategorySubmission = () => {
 				}}
 			></div>
 			<div className="max-w-6xl relative m-auto p-4">
-				<div className="text-white text-2xl mt-8">{localeLn('Category submission')}</div>
+				<div className="text-white text-2xl mt-8">{localeLn('CategorySubmission')}</div>
 				<div className="text-white font-bold text-4xl mb-8 capitalize">
 					{categoryId && categoryId.split('-').join(' ')}
 				</div>
@@ -96,7 +96,7 @@ const CategorySubmission = () => {
 					</div>
 				) : (
 					<div className="md:w-1/2 text-gray-100 border-2 border-dashed border-gray-800 rounded-md p-4 h-40 flex items-center justify-center">
-						<p>{localeLn('No Card Submission Found')}</p>
+						<p>{localeLn('NoCardSubmission')}</p>
 					</div>
 				)}
 			</div>
@@ -167,7 +167,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 							<span className="font-bold text-white">{localToken.metadata.title}</span>
 							<span>
 								{' '}
-								{localeLn('to {categoryId} category', {
+								{localeLn('To_{categoryId}_Category', {
 									categoryId: submission.category_id,
 								})}
 							</span>
@@ -186,13 +186,13 @@ const SubmissionDetail = ({ submission, updateData }) => {
 			{showModal === 'reject' && (
 				<Modal close={() => setShowModal('')} closeOnEscape={true} closeOnBgClick={true}>
 					<div className="bg-dark-primary-1 w-full max-w-xs p-4 m-auto rounded-md text-center">
-						<div className="font-bold text-2xl mb-4">{localeLn('Reject the card')}</div>
+						<div className="font-bold text-2xl mb-4">{localeLn('RejectTheCard')}</div>
 						<div className="mb-6 m-auto text-gray-400">
-							<span>{localeLn('You are going to reject')} </span>
+							<span>{localeLn('GoingToReject')} </span>
 							<span className="font-bold text-white">{localToken.metadata.title}</span>
 							<span>
 								{' '}
-								{localeLn('from {categoryId} category', {
+								{localeLn('From_{categoryId}_Category', {
 									categoryId: submission.category_id,
 								})}
 							</span>

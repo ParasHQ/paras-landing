@@ -27,45 +27,45 @@ export default function Drops() {
 	const { localeLn } = useIntl()
 	const timeline = [
 		{
-			date: localeLn('June 9th'),
-			note: [localeLn('Open registration for user to get early access (whitelist) to buy NFT')],
+			date: localeLn('June9th'),
+			note: [localeLn('OpenRegistrationFor')],
 		},
 		{
-			date: localeLn('June 16th'),
+			date: localeLn('June16th'),
 			note: [
-				localeLn('NFT Drops for whitelisted account'),
+				localeLn('NFTDropsFor'),
 				localeLn(
-					'Drops will start on June 16th at 00.01 and will end at June 18th at 00.00 (2-days)'
+					'Drops_Will_Start_On'
 				),
 			],
 		},
 		{
-			date: localeLn('June 19th'),
+			date: localeLn('June19th'),
 			note: [
-				localeLn('NFT Drops for public (if still available)'),
+				localeLn('NFTDropsPublic'),
 				localeLn(
-					'The remaining drops will start sale for public on June 19th at 00.01 and will end at June 24th at 00.00 (5 days)'
+					'Remaining_Drops_Will_Start'
 				),
 			],
 		},
 		{
-			date: localeLn('June 25th'),
-			note: [localeLn('Burn all the remaining NFTs')],
+			date: localeLn('June25th'),
+			note: [localeLn('BurnRemainingNFTs')],
 		},
 	]
 
 	const tasks = [
-		localeLn('Fill the Form of Eligibility: https://tripetto.app/run/2OGYWACAC6'),
+		localeLn('FillTheFormOf'),
 		localeLn('Follow MTVRS on Twitter (https://twitter.com/themtvrs)'),
 		localeLn(
-			'Retweet, like, tag your friends to this pinned tweet about the NFT Drops (https://twitter.com/ParasHQ/status/1402264239927185422)'
+			'Retweet_Like_Tag'
 		),
-		localeLn('Join the MTVRS Telegram group (https://t.me/themtvrs)'),
-		localeLn('Join the  MTVRS Discord channel (https://discord.com/invite/wSNk3ktahF)'),
-		localeLn('Follow Paras on Twitter (https://twitter.com/ParasHQ)'),
-		localeLn('Follow Paras on Instagram (https://instagram.com/paras.hq/)'),
-		localeLn('Join Paras Telegram group (https://t.me/parashq)'),
-		localeLn('Join Paras Discord server (https://discord.com/invite/vWR2XBNupg'),
+		localeLn('JoinMTVRSTelegram'),
+		localeLn('JoinMTVRSDiscord'),
+		localeLn('FollowParasOnTwitter'),
+		localeLn('FollowParasOnInstagram'),
+		localeLn('JoinParasTelegramGroup'),
+		localeLn('JoinParasDiscordServer'),
 	]
 	const [token, setToken] = useState(null)
 	const detail = useRef(null)
@@ -78,7 +78,7 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>{localeLn('Paras X MTVRS - NFT Drops')}</title>
+				<title>{localeLn('ParasXMTVRS')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -146,7 +146,7 @@ export default function Drops() {
 							</svg>
 							<div className="text-gray-100 ml-2 font-bold text-2xl">{'x MTVRS'}</div>
 						</div>
-						<h1 className="text-white font-bold text-6xl mt-4 mb-2">{localeLn('NFT Drops')}</h1>
+						<h1 className="text-white font-bold text-6xl mt-4 mb-2">{localeLn('NFTDrops')}</h1>
 						<img
 							src={parseImgUrl(
 								'ipfs://bafybeih3l32jyqm732bxol4ic2qsgxvas6fee57vrs3e6tpgjzt4kcvady'
@@ -155,12 +155,12 @@ export default function Drops() {
 						<div className="max-w-xl m-auto">
 							<p className="text-gray-400 mb-4">
 								{localeLn(
-									'MTVRS (www.mtvrs.app) is a world of worlds and home to blockchain-powered games for players, creators and developers! MTVRS is designing a platform to create experiences and utility around blockchain assets.'
+									'MTVRS_Is_World'
 								)}
 							</p>
 							<p className="text-gray-400 mb-4">
 								{localeLn(
-									'This is MTVRS first NFT Drop, “The Architect’s Devices” a set of exclusive collectibles forged by the architects of the metaverse to empower them as they hop the infinite worlds.'
+									'MTVR_First_NFT_Drop'
 								)}
 							</p>
 							<div className="my-8 flex justify-center space-x-8 items-center">
@@ -173,14 +173,14 @@ export default function Drops() {
 										})
 									}
 								>
-									{localeLn('Register now')}
+									{localeLn('RegisterNow')}
 								</p>
 								<a
 									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer mb-8"
 									target="_blank"
 									href="https://paras.id/publication/editorial/paras-x-mtvrs-nft-drops-the-architects-devices-60bf7208a537580686cbf237"
 								>
-									{localeLn('Find out more')}
+									{localeLn('FindOutMore')}
 								</a>
 							</div>
 						</div>
@@ -246,11 +246,11 @@ export default function Drops() {
 			</div>
 			<div className="max-w-xl m-4 md:m-auto text-gray-100 ">
 				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
-					{localeLn('How to register')}
+					{localeLn('HowToRegister')}
 				</h1>
 				<p className="mb-2 break-all">
 					{localeLn(
-						'How to registerSo let’s get started! In order to get a whitelist for Paras x MTVRS NFT Drops, please complete these tasks.'
+						'How_To_Register_So'
 					)}
 				</p>
 				<ReactLinkify
@@ -268,10 +268,10 @@ export default function Drops() {
 				</ReactLinkify>
 				<div className="text-center">
 					<h1 className="text-center text-gray-100 font-bold text-3xl mt-12 mb-2">
-						{localeLn('Read details')}
+						{localeLn('ReadDetails')}
 					</h1>
 					<p className="text-gray-200">
-						{localeLn('You can read full information on Paras publication')}
+						{localeLn('ReadFullInformation')}
 					</p>
 					<div className="flex justify-center my-8">
 						<a
@@ -279,7 +279,7 @@ export default function Drops() {
 							target="_blank"
 							href="https://paras.id/publication/editorial/paras-x-mtvrs-nft-drops-the-architects-devices-60bf7208a537580686cbf237"
 						>
-							{localeLn('Find out more')}
+							{localeLn('FindOutMore')}
 							<svg
 								width="12"
 								height="12"
@@ -422,7 +422,7 @@ const SpecialCard = ({
 							data-tip={`Total supply of the card`}
 						>
 							<div className="flex text-white justify-center">
-								<p className="text-gray-400 mr-1">{localeLn('Card Supply')}</p>
+								<p className="text-gray-400 mr-1">{localeLn('CardSupply')}</p>
 								<svg
 									width="16"
 									height="16"
@@ -448,7 +448,7 @@ const SpecialCard = ({
 							data-tip={`Card available for purchase today`}
 						>
 							<div className="flex text-white justify-center">
-								<p className="text-gray-400 mr-1">{localeLn('Card Available')}</p>
+								<p className="text-gray-400 mr-1">{localeLn('CardAvailable')}</p>
 								<svg
 									width="16"
 									height="16"
@@ -485,7 +485,7 @@ const SpecialCard = ({
 										Ⓝ`}
 									</p>
 								) : (
-									<p>{localeLn('See Details')}</p>
+									<p>{localeLn('SeeDetails')}</p>
 								)}
 							</button>
 						</div>

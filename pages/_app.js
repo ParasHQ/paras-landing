@@ -6,7 +6,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import { IntlProvider } from 'react-intl'
 import * as locales from '../content/locale'
-import { getLanguage } from '../content/locale'
+import { getLanguage, fallback } from '../content/locale'
 import * as gtag from 'lib/gtag'
 import cookie from 'lib/cookie'
 
@@ -29,8 +29,7 @@ function MyApp({ Component, pageProps }) {
 	const { locale, defaultLocale, pathname } = router
 	let localeCopy = locales[locale]
 	const defaultLocaleCopy = locales[defaultLocale]
-	localeCopy = localeCopy || defaultLocaleCopy
-
+	localeCopy = fallback({...defaultLocaleCopy},localeCopy||{})
 	let messages =
 		localeCopy[pathname] ||
 		localeCopy['defaultAll'] ||

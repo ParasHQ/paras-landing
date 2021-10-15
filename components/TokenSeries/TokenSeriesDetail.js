@@ -195,7 +195,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 							{token.is_non_mintable || token.total_mint === token.metadata.copies ? (
 								<div>
 									<Button size="md" onClick={() => changeActiveTab('owners')} isFullWidth>
-										{localeLn('Check Owners')}
+										{localeLn('CheckOwners')}
 									</Button>
 								</div>
 							) : isCreator() ? (
@@ -207,7 +207,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 									</div>
 									<div className="w-full flex-1">
 										<Button size="md" onClick={onClickUpdatePrice} isFullWidth>
-											{localeLn('Update Price')}
+											{localeLn('UpdatePrice')}
 										</Button>
 									</div>
 								</div>
@@ -231,7 +231,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 												onClick={() => setActiveTab('owners')}
 												isFullWidth
 											>
-												{localeLn('Buy for {price} on Secondary Marketplace', {
+												{localeLn('Buy_For_{price}_On', {
 													price: formatNearAmount(token.lowest_price),
 												})}
 											</Button>

@@ -82,7 +82,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						{localeLn('You are not the creator of this card')}
+						{localeLn('NotCreatorOfCard')}
 					</div>
 				),
 				type: 'error',
@@ -112,8 +112,8 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						<div>{localeLn('Thank you for your submission.')}</div>
-						<div>{localeLn('Submit card succeed.')}</div>
+						<div>{localeLn('ThankForsubmission')}</div>
+						<div>{localeLn('SubmitSucceed')}</div>
 					</div>
 				),
 				type: 'success',
@@ -137,7 +137,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 			<div className="max-w-xl w-full m-auto bg-dark-primary-1 p-4 text-gray-100 rounded-md relative">
 				<div className="flex justify-between">
 					<div className="font-bold text-2xl mb-4">
-						{localeLn('Submit your card to')} {categoryName}
+						{localeLn('SubmitCardTo')} {categoryName}
 					</div>
 					<div onClick={onClose}>
 						<svg
@@ -187,7 +187,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 								/>
 								<div className="opacity-75 mb-2 text-sm">
 									{localeLn(
-										'*Curators will review your card submission, please make sure that the card is belong to this category.'
+										'Curators_Card_Submission'
 									)}
 								</div>
 								<div className="opacity-75 mb-6 text-sm">
@@ -207,11 +207,11 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 									{tokenData?.metadata.collection || tokenData?.contract_id}
 								</div>
 								<div className="mb-6">
-									<span className="opacity-75">{localeLn('You will add')} </span>
+									<span className="opacity-75">{localeLn('YouWillAdd')} </span>
 									<span className="text-white font-bold opacity-100">
 										{tokenData?.metadata.title}
 									</span>
-									<span> {localeLn('to')} </span>
+									<span> {localeLn('To')} </span>
 									<span className="text-white font-bold opacity-100">{categoryName}</span>
 								</div>
 								<button

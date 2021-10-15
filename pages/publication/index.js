@@ -155,7 +155,7 @@ const Publication = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn('Publication — Paras')}</title>
+				<title>{localeLn('PublicationParas')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -191,7 +191,7 @@ const Publication = () => {
 				<h1 className="text-4xl font-bold text-gray-100 text-center">{localeLn('Publication')}</h1>
 				<div className="mt-4">
 					<p className="text-center text-xl text-gray-300">
-						{localeLn('Enhancing The Visuals through Stories')}
+						{localeLn('EnhancingVisualsStories')}
 					</p>
 				</div>
 				<div className="mt-8">

@@ -50,7 +50,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						{localeLn('Please make sure that your card is not on sale to accept the bid')}
+						{localeLn('MakeSureNotOnSale')}
 					</div>
 				),
 				type: 'error',
@@ -71,7 +71,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						{localeLn('You successfully accepted the bid from')} {data.accountId}.
+						{localeLn('SuccessfullyAcceptedBid')} {data.accountId}.
 					</div>
 				),
 				type: 'success',
@@ -108,7 +108,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						{localeLn('Insufficient Balance')}
+						{localeLn('InsufficientBalance')}
 						<p className="mt-2">
 							{localeLn('Available')} {prettyBalance(store.userBalance.available, 24, 6)} Ⓝ
 						</p>
@@ -150,7 +150,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							{localeLn('Your bid has been deleted')}
+							{localeLn('BidHasDeleted')}
 						</div>
 					),
 					type: 'success',
@@ -196,7 +196,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 			{showModal === 'cancelBid' && (
 				<Modal close={() => setShowModal('')} closeOnBgClick={false} closeOnEscape={false}>
 					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
-						<div className="w-full">{localeLn('Are you sure to delete your bids?')}</div>
+						<div className="w-full">{localeLn('AreSureDeleteBids')}</div>
 						<div className="flex space-x-4">
 							<button
 								disabled={isLoading}
@@ -310,12 +310,12 @@ const BidList = ({ userOwnership, token }) => {
 		<div>
 			{bidList.length === 0 && !isFetching && (
 				<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
-					<p className="text-gray-500 py-8 px-8">{localeLn('No bidding yet')}</p>
+					<p className="text-gray-500 py-8 px-8">{localeLn('NoBiddingYet')}</p>
 				</div>
 			)}
 			{isFetching && (
 				<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
-					<p className="my-2 text-center">{localeLn('Loading...')}</p>
+					<p className="my-2 text-center">{localeLn('LoadingLoading')}</p>
 				</div>
 			)}
 			{bidList.length !== 0 &&

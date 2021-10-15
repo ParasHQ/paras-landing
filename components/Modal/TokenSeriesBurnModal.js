@@ -49,10 +49,10 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 					</div>
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
-							{localeLn('Burn Asset')}
+							{localeLn('BurnAsset')}
 						</h1>
 						<p className="text-white mt-2">
-							{localeLn('You are about to reduce the copies of')} {data.metadata.title}
+							{localeLn('AreAboutToReduce')} {data.metadata.title}
 						</p>
 						<div className="mt-4">
 							<InputText
@@ -61,18 +61,18 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 								step="any"
 								value={burnCopies}
 								onChange={(e) => setBurnCopies(e.target.value.replace(/\D/, ''))}
-								placeholder={localeLn('Decrease copies by')}
+								placeholder={localeLn('DecreaseCopiesBy')}
 							/>
 							{burnCopies > data.metadata.copies - data.in_circulation && (
 								<div className="mt-2 text-sm text-red-500">
-									<p>{localeLn('Cannot reduce more than current copies')}</p>
+									<p>{localeLn('CannotReduceMore')}</p>
 								</div>
 							)}
 						</div>
 						<div className="mt-4 text-center">
 							<div className="text-white my-1">
 								<div className="flex justify-between">
-									<div className="text-sm">{localeLn('Available Copies')}</div>
+									<div className="text-sm">{localeLn('AvailableCopies')}</div>
 									<div className="text">
 										{parseInt(data.metadata.copies || 0) - parseInt(data.in_circulation || 0)}
 									</div>
@@ -80,7 +80,7 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 							</div>
 							<div className="text-white my-1">
 								<div className="flex justify-between">
-									<div className="text-sm">{localeLn('Decrease Copies')}</div>
+									<div className="text-sm">{localeLn('DecreaseCopies')}</div>
 									<div className="text">{parseInt(burnCopies || 0)}</div>
 								</div>
 							</div>
@@ -97,7 +97,7 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 							</div>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							{localeLn('You will be redirected to NEAR Web Wallet to confirm your transaction.')}
+							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
 							<Button

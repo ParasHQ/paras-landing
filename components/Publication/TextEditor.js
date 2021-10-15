@@ -55,7 +55,7 @@ const TextEditor = ({
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							{localeLn('Maximum file size 3MB')}
+							{localeLn('MaximumSize3MB')}
 						</div>
 					),
 					type: 'error',
@@ -217,7 +217,7 @@ const VideoButton = ({ theme, onAddVideo }) => {
 					<div className="w-full max-w-md p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
 						<div className="m-auto">
 							<label className="mb-4 block text-white text-2xl font-bold">
-								{localeLn('Embedd video')}
+								{localeLn('EmbeddVideo')}
 							</label>
 							<input
 								type="text"
@@ -228,7 +228,7 @@ const VideoButton = ({ theme, onAddVideo }) => {
 								placeholder="Video url"
 							/>
 							<p className="text-gray-300 text-sm italic">
-								{localeLn('Please enter link of youtube video')}
+								{localeLn('EnterLinkYoutube')}
 							</p>
 							<button
 								className="font-semibold mt-4 py-3 w-full rounded-md bg-primary text-white"
@@ -238,7 +238,7 @@ const VideoButton = ({ theme, onAddVideo }) => {
 									triggerModal()
 								}}
 							>
-								{localeLn('Add Video')}
+								{localeLn('AddVideo')}
 							</button>
 						</div>
 					</div>

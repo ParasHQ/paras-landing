@@ -31,7 +31,7 @@ const AllCategory = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn('Category — Paras')}</title>
+				<title>{localeLn('CategoryParas')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."

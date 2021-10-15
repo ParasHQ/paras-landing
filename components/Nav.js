@@ -61,15 +61,15 @@ const User = () => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						<p>{localeLn('Currently we only allow verified creator to create publication.')}</p>
-						<p className="mt-2">{localeLn('Visit our Discord channel to learn more:')}</p>
+						<p>{localeLn('CurrentlyWeOnly')}</p>
+						<p className="mt-2">{localeLn('VisitOurDiscord')}</p>
 						<div className="mt-2">
 							<a
 								href="https://discord.paras.id"
 								target="_blank"
 								className="cursor-pointer border-b-2 border-gray-900"
 							>
-								{localeLn('Join Paras Discord')}
+								{localeLn('NavJoinDiscord')}
 							</a>
 						</div>
 					</div>
@@ -166,30 +166,30 @@ const User = () => {
 									href="https://wallet.near.org/"
 									target="_blank"
 								>
-									{localeLn('View on NEAR Wallet')}
+									{localeLn('NavViewWallet')}
 								</a>
 							</div>
 						</div>
 						<hr className="my-2" />
 						<div onClick={_createCard}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								{localeLn('Create Card')}
+								{localeLn('NavCreateCard')}
 							</a>
 						</div>
 						<div onClick={_createColllection}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								{localeLn('Create Collection')}
+								{localeLn('NavCreateCollection')}
 							</a>
 						</div>
 						<div onClick={_createPublication}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								{localeLn('Create Publication')}
+								{localeLn('NavCreatePublication')}
 							</a>
 						</div>
 						<hr className="my-2" />
 						<Link href={`/${store.currentUser}`}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								{localeLn('My Profile')}
+								{localeLn('NavMyProfile')}
 							</a>
 						</Link>
 						<Link href="/my-bids">
@@ -204,7 +204,7 @@ const User = () => {
 							}}
 							className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 						>
-							{localeLn('Edit Profile')}
+							{localeLn('EditProfile')}
 						</button>
 						{process.env.APP_ENV !== 'testnet' && (
 							<button
@@ -214,7 +214,7 @@ const User = () => {
 								}}
 								className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 							>
-								{localeLn('Settings')}
+								{localeLn('NavSettings')}
 							</button>
 						)}
 						<hr className="my-2" />
@@ -222,7 +222,7 @@ const User = () => {
 							onClick={_signOut}
 							className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 						>
-							{localeLn('Log out')}
+							{localeLn('NavLogOut')}
 						</p>
 					</div>
 				</div>
@@ -440,7 +440,7 @@ const Nav = () => {
 										type="search"
 										value={searchQuery}
 										onChange={(event) => setSearchQuery(event.target.value)}
-										placeholder={localeLn('Search by title, collection or artist')}
+										placeholder={localeLn('SearchByTitle')}
 										className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-sm font-medium"
 									/>
 								</div>

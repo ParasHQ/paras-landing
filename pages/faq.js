@@ -19,7 +19,7 @@ const FaqPage = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn('Frequently Asked Questions — Paras')}</title>
+				<title>{localeLn('FrequentlyQuestionsParas')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -52,7 +52,7 @@ const FaqPage = () => {
 			</Head>
 			<Nav />
 			<div className="relative py-16 max-w-4xl mx-auto text-gray-100 px-4">
-				<h2 className="font-bold text-4xl text-center">{localeLn('Frequently Asked Questions')}</h2>
+				<h2 className="font-bold text-4xl text-center">{localeLn('FrequentlyQuestions')}</h2>
 				<div className="mt-8">
 					<FaqsList />
 				</div>

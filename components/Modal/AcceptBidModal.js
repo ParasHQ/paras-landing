@@ -33,8 +33,8 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 						{localeLn('Accept a Bid')}
 					</h1>
 					<p className="text-white mt-2">
-						{localeLn('You are about to accept bid for')} <b>{token.metadata.name}</b>{' '}
-						{localeLn('from')} <b>{data.buyer_id}</b>
+						{localeLn('AboutToAcceptBid')} <b>{token.metadata.name}</b>{' '}
+						{localeLn('From')} <b>{data.buyer_id}</b>
 					</p>
 					<div className="text-white mt-4 text-2xl font-bold text-center">
 						{`${prettyBalance(data.price, 24, 4)} Ⓝ `}
@@ -42,7 +42,7 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 					<div className="mt-4 text-center text-white opacity-90">
 						<div className="flex justify-between">
 							<div className="text-sm">
-								{localeLn('Royalty for Artist')} (
+								{localeLn('RoyaltyForArtist')} (
 								{Object.keys(token.royalty).length === 0
 									? `None`
 									: `${Object.values(token.royalty)[0] / 100}%`}
@@ -51,24 +51,24 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 							<div>{formatNearAmount(royaltyForArtist)} Ⓝ</div>
 						</div>
 						<div className="flex justify-between">
-							<div className="text-sm">{localeLn('Service Fee')} (5%)</div>
+							<div className="text-sm">{localeLn('ServiceFee')} (5%)</div>
 							<div>{formatNearAmount(serviceFee)} Ⓝ</div>
 						</div>
 						<div className="flex justify-between">
-							<div className="text-sm">{localeLn('You will get')}</div>
+							<div className="text-sm">{localeLn('YouWillGet')}</div>
 							<div>{formatNearAmount(userWillGet)} Ⓝ</div>
 						</div>
 					</div>
 					<div className="mt-4 text-center">
 						<div className="text-white my-1">
 							<div className="flex justify-between">
-								<div className="text-sm">{localeLn('Storage Fee')}</div>
+								<div className="text-sm">{localeLn('StorageFee')}</div>
 								<div className="text">{formatNearAmount(storageFee)} Ⓝ</div>
 							</div>
 						</div>
 					</div>
 					<p className="text-white mt-4 text-sm text-center opacity-90">
-						{localeLn('You will be redirected to NEAR Web Wallet to confirm your transaction.')}
+						{localeLn('RedirectedToconfirm')}
 					</p>
 
 					<div className="">
