@@ -48,16 +48,16 @@ function getLocale(lang) {
 	}
 }
 
-const isPlainObject = obj => {
+const isPlainObject = (obj) => {
 	return Object.prototype.toString.call(obj) === '[object Object]'
 }
 
 export function fallback() {
-	const args = Array.from(arguments);
-	if (args.length < 2) return args[0];
-	let result = args[0];
-	args.shift();
-	args.forEach(item => {
+	const args = Array.from(arguments)
+	if (args.length < 2) return args[0]
+	let result = args[0]
+	args.shift()
+	args.forEach((item) => {
 		if (isPlainObject(item)) {
 			if (!isPlainObject(result)) result = {}
 			for (let key in item) {
@@ -67,8 +67,7 @@ export function fallback() {
 					result[key] = item[key]
 				}
 			}
-		}
-		else if (item instanceof Array) {
+		} else if (item instanceof Array) {
 			if (!(result instanceof Array)) result = []
 			item.forEach((arrItem, arrIndex) => {
 				if (isPlainObject(arrItem)) {
@@ -79,5 +78,5 @@ export function fallback() {
 			})
 		}
 	})
-	return result;
+	return result
 }

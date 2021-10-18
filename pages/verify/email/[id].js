@@ -97,9 +97,7 @@ const EmailVerification = () => {
 								fill="#fafafa"
 							/>
 						</svg>
-						<div className="text-2xl text-gray-100 font-bold">
-							{localeLn('EmailIsVerified')}
-						</div>
+						<div className="text-2xl text-gray-100 font-bold">{localeLn('EmailIsVerified')}</div>
 					</>
 				)}
 				{!emailVerified && !isLoading && (

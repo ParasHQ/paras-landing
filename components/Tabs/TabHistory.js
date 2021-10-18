@@ -220,8 +220,7 @@ const Activity = ({ activity }) => {
 			return (
 				<p>
 					<span>
-						{localeLn('CreatorOnSale')}{' '}
-						{formatNearAmount(activity.msg.params.price)} Ⓝ
+						{localeLn('CreatorOnSale')} {formatNearAmount(activity.msg.params.price)} Ⓝ
 					</span>
 				</p>
 			)

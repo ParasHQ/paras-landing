@@ -136,21 +136,13 @@ export default function Home() {
 									<h2 className="text-white font-bold text-2xl text-gradient">
 										{localeLn('ForCollectors')}
 									</h2>
-									<p className="mt-4 text-gray-400">
-										{localeLn(
-											'Discover_Beautiful_Cards'
-										)}
-									</p>
+									<p className="mt-4 text-gray-400">{localeLn('Discover_Beautiful_Cards')}</p>
 								</div>
 								<div className="mt-8">
 									<h2 className="text-white font-bold text-2xl text-gradient">
 										{localeLn('ForArtists')}
 									</h2>
-									<p className="mt-4 text-gray-400">
-										{localeLn(
-											'Create_Digital_Cards'
-										)}
-									</p>
+									<p className="mt-4 text-gray-400">{localeLn('Create_Digital_Cards')}</p>
 								</div>
 							</div>
 						</div>

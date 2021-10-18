@@ -467,9 +467,7 @@ const NewPage = () => {
 						<div className="font-bold text-2xl mb-4 text-white">{localeLn('CreatingCard')}</div>
 						<div>
 							<p className="text-gray-200 font-bold text-lg">{localeLn('Upload')}</p>
-							<p className="text-gray-200 text-sm mb-2">
-								{localeLn('UploadingImageMeta')}
-							</p>
+							<p className="text-gray-200 text-sm mb-2">{localeLn('UploadingImageMeta')}</p>
 							<Button
 								isFullWidth
 								size="md"
@@ -712,9 +710,7 @@ const NewPage = () => {
 														fill="rgba(229, 231, 235, 0.5)"
 													/>
 												</svg>
-												<p className="text-gray-200 mt-2 opacity-50">
-													{localeLn('Maximum16mb')}
-												</p>
+												<p className="text-gray-200 mt-2 opacity-50">{localeLn('Maximum16mb')}</p>
 											</div>
 										)}
 									</div>
