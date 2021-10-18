@@ -50,9 +50,7 @@ const TokenStorageModal = ({ show, onClose }) => {
 						<h1 className="text-2xl font-bold text-white tracking-tight">
 							{localeLn('DepositStorage')}
 						</h1>
-						<p className="text-white mt-2">
-							{localeLn('ToDepositSmallAmount')}
-						</p>
+						<p className="text-white mt-2">{localeLn('ToDepositSmallAmount')}</p>
 						<div className="mt-4">
 							<div className="mt-2 text-sm text-red-500"></div>
 						</div>

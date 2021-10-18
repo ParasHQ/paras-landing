@@ -144,9 +144,7 @@ const MyBids = () => {
 					))}
 					{bidsData.length === 0 && !hasMore && (
 						<div className="border-2 border-dashed p-2 rounded-md text-center border-gray-800 my-4">
-							<p className="my-20 text-center text-gray-200">
-								{localeLn('NoActiveBid')}
-							</p>
+							<p className="my-20 text-center text-gray-200">{localeLn('NoActiveBid')}</p>
 						</div>
 					)}
 					{bidsData.length === 0 && hasMore && (

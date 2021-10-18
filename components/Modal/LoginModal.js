@@ -27,13 +27,9 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 					</svg>
 				</div>
 				<h3 className="mb-4 text-2xl text-white font-semibold">{title}</h3>
-				<p className="mt-1 text-white opacity-80">
-					{localeLn('CollectNFTTrulyOwn')}
-				</p>
+				<p className="mt-1 text-white opacity-80">{localeLn('CollectNFTTrulyOwn')}</p>
 				<div className="mt-6">
-					<p className="text-gray-400 text-sm mb-2 text-center">
-						{localeLn('WillBeRedirectedTo')}
-					</p>
+					<p className="text-gray-400 text-sm mb-2 text-center">{localeLn('WillBeRedirectedTo')}</p>
 					<Button className="mt-2 px-1" size="md" isFullWidth onClick={() => router.push('/login')}>
 						{localeLn('GoToLogin')}
 					</Button>

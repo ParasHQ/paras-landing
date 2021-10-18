@@ -9,7 +9,7 @@ const nav = {
 	Whitepaper: 'Whitepaper',
 	SearchByTitle: 'Search by title, collection or artist',
 	VisitOurDiscord: 'Visit our Discord channel to learn more:',
-	CurrentlyWeOnly: "Currently we only allow verified creator to create publication.",
+	CurrentlyWeOnly: 'Currently we only allow verified creator to create publication.',
 	NavJoinDiscord: 'Join Paras Discord',
 	NavViewWallet: 'View on NEAR Wallet',
 	NavCreateCard: 'Create Card',
@@ -46,7 +46,8 @@ const home = {
 	NewestCards: 'Newest Cards',
 	HowWorks: 'How it Works',
 	ForCollectors: 'For Collectors',
-	DiscoverBeautifulCards: 'Discover beautiful art cards and collect them on a blockchain-based technology that prevents forgery andprovides provable ownership.',
+	DiscoverBeautifulCards:
+		'Discover beautiful art cards and collect them on a blockchain-based technology that prevents forgery andprovides provable ownership.',
 	ExploreParas: 'Explore Paras',
 	ForArtists: 'For Artists',
 	CreateDigitalCards: `Create your digital art cards and sell them on the
@@ -60,7 +61,7 @@ const market = {
 	Filter: 'Filter',
 	SortBy: 'Sort by',
 	CategoryParas: 'Category — Paras',
-	OnlyAllowWhitelisted: 
+	OnlyAllowWhitelisted:
 		'Currently we only allow whitelisted Artist to create their digital art card on Paras.',
 	ApplyUsingLink: 'Apply now using the link below:',
 	ApplyAsArtist: 'Apply as an Artist',
@@ -74,9 +75,9 @@ const market = {
 	ThankForsubmission: 'Thank you for your submission.',
 	SubmitSucceed: 'Submit card succeed.',
 	SubmitCardTo: 'Submit your card to',
-	CuratorsCardSubmission: '*Curators will review your card submission, please make sure that the card is belong to this category.',
-	OnlyCreatorAllowedSubmit: 
-		'*Only the creator that allowed to submit their card',
+	CuratorsCardSubmission:
+		'*Curators will review your card submission, please make sure that the card is belong to this category.',
+	OnlyCreatorAllowedSubmit: '*Only the creator that allowed to submit their card',
 	YouWillAdd: 'You will add',
 	To: 'to',
 }
@@ -177,7 +178,8 @@ const CardInfo = {
 	EditImage: 'Edit Image',
 	YouWillBeBurning: 'You will be burning',
 	NotAllowedToList: 'You are not allowed to list this card at the moment',
-	NotAllowedToBuy: 'You are not allowed to buy this card at the moment. Only whitelisted account can buy this card',
+	NotAllowedToBuy:
+		'You are not allowed to buy this card at the moment. Only whitelisted account can buy this card',
 	AboutToAcceptBid: 'You are about to accept bid for',
 	From: 'from',
 	RoyaltyForArtist: 'Royalty for Artist',
@@ -208,7 +210,8 @@ const publication = {
 	Community: 'Community',
 	MaximumSize3MB: 'Maximum file size 3MB',
 	AddCardToPublication: 'Add card to your publication',
-	TokenIDIsCardId: 'TokenID is your card id. You can find your TokenID at https: /paras.id/token/[TokenID]',
+	TokenIDIsCardId:
+		'TokenID is your card id. You can find your TokenID at https: /paras.id/token/[TokenID]',
 	AddCard: 'Add Card',
 	Thumbnail: 'Thumbnail',
 	UpdateThumbnail3MB: 'Update Thumbnail (Max. 3MB)',
@@ -270,7 +273,8 @@ const modal = {
 	NewPrice: 'New Price',
 	CurrentPrice: 'Current price',
 	DepositStorage: 'Deposit Storage',
-	ToDepositSmallAmount: 'Before you can list this asset to market, you need to deposit small amount of NEAR',
+	ToDepositSmallAmount:
+		'Before you can list this asset to market, you need to deposit small amount of NEAR',
 	Deposit: 'Deposit',
 	AreAboutToSend: 'You are about to send',
 	MintedBy: 'minted by',
@@ -319,9 +323,8 @@ const common = {
 	ShareNow: 'Share Now',
 	Chapter: 'Chapter',
 	ReadNow: 'Read Now',
-	FlaggedByPARASStealing: 
-		'WARNING: This profile has been flagged by PARAS due to art stealing',
-	UseOwnRisk: 
+	FlaggedByPARASStealing: 'WARNING: This profile has been flagged by PARAS due to art stealing',
+	UseOwnRisk:
 		"Paras' smart contract is not yet audited by well-known security organization or firm. Use at your own risk!",
 	...token,
 	...tab,
@@ -336,15 +339,18 @@ const drops = {
 	OpenRegistrationFor: 'Open registration for user to get early access (whitelist) to buy NFT',
 	June16th: 'June 16th',
 	NFTDropsFor: 'NFT Drops for whitelisted account',
-	DropsWillStartOn: 'Drops will start on June 16th at 00.01 and will end at June 18th at 00.00 (2-days)',
+	DropsWillStartOn:
+		'Drops will start on June 16th at 00.01 and will end at June 18th at 00.00 (2-days)',
 	June19th: 'June 19th',
 	NFTDropsPublic: 'NFT Drops for public (if still available)',
-	RemainingDropsWillStart: 'The remaining drops will start sale for public on June 19th at 00.01 and will end at June 24th at 00.00 (5 days)',
+	RemainingDropsWillStart:
+		'The remaining drops will start sale for public on June 19th at 00.01 and will end at June 24th at 00.00 (5 days)',
 	June25th: 'June 25th',
 	BurnRemainingNFTs: 'Burn all the remaining NFTs',
 	FillTheFormOf: 'Fill the Form of Eligibility: https: /tripetto.app/run/2OGYWACAC6',
 	FollowMTVRSOn: 'Follow MTVRS on Twitter (https: /twitter.com/themtvrs)',
-	RetweetLikeTag: 'Retweet, like, tag your friends to this pinned tweet about the NFT Drops (https: /twitter.com/ParasHQ/status/1402264239927185422)',
+	RetweetLikeTag:
+		'Retweet, like, tag your friends to this pinned tweet about the NFT Drops (https: /twitter.com/ParasHQ/status/1402264239927185422)',
 	JoinMTVRSTelegram: 'Join the MTVRS Telegram group (https: /t.me/themtvrs)',
 	JoinMTVRSDiscord: 'Join the  MTVRS Discord channel (https: /discord.com/invite/wSNk3ktahF)',
 	FollowParasOnTwitter: 'Follow Paras on Twitter (https: /twitter.com/ParasHQ)',
@@ -353,13 +359,16 @@ const drops = {
 	JoinParasDiscordServer: 'Join Paras Discord server (https: /discord.com/invite/vWR2XBNupg',
 	ParasXMTVRS: 'Paras X MTVRS - NFT Drops',
 	NFTDrops: 'NFT Drops',
-	MTVRSIsWorld: 'MTVRS (www.mtvrs.app) is a world of worlds and home to blockchain-powered games for players, creators and developers! MTVRS is designing a platform to create experiences and utility around blockchain assets.',
-	MTVRFirstNFTDrop: 'This is MTVRS first NFT Drop, “The Architect’s Devices” a set of exclusive collectibles forged by the architects of the metaverse to empower them as they hop the infinite worlds.',
+	MTVRSIsWorld:
+		'MTVRS (www.mtvrs.app) is a world of worlds and home to blockchain-powered games for players, creators and developers! MTVRS is designing a platform to create experiences and utility around blockchain assets.',
+	MTVRFirstNFTDrop:
+		'This is MTVRS first NFT Drop, “The Architect’s Devices” a set of exclusive collectibles forged by the architects of the metaverse to empower them as they hop the infinite worlds.',
 	RegisterNow: 'Register now',
 	FindOutMore: 'Find out more',
 	Timeline: 'Timeline',
 	HowToRegister: 'How to register',
-	HowToRegisterSo: 'How to registerSo let’s get started! In order to get a whitelist for Paras x MTVRS NFT Drops, please complete these tasks.',
+	HowToRegisterSo:
+		'How to registerSo let’s get started! In order to get a whitelist for Paras x MTVRS NFT Drops, please complete these tasks.',
 	ReadDetails: 'Read details',
 	ReadFullInformation: 'You can read full information on Paras publication',
 	Price: 'Price',
@@ -377,7 +386,7 @@ const login = {
 	LoginParas: 'Login — Paras',
 	CreateAndCollect: 'Create and Collect',
 	StartJourneyCards: 'Start your journey with digital art cards on blockchain',
-	LoginWithNEAR:  'Login with NEAR',
+	LoginWithNEAR: 'Login with NEAR',
 	CreateFreeNEARAccount: 'Create free NEAR account with Metamask',
 }
 const activity = {
@@ -429,19 +438,26 @@ const faq = {
 	FrequentlyQuestionsParas: 'Frequently Asked Questions — Paras',
 	FrequentlyQuestions: 'Frequently Asked Questions',
 	WhatIsParas: 'What is Paras?',
-	DigitalCardMarketplace: 'Paras is a digital art card marketplace built on blockchain technology that offers true ownership and digital scarcity. Paras use <a href="https: /near.org" target="_blank">NEAR cryptocurrency</a> as the medium of exchange between creators and collectors to support cross border transactions.',
+	DigitalCardMarketplace:
+		'Paras is a digital art card marketplace built on blockchain technology that offers true ownership and digital scarcity. Paras use <a href="https: /near.org" target="_blank">NEAR cryptocurrency</a> as the medium of exchange between creators and collectors to support cross border transactions.',
 	WhatIsBlockchain: 'What is blockchain?',
-	BlockchainIsTechnology: 'Blockchain is technology that allows everyone to truly own their data and digital assets. The data stored on blockchain is transparent and untempered which makes the ownership of certain assets provable and verifiable by everyone.',
+	BlockchainIsTechnology:
+		'Blockchain is technology that allows everyone to truly own their data and digital assets. The data stored on blockchain is transparent and untempered which makes the ownership of certain assets provable and verifiable by everyone.',
 	WhatIsCryptocurrency: 'What is cryptocurrency & digital asset?',
-	BothCryptocurrencyDigital: 'Both cryptocurrency & digital assets use blockchain technology to handle the ownership and their transactions. Cryptocurrency enables cross border settlement between multiple parties that are accessible by everyone. Digital assets such as artwork that are stored in blockchain can easily be transferred globally without any barrier.',
-	YouNeedNEARAccount: 'You need NEAR account & some NEAR coin to start collecting the digital cards. You can start exploring the marketplace and find the card collectibles that you like and see if it is still available for sale. You can buy the digital card from other collectors or straight from the creators. When you bought one, that card will truly be yours and you can hold it, sell it or trade it in the future.',
+	BothCryptocurrencyDigital:
+		'Both cryptocurrency & digital assets use blockchain technology to handle the ownership and their transactions. Cryptocurrency enables cross border settlement between multiple parties that are accessible by everyone. Digital assets such as artwork that are stored in blockchain can easily be transferred globally without any barrier.',
+	YouNeedNEARAccount:
+		'You need NEAR account & some NEAR coin to start collecting the digital cards. You can start exploring the marketplace and find the card collectibles that you like and see if it is still available for sale. You can buy the digital card from other collectors or straight from the creators. When you bought one, that card will truly be yours and you can hold it, sell it or trade it in the future.',
 	HowDoStartCollecting: 'How do I start collecting digital cards?',
 	WhereCanGetNEAR: 'Where can I get some NEAR?',
-	CanGetNEARFrom: 'You can get NEAR from some crypto-exchange such as <a href="https://binance.com" target="blank">Binance</a>. When you got some NEAR from exchange, you can transfer it to your <a target="blank" href="https: /wallet.near.org">NEAR wallet</a> and you are good to go.',
+	CanGetNEARFrom:
+		'You can get NEAR from some crypto-exchange such as <a href="https://binance.com" target="blank">Binance</a>. When you got some NEAR from exchange, you can transfer it to your <a target="blank" href="https: /wallet.near.org">NEAR wallet</a> and you are good to go.',
 	HowDoBecomeArtist: 'How do I become a Paras Artist?',
-	CanStartApplying: 'You can start by applying as an artist <a target="blank" href="https: /forms.gle/QsZHqa2MKXpjckj98">here</a>. Our team will review your submission and we’ll tell you the result via email.',
+	CanStartApplying:
+		'You can start by applying as an artist <a target="blank" href="https: /forms.gle/QsZHqa2MKXpjckj98">here</a>. Our team will review your submission and we’ll tell you the result via email.',
 	HowDoMakeCard: 'How do I make a digital art card?',
-	ADigitalCardOnParas: 'A digital art card on Paras follows the format of real world trading cards which are in portrait with ratio 64 : 89. The maximum file size is 16MB. Currently Paras only support image format such as png, jpg, jpeg, gifs, etc. Videos are not supported.',
+	ADigitalCardOnParas:
+		'A digital art card on Paras follows the format of real world trading cards which are in portrait with ratio 64 : 89. The maximum file size is 16MB. Currently Paras only support image format such as png, jpg, jpeg, gifs, etc. Videos are not supported.',
 }
 const p404 = {
 	NotFoundParas: 'Not Found — Paras',
@@ -456,7 +472,8 @@ const license = {
   of the non-fungible tokens (NFTs) as well as artists working with
   NFTs. The NFT License is designed to balance two concerns:`,
 	LicenseProtectingCreators: 'Protecting the hard work and ingenuity of creators',
-	LicenseGrantingOwners: 'Granting owners or collectors the freedom and flexibility to fully enjoy their non-fungible tokens',
+	LicenseGrantingOwners:
+		'Granting owners or collectors the freedom and flexibility to fully enjoy their non-fungible tokens',
 	LicenseAnyNFT: 'Any NFT project can use this license.',
 	LicenseContentIsYours: 'The Content is Yours',
 	LicenseArtistsOwnRights: `Artists own all the rights to the content they create and post on Paras.
@@ -480,15 +497,20 @@ const license = {
   the DAC doesn’t stay on the website/app after you’ve left; and`,
 
 	LicenseArtAssociated: 'What am I NOT allowed to do with the art associated with my NFT?',
-	LicenseAreNotAppropriate: 'There are a few things that aren’t appropriate uses for your NFT art. They include:',
+	LicenseAreNotAppropriate:
+		'There are a few things that aren’t appropriate uses for your NFT art. They include:',
 	LicenseModifyingArt: 'Modifying the art;',
-	LicenseUsingForCommercialize: 'Using the art for commercialize purpose without asking from the creator/artist permission',
+	LicenseUsingForCommercialize:
+		'Using the art for commercialize purpose without asking from the creator/artist permission',
 	LicenseSellThirdParty: 'Using the art to market or sell third-party products;',
-	LicenseImagesHatred: 'Using the art in connection with images of hatred, violence, or other inappropriate behavior; or',
-	LicenseTryingTrademark: 'Trying to trademark your art, or otherwise acquire intellectual property rights in it.',
+	LicenseImagesHatred:
+		'Using the art in connection with images of hatred, violence, or other inappropriate behavior; or',
+	LicenseTryingTrademark:
+		'Trying to trademark your art, or otherwise acquire intellectual property rights in it.',
 	Version10: 'Version 1.0',
 	LicenseDefinitions: '1. Definitions.',
-	LicenseArtMeans: '“Art” means any art, design, and drawings that may be associated with an NFT that you Own.',
+	LicenseArtMeans:
+		'“Art” means any art, design, and drawings that may be associated with an NFT that you Own.',
 	LicenseNFTMeans: `"NFT" means any blockchain-tracked, non-fungible token.`,
 	LicenseConcerningAnNFT: `“Own” means, concerning an NFT, an NFT that you have purchased or
   otherwise rightfully acquired from a legitimate source, where proof of
@@ -503,7 +525,7 @@ const license = {
   applications and disclosures), copyrights, trade secrets, trademarks,
   know-how, or any other intellectual property rights recognized in any
   country or jurisdiction in the world.`,
-	LicenseThirdPartyIP:  `“Third Party IP” means any third party patent rights (including, without
+	LicenseThirdPartyIP: `“Third Party IP” means any third party patent rights (including, without
       limitation, patent applications and disclosures), copyrights, trade
       secrets, trademarks, know-how, or any other intellectual property rights
       recognized in any country or jurisdiction in the world.`,
@@ -520,17 +542,25 @@ const license = {
   non-transferable, royalty-free license to use, copy, and display the
   Art for your Purchased NFTs, solely for the following purposes:`,
 	LicenseForYourPersonal: 'for your own personal, non-commercial use;',
-	LicenseAsPartMarketplace: 'as part of a marketplace that permits the purchase and sale of your NFTs, provided that the marketplace cryptographically verifies each NFT owner’s rights to display the Art for their Purchased NFTs to ensure that only the actual owner can display the Art; or',
-	LicenseThirdPartyWebsite: 'as part of a third-party website or application that permits the inclusion, involvement, or participation of your NFTs, provided that the website/application cryptographically verifies each NFT owner’s rights to display the Art for their Purchased NFTs to ensure that only the actual owner can display the Art, and provided that the Art is no longer visible once the owner of the Purchased NFT leaves the website/application.',
-	LicenseCommercialUse: 'Commercial Use. Subject to your continued compliance with the terms of this License, Artist grants you a limited, worldwide, non-exclusive, non-transferable license to use, copy, and display the Art for your Purchased NFTs to commercialize your own merchandise that includes, contains or consists of the Art for your Purchased NFTs .',
+	LicenseAsPartMarketplace:
+		'as part of a marketplace that permits the purchase and sale of your NFTs, provided that the marketplace cryptographically verifies each NFT owner’s rights to display the Art for their Purchased NFTs to ensure that only the actual owner can display the Art; or',
+	LicenseThirdPartyWebsite:
+		'as part of a third-party website or application that permits the inclusion, involvement, or participation of your NFTs, provided that the website/application cryptographically verifies each NFT owner’s rights to display the Art for their Purchased NFTs to ensure that only the actual owner can display the Art, and provided that the Art is no longer visible once the owner of the Purchased NFT leaves the website/application.',
+	LicenseCommercialUse:
+		'Commercial Use. Subject to your continued compliance with the terms of this License, Artist grants you a limited, worldwide, non-exclusive, non-transferable license to use, copy, and display the Art for your Purchased NFTs to commercialize your own merchandise that includes, contains or consists of the Art for your Purchased NFTs .',
 	LicenseRestrictions: '4. Restrictions.',
-	LicenseYouAgree: 'You agree that you may not, nor permit any third party to do or attempt to do any of the foregoing without Artist’s express prior written consent in each case: i) use the Art for your Purchased NFTs in connection with images, videos, or other forms of media that depict hatred, intolerance, violence, cruelty, or anything else that could reasonably be found to constitute hate speech or otherwise infringe upon the rights of others; To the extent that Art associated with your Purchased NFTs contains Third Party IP (e.g., licensed intellectual property from a celebrity, athlete, or other public figures), you understand and agree as follows:',
-	LicenseHaveRightTo: 'that you will not have the right to use such Third Party IP in any way except as incorporated in the Art, and subject to the license and restrictions contained herein;',
+	LicenseYouAgree:
+		'You agree that you may not, nor permit any third party to do or attempt to do any of the foregoing without Artist’s express prior written consent in each case: i) use the Art for your Purchased NFTs in connection with images, videos, or other forms of media that depict hatred, intolerance, violence, cruelty, or anything else that could reasonably be found to constitute hate speech or otherwise infringe upon the rights of others; To the extent that Art associated with your Purchased NFTs contains Third Party IP (e.g., licensed intellectual property from a celebrity, athlete, or other public figures), you understand and agree as follows:',
+	LicenseHaveRightTo:
+		'that you will not have the right to use such Third Party IP in any way except as incorporated in the Art, and subject to the license and restrictions contained herein;',
 	LicenseInSection3: 'that the Commercial Use license in Section 3(b) above will not apply;',
-	LicenseDependingOn: 'that, depending on the nature of the license granted from the owner of the Third Party IP, Artist may need to pass through additional restrictions on your ability to use the Complete Art; and',
-	LicenseToTheExtent: 'to the extent that the Artist informs you of such additional restrictions in writing (email is permissible), you will be responsible for complying with all such restrictions from the date that you receive the notice, and that failure to do so will be deemed a breach of this license. The restriction in Section 4 will survive the expiration or termination of this License.',
+	LicenseDependingOn:
+		'that, depending on the nature of the license granted from the owner of the Third Party IP, Artist may need to pass through additional restrictions on your ability to use the Complete Art; and',
+	LicenseToTheExtent:
+		'to the extent that the Artist informs you of such additional restrictions in writing (email is permissible), you will be responsible for complying with all such restrictions from the date that you receive the notice, and that failure to do so will be deemed a breach of this license. The restriction in Section 4 will survive the expiration or termination of this License.',
 	LicenseTermsOf: '5. Terms of License.',
-	LicenseTheLicenseGranted: 'The license granted in Section 3 above applies only to the extent that you continue to Own the applicable Purchased NFT. If at any time you sell, trade, donate, give away, transfer, or otherwise dispose of your Purchased NFT for any reason, the license granted in Section 3 will immediately expire concerning those NFTs without the requirement of notice, and you will have no further rights in or to the Art for those NFTs.',
+	LicenseTheLicenseGranted:
+		'The license granted in Section 3 above applies only to the extent that you continue to Own the applicable Purchased NFT. If at any time you sell, trade, donate, give away, transfer, or otherwise dispose of your Purchased NFT for any reason, the license granted in Section 3 will immediately expire concerning those NFTs without the requirement of notice, and you will have no further rights in or to the Art for those NFTs.',
 }
 const languages = {
 	LanguagesParas: 'Languages — Paras',

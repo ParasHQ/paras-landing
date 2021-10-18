@@ -9,9 +9,7 @@ const Footer = () => {
 		toast.show({
 			text: (
 				<div className="text-sm text-gray-900">
-					<p>
-						{localeLn('UseOwnRisk')}
-					</p>
+					<p>{localeLn('UseOwnRisk')}</p>
 				</div>
 			),
 			type: 'info',

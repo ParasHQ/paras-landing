@@ -33,8 +33,8 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 						{localeLn('Accept a Bid')}
 					</h1>
 					<p className="text-white mt-2">
-						{localeLn('AboutToAcceptBid')} <b>{token.metadata.name}</b>{' '}
-						{localeLn('From')} <b>{data.buyer_id}</b>
+						{localeLn('AboutToAcceptBid')} <b>{token.metadata.name}</b> {localeLn('From')}{' '}
+						<b>{data.buyer_id}</b>
 					</p>
 					<div className="text-white mt-4 text-2xl font-bold text-center">
 						{`${prettyBalance(data.price, 24, 4)} Ⓝ `}

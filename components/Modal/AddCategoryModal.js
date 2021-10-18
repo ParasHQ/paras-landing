@@ -81,9 +81,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 		if (currentUser !== getCreatorId() && !curators.includes(currentUser)) {
 			toast.show({
 				text: (
-					<div className="font-semibold text-center text-sm">
-						{localeLn('NotCreatorOfCard')}
-					</div>
+					<div className="font-semibold text-center text-sm">{localeLn('NotCreatorOfCard')}</div>
 				),
 				type: 'error',
 				duration: 2500,
@@ -186,9 +184,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 									placeholder="Token URL"
 								/>
 								<div className="opacity-75 mb-2 text-sm">
-									{localeLn(
-										'Curators_Card_Submission'
-									)}
+									{localeLn('Curators_Card_Submission')}
 								</div>
 								<div className="opacity-75 mb-6 text-sm">
 									*Only the creator that allowed to submit their NFT

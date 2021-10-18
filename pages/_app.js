@@ -29,7 +29,7 @@ function MyApp({ Component, pageProps }) {
 	const { locale, defaultLocale, pathname } = router
 	let localeCopy = locales[locale]
 	const defaultLocaleCopy = locales[defaultLocale]
-	localeCopy = fallback({...defaultLocaleCopy},localeCopy||{})
+	localeCopy = fallback({ ...defaultLocaleCopy }, localeCopy || {})
 	let messages =
 		localeCopy[pathname] ||
 		localeCopy['defaultAll'] ||

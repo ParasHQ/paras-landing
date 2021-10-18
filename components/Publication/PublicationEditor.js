@@ -255,9 +255,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			if (e.target.files[0].size > 3 * 1024 * 1024) {
 				toast.show({
 					text: (
-						<div className="font-semibold text-center text-sm">
-							{localeLn('MaximumSize3MB')}
-						</div>
+						<div className="font-semibold text-center text-sm">{localeLn('MaximumSize3MB')}</div>
 					),
 					type: 'error',
 					duration: null,
@@ -422,9 +420,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			{showLeavingConfirmation && (
 				<Modal close={() => setShowLeavingConfirmation(false)} closeOnBgClick closeOnEscape>
 					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
-						<div className="w-full">
-							{localeLn('SureToLeavepage')}
-						</div>
+						<div className="w-full">{localeLn('SureToLeavepage')}</div>
 						<div className="flex space-x-4">
 							<button
 								className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"

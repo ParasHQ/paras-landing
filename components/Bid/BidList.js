@@ -49,9 +49,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 		) {
 			toast.show({
 				text: (
-					<div className="font-semibold text-center text-sm">
-						{localeLn('MakeSureNotOnSale')}
-					</div>
+					<div className="font-semibold text-center text-sm">{localeLn('MakeSureNotOnSale')}</div>
 				),
 				type: 'error',
 				duration: 2500,
@@ -149,9 +147,7 @@ const BidItem = ({ data, userOwnership, token, fetchBid }) => {
 			fetchAfterCancel &&
 				toast.show({
 					text: (
-						<div className="font-semibold text-center text-sm">
-							{localeLn('BidHasDeleted')}
-						</div>
+						<div className="font-semibold text-center text-sm">{localeLn('BidHasDeleted')}</div>
 					),
 					type: 'success',
 					duration: 2500,

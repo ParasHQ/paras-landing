@@ -32,21 +32,11 @@ export default function Drops() {
 		},
 		{
 			date: localeLn('June16th'),
-			note: [
-				localeLn('NFTDropsFor'),
-				localeLn(
-					'Drops_Will_Start_On'
-				),
-			],
+			note: [localeLn('NFTDropsFor'), localeLn('Drops_Will_Start_On')],
 		},
 		{
 			date: localeLn('June19th'),
-			note: [
-				localeLn('NFTDropsPublic'),
-				localeLn(
-					'Remaining_Drops_Will_Start'
-				),
-			],
+			note: [localeLn('NFTDropsPublic'), localeLn('Remaining_Drops_Will_Start')],
 		},
 		{
 			date: localeLn('June25th'),
@@ -57,9 +47,7 @@ export default function Drops() {
 	const tasks = [
 		localeLn('FillTheFormOf'),
 		localeLn('Follow MTVRS on Twitter (https://twitter.com/themtvrs)'),
-		localeLn(
-			'Retweet_Like_Tag'
-		),
+		localeLn('Retweet_Like_Tag'),
 		localeLn('JoinMTVRSTelegram'),
 		localeLn('JoinMTVRSDiscord'),
 		localeLn('FollowParasOnTwitter'),
@@ -153,16 +141,8 @@ export default function Drops() {
 							)}
 						/>
 						<div className="max-w-xl m-auto">
-							<p className="text-gray-400 mb-4">
-								{localeLn(
-									'MTVRS_Is_World'
-								)}
-							</p>
-							<p className="text-gray-400 mb-4">
-								{localeLn(
-									'MTVR_First_NFT_Drop'
-								)}
-							</p>
+							<p className="text-gray-400 mb-4">{localeLn('MTVRS_Is_World')}</p>
+							<p className="text-gray-400 mb-4">{localeLn('MTVR_First_NFT_Drop')}</p>
 							<div className="my-8 flex justify-center space-x-8 items-center">
 								<p
 									className="outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100 mb-8 cursor-pointer"
@@ -248,11 +228,7 @@ export default function Drops() {
 				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
 					{localeLn('HowToRegister')}
 				</h1>
-				<p className="mb-2 break-all">
-					{localeLn(
-						'How_To_Register_So'
-					)}
-				</p>
+				<p className="mb-2 break-all">{localeLn('How_To_Register_So')}</p>
 				<ReactLinkify
 					componentDecorator={(decoratedHref, decoratedText, key) => (
 						<a target="blank" href={decoratedHref} key={key} className="italic">
@@ -270,9 +246,7 @@ export default function Drops() {
 					<h1 className="text-center text-gray-100 font-bold text-3xl mt-12 mb-2">
 						{localeLn('ReadDetails')}
 					</h1>
-					<p className="text-gray-200">
-						{localeLn('ReadFullInformation')}
-					</p>
+					<p className="text-gray-200">{localeLn('ReadFullInformation')}</p>
 					<div className="flex justify-center my-8">
 						<a
 							className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer"
