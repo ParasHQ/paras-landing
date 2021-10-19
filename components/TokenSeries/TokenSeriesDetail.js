@@ -193,9 +193,12 @@ const TokenSeriesDetail = ({ token, className }) => {
 					{isShowButton && (
 						<div className="p-3">
 							{token.is_non_mintable || token.total_mint === token.metadata.copies ? (
-								<div>
+								<div className="flex space-x-2">
 									<Button size="md" onClick={() => changeActiveTab('owners')} isFullWidth>
 										{localeLn('CheckOwners')}
+									</Button>
+									<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
+										{`Place an offer`}
 									</Button>
 								</div>
 							) : isCreator() ? (
