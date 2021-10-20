@@ -162,6 +162,7 @@ const CardInfo = {
 	Description: '描述',
 	View: '查看',
 	Collection: '收集',
+	Collectibles: '收藏品',
 	Publication: '出版',
 	History: '历史',
 	Bids: '竞价',
@@ -562,8 +563,8 @@ const license = {
 		'The license granted in Section 3 above applies only to the extent that you continue to Own the applicable Purchased NFT. If at any time you sell, trade, donate, give away, transfer, or otherwise dispose of your Purchased NFT for any reason, the license granted in Section 3 will immediately expire concerning those NFTs without the requirement of notice, and you will have no further rights in or to the Art for those NFTs.',
 }
 const languages = {
-	LanguagesParas: 'Languages — Paras',
-	Languages: 'Languages',
+	LanguagesParas: '多语言 — Paras',
+	Languages: '多语言',
 	AvailableInFollowingLang: 'Paras is available in the following languages:',
 }
 const myBids = {
