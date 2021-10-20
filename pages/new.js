@@ -815,14 +815,14 @@ const NewPage = () => {
 												<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
 											</svg>
 										</div>
-										<Scrollbars ref={scrollBar} autoHeight>
+										<Scrollbars ref={scrollBar} autoHeight autoHide>
 											{attributes.map((attr, idx) => (
-												<div key={attr.id} className="flex space-x-2 items-center mb-2">
+												<div key={attr.id} className="flex space-x-2 items-center mb-2 relative">
 													<InputText
 														ref={register({ required: true })}
 														name={`attributes.${idx}.trait_type`}
 														className={`${
-															errors.attributes && errors.attributes[idx].trait_type && 'error'
+															errors.attributes && errors.attributes[idx]?.trait_type && 'error'
 														}`}
 														placeholder="Type"
 													/>
@@ -830,7 +830,7 @@ const NewPage = () => {
 														ref={register({ required: true })}
 														name={`attributes.${idx}.value`}
 														className={`${
-															errors.attributes && errors.attributes[idx].value && 'error'
+															errors.attributes && errors.attributes[idx]?.value && 'error'
 														}`}
 														placeholder="Value"
 													/>
@@ -841,6 +841,7 @@ const NewPage = () => {
 															viewBox="0 0 16 16"
 															fill="none"
 															transform="rotate(45)"
+															className="z-10"
 															xmlns="http://www.w3.org/2000/svg"
 														>
 															<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
