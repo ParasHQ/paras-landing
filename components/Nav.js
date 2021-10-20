@@ -496,12 +496,8 @@ const Nav = () => {
 							</Link>
 						</div> */}
 						<div className="px-3 text-gray-100 hidden md:block">
-							<a
-								href="https://ipfs.fleek.co/ipfs/bafybeihu6atdada45rmx4sszny6sahrzas4tuzrpuufdcpe6b63r6ugdce"
-								target="_blank"
-								className="flex cursor-pointer "
-							>
-								{localeLn('Whitepaper')}
+							<a href="https://stats.paras.id" target="_blank" className="flex cursor-pointer ">
+								{localeLn('Stats')}
 							</a>
 						</div>
 						<div className="px-3">
@@ -561,12 +557,8 @@ const Nav = () => {
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
-								<a
-									href="https://ipfs.fleek.co/ipfs/bafybeihu6atdada45rmx4sszny6sahrzas4tuzrpuufdcpe6b63r6ugdce"
-									target="_blank"
-									className="p-4 block w-full"
-								>
-									{localeLn('Whitepaper')}
+								<a href="https://stats.paras.id" target="_blank" className="p-4 block w-full">
+									{localeLn('Stats')}
 								</a>
 							</div>
 							{/* <div className="text-gray-100">

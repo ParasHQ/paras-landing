@@ -41,8 +41,17 @@ const Footer = () => {
 							<a className="flex cursor-pointer ">{localeLn('FAQ')}</a>
 						</Link>
 					</div>
+					<div className="flex items-center pt-2 px-2">
+						<a
+							href="https://ipfs.fleek.co/ipfs/bafybeihu6atdada45rmx4sszny6sahrzas4tuzrpuufdcpe6b63r6ugdce"
+							target="_blank"
+							className="flex cursor-pointer "
+						>
+							{localeLn('Whitepaper')}
+						</a>
+					</div>
 				</div>
-				<div className="flex flex-wrap justify-center -mx-2">
+				<div className="flex flex-wrap justify-center md:justify-start -mx-2">
 					<div className="flex items-center pt-2 px-2">
 						<a href="https://twitter.com/ParasHQ" target="_blank" className="flex cursor-pointer ">
 							{localeLn('Twitter')}
