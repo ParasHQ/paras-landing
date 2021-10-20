@@ -200,6 +200,7 @@ const CardInfo = {
 	TotalBidAmount: 'Total bid Amount',
 	Redirecting: 'Redirecting...',
 	SubmitBid: 'Submit Bid',
+	Attributes: 'Attributes',
 }
 const publication = {
 	PublicationParas: 'Publication — Paras',

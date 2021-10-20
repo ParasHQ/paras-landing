@@ -74,6 +74,24 @@ const TabInfo = ({ localToken, isNFT }) => {
 					</div>
 				)}
 			</div>
+			{localToken.metadata.attributes && (
+				<div className="flex bg-gray-800 mt-3 p-3 pb-1 rounded-md shadow-md">
+					<div>
+						<p className="text-sm text-white font-bold mb-2">{localeLn('Attributes')}</p>
+						<div className="flex flex-wrap">
+							{localToken.metadata.attributes.map((attr, idx) => (
+								<div
+									key={idx}
+									className="px-2 py-1 rounded-md border border-gray-700 flex space-x-1 mr-2 mb-2"
+								>
+									<p className="text-white opacity-80 text-sm">{attr.trait_type}</p>
+									<p className="text-white font-medium text-sm">{attr.value}</p>
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+			)}
 			<div className="bg-gray-800 text-gray-100  mt-3 p-3 rounded-md shadow-md">
 				<p className="text-sm text-white font-bold mb-2">{localeLn('TokenInfo')}</p>
 				<div className="flex justify-between text-sm">

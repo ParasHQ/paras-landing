@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Card from 'components/Card/Card'
 import ImgCrop from 'components/ImgCrop'
 import Nav from 'components/Nav'
@@ -21,11 +21,13 @@ import { InputText, InputTextarea } from 'components/Common/form'
 import CreateCollectionModal from 'components/Collection/CreateCollectionModal'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import Scrollbars from 'react-custom-scrollbars'
 
 const LIMIT = 10
 
 const NewPage = () => {
 	const { localeLn } = useIntl()
+	const scrollBar = useRef()
 	const store = useStore()
 	const router = useRouter()
 	const toast = useToast()
@@ -43,6 +45,7 @@ const NewPage = () => {
 
 	const [showAlertErr, setShowAlertErr] = useState(false)
 	const [choosenCollection, setChoosenCollection] = useState({})
+	const [attributes, setAttributes] = useState([])
 
 	const [collectionList, setCollectionList] = useState([])
 	const [page, setPage] = useState(0)
@@ -64,6 +67,7 @@ const NewPage = () => {
 			collection: choosenCollection.collection,
 			collection_id: choosenCollection.collection_id,
 			creator_id: store.currentUser,
+			attributes: formInput.attributes,
 			blurhash: blurhash,
 		})
 		const blob = new Blob([reference], { type: 'text/plain' })
@@ -247,6 +251,18 @@ const NewPage = () => {
 		if (categoryId) {
 			return categoryId.split('-').map(capitalize).join(' ')
 		}
+	}
+
+	const addNewAttributes = () => {
+		setAttributes([...attributes, { id: new Date().getTime(), trait_type: null, value: null }])
+		setTimeout(() => {
+			scrollBar?.current.scrollToBottom()
+		}, 100)
+	}
+
+	const removeAttributes = (id) => {
+		const temp = attributes.filter((attr) => attr.id !== id)
+		setAttributes(temp)
 	}
 
 	return (
@@ -594,11 +610,6 @@ const NewPage = () => {
 										{localeLn('Back')}
 									</button>
 									<div>{step + 1}/4</div>
-									{step === 1 && (
-										<button disabled={!imgFile} onClick={() => setStep(step + 1)}>
-											{localeLn('Next')}
-										</button>
-									)}
 									<button
 										disabled={!choosenCollection.collection_id}
 										onClick={() => setStep(step + 1)}
@@ -656,11 +667,9 @@ const NewPage = () => {
 									<div className="flex justify-between py-2">
 										<button onClick={_handleBack}>{localeLn('Back')}</button>
 										<div>{step + 1}/4</div>
-										{step === 1 && (
-											<button disabled={!imgFile} onClick={() => setStep(step + 1)}>
-												{localeLn('Next')}
-											</button>
-										)}
+										<button disabled={!imgFile} onClick={() => setStep(step + 1)}>
+											{localeLn('Next')}
+										</button>
 									</div>
 								</div>
 								<div className="mt-4 relative border-2 h-56 border-dashed rounded-md cursor-pointer overflow-hidden border-gray-400">
@@ -790,6 +799,56 @@ const NewPage = () => {
 										<div className="mt-2 text-sm text-red-500">
 											{errors.supply?.type === 'validate' && 'Only use rounded number'}
 										</div>
+									</div>
+									<div className="mt-4">
+										<div className="flex items-center justify-between mb-2">
+											<label className="block text-sm">{localeLn('Attributes')}</label>
+											<svg
+												width="14"
+												height="14"
+												viewBox="0 0 16 16"
+												fill="none"
+												className="cursor-pointer"
+												onClick={addNewAttributes}
+												xmlns="http://www.w3.org/2000/svg"
+											>
+												<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
+											</svg>
+										</div>
+										<Scrollbars ref={scrollBar} autoHeight>
+											{attributes.map((attr, idx) => (
+												<div key={attr.id} className="flex space-x-2 items-center mb-2">
+													<InputText
+														ref={register({ required: true })}
+														name={`attributes.${idx}.trait_type`}
+														className={`${
+															errors.attributes && errors.attributes[idx].trait_type && 'error'
+														}`}
+														placeholder="Type"
+													/>
+													<InputText
+														ref={register({ required: true })}
+														name={`attributes.${idx}.value`}
+														className={`${
+															errors.attributes && errors.attributes[idx].value && 'error'
+														}`}
+														placeholder="Name"
+													/>
+													<div className="cursor-pointer" onClick={() => removeAttributes(attr.id)}>
+														<svg
+															width="14"
+															height="14"
+															viewBox="0 0 16 16"
+															fill="none"
+															transform="rotate(45)"
+															xmlns="http://www.w3.org/2000/svg"
+														>
+															<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
+														</svg>
+													</div>
+												</div>
+											))}
+										</Scrollbars>
 									</div>
 								</div>
 							</form>
