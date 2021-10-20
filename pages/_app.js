@@ -6,7 +6,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 import { IntlProvider } from 'react-intl'
 import * as locales from '../content/locale'
-import { getLanguage, fallback } from '../content/locale'
+import { getLanguage } from '../content/locale'
 import * as gtag from 'lib/gtag'
 import cookie from 'lib/cookie'
 
@@ -22,7 +22,6 @@ import ToastProvider from 'hooks/useToast'
 import { SWRConfig } from 'swr'
 import * as Sentry from '@sentry/nextjs'
 import { sentryCaptureException } from 'lib/sentry'
-import { isEmpty } from 'utils/common'
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
