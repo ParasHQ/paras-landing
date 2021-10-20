@@ -8,7 +8,8 @@ const LanguagesPage = () => {
 
 	const setLang = async (lang) => {
 		localStorage.setItem('lang', lang)
-		window.location.href = location.origin + '/' + lang
+
+		window.location.replace(window.location.origin + '/' + lang)
 	}
 
 	return (

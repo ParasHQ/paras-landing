@@ -22,6 +22,7 @@ import ToastProvider from 'hooks/useToast'
 import { SWRConfig } from 'swr'
 import * as Sentry from '@sentry/nextjs'
 import { sentryCaptureException } from 'lib/sentry'
+import { isEmpty } from 'utils/common'
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
@@ -31,8 +32,15 @@ function MyApp({ Component, pageProps }) {
 	let localeCopy = locales[locale]
 	const defaultLocaleCopy = locales[defaultLocale]
 
-	localeCopy = fallback({ ...defaultLocaleCopy }, localeCopy || {})
-	const messages = localeCopy[pathname] || localeCopy['defaultAll']
+	const messages = localeCopy[pathname]
+		? {
+				...defaultLocaleCopy[pathname],
+				...localeCopy[pathname],
+		  }
+		: {
+				...defaultLocaleCopy['defaultAll'],
+				...localeCopy['defaultAll'],
+		  }
 
 	const counter = async (url) => {
 		// check cookie uid
