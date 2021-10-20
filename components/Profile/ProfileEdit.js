@@ -41,7 +41,7 @@ const ProfileEdit = ({ close }) => {
 			return
 		}
 
-		if (weibo && !checkUrl(weibo) && !weibo.includes('weibo.com')) {
+		if (weibo && (!checkUrl(weibo) || !weibo.includes('weibo.com'))) {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
@@ -170,7 +170,7 @@ const ProfileEdit = ({ close }) => {
 							value={weibo}
 							onChange={(e) => setWeibo(e.target.value)}
 							className="focus:border-gray-100"
-							placeholder="Weibo"
+							placeholder="Weibo URL"
 						/>
 					</div>
 					<div className="my-2 flex space-x-4">
