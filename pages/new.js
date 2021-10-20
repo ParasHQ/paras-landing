@@ -832,7 +832,7 @@ const NewPage = () => {
 														className={`${
 															errors.attributes && errors.attributes[idx].value && 'error'
 														}`}
-														placeholder="Name"
+														placeholder="Value"
 													/>
 													<div className="cursor-pointer" onClick={() => removeAttributes(attr.id)}>
 														<svg
