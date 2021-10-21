@@ -49,40 +49,36 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 		}
 	}, [show])
 
-	const hasStorageBalance = async (token) => {
+	const hasStorageBalance = async () => {
 		try {
-			if (!token.approval_id) {
-				const currentStorage = await near.wallet
-					.account()
-					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `storage_balance_of`, {
-						account_id: currentUser,
-					})
+			const currentStorage = await near.wallet
+				.account()
+				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `storage_balance_of`, {
+					account_id: currentUser,
+				})
 
-				const supplyPerOwner = await near.wallet
-					.account()
-					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_supply_by_owner_id`, {
-						account_id: currentUser,
-					})
+			const supplyPerOwner = await near.wallet
+				.account()
+				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_supply_by_owner_id`, {
+					account_id: currentUser,
+				})
 
-				const usedStorage = JSBI.multiply(
-					JSBI.BigInt(parseInt(supplyPerOwner) + 1),
-					JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
-				)
+			const usedStorage = JSBI.multiply(
+				JSBI.BigInt(parseInt(supplyPerOwner) + 1),
+				JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
+			)
 
-				if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
-					return true
-				}
-				return false
-			} else {
+			if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
 				return true
 			}
+			return false
 		} catch (err) {
 			sentryCaptureException(err)
 		}
 	}
 
 	const onPlaceBid = async ({ bidAmount }) => {
-		const hasDepositStorage = await hasStorageBalance(data)
+		const hasDepositStorage = await hasStorageBalance()
 
 		try {
 			const depositParams = {
