@@ -67,7 +67,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 							<Fragment key={idx}>
 								<span
 									onClick={() => router.push(`/market/${cat.category_id}`)}
-									className="cursor-pointer text-gray-200 font-semibold border-b-2 border-transparent hover:border-gray-200"
+									className="cursor-pointer text-gray-200 font-semibold hover:opacity-80"
 								>
 									{cat.name}
 								</span>
