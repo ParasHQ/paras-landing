@@ -5,7 +5,7 @@ import Card from 'components/Card/Card'
 import ImgCrop from 'components/ImgCrop'
 import Nav from 'components/Nav'
 import useStore from 'lib/store'
-import { useForm } from 'react-hook-form'
+import { useForm, useFieldArray } from 'react-hook-form'
 import Modal from 'components/Modal'
 import { useRouter } from 'next/router'
 import near from 'lib/near'
@@ -32,7 +32,11 @@ const NewPage = () => {
 	const router = useRouter()
 	const toast = useToast()
 	const [formInput, setFormInput] = useState({})
-	const { errors, register, handleSubmit, watch, setValue, getValues } = useForm()
+	const { errors, control, register, handleSubmit, watch, setValue, getValues } = useForm()
+	const { fields, append, remove } = useFieldArray({
+		control,
+		name: 'attributes',
+	})
 
 	const [showImgCrop, setShowImgCrop] = useState(false)
 	const [imgFile, setImgFile] = useState('')
@@ -45,7 +49,6 @@ const NewPage = () => {
 
 	const [showAlertErr, setShowAlertErr] = useState(false)
 	const [choosenCollection, setChoosenCollection] = useState({})
-	const [attributes, setAttributes] = useState([])
 
 	const [collectionList, setCollectionList] = useState([])
 	const [page, setPage] = useState(0)
@@ -156,6 +159,7 @@ const NewPage = () => {
 		setValue('quantity', formInput.quantity)
 		setValue('amount', formInput.amount)
 		setValue('royalty', formInput.royalty)
+		setValue('attributes', formInput.attributes)
 	}, [step])
 
 	const _updateValues = () => {
@@ -251,18 +255,6 @@ const NewPage = () => {
 		if (categoryId) {
 			return categoryId.split('-').map(capitalize).join(' ')
 		}
-	}
-
-	const addNewAttributes = () => {
-		setAttributes([...attributes, { id: new Date().getTime(), trait_type: null, value: null }])
-		setTimeout(() => {
-			scrollBar?.current.scrollToBottom()
-		}, 100)
-	}
-
-	const removeAttributes = (id) => {
-		const temp = attributes.filter((attr) => attr.id !== id)
-		setAttributes(temp)
 	}
 
 	return (
@@ -801,7 +793,7 @@ const NewPage = () => {
 										</div>
 									</div>
 									<div className="mt-4">
-										<div className="flex items-center justify-between mb-2">
+										<div className="flex items-center justify-between mb-1">
 											<label className="block text-sm">{localeLn('Attributes')}</label>
 											<svg
 												width="14"
@@ -809,14 +801,14 @@ const NewPage = () => {
 												viewBox="0 0 16 16"
 												fill="none"
 												className="cursor-pointer"
-												onClick={addNewAttributes}
+												onClick={() => append({ trait_type: '', value: '' })}
 												xmlns="http://www.w3.org/2000/svg"
 											>
 												<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
 											</svg>
 										</div>
 										<Scrollbars ref={scrollBar} autoHeight autoHide>
-											{attributes.map((attr, idx) => (
+											{fields.map((attr, idx) => (
 												<div key={attr.id} className="flex space-x-2 items-center mb-2">
 													<InputText
 														ref={register({ required: true })}
@@ -824,6 +816,7 @@ const NewPage = () => {
 														className={`${
 															errors.attributes && errors.attributes[idx]?.trait_type && 'error'
 														}`}
+														defaultValue={formInput.attributes?.[idx]?.trait_type || ''}
 														placeholder="Type"
 													/>
 													<InputText
@@ -832,9 +825,10 @@ const NewPage = () => {
 														className={`${
 															errors.attributes && errors.attributes[idx]?.value && 'error'
 														}`}
+														defaultValue={formInput.attributes?.[idx]?.value || ''}
 														placeholder="Value"
 													/>
-													<div className="cursor-pointer" onClick={() => removeAttributes(attr.id)}>
+													<div className="cursor-pointer" onClick={() => remove(idx)}>
 														<svg
 															width="14"
 															height="14"
