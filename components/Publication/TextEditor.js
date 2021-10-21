@@ -54,9 +54,7 @@ const TextEditor = ({
 			if (e.target.files[0].size > 3 * 1024 * 1024) {
 				toast.show({
 					text: (
-						<div className="font-semibold text-center text-sm">
-							{localeLn('Maximum file size 3MB')}
-						</div>
+						<div className="font-semibold text-center text-sm">{localeLn('MaximumSize3MB')}</div>
 					),
 					type: 'error',
 					duration: null,
@@ -217,7 +215,7 @@ const VideoButton = ({ theme, onAddVideo }) => {
 					<div className="w-full max-w-md p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
 						<div className="m-auto">
 							<label className="mb-4 block text-white text-2xl font-bold">
-								{localeLn('Embedd video')}
+								{localeLn('EmbeddVideo')}
 							</label>
 							<input
 								type="text"
@@ -227,9 +225,7 @@ const VideoButton = ({ theme, onAddVideo }) => {
 								className={`resize-none h-auto focus:border-gray-100 mb-4 text-black`}
 								placeholder="Video url"
 							/>
-							<p className="text-gray-300 text-sm italic">
-								{localeLn('Please enter link of youtube video')}
-							</p>
+							<p className="text-gray-300 text-sm italic">{localeLn('EnterLinkYoutube')}</p>
 							<button
 								className="font-semibold mt-4 py-3 w-full rounded-md bg-primary text-white"
 								disabled={!checkUrl(url)}
@@ -238,7 +234,7 @@ const VideoButton = ({ theme, onAddVideo }) => {
 									triggerModal()
 								}}
 							>
-								{localeLn('Add Video')}
+								{localeLn('AddVideo')}
 							</button>
 						</div>
 					</div>

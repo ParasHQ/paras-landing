@@ -1,11 +1,11 @@
 import axios from 'axios'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Card from 'components/Card/Card'
 import ImgCrop from 'components/ImgCrop'
 import Nav from 'components/Nav'
 import useStore from 'lib/store'
-import { useForm } from 'react-hook-form'
+import { useForm, useFieldArray } from 'react-hook-form'
 import Modal from 'components/Modal'
 import { useRouter } from 'next/router'
 import near from 'lib/near'
@@ -21,16 +21,22 @@ import { InputText, InputTextarea } from 'components/Common/form'
 import CreateCollectionModal from 'components/Collection/CreateCollectionModal'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import Scrollbars from 'react-custom-scrollbars'
 
 const LIMIT = 10
 
 const NewPage = () => {
 	const { localeLn } = useIntl()
+	const scrollBar = useRef()
 	const store = useStore()
 	const router = useRouter()
 	const toast = useToast()
 	const [formInput, setFormInput] = useState({})
-	const { errors, register, handleSubmit, watch, setValue, getValues } = useForm()
+	const { errors, control, register, handleSubmit, watch, setValue, getValues } = useForm()
+	const { fields, append, remove } = useFieldArray({
+		control,
+		name: 'attributes',
+	})
 
 	const [showImgCrop, setShowImgCrop] = useState(false)
 	const [imgFile, setImgFile] = useState('')
@@ -64,6 +70,7 @@ const NewPage = () => {
 			collection: choosenCollection.collection,
 			collection_id: choosenCollection.collection_id,
 			creator_id: store.currentUser,
+			attributes: formInput.attributes,
 			blurhash: blurhash,
 		})
 		const blob = new Blob([reference], { type: 'text/plain' })
@@ -152,6 +159,7 @@ const NewPage = () => {
 		setValue('quantity', formInput.quantity)
 		setValue('amount', formInput.amount)
 		setValue('royalty', formInput.royalty)
+		setValue('attributes', formInput.attributes)
 	}, [step])
 
 	const _updateValues = () => {
@@ -261,7 +269,7 @@ const NewPage = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn('Create New Card — Paras')}</title>
+				<title>{localeLn('CreateNewCardParas')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -340,7 +348,7 @@ const NewPage = () => {
 						<div className="w-full md:w-1/2 pl-0 md:pl-2 flex items-center">
 							<div className="w-full">
 								<h1 className="mt-4 text-2xl font-bold text-white tracking-tight">
-									{localeLn('Market Data')}
+									{localeLn('MarketData')}
 								</h1>
 								<div className="text-white opacity-80">
 									{isOnSale && (
@@ -441,7 +449,7 @@ const NewPage = () => {
 									)}
 								</div>
 								<div className="mt-2 text-white opacity-80">
-									<p>{localeLn('Confirm card creation')}?</p>
+									<p>{localeLn('ConfirmCardCreation')}?</p>
 								</div>
 								<div className="">
 									<Button className="mt-4" onClick={uploadImageMetadata} isFullWidth>
@@ -464,12 +472,10 @@ const NewPage = () => {
 			{showCreatingModal && (
 				<Modal closeOnEscape={false} closeOnBgClick={false}>
 					<div className="max-w-xs m-auto p-4 bg-gray-800 rounded-md">
-						<div className="font-bold text-2xl mb-4 text-white">{localeLn('Creating Card')}</div>
+						<div className="font-bold text-2xl mb-4 text-white">{localeLn('CreatingCard')}</div>
 						<div>
 							<p className="text-gray-200 font-bold text-lg">{localeLn('Upload')}</p>
-							<p className="text-gray-200 text-sm mb-2">
-								{localeLn('Uploading your image and meta data')}
-							</p>
+							<p className="text-gray-200 text-sm mb-2">{localeLn('UploadingImageMeta')}</p>
 							<Button
 								isFullWidth
 								size="md"
@@ -490,7 +496,7 @@ const NewPage = () => {
 								{localeLn('Confirm your transaction on Near Wallet')}
 							</p>
 							<p className="text-gray-200 text-sm mb-2">
-								{localeLn('Small transaction fee is applied of')} 0.00854 Ⓝ
+								{localeLn('SmallTransactionFee')} 0.00854 Ⓝ
 							</p>
 							<Button
 								isDisabled={!(isUploading === 'success')}
@@ -579,14 +585,14 @@ const NewPage = () => {
 								style={{ width: 'calc(100% + 2rem)' }}
 							>
 								<div className="block text-sm text-white">
-									<span>{localeLn('You will submit card to')} </span>
+									<span>{localeLn('WillSubmitCardTo')} </span>
 									<span className="font-bold">{formatCategoryId(router.query.categoryId)}</span>
 								</div>
 							</div>
 						)}
 						<div>
 							<h1 className="text-2xl font-bold text-white tracking-tight">
-								{localeLn('Card Creation')}
+								{localeLn('CardCreation')}
 							</h1>
 						</div>
 						{step === 0 && (
@@ -596,11 +602,6 @@ const NewPage = () => {
 										{localeLn('Back')}
 									</button>
 									<div>{step + 1}/4</div>
-									{step === 1 && (
-										<button disabled={!imgFile} onClick={() => setStep(step + 1)}>
-											{localeLn('Next')}
-										</button>
-									)}
 									<button
 										disabled={!choosenCollection.collection_id}
 										onClick={() => setStep(step + 1)}
@@ -621,7 +622,7 @@ const NewPage = () => {
 											className="bg-gray-800 mt-2 flex items-center rounded-md overflow-hidden cursor-pointer border-2 border-gray-800"
 										>
 											<div className="h-10 w-full flex items-center justify-center flex-shrink-0 text-sm text-center font-medium">
-												+ {localeLn('Create New Collection')}
+												+ {localeLn('CreateNewCollection')}
 											</div>
 										</div>
 										{collectionList.map((item) => (
@@ -658,11 +659,9 @@ const NewPage = () => {
 									<div className="flex justify-between py-2">
 										<button onClick={_handleBack}>{localeLn('Back')}</button>
 										<div>{step + 1}/4</div>
-										{step === 1 && (
-											<button disabled={!imgFile} onClick={() => setStep(step + 1)}>
-												{localeLn('Next')}
-											</button>
-										)}
+										<button disabled={!imgFile} onClick={() => setStep(step + 1)}>
+											{localeLn('Next')}
+										</button>
 									</div>
 								</div>
 								<div className="mt-4 relative border-2 h-56 border-dashed rounded-md cursor-pointer overflow-hidden border-gray-400">
@@ -712,9 +711,7 @@ const NewPage = () => {
 														fill="rgba(229, 231, 235, 0.5)"
 													/>
 												</svg>
-												<p className="text-gray-200 mt-2 opacity-50">
-													{localeLn('Maximum size 16mb')}
-												</p>
+												<p className="text-gray-200 mt-2 opacity-50">{localeLn('Maximum16mb')}</p>
 											</div>
 										)}
 									</div>
@@ -773,7 +770,7 @@ const NewPage = () => {
 										</div>
 									</div>
 									<div className="mt-4">
-										<label className="block text-sm">{localeLn('Number of copies')}</label>
+										<label className="block text-sm">{localeLn('NumberOfCopies')}</label>
 										<InputText
 											type="number"
 											name="supply"
@@ -794,6 +791,59 @@ const NewPage = () => {
 										<div className="mt-2 text-sm text-red-500">
 											{errors.supply?.type === 'validate' && 'Only use rounded number'}
 										</div>
+									</div>
+									<div className="mt-4">
+										<div className="flex items-center justify-between mb-1">
+											<label className="block text-sm">{localeLn('Attributes')}</label>
+											<svg
+												width="14"
+												height="14"
+												viewBox="0 0 16 16"
+												fill="none"
+												className="cursor-pointer"
+												onClick={() => append({ trait_type: '', value: '' })}
+												xmlns="http://www.w3.org/2000/svg"
+											>
+												<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
+											</svg>
+										</div>
+										<Scrollbars ref={scrollBar} autoHeight autoHide>
+											{fields.map((attr, idx) => (
+												<div key={attr.id} className="flex space-x-2 items-center mb-2">
+													<InputText
+														ref={register({ required: true })}
+														name={`attributes.${idx}.trait_type`}
+														className={`${
+															errors.attributes && errors.attributes[idx]?.trait_type && 'error'
+														}`}
+														defaultValue={formInput.attributes?.[idx]?.trait_type || ''}
+														placeholder="Type"
+													/>
+													<InputText
+														ref={register({ required: true })}
+														name={`attributes.${idx}.value`}
+														className={`${
+															errors.attributes && errors.attributes[idx]?.value && 'error'
+														}`}
+														defaultValue={formInput.attributes?.[idx]?.value || ''}
+														placeholder="Value"
+													/>
+													<div className="cursor-pointer" onClick={() => remove(idx)}>
+														<svg
+															width="14"
+															height="14"
+															viewBox="0 0 16 16"
+															fill="none"
+															transform="rotate(45)"
+															className="relative z-10"
+															xmlns="http://www.w3.org/2000/svg"
+														>
+															<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
+														</svg>
+													</div>
+												</div>
+											))}
+										</Scrollbars>
 									</div>
 								</div>
 							</form>
@@ -847,12 +897,12 @@ const NewPage = () => {
 											/>
 										</div>
 										<label htmlFor="put-marketplace" className="block text-sm">
-											{localeLn('Put on Marketplace')}
+											{localeLn('PutOnMarketplace')}
 										</label>
 									</div>
 									{isOnSale && (
 										<>
-											<label className="block text-sm">{localeLn('Sale price')}</label>
+											<label className="block text-sm">{localeLn('SalePrice')}</label>
 											<div className="relative">
 												<InputText
 													type="number"

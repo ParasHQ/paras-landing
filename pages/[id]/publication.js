@@ -118,7 +118,7 @@ const Publication = ({ userProfile, accountId }) => {
 							<div className="w-40 m-auto">
 								<img src="/cardstack.png" className="opacity-75" />
 							</div>
-							<p className="mt-4">{localeLn('No Publications')}</p>
+							<p className="mt-4">{localeLn('NoPublications')}</p>
 						</div>
 					) : (
 						<div className="mt-4 -mx-2">

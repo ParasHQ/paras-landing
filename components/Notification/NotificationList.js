@@ -444,7 +444,7 @@ const NotificationList = () => {
 								{notificationList.length === 0 && !notificationListHasMore ? (
 									<div className="p-2 opacity-75">
 										<div className="border-2 border-dashed rounded-md text-center">
-											<p className="text-gray-300 py-4">{localeLn('No Notifications')}</p>
+											<p className="text-gray-300 py-4">{localeLn('NoNotifications')}</p>
 										</div>
 									</div>
 								) : (
@@ -452,7 +452,7 @@ const NotificationList = () => {
 										dataLength={notificationList.length}
 										next={_fetchData}
 										hasMore={notificationListHasMore}
-										loader={<h4 className="text-center p-2">{localeLn('Loading...')}</h4>}
+										loader={<h4 className="text-center p-2">{localeLn('LoadingLoading')}</h4>}
 										scrollableTarget="scrollableDiv"
 									>
 										{notificationList.map((notif) => {

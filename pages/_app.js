@@ -27,15 +27,20 @@ function MyApp({ Component, pageProps }) {
 	const store = useStore()
 	const router = useRouter()
 	const { locale, defaultLocale, pathname } = router
+
 	let localeCopy = locales[locale]
 	const defaultLocaleCopy = locales[defaultLocale]
-	localeCopy = localeCopy || defaultLocaleCopy
 
-	let messages =
-		localeCopy[pathname] ||
-		localeCopy['defaultAll'] ||
-		defaultLocaleCopy[pathname] ||
-		defaultLocaleCopy['defaultAll']
+	const messages = localeCopy[pathname]
+		? {
+				...defaultLocaleCopy[pathname],
+				...localeCopy[pathname],
+		  }
+		: {
+				...defaultLocaleCopy['defaultAll'],
+				...localeCopy['defaultAll'],
+		  }
+
 	const counter = async (url) => {
 		// check cookie uid
 		let uid = cookie.get('uid')

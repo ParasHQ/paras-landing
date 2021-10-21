@@ -57,7 +57,7 @@ const CreateCollection = ({ onFinishCreate }) => {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							{localeLn('Create collection success')}
+							{localeLn('CreateCollectionSuccess')}
 						</div>
 					),
 					type: 'success',
@@ -104,7 +104,7 @@ const CreateCollection = ({ onFinishCreate }) => {
 				/>
 			)}
 			<div className="relative max-w-3xl m-auto p-4">
-				<div className="text-white font-bold text-4xl">{localeLn('Create collection')}</div>
+				<div className="text-white font-bold text-4xl">{localeLn('NavCreateCollection')}</div>
 				<div className="text-white mt-4">{localeLn('Logo')}</div>
 				<div className="relative cursor-pointer w-32 h-32 overflow-hidden rounded-md mt-2">
 					<input
@@ -148,7 +148,7 @@ const CreateCollection = ({ onFinishCreate }) => {
 					className="mt-8"
 					onClick={_submit}
 				>
-					{isSubmitting ? localeLn('Creating...') : localeLn('Create')}
+					{isSubmitting ? localeLn('CreatingLoading') : localeLn('Create')}
 				</Button>
 			</div>
 		</>

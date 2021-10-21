@@ -255,9 +255,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			if (e.target.files[0].size > 3 * 1024 * 1024) {
 				toast.show({
 					text: (
-						<div className="font-semibold text-center text-sm">
-							{localeLn('Maximum file size 3MB')}
-						</div>
+						<div className="font-semibold text-center text-sm">{localeLn('MaximumSize3MB')}</div>
 					),
 					type: 'error',
 					duration: null,
@@ -292,7 +290,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 					<div className="w-full max-w-md p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
 						<div className="m-auto">
 							<label className="mb-4 block text-white text-2xl font-bold">
-								{localeLn('Add card to your publication')}
+								{localeLn('AddCardToPublication')}
 							</label>
 							<input
 								type="text"
@@ -309,7 +307,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 								disabled={!searchToken}
 								onClick={getDataFromTokenId}
 							>
-								{localeLn('Add Card')}
+								{localeLn('AddCard')}
 							</button>
 						</div>
 					</div>
@@ -365,7 +363,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 													/>
 												</svg>
 												<p className="text-white font-semibold ml-2 text-sm">
-													{localeLn('Update Thumbnail (Max. 3MB)')}
+													{localeLn('UpdateThumbnail3MB')}
 												</p>
 											</div>
 										</div>
@@ -422,9 +420,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			{showLeavingConfirmation && (
 				<Modal close={() => setShowLeavingConfirmation(false)} closeOnBgClick closeOnEscape>
 					<div className="w-full max-w-xs p-4 m-auto bg-gray-100 rounded-md overflow-y-auto max-h-screen">
-						<div className="w-full">
-							{localeLn('Are you sure to leave this page? You will lose any unpublished changes')}
-						</div>
+						<div className="w-full">{localeLn('SureToLeavepage')}</div>
 						<div className="flex space-x-4">
 							<button
 								className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
@@ -475,7 +471,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				<div className="max-w-4xl mx-auto px-4 pt-16">
 					<div className=" border-2 border-dashed border-gray-800 rounded-md p-4 md:p-8">
 						<h4 className="text-white font-semibold text-3xl mb-4 text-center">
-							{localeLn('Card Collectibles')}
+							{localeLn('CardCollectibles')}
 						</h4>
 						<div
 							className={`md:flex md:flex-wrap ${embeddedCards.length <= 3 && 'justify-center'}`}

@@ -35,6 +35,10 @@ const TokenSeriesDetail = ({ token, className }) => {
 		setActiveTab(tab)
 	}
 
+	const isShowButton =
+		token.contract_id === process.env.NFT_CONTRACT_ID ||
+		process.env.WHITELIST_CONTRACT_ID.split(',').includes(token.contract_id)
+
 	const tabDetail = (tab) => {
 		return (
 			<div
@@ -186,12 +190,15 @@ const TokenSeriesDetail = ({ token, className }) => {
 							{activeTab === 'publication' && <TabPublication localToken={token} />}
 						</div>
 					</Scrollbars>
-					{token.contract_id === process.env.NFT_CONTRACT_ID && (
+					{isShowButton && (
 						<div className="p-3">
 							{token.is_non_mintable || token.total_mint === token.metadata.copies ? (
-								<div>
+								<div className="flex space-x-2">
 									<Button size="md" onClick={() => changeActiveTab('owners')} isFullWidth>
-										{localeLn('Check Owners')}
+										{localeLn('CheckOwners')}
+									</Button>
+									<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
+										{`Place an offer`}
 									</Button>
 								</div>
 							) : isCreator() ? (
@@ -203,7 +210,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 									</div>
 									<div className="w-full flex-1">
 										<Button size="md" onClick={onClickUpdatePrice} isFullWidth>
-											{localeLn('Update Price')}
+											{localeLn('UpdatePrice')}
 										</Button>
 									</div>
 								</div>
@@ -227,7 +234,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 												onClick={() => setActiveTab('owners')}
 												isFullWidth
 											>
-												{localeLn('Buy for {price} on Secondary Marketplace', {
+												{localeLn('Buy_For_{price}_On', {
 													price: formatNearAmount(token.lowest_price),
 												})}
 											</Button>

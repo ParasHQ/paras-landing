@@ -48,26 +48,22 @@ const TokenStorageModal = ({ show, onClose }) => {
 					</div>
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
-							{localeLn('Deposit Storage')}
+							{localeLn('DepositStorage')}
 						</h1>
-						<p className="text-white mt-2">
-							{localeLn(
-								'Before you can list this asset to market, you need to deposit small amount of NEAR'
-							)}
-						</p>
+						<p className="text-white mt-2">{localeLn('ToDepositSmallAmount')}</p>
 						<div className="mt-4">
 							<div className="mt-2 text-sm text-red-500"></div>
 						</div>
 						<div className="mt-4 text-center">
 							<div className="text-white my-1">
 								<div className="flex justify-between">
-									<div className="text-sm">{localeLn('Storage Fee')}</div>
+									<div className="text-sm">{localeLn('StorageFee')}</div>
 									<div className="text">{formatNearAmount(STORAGE_ADD_MARKET_FEE)} Ⓝ</div>
 								</div>
 							</div>
 						</div>
 						<p className="text-white mt-4 text-sm text-center opacity-90">
-							{localeLn('You will be redirected to NEAR Web Wallet to confirm your transaction.')}
+							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
 							<Button size="md" isFullWidth onClick={onBuyToken}>

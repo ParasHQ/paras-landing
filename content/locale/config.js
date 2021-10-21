@@ -149,8 +149,9 @@ export const config = ({
 		'/new': {
 			...common,
 			...news,
+			...newCollection,
 		},
-		'new-collection': {
+		'/new-collection': {
 			...common,
 			...newCollection,
 		},

@@ -9,11 +9,7 @@ const Footer = () => {
 		toast.show({
 			text: (
 				<div className="text-sm text-gray-900">
-					<p>
-						{localeLn(
-							"Paras' smart contract is not yet audited by well-known security organization or firm. Use at your own risk!"
-						)}
-					</p>
+					<p>{localeLn('UseOwnRisk')}</p>
 				</div>
 			),
 			type: 'info',
@@ -45,8 +41,17 @@ const Footer = () => {
 							<a className="flex cursor-pointer ">{localeLn('FAQ')}</a>
 						</Link>
 					</div>
+					<div className="flex items-center pt-2 px-2">
+						<a
+							href="https://ipfs.fleek.co/ipfs/bafybeihu6atdada45rmx4sszny6sahrzas4tuzrpuufdcpe6b63r6ugdce"
+							target="_blank"
+							className="flex cursor-pointer "
+						>
+							{localeLn('Whitepaper')}
+						</a>
+					</div>
 				</div>
-				<div className="flex flex-wrap justify-center -mx-2">
+				<div className="flex flex-wrap justify-center md:justify-start -mx-2">
 					<div className="flex items-center pt-2 px-2">
 						<a href="https://twitter.com/ParasHQ" target="_blank" className="flex cursor-pointer ">
 							{localeLn('Twitter')}
@@ -80,7 +85,7 @@ const Footer = () => {
 			<div className="py-2">
 				<div className="flex items-center justify-center md:justify-start">
 					<div className="flex">
-						<p>{localeLn('This project is in public beta.')}</p>
+						<p>{localeLn('FooterBeta')}</p>
 						<svg
 							width="16"
 							height="16"
@@ -100,10 +105,10 @@ const Footer = () => {
 					</div>
 				</div>
 				<div className="mt-2 flex items-center">
-					<p>{localeLn('2021 Paras')}</p>
+					<p>{localeLn('Paras2021')}</p>
 					<p className="mx-2">|</p>
 					<div className="flex items-center text-sm">
-						<p>{localeLn('Powered by')}</p>
+						<p>{localeLn('PoweredBy')}</p>
 						<a href="https://near.org" target="_blank">
 							<svg
 								className="mx-2"
