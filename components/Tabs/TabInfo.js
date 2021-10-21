@@ -3,8 +3,13 @@ import Link from 'next/link'
 import ReactLinkify from 'react-linkify'
 import { parseImgUrl } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
+import { Fragment } from 'react'
+import { useRouter } from 'next/router'
+
 const TabInfo = ({ localToken, isNFT }) => {
 	const { localeLn } = useIntl()
+	const router = useRouter()
+
 	const collection = localToken.metadata.collection_id
 		? {
 				id: localToken.metadata.collection_id,
@@ -54,6 +59,26 @@ const TabInfo = ({ localToken, isNFT }) => {
 					</Link>
 				</div>
 			</div>
+			{localToken.categories.length !== 0 && (
+				<div className="flex bg-gray-800 mt-3 p-3 rounded-md shadow-md">
+					<div>
+						<p className="text-sm text-white font-bold">{localeLn('FeaturedIn')}</p>
+						{localToken.categories.map((cat, idx) => (
+							<Fragment key={idx}>
+								<span
+									onClick={() => router.push(`/market/${cat.category_id}`)}
+									className="cursor-pointer text-gray-200 font-semibold border-b-2 border-transparent hover:border-gray-200"
+								>
+									{cat.name}
+								</span>
+								{idx !== localToken.categories.length - 1 && (
+									<span className="text-gray-200">, </span>
+								)}
+							</Fragment>
+						))}
+					</div>
+				</div>
+			)}
 			<div className="flex space-x-3">
 				<div className="flex flex-1 bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 					<div>
