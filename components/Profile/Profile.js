@@ -16,7 +16,7 @@ const Profile = ({ userProfile, activeTab }) => {
 	useEffect(() => {
 		if (
 			JSON.stringify(userProfileStore) !== '{}' &&
-			userProfile.accountId === userProfileStore.accountId
+			userProfile?.accountId === userProfileStore?.accountId
 		) {
 			setProfileData(userProfileStore)
 		}
