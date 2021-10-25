@@ -75,7 +75,7 @@ export default function SearchPage({ searchQuery }) {
 	}
 
 	const headMeta = {
-		title: localeLn('Search_{searchQuery}_Paras', {
+		title: localeLn('Search{searchQuery}Paras', {
 			searchQuery: searchQuery,
 		}),
 		description: `Explore and collect ${searchQuery} digital art cards on Paras. All-in-one social digital art card marketplace for creators and collectors.`,

@@ -259,8 +259,10 @@ const TabOffers = ({ localToken }) => {
 
 		if (localToken.token_id) {
 			params.token_id = localToken.token_id
+			params.contract_id = localToken.contract_id
 		} else {
 			params.token_series_id = localToken.token_series_id
+			params.contract_id = localToken.contract_id
 		}
 
 		const resp = await cachios.get(`${process.env.V2_API_URL}/offers`, {
