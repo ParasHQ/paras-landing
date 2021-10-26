@@ -234,7 +234,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 												onClick={() => setActiveTab('owners')}
 												isFullWidth
 											>
-												{localeLn('Buy_For_{price}_On', {
+												{localeLn('BuyFor{price}On', {
 													price: formatNearAmount(token.lowest_price),
 												})}
 											</Button>
