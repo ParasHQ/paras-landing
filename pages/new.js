@@ -361,15 +361,21 @@ const NewPage = () => {
 														0,
 														6
 													)}{' '}
-													Ⓝ (~$
-													{prettyBalance(
-														Number(store.nearUsdPrice * getValues('amount', 0))
-															.toPrecision(4)
-															.toString(),
-														0,
-														6
+													Ⓝ
+													{store.nearUsdPrice !== 0 && (
+														<>
+															{' '}
+															(~$
+															{prettyBalance(
+																Number(store.nearUsdPrice * getValues('amount', 0))
+																	.toPrecision(4)
+																	.toString(),
+																0,
+																6
+															)}
+															)
+														</>
 													)}
-													)
 												</span>
 											</div>
 											<div className="flex items-center justify-between text-sm">
@@ -382,19 +388,25 @@ const NewPage = () => {
 														0,
 														6
 													)}{' '}
-													Ⓝ (~$
-													{prettyBalance(
-														Number(
-															store.nearUsdPrice *
-																getValues('amount', 0) *
-																((95 - (formInput.royalty || 0)) / 100)
-														)
-															.toPrecision(4)
-															.toString(),
-														0,
-														6
+													Ⓝ
+													{store.nearUsdPrice !== 0 && (
+														<>
+															{' '}
+															(~$
+															{prettyBalance(
+																Number(
+																	store.nearUsdPrice *
+																		getValues('amount', 0) *
+																		((95 - (formInput.royalty || 0)) / 100)
+																)
+																	.toPrecision(4)
+																	.toString(),
+																0,
+																6
+															)}
+															)
+														</>
 													)}
-													)
 												</span>
 											</div>
 											{formInput.royalty !== 0 && (
@@ -408,19 +420,25 @@ const NewPage = () => {
 															0,
 															6
 														)}{' '}
-														Ⓝ (~$
-														{prettyBalance(
-															Number(
-																store.nearUsdPrice *
-																	getValues('amount', 0) *
-																	(formInput.royalty / 100)
-															)
-																.toPrecision(4)
-																.toString(),
-															0,
-															6
+														Ⓝ
+														{store.nearUsdPrice !== 0 && (
+															<>
+																{' '}
+																(~$
+																{prettyBalance(
+																	Number(
+																		store.nearUsdPrice *
+																			getValues('amount', 0) *
+																			(formInput.royalty / 100)
+																	)
+																		.toPrecision(4)
+																		.toString(),
+																	0,
+																	6
+																)}
+																)
+															</>
 														)}
-														)
 													</span>
 												</div>
 											)}
@@ -434,15 +452,21 @@ const NewPage = () => {
 														0,
 														6
 													)}{' '}
-													Ⓝ (~$
-													{prettyBalance(
-														Number(store.nearUsdPrice * getValues('amount', 0) * 0.05)
-															.toPrecision(4)
-															.toString(),
-														0,
-														6
+													Ⓝ
+													{store.nearUsdPrice !== 0 && (
+														<>
+															{' '}
+															(~$
+															{prettyBalance(
+																Number(store.nearUsdPrice * getValues('amount', 0) * 0.05)
+																	.toPrecision(4)
+																	.toString(),
+																0,
+																6
+															)}
+															)
+														</>
 													)}
-													)
 												</span>
 											</div>
 										</>
@@ -918,10 +942,12 @@ const NewPage = () => {
 													<div className="pr-4">Ⓝ</div>
 												</div>
 											</div>
-											<p>
-												~$
-												{prettyBalance(store.nearUsdPrice * watch('amount'), 0, 6)}
-											</p>
+											{store.nearUsdPrice !== 0 && (
+												<p>
+													~$
+													{prettyBalance(store.nearUsdPrice * watch('amount'), 0, 6)}
+												</p>
+											)}
 											<div className="mt-2 text-sm text-red-500">
 												{errors.amount?.type === 'required' && `Sale price is required`}
 												{errors.amount?.type === 'min' && `Minimum 0`}

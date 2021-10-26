@@ -144,9 +144,11 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnershi
 												{price ? (
 													<div>
 														<div>{prettyBalance(price, 24, 4)} Ⓝ</div>
-														<div className="text-xs text-gray-400">
-															~ ${prettyBalance(JSBI.BigInt(price * store.nearUsdPrice), 24, 4)}
-														</div>
+														{store.nearUsdPrice !== 0 && (
+															<div className="text-xs text-gray-400">
+																~ ${prettyBalance(JSBI.BigInt(price * store.nearUsdPrice), 24, 4)}
+															</div>
+														)}
 													</div>
 												) : (
 													<div className="line-through text-red-600">
