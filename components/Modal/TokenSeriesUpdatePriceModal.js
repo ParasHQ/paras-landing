@@ -12,7 +12,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import { trackRemoveListingTokenSeries, trackUpdateListingTokenSeries } from 'lib/ga'
 
 const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
-	const [newPrice, setNewPrice] = useState('0')
+	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
 	const { localeLn } = useIntl()
 	const onUpdateListing = async (e) => {
 		e.preventDefault()
@@ -205,7 +205,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 							</div>
 						</div>
 						<div className="mt-6">
-							<Button type="submit" size="md" isFullWidth>
+							<Button type="submit" size="md" isFullWidth isDisabled={newPrice === ''}>
 								{localeLn('UpdateListing')}
 							</Button>
 							<Button

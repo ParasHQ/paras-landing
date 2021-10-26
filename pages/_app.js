@@ -113,9 +113,15 @@ function MyApp({ Component, pageProps }) {
 	const _init = async () => {
 		await near.init()
 		const currentUser = await near.currentUser
-		const nearUsdPrice = await axios.get(
-			'https://api.coingecko.com/api/v3/simple/price?ids=NEAR&vs_currencies=USD'
-		)
+
+		try {
+			const nearUsdPrice = await axios.get(
+				'https://api.coingecko.com/api/v3/simple/price?ids=NEAR&vs_currencies=USD'
+			)
+			store.setNearUsdPrice(nearUsdPrice.data.near.usd)
+		} catch (error) {
+			sentryCaptureException('Failed Coingecko')
+		}
 
 		Sentry.configureScope((scope) => {
 			const user = currentUser ? { id: currentUser.accountId } : null
@@ -161,7 +167,6 @@ function MyApp({ Component, pageProps }) {
 			store.setCurrentUser(currentUser.accountId)
 			store.setUserBalance(currentUser.balance)
 		}
-		store.setNearUsdPrice(nearUsdPrice.data.near.usd)
 		store.setInitialized(true)
 
 		if (process.env.APP_ENV === 'production') {
