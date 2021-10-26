@@ -340,6 +340,22 @@ const Nav = () => {
 						</svg>
 					</div>
 				)}
+
+				<div
+					className={`relative text-white text-center overflow-hidden text-sm md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
+				>
+					<div className="px-10 py-1 md:p-0 ">
+						Participate in October’s card4card & Enjoy the Fun! More Info{' '}
+						<a
+							href="https://paras.id/publication/card4card-is-back-this-october-616d7ceeee25ff5cc2b63053"
+							target="_blank"
+							className="font-bold cursor-pointer hover:underline"
+						>
+							here
+						</a>
+					</div>
+				</div>
+
 				{process.env.APP_ENV !== 'production' && (
 					<div
 						ref={testnetBannerRef}
