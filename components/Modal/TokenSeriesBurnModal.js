@@ -63,7 +63,7 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 								onChange={(e) => setBurnCopies(e.target.value.replace(/\D/, ''))}
 								placeholder={localeLn('DecreaseCopiesBy')}
 							/>
-							{burnCopies > data.metadata.copies - data.in_circulation && (
+							{burnCopies > data.metadata.copies - (data.total_mint || 0) && (
 								<div className="mt-2 text-sm text-red-500">
 									<p>{localeLn('CannotReduceMore')}</p>
 								</div>
@@ -74,7 +74,7 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 								<div className="flex justify-between">
 									<div className="text-sm">{localeLn('AvailableCopies')}</div>
 									<div className="text">
-										{parseInt(data.metadata.copies || 0) - parseInt(data.in_circulation || 0)}
+										{parseInt(data.metadata.copies || 0) - parseInt(data.total_mint || 0)}
 									</div>
 								</div>
 							</div>
@@ -90,7 +90,7 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 									<div className="text-sm">{localeLn('Total')}</div>
 									<div className="text">
 										{parseInt(data.metadata.copies || 0) -
-											parseInt(data.in_circulation || 0) -
+											parseInt(data.total_mint || 0) -
 											parseInt(burnCopies || 0)}
 									</div>
 								</div>
@@ -104,7 +104,9 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 								size="md"
 								isFullWidth
 								onClick={onBurnToken}
-								isDisabled={!burnCopies || burnCopies > data.metadata.copies - data.in_circulation}
+								isDisabled={
+									!burnCopies || burnCopies > data.metadata.copies - (data.total_mint || 0)
+								}
 							>
 								{localeLn('Reduce')}
 							</Button>
