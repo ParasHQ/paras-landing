@@ -148,7 +148,7 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnersh
 														<div>{prettyBalance(price, 24, 4)} Ⓝ</div>
 														{store.nearUsdPrice !== 0 && (
 															<div className="text-xs text-gray-400">
-																~ ${prettyBalance(JSBI.BigInt(price * store.nearUsdPrice), 24, 4)}
+																~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 4)}
 															</div>
 														)}
 													</div>
