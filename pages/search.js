@@ -59,6 +59,8 @@ export default function SearchPage({ searchQuery }) {
 			params: {
 				search: encodeURIComponent(query.q),
 				__view: 'simple',
+				__skip: 0,
+				__limit: LIMIT,
 			},
 		})
 		if (resPub.data.data.results.length === LIMIT) {
@@ -111,6 +113,8 @@ export default function SearchPage({ searchQuery }) {
 			params: {
 				search: encodeURIComponent(query.q),
 				__view: 'simple',
+				__skip: pubPage * LIMIT,
+				__limit: LIMIT,
 			},
 		})
 		const newData = await res.data.data
