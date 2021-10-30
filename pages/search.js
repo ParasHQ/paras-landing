@@ -12,9 +12,8 @@ import FilterMarket from 'components/Filter/FilterMarket'
 import { parseSortQuery } from 'utils/common'
 import CardListLoader from 'components/Card/CardListLoader'
 import { useIntl } from 'hooks/useIntl'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import PublicationCardListLoader from 'components/Publication/PublicationCardListLoader'
-import PublicationList from 'components/Publication/PublicationList'
+import PublicationListScroll from 'components/Publication/PublicationListScroll'
+
 const LIMIT = 12
 
 export default function SearchPage({ searchQuery }) {
@@ -183,7 +182,7 @@ export default function SearchPage({ searchQuery }) {
 				<div className="flex justify-between items-end h-12">
 					<div className="flex">
 						<div className="mx-4 relative" onClick={() => setActiveTab('card')}>
-							<h4 className="text-gray-100 font-medium cursor-pointer text-xl">Cards</h4>
+							<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Cards</h4>
 							{activeTab === 'card' && (
 								<div className="absolute left-0 -bottom-1">
 									<div className="mx-auto w-8 h-1 bg-gray-100"></div>
@@ -191,7 +190,7 @@ export default function SearchPage({ searchQuery }) {
 							)}
 						</div>
 						<div className="mx-4 relative" onClick={() => setActiveTab('publication')}>
-							<h4 className="text-gray-100 font-medium cursor-pointer text-xl">Publication</h4>
+							<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Publication</h4>
 							{activeTab === 'publication' && (
 								<div className="absolute left-0 -bottom-1">
 									<div className="mx-auto w-8 h-1 bg-gray-100"></div>
@@ -218,20 +217,11 @@ export default function SearchPage({ searchQuery }) {
 							</div>
 						))}
 					{activeTab === 'publication' && (
-						<InfiniteScroll
-							dataLength={publication.length}
-							next={_fetchPublicationData}
+						<PublicationListScroll
+							data={publication}
+							fetchData={_fetchPublicationData}
 							hasMore={pubHasMore}
-							loader={<PublicationCardListLoader />}
-						>
-							<div className="flex flex-wrap">
-								{publication.map((pub, idx) => (
-									<div key={idx} className="w-full md:w-1/2 p-4">
-										<PublicationList key={pub._id} data={pub} />
-									</div>
-								))}
-							</div>
-						</InfiniteScroll>
+						/>
 					)}
 				</div>
 			</div>
