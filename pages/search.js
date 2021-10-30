@@ -50,6 +50,8 @@ export default function SearchPage({ searchQuery }) {
 		if (res.data.data.results.length === LIMIT) {
 			setPage(1)
 			setHasMore(true)
+		} else {
+			setHasMore(false)
 		}
 		setTokens(res.data.data.results)
 
@@ -65,6 +67,8 @@ export default function SearchPage({ searchQuery }) {
 		if (resPub.data.data.results.length === LIMIT) {
 			setPubPage(1)
 			setPubHasMore(true)
+		} else {
+			setPubHasMore(false)
 		}
 		setPublication(resPub.data.data.results)
 
