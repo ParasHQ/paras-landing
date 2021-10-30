@@ -176,7 +176,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 									/>
 								</div>
 							</div>
-							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative overflow-scroll flex-nowrap disable-scrollbars -mb-4">
+							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
 								{tabDetail('info')}
 								{tabDetail('owners')}
 								{tabDetail('history')}

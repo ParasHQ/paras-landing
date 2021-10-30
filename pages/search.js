@@ -12,23 +12,36 @@ import FilterMarket from 'components/Filter/FilterMarket'
 import { parseSortQuery } from 'utils/common'
 import CardListLoader from 'components/Card/CardListLoader'
 import { useIntl } from 'hooks/useIntl'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import PublicationCardListLoader from 'components/Publication/PublicationCardListLoader'
+import PublicationList from 'components/Publication/PublicationList'
 const LIMIT = 12
 
 export default function SearchPage({ searchQuery }) {
 	const { localeLn } = useIntl()
 	const store = useStore()
 	const router = useRouter()
+
 	const [tokens, setTokens] = useState([])
 	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
-	const [isRefreshing, setIsRefreshing] = useState(false)
 	const [hasMore, setHasMore] = useState(false)
+
+	const [publication, setPublication] = useState([])
+	const [pubPage, setPubPage] = useState(0)
+	const [pubIsFetch, setPubIsFetch] = useState(false)
+	const [pubHasMore, setPubHasMore] = useState(false)
+
+	const [isRefreshing, setIsRefreshing] = useState(false)
+	const [activeTab, setActiveTab] = useState('card')
 
 	const { query } = router
 
 	useEffect(async () => {
 		setIsRefreshing(true)
 		window.scrollTo(0, 0)
+
+		/** Tokens */
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: tokensParams(0, {
 				...query,
@@ -40,6 +53,20 @@ export default function SearchPage({ searchQuery }) {
 			setHasMore(true)
 		}
 		setTokens(res.data.data.results)
+
+		/** Publication */
+		const resPub = await axios(`${process.env.V2_API_URL}/publications`, {
+			params: {
+				search: encodeURIComponent(query.q),
+				__view: 'simple',
+			},
+		})
+		if (resPub.data.data.results.length === LIMIT) {
+			setPubPage(1)
+			setPubHasMore(true)
+		}
+		setPublication(resPub.data.data.results)
+
 		setIsRefreshing(false)
 	}, [query.q, query.sort, query.pmin, query.pmax, query.is_verified])
 
@@ -72,6 +99,31 @@ export default function SearchPage({ searchQuery }) {
 			setHasMore(true)
 		}
 		setIsFetching(false)
+	}
+
+	const _fetchPublicationData = async () => {
+		if (!pubHasMore || pubIsFetch) {
+			return
+		}
+
+		setPubIsFetch(true)
+		const res = await axios(`${process.env.V2_API_URL}/publications`, {
+			params: {
+				search: encodeURIComponent(query.q),
+				__view: 'simple',
+			},
+		})
+		const newData = await res.data.data
+
+		const newPub = [...publication, ...newData.results]
+		setPublication(newPub)
+		setPubPage(pubPage + 1)
+		if (newData.results.length < LIMIT) {
+			setPubHasMore(false)
+		} else {
+			setPubHasMore(true)
+		}
+		setPubIsFetch(false)
 	}
 
 	const headMeta = {
@@ -124,21 +176,58 @@ export default function SearchPage({ searchQuery }) {
 						<span className="border-b-2 border-gray-100">{searchQuery}</span>
 					</h4>
 				</div>
-				<div className="flex justify-end">
-					<FilterMarket />
-				</div>
-				<div className="mt-4 px-4">
-					{isRefreshing ? (
-						<div className="min-h-full border-2 border-dashed border-gray-800 rounded-md">
-							<CardListLoader />
+				<div className="flex justify-between items-end h-12">
+					<div className="flex">
+						<div className="mx-4 relative" onClick={() => setActiveTab('card')}>
+							<h4 className="text-gray-100 font-medium cursor-pointer text-xl">Cards</h4>
+							{activeTab === 'card' && (
+								<div className="absolute left-0 -bottom-1">
+									<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+								</div>
+							)}
 						</div>
-					) : (
-						<CardList
-							name="Search Result"
-							tokens={tokens}
-							fetchData={_fetchData}
-							hasMore={hasMore}
-						/>
+						<div className="mx-4 relative" onClick={() => setActiveTab('publication')}>
+							<h4 className="text-gray-100 font-medium cursor-pointer text-xl">Publication</h4>
+							{activeTab === 'publication' && (
+								<div className="absolute left-0 -bottom-1">
+									<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+								</div>
+							)}
+						</div>
+					</div>
+					{activeTab === 'card' && <FilterMarket />}
+				</div>
+				<div className="mt-4">
+					{activeTab === 'card' &&
+						(isRefreshing ? (
+							<div className="min-h-full border-2 border-dashed border-gray-800 rounded-md">
+								<CardListLoader />
+							</div>
+						) : (
+							<div className="px-4">
+								<CardList
+									name="Search Result"
+									tokens={tokens}
+									fetchData={_fetchData}
+									hasMore={hasMore}
+								/>
+							</div>
+						))}
+					{activeTab === 'publication' && (
+						<InfiniteScroll
+							dataLength={publication.length}
+							next={_fetchPublicationData}
+							hasMore={pubHasMore}
+							loader={<PublicationCardListLoader />}
+						>
+							<div className="flex flex-wrap">
+								{publication.map((pub, idx) => (
+									<div key={idx} className="w-full md:w-1/2 p-4">
+										<PublicationList key={pub._id} data={pub} />
+									</div>
+								))}
+							</div>
+						</InfiniteScroll>
 					)}
 				</div>
 			</div>
