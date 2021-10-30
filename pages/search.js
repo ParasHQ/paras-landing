@@ -56,7 +56,7 @@ export default function SearchPage({ searchQuery }) {
 		/** Publication */
 		const resPub = await axios(`${process.env.V2_API_URL}/publications`, {
 			params: {
-				search: encodeURIComponent(query.q),
+				search: query.q,
 				__view: 'simple',
 				__skip: 0,
 				__limit: LIMIT,
@@ -110,7 +110,7 @@ export default function SearchPage({ searchQuery }) {
 		setPubIsFetch(true)
 		const res = await axios(`${process.env.V2_API_URL}/publications`, {
 			params: {
-				search: encodeURIComponent(query.q),
+				search: query.q,
 				__view: 'simple',
 				__skip: pubPage * LIMIT,
 				__limit: LIMIT,
