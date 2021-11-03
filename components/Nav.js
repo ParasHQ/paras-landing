@@ -341,7 +341,8 @@ const Nav = () => {
 					</div>
 				)}
 
-				<div
+				{/* Banner for special event */}
+				{/* <div
 					className={`relative text-white text-center overflow-hidden text-sm md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
 				>
 					<div className="px-10 py-1 md:p-0 ">
@@ -354,7 +355,7 @@ const Nav = () => {
 							here
 						</a>
 					</div>
-				</div>
+				</div> */}
 
 				{process.env.APP_ENV !== 'production' && (
 					<div
@@ -485,6 +486,11 @@ const Nav = () => {
 						</div>
 					</div>
 					<div className="flex items-center -mx-4">
+						<div className="px-3 text-gray-100 hidden md:block fireText">
+							<Link href="/drops">
+								<a className="block w-full">{localeLn('Drops')}</a>
+							</Link>
+						</div>
 						<div className="px-3 text-gray-100 hidden md:block">
 							{router.pathname === '/market' ? (
 								<a className="cursor-pointer" onClick={() => store.setMarketScrollPersist(0)}>
@@ -546,6 +552,11 @@ const Nav = () => {
 							<div className="text-gray-100 ">
 								<Link href="/">
 									<a className="p-4 block w-full">{localeLn('Home')}</a>
+								</Link>
+							</div>
+							<div className="text-gray-100 ">
+								<Link href="/drops">
+									<a className="p-4 block w-full fireText">Drops</a>
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
