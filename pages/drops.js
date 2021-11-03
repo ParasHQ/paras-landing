@@ -175,20 +175,20 @@ export default function Drops() {
 							src={parseImgUrl('bafybeid5pask4j3ejkbeegmau6n5mmfj5gkja64exyobxg4uzltjdcw7kq')}
 						/>
 						<div className="max-w-xl m-auto">
-							<p className="text-gray-400 mt-4">
+							<p className="text-gray-200 mt-4">
 								Welcome to Metamon! Get ready to explore an exciting universe full of powerful
 								creatures with unique abilities! Capture, evolve and train your Metamon to become
 								the best! Battle each other in a competitive online battle royale and earn your
 								place as the Supreme One!
 							</p>
-							<p className="text-gray-400 mt-4">
+							<p className="text-gray-200 mt-4">
 								The upcoming Metamon game is an online competitive Battle Royale PC Play-To-Earn
 								game with an official launch date of January 20th.
 							</p>
 							<a
 								target="blank"
-								href="https://gxi0ur2hy9b.typeform.com/to/sqEIwsls"
-								className="underline break-all block text-gray-400 mt-4"
+								href="https://forms.gle/oiyYYLx5gvqFNgtH8"
+								className="underline break-all block text-gray-200 mt-4 font-medium"
 							>
 								Sign up here for exclusive early access to the game.
 							</a>
