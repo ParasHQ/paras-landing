@@ -486,6 +486,11 @@ const Nav = () => {
 						</div>
 					</div>
 					<div className="flex items-center -mx-4">
+						<div className="px-3 text-gray-100 hidden md:block fireText">
+							<Link href="/drops">
+								<a className="block w-full">{localeLn('Drops')}</a>
+							</Link>
+						</div>
 						<div className="px-3 text-gray-100 hidden md:block">
 							{router.pathname === '/market' ? (
 								<a className="cursor-pointer" onClick={() => store.setMarketScrollPersist(0)}>
@@ -547,6 +552,11 @@ const Nav = () => {
 							<div className="text-gray-100 ">
 								<Link href="/">
 									<a className="p-4 block w-full">{localeLn('Home')}</a>
+								</Link>
+							</div>
+							<div className="text-gray-100 ">
+								<Link href="/drops">
+									<a className="p-4 block w-full fireText">Drops</a>
 								</Link>
 							</div>
 							<div className="text-gray-100 ">

@@ -1,15 +1,14 @@
 import axios from 'axios'
-import PublicationList from 'components/Publication/PublicationList'
 import { useIntl } from 'hooks/useIntl'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import Profile from 'components/Profile/Profile'
 import PublicationCardListLoader from 'components/Publication/PublicationCardListLoader'
 import useStore from 'lib/store'
+import PublicationListScroll from 'components/Publication/PublicationListScroll'
 const LIMIT = 6
 
 const Publication = ({ userProfile, accountId }) => {
@@ -122,20 +121,11 @@ const Publication = ({ userProfile, accountId }) => {
 						</div>
 					) : (
 						<div className="mt-4 -mx-2">
-							<InfiniteScroll
-								dataLength={usersPublicationList[router.query.id]?.length}
-								next={_fetchData}
+							<PublicationListScroll
+								data={usersPublicationList[router.query.id]}
+								fetchData={_fetchData}
 								hasMore={usersPublicationMeta[router.query.id]?.hasMore}
-								loader={<PublicationCardListLoader />}
-							>
-								<div className="flex flex-wrap">
-									{usersPublicationList[router.query.id]?.map((pub, idx) => (
-										<div key={idx} className="w-full md:w-1/2 p-4">
-											<PublicationList key={pub._id} data={pub} />
-										</div>
-									))}
-								</div>
-							</InfiniteScroll>
+							/>
 						</div>
 					)}
 				</div>

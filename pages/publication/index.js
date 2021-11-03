@@ -1,35 +1,16 @@
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import InfiniteScroll from 'react-infinite-scroll-component'
 
 import Nav from 'components/Nav'
 import Footer from 'components/Footer'
-import PublicationList from 'components/Publication/PublicationList'
-import PublicationCardListLoader from 'components/Publication/PublicationCardListLoader'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import useStore from 'lib/store'
 import { useIntl } from 'hooks/useIntl'
+import PublicationListScroll from 'components/Publication/PublicationListScroll'
 
 const LIMIT = 6
-
-const PublicationListContainer = ({ data, fetchData, hasMore }) => (
-	<InfiniteScroll
-		dataLength={data.length}
-		next={fetchData}
-		hasMore={hasMore}
-		loader={<PublicationCardListLoader />}
-	>
-		<div className="flex flex-wrap">
-			{data.map((pub, idx) => (
-				<div key={idx} className="w-full md:w-1/2 p-4">
-					<PublicationList key={pub._id} data={pub} />
-				</div>
-			))}
-		</div>
-	</InfiniteScroll>
-)
 
 const Publication = () => {
 	const router = useRouter()
@@ -224,15 +205,11 @@ const Publication = () => {
 					</div>
 					{/* render All */}
 					{!router.query.type && (
-						<PublicationListContainer
-							data={pubList}
-							hasMore={pubListHasMore}
-							fetchData={fetchData}
-						/>
+						<PublicationListScroll data={pubList} hasMore={pubListHasMore} fetchData={fetchData} />
 					)}
 					{/* render Editorial */}
 					{router.query.type === 'editorial' && (
-						<PublicationListContainer
+						<PublicationListScroll
 							data={pubListEditorial}
 							hasMore={pubListEditorialHasMore}
 							fetchData={fetchData}
@@ -240,7 +217,7 @@ const Publication = () => {
 					)}
 					{/* render Community */}
 					{router.query.type === 'community' && (
-						<PublicationListContainer
+						<PublicationListScroll
 							data={pubListCommunity}
 							hasMore={pubListCommunityHasMore}
 							fetchData={fetchData}
