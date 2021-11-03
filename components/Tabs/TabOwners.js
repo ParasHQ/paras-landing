@@ -14,7 +14,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
-const FETCH_TOKENS_LIMIT = 30
+const FETCH_TOKENS_LIMIT = 100
 
 const TabOwners = ({ localToken }) => {
 	const [tokens, setTokens] = useState([])
@@ -80,7 +80,7 @@ const TabOwners = ({ localToken }) => {
 				contract_id: localToken.contract_id,
 				__skip: page * FETCH_TOKENS_LIMIT,
 				__limit: FETCH_TOKENS_LIMIT,
-				__sort: 'token_id::1',
+				__sort: '_id::1',
 			},
 			ttl: 120,
 		})
