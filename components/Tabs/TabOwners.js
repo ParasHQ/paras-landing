@@ -14,7 +14,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
-const FETCH_TOKENS_LIMIT = 30
+const FETCH_TOKENS_LIMIT = 100
 
 const TabOwners = ({ localToken }) => {
 	const [tokens, setTokens] = useState([])
