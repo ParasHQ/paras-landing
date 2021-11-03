@@ -123,8 +123,17 @@ export default function Drops() {
 				/>
 			</Head>
 			<Nav />
+			<div
+				className="fixed inset-0 opacity-75"
+				style={{
+					zIndex: 0,
+					backgroundImage: `url('/bg.jpg')`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+				}}
+			/>
 			<TokenSeriesDetailModal tokens={[token]} />
-			<div className="max-w-2xl m-auto py-12 min-h-full">
+			<div className="max-w-2xl m-auto py-12 min-h-full relative z-10">
 				<div className="flex items-center justify-center m-4 md:m-0">
 					<div className="text-center px-4 whitespace-pre-wrap">
 						<div className="flex justify-center items-baseline">
@@ -207,7 +216,7 @@ export default function Drops() {
 					})}
 				</div>
 			</div>
-			<div>
+			<div className="relative z-10">
 				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
 					{localeLn('Timeline')}
 				</h1>
