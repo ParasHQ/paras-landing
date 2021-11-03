@@ -488,7 +488,7 @@ const Nav = () => {
 					<div className="flex items-center -mx-4">
 						<div className="px-3 text-gray-100 hidden md:block fireText">
 							<Link href="/drops">
-								<a className="p-4 block w-full">{localeLn('Drops')}</a>
+								<a className="block w-full">{localeLn('Drops')}</a>
 							</Link>
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block">
