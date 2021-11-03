@@ -14,7 +14,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
-const FETCH_TOKENS_LIMIT = 12
+const FETCH_TOKENS_LIMIT = 30
 
 const TabOwners = ({ localToken }) => {
 	const [tokens, setTokens] = useState([])
@@ -113,21 +113,23 @@ const TabOwners = ({ localToken }) => {
 
 	const changeSortBy = (sortby) => {
 		let tempTokens = tokens.slice()
-		let saleOwner = tokens.filter((token) => token.price)
-		let nonSaleOwner = tokens.filter((token) => !token.price)
 
 		if (sortby === 'nameasc') {
-			tempTokens.sort((a, b) => a.owner_id.localeCompare(b.owner_id))
+			tempTokens.sort((a, b) => a.owner_id?.localeCompare(b.owner_id))
 		} else if (sortby === 'namedesc') {
-			tempTokens.sort((a, b) => b.owner_id.localeCompare(a.owner_id))
+			tempTokens.sort((a, b) => b.owner_id?.localeCompare(a.owner_id))
 		} else if (sortby === 'editionasc') {
 			tempTokens.sort((a, b) => parseInt(a.edition_id) - parseInt(b.edition_id))
 		} else if (sortby === 'editiondesc') {
 			tempTokens.sort((a, b) => parseInt(b.edition_id) - parseInt(a.edition_id))
 		} else if (sortby === 'priceasc') {
+			let saleOwner = tokens.filter((token) => token.price)
+			let nonSaleOwner = tokens.filter((token) => !token.price)
 			saleOwner = saleOwner.sort((a, b) => a.price - b.price)
 			tempTokens = [...saleOwner, ...nonSaleOwner]
 		} else if (sortby === 'pricedesc') {
+			let saleOwner = tokens.filter((token) => token.price)
+			let nonSaleOwner = tokens.filter((token) => !token.price)
 			saleOwner = saleOwner.sort((a, b) => b.price - a.price)
 			tempTokens = [...saleOwner, ...nonSaleOwner]
 		}
@@ -146,7 +148,7 @@ const TabOwners = ({ localToken }) => {
 					<div className="flex justify-between bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 						<p className="text-sm my-auto text-white font-medium">Sort By</p>
 						<select
-							className="py-1 rounded-md bg-transparent text-white focus:outline-none outline-none text-right"
+							className="py-1 rounded-md bg-gray-800 text-white focus:outline-none outline-none text-right"
 							onChange={(e) => setSortBy(e.target.value)}
 							defaultValue="editionasc"
 							value={sortBy}
