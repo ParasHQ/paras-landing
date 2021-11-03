@@ -220,7 +220,7 @@ export default function Drops() {
 				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
 					{localeLn('Timeline')}
 				</h1>
-				<div className="max-w-6xl m-auto md:flex">
+				<div className="max-w-4xl m-auto md:flex">
 					{timeline.map((item, index) => (
 						<div
 							key={index}
