@@ -107,7 +107,7 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://ipfs.fleek.co/ipfs/bafybeigkjniothjzstnyei5bmweove7exhsxda7l5ta724xbl2qejudczy"
+					content={parseImgUrl('bafybeid5pask4j3ejkbeegmau6n5mmfj5gkja64exyobxg4uzltjdcw7kq')}
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras X MTVRS NFT Drops" />
@@ -119,7 +119,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://ipfs.fleek.co/ipfs/bafybeigkjniothjzstnyei5bmweove7exhsxda7l5ta724xbl2qejudczy"
+					content={parseImgUrl('bafybeid5pask4j3ejkbeegmau6n5mmfj5gkja64exyobxg4uzltjdcw7kq')}
 				/>
 			</Head>
 			<Nav />
