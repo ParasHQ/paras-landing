@@ -183,7 +183,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 						<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
 							<div className="py-2 cursor-pointer">
 								<TwitterShareButton
-									title={`Read ${pubDetail.title} only at @ParasHQ\n\n#card4card #cryptoart #digitalart #tradingcards`}
+									title={`Read ${pubDetail.title} only at @ParasHQ\n\n#paras #cryptoart #digitalart #tradingcards`}
 									url={window.location.href}
 									className="flex items-center w-full"
 								>
