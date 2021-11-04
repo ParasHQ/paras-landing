@@ -467,6 +467,7 @@ const SpecialCard = ({
 						<div className="mx-8 mt-8">
 							<button
 								onClick={onPressBuyNow}
+								disabled
 								className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 text-primary bg-gray-200`}
 							>
 								{_getLowestPrice(localToken?.ownerships) ? (
