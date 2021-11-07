@@ -307,11 +307,18 @@ const SpecialCard = ({
 	const router = useRouter()
 
 	useEffect(() => {
-		fetchToken()
+		if (tokenId) {
+			fetchToken()
+		}
 	}, [])
 
 	const fetchToken = async () => {
-		const res = await axios(`${process.env.API_URL}/tokens?tokenId=${tokenId}`)
+		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
+			params: {
+				contract_id: 'x.paras.near',
+				token_series_id: tokenId,
+			},
+		})
 		const token = (await res.data.data.results[0]) || null
 		setLocalToken(token)
 	}
@@ -324,12 +331,15 @@ const SpecialCard = ({
 					pathname: router.pathname,
 					query: {
 						...router.query,
-						...{ tokenId: localToken?.tokenId },
+						...{ tokenSeriesId: localToken.token_series_id },
 						...{ prevAs: router.asPath },
 					},
 				},
-				`/token/${localToken?.tokenId}`,
-				{ shallow: true }
+				`/token/${localToken.contract_id}::${localToken.token_series_id}`,
+				{
+					shallow: true,
+					scroll: false,
+				}
 			)
 		}
 	}
@@ -376,7 +386,7 @@ const SpecialCard = ({
 						<div className="w-full m-auto">
 							<Card
 								special
-								imgUrl={localToken ? parseImgUrl(localToken.metadata.image) : parseImgUrl(imgUrl)}
+								imgUrl={localToken ? parseImgUrl(localToken.metadata.media) : parseImgUrl(imgUrl)}
 								imgBlur={blurhash}
 								disableFlip
 								token={{
@@ -431,7 +441,7 @@ const SpecialCard = ({
 								</svg>
 							</div>
 							<p className="text-gray-100 text-lg font-semibold">
-								{localToken?.supply || cardSupplyText} {localeLn('pcs')}
+								{localToken?.metadata.copies || cardSupplyText} {localeLn('pcs')}
 							</p>
 						</div>
 						<div
@@ -458,7 +468,9 @@ const SpecialCard = ({
 							</div>
 							{localToken ? (
 								<p className="text-gray-100 text-lg font-semibold">
-									{`${getCardAvailable(localToken.ownerships) || '0'} / ${localToken.supply}`}
+									{`${localToken.metadata.copies - (localToken.total_mint || 0)} / ${
+										localToken.metadata.copies
+									}`}
 								</p>
 							) : (
 								<p className="text-gray-100 text-lg font-semibold">{cardAvailableText}</p>
@@ -467,13 +479,13 @@ const SpecialCard = ({
 						<div className="mx-8 mt-8">
 							<button
 								onClick={onPressBuyNow}
-								disabled
+								// disabled
 								className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 text-primary bg-gray-200`}
 							>
-								{_getLowestPrice(localToken?.ownerships) ? (
+								{localToken ? (
 									<p>
 										{`Buy for
-										${prettyBalance(_getLowestPrice(localToken?.ownerships), 24, 4)}
+										${prettyBalance(localToken?.price, 24, 4)}
 										Ⓝ`}
 									</p>
 								) : (
