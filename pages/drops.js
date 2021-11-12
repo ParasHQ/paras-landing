@@ -620,10 +620,7 @@ const SpecialCardBid = ({
 						<div className="text-white font-bold text-2xl">Bid The Special Card</div>
 						<div className="my-4">
 							<div className="text-white font-bold">Limited time only</div>
-							<Countdown
-								className="text-white text-2xl font-bold"
-								date={new Date().getTime() + 1000000}
-							/>
+							<Countdown className="text-white text-2xl font-bold" date={1636934399000} />
 						</div>
 						<div className="md:flex md:items-center md:justify-center md:space-x-4">
 							<div
