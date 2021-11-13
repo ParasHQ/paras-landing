@@ -8,7 +8,7 @@ import { Blurhash } from 'react-blurhash'
 import Nav from 'components/Nav'
 import Footer from 'components/Footer'
 import Card from 'components/Card/Card'
-import { parseImgUrl, prettyBalance } from 'utils/common'
+import { parseImgUrl, prettyBalance, timeAgo } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 import Countdown from 'react-countdown'
@@ -206,7 +206,7 @@ export default function Drops() {
 					</div>
 				</div>
 			</div>
-			<div className="mx-auto text-center flex flex-col items-center justify-center relative z-10">
+			<div className="mx-auto text-center flex flex-col items-center justify-center">
 				<SpecialCardBid
 					tokenId={specialBidToken.tokenId}
 					onClick={setToken}
@@ -517,11 +517,13 @@ const SpecialCardBid = ({
 	cardAvailableText,
 }) => {
 	const [localToken, setLocalToken] = useState(null)
+	const [offers, setOffers] = useState([])
 	const router = useRouter()
 
 	useEffect(() => {
 		if (tokenId) {
 			fetchToken()
+			fetchOffers()
 		}
 	}, [])
 
@@ -534,6 +536,21 @@ const SpecialCardBid = ({
 		})
 		const token = (await res.data.data.results[0]) || null
 		setLocalToken(token)
+	}
+
+	const fetchOffers = async () => {
+		const resp = await axios.get(`${process.env.V2_API_URL}/offers`, {
+			params: {
+				token_series_id: tokenId,
+				__skip: 0,
+				__limit: 5,
+				contract_id: 'x.paras.near',
+			},
+		})
+
+		const newData = resp.data.data.results
+
+		setOffers(newData)
 	}
 
 	const onPressBuyNow = () => {
@@ -682,8 +699,21 @@ const SpecialCardBid = ({
 								)}
 							</div>
 						</div>
+						<div className="text-white">
+							<div className="font-bold text-xl mb-4">Top 5 Offer</div>
+							{offers.map((offer) => (
+								<div className="mb-2" key={offer._id}>
+									<div className="flex justify-between items-center mx-8">
+										<div className="text-left">
+											<div className="text-lg">{offer.buyer_id}</div>
+											<div className="text-sm opacity-70">{timeAgo.format(offer.issued_at)}</div>
+										</div>
+										<div>{prettyBalance(offer.price, 24, 4)} Ⓝ</div>
+									</div>
+								</div>
+							))}
+						</div>
 						<div className="mx-8 mt-8">
-							<div className="text-gray-100 text-lg font-semibold mb-2">Starting Price 100 Ⓝ</div>
 							<button
 								onClick={onPressBuyNow}
 								// disabled
@@ -696,7 +726,7 @@ const SpecialCardBid = ({
 										Ⓝ`}
 									</p>
 								) : (
-									<p>Place a Bid</p>
+									<p>Place an Offer</p>
 								)}
 							</button>
 						</div>
