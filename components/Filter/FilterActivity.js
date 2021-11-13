@@ -140,6 +140,10 @@ const filter = [
 		key: 'burn',
 		value: 'NFT Burn',
 	},
+	{
+		key: 'offer',
+		value: 'Token Bid',
+	},
 ]
 
 export default FilterActivity
