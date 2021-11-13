@@ -525,8 +525,8 @@ const Nav = () => {
 						<div className="px-3">
 							{store.currentUser ? (
 								<div className="flex items-center -mx-2">
-										<NotificationList />
 									<div className="px-2">
+										<NotificationList />
 									</div>
 									<div className="px-2">
 										<User />

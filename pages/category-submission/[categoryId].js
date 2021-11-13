@@ -117,8 +117,6 @@ const SubmissionDetail = ({ submission, updateData }) => {
 		if (submission.contract_id && submission.token_series_id) {
 			fetchTokenSeries()
 		}
-
-		console.log(submission.account_id)
 	}, [submission])
 
 	const fetchTokenSeries = async () => {
@@ -129,7 +127,6 @@ const SubmissionDetail = ({ submission, updateData }) => {
 				creator_id: submission.account_id,
 			},
 		})
-		console.log(resp.data.data)
 		if (resp.data.data.results.length > 0) {
 			setLocalToken(resp.data.data.results[0])
 		}
