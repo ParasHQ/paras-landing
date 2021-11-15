@@ -199,11 +199,7 @@ const NotificationItem = ({ notif, currentUser }) => {
 							<div className="pl-2 text-gray-100">
 								Token <span className="font-semibold">{token.metadata?.title}</span> submission has
 								been accepted
-								{' to '}{' '}
-								<span className="font-semibold">
-									{token.categories?.[token.categories?.length - 1].name}
-								</span>{' '}
-								category
+								{' to '} <span className="font-semibold">{notif.msg.category_name}</span> category
 							</div>
 						</div>
 					</a>
@@ -221,7 +217,8 @@ const NotificationItem = ({ notif, currentUser }) => {
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-100">
 								Token <span className="font-semibold">{token.metadata?.title}</span> submission has
-								been rejected from {notif.category_id} category.
+								been rejected from <span className="font-semibold">{notif.msg.category_name}</span>{' '}
+								category.
 							</div>
 						</div>
 					</a>
