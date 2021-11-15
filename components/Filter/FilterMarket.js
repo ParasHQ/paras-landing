@@ -142,7 +142,7 @@ const FilterMarket = ({ isShowVerified = true }) => {
 							</div>
 							<input type="submit" className="hidden" />
 						</form>
-						{isShowVerified ? (
+						{isShowVerified && (
 							<div className="mt-2 flex items-center justify-between">
 								<h1 className="text-white font-semibold text-xl mt-2">Verified Only</h1>
 								<input
@@ -155,7 +155,7 @@ const FilterMarket = ({ isShowVerified = true }) => {
 									}}
 								/>
 							</div>
-						) : null}
+						)}
 						<button
 							onClick={onClickApply}
 							className="w-full outline-none mt-4 rounded-md bg-transparent text-sm font-semibold py-2 bg-primary text-gray-100"
