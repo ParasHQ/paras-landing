@@ -83,7 +83,7 @@ const NotificationItem = ({ notif, currentUser }) => {
 						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-300">
-								Creator minted edition #{token.edition.id || 1} to {notif.to}
+								Creator minted edition #{token.edition_id || 1} to {notif.to}
 							</div>
 						</div>
 					</a>
@@ -99,7 +99,7 @@ const NotificationItem = ({ notif, currentUser }) => {
 					<a>
 						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
 							<NotificationImage media={token.metadata?.media} />
-							<div className="pl-2 text-gray-300">burned edition #{token.edition.id || 1}</div>
+							<div className="pl-2 text-gray-300">burned edition #{token.edition_id || 1}</div>
 						</div>
 					</a>
 				</Link>
