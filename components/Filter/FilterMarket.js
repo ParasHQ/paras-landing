@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
-const FilterMarket = () => {
+const FilterMarket = ({ isShowVerified = true }) => {
 	const filterModalRef = useRef()
 	const router = useRouter()
 
@@ -79,7 +79,6 @@ const FilterMarket = () => {
 		})
 		setShowFilterModal(false)
 	}
-
 	return (
 		<div ref={filterModalRef} className="inline-block">
 			<div
@@ -143,18 +142,20 @@ const FilterMarket = () => {
 							</div>
 							<input type="submit" className="hidden" />
 						</form>
-						<div className="mt-2 flex items-center justify-between">
-							<h1 className="text-white font-semibold text-xl mt-2">Verified Only</h1>
-							<input
-								id="put-marketplace"
-								className="w-auto"
-								type="checkbox"
-								defaultChecked={isVerified}
-								onChange={() => {
-									setIsVerified(!isVerified)
-								}}
-							/>
-						</div>
+						{isShowVerified && (
+							<div className="mt-2 flex items-center justify-between">
+								<h1 className="text-white font-semibold text-xl mt-2">Verified Only</h1>
+								<input
+									id="put-marketplace"
+									className="w-auto"
+									type="checkbox"
+									defaultChecked={isVerified}
+									onChange={() => {
+										setIsVerified(!isVerified)
+									}}
+								/>
+							</div>
+						)}
 						<button
 							onClick={onClickApply}
 							className="w-full outline-none mt-4 rounded-md bg-transparent text-sm font-semibold py-2 bg-primary text-gray-100"

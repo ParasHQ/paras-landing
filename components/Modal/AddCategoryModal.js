@@ -183,9 +183,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 									className={`resize-none h-auto focus:border-gray-100 mb-4 text-black`}
 									placeholder="Token URL"
 								/>
-								<div className="opacity-75 mb-2 text-sm">
-									{localeLn('Curators_Card_Submission')}
-								</div>
+								<div className="opacity-75 mb-2 text-sm">{localeLn('CuratorsCardSubmission')}</div>
 								<div className="opacity-75 mb-6 text-sm">
 									*Only the creator that allowed to submit their NFT
 								</div>
