@@ -8,9 +8,18 @@ import { Blurhash } from 'react-blurhash'
 import Nav from 'components/Nav'
 import Footer from 'components/Footer'
 import Card from 'components/Card/Card'
-import { parseImgUrl, prettyBalance } from 'utils/common'
+import { parseImgUrl, prettyBalance, timeAgo } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
+import Countdown from 'react-countdown'
+
+const specialBidToken = {
+	tokenId: 42562,
+	image: 'https://paras-cdn.imgix.net/QmSxCMJ7PrW9D4pUbMMcAe79fCKuB3EPv5im1MRr3J14KV?w=800',
+	title: `LILO’S ESCAPE`,
+	price: `20`,
+	supply: `10`,
+}
 
 export const specialTokenId = [
 	{
@@ -47,13 +56,6 @@ export const specialTokenId = [
 		title: `Pico Explorer Sketch`,
 		price: `50`,
 		supply: `50`,
-	},
-	{
-		tokenId: null,
-		image: 'bafybeidvk5fbtan4zviz25tv43w6bl4dr5jgmqeykzowk5wjq3wer7wuea',
-		title: `?`,
-		price: `?`,
-		supply: `?`,
 	},
 ]
 
@@ -170,10 +172,18 @@ export default function Drops() {
 							<div className="text-gray-100 ml-2 font-bold text-2xl">{'x MTVRS'}</div>
 						</div>
 						<h1 className="text-white font-bold text-6xl mt-4 mb-2">{localeLn('NFTDrops')}</h1>
-						<img
+						{/* <img
 							className="max-w-full"
 							src={parseImgUrl('bafybeid5pask4j3ejkbeegmau6n5mmfj5gkja64exyobxg4uzltjdcw7kq')}
-						/>
+						/> */}
+						<div className="text-center flex justify-center">
+							<video width="320" height="180" autoPlay loop muted>
+								<source
+									src="https://paras-cdn.imgix.net/bafybeieacc3jusxvhckq75rh2g7lgay6gfvuh4aquzm64eafkcjdf3r7dq.mp4"
+									type="video/mp4"
+								/>
+							</video>
+						</div>
 						<div className="max-w-xl m-auto">
 							<p className="text-gray-200 mt-4">
 								Welcome to Metamon! Get ready to explore an exciting universe full of powerful
@@ -196,8 +206,21 @@ export default function Drops() {
 					</div>
 				</div>
 			</div>
+			<div className="mx-auto text-center flex flex-col items-center justify-center">
+				<SpecialCardBid
+					tokenId={specialBidToken.tokenId}
+					onClick={setToken}
+					titleCard={specialBidToken.title}
+					price={specialBidToken.price}
+					priceOriginal={null}
+					cardSupplyText={specialBidToken.supply}
+					cardAvailableText={`${specialBidToken.supply}/${specialBidToken.supply}`}
+					imgUrl={specialBidToken.image}
+					blurhash="UHC$2K~9J{5K-.%DflN3A5Su$P$jRFV@WEXA"
+				/>
+			</div>
 			<div className="max-w-6xl mx-auto">
-				<div ref={detail} className="flex flex-wrap px-4 -mx-4">
+				<div ref={detail} className="flex flex-wrap justify-center px-4 -mx-4">
 					{specialTokenId.map((token, idx) => {
 						return (
 							<SpecialCard
@@ -344,29 +367,13 @@ const SpecialCard = ({
 		}
 	}
 
-	const _getLowestPrice = (ownerships = []) => {
-		const marketDataList = ownerships
-			.filter((ownership) => ownership.marketData)
-			.map((ownership) => ownership.marketData.amount)
-			.sort((a, b) => a - b)
-		return marketDataList[0]
-	}
-
-	const getCardAvailable = (ownerships = []) => {
-		let total = 0
-		const marketDataList = ownerships
-			.filter((ownership) => ownership.marketData)
-			.map((ownership) => ownership.marketData.quantity)
-		total = marketDataList.reduce((a, b) => a + b, 0)
-		return total
-	}
 	const { localeLn } = useIntl()
 
 	return (
 		<div className="relative p-4 md:m-0 w-full md:w-1/3">
 			<ReactTooltip effect={'solid'} className="bg-dark-primary-1 text-white px-2 py-4 max-w-sm" />
 			<div className="absolute p-4 inset-0 m-auto opacity-50">
-				<div className="overflow-hidden rounded-xl w-full h-full">
+				<div className="overflow-hidden rounded-xl w-full h-full opacity-50">
 					<Blurhash
 						hash={blurhash}
 						width={`100%`}
@@ -490,6 +497,236 @@ const SpecialCard = ({
 									</p>
 								) : (
 									<p>{localeLn('SeeDetails')}</p>
+								)}
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	)
+}
+
+const SpecialCardBid = ({
+	tokenId,
+	onClick,
+	blurhash,
+	imgUrl,
+	titleCard,
+	cardSupplyText,
+	cardAvailableText,
+}) => {
+	const [localToken, setLocalToken] = useState(null)
+	const [offers, setOffers] = useState([])
+	const router = useRouter()
+
+	useEffect(() => {
+		if (tokenId) {
+			fetchToken()
+			fetchOffers()
+		}
+	}, [])
+
+	const fetchToken = async () => {
+		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
+			params: {
+				contract_id: 'x.paras.near',
+				token_series_id: tokenId,
+			},
+		})
+		const token = (await res.data.data.results[0]) || null
+		setLocalToken(token)
+	}
+
+	const fetchOffers = async () => {
+		const resp = await axios.get(`${process.env.V2_API_URL}/offers`, {
+			params: {
+				token_series_id: tokenId,
+				__skip: 0,
+				__limit: 5,
+				contract_id: 'x.paras.near',
+			},
+		})
+
+		const newData = resp.data.data.results
+
+		setOffers(newData)
+	}
+
+	const onPressBuyNow = () => {
+		if (localToken) {
+			onClick(localToken)
+			router.push(
+				{
+					pathname: router.pathname,
+					query: {
+						...router.query,
+						...{ tokenSeriesId: localToken.token_series_id },
+						...{ prevAs: router.asPath },
+					},
+				},
+				`/token/${localToken.contract_id}::${localToken.token_series_id}`,
+				{
+					shallow: true,
+					scroll: false,
+				}
+			)
+		}
+	}
+
+	const { localeLn } = useIntl()
+
+	return (
+		<div className="relative p-4 md:m-0 max-w-4xl w-full">
+			<ReactTooltip effect={'solid'} className="bg-dark-primary-1 text-white px-2 py-4 max-w-sm" />
+			<div className="absolute p-4 inset-0 m-auto opacity-50">
+				<div className="overflow-hidden rounded-xl w-full h-full opacity-50">
+					<Blurhash
+						hash={blurhash}
+						width={`100%`}
+						height={`100%`}
+						resolutionX={32}
+						resolutionY={32}
+						punch={1}
+					/>
+				</div>
+			</div>
+			<div className="relative py-8 m-auto">
+				<div className="static m-auto md:flex md:items-center">
+					<div className="md:w-1/2">
+						<h1 className="text-white mb-8 text-2xl font-bold text-center">
+							{localToken?.metadata.name || titleCard}
+						</h1>
+						<div className="m-8">
+							<div className="w-full m-auto">
+								<Card
+									special
+									imgUrl={localToken ? parseImgUrl(localToken.metadata.media) : parseImgUrl(imgUrl)}
+									imgBlur={blurhash}
+									disableFlip
+									token={{
+										name: localToken?.metadata.name,
+										collection: localToken?.metadata.collection,
+										description: localToken?.metadata.description,
+										creatorId: localToken?.creatorId,
+										copies: localToken?.copies || cardSupplyText,
+										tokenId: localToken?.tokenId,
+										createdAt: localToken?.createdAt,
+									}}
+									initialRotate={{
+										x: 0,
+										y: 0,
+									}}
+								/>
+							</div>
+						</div>
+					</div>
+					<div className="md:w-1/2 text-center h-full">
+						{/* <div>
+							<p className="text-gray-400">{localeLn('Price')}</p>
+							<div className="mb-4 flex space-x-2 justify-center items-center">
+								<p
+									className="text-gray-100 text-xl font-bold line-through opacity-75"
+									style={{ textDecorationColor: '#DC143C' }}
+								>
+									{priceOriginal}
+								</p>
+								<p className="text-gray-100 text-4xl font-bold">{`${price} Ⓝ`}</p>
+							</div>
+						</div> */}
+						<div className="text-white font-bold text-2xl">Bid The Special Card</div>
+						<div className="my-4">
+							<div className="text-white font-bold">Limited time only</div>
+							<Countdown className="text-white text-2xl font-bold" date={1636934399000} />
+						</div>
+						<div className="md:flex md:items-center md:justify-center md:space-x-4">
+							<div
+								className="flex flex-col cursor-default mb-4"
+								data-tip={`Total supply of the card`}
+							>
+								<div className="flex text-white justify-center">
+									<p className="text-gray-400 mr-1">{localeLn('CardSupply')}</p>
+									<svg
+										width="16"
+										height="16"
+										viewBox="0 0 24 24"
+										fill="#ffffff"
+										xmlns="http://www.w3.org/2000/svg"
+									>
+										<path
+											className="fill-current"
+											fill="#ffffff"
+											fillRule="evenodd"
+											clipRule="evenodd"
+											d="M1 12C1 18.0751 5.92487 23 12 23C18.0751 23 23 18.0751 23 12C23 5.92487 18.0751 1 12 1C5.92487 1 1 5.92487 1 12ZM21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12ZM13.0036 13.9983H14.003V15.9983H10.003V13.9983H11.003V11.9983H10.003V9.99835H13.0036V13.9983ZM13.0007 7.99835C13.0007 8.55063 12.5528 8.99835 12.0003 8.99835C11.4479 8.99835 11 8.55063 11 7.99835C11 7.44606 11.4479 6.99835 12.0003 6.99835C12.5528 6.99835 13.0007 7.44606 13.0007 7.99835Z"
+										/>
+									</svg>
+								</div>
+								<p className="text-gray-100 text-lg font-semibold">
+									{localToken?.metadata.copies || cardSupplyText} {localeLn('pcs')}
+								</p>
+							</div>
+							<div
+								className="flex flex-col cursor-default mb-4"
+								data-tip={`Card available for purchase`}
+							>
+								<div className="flex text-white justify-center">
+									<p className="text-gray-400 mr-1">{localeLn('CardAvailable')}</p>
+									<svg
+										width="16"
+										height="16"
+										viewBox="0 0 24 24"
+										fill="#ffffff"
+										xmlns="http://www.w3.org/2000/svg"
+									>
+										<path
+											className="fill-current"
+											fill="#ffffff"
+											fillRule="evenodd"
+											clipRule="evenodd"
+											d="M1 12C1 18.0751 5.92487 23 12 23C18.0751 23 23 18.0751 23 12C23 5.92487 18.0751 1 12 1C5.92487 1 1 5.92487 1 12ZM21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12ZM13.0036 13.9983H14.003V15.9983H10.003V13.9983H11.003V11.9983H10.003V9.99835H13.0036V13.9983ZM13.0007 7.99835C13.0007 8.55063 12.5528 8.99835 12.0003 8.99835C11.4479 8.99835 11 8.55063 11 7.99835C11 7.44606 11.4479 6.99835 12.0003 6.99835C12.5528 6.99835 13.0007 7.44606 13.0007 7.99835Z"
+										/>
+									</svg>
+								</div>
+								{localToken ? (
+									<p className="text-gray-100 text-lg font-semibold">
+										{`${localToken.metadata.copies - (localToken.total_mint || 0)} / ${
+											localToken.metadata.copies
+										}`}
+									</p>
+								) : (
+									<p className="text-gray-100 text-lg font-semibold">{cardAvailableText}</p>
+								)}
+							</div>
+						</div>
+						<div className="text-white">
+							<div className="font-bold text-xl mb-4">Top 5 Offer</div>
+							{offers.map((offer) => (
+								<div className="mb-2" key={offer._id}>
+									<div className="flex justify-between items-center mx-8">
+										<div className="text-left">
+											<div className="text-lg">{offer.buyer_id}</div>
+											<div className="text-sm opacity-70">{timeAgo.format(offer.issued_at)}</div>
+										</div>
+										<div>{prettyBalance(offer.price, 24, 4)} Ⓝ</div>
+									</div>
+								</div>
+							))}
+						</div>
+						<div className="mx-8 mt-8">
+							<button
+								onClick={onPressBuyNow}
+								// disabled
+								className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 text-primary bg-gray-200`}
+							>
+								{localToken?.price ? (
+									<p>
+										{`Buy for
+										${prettyBalance(localToken?.price, 24, 4)}
+										Ⓝ`}
+									</p>
+								) : (
+									<p>Place an Offer</p>
 								)}
 							</button>
 						</div>
