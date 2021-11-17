@@ -103,7 +103,7 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content={parseImgUrl('bafybeiceu4kfmaxu5eixtxubfaska62ssbzcaaptpvunev4vsoksa7cssu')}
+					content="https://ipfs.fleek.co/ipfs/bafybeie4oljhanhzil5hut3fkavki3ut4b35pvt34n7mw27mw5pljnyyha"
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras X Nearnauts - NFT Drops" />
@@ -115,7 +115,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content={parseImgUrl('bafybeiceu4kfmaxu5eixtxubfaska62ssbzcaaptpvunev4vsoksa7cssu')}
+					content="https://ipfs.fleek.co/ipfs/bafybeie4oljhanhzil5hut3fkavki3ut4b35pvt34n7mw27mw5pljnyyha"
 				/>
 			</Head>
 			<Nav />
