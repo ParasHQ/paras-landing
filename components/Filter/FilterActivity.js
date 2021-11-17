@@ -142,7 +142,7 @@ const filter = [
 	},
 	{
 		key: 'offer',
-		value: 'Token Bid',
+		value: 'NFT Offer',
 	},
 ]
 
