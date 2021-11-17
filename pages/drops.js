@@ -72,8 +72,8 @@ export default function Drops() {
 			note: [`NFT drop is live by offer`, `Drops will start on Nov 18th at 00.01 UTC`],
 		},
 		{
-			date: 'Nov 22th',
-			note: [`NFT drops will end at Nov 22th at 23.59 UTC (4-days)`],
+			date: 'Nov 22nd',
+			note: [`NFT drops will end on Nov 22nd at 23.59 UTC (4-days)`],
 		},
 	]
 
