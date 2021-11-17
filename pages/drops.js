@@ -14,49 +14,50 @@ import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModa
 import Countdown from 'react-countdown'
 
 const specialBidToken = {
-	tokenId: 42562,
-	image: 'https://paras-cdn.imgix.net/QmSxCMJ7PrW9D4pUbMMcAe79fCKuB3EPv5im1MRr3J14KV?w=800',
-	title: `LILO’S ESCAPE`,
+	tokenId: 49791,
+	image:
+		'https://paras-cdn.imgix.net/bafybeiei26graswnft24sl7haphtrt3iwjxbwmqdux53tovefzzo3s4n5e?w=800',
+	title: `NEARNauts Comic 'Page 1'`,
 	price: `20`,
 	supply: `10`,
 }
 
 export const specialTokenId = [
-	{
-		tokenId: 38124,
-		image: 'bafybeihkl2v7yzvyyftd55wtuu3sqeul3463re5qe7e4xzntgt7h5tqkcy',
-		title: `Lidra`,
-		price: `20`,
-		supply: `250`,
-	},
-	{
-		tokenId: 38125,
-		image: 'bafybeig5o6y446cgk5k3tnae37jxroxuyvx7ivydu5yxu23qu3h5k65p64',
-		title: `Pyro`,
-		price: `10`,
-		supply: `500`,
-	},
-	{
-		tokenId: 38126,
-		image: 'bafybeib3y5vj5rjf5daf77uy7nwlug57kxzjqlyas4q57eah5h7d6khc6a',
-		title: `Rayo`,
-		price: `10`,
-		supply: `500`,
-	},
-	{
-		tokenId: 38127,
-		image: 'bafybeifezesodcrc5zg4dnj46duxfa2o2qvx7nrlibof2245vpntbkieva',
-		title: `Lilo Explorer Sketch`,
-		price: `50`,
-		supply: `50`,
-	},
-	{
-		tokenId: 38128,
-		image: 'bafybeie33tikoko67irxpy6bjurbtztf4t5jd4mhibqj26l6ndgkthvfo4',
-		title: `Pico Explorer Sketch`,
-		price: `50`,
-		supply: `50`,
-	},
+	// {
+	// 	tokenId: 38124,
+	// 	image: 'bafybeihkl2v7yzvyyftd55wtuu3sqeul3463re5qe7e4xzntgt7h5tqkcy',
+	// 	title: `Lidra`,
+	// 	price: `20`,
+	// 	supply: `250`,
+	// },
+	// {
+	// 	tokenId: 38125,
+	// 	image: 'bafybeig5o6y446cgk5k3tnae37jxroxuyvx7ivydu5yxu23qu3h5k65p64',
+	// 	title: `Pyro`,
+	// 	price: `10`,
+	// 	supply: `500`,
+	// },
+	// {
+	// 	tokenId: 38126,
+	// 	image: 'bafybeib3y5vj5rjf5daf77uy7nwlug57kxzjqlyas4q57eah5h7d6khc6a',
+	// 	title: `Rayo`,
+	// 	price: `10`,
+	// 	supply: `500`,
+	// },
+	// {
+	// 	tokenId: 38127,
+	// 	image: 'bafybeifezesodcrc5zg4dnj46duxfa2o2qvx7nrlibof2245vpntbkieva',
+	// 	title: `Lilo Explorer Sketch`,
+	// 	price: `50`,
+	// 	supply: `50`,
+	// },
+	// {
+	// 	tokenId: 38128,
+	// 	image: 'bafybeie33tikoko67irxpy6bjurbtztf4t5jd4mhibqj26l6ndgkthvfo4',
+	// 	title: `Pico Explorer Sketch`,
+	// 	price: `50`,
+	// 	supply: `50`,
+	// },
 ]
 
 const ReactTooltip = dynamic(() => import('react-tooltip'), { ssr: false })
@@ -67,19 +68,12 @@ export default function Drops() {
 	const { localeLn } = useIntl()
 	const timeline = [
 		{
-			date: `Nov 8th`,
-			note: [
-				`NFT drop is live`,
-				`Drops will start on Nov 8th at 00.01 and will end at Nov 14th at 00.00 (6-days)`,
-			],
+			date: `Nov 18th`,
+			note: [`NFT drop is live by offer`, `Drops will start on Nov 18th at 00.01 UTC`],
 		},
 		{
-			date: 'Nov 12th',
-			note: [`Bid item is live`],
-		},
-		{
-			date: `Nov 14th`,
-			note: [`NFT Drop ends`, `Burn all the remaining NFTs`],
+			date: 'Nov 22th',
+			note: [`NFT drops will end at Nov 22th at 23.59 UTC (4-days)`],
 		},
 	]
 
@@ -94,12 +88,12 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>{localeLn('ParasXMTVRS')}</title>
+				<title>Paras X Nearnauts - NFT Drops</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
-				<meta name="twitter:title" content="Paras X MTVRS NFT Drops" />
+				<meta name="twitter:title" content="Paras X Nearnauts - NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -109,11 +103,11 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content={parseImgUrl('bafybeid5pask4j3ejkbeegmau6n5mmfj5gkja64exyobxg4uzltjdcw7kq')}
+					content={parseImgUrl('bafybeiceu4kfmaxu5eixtxubfaska62ssbzcaaptpvunev4vsoksa7cssu')}
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Paras X MTVRS NFT Drops" />
-				<meta property="og:site_name" content="Paras X MTVRS NFT Drops" />
+				<meta property="og:title" content="Paras X Nearnauts - NFT Drops" />
+				<meta property="og:site_name" content="Paras X Nearnauts - NFT Drops" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -121,7 +115,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content={parseImgUrl('bafybeid5pask4j3ejkbeegmau6n5mmfj5gkja64exyobxg4uzltjdcw7kq')}
+					content={parseImgUrl('bafybeiceu4kfmaxu5eixtxubfaska62ssbzcaaptpvunev4vsoksa7cssu')}
 				/>
 			</Head>
 			<Nav />
@@ -172,36 +166,51 @@ export default function Drops() {
 							<div className="text-gray-100 ml-2 font-bold text-2xl">{'x MTVRS'}</div>
 						</div>
 						<h1 className="text-white font-bold text-6xl mt-4 mb-2">{localeLn('NFTDrops')}</h1>
-						{/* <img
-							className="max-w-full"
-							src={parseImgUrl('bafybeid5pask4j3ejkbeegmau6n5mmfj5gkja64exyobxg4uzltjdcw7kq')}
-						/> */}
-						<div className="text-center flex justify-center">
+						<img
+							className="md:w-1/2 m-auto"
+							src={
+								'https://paras-cdn.imgix.net/bafybeiasyzrwtkxezu73nxhh2vv7p77i4tennvjvkr2pmbhmatkyjuhmey?w=800'
+							}
+						/>
+						{/* <div className="text-center flex justify-center">
 							<video width="320" height="180" autoPlay loop muted>
 								<source
 									src="https://paras-cdn.imgix.net/bafybeieacc3jusxvhckq75rh2g7lgay6gfvuh4aquzm64eafkcjdf3r7dq.mp4"
 									type="video/mp4"
 								/>
 							</video>
-						</div>
+						</div> */}
 						<div className="max-w-xl m-auto">
 							<p className="text-gray-200 mt-4">
-								Welcome to Metamon! Get ready to explore an exciting universe full of powerful
-								creatures with unique abilities! Capture, evolve and train your Metamon to become
-								the best! Battle each other in a competitive online battle royale and earn your
-								place as the Supreme One!
+								Blast into the NEARNauts Universe, the first NFT of its type on the NEAR Network. A
+								completely community driven project, NEARNauts is paving the way for PFP NFT's on
+								NEAR, all while giving back to those in need, starting with 'Page 1'.
 							</p>
 							<p className="text-gray-200 mt-4">
-								The upcoming Metamon game is an online competitive Battle Royale PC Play-To-Earn
-								game with an official launch date of January 20th.
+								The 'Page 1' Auction is the first of many auctions NEARNauts will be hosting to
+								donate ALL profits to various charities as voted on by the community.
 							</p>
-							<a
+							<p className="text-gray-200 mt-4">
+								Follow the story of NEARNauts on Paras with the official NEARNauts comic coming
+								soon! Click{' '}
+								<span>
+									<a
+										target="blank"
+										href="https://paras.id/publication/nearnauts-page-1-charity-auction-619502d2cd074713e3ad704a"
+										className="text-white mt-4 font-bold underline"
+									>
+										HERE
+									</a>{' '}
+								</span>
+								for more information.
+							</p>
+							{/* <a
 								target="blank"
 								href="https://forms.gle/oiyYYLx5gvqFNgtH8"
 								className="underline break-all block text-gray-200 mt-4 font-medium"
 							>
 								Sign up here for exclusive early access to the game.
-							</a>
+							</a> */}
 						</div>
 					</div>
 				</div>
@@ -216,7 +225,7 @@ export default function Drops() {
 					cardSupplyText={specialBidToken.supply}
 					cardAvailableText={`${specialBidToken.supply}/${specialBidToken.supply}`}
 					imgUrl={specialBidToken.image}
-					blurhash="UHC$2K~9J{5K-.%DflN3A5Su$P$jRFV@WEXA"
+					blurhash="U7I#{i%OWAoh-@ISogWBI8x^WAof%PM^t8WA"
 				/>
 			</div>
 			<div className="max-w-6xl mx-auto">
@@ -243,7 +252,7 @@ export default function Drops() {
 				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
 					{localeLn('Timeline')}
 				</h1>
-				<div className="max-w-4xl m-auto md:flex">
+				<div className="max-w-4xl m-auto md:flex justify-center">
 					{timeline.map((item, index) => (
 						<div
 							key={index}
@@ -543,7 +552,7 @@ const SpecialCardBid = ({
 			params: {
 				token_series_id: tokenId,
 				__skip: 0,
-				__limit: 5,
+				__limit: 10,
 				contract_id: 'x.paras.near',
 			},
 		})
@@ -592,7 +601,7 @@ const SpecialCardBid = ({
 				</div>
 			</div>
 			<div className="relative py-8 m-auto">
-				<div className="static m-auto md:flex md:items-center">
+				<div className="static m-auto md:flex ">
 					<div className="md:w-1/2">
 						<h1 className="text-white mb-8 text-2xl font-bold text-center">
 							{localToken?.metadata.name || titleCard}
@@ -619,6 +628,23 @@ const SpecialCardBid = ({
 									}}
 								/>
 							</div>
+							<div className="mx-8 mt-8 hidden md:block">
+								<button
+									onClick={onPressBuyNow}
+									// disabled
+									className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 text-primary bg-gray-200`}
+								>
+									{localToken?.price ? (
+										<p>
+											{`Buy for
+										${prettyBalance(localToken?.price, 24, 4)}
+										Ⓝ`}
+										</p>
+									) : (
+										<p>Place an Offer</p>
+									)}
+								</button>
+							</div>
 						</div>
 					</div>
 					<div className="md:w-1/2 text-center h-full">
@@ -637,7 +663,7 @@ const SpecialCardBid = ({
 						<div className="text-white font-bold text-2xl">Bid The Special Card</div>
 						<div className="my-4">
 							<div className="text-white font-bold">Limited time only</div>
-							<Countdown className="text-white text-2xl font-bold" date={1636934399000} />
+							<Countdown className="text-white text-2xl font-bold" date={1637625599000} />
 						</div>
 						<div className="md:flex md:items-center md:justify-center md:space-x-4">
 							<div
@@ -700,7 +726,7 @@ const SpecialCardBid = ({
 							</div>
 						</div>
 						<div className="text-white">
-							<div className="font-bold text-xl mb-4">Top 5 Offer</div>
+							<div className="font-bold text-xl mb-4">Top 10 Offer</div>
 							{offers.map((offer) => (
 								<div className="mb-2" key={offer._id}>
 									<div className="flex justify-between items-center mx-8">
@@ -712,23 +738,23 @@ const SpecialCardBid = ({
 									</div>
 								</div>
 							))}
-						</div>
-						<div className="mx-8 mt-8">
-							<button
-								onClick={onPressBuyNow}
-								// disabled
-								className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 text-primary bg-gray-200`}
-							>
-								{localToken?.price ? (
-									<p>
-										{`Buy for
+							<div className="mx-8 mt-8 md:hidden">
+								<button
+									onClick={onPressBuyNow}
+									// disabled
+									className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 text-primary bg-gray-200`}
+								>
+									{localToken?.price ? (
+										<p>
+											{`Buy for
 										${prettyBalance(localToken?.price, 24, 4)}
 										Ⓝ`}
-									</p>
-								) : (
-									<p>Place an Offer</p>
-								)}
-							</button>
+										</p>
+									) : (
+										<p>Place an Offer</p>
+									)}
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
