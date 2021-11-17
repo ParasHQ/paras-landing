@@ -99,7 +99,7 @@ const NotificationItem = ({ notif, currentUser }) => {
 					<a>
 						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
 							<NotificationImage media={token.metadata?.media} />
-							<div className="pl-2 text-gray-300">burned edition #{token.edition_id || 1}</div>
+							<div className="pl-2 text-gray-300">burned edition #{token.edition?.id || 1}</div>
 						</div>
 					</a>
 				</Link>
@@ -107,7 +107,7 @@ const NotificationItem = ({ notif, currentUser }) => {
 		)
 	}
 
-	if (notif.type === 'nft_transfer' && notif.to === null) {
+	if (notif.type === 'nft_transfer') {
 		if (notif.price && notif.from === currentUser) {
 			return (
 				<div>
@@ -117,7 +117,9 @@ const NotificationItem = ({ notif, currentUser }) => {
 								<NotificationImage media={token.metadata?.media} />
 								<div className="pl-2 text-gray-300">
 									sold <span className="font-medium text-gray-100">{token.metadata?.title}</span>
-									{formatNearAmount(notif.msg.params.price)} Ⓝ
+									{' to '}
+									<span className="font-semibold">{notif.to}</span> for{' '}
+									{formatNearAmount(notif.price)} Ⓝ
 								</div>
 							</div>
 						</a>
@@ -178,7 +180,7 @@ const NotificationItem = ({ notif, currentUser }) => {
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-100">
 								<span className="font-semibold">{notif.from}</span> offer{' '}
-								<span className="font-medium text-gray-100">{token.metadata?.media}</span>
+								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
 								{' for '}
 								{formatNearAmount(notif.msg.params.price)} Ⓝ
 							</div>
