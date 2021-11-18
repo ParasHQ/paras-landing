@@ -12,6 +12,7 @@ import { parseImgUrl, prettyBalance, timeAgo } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 import Countdown from 'react-countdown'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
 const specialBidToken = {
 	tokenId: 49791,
@@ -726,18 +727,24 @@ const SpecialCardBid = ({
 							</div>
 						</div>
 						<div className="text-white">
-							<div className="font-bold text-xl mb-4">Top 10 Offer</div>
-							{offers.map((offer) => (
-								<div className="mb-2" key={offer._id}>
-									<div className="flex justify-between items-center mx-8">
-										<div className="text-left">
-											<div className="text-lg">{offer.buyer_id}</div>
-											<div className="text-sm opacity-70">{timeAgo.format(offer.issued_at)}</div>
+							<div className="font-bold text-xl">Top 10 Offer</div>
+							<div className="mb-4">Starting price 5 Ⓝ</div>
+							{offers.map(
+								(offer) =>
+									parseInt(formatNearAmount(offer.price, 0)) >= 5 && (
+										<div className="mb-2" key={offer._id}>
+											<div className="flex justify-between items-center mx-8">
+												<div className="text-left">
+													<div className="text-lg">{offer.buyer_id}</div>
+													<div className="text-sm opacity-70">
+														{timeAgo.format(offer.issued_at)}
+													</div>
+												</div>
+												<div>{prettyBalance(offer.price, 24, 4)} Ⓝ</div>
+											</div>
 										</div>
-										<div>{prettyBalance(offer.price, 24, 4)} Ⓝ</div>
-									</div>
-								</div>
-							))}
+									)
+							)}
 							<div className="mx-8 mt-8 md:hidden">
 								<button
 									onClick={onPressBuyNow}
