@@ -164,7 +164,7 @@ export default function Drops() {
 									fill="white"
 								/>
 							</svg>
-							<div className="text-gray-100 ml-2 font-bold text-2xl">{'x MTVRS'}</div>
+							<div className="text-gray-100 ml-2 font-bold text-2xl">{'x NEARNauts'}</div>
 						</div>
 						<h1 className="text-white font-bold text-6xl mt-4 mb-2">{localeLn('NFTDrops')}</h1>
 						<img
