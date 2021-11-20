@@ -22,6 +22,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [tokens, setTokens] = useState([])
 	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
+	const [isFiltering, setIsFiltering] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
 
 	const fetchData = async () => {
@@ -56,7 +57,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	useEffect(() => {
 		updateFilter(router.query)
-	}, [router.query])
+	}, [router.query.sort, router.query.pmin, router.query.pmax])
 
 	const editCollection = () => {
 		router.push(`/collection/edit/${collectionId}`)
@@ -81,7 +82,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const updateFilter = async (query) => {
-		setIsFetching(true)
+		setIsFiltering(true)
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: tokensParams(0, query || serverQuery),
 		})
@@ -93,7 +94,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			setHasMore(true)
 		}
 
-		setIsFetching(false)
+		setIsFiltering(false)
 	}
 
 	return (
@@ -173,7 +174,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					<FilterMarket isShowVerified={false} />
 				</div>
 				<div className="mt-12 px-4">
-					{isFetching ? (
+					{isFiltering ? (
 						<CardListLoader />
 					) : (
 						<CardList name="market" tokens={tokens} fetchData={fetchData} hasMore={hasMore} />
