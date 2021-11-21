@@ -18,6 +18,7 @@ const moduleExports = {
 		MARKETPLACE_CONTRACT_ID: process.env.MARKETPLACE_CONTRACT_ID,
 		NFT_CONTRACT_ID: process.env.NFT_CONTRACT_ID,
 		WHITELIST_CONTRACT_ID: process.env.WHITELIST_CONTRACT_ID,
+		REPORT_URL: process.env.REPORT_URL,
 	},
 	async redirects() {
 		return [

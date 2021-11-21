@@ -201,6 +201,13 @@ const CardInfo = {
 	Redirecting: 'Redirecting...',
 	SubmitBid: 'Submit Bid',
 	Attributes: 'Attributes',
+	ReportTitle: 'Report this item',
+	ReportReason: 'Reason',
+	ReportDetail: 'Additional details',
+	ReportDetailPlaceholder: 'Please provide additional information',
+	ReportButton: 'Report',
+	ReportButtonLoading: 'Reporting...',
+	ReportToastSuccess: 'This item has been reported.',
 }
 const publication = {
 	PublicationParas: 'Publication — Paras',
