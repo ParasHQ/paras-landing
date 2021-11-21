@@ -19,7 +19,7 @@ const InputSelect = ({ className = '', isError = false, options = [{}], ...rest 
 					Choose here
 				</option>
 				{options.map((option, index) => (
-					<option key={index} value={option.value}>
+					<option key={index} value={option.value} className="bg-gray-700">
 						{option.label}
 					</option>
 				))}
