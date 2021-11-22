@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Scrollbars from 'react-custom-scrollbars'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
@@ -25,10 +25,13 @@ import { useIntl } from 'hooks/useIntl'
 import TabOffers from 'components/Tabs/TabOffers'
 import PlaceBidModal from 'components/Modal/PlaceBidModal'
 import TabPublication from 'components/Tabs/TabPublication'
+import axios from 'axios'
+// import FileType from 'file-type/browser'
 
 const TokenSeriesDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
+	const [media, setMedia] = useState(null)
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
 	const changeActiveTab = (tab) => {
@@ -116,6 +119,26 @@ const TokenSeriesDetail = ({ token, className }) => {
 		)
 	}
 
+	// useEffect(() => {
+	// 	if (token.metadata.media) {
+	// 		getMedia()
+	// 	}
+	// }, [token])
+
+	// const getMedia = async () => {
+	// 	const resp = await axios.get(`${parseImgUrl(token.metadata.media)}`, {
+	// 		responseType: 'blob',
+	// 	})
+
+	// 	const fileType = await FileType.fromBlob(resp.data)
+
+	// 	const objectUrl = URL.createObjectURL(resp.data)
+	// 	setMedia({
+	// 		type: fileType.mime,
+	// 		url: [objectUrl],
+	// 	})
+	// }
+
 	return (
 		<div className={`m-auto rounded-lg overflow-hidden ${className}`}>
 			<div className="flex flex-col lg:flex-row h-90vh lg:h-80vh" style={{ background: '#202124' }}>
@@ -133,12 +156,12 @@ const TokenSeriesDetail = ({ token, className }) => {
 						)}
 					</div>
 					<div className="w-full h-full flex items-center justify-center p-2 lg:p-8 relative z-10">
-						<img
-							className="object-contain w-full h-full"
-							src={parseImgUrl(token.metadata.media, null, {
-								useOriginal: process.env.APP_ENV === 'production' ? false : true,
-							})}
-						/>
+						{/* {media &&
+							(media.type.includes('image') ? (
+								<img className="object-contain w-full h-full" src={media.url} />
+							) : (
+								media.type.includes('video') && <video autoPlay controls src={media.url} />
+							))} */}
 					</div>
 					<ArtistBanned creatorId={token.metadata.creator_id} />
 				</div>
