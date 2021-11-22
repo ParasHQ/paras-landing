@@ -64,7 +64,7 @@ const FilterMarket = ({ isShowVerified = true }) => {
 			sort: sortBy,
 			...(minPrice && { pmin: minPrice }),
 			...(maxPrice && { pmax: maxPrice }),
-			is_verified: isVerified,
+			...(isShowVerified && { is_verified: isVerified }),
 		}
 
 		if (minPrice === '') {

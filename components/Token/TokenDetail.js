@@ -29,6 +29,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import TabOffers from 'components/Tabs/TabOffers'
 import PlaceBidModal from 'components/Modal/PlaceBidModal'
 import TabPublication from 'components/Tabs/TabPublication'
+import ReportModal from 'components/Modal/ReportModal'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -286,6 +287,7 @@ const TokenDetail = ({ token, className }) => {
 					isOwner() && { name: 'Update Listing', onClick: onClickUpdate },
 					isOwner() && { name: 'Transfer', onClick: onClickTransfer },
 					isOwner() && { name: 'Burn Card', onClick: onClickBurn },
+					{ name: 'Report', onClick: () => setShowModal('report') },
 				].filter((x) => x)}
 			/>
 			<TokenShareModal show={showModal === 'share'} onClose={onDismissModal} tokenData={token} />
@@ -299,6 +301,7 @@ const TokenDetail = ({ token, className }) => {
 			<TokenBuyModal show={showModal === 'buy'} onClose={onDismissModal} data={token} />
 			<TokenTransferModal show={showModal === 'transfer'} onClose={onDismissModal} data={token} />
 			<PlaceBidModal show={showModal === 'placeoffer'} data={token} onClose={onDismissModal} />
+			<ReportModal show={showModal === 'report'} data={token} onClose={onDismissModal} />
 			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>
 	)
