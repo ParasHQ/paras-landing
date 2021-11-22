@@ -130,7 +130,7 @@ const Activity = ({ activity }) => {
 					<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
 					<span>
 						{' '}
-						bought <span className="font-semibold">#{edition_id || 1}</span> for{' '}
+						bought <span className="font-semibold">#{edition_id || activity.msg.params.token_id}</span> for{' '}
 					</span>
 					{formatNearAmount(activity.msg.params.price)} Ⓝ
 				</p>
@@ -143,7 +143,7 @@ const Activity = ({ activity }) => {
 					<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
 					<span>
 						{' '}
-						minted <span className="font-semibold">#{edition_id || 1}</span>
+						minted <span className="font-semibold">#{edition_id || activity.msg.params.token_id}</span>
 					</span>
 				</p>
 			)
@@ -157,7 +157,7 @@ const Activity = ({ activity }) => {
 				/>
 				<span>
 					{' '}
-					minted <span className="font-semibold">#{edition_id || 1}</span> to{' '}
+					minted <span className="font-semibold">#{edition_id || activity.msg.params.token_id}</span> to{' '}
 				</span>
 				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
 			</p>
@@ -172,7 +172,7 @@ const Activity = ({ activity }) => {
 				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.from} />
 				<span>
 					{' '}
-					burned <span className="font-semibold">#{edition_id || 1}</span>
+					burned <span className="font-semibold">#{edition_id || activity.msg.params.token_id}</span>
 				</span>
 			</p>
 		)
