@@ -9,6 +9,7 @@ import { GAS_FEE, STORAGE_MINT_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import { trackMintToken } from 'lib/ga'
 
 const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
@@ -24,6 +25,8 @@ const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 			token_series_id: data.token_series_id,
 			receiver_id: isSelfMint ? near.currentUser.accountId : receiverId,
 		}
+
+		trackMintToken(data.token_series_id)
 
 		try {
 			await near.wallet.account().functionCall({

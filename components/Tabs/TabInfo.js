@@ -32,7 +32,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 							wordBreak: 'break-word',
 						}}
 					>
-						{localToken.metadata.description.replace(/\n\s*\n\s*\n/g, '\n\n')}
+						{localToken.metadata.description?.replace(/\n\s*\n\s*\n/g, '\n\n')}
 					</p>
 				</ReactLinkify>
 			</div>

@@ -174,7 +174,18 @@ function MyApp({ Component, pageProps }) {
 
 	return (
 		<div>
-			<IntlProvider locale={locale} defaultLocale={defaultLocale} messages={messages}>
+			<IntlProvider
+				locale={locale}
+				defaultLocale={defaultLocale}
+				messages={messages}
+				onError={(err) => {
+					if (err.code === 'MISSING_TRANSLATION') {
+						// console.warn('Missing translation', err.message)
+						return
+					}
+					throw err
+				}}
+			>
 				<SWRConfig value={{}}>
 					<ToastProvider>
 						<Component {...pageProps} />

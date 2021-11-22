@@ -8,6 +8,7 @@ import { InputText } from 'components/Common/form'
 import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import { trackBurnTokenSeries } from 'lib/ga'
 
 const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
@@ -19,6 +20,7 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 			return
 		}
 
+		trackBurnTokenSeries(data.token_series_id)
 		try {
 			const params = {
 				token_series_id: data.token_series_id,
