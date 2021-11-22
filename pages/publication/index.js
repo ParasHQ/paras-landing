@@ -1,35 +1,16 @@
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import InfiniteScroll from 'react-infinite-scroll-component'
 
 import Nav from 'components/Nav'
 import Footer from 'components/Footer'
-import PublicationList from 'components/Publication/PublicationList'
-import PublicationCardListLoader from 'components/Publication/PublicationCardListLoader'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import useStore from 'lib/store'
 import { useIntl } from 'hooks/useIntl'
+import PublicationListScroll from 'components/Publication/PublicationListScroll'
 
 const LIMIT = 6
-
-const PublicationListContainer = ({ data, fetchData, hasMore }) => (
-	<InfiniteScroll
-		dataLength={data.length}
-		next={fetchData}
-		hasMore={hasMore}
-		loader={<PublicationCardListLoader />}
-	>
-		<div className="flex flex-wrap">
-			{data.map((pub, idx) => (
-				<div key={idx} className="w-full md:w-1/2 p-4">
-					<PublicationList key={pub._id} data={pub} />
-				</div>
-			))}
-		</div>
-	</InfiniteScroll>
-)
 
 const Publication = () => {
 	const router = useRouter()
@@ -155,7 +136,7 @@ const Publication = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn('Publication — Paras')}</title>
+				<title>{localeLn('PublicationParas')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -190,9 +171,7 @@ const Publication = () => {
 			<div className="max-w-6xl relative m-auto py-12">
 				<h1 className="text-4xl font-bold text-gray-100 text-center">{localeLn('Publication')}</h1>
 				<div className="mt-4">
-					<p className="text-center text-xl text-gray-300">
-						{localeLn('Enhancing The Visuals through Stories')}
-					</p>
+					<p className="text-center text-xl text-gray-300">{localeLn('EnhancingVisualsStories')}</p>
 				</div>
 				<div className="mt-8">
 					<div className="flex text-white">
@@ -226,15 +205,11 @@ const Publication = () => {
 					</div>
 					{/* render All */}
 					{!router.query.type && (
-						<PublicationListContainer
-							data={pubList}
-							hasMore={pubListHasMore}
-							fetchData={fetchData}
-						/>
+						<PublicationListScroll data={pubList} hasMore={pubListHasMore} fetchData={fetchData} />
 					)}
 					{/* render Editorial */}
 					{router.query.type === 'editorial' && (
-						<PublicationListContainer
+						<PublicationListScroll
 							data={pubListEditorial}
 							hasMore={pubListEditorialHasMore}
 							fetchData={fetchData}
@@ -242,7 +217,7 @@ const Publication = () => {
 					)}
 					{/* render Community */}
 					{router.query.type === 'community' && (
-						<PublicationListContainer
+						<PublicationListScroll
 							data={pubListCommunity}
 							hasMore={pubListCommunityHasMore}
 							fetchData={fetchData}

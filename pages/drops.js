@@ -9,14 +9,52 @@ import Nav from 'components/Nav'
 import Footer from 'components/Footer'
 import Card from 'components/Card/Card'
 import { parseImgUrl, prettyBalance } from 'utils/common'
-import ReactLinkify from 'react-linkify'
 import { useIntl } from 'hooks/useIntl'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 
 export const specialTokenId = [
-	'bafybeihsd32maurfvj2w7bfl2ca2v5zb3fbxf6w7s5chjb5dtriegbvtxy',
-	'bafybeieqcjc2jixkaczxz52bl7tvujll32lme7dwoytqgf5eiyaiz775py',
-	'bafybeihqtgsmpytpvg6po7xdmzz3yj3hlofv3un5qthytspj6euov3djta',
+	{
+		tokenId: 38124,
+		image: 'bafybeihkl2v7yzvyyftd55wtuu3sqeul3463re5qe7e4xzntgt7h5tqkcy',
+		title: `Lidra`,
+		price: `20`,
+		supply: `250`,
+	},
+	{
+		tokenId: 38125,
+		image: 'bafybeig5o6y446cgk5k3tnae37jxroxuyvx7ivydu5yxu23qu3h5k65p64',
+		title: `Pyro`,
+		price: `10`,
+		supply: `500`,
+	},
+	{
+		tokenId: 38126,
+		image: 'bafybeib3y5vj5rjf5daf77uy7nwlug57kxzjqlyas4q57eah5h7d6khc6a',
+		title: `Rayo`,
+		price: `10`,
+		supply: `500`,
+	},
+	{
+		tokenId: 38127,
+		image: 'bafybeifezesodcrc5zg4dnj46duxfa2o2qvx7nrlibof2245vpntbkieva',
+		title: `Lilo Explorer Sketch`,
+		price: `50`,
+		supply: `50`,
+	},
+	{
+		tokenId: 38128,
+		image: 'bafybeie33tikoko67irxpy6bjurbtztf4t5jd4mhibqj26l6ndgkthvfo4',
+		title: `Pico Explorer Sketch`,
+		price: `50`,
+		supply: `50`,
+	},
+	{
+		tokenId: null,
+		image: 'bafybeidvk5fbtan4zviz25tv43w6bl4dr5jgmqeykzowk5wjq3wer7wuea',
+		title: `?`,
+		price: `?`,
+		supply: `?`,
+	},
 ]
 
 const ReactTooltip = dynamic(() => import('react-tooltip'), { ssr: false })
@@ -27,46 +65,22 @@ export default function Drops() {
 	const { localeLn } = useIntl()
 	const timeline = [
 		{
-			date: localeLn('June 9th'),
-			note: [localeLn('Open registration for user to get early access (whitelist) to buy NFT')],
-		},
-		{
-			date: localeLn('June 16th'),
+			date: `Nov 8th`,
 			note: [
-				localeLn('NFT Drops for whitelisted account'),
-				localeLn(
-					'Drops will start on June 16th at 00.01 and will end at June 18th at 00.00 (2-days)'
-				),
+				`NFT drop is live`,
+				`Drops will start on Nov 8th at 00.01 and will end at Nov 14th at 00.00 (6-days)`,
 			],
 		},
 		{
-			date: localeLn('June 19th'),
-			note: [
-				localeLn('NFT Drops for public (if still available)'),
-				localeLn(
-					'The remaining drops will start sale for public on June 19th at 00.01 and will end at June 24th at 00.00 (5 days)'
-				),
-			],
+			date: 'Nov 12th',
+			note: [`Bid item is live`],
 		},
 		{
-			date: localeLn('June 25th'),
-			note: [localeLn('Burn all the remaining NFTs')],
+			date: `Nov 14th`,
+			note: [`NFT Drop ends`, `Burn all the remaining NFTs`],
 		},
 	]
 
-	const tasks = [
-		localeLn('Fill the Form of Eligibility: https://tripetto.app/run/2OGYWACAC6'),
-		localeLn('Follow MTVRS on Twitter (https://twitter.com/themtvrs)'),
-		localeLn(
-			'Retweet, like, tag your friends to this pinned tweet about the NFT Drops (https://twitter.com/ParasHQ/status/1402264239927185422)'
-		),
-		localeLn('Join the MTVRS Telegram group (https://t.me/themtvrs)'),
-		localeLn('Join the  MTVRS Discord channel (https://discord.com/invite/wSNk3ktahF)'),
-		localeLn('Follow Paras on Twitter (https://twitter.com/ParasHQ)'),
-		localeLn('Follow Paras on Instagram (https://instagram.com/paras.hq/)'),
-		localeLn('Join Paras Telegram group (https://t.me/parashq)'),
-		localeLn('Join Paras Discord server (https://discord.com/invite/vWR2XBNupg'),
-	]
 	const [token, setToken] = useState(null)
 	const detail = useRef(null)
 
@@ -78,7 +92,7 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>{localeLn('Paras X MTVRS - NFT Drops')}</title>
+				<title>{localeLn('ParasXMTVRS')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -93,7 +107,7 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://ipfs.fleek.co/ipfs/bafybeigkjniothjzstnyei5bmweove7exhsxda7l5ta724xbl2qejudczy"
+					content={parseImgUrl('bafybeid5pask4j3ejkbeegmau6n5mmfj5gkja64exyobxg4uzltjdcw7kq')}
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras X MTVRS NFT Drops" />
@@ -105,14 +119,23 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://ipfs.fleek.co/ipfs/bafybeigkjniothjzstnyei5bmweove7exhsxda7l5ta724xbl2qejudczy"
+					content={parseImgUrl('bafybeid5pask4j3ejkbeegmau6n5mmfj5gkja64exyobxg4uzltjdcw7kq')}
 				/>
 			</Head>
 			<Nav />
+			<div
+				className="fixed inset-0 opacity-75"
+				style={{
+					zIndex: 0,
+					backgroundImage: `url('/bg.jpg')`,
+					backgroundRepeat: 'no-repeat',
+					backgroundSize: 'cover',
+				}}
+			/>
 			<TokenSeriesDetailModal tokens={[token]} />
-			<div className="max-w-2xl m-auto py-12 min-h-full">
+			<div className="max-w-2xl m-auto py-12 min-h-full relative z-10">
 				<div className="flex items-center justify-center m-4 md:m-0">
-					<div className="text-center">
+					<div className="text-center px-4 whitespace-pre-wrap">
 						<div className="flex justify-center items-baseline">
 							<svg
 								width="80"
@@ -146,87 +169,58 @@ export default function Drops() {
 							</svg>
 							<div className="text-gray-100 ml-2 font-bold text-2xl">{'x MTVRS'}</div>
 						</div>
-						<h1 className="text-white font-bold text-6xl mt-4 mb-2">{localeLn('NFT Drops')}</h1>
+						<h1 className="text-white font-bold text-6xl mt-4 mb-2">{localeLn('NFTDrops')}</h1>
 						<img
-							src={parseImgUrl(
-								'ipfs://bafybeih3l32jyqm732bxol4ic2qsgxvas6fee57vrs3e6tpgjzt4kcvady'
-							)}
+							className="max-w-full"
+							src={parseImgUrl('bafybeid5pask4j3ejkbeegmau6n5mmfj5gkja64exyobxg4uzltjdcw7kq')}
 						/>
 						<div className="max-w-xl m-auto">
-							<p className="text-gray-400 mb-4">
-								{localeLn(
-									'MTVRS (www.mtvrs.app) is a world of worlds and home to blockchain-powered games for players, creators and developers! MTVRS is designing a platform to create experiences and utility around blockchain assets.'
-								)}
+							<p className="text-gray-200 mt-4">
+								Welcome to Metamon! Get ready to explore an exciting universe full of powerful
+								creatures with unique abilities! Capture, evolve and train your Metamon to become
+								the best! Battle each other in a competitive online battle royale and earn your
+								place as the Supreme One!
 							</p>
-							<p className="text-gray-400 mb-4">
-								{localeLn(
-									'This is MTVRS first NFT Drop, “The Architect’s Devices” a set of exclusive collectibles forged by the architects of the metaverse to empower them as they hop the infinite worlds.'
-								)}
+							<p className="text-gray-200 mt-4">
+								The upcoming Metamon game is an online competitive Battle Royale PC Play-To-Earn
+								game with an official launch date of January 20th.
 							</p>
-							<div className="my-8 flex justify-center space-x-8 items-center">
-								<p
-									className="outline-none rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100 mb-8 cursor-pointer"
-									onClick={() =>
-										window.scrollTo({
-											behavior: 'smooth',
-											top: document.body.scrollHeight,
-										})
-									}
-								>
-									{localeLn('Register now')}
-								</p>
-								<a
-									className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer mb-8"
-									target="_blank"
-									href="https://paras.id/publication/editorial/paras-x-mtvrs-nft-drops-the-architects-devices-60bf7208a537580686cbf237"
-								>
-									{localeLn('Find out more')}
-								</a>
-							</div>
+							<a
+								target="blank"
+								href="https://forms.gle/oiyYYLx5gvqFNgtH8"
+								className="underline break-all block text-gray-200 mt-4 font-medium"
+							>
+								Sign up here for exclusive early access to the game.
+							</a>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div ref={detail} className="md:flex justify-center md:space-x-8 max-w-6xl m-auto">
-				<SpecialCard
-					tokenId={specialTokenId[0]}
-					onClick={setToken}
-					titleCard="MTVRS Hopping"
-					price="10"
-					priceOriginal="15"
-					cardSupplyText="500"
-					cardAvailableText="0/500"
-					imgUrl="ipfs://bafybeieq6qgmhyjpm6ctogjslka62j3w4rgl5hvz5qkkya7qc3defvr6le"
-					blurhash="UHC$2K~9J{5K-.%DflN3A5Su$P$jRFV@WEXA"
-				/>
-				<SpecialCard
-					tokenId={specialTokenId[1]}
-					onClick={setToken}
-					titleCard="Quantum Crystal"
-					price="45"
-					priceOriginal="60"
-					cardSupplyText="100"
-					cardAvailableText="0/100"
-					imgUrl="ipfs://bafybeif5lh4nwnpbwnvx6bt4ky73bvmykf2bkmeza3x4z2pddtvfzhpuzu"
-					blurhash="U65=L[g48wm*EbbEsEWBz.nik]b_M]fkXTV?"
-				/>
-				<SpecialCard
-					tokenId={specialTokenId[2]}
-					onClick={setToken}
-					titleCard="The Fusion Cell"
-					price="30"
-					priceOriginal="45"
-					cardSupplyText="200"
-					cardAvailableText="0/200"
-					imgUrl="ipfs://bafybeibh534mkoiem7m7sinkpuqtgtqeeigfknsckpy4j5jijdadapr7v4"
-					blurhash="U7G=];-A0NEh0%NcxrSLVzSN|s$g0~S2tQN^"
-				/>
+			<div className="max-w-6xl mx-auto">
+				<div ref={detail} className="flex flex-wrap px-4 -mx-4">
+					{specialTokenId.map((token, idx) => {
+						return (
+							<SpecialCard
+								key={idx}
+								tokenId={token.tokenId}
+								onClick={setToken}
+								titleCard={token.title}
+								price={token.price}
+								priceOriginal={null}
+								cardSupplyText={token.supply}
+								cardAvailableText={`${token.supply}/${token.supply}`}
+								imgUrl={token.image}
+								blurhash="UHC$2K~9J{5K-.%DflN3A5Su$P$jRFV@WEXA"
+							/>
+						)
+					})}
+				</div>
 			</div>
-			<div>
+			<div className="relative z-10">
 				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
 					{localeLn('Timeline')}
 				</h1>
-				<div className="max-w-6xl m-auto md:flex">
+				<div className="max-w-4xl m-auto md:flex">
 					{timeline.map((item, index) => (
 						<div
 							key={index}
@@ -244,15 +238,11 @@ export default function Drops() {
 					))}
 				</div>
 			</div>
-			<div className="max-w-xl m-4 md:m-auto text-gray-100 ">
+			{/* <div className="max-w-xl m-4 md:m-auto text-gray-100 ">
 				<h1 className="text-center text-gray-100 font-bold text-3xl object-center mt-12 mb-2">
-					{localeLn('How to register')}
+					{localeLn('HowToRegister')}
 				</h1>
-				<p className="mb-2 break-all">
-					{localeLn(
-						'How to registerSo let’s get started! In order to get a whitelist for Paras x MTVRS NFT Drops, please complete these tasks.'
-					)}
-				</p>
+				<p className="mb-2 break-all">{localeLn('How_To_Register_So')}</p>
 				<ReactLinkify
 					componentDecorator={(decoratedHref, decoratedText, key) => (
 						<a target="blank" href={decoratedHref} key={key} className="italic">
@@ -268,18 +258,16 @@ export default function Drops() {
 				</ReactLinkify>
 				<div className="text-center">
 					<h1 className="text-center text-gray-100 font-bold text-3xl mt-12 mb-2">
-						{localeLn('Read details')}
+						{localeLn('ReadDetails')}
 					</h1>
-					<p className="text-gray-200">
-						{localeLn('You can read full information on Paras publication')}
-					</p>
+					<p className="text-gray-200">{localeLn('ReadFullInformation')}</p>
 					<div className="flex justify-center my-8">
 						<a
 							className="flex text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer"
 							target="_blank"
 							href="https://paras.id/publication/editorial/paras-x-mtvrs-nft-drops-the-architects-devices-60bf7208a537580686cbf237"
 						>
-							{localeLn('Find out more')}
+							{localeLn('FindOutMore')}
 							<svg
 								width="12"
 								height="12"
@@ -298,7 +286,7 @@ export default function Drops() {
 						</a>
 					</div>
 				</div>
-			</div>
+			</div> */}
 			<Footer />
 		</div>
 	)
@@ -319,11 +307,18 @@ const SpecialCard = ({
 	const router = useRouter()
 
 	useEffect(() => {
-		fetchToken()
+		if (tokenId) {
+			fetchToken()
+		}
 	}, [])
 
 	const fetchToken = async () => {
-		const res = await axios(`${process.env.API_URL}/tokens?tokenId=${tokenId}`)
+		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
+			params: {
+				contract_id: 'x.paras.near',
+				token_series_id: tokenId,
+			},
+		})
 		const token = (await res.data.data.results[0]) || null
 		setLocalToken(token)
 	}
@@ -336,12 +331,15 @@ const SpecialCard = ({
 					pathname: router.pathname,
 					query: {
 						...router.query,
-						...{ tokenId: localToken?.tokenId },
+						...{ tokenSeriesId: localToken.token_series_id },
 						...{ prevAs: router.asPath },
 					},
 				},
-				`/token/${localToken?.tokenId}`,
-				{ shallow: true }
+				`/token/${localToken.contract_id}::${localToken.token_series_id}`,
+				{
+					shallow: true,
+					scroll: false,
+				}
 			)
 		}
 	}
@@ -363,18 +361,21 @@ const SpecialCard = ({
 		return total
 	}
 	const { localeLn } = useIntl()
+
 	return (
-		<div className="relative m-4 md:m-0 md:w-1/3">
+		<div className="relative p-4 md:m-0 w-full md:w-1/3">
 			<ReactTooltip effect={'solid'} className="bg-dark-primary-1 text-white px-2 py-4 max-w-sm" />
-			<div className="absolute inset-0 m-auto overflow-hidden rounded-xl opacity-50">
-				<Blurhash
-					hash={blurhash}
-					width={`100%`}
-					height={`100%`}
-					resolutionX={32}
-					resolutionY={32}
-					punch={1}
-				/>
+			<div className="absolute p-4 inset-0 m-auto opacity-50">
+				<div className="overflow-hidden rounded-xl w-full h-full">
+					<Blurhash
+						hash={blurhash}
+						width={`100%`}
+						height={`100%`}
+						resolutionX={32}
+						resolutionY={32}
+						punch={1}
+					/>
+				</div>
 			</div>
 			<div className="relative py-8 m-auto">
 				<div className="static m-auto">
@@ -385,7 +386,7 @@ const SpecialCard = ({
 						<div className="w-full m-auto">
 							<Card
 								special
-								imgUrl={localToken ? parseImgUrl(localToken.metadata.image) : parseImgUrl(imgUrl)}
+								imgUrl={localToken ? parseImgUrl(localToken.metadata.media) : parseImgUrl(imgUrl)}
 								imgBlur={blurhash}
 								disableFlip
 								token={{
@@ -393,7 +394,7 @@ const SpecialCard = ({
 									collection: localToken?.metadata.collection,
 									description: localToken?.metadata.description,
 									creatorId: localToken?.creatorId,
-									supply: localToken?.supply,
+									copies: localToken?.copies || cardSupplyText,
 									tokenId: localToken?.tokenId,
 									createdAt: localToken?.createdAt,
 								}}
@@ -422,7 +423,7 @@ const SpecialCard = ({
 							data-tip={`Total supply of the card`}
 						>
 							<div className="flex text-white justify-center">
-								<p className="text-gray-400 mr-1">{localeLn('Card Supply')}</p>
+								<p className="text-gray-400 mr-1">{localeLn('CardSupply')}</p>
 								<svg
 									width="16"
 									height="16"
@@ -440,15 +441,15 @@ const SpecialCard = ({
 								</svg>
 							</div>
 							<p className="text-gray-100 text-lg font-semibold">
-								{localToken?.supply || cardSupplyText} {localeLn('pcs')}
+								{localToken?.metadata.copies || cardSupplyText} {localeLn('pcs')}
 							</p>
 						</div>
 						<div
 							className="flex flex-col cursor-default mb-4"
-							data-tip={`Card available for purchase today`}
+							data-tip={`Card available for purchase`}
 						>
 							<div className="flex text-white justify-center">
-								<p className="text-gray-400 mr-1">{localeLn('Card Available')}</p>
+								<p className="text-gray-400 mr-1">{localeLn('CardAvailable')}</p>
 								<svg
 									width="16"
 									height="16"
@@ -467,7 +468,9 @@ const SpecialCard = ({
 							</div>
 							{localToken ? (
 								<p className="text-gray-100 text-lg font-semibold">
-									{`${getCardAvailable(localToken.ownerships) || '0'} / ${localToken.supply}`}
+									{`${localToken.metadata.copies - (localToken.total_mint || 0)} / ${
+										localToken.metadata.copies
+									}`}
 								</p>
 							) : (
 								<p className="text-gray-100 text-lg font-semibold">{cardAvailableText}</p>
@@ -476,16 +479,17 @@ const SpecialCard = ({
 						<div className="mx-8 mt-8">
 							<button
 								onClick={onPressBuyNow}
+								// disabled
 								className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 text-primary bg-gray-200`}
 							>
-								{_getLowestPrice(localToken?.ownerships) ? (
+								{localToken?.price ? (
 									<p>
 										{`Buy for
-										${prettyBalance(_getLowestPrice(localToken?.ownerships), 24, 4)}
+										${prettyBalance(localToken?.price, 24, 4)}
 										Ⓝ`}
 									</p>
 								) : (
-									<p>{localeLn('See Details')}</p>
+									<p>{localeLn('SeeDetails')}</p>
 								)}
 							</button>
 						</div>

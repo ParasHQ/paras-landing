@@ -27,15 +27,20 @@ function MyApp({ Component, pageProps }) {
 	const store = useStore()
 	const router = useRouter()
 	const { locale, defaultLocale, pathname } = router
+
 	let localeCopy = locales[locale]
 	const defaultLocaleCopy = locales[defaultLocale]
-	localeCopy = localeCopy || defaultLocaleCopy
 
-	let messages =
-		localeCopy[pathname] ||
-		localeCopy['defaultAll'] ||
-		defaultLocaleCopy[pathname] ||
-		defaultLocaleCopy['defaultAll']
+	const messages = localeCopy[pathname]
+		? {
+				...defaultLocaleCopy[pathname],
+				...localeCopy[pathname],
+		  }
+		: {
+				...defaultLocaleCopy['defaultAll'],
+				...localeCopy['defaultAll'],
+		  }
+
 	const counter = async (url) => {
 		// check cookie uid
 		let uid = cookie.get('uid')
@@ -108,9 +113,6 @@ function MyApp({ Component, pageProps }) {
 	const _init = async () => {
 		await near.init()
 		const currentUser = await near.currentUser
-		const nearUsdPrice = await axios.get(
-			'https://api.coingecko.com/api/v3/simple/price?ids=NEAR&vs_currencies=USD'
-		)
 
 		Sentry.configureScope((scope) => {
 			const user = currentUser ? { id: currentUser.accountId } : null
@@ -156,7 +158,7 @@ function MyApp({ Component, pageProps }) {
 			store.setCurrentUser(currentUser.accountId)
 			store.setUserBalance(currentUser.balance)
 		}
-		store.setNearUsdPrice(nearUsdPrice.data.near.usd)
+		getNearUsdPrice()
 		store.setInitialized(true)
 
 		if (process.env.APP_ENV === 'production') {
@@ -169,6 +171,17 @@ function MyApp({ Component, pageProps }) {
 			if (window) {
 				counter(url)
 			}
+		}
+	}
+
+	const getNearUsdPrice = async () => {
+		try {
+			const nearUsdPrice = await axios.get(
+				'https://api.coingecko.com/api/v3/simple/price?ids=NEAR&vs_currencies=USD'
+			)
+			store.setNearUsdPrice(nearUsdPrice.data.near.usd)
+		} catch (error) {
+			sentryCaptureException('Failed Coingecko')
 		}
 	}
 

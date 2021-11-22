@@ -109,7 +109,7 @@ const Setting = ({ close }) => {
 						<>
 							<div>
 								<label className="font-bold text-xl my-2 text-gray-100">
-									{localeLn('Add Email')}
+									{localeLn('AddEmail')}
 								</label>
 								<input
 									type="text"
@@ -121,13 +121,13 @@ const Setting = ({ close }) => {
 								/>
 							</div>
 							<div className="text-gray-100 font-bold text-xl mt-4 my-2">
-								{localeLn('Notification preferences')}
+								{localeLn('NotificationPreferences')}
 							</div>
 							<div className="text-gray-100 flex justify-between items-center my-2">
 								<div>
 									<div className="text-lg">{localeLn('Newsletters')}</div>
 									<div className="text-gray-100 opacity-75 text-sm">
-										{localeLn('Get first notified for any paras Info')}
+										{localeLn('FirstNotifiedFor')}
 									</div>
 								</div>
 								<Toggle
@@ -138,9 +138,9 @@ const Setting = ({ close }) => {
 							</div>
 							<div className="text-gray-100 flex justify-between items-center my-2">
 								<div>
-									<div className="text-lg">{localeLn('NFT Drops')}</div>
+									<div className="text-lg">{localeLn('NFTDrops')}</div>
 									<div className="text-gray-100 opacity-75 text-sm">
-										{localeLn('Get first notified for upcoming drops!')}
+										{localeLn('GetFirstNotifiedFor')}
 									</div>
 								</div>
 								<Toggle
@@ -153,7 +153,7 @@ const Setting = ({ close }) => {
 								<div>
 									<div className="text-lg">{localeLn('Notification')}</div>
 									<div className="text-gray-100 opacity-75 text-sm">
-										{localeLn('Get notified for your transaction on Paras')}
+										{localeLn('GetNotifiedForTransaction')}
 									</div>
 								</div>
 								<Toggle
@@ -165,7 +165,7 @@ const Setting = ({ close }) => {
 						</>
 					) : (
 						<div className="flex items-center justify-center h-64 text-gray-100">
-							{localeLn('Loading...')}
+							{localeLn('LoadingLoading')}
 						</div>
 					)}
 					<button
@@ -173,7 +173,7 @@ const Setting = ({ close }) => {
 						className="outline-none h-12 w-full mt-4 rounded-md bg-transparent text-sm font-semibold border-none px-4 py-2 bg-primary text-gray-100"
 						onClick={updateEmail}
 					>
-						{isUpdating ? localeLn('Saving...') : localeLn('Save')}
+						{isUpdating ? localeLn('SavingLoading') : localeLn('Save')}
 					</button>
 				</div>
 			</div>

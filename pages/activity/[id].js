@@ -69,12 +69,14 @@ export async function getServerSideProps({ params }) {
 		? {
 				url: `${process.env.V2_API_URL}/token`,
 				params: {
+					contract_id: activity.contract_id,
 					token_id: activity.token_id,
 				},
 		  }
 		: {
 				url: `${process.env.V2_API_URL}/token-series`,
 				params: {
+					contract_id: activity.contract_id,
 					token_series_id: activity.token_series_id,
 				},
 		  }

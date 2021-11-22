@@ -60,9 +60,7 @@ const PublicationPreviewList = ({ tokenId }) => {
 		<div>
 			{publicationList.length === 0 && !hasMore && (
 				<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
-					<p className="text-gray-500 py-8 px-8">
-						{localeLn('Card not mentioned in any publication')}
-					</p>
+					<p className="text-gray-500 py-8 px-8">{localeLn('CardNotMentioned')}</p>
 				</div>
 			)}
 			<InfiniteScroll
@@ -71,7 +69,7 @@ const PublicationPreviewList = ({ tokenId }) => {
 				hasMore={hasMore}
 				loader={
 					<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
-						<p className="my-2 text-center">{localeLn('Loading...')}</p>
+						<p className="my-2 text-center">{localeLn('LoadingLoading')}</p>
 					</div>
 				}
 				scrollableTarget="publicationListScroll"

@@ -50,3 +50,36 @@ function getLocale(lang) {
 			return 'en'
 	}
 }
+
+const isPlainObject = (obj) => {
+	return Object.prototype.toString.call(obj) === '[object Object]'
+}
+
+export function fallback() {
+	const args = Array.from(arguments)
+	if (args.length < 2) return args[0]
+	let result = args[0]
+	args.shift()
+	args.forEach((item) => {
+		if (isPlainObject(item)) {
+			if (!isPlainObject(result)) result = {}
+			for (let key in item) {
+				if (result[key] && isPlainObject(item[key])) {
+					result[key] = fallback(result[key], item[key])
+				} else {
+					result[key] = item[key]
+				}
+			}
+		} else if (item instanceof Array) {
+			if (!(result instanceof Array)) result = []
+			item.forEach((arrItem, arrIndex) => {
+				if (isPlainObject(arrItem)) {
+					result[arrIndex] = fallback(result[arrIndex])
+				} else {
+					result[arrIndex] = arrItem
+				}
+			})
+		}
+	})
+	return result
+}

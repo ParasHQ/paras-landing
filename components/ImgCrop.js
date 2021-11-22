@@ -110,7 +110,7 @@ const ImgCrop = ({
 							</button>
 						</div>
 						<div className="flex-auto overflow-hidden px-2 font-bold text-2xl">
-							{localeLn('Edit Image')}
+							{localeLn('EditImage')}
 						</div>
 						<div className="w-8 flex items-center justify-end">
 							<button>

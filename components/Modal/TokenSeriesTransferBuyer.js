@@ -36,6 +36,7 @@ const TokenSeriesTransferBuyer = ({ show, onClose, data }) => {
 		const resp = await axios.get(`${process.env.V2_API_URL}/token`, {
 			params: {
 				token_series_id: data.token_series_id,
+				contract_id: data.contract_id,
 				owner_id: store.currentUser,
 				__skip: page * FETCH_TOKENS_LIMIT,
 				__limit: FETCH_TOKENS_LIMIT,
@@ -75,7 +76,7 @@ const TokenSeriesTransferBuyer = ({ show, onClose, data }) => {
 							</div>
 							{!isFetching && !hasMore && tokens.length === 0 ? (
 								<div className="mt-4">
-									<p className="text-gray-200">{localeLn('No Tokens Owned')}</p>
+									<p className="text-gray-200">{localeLn('NoTokensOwned')}</p>
 								</div>
 							) : (
 								<InfiniteScroll
@@ -84,7 +85,7 @@ const TokenSeriesTransferBuyer = ({ show, onClose, data }) => {
 									hasMore={hasMore}
 									loader={
 										<div className="border-2 border-dashed my-4 p-2 rounded-md text-center">
-											<p className="my-2 text-center">{localeLn('Loading...')}</p>
+											<p className="my-2 text-center">{localeLn('LoadingLoading')}</p>
 										</div>
 									}
 								>

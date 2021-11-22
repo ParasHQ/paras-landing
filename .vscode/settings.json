@@ -8,5 +8,8 @@
 	"prettier.singleQuote": true,
 	"editor.detectIndentation": false,
 	"editor.minimap.maxColumn": 80,
-	"prettier.printWidth": 80
+	"prettier.printWidth": 80,
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	}
 }

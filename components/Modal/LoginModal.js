@@ -27,15 +27,11 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 					</svg>
 				</div>
 				<h3 className="mb-4 text-2xl text-white font-semibold">{title}</h3>
-				<p className="mt-1 text-white opacity-80">
-					{localeLn('Collect NFT that you can truly own.')}
-				</p>
+				<p className="mt-1 text-white opacity-80">{localeLn('CollectNFTTrulyOwn')}</p>
 				<div className="mt-6">
-					<p className="text-gray-400 text-sm mb-2 text-center">
-						{localeLn('You will be redirected to NEAR Wallet')}
-					</p>
+					<p className="text-gray-400 text-sm mb-2 text-center">{localeLn('WillBeRedirectedTo')}</p>
 					<Button className="mt-2 px-1" size="md" isFullWidth onClick={() => router.push('/login')}>
-						{localeLn('Go to Login')}
+						{localeLn('GoToLogin')}
 					</Button>
 				</div>
 				<div className="absolute -top-4 -right-4 cursor-pointer" onClick={onClose}>

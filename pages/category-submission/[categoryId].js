@@ -52,7 +52,7 @@ const CategorySubmission = () => {
 					toast.show({
 						text: (
 							<div className="font-semibold text-center text-sm">
-								{localeLn('You dont have permission')}
+								{localeLn('DontHavePermission')}
 							</div>
 						),
 						type: 'error',
@@ -82,7 +82,7 @@ const CategorySubmission = () => {
 				}}
 			></div>
 			<div className="max-w-6xl relative m-auto p-4">
-				<div className="text-white text-2xl mt-8">{localeLn('Category submission')}</div>
+				<div className="text-white text-2xl mt-8">{localeLn('CategorySubmission')}</div>
 				<div className="text-white font-bold text-4xl mb-8 capitalize">
 					{categoryId && categoryId.split('-').join(' ')}
 				</div>
@@ -96,7 +96,7 @@ const CategorySubmission = () => {
 					</div>
 				) : (
 					<div className="md:w-1/2 text-gray-100 border-2 border-dashed border-gray-800 rounded-md p-4 h-40 flex items-center justify-center">
-						<p>{localeLn('No Card Submission Found')}</p>
+						<p>{localeLn('NoCardSubmission')}</p>
 					</div>
 				)}
 			</div>
@@ -124,6 +124,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 			params: {
 				token_series_id: submission.token_series_id,
 				contract_id: submission.contract_id,
+				creator_id: submission.account_id,
 			},
 		})
 		if (resp.data.data.results.length > 0) {
@@ -164,10 +165,10 @@ const SubmissionDetail = ({ submission, updateData }) => {
 						<div className="font-bold text-2xl mb-4">Accept the card</div>
 						<div className="mb-6 m-auto text-gray-400">
 							<span>You are going to accept </span>
-							<span className="font-bold text-white">{localToken.metadata.title}</span>
+							<span className="font-bold text-white">{localToken?.metadata.title}</span>
 							<span>
 								{' '}
-								{localeLn('to {categoryId} category', {
+								{localeLn('To{categoryId}Category', {
 									categoryId: submission.category_id,
 								})}
 							</span>
@@ -186,13 +187,13 @@ const SubmissionDetail = ({ submission, updateData }) => {
 			{showModal === 'reject' && (
 				<Modal close={() => setShowModal('')} closeOnEscape={true} closeOnBgClick={true}>
 					<div className="bg-dark-primary-1 w-full max-w-xs p-4 m-auto rounded-md text-center">
-						<div className="font-bold text-2xl mb-4">{localeLn('Reject the card')}</div>
+						<div className="font-bold text-2xl mb-4">{localeLn('RejectTheCard')}</div>
 						<div className="mb-6 m-auto text-gray-400">
-							<span>{localeLn('You are going to reject')} </span>
-							<span className="font-bold text-white">{localToken.metadata.title}</span>
+							<span>{localeLn('GoingToReject')} </span>
+							<span className="font-bold text-white">{localToken?.metadata.title}</span>
 							<span>
 								{' '}
-								{localeLn('from {categoryId} category', {
+								{localeLn('From{categoryId}Category', {
 									categoryId: submission.category_id,
 								})}
 							</span>
@@ -251,7 +252,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 							</a>
 						</Link>
 					</div>
-					<p className="opacity-75 truncate mb-4">{localToken?.metadata?.collection}</p>
+					<p className="opacity-75 truncate mb-4">{localToken?.metadata.collection}</p>
 					<p className="mt-2 text-sm opacity-50 mb-8">{timeAgo.format(submission.issued_at)}</p>
 					<div className="space-x-4">
 						<button

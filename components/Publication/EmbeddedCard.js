@@ -33,6 +33,7 @@ const EmbeddedCard = ({ tokenId }) => {
 			params: token_id
 				? {
 						token_id: token_id,
+						contract_id: contractId,
 				  }
 				: {
 						contract_id: contractId,
@@ -92,14 +93,16 @@ const EmbeddedCard = ({ tokenId }) => {
 			<div className="text-center">
 				<div className="mt-4">
 					<div className="p-2 pb-4">
-						<p className="text-gray-400 text-xs">{localeLn('Start From')}</p>
+						<p className="text-gray-400 text-xs">{localeLn('StartFrom')}</p>
 						<div className="text-gray-100 text-xl">
 							{price ? (
 								<div>
 									<div>{prettyBalance(price, 24, 4)} Ⓝ</div>
-									<div className="text-xs text-gray-400">
-										~ ${prettyBalance(JSBI.BigInt(price * store.nearUsdPrice), 24, 4)}
-									</div>
+									{store.nearUsdPrice !== 0 && (
+										<div className="text-xs text-gray-400">
+											~ ${prettyBalance(JSBI.BigInt(price * store.nearUsdPrice), 24, 4)}
+										</div>
+									)}
 								</div>
 							) : (
 								<div className="line-through text-red-600">

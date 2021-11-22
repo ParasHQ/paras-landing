@@ -22,7 +22,7 @@ const Share = ({ show, onClose, tokenData }) => {
 		{
 			name: (
 				<TwitterShareButton
-					title={`Checkout ${tokenData.metadata.title} from collection ${tokenData.metadata.collection} on @ParasHQ\n\n#card4card #cryptoart #digitalart #tradingcards`}
+					title={`Checkout ${tokenData.metadata.title} from collection ${tokenData.metadata.collection} on @ParasHQ\n\n#paras #cryptoart #digitalart #tradingcards`}
 					url={window.location.href}
 					className="flex text-white"
 				>

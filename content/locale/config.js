@@ -70,7 +70,7 @@ export const config = ({
 			...common,
 			...activity,
 		},
-		'/category-submission/[[categoryId]]': {
+		'/category-submission/[categoryId]': {
 			...common,
 			...categorySubmission,
 		},
@@ -149,8 +149,9 @@ export const config = ({
 		'/new': {
 			...common,
 			...news,
+			...newCollection,
 		},
-		'new-collection': {
+		'/new-collection': {
 			...common,
 			...newCollection,
 		},

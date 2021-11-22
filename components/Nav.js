@@ -61,15 +61,15 @@ const User = () => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						<p>{localeLn('Currently we only allow verified creator to create publication.')}</p>
-						<p className="mt-2">{localeLn('Visit our Discord channel to learn more:')}</p>
+						<p>{localeLn('CurrentlyWeOnly')}</p>
+						<p className="mt-2">{localeLn('VisitOurDiscord')}</p>
 						<div className="mt-2">
 							<a
 								href="https://discord.paras.id"
 								target="_blank"
 								className="cursor-pointer border-b-2 border-gray-900"
 							>
-								{localeLn('Join Paras Discord')}
+								{localeLn('NavJoinDiscord')}
 							</a>
 						</div>
 					</div>
@@ -166,30 +166,35 @@ const User = () => {
 									href="https://wallet.near.org/"
 									target="_blank"
 								>
-									{localeLn('View on NEAR Wallet')}
+									{localeLn('NavViewWallet')}
 								</a>
 							</div>
 						</div>
 						<hr className="my-2" />
 						<div onClick={_createCard}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								{localeLn('Create Card')}
+								{localeLn('NavCreateCard')}
 							</a>
 						</div>
 						<div onClick={_createColllection}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								{localeLn('Create Collection')}
+								{localeLn('NavCreateCollection')}
 							</a>
 						</div>
 						<div onClick={_createPublication}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								{localeLn('Create Publication')}
+								{localeLn('NavCreatePublication')}
 							</a>
 						</div>
 						<hr className="my-2" />
 						<Link href={`/${store.currentUser}`}>
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								{localeLn('My Profile')}
+								{localeLn('NavMyProfile')}
+							</a>
+						</Link>
+						<Link href="/my-bids">
+							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
+								{localeLn('My Bids')}
 							</a>
 						</Link>
 						<button
@@ -199,7 +204,7 @@ const User = () => {
 							}}
 							className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 						>
-							{localeLn('Edit Profile')}
+							{localeLn('EditProfile')}
 						</button>
 						{process.env.APP_ENV !== 'testnet' && (
 							<button
@@ -209,7 +214,7 @@ const User = () => {
 								}}
 								className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 							>
-								{localeLn('Settings')}
+								{localeLn('NavSettings')}
 							</button>
 						)}
 						<hr className="my-2" />
@@ -217,7 +222,7 @@ const User = () => {
 							onClick={_signOut}
 							className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 						>
-							{localeLn('Log out')}
+							{localeLn('NavLogOut')}
 						</p>
 					</div>
 				</div>
@@ -335,6 +340,23 @@ const Nav = () => {
 						</svg>
 					</div>
 				)}
+
+				{/* Banner for special event */}
+				{/* <div
+					className={`relative text-white text-center overflow-hidden text-sm md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
+				>
+					<div className="px-10 py-1 md:p-0 ">
+						Participate in October’s card4card & Enjoy the Fun! More Info{' '}
+						<a
+							href="https://paras.id/publication/card4card-is-back-this-october-616d7ceeee25ff5cc2b63053"
+							target="_blank"
+							className="font-bold cursor-pointer hover:underline"
+						>
+							here
+						</a>
+					</div>
+				</div> */}
+
 				{process.env.APP_ENV !== 'production' && (
 					<div
 						ref={testnetBannerRef}
@@ -435,7 +457,7 @@ const Nav = () => {
 										type="search"
 										value={searchQuery}
 										onChange={(event) => setSearchQuery(event.target.value)}
-										placeholder={localeLn('Search by title, collection or artist')}
+										placeholder={localeLn('SearchByTitle')}
 										className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-sm font-medium"
 									/>
 								</div>
@@ -464,6 +486,11 @@ const Nav = () => {
 						</div>
 					</div>
 					<div className="flex items-center -mx-4">
+						<div className="px-3 text-gray-100 hidden md:block fireText">
+							<Link href="/drops">
+								<a className="block w-full">{localeLn('Drops')}</a>
+							</Link>
+						</div>
 						<div className="px-3 text-gray-100 hidden md:block">
 							{router.pathname === '/market' ? (
 								<a className="cursor-pointer" onClick={() => store.setMarketScrollPersist(0)}>
@@ -491,12 +518,8 @@ const Nav = () => {
 							</Link>
 						</div> */}
 						<div className="px-3 text-gray-100 hidden md:block">
-							<a
-								href="https://ipfs.fleek.co/ipfs/bafybeihu6atdada45rmx4sszny6sahrzas4tuzrpuufdcpe6b63r6ugdce"
-								target="_blank"
-								className="flex cursor-pointer "
-							>
-								{localeLn('Whitepaper')}
+							<a href="https://stats.paras.id" target="_blank" className="flex cursor-pointer ">
+								{localeLn('Stats')}
 							</a>
 						</div>
 						<div className="px-3">
@@ -532,6 +555,11 @@ const Nav = () => {
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
+								<Link href="/drops">
+									<a className="p-4 block w-full fireText">Drops</a>
+								</Link>
+							</div>
+							<div className="text-gray-100 ">
 								{router.pathname === '/market' ? (
 									<a
 										className="cursor-pointer p-4 block w-full"
@@ -556,12 +584,8 @@ const Nav = () => {
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
-								<a
-									href="https://ipfs.fleek.co/ipfs/bafybeihu6atdada45rmx4sszny6sahrzas4tuzrpuufdcpe6b63r6ugdce"
-									target="_blank"
-									className="p-4 block w-full"
-								>
-									{localeLn('Whitepaper')}
+								<a href="https://stats.paras.id" target="_blank" className="p-4 block w-full">
+									{localeLn('Stats')}
 								</a>
 							</div>
 							{/* <div className="text-gray-100">

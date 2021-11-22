@@ -12,22 +12,32 @@ import useStore from 'lib/store'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
-const FETCH_TOKENS_LIMIT = 12
+const FETCH_TOKENS_LIMIT = 100
 
 const TabOwners = ({ localToken }) => {
 	const [tokens, setTokens] = useState([])
-	const [page, setPage] = useState(0)
-	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 	const [activeToken, setActiveToken] = useState(null)
 	const [showModal, setShowModal] = useState(null)
+	const [sortBy, setSortBy] = useState()
 	const { localeLn } = useIntl()
 	const { currentUser } = useStore((state) => ({
 		currentUser: state.currentUser,
 	}))
+
+	useEffect(() => {
+		if (localToken.token_series_id) {
+			fetchTokens([], 0)
+		}
+	}, [])
+
+	useEffect(() => {
+		if (!isFetching) {
+			changeSortBy(sortBy)
+		}
+	}, [sortBy, isFetching])
 
 	const hasStorageBalance = async (token) => {
 		try {
@@ -61,38 +71,29 @@ const TabOwners = ({ localToken }) => {
 		}
 	}
 
-	useEffect(() => {
-		if (localToken.token_series_id) {
-			fetchTokens()
-		}
-	}, [])
-
-	const fetchTokens = async () => {
-		if (!hasMore || isFetching) {
-			return
-		}
-
+	const fetchTokens = async (currentData, page) => {
 		setIsFetching(true)
+
 		const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
 			params: {
 				token_series_id: localToken.token_series_id,
 				contract_id: localToken.contract_id,
 				__skip: page * FETCH_TOKENS_LIMIT,
 				__limit: FETCH_TOKENS_LIMIT,
-				__sort: 'token_id::1',
+				__sort: '_id::1',
 			},
-			ttl: 30,
+			ttl: 120,
 		})
+		const respData = resp.data.data.results
+		const newData = [...currentData, ...respData]
 
-		const newData = resp.data.data
+		setTokens(newData)
 
-		const newTokens = [...(tokens || []), ...newData.results]
-		setTokens(newTokens)
-		setPage(page + 1)
-		const _hasMore = newData.results.length < FETCH_TOKENS_LIMIT ? false : true
-
-		setHasMore(_hasMore)
-		setIsFetching(false)
+		if (respData.length === FETCH_TOKENS_LIMIT) {
+			fetchTokens(newData, page + 1)
+		} else {
+			setIsFetching(false)
+		}
 	}
 
 	const onUpdateListing = async (token) => {
@@ -110,19 +111,56 @@ const TabOwners = ({ localToken }) => {
 		setShowModal(null)
 	}
 
+	const changeSortBy = (sortby) => {
+		let tempTokens = tokens.slice()
+
+		if (sortby === 'nameasc') {
+			tempTokens.sort((a, b) => a.owner_id?.localeCompare(b.owner_id))
+		} else if (sortby === 'namedesc') {
+			tempTokens.sort((a, b) => b.owner_id?.localeCompare(a.owner_id))
+		} else if (sortby === 'editionasc') {
+			tempTokens.sort((a, b) => parseInt(a.edition_id) - parseInt(b.edition_id))
+		} else if (sortby === 'editiondesc') {
+			tempTokens.sort((a, b) => parseInt(b.edition_id) - parseInt(a.edition_id))
+		} else if (sortby === 'priceasc') {
+			let saleOwner = tokens.filter((token) => token.price)
+			let nonSaleOwner = tokens.filter((token) => !token.price)
+			saleOwner = saleOwner.sort((a, b) => a.price - b.price)
+			tempTokens = [...saleOwner, ...nonSaleOwner]
+		} else if (sortby === 'pricedesc') {
+			let saleOwner = tokens.filter((token) => token.price)
+			let nonSaleOwner = tokens.filter((token) => !token.price)
+			saleOwner = saleOwner.sort((a, b) => b.price - a.price)
+			tempTokens = [...saleOwner, ...nonSaleOwner]
+		}
+
+		setTokens(tempTokens)
+	}
+
 	return (
 		<div>
-			{!isFetching && !hasMore && tokens.length === 0 ? (
+			{!isFetching && tokens.length === 0 ? (
 				<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
-					<div className="text-white">{localeLn('No owners, become the first one!')}</div>
+					<div className="text-white">{localeLn('NoOwnersBecome')}</div>
 				</div>
 			) : (
-				<InfiniteScroll
-					dataLength={tokens.length}
-					next={fetchTokens}
-					hasMore={hasMore}
-					scrollableTarget="TokenScroll"
-				>
+				<>
+					<div className="flex justify-between bg-gray-800 mt-3 p-3 rounded-md shadow-md">
+						<p className="text-sm my-auto text-white font-medium">Sort By</p>
+						<select
+							className="py-1 rounded-md bg-gray-800 text-white focus:outline-none outline-none text-right"
+							onChange={(e) => setSortBy(e.target.value)}
+							defaultValue="editionasc"
+							value={sortBy}
+						>
+							<option value="editionasc">Edition Low-High</option>
+							<option value="editiondesc">Edition High-Low</option>
+							<option value="nameasc">Name A-Z</option>
+							<option value="namedesc">Name Z-A</option>
+							<option value="priceasc">Price Low-High</option>
+							<option value="pricedesc">Price High-Low</option>
+						</select>
+					</div>
 					{tokens.map((token) => (
 						<Owner
 							token={token}
@@ -133,16 +171,10 @@ const TabOwners = ({ localToken }) => {
 							}}
 							onUpdateListing={(token) => {
 								onUpdateListing(token)
-								// if (needDeposit) {
-								// 	setShowModal('storage')
-								// } else {
-								// 	setShowModal('update')
-								// }
-								// setActiveToken(token)
 							}}
 						/>
 					))}
-				</InfiniteScroll>
+				</>
 			)}
 			{showModal === 'buy' && (
 				<TokenBuyModal show={showModal === 'buy'} onClose={onDismissModal} data={activeToken} />
@@ -229,25 +261,29 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 				<div className="flex items-center justify-between">
 					{token.price ? (
 						<p className="text-white">
-							{localeLn('On sale')} {formatNearAmount(token.price)} Ⓝ
+							{localeLn('OnSale')} {formatNearAmount(token.price)} Ⓝ
 						</p>
 					) : (
-						<p className="text-white">{localeLn('Not for sale')}</p>
+						<p className="text-white">{localeLn('NotForSale')}</p>
 					)}
-					{token.owner_id === currentUser ? (
-						<div className="w-24">
-							<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>
-								{localeLn('Update')}
-							</Button>
-						</div>
-					) : (
-						token.price && (
-							<div className="w-24">
-								<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
-									{localeLn('Buy')}
-								</Button>
-							</div>
-						)
+					{currentUser && (
+						<>
+							{token.owner_id === currentUser ? (
+								<div className="w-24">
+									<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>
+										{localeLn('Update')}
+									</Button>
+								</div>
+							) : (
+								token.price && (
+									<div className="w-24">
+										<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
+											{localeLn('Buy')}
+										</Button>
+									</div>
+								)
+							)}
+						</>
 					)}
 				</div>
 			</div>

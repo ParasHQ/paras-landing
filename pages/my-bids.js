@@ -41,9 +41,11 @@ const MyBids = () => {
 
 		setIsFetching(true)
 		const res = await Axios(
-			`${process.env.API_URL}/bids?accountId=${store.currentUser}&__skip=${_page * 10}${
-				type === 'receivedBids' ? '&isReceived=true' : '&isReceived=false'
-			}&__limit=10`
+			`${process.env.V2_API_URL}/offers?${
+				type === 'receivedBids'
+					? `receiver_id=${store.currentUser}`
+					: `buyer_id=${store.currentUser}`
+			}&__limit=10&__skip=${_page * 10}`
 		)
 		const newData = await res.data.data
 
@@ -56,11 +58,6 @@ const MyBids = () => {
 			setHasMore(true)
 		}
 		setIsFetching(false)
-	}
-
-	const updateBidData = (bidId) => {
-		const updatedData = bidsData.filter((bid) => bid.id !== bidId)
-		setBidsData(updatedData)
 	}
 
 	const switchType = (_type) => {
@@ -79,7 +76,7 @@ const MyBids = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn('My Bids — Paras')}</title>
+				<title>{localeLn('MyBidsParas')}</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -119,7 +116,7 @@ const MyBids = () => {
 							type === 'myBids' ? 'font-bold' : 'opacity-75'
 						}`}
 					>
-						{localeLn('My Bids')}
+						{localeLn('MyBids')}
 					</div>
 					<div
 						onClick={() => switchType('receivedBids')}
@@ -127,7 +124,7 @@ const MyBids = () => {
 							type === 'receivedBids' ? 'font-bold' : 'opacity-75'
 						}`}
 					>
-						{localeLn('Received Bids')}
+						{localeLn('ReceivedBids')}
 					</div>
 				</div>
 				<InfiniteScroll
@@ -136,25 +133,23 @@ const MyBids = () => {
 					hasMore={hasMore}
 					loader={
 						<div className="border-2 border-dashed my-4 p-2 rounded-md text-center border-gray-800">
-							<p className="my-2 text-center text-gray-200">{localeLn('Loading...')}</p>
+							<p className="my-2 text-center text-gray-200">{localeLn('LoadingLoading')}</p>
 						</div>
 					}
 				>
 					{bidsData.map((bid) => (
 						<div key={bid._id}>
-							<Bid tokenId={bid.tokenId} data={bid} updateBidData={updateBidData} />
+							<Bid data={bid} type={type} />
 						</div>
 					))}
 					{bidsData.length === 0 && !hasMore && (
 						<div className="border-2 border-dashed p-2 rounded-md text-center border-gray-800 my-4">
-							<p className="my-20 text-center text-gray-200">
-								{localeLn('You have no active bid')}
-							</p>
+							<p className="my-20 text-center text-gray-200">{localeLn('NoActiveBid')}</p>
 						</div>
 					)}
 					{bidsData.length === 0 && hasMore && (
 						<div className="border-2 border-dashed p-2 rounded-md text-center border-gray-800 my-4">
-							<p className="my-20 text-center text-gray-200">{localeLn('Loading...')}</p>
+							<p className="my-20 text-center text-gray-200">{localeLn('LoadingLoading')}</p>
 						</div>
 					)}
 				</InfiniteScroll>

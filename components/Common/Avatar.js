@@ -43,7 +43,7 @@ const Avatar = ({ alt, entityName, bg, size, src, className, style, onClick }) =
 		}
 
 		if (entityName) {
-			const entityStyle = 'font-medium'
+			const entityStyle = 'font-medium text-white'
 			return <h2 className={entityStyle}>{getInitials(entityName)}</h2>
 		}
 
