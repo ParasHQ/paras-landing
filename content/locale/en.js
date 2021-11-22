@@ -47,7 +47,7 @@ const home = {
 	HowWorks: 'How it Works',
 	ForCollectors: 'For Collectors',
 	DiscoverBeautifulCards:
-		'Discover beautiful art cards and collect them on a blockchain-based technology that prevents forgery andprovides provable ownership.',
+		'Discover beautiful art cards and collect them on a blockchain-based technology that prevents forgery and provides provable ownership.',
 	ExploreParas: 'Explore Paras',
 	ForArtists: 'For Artists',
 	CreateDigitalCards: `Create your digital art cards and sell them on the

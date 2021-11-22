@@ -124,6 +124,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 			params: {
 				token_series_id: submission.token_series_id,
 				contract_id: submission.contract_id,
+				creator_id: submission.account_id,
 			},
 		})
 		if (resp.data.data.results.length > 0) {
@@ -164,10 +165,10 @@ const SubmissionDetail = ({ submission, updateData }) => {
 						<div className="font-bold text-2xl mb-4">Accept the card</div>
 						<div className="mb-6 m-auto text-gray-400">
 							<span>You are going to accept </span>
-							<span className="font-bold text-white">{localToken.metadata.title}</span>
+							<span className="font-bold text-white">{localToken?.metadata.title}</span>
 							<span>
 								{' '}
-								{localeLn('To_{categoryId}_Category', {
+								{localeLn('To{categoryId}Category', {
 									categoryId: submission.category_id,
 								})}
 							</span>
@@ -189,10 +190,10 @@ const SubmissionDetail = ({ submission, updateData }) => {
 						<div className="font-bold text-2xl mb-4">{localeLn('RejectTheCard')}</div>
 						<div className="mb-6 m-auto text-gray-400">
 							<span>{localeLn('GoingToReject')} </span>
-							<span className="font-bold text-white">{localToken.metadata.title}</span>
+							<span className="font-bold text-white">{localToken?.metadata.title}</span>
 							<span>
 								{' '}
-								{localeLn('From_{categoryId}_Category', {
+								{localeLn('From{categoryId}Category', {
 									categoryId: submission.category_id,
 								})}
 							</span>
@@ -251,7 +252,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 							</a>
 						</Link>
 					</div>
-					<p className="opacity-75 truncate mb-4">{localToken?.metadata?.collection}</p>
+					<p className="opacity-75 truncate mb-4">{localToken?.metadata.collection}</p>
 					<p className="mt-2 text-sm opacity-50 mb-8">{timeAgo.format(submission.issued_at)}</p>
 					<div className="space-x-4">
 						<button
