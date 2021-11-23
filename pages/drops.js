@@ -55,7 +55,7 @@ const specialBidTokens = [
 		tokenId: 52038,
 		image:
 			'https://paras-cdn.imgix.net/bafybeidcgqvh7pr2cqiy25ew5wqy3ogldklyzapcrgguxixmqjfx7aaeki?w=800',
-		title: `Mr. Flufffy`,
+		title: `Mr. Fluffy`,
 		supply: `1`,
 		blurhash: 'UEQJcd_NIUIT?bt89FRj-=4m%Mt7RjIAx]xu',
 		price: 2,
