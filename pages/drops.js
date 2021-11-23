@@ -16,28 +16,13 @@ import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
 const specialBidTokens = [
 	{
-		tokenId: 52038,
+		tokenId: 52026,
 		image:
-			'https://paras-cdn.imgix.net/bafybeidcgqvh7pr2cqiy25ew5wqy3ogldklyzapcrgguxixmqjfx7aaeki?w=800',
-		title: `Mr. Flufffy`,
+			'https://paras-cdn.imgix.net/bafybeigff5tuntfozwjsmmtgvojfe2xp5eadnliu6kroxzbqipwb5764xu?w=800',
+		title: `Ping & Pong`,
 		supply: `1`,
-		blurhash: 'UEQJcd_NIUIT?bt89FRj-=4m%Mt7RjIAx]xu',
-	},
-	{
-		tokenId: 52036,
-		image:
-			'https://paras-cdn.imgix.net/bafybeicehwngiwi6j6odvg7b5fgj7mdekcpcr6zmwb27zg42w2pu6sv5we?w=800',
-		title: `Shark`,
-		supply: `1`,
-		blurhash: 'UiM@s3_Nx^EMx^V?M{f+%gM{M{xtxuRkkCRP',
-	},
-	{
-		tokenId: 52032,
-		image:
-			'https://paras-cdn.imgix.net/bafybeigcx2mjzj2cgddfmkxxzjrzihw2cng335etipdap62e45vvhx42ii?w=800',
-		title: `Leonard`,
-		supply: `1`,
-		blurhash: 'UvO{,U?^WBI9xuRPayaz%gIToLtRoeV[jZay',
+		blurhash: 'UsP?2hjZ_Na1xbfQM{ay%gjGRPWUxuaeM{oM',
+		price: 10,
 	},
 	{
 		tokenId: 52029,
@@ -46,14 +31,34 @@ const specialBidTokens = [
 		title: `Linsey`,
 		supply: `1`,
 		blurhash: 'UlO{XO_3?bIU~WIUM{V@l9VYRP$%sns:RPX9',
+		price: 5,
 	},
 	{
-		tokenId: 52026,
+		tokenId: 52032,
 		image:
-			'https://paras-cdn.imgix.net/bafybeigff5tuntfozwjsmmtgvojfe2xp5eadnliu6kroxzbqipwb5764xu?w=800',
-		title: `Ping & Pong`,
+			'https://paras-cdn.imgix.net/bafybeigcx2mjzj2cgddfmkxxzjrzihw2cng335etipdap62e45vvhx42ii?w=800',
+		title: `Leonard`,
 		supply: `1`,
-		blurhash: 'UsP?2hjZ_Na1xbfQM{ay%gjGRPWUxuaeM{oM',
+		blurhash: 'UvO{,U?^WBI9xuRPayaz%gIToLtRoeV[jZay',
+		price: 3,
+	},
+	{
+		tokenId: 52036,
+		image:
+			'https://paras-cdn.imgix.net/bafybeicehwngiwi6j6odvg7b5fgj7mdekcpcr6zmwb27zg42w2pu6sv5we?w=800',
+		title: `Shark`,
+		supply: `1`,
+		blurhash: 'UiM@s3_Nx^EMx^V?M{f+%gM{M{xtxuRkkCRP',
+		price: 2,
+	},
+	{
+		tokenId: 52038,
+		image:
+			'https://paras-cdn.imgix.net/bafybeidcgqvh7pr2cqiy25ew5wqy3ogldklyzapcrgguxixmqjfx7aaeki?w=800',
+		title: `Mr. Flufffy`,
+		supply: `1`,
+		blurhash: 'UEQJcd_NIUIT?bt89FRj-=4m%Mt7RjIAx]xu',
+		price: 2,
 	},
 ]
 
@@ -600,6 +605,7 @@ const SpecialCardBid = ({
 	titleCard,
 	cardSupplyText,
 	cardAvailableText,
+	price,
 }) => {
 	const [localToken, setLocalToken] = useState(null)
 	const [offers, setOffers] = useState([])
@@ -786,7 +792,7 @@ const SpecialCardBid = ({
 						</div>
 						<div className="text-white">
 							<div className="font-bold text-xl">Highest Offer</div>
-							<div className="mb-4">Starting price 5 Ⓝ</div>
+							<div className="mb-4">Starting price {price} Ⓝ</div>
 							{offers.map(
 								(offer) =>
 									parseInt(formatNearAmount(offer.price, 0)) >= 5 && (
