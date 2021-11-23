@@ -113,7 +113,7 @@ export default function Drops() {
 		},
 		{
 			date: 'Dec 1st',
-			note: [`NFT drops will end on Dec 1st at 23.59 UTC`],
+			note: [`NFT drop will end on Dec 1st at 23.59 UTC`],
 		},
 	]
 
