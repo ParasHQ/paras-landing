@@ -146,7 +146,7 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 								step="any"
 								ref={register({
 									required: true,
-									min: 0.01,
+									min: data.token_series_id === '49791' ? 5 : 0.01,
 									max: parseFloat(prettyBalance(userBalance.available, 24, 4)),
 								})}
 								className={`${errors.bidAmount && 'error'}`}
@@ -154,7 +154,8 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 							/>
 							<div className="mt-2 text-sm text-red-500">
 								{errors.bidAmount?.type === 'required' && `Offer amount is required`}
-								{errors.bidAmount?.type === 'min' && `Minimum 0.01 Ⓝ`}
+								{errors.bidAmount?.type === 'min' &&
+									(data.token_series_id === '49791' ? `Minimum 5 Ⓝ` : `Minimum 0.01 Ⓝ`)}
 								{errors.bidAmount?.type === 'max' && `You don't have enough balance`}
 							</div>
 						</div>
