@@ -14,6 +14,14 @@ import JSBI from 'jsbi'
 import { IconX } from 'components/Icons'
 import { useEffect, useState } from 'react'
 
+const HARD_CODE_TOKEN = {
+	52026: '10',
+	52029: '5',
+	52032: '3',
+	52036: '2',
+	52038: '2',
+}
+
 const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuantity }) => {
 	const { localeLn } = useIntl()
 	const { errors, register, handleSubmit, watch, setValue } = useForm({
@@ -146,7 +154,9 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 								step="any"
 								ref={register({
 									required: true,
-									min: data.token_series_id === '49791' ? 5 : 0.01,
+									min: HARD_CODE_TOKEN[data.token_series_id]
+										? HARD_CODE_TOKEN[data.token_series_id]
+										: 0.01,
 									max: parseFloat(prettyBalance(userBalance.available, 24, 4)),
 								})}
 								className={`${errors.bidAmount && 'error'}`}
@@ -155,7 +165,9 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 							<div className="mt-2 text-sm text-red-500">
 								{errors.bidAmount?.type === 'required' && `Offer amount is required`}
 								{errors.bidAmount?.type === 'min' &&
-									(data.token_series_id === '49791' ? `Minimum 5 Ⓝ` : `Minimum 0.01 Ⓝ`)}
+									(HARD_CODE_TOKEN[data.token_series_id]
+										? `Minimum ${HARD_CODE_TOKEN[data.token_series_id]} Ⓝ`
+										: `Minimum 0.01 Ⓝ`)}
 								{errors.bidAmount?.type === 'max' && `You don't have enough balance`}
 							</div>
 						</div>
