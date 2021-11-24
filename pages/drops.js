@@ -795,7 +795,7 @@ const SpecialCardBid = ({
 							<div className="mb-4">Starting price {price} Ⓝ</div>
 							{offers.map(
 								(offer) =>
-									parseInt(formatNearAmount(offer.price, 0)) >= 5 && (
+									parseInt(formatNearAmount(offer.price, 0)) >= price && (
 										<div className="mb-2" key={offer._id}>
 											<div className="flex justify-between items-center mx-8">
 												<div className="text-left">
