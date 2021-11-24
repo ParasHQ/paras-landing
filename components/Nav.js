@@ -486,11 +486,11 @@ const Nav = () => {
 						</div>
 					</div>
 					<div className="flex items-center -mx-4">
-						{/* <div className="px-3 text-gray-100 hidden md:block fireText">
+						<div className="px-3 text-gray-100 hidden md:block fireText">
 							<Link href="/drops">
 								<a className="block w-full">{localeLn('Drops')}</a>
 							</Link>
-						</div> */}
+						</div>
 						<div className="px-3 text-gray-100 hidden md:block">
 							{router.pathname === '/market' ? (
 								<a className="cursor-pointer" onClick={() => store.setMarketScrollPersist(0)}>
@@ -512,11 +512,6 @@ const Nav = () => {
 								<a>{localeLn('Activity')}</a>
 							</Link>
 						</div>
-						{/* <div className="px-3 text-gray-100 hidden md:block">
-							<Link href="/activity/top-cards">
-								<a>Stats</a>
-							</Link>
-						</div> */}
 						<div className="px-3 text-gray-100 hidden md:block">
 							<a href="https://stats.paras.id" target="_blank" className="flex cursor-pointer ">
 								{localeLn('Stats')}
@@ -554,11 +549,11 @@ const Nav = () => {
 									<a className="p-4 block w-full">{localeLn('Home')}</a>
 								</Link>
 							</div>
-							{/* <div className="text-gray-100 ">
+							<div className="text-gray-100 ">
 								<Link href="/drops">
 									<a className="p-4 block w-full fireText">Drops</a>
 								</Link>
-							</div> */}
+							</div>
 							<div className="text-gray-100 ">
 								{router.pathname === '/market' ? (
 									<a
