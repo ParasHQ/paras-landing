@@ -16,9 +16,8 @@ const LoginPage = () => {
 		}
 	}, [store.currentUser])
 
-	const _signIn = async () => {
-		const appTitle = 'Paras — Digital Art Cards Market'
-		near.wallet.requestSignIn(near.config.contractName, appTitle)
+	const _signIn = () => {
+		near.login()
 	}
 
 	return (
