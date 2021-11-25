@@ -10,7 +10,7 @@ import TabOwners from 'components/Tabs/TabOwners'
 
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
 import near from 'lib/near'
-import { capitalize, parseImgUrl } from 'utils/common'
+import { capitalize } from 'utils/common'
 import TokenMoreModal from '../Modal/TokenMoreModal'
 import TokenShareModal from '../Modal/TokenShareModal'
 import TokenUpdatePriceModal from '../Modal/TokenUpdatePriceModal'
@@ -29,6 +29,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import TabOffers from 'components/Tabs/TabOffers'
 import PlaceBidModal from 'components/Modal/PlaceBidModal'
 import TabPublication from 'components/Tabs/TabPublication'
+import Media from 'components/Common/Media'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -168,11 +169,12 @@ const TokenDetail = ({ token, className }) => {
 						)}
 					</div>
 					<div className="w-full h-full flex items-center justify-center p-2 lg:p-8 relative">
-						<img
-							className="object-contain w-full h-full"
-							src={parseImgUrl(token.metadata.media, null, {
-								useOriginal: process.env.APP_ENV === 'production' ? false : true,
-							})}
+						<Media
+							className="rounded-lg overflow-hidden"
+							url={token.metadata.media}
+							videoControls={true}
+							videoLoop={true}
+							videoMuted={true}
 						/>
 					</div>
 					<ArtistBanned creatorId={token.metadata.creator_id} />

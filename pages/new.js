@@ -692,7 +692,7 @@ const NewPage = () => {
 									<input
 										className="cursor-pointer w-full opacity-0 absolute inset-0"
 										type="file"
-										accept="image/*"
+										accept="image/*,video/*"
 										onClick={(e) => {
 											e.target.value = null
 										}}
@@ -735,7 +735,12 @@ const NewPage = () => {
 														fill="rgba(229, 231, 235, 0.5)"
 													/>
 												</svg>
-												<p className="text-gray-200 mt-2 opacity-50">{localeLn('Maximum16mb')}</p>
+												<p className="text-sm text-gray-200 mt-2 opacity-50">
+													{localeLn('Maximum16mb')}
+												</p>
+												<p className="text-sm text-gray-200 opacity-50">
+													Supported image or video file
+												</p>
 											</div>
 										)}
 									</div>

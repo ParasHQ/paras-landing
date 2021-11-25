@@ -63,7 +63,7 @@ export const prettyTruncate = (str = '', len = 8, type) => {
 export const readFileAsUrl = (file) => {
 	const temporaryFileReader = new FileReader()
 
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		temporaryFileReader.onload = () => {
 			resolve(temporaryFileReader.result)
 		}
@@ -74,7 +74,7 @@ export const readFileAsUrl = (file) => {
 export const readFileDimension = (file) => {
 	const temporaryFileReader = new FileReader()
 
-	return new Promise((resolve, reject) => {
+	return new Promise((resolve) => {
 		temporaryFileReader.onload = () => {
 			const img = new Image()
 
