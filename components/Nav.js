@@ -81,9 +81,7 @@ const User = () => {
 	}
 
 	const _signOut = () => {
-		near.wallet.signOut()
-
-		window.location.replace(window.location.origin + window.location.pathname)
+		near.logout()
 	}
 
 	return (
