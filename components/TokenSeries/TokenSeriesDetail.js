@@ -26,6 +26,7 @@ import { useIntl } from 'hooks/useIntl'
 import TabOffers from 'components/Tabs/TabOffers'
 import PlaceBidModal from 'components/Modal/PlaceBidModal'
 import TabPublication from 'components/Tabs/TabPublication'
+import ReportModal from 'components/Modal/ReportModal'
 
 const TokenSeriesDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -282,11 +283,13 @@ const TokenSeriesDetail = ({ token, className }) => {
 				listModalItem={[
 					{ name: 'Share to...', onClick: onClickShare },
 					{ name: 'Transfer', onClick: onClickBuyerTransfer },
-					isCreator() ? { name: 'Reduce Copies', onClick: onClickDecreaseCopies } : null,
+					isCreator() && { name: 'Reduce Copies', onClick: onClickDecreaseCopies },
+					{ name: 'Report', onClick: () => setShowModal('report') },
 				].filter((x) => x)}
 			/>
 			<TokenShareModal show={showModal === 'share'} onClose={onDismissModal} tokenData={token} />
 			<PlaceBidModal show={showModal === 'placeoffer'} data={token} onClose={onDismissModal} />
+			<ReportModal show={showModal === 'report'} data={token} onClose={onDismissModal} />
 			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>
 	)

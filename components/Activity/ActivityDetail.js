@@ -32,14 +32,18 @@ export const descriptionMaker = (activity) => {
 		const [, edition_id] = activity.msg.params.token_id.split(':')
 
 		if (activity.price) {
-			return `${activity.to} bought #${edition_id || 1} for ${formatNearAmount(activity.price)} Ⓝ`
+			return `${activity.to} bought #${
+				edition_id || activity.msg.params.token_id
+			} for ${formatNearAmount(activity.price)} Ⓝ`
 		}
 
 		if (activity.to === activity.creator_id) {
-			return `${activity.to} minted #${edition_id || 1}`
+			return `${activity.to} minted #${edition_id || activity.msg.params.token_id}`
 		}
 
-		return `${activity.creator_id} minted #${edition_id || 1} ${activity.to}`
+		return `${activity.creator_id} minted #${edition_id || activity.msg.params.token_id} ${
+			activity.to
+		}`
 	}
 
 	if (type === 'nft_transfer' && activity.to === null) {
@@ -130,7 +134,10 @@ const Activity = ({ activity }) => {
 					<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
 					<span>
 						{' '}
-						bought <span className="font-semibold">#{edition_id || 1}</span> for{' '}
+						bought{' '}
+						<span className="font-semibold">
+							#{edition_id || activity.msg.params.token_id}
+						</span> for{' '}
 					</span>
 					{formatNearAmount(activity.msg.params.price)} Ⓝ
 				</p>
@@ -143,7 +150,8 @@ const Activity = ({ activity }) => {
 					<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
 					<span>
 						{' '}
-						minted <span className="font-semibold">#{edition_id || 1}</span>
+						minted{' '}
+						<span className="font-semibold">#{edition_id || activity.msg.params.token_id}</span>
 					</span>
 				</p>
 			)
@@ -157,7 +165,10 @@ const Activity = ({ activity }) => {
 				/>
 				<span>
 					{' '}
-					minted <span className="font-semibold">#{edition_id || 1}</span> to{' '}
+					minted{' '}
+					<span className="font-semibold">
+						#{edition_id || activity.msg.params.token_id}
+					</span> to{' '}
 				</span>
 				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
 			</p>
@@ -172,7 +183,8 @@ const Activity = ({ activity }) => {
 				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.from} />
 				<span>
 					{' '}
-					burned <span className="font-semibold">#{edition_id || 1}</span>
+					burned{' '}
+					<span className="font-semibold">#{edition_id || activity.msg.params.token_id}</span>
 				</span>
 			</p>
 		)
