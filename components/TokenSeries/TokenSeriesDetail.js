@@ -7,7 +7,7 @@ import { IconDots } from 'components/Icons'
 import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
-import { capitalize, parseImgUrl } from 'utils/common'
+import { capitalize } from 'utils/common'
 import TokenSeriesTransferBuyer from '../Modal/TokenSeriesTransferBuyer'
 import TokenSeriesUpdatePriceModal from '../Modal/TokenSeriesUpdatePriceModal'
 import TokenSeriesBuyModal from '../Modal/TokenSeriesBuyModal'
@@ -21,6 +21,7 @@ import { Blurhash } from 'react-blurhash'
 import LoginModal from '../Modal/LoginModal'
 import ArtistVerified from '../Common/ArtistVerified'
 import ArtistBanned from '../Common/ArtistBanned'
+import Media from '../Common/Media'
 import { useIntl } from 'hooks/useIntl'
 import TabOffers from 'components/Tabs/TabOffers'
 import PlaceBidModal from 'components/Modal/PlaceBidModal'
@@ -133,12 +134,13 @@ const TokenSeriesDetail = ({ token, className }) => {
 							/>
 						)}
 					</div>
-					<div className="w-full h-full flex items-center justify-center p-2 lg:p-8 relative z-10">
-						<img
-							className="object-contain w-full h-full"
-							src={parseImgUrl(token.metadata.media, null, {
-								useOriginal: process.env.APP_ENV === 'production' ? false : true,
-							})}
+					<div className="w-full h-full flex items-center justify-center p-2 lg:p-8 relative z-10 ">
+						<Media
+							className="rounded-lg overflow-hidden"
+							url={token.metadata.media}
+							videoControls={true}
+							videoLoop={true}
+							videoMuted={true}
 						/>
 					</div>
 					<ArtistBanned creatorId={token.metadata.creator_id} />

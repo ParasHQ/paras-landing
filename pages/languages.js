@@ -89,7 +89,7 @@ const LanguagesPage = () => {
 							</div>
 						</div>
 
-            <div className="w-64 px-4 mb-12">
+						<div className="w-64 px-4 mb-12">
 							<div>Spanish</div>
 							<div className="mt-2">
 								<a

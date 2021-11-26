@@ -30,6 +30,7 @@
 		"compressorjs": "^1.0.7",
 		"croppie": "^2.6.5",
 		"draft-js": "^0.11.7",
+		"file-type": "^16.5.3",
 		"javascript-time-ago": "^2.3.2",
 		"js-base64": "^3.5.2",
 		"js-cookie": "^2.2.1",

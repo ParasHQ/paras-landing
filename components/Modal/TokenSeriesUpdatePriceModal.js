@@ -74,7 +74,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 								JSBI.BigInt(parseNearAmount(newPrice)),
 								JSBI.BigInt(
 									Object.values(data.royalty).reduce((a, b) => {
-										return a + b
+										return parseInt(a) + parseInt(b)
 									}, 0)
 								)
 							),

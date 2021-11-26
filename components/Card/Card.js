@@ -1,27 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
-// import { Blurhash } from 'react-blurhash'
+import Media from 'components/Common/Media'
 
 const Card = ({
 	imgUrl,
 	imgWidth = 640,
 	imgHeight = 890,
 	token,
-	// imgBlur,
 	borderRadius = '10px',
 	onClick = () => {},
 }) => {
 	const containerRef = useRef()
-	const [imgLoaded, setImgLoaded] = useState(null)
 	const [dimension, setDimension] = useState({ width: 0, height: 0 })
 	const { localeLn } = useIntl()
-	useEffect(() => {
-		var img = new Image()
-		img.onload = function () {
-			setImgLoaded(imgUrl)
-		}
-		img.src = imgUrl
-	}, [imgUrl])
 
 	useEffect(() => {
 		function updateSize() {
@@ -74,7 +65,6 @@ const Card = ({
 						style={{
 							fontSize: `${dimension.width / 14}px`,
 							borderRadius: borderRadius,
-							// background: '#202124',
 						}}
 					>
 						<div className="h-full py-2 flex flex-col">
@@ -97,17 +87,13 @@ const Card = ({
 								</p>
 							</div>
 							<div className="card-content my-2 relative flex flex-grow h-0">
-								<img className="mx-auto h-full object-contain relative z-10" src={imgLoaded} />
-								<div className="absolute inset-0 z-0">
-									{/* <Blurhash
-										hash={imgBlur || 'UZ9ZtPzmpHv;R]ONJ6bKQ-l7Z.S_bow5$-nh'}
-										width={`100%`}
-										height={`100%`}
-										resolutionX={32}
-										resolutionY={32}
-										punch={1}
-									/> */}
-								</div>
+								<Media
+									className="mx-auto h-full object-contain relative z-10"
+									url={imgUrl}
+									videoControls={false}
+									videoMuted={true}
+									videoLoop={true}
+								/>
 							</div>
 							<div className="px-2 mt-auto">
 								<div className="flex justify-between">
@@ -132,7 +118,11 @@ const Card = ({
 												? `#${token.edition_id} of ${token.copies || localeLn('OpenEdition')}`
 												: token.copies
 												? `${localeLn('EditionOf')} ${token.copies}`
-												: localeLn('OpenEdition')}
+												: (token.contract_id === process.env.NFT_CONTRACT_ID ||
+														process.env.WHITELIST_CONTRACT_ID.split(',').includes(
+															token.contract_id
+														)) &&
+												  localeLn('OpenEdition')}
 										</p>
 									</div>
 								</div>
