@@ -89,6 +89,18 @@ const LanguagesPage = () => {
 							</div>
 						</div>
 
+            <div className="w-64 px-4 mb-12">
+							<div>Spanish</div>
+							<div className="mt-2">
+								<a
+									onClick={() => setLang('es')}
+									className="underline text-2xl text-gray-100 font-bold pointer"
+								>
+									Español
+								</a>
+							</div>
+						</div>
+
 						<div className="w-64 px-4 mb-12 opacity-50">
 							<div>
 								French <span className="text-xs">(Needs Contributors)</span>
