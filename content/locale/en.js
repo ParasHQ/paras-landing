@@ -591,6 +591,20 @@ const search = {
 	'Search{searchQuery}Paras': 'Search {searchQuery} — Paras',
 	SearchResult: 'Search Result',
 }
+const collection = {
+	Items: 'Items',
+	Activity: 'Activity',
+	TotalCards: 'Total Cards',
+	TotalOwners: 'Total Owners',
+	FloorPrice: 'Floor Price',
+	AveragePrice: 'Average Price',
+	Collection: 'Collection',
+	Price: 'Price',
+	From: 'From',
+	To: 'To',
+	Time: 'Time',
+	Type: 'Type',
+}
 
 import { config } from './config.js'
 const data = {
@@ -614,6 +628,7 @@ const data = {
 	news,
 	search,
 	newCollection,
+	collection,
 }
 
 export const en = config(data)
