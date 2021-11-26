@@ -281,7 +281,6 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						<CardListLoader />
 					) : router.query.tab == 'activity' ? (
 						<CollectionActivity
-							tokens={tokens}
 							activities={activities}
 							fetchData={fetchCollectionActivity}
 							hasMore={hasMoreActivities}
