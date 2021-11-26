@@ -420,7 +420,7 @@ const faq = {
 		'You can start by applying as an artist <a target="blank" href="https: /forms.gle/QsZHqa2MKXpjckj98">here</a>. Our team will review your submission and we’ll tell you the result via email.',
 	HowDoMakeCard: 'How do I make a digital art card?',
 	ADigitalCardOnParas:
-		'A digital art card on Paras follows the format of real world trading cards which are in portrait with ratio 64 : 89. The maximum file size is 16MB. Currently Paras only support image format such as png, jpg, jpeg, gifs, etc. Videos are not supported.',
+		'A digital art card on Paras follows the format of real world trading cards which are in portrait with ratio 64 : 89. The maximum file size is 30MB. Currently Paras only support image format such as png, jpg, jpeg, gifs, etc. Videos are not supported.',
 }
 const p404 = {
 	NotFoundParas: 'Not Found — Paras',
@@ -540,7 +540,7 @@ const news = {
 	CreateNewCardParas: 'Create New Card — Paras',
 	MarketData: 'Market Data',
 	RecommendedRatio6489: 'Recommended ratio 64 : 89',
-	Maximum16mb: 'Maximum size 16mb',
+	Maximum30MB: 'Maximum size 30MB',
 	OnlyWantCreate: 'if you only want to create card without selling',
 }
 const newCollection = {

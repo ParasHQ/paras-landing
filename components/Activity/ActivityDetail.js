@@ -144,31 +144,11 @@ const Activity = ({ activity }) => {
 			)
 		}
 
-		if (activity.to === activity.creator_id) {
-			return (
-				<p>
-					<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
-					<span>
-						{' '}
-						minted{' '}
-						<span className="font-semibold">#{edition_id || activity.msg.params.token_id}</span>
-					</span>
-				</p>
-			)
-		}
-
 		return (
 			<p>
-				<LinkToProfile
-					className="text-gray-100 hover:border-gray-100"
-					accountId={activity.creator_id}
-				/>
 				<span>
-					{' '}
 					minted{' '}
-					<span className="font-semibold">
-						#{edition_id || activity.msg.params.token_id}
-					</span> to{' '}
+					<span className="font-semibold">#{edition_id || activity.msg.params.token_id}</span> by{' '}
 				</span>
 				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
 			</p>
