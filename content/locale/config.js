@@ -98,11 +98,11 @@ export const config = ({
 			...common,
 			...publication,
 		},
-		'/publication/eidt/[pubId]': {
+		'/publication/edit/[pubId]': {
 			...common,
 			...publication,
 		},
-		'/publication/[create]': {
+		'/publication/create': {
 			...common,
 			...publication,
 		},
