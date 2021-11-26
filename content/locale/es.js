@@ -9,7 +9,8 @@ const nav = {
 	Whitepaper: 'Libro blanco',
 	SearchByTitle: 'Buscar por título, colección o artista',
 	VisitOurDiscord: 'Visite nuestro canal de Discord para obtener más información:',
-	CurrentlyWeOnly: 'Actualmente nosotros solo permitimos que creadores verificados creen publicaciones.',
+	CurrentlyWeOnly:
+		'Actualmente nosotros solo permitimos que creadores verificados creen publicaciones.',
 	NavJoinDiscord: 'Unirte al Discord de Paras',
 	NavViewWallet: 'Ver en NEAR Wallet',
 	NavCreateCard: 'Crear tarjeta',
@@ -166,7 +167,7 @@ const CardInfo = {
 	TransferSuccess: 'Transferencia exitosa',
 	AddressAccountID: 'Dirección (Account ID)',
 	QuantityAvailableForBurn: 'Cantidad (Available for Burn',
-  Info: 'Info',
+	Info: 'Info',
 	by: 'por',
 	Ok: 'Ok',
 	Burn: 'Quemar',
@@ -182,7 +183,8 @@ const CardInfo = {
 	RoyaltyForArtist: 'Regalías para Artistas',
 	ServiceFee: 'Comisión de Servicio',
 	YouWillGet: 'Recibirás',
-	MakeSureNotOnSale: 'Por favor, asegúrese de que su tarjeta no esté a la venta para aceptar la oferta',
+	MakeSureNotOnSale:
+		'Por favor, asegúrese de que su tarjeta no esté a la venta para aceptar la oferta',
 	SuccessfullyAcceptedBid: 'Usted aceptó con éxito la oferta de',
 	BidHasDeleted: 'Su oferta ha sido eliminada',
 	AreSureDeleteBids: '¿Está seguro de eliminar sus ofertas?',
@@ -221,7 +223,8 @@ const publication = {
 	Thumbnail: 'Miniatura',
 	UpdateThumbnail3MB: 'Actualizar Miniatura (Max. 3MB)',
 	Title: 'Titulo',
-	SureToLeavepage: '¿Estás seguro de querer abandonar la página? Vas a perder cualquier cambio no publicado',
+	SureToLeavepage:
+		'¿Estás seguro de querer abandonar la página? Vas a perder cualquier cambio no publicado',
 	CardCollectibles: 'Tarjetas Coleccionables',
 	Continue: 'Continuar',
 	Delete: 'Borrar',
@@ -341,7 +344,8 @@ const common = {
 }
 const drops = {
 	June9th: 'Junio 9',
-	OpenRegistrationFor: 'Registro abierto para que el usuario obtenga acceso anticipado (lista blanca) para comprar NFT',
+	OpenRegistrationFor:
+		'Registro abierto para que el usuario obtenga acceso anticipado (lista blanca) para comprar NFT',
 	June16th: 'Junio 16',
 	NFTDropsFor: 'NFT Drops para cuentas en la lista blanca',
 	DropsWillStartOn:
@@ -361,7 +365,8 @@ const drops = {
 	FollowParasOnTwitter: 'Sigue a Paras en Twitter (https://twitter.com/ParasHQ)',
 	FollowParasOnInstagram: 'Sigue a Paras en Instagram (https://instagram.com/paras.hq/)',
 	JoinParasTelegramGroup: 'Unete al grupo de Paras en Telegram (https://t.me/parashq)',
-	JoinParasDiscordServer: 'Unete al grupo de Paras en Discord (https://discord.com/invite/vWR2XBNupg',
+	JoinParasDiscordServer:
+		'Unete al grupo de Paras en Discord (https://discord.com/invite/vWR2XBNupg',
 	ParasXMTVRS: 'Paras X MTVRS - NFT Drops',
 	NFTDrops: 'NFT Drops',
 	MTVRSIsWorld:
@@ -447,7 +452,7 @@ const faq = {
 		'Paras es un mercado de tarjetas de arte digital construido sobre tecnología blockchain que ofrece verdadera propiedad y escasez digital. Paras usa <a href="https://near.org" target="_blank">NEAR</a> como medio de intercambio entre creadores y coleccionistas para respaldar las transacciones transfronterizas.',
 	WhatIsBlockchain: '¿Qué es la blockchain?',
 	BlockchainIsTechnology:
-  'Blockchain es una tecnología que permite a todos poseer verdaderamente sus datos y activos digitales. Los datos almacenados en blockchain son transparentes y sin alteraciones, lo que hace que la propiedad de ciertos activos sea demostrable y verificable por todos',
+		'Blockchain es una tecnología que permite a todos poseer verdaderamente sus datos y activos digitales. Los datos almacenados en blockchain son transparentes y sin alteraciones, lo que hace que la propiedad de ciertos activos sea demostrable y verificable por todos',
 	WhatIsCryptocurrency: '¿Qué son las criptomonedas y un activo digital?',
 	BothCryptocurrencyDigital:
 		'Tanto las criptomonedas como los activos digitales utilizan la tecnología blockchain para manejar la propiedad y sus transacciones. La criptomoneda permite la liquidación transfronteriza entre múltiples partes a las que todos pueden acceder. Los activos digitales, como las obras de arte que se almacenan en blockchain, se pueden transferir fácilmente a nivel mundial sin ninguna barrera',
@@ -489,7 +494,7 @@ const license = {
 
 	LicenseArtAssociated: '¿Qué NO puedo hacer con el arte asociado con mi NFT?',
 	LicenseAreNotAppropriate:
-  'Hay algunas cosas que no son usos apropiados para su arte NFT. Se incluyen:',
+		'Hay algunas cosas que no son usos apropiados para su arte NFT. Se incluyen:',
 	LicenseModifyingArt: 'Modificar el arte;',
 	LicenseUsingForCommercialize:
 		'Usar el arte con fines comerciales sin pedir permiso al creador / artista',
@@ -523,7 +528,8 @@ const license = {
 		'Usted acepta que no debe, ni puede permitir que ningún tercero haga o intente hacer nada de lo anterior sin el consentimiento previo expreso por escrito del Artista en cada caso: (i) usar el Arte para sus NFT comprados en relación con imágenes, videos, u otras formas de medios que muestren odio, intolerancia, violencia, crueldad o cualquier otra cosa que pueda razonablemente constituir un discurso de odio o que infrinja los derechos de los demás; En la medida en que el Arte asociado con sus NFT comprados contenga IP de terceros (por ejemplo, propiedad intelectual con licencia de una celebridad, atleta u otras figuras públicas), usted comprende y acepta lo siguiente:',
 	LicenseHaveRightTo:
 		'que no tendrá derecho a usar dicha propiedad intelectual de terceros de ninguna manera, excepto según se incorpore en el Arte, y sujeto a la licencia y restricciones contenidas en este documento;',
-	LicenseInSection3: 'que la licencia de Uso Comercial de la Sección 3 (b) anterior no se aplicará;',
+	LicenseInSection3:
+		'que la licencia de Uso Comercial de la Sección 3 (b) anterior no se aplicará;',
 	LicenseDependingOn:
 		'que, dependiendo de la naturaleza de la licencia otorgada por el propietario de la IP de Terceros, el Artista puede necesitar pasar restricciones adicionales sobre su capacidad para usar el Arte Completo; y',
 	LicenseToTheExtent:

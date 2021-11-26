@@ -32,14 +32,18 @@ export const descriptionMaker = (activity) => {
 		const [, edition_id] = activity.msg.params.token_id.split(':')
 
 		if (activity.price) {
-			return `${activity.to} bought #${edition_id || activity.msg.params.token_id} for ${formatNearAmount(activity.price)} Ⓝ`
+			return `${activity.to} bought #${
+				edition_id || activity.msg.params.token_id
+			} for ${formatNearAmount(activity.price)} Ⓝ`
 		}
 
 		if (activity.to === activity.creator_id) {
 			return `${activity.to} minted #${edition_id || activity.msg.params.token_id}`
 		}
 
-		return `${activity.creator_id} minted #${edition_id || activity.msg.params.token_id} ${activity.to}`
+		return `${activity.creator_id} minted #${edition_id || activity.msg.params.token_id} ${
+			activity.to
+		}`
 	}
 
 	if (type === 'nft_transfer' && activity.to === null) {
@@ -140,31 +144,11 @@ const Activity = ({ activity }) => {
 			)
 		}
 
-		if (activity.to === activity.creator_id) {
-			return (
-				<p>
-					<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
-					<span>
-						{' '}
-						minted{' '}
-						<span className="font-semibold">#{edition_id || activity.msg.params.token_id}</span>
-					</span>
-				</p>
-			)
-		}
-
 		return (
 			<p>
-				<LinkToProfile
-					className="text-gray-100 hover:border-gray-100"
-					accountId={activity.creator_id}
-				/>
 				<span>
-					{' '}
 					minted{' '}
-					<span className="font-semibold">
-						#{edition_id || activity.msg.params.token_id}
-					</span> to{' '}
+					<span className="font-semibold">#{edition_id || activity.msg.params.token_id}</span> by{' '}
 				</span>
 				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
 			</p>
