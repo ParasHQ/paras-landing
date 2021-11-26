@@ -84,7 +84,6 @@ const CollectionActivity = ({ tokens, activities, fetchData, hasMore }) => {
 				<div className="hidden md:block">
 					<div className="grid grid-cols-7 gap-10 text-gray-300 hover:opacity-75 border-gray-800 border-b-2">
 						{HEADERS.map((d, index) => {
-							console.log(d.id + ' : ' + index)
 							return (
 								<div
 									key={d.id}
