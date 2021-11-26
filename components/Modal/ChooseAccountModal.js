@@ -8,11 +8,13 @@ import { parseImgUrl, prettyTruncate } from 'utils/common'
 import { IconX } from 'components/Icons'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import useStore from 'lib/store'
+import { useIntl } from 'hooks/useIntl'
 
 const ChooseAccountModal = ({ show, onClose }) => {
 	const [profileList, setProfileList] = useState([])
 	const connectedAccount = near.getAccountAndKey()
 	const currentUser = useStore((state) => state.currentUser)
+	const { localeLn } = useIntl()
 
 	useEffect(() => {
 		const fetchAllUserData = async () => {
@@ -56,7 +58,7 @@ const ChooseAccountModal = ({ show, onClose }) => {
 						<IconX />
 					</div>
 				</div>
-				<p className="text-white font-bold text-2xl mb-4">Switch Account</p>
+				<p className="text-white font-bold text-2xl mb-4">{localeLn('NavSwitchAccount')}</p>
 
 				{connectedAccount.map((account, idx) => (
 					<div key={account.key} className="my-4">
@@ -88,7 +90,7 @@ const ChooseAccountModal = ({ show, onClose }) => {
 				))}
 
 				<Button size="md" className="mt-2" isFullWidth onClick={onAddAccount}>
-					Add Account
+					{localeLn('NavAddAccount')}
 				</Button>
 			</div>
 		</Modal>

@@ -18,9 +18,6 @@ const User = () => {
 	const router = useRouter()
 
 	const [showAccountModal, setShowAccountModal] = useState(false)
-	// const [showEditAccountModal, setShowEditAccountModal] = useState(false)
-	// const [showSettingModal, setShowSettingModal] = useState(false)
-
 	const [showUserModal, setShowUserModal] = useState(null)
 
 	const { localeLn } = useIntl()
@@ -185,7 +182,7 @@ const User = () => {
 									className="text-gray-200 hover:opacity-75 text-sm cursor-pointer"
 									onClick={onClickSwitchAccount}
 								>
-									Switch Account
+									{localeLn('NavSwitchAccount')}
 								</div>
 							</div>
 						</div>
