@@ -132,7 +132,11 @@ const Card = ({
 												? `#${token.edition_id} of ${token.copies || localeLn('OpenEdition')}`
 												: token.copies
 												? `${localeLn('EditionOf')} ${token.copies}`
-												: localeLn('OpenEdition')}
+												: (token.contract_id === process.env.NFT_CONTRACT_ID ||
+														process.env.WHITELIST_CONTRACT_ID.split(',').includes(
+															token.contract_id
+														)) &&
+												  localeLn('OpenEdition')}
 										</p>
 									</div>
 								</div>
