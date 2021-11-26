@@ -9,6 +9,7 @@ import useStore from 'lib/store'
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { parseImgUrl, prettyBalance } from 'utils/common'
+import ChooseAccountModal from 'components/Modal/ChooseAccountModal'
 
 const User = () => {
 	const store = useStore()
@@ -17,8 +18,11 @@ const User = () => {
 	const router = useRouter()
 
 	const [showAccountModal, setShowAccountModal] = useState(false)
-	const [showEditAccountModal, setShowEditAccountModal] = useState(false)
-	const [showSettingModal, setShowSettingModal] = useState(false)
+	// const [showEditAccountModal, setShowEditAccountModal] = useState(false)
+	// const [showSettingModal, setShowSettingModal] = useState(false)
+
+	const [showUserModal, setShowUserModal] = useState(null)
+
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
@@ -81,28 +85,40 @@ const User = () => {
 		near.logout()
 	}
 
+	const dismissUserModal = () => {
+		setShowUserModal(null)
+	}
+
+	const onClickSetting = () => {
+		setShowUserModal('setting')
+		toggleAccountModal()
+	}
+
+	const onClickSwitchAccount = () => {
+		setShowUserModal('switchAcc')
+		toggleAccountModal()
+	}
+
+	const onClickEditProfile = () => {
+		setShowUserModal('edit')
+		toggleAccountModal()
+	}
+
 	return (
 		<div ref={accModalRef} className="relative">
-			{showSettingModal && (
-				<Modal
-					close={() => setShowSettingModal(false)}
-					closeOnBgClick={false}
-					closeOnEscape={false}
-				>
-					<Setting close={() => setShowSettingModal(false)} />
+			{showUserModal === 'setting' && (
+				<Modal close={dismissUserModal} closeOnBgClick={false} closeOnEscape={false}>
+					<Setting close={dismissUserModal} />
 				</Modal>
 			)}
-			{showEditAccountModal && (
-				<Modal
-					close={() => setShowEditAccountModal(false)}
-					closeOnBgClick={false}
-					closeOnEscape={false}
-				>
+			{showUserModal === 'edit' && (
+				<Modal close={dismissUserModal} closeOnBgClick={false} closeOnEscape={false}>
 					<div className="w-full max-w-sm p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
-						<ProfileEdit close={() => setShowEditAccountModal(false)} />
+						<ProfileEdit close={dismissUserModal} />
 					</div>
 				</Modal>
 			)}
+			<ChooseAccountModal show={showUserModal === 'switchAcc'} onClose={dismissUserModal} />
 			<div
 				className="relative flex items-center justify-end text-gray-100"
 				onClick={toggleAccountModal}
@@ -165,7 +181,12 @@ const User = () => {
 										{localeLn('NavViewWallet')}
 									</a>
 								</div>
-								<div className="text-gray-200 hover:opacity-75 text-sm">Switch Account</div>
+								<div
+									className="text-gray-200 hover:opacity-75 text-sm cursor-pointer"
+									onClick={onClickSwitchAccount}
+								>
+									Switch Account
+								</div>
 							</div>
 						</div>
 						<hr className="my-2" />
@@ -196,20 +217,14 @@ const User = () => {
 							</a>
 						</Link>
 						<button
-							onClick={() => {
-								setShowEditAccountModal(true)
-								toggleAccountModal()
-							}}
+							onClick={onClickEditProfile}
 							className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 						>
 							{localeLn('EditProfile')}
 						</button>
 						{process.env.APP_ENV !== 'testnet' && (
 							<button
-								onClick={() => {
-									setShowSettingModal(true)
-									toggleAccountModal()
-								}}
+								onClick={onClickSetting}
 								className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 							>
 								{localeLn('NavSettings')}
