@@ -553,7 +553,7 @@ const news = {
 	CreateNewCardParas: 'Crear Nueva Tarjeta — Paras',
 	MarketData: 'Datos de Mercado',
 	RecommendedRatio6489: 'Relación recomendada 64 : 89',
-	Maximum16mb: 'Tamaño máximo 16mb',
+	Maximum30MB: 'Tamaño máximo 30MB',
 	OnlyWantCreate: 'si solo quieres crear tarjeta sin vender',
 }
 const newCollection = {

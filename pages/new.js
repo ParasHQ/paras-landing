@@ -15,7 +15,7 @@ import Footer from 'components/Footer'
 import { parseImgUrl, prettyBalance, readFileAsUrl } from 'utils/common'
 import { encodeImageToBlurhash } from 'lib/blurhash'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { GAS_FEE, STORAGE_CREATE_SERIES_FEE } from 'config/constants'
+import { GAS_FEE, MAX_FILE_SIZE, STORAGE_CREATE_SERIES_FEE } from 'config/constants'
 import Button from 'components/Common/Button'
 import { InputText, InputTextarea } from 'components/Common/form'
 import CreateCollectionModal from 'components/Collection/CreateCollectionModal'
@@ -198,8 +198,8 @@ const NewPage = () => {
 
 	const _setImg = async (e) => {
 		if (e.target.files[0]) {
-			if (e.target.files[0].size > 20 * 1024 * 1024) {
-				setShowAlertErr('Maximum file size is 16 Mb')
+			if (e.target.files[0].size > MAX_FILE_SIZE) {
+				setShowAlertErr('Maximum file size is 30MB')
 				return
 			} else {
 				const newImgUrl = await readFileAsUrl(e.target.files[0])
@@ -736,7 +736,7 @@ const NewPage = () => {
 													/>
 												</svg>
 												<p className="text-sm text-gray-200 mt-2 opacity-50">
-													{localeLn('Maximum16mb')}
+													{localeLn('Maximum30MB')}
 												</p>
 												<p className="text-sm text-gray-200 opacity-50">
 													Supported image or video file
