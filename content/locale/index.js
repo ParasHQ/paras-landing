@@ -1,10 +1,6 @@
 export * from './en'
 export * from './zh'
 export * from './es'
-/* export * from './fr'
-export * from './ru'
-export * from './ko'
-export * from './vi' */
 
 export function getLanguage() {
 	let lang = navigator.language || navigator.userLanguage
