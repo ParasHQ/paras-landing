@@ -29,11 +29,8 @@ import { sentryCaptureException } from 'lib/sentry'
 import TabOffers from 'components/Tabs/TabOffers'
 import PlaceBidModal from 'components/Modal/PlaceBidModal'
 import TabPublication from 'components/Tabs/TabPublication'
-<<<<<<< HEAD
 import Media from 'components/Common/Media'
-=======
 import ReportModal from 'components/Modal/ReportModal'
->>>>>>> 134d75d79d82cb64aeecea84acc62bd94ecdbca0
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
