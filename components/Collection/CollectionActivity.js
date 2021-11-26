@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import CollectionActivityLoader from './CollectionActivityLoader'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
+import { useIntl } from 'hooks/useIntl'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
@@ -40,10 +40,11 @@ const HEADERS = [
 	},
 ]
 
-const CollectionActivity = ({ tokens, activities, fetchData, hasMore }) => {
+const CollectionActivity = ({ activities, fetchData, hasMore }) => {
 	const [showDetailActivity, setShowDetailActivity] = useState(-1)
 
 	const router = useRouter()
+	const { localeLn } = useIntl()
 
 	const parseType = (creator, price, from, to, type) => {
 		if ((type === 'nft_transfer' && price && from && to) || type === 'resolve_purchase') {
@@ -79,7 +80,6 @@ const CollectionActivity = ({ tokens, activities, fetchData, hasMore }) => {
 
 	return (
 		<div className="overflow-x-auto bg-black bg-opacity-25 w-full rounded-lg">
-			<TokenSeriesDetailModal tokens={tokens} />
 			<div className="text-white bg-gray-50 bg-opacity-10 rounded p-3">
 				<div className="hidden md:block">
 					<div className="grid grid-cols-7 gap-10 text-gray-300 hover:opacity-75 border-gray-800 border-b-2">
@@ -91,7 +91,7 @@ const CollectionActivity = ({ tokens, activities, fetchData, hasMore }) => {
 										index === 0 && 'col-span-2 justify-start'
 									} flex items-center w-2/6 lg:w-full flex-shrink-0 p-3 h-full`}
 								>
-									<span>{d.title}</span>
+									<span>{localeLn(d.title)}</span>
 								</div>
 							)
 						})}
@@ -108,43 +108,26 @@ const CollectionActivity = ({ tokens, activities, fetchData, hasMore }) => {
 							<div key={activity._id} className="py-3">
 								<div className="w-full">
 									<div className="flex flex-row items-center w-full cursor-pointer sm:cursor-default md:grid md:grid-cols-7 md:gap-5 lg:gap-10 md:h-19 md:hover:bg-gray-800">
-										<a
-											className="flex md:col-span-2 items-center md:cursor-pointer"
-											onClick={() => {
-												router.push(
-													{
-														pathname: router.pathname,
-														query: {
-															...router.query,
-															...{ tokenSeriesId: activity.token_series_id },
-															...{ prevAs: router.asPath },
-														},
-													},
-													`/token/${activity.contract_id}::${activity.token_series_id}`,
-													{
-														shallow: true,
-														scroll: false,
-													}
-												)
-											}}
-										>
-											<div className="w-1/4 bg-blue-900 rounded">
-												{activity?.data?.[0]?.metadata.media && (
-													<img
-														src={parseImgUrl(activity?.data?.[0]?.metadata.media)}
-														className="bg-cover"
-													/>
-												)}
+										<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
+											<div className="flex md:col-span-2 items-center md:cursor-pointer">
+												<div className="w-1/4 bg-blue-900 rounded">
+													{activity?.data?.[0]?.metadata.media && (
+														<img
+															src={parseImgUrl(activity?.data?.[0]?.metadata.media)}
+															className="bg-cover"
+														/>
+													)}
+												</div>
+												<div className="pl-4 overflow-hidden cursor-pointer">
+													<p className="font-semibold">
+														{prettyTruncate(activity?.data?.[0]?.metadata.title, 25)}
+													</p>
+													<p className="block md:hidden font-semibold truncate">
+														{formatNearAmount(activity.price ? activity.price : '0')} Ⓝ
+													</p>
+												</div>
 											</div>
-											<div className="pl-4 overflow-hidden cursor-pointer">
-												<p className="font-semibold truncate">
-													{activity?.data?.[0]?.metadata.title}
-												</p>
-												<p className="block md:hidden font-semibold truncate">
-													{formatNearAmount(activity.price ? activity.price : '0')} Ⓝ
-												</p>
-											</div>
-										</a>
+										</Link>
 										<div
 											className={`${HEADERS[1].className} hidden md:flex md:text-sm lg:text-base font-bold justify-start`}
 										>
