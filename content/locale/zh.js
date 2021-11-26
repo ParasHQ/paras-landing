@@ -168,7 +168,7 @@ const CardInfo = {
 	Collectibles: '收藏品',
 	Publication: '出版',
 	History: '历史',
-	Bids: '竞价',
+	Offers: '竞价',
 	Owners: '所有者',
 	TransferSuccess: '发送成功',
 	AddressAccountID: 'Address (Account ID)',

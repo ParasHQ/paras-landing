@@ -167,7 +167,7 @@ const CardInfo = {
 	Collectibles: 'Collectibles',
 	Publication: 'Publication',
 	History: 'History',
-	Bids: 'Bids',
+	Offers: 'Offers',
 	Owners: 'Owners',
 	TransferSuccess: 'Transfer success',
 	AddressAccountID: 'Address (Account ID)',

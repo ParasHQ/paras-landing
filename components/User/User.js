@@ -210,7 +210,7 @@ const User = () => {
 						</Link>
 						<Link href="/my-bids">
 							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								{localeLn('My Bids')}
+								{localeLn('NavMyBids')}
 							</a>
 						</Link>
 						<button

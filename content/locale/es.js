@@ -165,7 +165,7 @@ const CardInfo = {
 	Collectibles: 'Coleccionables',
 	Publication: 'Publicaciones',
 	History: 'Historial',
-	Bids: 'Ofertas',
+	Offers: 'Ofertas',
 	Owners: 'Propietarios',
 	TransferSuccess: 'Transferencia exitosa',
 	AddressAccountID: 'Dirección (Account ID)',
