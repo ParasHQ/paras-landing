@@ -78,7 +78,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}, [router.query.sort, router.query.pmin, router.query.pmax])
 
 	useEffect(() => {
-		fetchCollectionActivity()
+		if (router.query.tab === 'activity') {
+			fetchCollectionActivity()
+		}
 	}, [router.query.tab])
 
 	const editCollection = () => {
@@ -131,6 +133,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const fetchCollectionActivity = async () => {
+		if (!hasMoreActivities) {
+			return
+		}
+
 		const res = await axios.get(`${process.env.V2_API_URL}/collection-activities`, {
 			params: activitiesParams(activityPage),
 		})
