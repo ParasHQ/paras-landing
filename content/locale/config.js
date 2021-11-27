@@ -70,6 +70,10 @@ export const config = ({
 			...common,
 			...activity,
 		},
+		'/activity/top-collections': {
+			...common,
+			...activity,
+		},
 		'/category-submission/[categoryId]': {
 			...common,
 			...categorySubmission,
