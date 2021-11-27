@@ -3,7 +3,6 @@ import CollectionActivityLoader from './CollectionActivityLoader'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useIntl } from 'hooks/useIntl'
 import { useState } from 'react'
-import { useRouter } from 'next/router'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { parseImgUrl, prettyTruncate, timeAgo } from 'utils/common'
 
@@ -43,7 +42,6 @@ const HEADERS = [
 const CollectionActivity = ({ activities, fetchData, hasMore }) => {
 	const [showDetailActivity, setShowDetailActivity] = useState(-1)
 
-	const router = useRouter()
 	const { localeLn } = useIntl()
 
 	const parseType = (creator, price, from, to, type) => {
