@@ -5,10 +5,8 @@ import { useEffect, useState } from 'react'
 import Scrollbars from 'react-custom-scrollbars'
 
 import Card from '../Card/Card'
-import LinkToProfile from '../LinkToProfile'
 
 import { parseImgUrl } from 'utils/common'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import cachios from 'cachios'
@@ -28,37 +26,36 @@ const renderThumb = ({ style, ...props }) => {
 	)
 }
 
-const UserTransactionList = ({ usersData, fetchData, hasMore, type }) => {
+const CollectionTransactionList = ({ data }) => {
 	const [localToken, setLocalToken] = useState(null)
 
 	return (
 		<>
 			<TokenDetailModal tokens={[localToken]} />
-			<InfiniteScroll dataLength={usersData.length} next={fetchData} hasMore={hasMore}>
-				{usersData.map((user, idx) => (
-					<UserTransactionDetail
-						data={user}
-						key={user.account_id}
-						idx={idx}
-						type={type}
-						setLocalToken={setLocalToken}
-					/>
-				))}
-			</InfiniteScroll>
+			{data.map((user, idx) => (
+				<UserTransactionDetail
+					data={user}
+					key={user.account_id}
+					idx={idx}
+					setLocalToken={setLocalToken}
+				/>
+			))}
 		</>
 	)
 }
 
-const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => {
-	const [profile, setProfile] = useState({})
+const UserTransactionDetail = ({ data, idx, setLocalToken }) => {
 	const { localeLn } = useIntl()
+
+	const [colDetail, setColDetail] = useState({})
+
 	useEffect(async () => {
-		const res = await axios(`${process.env.V2_API_URL}/profiles`, {
+		const res = await axios(`${process.env.V2_API_URL}/collections`, {
 			params: {
-				accountId: data.account_id,
+				collection_id: data.collection_id,
 			},
 		})
-		setProfile(res.data.data.results[0])
+		setColDetail(res.data.data.results[0])
 	}, [])
 
 	return (
@@ -66,30 +63,31 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => 
 			<div className="flex items-center md:w-2/5 p-4">
 				<p className="text-base text-gray-100 opacity-50 mr-3 self-start">{idx + 1}</p>
 				<div className="flex self-start">
-					<Link href={`/${data.account_id}`}>
-						<div className="cursor-pointer w-20 h-20 rounded-full overflow-hidden bg-primary">
-							<img
-								src={parseImgUrl(profile?.imgUrl, null, {
-									width: `300`,
-								})}
-								className="object-cover"
-							/>
-						</div>
+					<Link href={`/collection/${data.collection_id}`}>
+						<a>
+							<div className="cursor-pointer w-20 h-20 rounded-full overflow-hidden bg-primary">
+								<img
+									src={parseImgUrl(colDetail?.media, null, {
+										width: `300`,
+									})}
+									className="object-cover"
+								/>
+							</div>
+						</a>
 					</Link>
 					<div className="ml-4">
-						{data.account_id && (
-							<LinkToProfile
-								accountId={data.account_id}
-								len={16}
-								className="text-gray-100 hover:border-gray-100 font-bold text-lg md:text-2xl"
-							/>
+						{colDetail.collection && (
+							<Link href={`/collection/${data.collection_id}`}>
+								<a className="text-gray-100 border-b-2 border-transparent hover:border-gray-100 font-bold text-lg md:text-2xl">
+									{colDetail.collection}
+								</a>
+							</Link>
 						)}
 						<p className="text-base text-gray-400">
-							Total {type !== 'buyer' ? 'sales' : 'purchase'}: {formatNearAmount(data.total_sum)} Ⓝ
+							Total sales: {formatNearAmount(data.total_sum)} Ⓝ
 						</p>
 						<p className="text-base text-gray-400">
-							{localeLn('Card')} {type !== 'buyer' ? 'sold' : 'bought'}:{' '}
-							{data.contract_token_ids.length}
+							{localeLn('Card')} sold: {data.contract_token_ids.length}
 						</p>
 					</div>
 				</div>
@@ -152,7 +150,7 @@ const UserTransactionCard = ({ contract_token_id, setLocalToken }) => {
 			<div className="w-full m-auto" onClick={() => setLocalToken(token)}>
 				<Card
 					imgUrl={parseImgUrl(token.metadata.media, null, {
-						width: `600`,
+						width: `300`,
 						useOriginal: process.env.APP_ENV === 'production' ? false : true,
 					})}
 					onClick={() => {
@@ -185,4 +183,4 @@ const UserTransactionCard = ({ contract_token_id, setLocalToken }) => {
 	)
 }
 
-export default UserTransactionList
+export default CollectionTransactionList
