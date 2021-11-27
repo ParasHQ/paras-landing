@@ -14,19 +14,27 @@ const Media = ({ className, url, videoControls = false, videoMuted = true, video
 	}, [url])
 
 	const getMedia = async () => {
-		const resp = await axios.get(`${parseImgUrl(url)}`, {
-			responseType: 'blob',
-		})
+		try {
+			const resp = await axios.get(`${parseImgUrl(url)}`, {
+				responseType: 'blob',
+			})
 
-		const fileType = await FileType.fromBlob(resp.data)
+			const fileType = await FileType.fromBlob(resp.data)
 
-		const objectUrl = URL.createObjectURL(resp.data)
+			const objectUrl = URL.createObjectURL(resp.data)
 
-		setMedia({
-			type: fileType.mime,
-			url: [objectUrl],
-		})
-		setIsLoading(false)
+			setMedia({
+				type: fileType.mime,
+				url: [objectUrl],
+			})
+			setIsLoading(false)
+		} catch (err) {
+			setMedia({
+				type: 'image/jpg',
+				url: parseImgUrl(url),
+			})
+			setIsLoading(false)
+		}
 	}
 
 	if (isLoading) {
