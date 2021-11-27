@@ -104,7 +104,7 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => 
 					renderThumbHorizontal={renderThumb}
 				>
 					<div className="flex py-2">
-						{data.contract_token_ids.map((contract_token_id, idx) => (
+						{data.contract_token_ids.slice(0, 5).map((contract_token_id, idx) => (
 							<UserTransactionCard
 								key={idx}
 								contract_token_id={contract_token_id}
