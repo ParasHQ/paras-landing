@@ -89,9 +89,11 @@ const ChooseAccountModal = ({ show, onClose }) => {
 					</div>
 				))}
 
-				<Button size="md" className="mt-2" isFullWidth onClick={onAddAccount}>
-					{localeLn('NavAddAccount')}
-				</Button>
+				{connectedAccount.length < 3 && (
+					<Button size="md" className="mt-2" isFullWidth onClick={onAddAccount}>
+						{localeLn('NavAddAccount')}
+					</Button>
+				)}
 			</div>
 		</Modal>
 	)
