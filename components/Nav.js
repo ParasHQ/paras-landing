@@ -346,7 +346,7 @@ const Nav = () => {
 					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
 				>
 					<div className="px-10 py-1 md:p-0 ">
-						Check out Degens Syndicate's NFT Drops & Paras' Card4Card now!
+						Check out Degens Syndicate's NFT Drops & Paras' Card4Card now
 						{/* <a
 							href="https://paras.id/publication/card4card-is-back-this-october-616d7ceeee25ff5cc2b63053"
 							target="_blank"
