@@ -19,6 +19,7 @@ export const config = ({
 	news,
 	search,
 	newCollection,
+	collection,
 }) => {
 	return {
 		defaultAll: {
@@ -67,6 +68,10 @@ export const config = ({
 			...activity,
 		},
 		'/activity/top-sellers': {
+			...common,
+			...activity,
+		},
+		'/activity/top-collections': {
 			...common,
 			...activity,
 		},
@@ -158,6 +163,10 @@ export const config = ({
 		'/search': {
 			...common,
 			...search,
+		},
+		'/collection/[collection_id]': {
+			...common,
+			...collection,
 		},
 	}
 }

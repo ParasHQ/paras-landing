@@ -89,7 +89,7 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnershi
 
 						return (
 							<div
-								key={token.token_series_id}
+								key={`${token.contract_id}::${token.token_series_id}`}
 								className={`w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-4 relative ${
 									toggleOwnership &&
 									!_getUserOwnership(store.currentUser, token.ownerships) &&

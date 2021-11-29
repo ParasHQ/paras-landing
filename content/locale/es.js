@@ -13,10 +13,13 @@ const nav = {
 		'Actualmente nosotros solo permitimos que creadores verificados creen publicaciones.',
 	NavJoinDiscord: 'Unirte al Discord de Paras',
 	NavViewWallet: 'Ver en NEAR Wallet',
+	NavSwitchAccount: 'Cambiar cuenta',
+	NavAddAccount: 'Añadir cuenta',
 	NavCreateCard: 'Crear tarjeta',
 	NavLogOut: 'Cerrar sesión',
 	NavSettings: 'Configuración',
 	NavMyProfile: 'Mi perfil',
+	NavMyBids: 'Mi oferta',
 	NavCreatePublication: 'Crear Publicación',
 	NavCreateCollection: 'Crear Colección',
 	Languages: 'Idiomas',
@@ -162,7 +165,7 @@ const CardInfo = {
 	Collectibles: 'Coleccionables',
 	Publication: 'Publicaciones',
 	History: 'Historial',
-	Bids: 'Ofertas',
+	Offers: 'Ofertas',
 	Owners: 'Propietarios',
 	TransferSuccess: 'Transferencia exitosa',
 	AddressAccountID: 'Dirección (Account ID)',
@@ -343,49 +346,7 @@ const common = {
 	...profile,
 }
 const drops = {
-	June9th: 'Junio 9',
-	OpenRegistrationFor:
-		'Registro abierto para que el usuario obtenga acceso anticipado (lista blanca) para comprar NFT',
-	June16th: 'Junio 16',
-	NFTDropsFor: 'NFT Drops para cuentas en la lista blanca',
-	DropsWillStartOn:
-		'Las entregas comenzarán el 16 de junio a las 00.01 y finalizarán el 18 de junio a las 00.00 (2 días)',
-	June19th: 'Junio 19',
-	NFTDropsPublic: 'NFT Drops para cuentas públicas (si aún está disponible)',
-	RemainingDropsWillStart:
-		'Los Drops restantes comenzarán a venderse al público el 19 de junio a las 00.01 y finalizarán el 24 de junio a las 00.00 (5 días)',
-	June25th: 'Junio 25',
-	BurnRemainingNFTs: 'Quemar todos los NFTs restantes',
-	FillTheFormOf: 'Complete el formulario de elegibilidad: https://tripetto.app/run/2OGYWACAC6',
-	FollowMTVRSOn: 'Siga a MTVRS en Twitter (https://twitter.com/themtvrs)',
-	RetweetLikeTag:
-		'Retweet, like, etiqueta a tus amigos en este tweet anclado sobre NFT Drops (https://twitter.com/ParasHQ/status/1402264239927185422)',
-	JoinMTVRSTelegram: 'Unete al grupo MTVRS en Telegram (https://t.me/themtvrs)',
-	JoinMTVRSDiscord: 'Unete al grupo MTVRS en Discord (https://discord.com/invite/wSNk3ktahF)',
-	FollowParasOnTwitter: 'Sigue a Paras en Twitter (https://twitter.com/ParasHQ)',
-	FollowParasOnInstagram: 'Sigue a Paras en Instagram (https://instagram.com/paras.hq/)',
-	JoinParasTelegramGroup: 'Unete al grupo de Paras en Telegram (https://t.me/parashq)',
-	JoinParasDiscordServer:
-		'Unete al grupo de Paras en Discord (https://discord.com/invite/vWR2XBNupg',
-	ParasXMTVRS: 'Paras X MTVRS - NFT Drops',
-	NFTDrops: 'NFT Drops',
-	MTVRSIsWorld:
-		'¡MTVRS (www.mtvrs.app) es un mundo de mundos y el hogar de juegos impulsados ​​por blockchain para jugadores, creadores y desarrolladores! MTVRS está diseñando una plataforma para crear experiencias y utilidad en torno a los activos de blockchain.',
-	MTVRFirstNFTDrop:
-		'Este es el primer NFT Drop de MTVRS, "Los dispositivos del arquitecto", un conjunto de coleccionables exclusivos forjados por los arquitectos del metaverso para empoderarlos mientras saltan los mundos infinitos.',
-	RegisterNow: 'Regístrese ahora',
-	FindOutMore: 'Más información',
-	Timeline: 'Linea de Tiempo',
-	HowToRegister: 'Como registarse',
-	HowToRegisterSo:
-		'Cómo registrarse ¡Así que comencemos! Para obtener un lugar en la lista blanca para Paras x MTVRS NFT Drops, complete estas tareas.',
-	ReadDetails: 'Leer detalles',
-	ReadFullInformation: 'Puede leer la información completa en la publicación de Paras',
-	Price: 'Precio',
-	CardSupply: 'Suministro de Tarjeta',
-	pcs: 'piezas',
-	CardAvailable: 'Tarjeta Disponible',
-	SeeDetails: 'Ver Detalles',
+	// none
 }
 const id = {
 	NoPublications: 'Sin Publicaciones',
@@ -553,7 +514,7 @@ const news = {
 	CreateNewCardParas: 'Crear Nueva Tarjeta — Paras',
 	MarketData: 'Datos de Mercado',
 	RecommendedRatio6489: 'Relación recomendada 64 : 89',
-	Maximum16mb: 'Tamaño máximo 16mb',
+	Maximum30MB: 'Tamaño máximo 30MB',
 	OnlyWantCreate: 'si solo quieres crear tarjeta sin vender',
 }
 const newCollection = {
