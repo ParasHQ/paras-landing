@@ -228,6 +228,12 @@ const User = () => {
 							</button>
 						)}
 						<hr className="my-2" />
+						<div
+							className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+							onClick={onClickSwitchAccount}
+						>
+							{localeLn('NavSwitchAccount')}
+						</div>
 						<p
 							onClick={_signOut}
 							className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
