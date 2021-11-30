@@ -46,7 +46,7 @@ const CollectionActivity = ({ activities, fetchData, hasMore }) => {
 
 	const parseType = (creator, price, from, to, type) => {
 		if ((type === 'nft_transfer' && price && from && to) || type === 'resolve_purchase') {
-			return 'Transaction'
+			return 'Sold'
 		} else if (type === 'nft_transfer' && from === null) {
 			return 'Minted'
 		} else if (type === 'nft_transfer' && to === null) {
@@ -105,27 +105,38 @@ const CollectionActivity = ({ activities, fetchData, hasMore }) => {
 						return (
 							<div key={activity._id} className="py-3">
 								<div className="w-full">
-									<div className="flex flex-row items-center w-full cursor-pointer sm:cursor-default md:grid md:grid-cols-7 md:gap-5 lg:gap-10 md:h-19 md:hover:bg-gray-800">
-										<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
-											<div className="flex md:col-span-2 items-center md:cursor-pointer">
-												<div className="w-1/4 bg-blue-900 rounded">
-													{activity?.data?.[0]?.metadata.media && (
-														<img
-															src={parseImgUrl(activity?.data?.[0]?.metadata.media)}
-															className="bg-cover"
-														/>
-													)}
-												</div>
-												<div className="pl-4 overflow-hidden cursor-pointer">
-													<p className="font-semibold">
+									<div
+										className="flex flex-row items-center w-full cursor-pointer sm:cursor-default md:grid md:grid-cols-7 md:gap-5 lg:gap-10 md:h-19 md:hover:bg-gray-800"
+										onClick={() => showDetail(index)}
+									>
+										<div className="flex md:col-span-2 items-center md:cursor-pointer">
+											<div className="w-1/4 bg-blue-900 rounded z-20">
+												{activity?.data?.[0]?.metadata.media && (
+													<Link
+														href={`/token/${activity.contract_id}::${activity.token_series_id}`}
+													>
+														<a>
+															<img
+																src={parseImgUrl(activity?.data?.[0]?.metadata.media)}
+																className="bg-cover"
+															/>
+														</a>
+													</Link>
+												)}
+											</div>
+											<div className="pl-4 overflow-hidden cursor-pointer">
+												<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
+													<a className="font-semibold z-20">
 														{prettyTruncate(activity?.data?.[0]?.metadata.title, 25)}
-													</p>
-													<p className="block md:hidden font-semibold truncate">
+													</a>
+												</Link>
+												<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
+													<p className="w-min md:hidden font-semibold truncate z-20">
 														{formatNearAmount(activity.price ? activity.price : '0')} Ⓝ
 													</p>
-												</div>
+												</Link>
 											</div>
-										</Link>
+										</div>
 										<div
 											className={`${HEADERS[1].className} hidden md:flex md:text-sm lg:text-base font-bold justify-start`}
 										>
@@ -155,10 +166,7 @@ const CollectionActivity = ({ activities, fetchData, hasMore }) => {
 											{timeAgo.format(
 												new Date(activity.issued_at ? activity.issued_at : 1636197684986)
 											)}
-											<button
-												className="relative top-1 items-end md:hidden"
-												onClick={() => showDetail(index)}
-											>
+											<button className="relative top-1 items-end md:hidden">
 												<svg
 													width="10"
 													height="10"
