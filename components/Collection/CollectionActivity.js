@@ -117,7 +117,9 @@ const CollectionActivity = ({ activities, fetchData, hasMore }) => {
 													>
 														<a>
 															<img
-																src={parseImgUrl(activity?.data?.[0]?.metadata.media)}
+																src={parseImgUrl(activity?.data?.[0]?.metadata.media, null, {
+																	width: `200`,
+																})}
 																className="bg-cover"
 															/>
 														</a>
@@ -166,7 +168,7 @@ const CollectionActivity = ({ activities, fetchData, hasMore }) => {
 											{timeAgo.format(
 												new Date(activity.issued_at ? activity.issued_at : 1636197684986)
 											)}
-											<button className="relative top-1 items-end md:hidden">
+											<div className="relative top-1 items-end md:hidden">
 												<svg
 													width="10"
 													height="10"
@@ -179,7 +181,7 @@ const CollectionActivity = ({ activities, fetchData, hasMore }) => {
 														fill="white"
 													/>
 												</svg>
-											</button>
+											</div>
 										</div>
 										<div
 											className={`${HEADERS[4].className} font-thin hidden md:flex md:text-sm lg:text-base justify-start`}
