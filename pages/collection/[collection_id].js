@@ -236,8 +236,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				<div className="mb-10 sm:my-2 flex items-center justify-center">
 					<CollectionStats stats={stats} />
 				</div>
-				<div className="md:ml-8 z-10 flex items-center justify-center">
-					<div className="flex justify-center mt-4">
+				<div className="z-10 flex items-center justify-center relative">
+					<div className="flex justify-center mt-4 relative z-20">
 						<div className="flex mx-4">
 							<div className="px-4 relative" onClick={() => changeTab('items')}>
 								<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Items')}</h4>
@@ -272,16 +272,16 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							<FilterMarket isShowVerified={false} />
 						</div>
 					)}
-				</div>
-				{(router.query.tab === 'items' || router.query.tab === undefined) && (
-					<div className="hidden sm:flex md:ml-8 z-10 items-center justify-end">
-						<div className="flex justify-center mt-4">
-							<div className="flex mx-4">
-								<FilterMarket isShowVerified={false} />
+					{(router.query.tab === 'items' || router.query.tab === undefined) && (
+						<div className="hidden sm:flex md:ml-8 z-10 items-center justify-end right-0 absolute w-full">
+							<div className="flex justify-center mt-4">
+								<div className="flex">
+									<FilterMarket isShowVerified={false} />
+								</div>
 							</div>
 						</div>
-					</div>
-				)}
+					)}
+				</div>
 				<div className="mt-12 px-4">
 					{isFiltering ? (
 						<CardListLoader />
