@@ -566,7 +566,7 @@ const search = {
 const collection = {
 	Items: 'Items',
 	Activity: 'Activity',
-	TotalCards: 'Total Cards',
+	TotalMinted: 'Total Minted',
 	TotalOwners: 'Total Owners',
 	FloorPrice: 'Floor Price',
 	AveragePrice: 'Average Price',
