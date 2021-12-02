@@ -24,6 +24,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const router = useRouter()
 	const { localeLn } = useIntl()
 
+	const [attributes, setAttributes] = useState([])
 	const [tokens, setTokens] = useState([])
 	const [page, setPage] = useState(0)
 	const [activityPage, setActivityPage] = useState(0)
@@ -49,9 +50,17 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			},
 		})
 
+		const attributes = await axios(`${process.env.V2_API_URL}/collection-attributes`, {
+			params: {
+				collection_id: collectionId,
+			},
+		})
+
+		const newAttributes = await attributes.data.data.results
 		const newStat = await stat.data.data.results
 		const newData = await res.data.data
 		const newTokens = [...tokens, ...newData.results]
+		setAttributes(Array(newAttributes)[0])
 		setStats(newStat)
 		setTokens(newTokens)
 		setPage(page + 1)
@@ -269,14 +278,14 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					</div>
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
 						<div className="flex sm:hidden">
-							<FilterMarket isShowVerified={false} />
+							<FilterMarket isShowVerified={false} attributes={attributes} />
 						</div>
 					)}
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
 						<div className="hidden sm:flex md:ml-8 z-10 items-center justify-end right-0 absolute w-full">
 							<div className="flex justify-center mt-4">
 								<div className="flex">
-									<FilterMarket isShowVerified={false} />
+									<FilterMarket isShowVerified={false} attributes={attributes} />
 								</div>
 							</div>
 						</div>
