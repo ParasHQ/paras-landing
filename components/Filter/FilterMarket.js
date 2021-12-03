@@ -1,13 +1,11 @@
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
-import AttributeList from './AttributeList'
 
-const FilterMarket = ({ isShowVerified = true, attributes }) => {
+const FilterMarket = ({ isShowVerified = true }) => {
 	const filterModalRef = useRef()
 	const router = useRouter()
 
-	const [attributeIndex, setAttributeIndex] = useState([])
 	const [showFilterModal, setShowFilterModal] = useState(false)
 	const [sortBy, setSortBy] = useState(router.query.sort || filter[0].key)
 	const [minPrice, setMinPrice] = useState(router.query.pmin || '')
@@ -157,12 +155,6 @@ const FilterMarket = ({ isShowVerified = true, attributes }) => {
 										setIsVerified(!isVerified)
 									}}
 								/>
-							</div>
-						)}
-						{attributes && (
-							<div className="mt-4">
-								<h1 className="text-white font-semibold text-xl mt-2">{localeLn('Attributes')}</h1>
-								<AttributeList attributes={attributes} />
 							</div>
 						)}
 						<button
