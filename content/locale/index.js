@@ -1,5 +1,6 @@
 export * from './en'
 export * from './zh'
+export * from './ru'
 /* export * from './fr'
 export * from './ru'
 export * from './ko'
@@ -43,6 +44,8 @@ function getLocale(lang) {
 			return 'zh'
 		case 'zh-cn':
 			return 'zh'
+		case 'ru':
+			return 'ru'
 		default:
 			return 'en'
 	}
