@@ -15,6 +15,7 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useIntl } from 'hooks/useIntl'
 import CollectionStats from 'components/Collection/CollectionStats'
 import CollectionActivity from 'components/Collection/CollectionActivity'
+import FilterAttribute from 'components/Filter/FilterAttribute'
 
 const LIMIT = 8
 const LIMIT_ACTIVITY = 20
@@ -84,7 +85,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	useEffect(() => {
 		updateFilter(router.query)
-	}, [router.query.sort, router.query.pmin, router.query.pmax])
+	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.attributes])
 
 	useEffect(() => {
 		if (router.query.tab === 'activity') {
@@ -101,7 +102,24 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const tokensParams = (_page = 0, query) => {
-		const params = {
+		let params = {}
+		if (query.attributes) {
+			const attributesQuery = JSON.parse(query.attributes)
+			attributesQuery.map((item) => {
+				const typeAttribute = Object.keys(item)[0]
+				const type = `attributes[${Object.keys(item)[0]}]`
+				const value = item[typeAttribute]
+
+				if (params[type]) {
+					params[type] += `||${value}`
+				} else {
+					params[type] = value
+				}
+			})
+		}
+
+		params = {
+			...params,
 			collection_id: collectionId,
 			exclude_total_burn: true,
 			__skip: _page * LIMIT,
@@ -245,6 +263,19 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				<div className="mb-10 sm:my-2 flex items-center justify-center">
 					<CollectionStats stats={stats} />
 				</div>
+				<div>
+					{router.query.attributes &&
+						JSON.parse(router.query.attributes).map((type, index) => {
+							return (
+								<div key={index}>
+									<button className="flex flex-row justify-end items-center text-white rounded-md px-3 py-3 mr-2 border-2 border-gray-800">
+										{Object.values(type)[0]}
+										<p className="ml-3">X</p>
+									</button>
+								</div>
+							)
+						})}
+				</div>
 				<div className="z-10 flex items-center justify-center relative">
 					<div className="flex justify-center mt-4 relative z-20">
 						<div className="flex mx-4">
@@ -278,14 +309,16 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					</div>
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
 						<div className="flex sm:hidden">
-							<FilterMarket isShowVerified={false} attributes={attributes} />
+							<FilterAttribute attributes={attributes} />
+							<FilterMarket isShowVerified={false} />
 						</div>
 					)}
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
 						<div className="hidden sm:flex md:ml-8 z-10 items-center justify-end right-0 absolute w-full">
 							<div className="flex justify-center mt-4">
 								<div className="flex">
-									<FilterMarket isShowVerified={false} attributes={attributes} />
+									<FilterAttribute attributes={attributes} />
+									<FilterMarket isShowVerified={false} />
 								</div>
 							</div>
 						</div>
