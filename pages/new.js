@@ -256,7 +256,11 @@ const NewPage = () => {
 		}, 0)
 
 		if (totalRoyalties > 90) {
-			console.log('skip')
+			setShowAlertErr('Maximum royalty is 90%')
+			return
+		} else if (data.royalties?.length > 10) {
+			setShowAlertErr('Maximum 10 accounts for royalty split')
+			return
 		} else {
 			const newFormInput = {
 				...formInput,
