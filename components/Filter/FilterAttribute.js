@@ -39,28 +39,35 @@ const FilterAttribute = ({ attributes }) => {
 			</div>
 			{showFilterModal && (
 				<div
-					className="absolute max-w-full z-20 mt-2 px-4 right-0"
+					className="absolute max-w-xs md:max-w-full mr-4 sm:mr-0 z-20 mt-2 px-4 right-0 bg-dark-primary-2 rounded-md"
 					style={{
 						width: `24rem`,
 					}}
 				>
-					<div className="bg-dark-primary-2 rounded-md p-4">
-						<h1 className="text-white font-semibold text-xl">{localeLn('Attributes')}</h1>
-						<div>
-							{Object.keys(attributes).map((attribute, index) => (
-								<AttributeItem
-									key={index}
-									attributeFilter={attributeFilter}
-									setAttributeFilter={setAttributeFilter}
-									attribute={attribute}
-									attributes={attributes}
-									router={router}
-								/>
-							))}
+					<Scrollbars
+						autoHeight
+						autoHeightMax={`30rem`}
+						renderView={(props) => <div {...props} id="scrollableDiv" />}
+					>
+						<div className=" p-4">
+							<h1 className="text-white font-semibold text-xl">{localeLn('Attributes')}</h1>
+							<div>
+								{Object.keys(attributes).map((attribute, index) => (
+									<AttributeItem
+										key={index}
+										attributeFilter={attributeFilter}
+										setAttributeFilter={setAttributeFilter}
+										attribute={attribute}
+										attributes={attributes}
+									/>
+								))}
+							</div>
 						</div>
+					</Scrollbars>
+					<div className="py-4">
 						<button
 							onClick={onClickApply}
-							className="w-full outline-none mt-4 rounded-md bg-transparent text-sm font-semibold py-2 bg-primary text-gray-100"
+							className="w-full outline-none rounded-md bg-transparent text-sm font-semibold py-2 bg-primary text-gray-100"
 						>
 							{localeLn('Apply')}
 						</button>
@@ -109,34 +116,28 @@ const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attribu
 					<path d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z" fill="white" />
 				</svg>
 			</button>
-			<Scrollbars
-				autoHeight
-				autoHeightMax={`24rem`}
-				renderView={(props) => <div {...props} id="scrollableDiv" />}
-			>
-				{isOpen && (
-					<div className="max-w-sm mx-auto p-2 pl-5 mb-3 border-2 border-gray-800 rounded-md">
-						{Object.keys(attributes[attribute]).map((value, index) => {
-							return (
-								<div key={index}>
-									<label className="inline-flex items-center">
-										<input
-											className="text-white w-4 h-4 mr-2 focus:ring-indigo-400 focus:ring-opacity-25 border border-gray-300 rounded"
-											type="checkbox"
-											onChange={() => {
-												addAttribute({ [attribute]: value })
-											}}
-											checked={checkIfObjectExist({ [attribute]: value })}
-										/>
-										<p className="text-white text-sm">{value}</p>
-									</label>
-									<br />
-								</div>
-							)
-						})}
-					</div>
-				)}
-			</Scrollbars>
+			{isOpen && (
+				<div className="max-w-sm mx-auto p-2 pl-5 mb-3 border-2 border-gray-800 rounded-md">
+					{Object.keys(attributes[attribute]).map((value, index) => {
+						return (
+							<div key={index}>
+								<label className="inline-flex items-center">
+									<input
+										className="text-white w-4 h-4 mr-2 focus:ring-indigo-400 focus:ring-opacity-25 border border-gray-300 rounded cursor-pointer"
+										type="checkbox"
+										onChange={() => {
+											addAttribute({ [attribute]: value })
+										}}
+										checked={checkIfObjectExist({ [attribute]: value })}
+									/>
+									<p className="font-thin text-white text-sm py-1 md:py-2">{value}</p>
+								</label>
+								<br />
+							</div>
+						)
+					})}
+				</div>
+			)}
 		</div>
 	)
 }

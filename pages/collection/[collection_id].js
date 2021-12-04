@@ -187,6 +187,17 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		})
 	}
 
+	const removeAttributeFilter = (index) => {
+		const url = JSON.parse(router.query.attributes)
+		url.splice(index, 1)
+		router.push({
+			query: {
+				...router.query,
+				attributes: JSON.stringify(url),
+			},
+		})
+	}
+
 	return (
 		<div className="min-h-screen bg-black">
 			<div
@@ -263,20 +274,23 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				<div className="mb-10 sm:my-2 flex items-center justify-center">
 					<CollectionStats stats={stats} />
 				</div>
-				<div>
-					{router.query.attributes &&
-						JSON.parse(router.query.attributes).map((type, index) => {
-							return (
-								<div key={index}>
-									<button className="flex flex-row justify-end items-center text-white rounded-md px-3 py-3 mr-2 border-2 border-gray-800">
-										{Object.values(type)[0]}
-										<p className="ml-3">X</p>
-									</button>
-								</div>
-							)
-						})}
-				</div>
 				<div className="z-10 flex items-center justify-center relative">
+					<div className="absolute flex flex-row justify-center left-0 ml-4 my-5 top-10 md:absolute md:flex md:flex-wrap md:mt-5 md:z-20">
+						{router.query.attributes &&
+							JSON.parse(router.query.attributes).map((type, index) => {
+								return (
+									<div key={index}>
+										<button
+											onClick={() => removeAttributeFilter(index)}
+											className="flex-grow rounded-md px-2 py-2 mr-2 my-1 border-2 border-gray-800 bg-blue-400 bg-opacity-10 text-sm cursor-pointer"
+										>
+											<span className=" text-gray-200">{Object.values(type)[0]}</span>{' '}
+											<span className="font-extralight text-gray-600 text-lg ml-1">X</span>
+										</button>
+									</div>
+								)
+							})}
+					</div>
 					<div className="flex justify-center mt-4 relative z-20">
 						<div className="flex mx-4">
 							<div className="px-4 relative" onClick={() => changeTab('items')}>
