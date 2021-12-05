@@ -275,22 +275,6 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					<CollectionStats stats={stats} />
 				</div>
 				<div className="z-10 flex items-center justify-center relative">
-					<div className="absolute flex flex-row justify-center left-0 ml-4 my-5 top-10 md:absolute md:flex md:flex-wrap md:mt-5 md:z-20">
-						{router.query.attributes &&
-							JSON.parse(router.query.attributes).map((type, index) => {
-								return (
-									<div key={index}>
-										<button
-											onClick={() => removeAttributeFilter(index)}
-											className="flex-grow rounded-md px-2 py-2 mr-2 my-1 border-2 border-gray-800 bg-blue-400 bg-opacity-10 text-sm cursor-pointer"
-										>
-											<span className=" text-gray-200">{Object.values(type)[0]}</span>{' '}
-											<span className="font-extralight text-gray-600 text-lg ml-1">X</span>
-										</button>
-									</div>
-								)
-							})}
-					</div>
 					<div className="flex justify-center mt-4 relative z-20">
 						<div className="flex mx-4">
 							<div className="px-4 relative" onClick={() => changeTab('items')}>
@@ -337,6 +321,24 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							</div>
 						</div>
 					)}
+				</div>
+				<div className="relative flex flex-row flex-wrap left-0 ml-5 mt-5 ">
+					{router.query.attributes &&
+						JSON.parse(router.query.attributes).map((type, index) => {
+							return (
+								<div key={index}>
+									<button
+										onClick={() => removeAttributeFilter(index)}
+										className="flex-grow rounded-md px-2 py-2 mr-2 my-1 border-2 border-gray-800 bg-blue-400 bg-opacity-10 text-sm cursor-pointer group hover:border-gray-700"
+									>
+										<span className=" text-gray-200">{Object.values(type)[0]}</span>{' '}
+										<span className="font-extralight text-gray-600 text-lg ml-1 group-hover:text-gray-500">
+											X
+										</span>
+									</button>
+								</div>
+							)
+						})}
 				</div>
 				<div className="mt-12 px-4">
 					{isFiltering ? (
