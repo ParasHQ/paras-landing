@@ -20,7 +20,6 @@ const Card = ({
 	const [rotate, setRotate] = useState(initialRotate)
 	const [isShowFront, setIsShowFront] = useState(true)
 
-	let cardTimeout
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
@@ -61,12 +60,8 @@ const Card = ({
 		})
 	}
 
-	const handleMouseEnter = () => {
-		clearTimeout(cardTimeout)
-	}
-
 	const handleMouseLeave = () => {
-		cardTimeout = setTimeout(() => {
+		setTimeout(() => {
 			setRotate(initialRotate)
 		}, 500)
 	}
@@ -79,11 +74,7 @@ const Card = ({
 
 	const calculateRoyalty = () => {
 		if (token.royalty) {
-			return (
-				Object.values(token.royalty).reduce((a, b) => {
-					return parseInt(a) + parseInt(b)
-				}, 0) / 100
-			)
+			return Object.values(token.royalty).reduce((a, b) => parseInt(a) + parseInt(b), 0) / 100
 		}
 	}
 
@@ -112,7 +103,6 @@ const Card = ({
 					onClick={onClick}
 					className="card-wrap"
 					onMouseMove={handleMouseMove}
-					onMouseEnter={handleMouseEnter}
 					onMouseLeave={handleMouseLeave}
 					ref={cardRef}
 					style={{
@@ -184,7 +174,6 @@ const Card = ({
 					<div
 						className={`card-wrap`}
 						onMouseMove={handleMouseMove}
-						onMouseEnter={handleMouseEnter}
 						onMouseLeave={handleMouseLeave}
 						ref={cardRef}
 						style={{ transform: `perspective(${dimension.height * 4}px)` }}
