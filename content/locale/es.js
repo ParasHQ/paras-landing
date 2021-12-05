@@ -425,7 +425,7 @@ const faq = {
 		'Puedes conseguir NEAR de algún exchange como <a href="https://binance.com" target="_blank">Binance</a>. Cuando obtengas un poco de NEAR del exchange, puedes transferirlo a tu <a target="_blank" href="https://wallet.near.org">NEAR wallet</a> y estarás listo para comenzar.',
 	HowDoBecomeArtist: '¿Cómo me convierto en un Artista en Paras?',
 	CanStartApplying:
-		'Puede comenzar aplicando como artista <a target="_blank" href="https://forms.gle/QsZHqa2MKXpjckj98">aquí</a>. Nuestro equipo revisará su envío y le informaremos el resultado por correo electrónico.',
+		'Puede comenzar aplicando como artista <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLScqkh-sJJREv9UOtIjML5J6CdjPftJ0ACICPKxzRrAsoAuzJw/viewform">aquí</a>. Nuestro equipo revisará su envío y le informaremos el resultado por correo electrónico.',
 	HowDoMakeCard: '¿Cómo hago una tarjeta de arte digital?',
 	ADigitalCardOnParas:
 		'Una tarjeta de arte digital en Paras sigue el formato de las tarjetas coleccionables del mundo real que están en vertical con una proporción de 64: 89. El tamaño máximo de archivo es de 16 MB. Actualmente, Paras solo admite formatos de imagen como png, jpg, jpeg, gifs, etc. No se admiten videos.',
