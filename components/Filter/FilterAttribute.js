@@ -1,6 +1,6 @@
 import Scrollbars from 'react-custom-scrollbars'
 import { useRouter } from 'next/router'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 
 const FilterAttribute = ({ attributes }) => {
@@ -10,6 +10,10 @@ const FilterAttribute = ({ attributes }) => {
 	const { localeLn } = useIntl()
 
 	const [showFilterModal, setShowFilterModal] = useState(false)
+
+	useEffect(() => {
+		router.query.attributes && setAttributeFilter(JSON.parse(router.query.attributes))
+	}, [router.query.attributes])
 
 	const onClickApply = () => {
 		router.push({
@@ -39,9 +43,9 @@ const FilterAttribute = ({ attributes }) => {
 			</div>
 			{showFilterModal && (
 				<div
-					className="absolute max-w-xs md:max-w-full mr-4 sm:mr-0 z-20 mt-2 px-4 right-0 bg-dark-primary-2 rounded-md"
+					className="absolute max-w-xs md:max-w-full mr-4 sm:mr-4 z-20 mt-2 px-4 right-0 bg-dark-primary-2 rounded-md"
 					style={{
-						width: `24rem`,
+						width: `22rem`,
 					}}
 				>
 					<Scrollbars
@@ -59,6 +63,7 @@ const FilterAttribute = ({ attributes }) => {
 										setAttributeFilter={setAttributeFilter}
 										attribute={attribute}
 										attributes={attributes}
+										router={router}
 									/>
 								))}
 							</div>
@@ -80,7 +85,7 @@ const FilterAttribute = ({ attributes }) => {
 
 export default FilterAttribute
 
-const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attributes }) => {
+const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attributes, router }) => {
 	const [isOpen, setIsOpen] = useState(false)
 
 	const addAttribute = (addedAttribute) => {
@@ -95,7 +100,11 @@ const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attribu
 	}
 
 	const checkIfObjectExist = (obj) => {
-		return attributeFilter.some((attr) => JSON.stringify(attr) === JSON.stringify(obj))
+		return (
+			attributeFilter.some((attr) => JSON.stringify(attr) === JSON.stringify(obj)) ||
+			(router.query.attributes &&
+				JSON.stringify(router.query.attributes).replace(/\\/g, '').includes(JSON.stringify(obj)))
+		)
 	}
 
 	return (
@@ -117,11 +126,14 @@ const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attribu
 				</svg>
 			</button>
 			{isOpen && (
-				<div className="max-w-sm mx-auto p-2 pl-5 mb-3 border-2 border-gray-800 rounded-md">
+				<div className="max-w-sm mx-auto p-2 mb-3 border-2 border-gray-800 rounded-md">
 					{Object.keys(attributes[attribute]).map((value, index) => {
 						return (
-							<div key={index}>
-								<label className="inline-flex items-center">
+							<div
+								className="group rounded-md pl-3 pr-3 hover:bg-gray-600 hover:bg-opacity-10"
+								key={index}
+							>
+								<label className="inline-flex items-center w-full cursor-pointer">
 									<input
 										className="text-white w-4 h-4 mr-2 focus:ring-indigo-400 focus:ring-opacity-25 border border-gray-300 rounded cursor-pointer"
 										type="checkbox"
@@ -131,6 +143,9 @@ const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attribu
 										checked={checkIfObjectExist({ [attribute]: value })}
 									/>
 									<p className="font-thin text-white text-sm py-1 md:py-2">{value}</p>
+									<p className="font-thin text-right flex-grow text-gray-500 text-sm py-1 md:py-2">
+										{attributes[attribute][value]}
+									</p>
 								</label>
 								<br />
 							</div>
