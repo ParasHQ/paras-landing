@@ -138,7 +138,7 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://paras-cdn.imgix.net/bafybeidoerucqfzyazvyfm5axjixs6vie7ts2myru7g5mu2ub7tlvixpqq"
+					content="https://ipfs.io/ipfs/bafybeidy2nrxi4zeva7wscjtcw7itxzffc3gw5xfl6hyjxoctbj6zes4b4"
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras 1st Anniversary - NFT Drops" />
@@ -150,7 +150,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://paras-cdn.imgix.net/bafybeidoerucqfzyazvyfm5axjixs6vie7ts2myru7g5mu2ub7tlvixpqq"
+					content="https://ipfs.io/ipfs/bafybeidy2nrxi4zeva7wscjtcw7itxzffc3gw5xfl6hyjxoctbj6zes4b4"
 				/>
 			</Head>
 			<Nav />
@@ -206,7 +206,7 @@ export default function Drops() {
 						<h1 className="text-white font-bold text-6xl mt-4 mb-2">{localeLn('NFTDrops')}</h1>
 						<img
 							className="m-auto"
-							src="https://paras-cdn.imgix.net/bafybeidoerucqfzyazvyfm5axjixs6vie7ts2myru7g5mu2ub7tlvixpqq"
+							src="https://ipfs.io/ipfs/bafybeidy2nrxi4zeva7wscjtcw7itxzffc3gw5xfl6hyjxoctbj6zes4b4"
 						/>
 						{/* <div className="text-center flex justify-center">
 							<video width="320" height="180" autoPlay loop muted>

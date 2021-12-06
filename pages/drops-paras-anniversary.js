@@ -32,7 +32,7 @@ const Drops = () => {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://paras-cdn.imgix.net/bafybeidoerucqfzyazvyfm5axjixs6vie7ts2myru7g5mu2ub7tlvixpqq"
+					content="https://ipfs.io/ipfs/bafybeidy2nrxi4zeva7wscjtcw7itxzffc3gw5xfl6hyjxoctbj6zes4b4"
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Paras 1st Anniversary - NFT Drops" />
@@ -44,7 +44,7 @@ const Drops = () => {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://paras-cdn.imgix.net/bafybeidoerucqfzyazvyfm5axjixs6vie7ts2myru7g5mu2ub7tlvixpqq"
+					content="https://ipfs.io/ipfs/bafybeidy2nrxi4zeva7wscjtcw7itxzffc3gw5xfl6hyjxoctbj6zes4b4"
 				/>
 			</Head>
 			<Nav />
