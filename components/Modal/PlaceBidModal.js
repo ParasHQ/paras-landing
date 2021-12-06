@@ -15,11 +15,14 @@ import { IconX } from 'components/Icons'
 import { useEffect, useState } from 'react'
 
 const HARD_CODE_TOKEN = {
-	52026: '10',
-	52029: '5',
-	52032: '3',
-	52036: '2',
-	52038: '2',
+	62036: '10',
+	61752: '10',
+	61776: '15',
+	61880: '10',
+	61601: '13',
+	61811: '15',
+	61736: '10',
+	61817: '10',
 }
 
 const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuantity }) => {

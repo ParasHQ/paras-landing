@@ -17,12 +17,12 @@ const Drops = () => {
 			}}
 		>
 			<Head>
-				<title>Paras X Degens Syndicate - NFT Drops</title>
+				<title>Paras 1st Anniversary - NFT Drops</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
-				<meta name="twitter:title" content="Paras X Degens Syndicate - NFT Drops" />
+				<meta name="twitter:title" content="Paras 1st Anniversary - NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -32,11 +32,11 @@ const Drops = () => {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://paras-cdn.imgix.net/bafybeigmp4oakbzngzf6sbrogylzmbux6s56rlhjaacelapoqak6xg5cuq"
+					content="https://paras-cdn.imgix.net/bafybeidoerucqfzyazvyfm5axjixs6vie7ts2myru7g5mu2ub7tlvixpqq"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Paras X Degens Syndicate - NFT Drops" />
-				<meta property="og:site_name" content="Paras X Degens Syndicate - NFT Drops" />
+				<meta property="og:title" content="Paras 1st Anniversary - NFT Drops" />
+				<meta property="og:site_name" content="Paras 1st Anniversary - NFT Drops" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -44,7 +44,7 @@ const Drops = () => {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://paras-cdn.imgix.net/bafybeigmp4oakbzngzf6sbrogylzmbux6s56rlhjaacelapoqak6xg5cuq"
+					content="https://paras-cdn.imgix.net/bafybeidoerucqfzyazvyfm5axjixs6vie7ts2myru7g5mu2ub7tlvixpqq"
 				/>
 			</Head>
 			<Nav />

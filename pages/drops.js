@@ -16,49 +16,44 @@ import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
 const specialBidTokens = [
 	{
-		tokenId: 52026,
-		image:
-			'https://paras-cdn.imgix.net/bafybeigff5tuntfozwjsmmtgvojfe2xp5eadnliu6kroxzbqipwb5764xu?w=800',
-		title: `Ping & Pong`,
+		tokenId: 62036,
 		supply: `1`,
-		blurhash: 'UsP?2hjZ_Na1xbfQM{ay%gjGRPWUxuaeM{oM',
 		price: 10,
 	},
 	{
-		tokenId: 52029,
-		image:
-			'https://paras-cdn.imgix.net/bafybeibnnlcoq7s4jw6cbautfokjcz2o3zwgtz4pssiuh55phmh3h7xjwq?w=800',
-		title: `Linsey`,
+		tokenId: 61752,
 		supply: `1`,
-		blurhash: 'UlO{XO_3?bIU~WIUM{V@l9VYRP$%sns:RPX9',
-		price: 5,
+		price: 10,
 	},
 	{
-		tokenId: 52032,
-		image:
-			'https://paras-cdn.imgix.net/bafybeigcx2mjzj2cgddfmkxxzjrzihw2cng335etipdap62e45vvhx42ii?w=800',
-		title: `Leonard`,
+		tokenId: 61776,
 		supply: `1`,
-		blurhash: 'UvO{,U?^WBI9xuRPayaz%gIToLtRoeV[jZay',
-		price: 3,
+		price: 15,
 	},
 	{
-		tokenId: 52036,
-		image:
-			'https://paras-cdn.imgix.net/bafybeicehwngiwi6j6odvg7b5fgj7mdekcpcr6zmwb27zg42w2pu6sv5we?w=800',
-		title: `Shark`,
+		tokenId: 61880,
 		supply: `1`,
-		blurhash: 'UiM@s3_Nx^EMx^V?M{f+%gM{M{xtxuRkkCRP',
-		price: 2,
+		price: 10,
 	},
 	{
-		tokenId: 52038,
-		image:
-			'https://paras-cdn.imgix.net/bafybeidcgqvh7pr2cqiy25ew5wqy3ogldklyzapcrgguxixmqjfx7aaeki?w=800',
-		title: `Mr. Fluffy`,
+		tokenId: 61601,
 		supply: `1`,
-		blurhash: 'UEQJcd_NIUIT?bt89FRj-=4m%Mt7RjIAx]xu',
-		price: 2,
+		price: 13,
+	},
+	{
+		tokenId: 61811,
+		supply: `1`,
+		price: 15,
+	},
+	{
+		tokenId: 61736,
+		supply: `1`,
+		price: 10,
+	},
+	{
+		tokenId: 61817,
+		supply: `1`,
+		price: 10,
 	},
 ]
 
@@ -108,12 +103,12 @@ export default function Drops() {
 	const { localeLn } = useIntl()
 	const timeline = [
 		{
-			date: `Nov 24th`,
-			note: [`NFT drop is live by offer`, `Drops will start on Nov 24th at 09.00 UTC`],
+			date: `Dec 6th`,
+			note: [`NFT drop is live by offer`, `Drops will start on Dec 6th at 00.00 UTC`],
 		},
 		{
-			date: 'Dec 1st',
-			note: [`NFT drop will end on Dec 1st at 23.59 UTC`],
+			date: 'Dec 10th',
+			note: [`NFT drop will end on Dec 10th at 23.59 UTC`],
 		},
 	]
 
@@ -128,12 +123,12 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>Paras X Degens Syndicate - NFT Drops</title>
+				<title>Paras 1st Anniversary - NFT Drops</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
-				<meta name="twitter:title" content="Paras X Degens Syndicate - NFT Drops" />
+				<meta name="twitter:title" content="Paras 1st Anniversary - NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -143,11 +138,11 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://paras-cdn.imgix.net/bafybeigmp4oakbzngzf6sbrogylzmbux6s56rlhjaacelapoqak6xg5cuq"
+					content="https://paras-cdn.imgix.net/bafybeidoerucqfzyazvyfm5axjixs6vie7ts2myru7g5mu2ub7tlvixpqq"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Paras X Degens Syndicate - NFT Drops" />
-				<meta property="og:site_name" content="Paras X Degens Syndicate - NFT Drops" />
+				<meta property="og:title" content="Paras 1st Anniversary - NFT Drops" />
+				<meta property="og:site_name" content="Paras 1st Anniversary - NFT Drops" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -155,7 +150,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://paras-cdn.imgix.net/bafybeigmp4oakbzngzf6sbrogylzmbux6s56rlhjaacelapoqak6xg5cuq"
+					content="https://paras-cdn.imgix.net/bafybeidoerucqfzyazvyfm5axjixs6vie7ts2myru7g5mu2ub7tlvixpqq"
 				/>
 			</Head>
 			<Nav />
@@ -205,13 +200,13 @@ export default function Drops() {
 									/>
 								</svg>
 							</div>
-							<p className="text-gray-100 ml-2 font-bold text-2xl">x</p>
-							<p className="text-gray-100 ml-2 font-bold text-2xl">{'Degens Syndicate'}</p>
+							{/* <p className="text-gray-100 ml-2 font-bold text-2xl">x</p> */}
+							<p className="text-gray-100 ml-2 font-bold text-2xl">{'1st Anniversary'}</p>
 						</div>
 						<h1 className="text-white font-bold text-6xl mt-4 mb-2">{localeLn('NFTDrops')}</h1>
 						<img
-							className="md:w-1/2 m-auto"
-							src="https://paras-cdn.imgix.net/bafybeigmp4oakbzngzf6sbrogylzmbux6s56rlhjaacelapoqak6xg5cuq"
+							className="m-auto"
+							src="https://paras-cdn.imgix.net/bafybeidoerucqfzyazvyfm5axjixs6vie7ts2myru7g5mu2ub7tlvixpqq"
 						/>
 						{/* <div className="text-center flex justify-center">
 							<video width="320" height="180" autoPlay loop muted>
@@ -223,32 +218,24 @@ export default function Drops() {
 						</div> */}
 						<div className="max-w-xl m-auto">
 							<p className="text-gray-200 mt-4">
-								<b>Love.</b> A feeling that every person has felt at least once.
-							</p>
-							<p className="text-gray-200">
-								<b>Care.</b> What we value in people and give it to our loved ones.
-							</p>
-							<p className="text-gray-200">
-								<b>Animals.</b> Lovely creatures, without which many of us cannot imagine our life.
+								December 7th becomes a momentous day for Paras. One year ago, our platform
+								officially launched as an NFT marketplace. Since then, we have only kept thriving —
+								both on the number of volumes and transactions — and improving for the community.
 							</p>
 							<p className="text-gray-200 mt-4">
-								We put all these three words into our NFTs so that our four-legged friends could
-								live this life well-fed and warm. The first NTF project from Degens Syndicate x
-								Paras: Love, Care & Animals.
+								We want to thank our community who supportively believes in us. Paras will not be as
+								we are now without the help of our creators, collectors, token holders, and backers
+								- hence we are proudly present: "Paras 1st Anniversary: 1 of 1 NFT Auction".
 							</p>
-							<p className="text-gray-200 mt-4"></p>
 							<p className="text-gray-200 mt-4">
-								By buying NTF from the Love, Care & Animals pack, you support our project and
-								physically help the animals from the animal shelter with our hands! After the end of
-								the drop, we will go to the animal shelter and help with animal feed, cleaning the
-								enclosures, etc. More details can be found{' '}
+								Check full information about the event{' '}
 								<span>
 									<a
 										target="blank"
-										href="https://paras.id/publication/degens-syndicate-x-paras-love-care-animals-6197fd530ff2505b731a5a7a"
+										href="https://paras.id/publication/paras-1st-anniversary-1-of-1-nft-auction-61adc0a1eb19987b01ce7eef"
 										className="text-white mt-4 font-bold underline"
 									>
-										HERE
+										here
 									</a>{' '}
 								</span>
 							</p>
@@ -256,25 +243,25 @@ export default function Drops() {
 								<div className="text-white font-bold mb-2">Limited time only</div>
 								<Countdown
 									className="text-white text-2xl font-bold"
-									date={1638363599000}
+									date={1639180799000}
 									renderer={({ formatted }) => (
 										<div className="text-white flex justify-center items-center font-bold">
-											<div className="w-20">
+											<div className="w-1/4 md:w-20">
 												<div>Day</div>
 												<div className="text-4xl">{formatted.days}</div>
 											</div>
 											<div>:</div>
-											<div className="w-20">
+											<div className="w-1/4 md:w-20">
 												<div>Hour</div>
 												<div className="text-4xl">{formatted.hours}</div>
 											</div>
 											<div>:</div>
-											<div className="w-20">
+											<div className="w-1/4 md:w-20">
 												<div>Min</div>
 												<div className="text-4xl">{formatted.minutes}</div>
 											</div>
 											<div>:</div>
-											<div className="w-20">
+											<div className="w-1/4 md:w-20">
 												<div>Sec</div>
 												<div className="text-4xl">{formatted.seconds}</div>
 											</div>
@@ -600,7 +587,6 @@ const SpecialCard = ({
 const SpecialCardBid = ({
 	tokenId,
 	onClick,
-	blurhash,
 	imgUrl,
 	titleCard,
 	cardSupplyText,
@@ -672,29 +658,31 @@ const SpecialCardBid = ({
 			<ReactTooltip effect={'solid'} className="bg-dark-primary-1 text-white px-2 py-4 max-w-sm" />
 			<div className="absolute p-4 inset-0 m-auto opacity-50">
 				<div className="overflow-hidden rounded-xl w-full h-full opacity-50">
-					<Blurhash
-						hash={blurhash}
-						width={`100%`}
-						height={`100%`}
-						resolutionX={32}
-						resolutionY={32}
-						punch={1}
-					/>
+					{localToken && (
+						<Blurhash
+							hash={localToken?.metadata.blurhash || 'U47e#,HX%kmoUuvZyEn3L#qERJgH4Tu1Dip0'}
+							width={`100%`}
+							height={`100%`}
+							resolutionX={32}
+							resolutionY={32}
+							punch={1}
+						/>
+					)}
 				</div>
 			</div>
 			<div className="relative py-8 m-auto">
 				<div className="static m-auto">
 					<div className="">
-						<h1 className="text-white mb-8 text-2xl font-bold text-center">
-							{localToken?.metadata.name || titleCard}
+						<h1 className="text-white mb-8 text-2xl font-bold text-center truncate px-8">
+							{localToken?.metadata.title || titleCard}
 						</h1>
 						<div className="m-8">
 							<div className="w-full m-auto">
 								<Card
 									special
 									imgUrl={localToken ? parseImgUrl(localToken.metadata.media) : parseImgUrl(imgUrl)}
-									imgBlur={blurhash}
-									disableFlip
+									imgBlur={localToken?.metadata.blurhash}
+									flippable
 									token={{
 										name: localToken?.metadata.name,
 										collection: localToken?.metadata.collection,
@@ -703,6 +691,7 @@ const SpecialCardBid = ({
 										copies: localToken?.copies || cardSupplyText,
 										tokenId: localToken?.tokenId,
 										createdAt: localToken?.createdAt,
+										royalty: localToken?.royalty,
 									}}
 									initialRotate={{
 										x: 0,
