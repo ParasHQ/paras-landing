@@ -80,7 +80,7 @@ const Card = ({
 
 	return (
 		<div
-			className="relative select-none m-auto"
+			className="relative select-none m-auto outline-none"
 			onClick={_flipCard}
 			style={{
 				transition: `transform .6s .1s`,
@@ -182,67 +182,46 @@ const Card = ({
 							className="card w-full h-full text-white"
 							style={{ transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)` }}
 						>
-							<div className="bg-white opacity-5 absolute inset-0" />
+							<div className="bg-white opacity-10 absolute inset-0">
+								<Media
+									className="mx-auto h-full object-cover relative z-10 img-hor-vert"
+									url={imgUrl}
+									videoControls={false}
+									videoMuted={true}
+									videoLoop={true}
+								/>
+							</div>
 							<div className="card-bg relative z-10">
 								<div
 									className="absolute inset-0 rounded-md z-20"
 									style={{ fontSize: `${dimension.width / 14}px`, padding: `.3em` }}
 								>
 									<div className="h-full border-gray-400 border-2">
-										<div
-											className="border-b-2 border-gray-400 flex items-center"
-											style={{ height: `15%` }}
-										>
-											<div className="px-2 overflow-hidden">
-												<h4 className="truncate" style={{ fontSize: `0.75em` }}>
-													{token.title}
+										<div className="py-2 overflow-hidden" style={{ height: '90%' }}>
+											<div className="mb-2">
+												<h4 className="px-2 truncate" style={{ fontSize: `0.75em` }}>
+													Description
 												</h4>
-												<h4 className="truncate" style={{ fontSize: `0.5em` }}>
-													{token.collection}
+												<h4 className="px-2 whitespace-pre-line" style={{ fontSize: `0.5em` }}>
+													{token.description?.replace(/\n\s*\n\s*\n/g, '\n\n')}
 												</h4>
 											</div>
-										</div>
-										<div className="border-b-2 border-gray-400" style={{ height: `15%` }}>
-											<div className="flex h-full">
-												<div className="w-1/2 flex items-center">
-													<div className="overflow-hidden">
-														<h4 className="px-2 truncate" style={{ fontSize: `0.5em` }}>
-															Artist
-														</h4>
-														<h4 style={{ fontSize: `0.65em` }} className="truncate px-2">
-															{token.creatorId}
-														</h4>
-													</div>
-												</div>
-												<div className="w-1/2 flex items-center border-l-2 border-gray-400 h-full">
-													<div className="overflow-hidden">
-														<h4 className="px-2 truncate" style={{ fontSize: `0.5em` }}>
-															Royalty
-														</h4>
-														<h4 className="truncate px-2" style={{ fontSize: `0.65em` }}>
-															{calculateRoyalty()}%
-														</h4>
-													</div>
-												</div>
+											<div className="mb-2">
+												<h4 className="px-2 truncate" style={{ fontSize: `0.75em` }}>
+													{'Attributes'}
+												</h4>
+												<h4 className="px-2" style={{ fontSize: `0.5em` }}>
+													{token.attributes
+														?.map(({ value, trait_type }) => `${trait_type} ${value}`)
+														.join(', ') || 'None'}
+												</h4>
+											</div>
+											<div className="flex items-end px-2 space-x-2">
+												<h4 style={{ fontSize: `0.5em` }}>Royalty</h4>
+												<h4 style={{ fontSize: `0.5em` }}>{calculateRoyalty()}%</h4>
 											</div>
 										</div>
-										<div className="py-2 overflow-hidden" style={{ height: '60%' }}>
-											<h4 className="px-2 whitespace-pre-line" style={{ fontSize: `0.5em` }}>
-												{token.description?.replace(/\n\s*\n\s*\n/g, '\n\n')}
-											</h4>
-										</div>
-										<div style={{ height: '10%' }}>
-											<div className="h-full">
-												<div>
-													<h4 className="px-2 truncate" style={{ fontSize: `0.5em` }}>
-														{token.attributes && 'Attributes'}
-													</h4>
-													<h4 className="px-2 truncate" style={{ fontSize: `0.5em` }}>
-														{token.attributes?.map(({ value }) => value).join(', ')}
-													</h4>
-												</div>
-											</div>
-										</div>
+										<div style={{ height: '10%' }}></div>
 									</div>
 								</div>
 							</div>
