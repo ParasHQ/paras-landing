@@ -62,7 +62,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		const newStat = await stat.data.data.results
 		const newData = await res.data.data
 		const newTokens = [...tokens, ...newData.results]
-		setAttributes(Array(newAttributes)[0])
+		setAttributes(newAttributes)
 		setStats(newStat)
 		setTokens(newTokens)
 		setPage(page + 1)
@@ -335,7 +335,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				</div>
 				<div className="relative flex flex-row flex-wrap left-0 ml-5 mt-5 ">
 					{router.query.attributes &&
-						router.query.tab != 'activity' &&
+						router.query.tab !== 'activity' &&
 						JSON.parse(router.query.attributes).map((type, index) => {
 							return (
 								<div key={index}>
