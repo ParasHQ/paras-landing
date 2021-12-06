@@ -10,6 +10,8 @@ const Media = ({ className, url, videoControls = false, videoMuted = true, video
 	useEffect(() => {
 		if (url) {
 			getMedia()
+		} else {
+			setIsLoading(false)
 		}
 	}, [url])
 

@@ -63,7 +63,10 @@ const ChooseAccountModal = ({ show, onClose }) => {
 				{connectedAccount.map((account, idx) => (
 					<div key={account.key} className="my-4">
 						<div className="flex items-center space-x-4">
-							<div className="flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden bg-primary">
+							<div
+								className="flex-shrink-0 w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden bg-primary cursor-pointer"
+								onClick={() => switchAccount(account)}
+							>
 								<img
 									src={parseImgUrl(profileList[idx]?.imgUrl || '', null, {
 										width: `300`,
