@@ -711,7 +711,7 @@ const NewPage = () => {
 										{localeLn('Next')}
 									</button>
 								</div>
-								<div className="text-sm">Choose Collection</div>
+								<div className="text-sm mt-2">Choose Collection</div>
 								<div id="collection::user" className="h-60vh overflow-auto">
 									<InfiniteScroll
 										dataLength={collectionList.length}
@@ -835,7 +835,7 @@ const NewPage = () => {
 											{localeLn('Next')}
 										</button>
 									</div>
-									<div>
+									<div className="mt-2">
 										<label className="block text-sm">{localeLn('Name')}</label>
 										<InputText
 											autoComplete="off"
@@ -964,7 +964,7 @@ const NewPage = () => {
 										{localeLn('Next')}
 									</button>
 								</div>
-								<div>
+								<div className="mt-2">
 									<div>
 										<RoyaltyWatch control={control} fields={royaltyFields} append={royaltyAppend} />
 										<Scrollbars ref={royaltyScrollBar} autoHeight autoHide>
