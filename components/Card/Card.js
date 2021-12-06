@@ -73,9 +73,10 @@ const Card = ({
 	}
 
 	const calculateRoyalty = () => {
-		if (token.royalty) {
-			return Object.values(token.royalty).reduce((a, b) => parseInt(a) + parseInt(b), 0) / 100
+		if (JSON.stringify(token.royalty) !== '{}') {
+			return Object.values(token.royalty).reduce((a, b) => parseInt(a) + parseInt(b), 0) / 100 + '%'
 		}
+		return 'None'
 	}
 
 	return (
@@ -216,9 +217,9 @@ const Card = ({
 														.join(', ') || 'None'}
 												</h4>
 											</div>
-											<div className="flex items-end px-2 space-x-2">
-												<h4 style={{ fontSize: `0.5em` }}>Royalty</h4>
-												<h4 style={{ fontSize: `0.5em` }}>{calculateRoyalty()}%</h4>
+											<div className="flex items-end px-2 space-x-1">
+												<h4 style={{ fontSize: `0.5em` }}>Royalty:</h4>
+												<h4 style={{ fontSize: `0.5em` }}>{calculateRoyalty()}</h4>
 											</div>
 										</div>
 										<div style={{ height: '10%' }}></div>
