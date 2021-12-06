@@ -324,6 +324,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				</div>
 				<div className="relative flex flex-row flex-wrap left-0 ml-5 mt-5 ">
 					{router.query.attributes &&
+						router.query.tab != 'activity' &&
 						JSON.parse(router.query.attributes).map((type, index) => {
 							return (
 								<div key={index}>
@@ -340,7 +341,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							)
 						})}
 				</div>
-				<div className="mt-12 px-4">
+				<div className="mt-4 px-4">
 					{isFiltering ? (
 						<CardListLoader />
 					) : router.query.tab == 'activity' ? (

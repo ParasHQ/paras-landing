@@ -12,6 +12,20 @@ const FilterAttribute = ({ attributes }) => {
 	const [showFilterModal, setShowFilterModal] = useState(false)
 
 	useEffect(() => {
+		const onClickEv = (e) => {
+			if (filterModalRef.current?.contains && !filterModalRef.current.contains(e.target)) {
+				setShowFilterModal(false)
+			}
+		}
+		if (showFilterModal) {
+			document.body.addEventListener('click', onClickEv)
+		}
+		return () => {
+			document.body.removeEventListener('click', onClickEv)
+		}
+	}, [showFilterModal])
+
+	useEffect(() => {
 		router.query.attributes && setAttributeFilter(JSON.parse(router.query.attributes))
 	}, [router.query.attributes])
 
@@ -22,6 +36,8 @@ const FilterAttribute = ({ attributes }) => {
 				attributes: JSON.stringify(attributeFilter),
 			},
 		})
+
+		setShowFilterModal(false)
 	}
 
 	return (
@@ -30,12 +46,24 @@ const FilterAttribute = ({ attributes }) => {
 				className="mx-4 inline-flex cursor-pointer px-4 py-2 bg-dark-primary-2 button-wrapper rounded-md"
 				onClick={() => setShowFilterModal(!showFilterModal)}
 			>
-				<svg viewBox="0 0 24 24" width="24" height="24" fill="white" className="inline-block mr-1">
-					<path
-						fillRule="evenodd"
-						clipRule="evenodd"
-						d="M5.14 9H4a1 1 0 110-2h1.14a4 4 0 017.72 0H20a1 1 0 110 2h-7.14a4 4 0 01-7.72 0zm4.971-2.663A2 2 0 107.89 9.663a2 2 0 002.222-3.326zM18.86 15H20a1 1 0 110 2h-1.14a4 4 0 01-7.72 0H4a1 1 0 010-2h7.14a4 4 0 017.72 0zm-4.971 2.663a2 2 0 102.222-3.325 2 2 0 00-2.222 3.325z"
-					></path>
+				<svg
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					strokeWidth="2"
+					stroke="white"
+					fill="white"
+					strokeLinecap="round"
+					strokeLinejoin="round"
+					className="mr-1"
+				>
+					<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+					<line x1="9" y1="6" x2="20" y2="6"></line>
+					<line x1="9" y1="12" x2="20" y2="12"></line>
+					<line x1="9" y1="18" x2="20" y2="18"></line>
+					<line x1="5" y1="6" x2="5" y2="6.01"></line>
+					<line x1="5" y1="12" x2="5" y2="12.01"></line>
+					<line x1="5" y1="18" x2="5" y2="18.01"></line>
 				</svg>
 				<h1 className="text-white font-semibold text-xl select-none hidden md:inline-block">
 					{localeLn('Attributes')}
@@ -85,7 +113,7 @@ const FilterAttribute = ({ attributes }) => {
 
 export default FilterAttribute
 
-const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attributes, router }) => {
+const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attributes }) => {
 	const [isOpen, setIsOpen] = useState(false)
 
 	const addAttribute = (addedAttribute) => {
@@ -100,11 +128,7 @@ const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attribu
 	}
 
 	const checkIfObjectExist = (obj) => {
-		return (
-			attributeFilter.some((attr) => JSON.stringify(attr) === JSON.stringify(obj)) ||
-			(router.query.attributes &&
-				JSON.stringify(router.query.attributes).replace(/\\/g, '').includes(JSON.stringify(obj)))
-		)
+		return attributeFilter.some((attr) => JSON.stringify(attr) === JSON.stringify(obj))
 	}
 
 	return (

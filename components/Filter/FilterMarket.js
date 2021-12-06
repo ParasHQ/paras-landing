@@ -17,7 +17,7 @@ const FilterMarket = ({ isShowVerified = true }) => {
 
 	useEffect(() => {
 		const onClickEv = (e) => {
-			if (!filterModalRef.current.contains(e.target)) {
+			if (filterModalRef.current?.contains && !filterModalRef.current.contains(e.target)) {
 				setShowFilterModal(false)
 			}
 		}
@@ -27,7 +27,7 @@ const FilterMarket = ({ isShowVerified = true }) => {
 		return () => {
 			document.body.removeEventListener('click', onClickEv)
 		}
-	}, [])
+	}, [showFilterModal])
 
 	// update filter state based on query
 	useEffect(() => {
