@@ -16,6 +16,7 @@ import { useIntl } from 'hooks/useIntl'
 import CollectionStats from 'components/Collection/CollectionStats'
 import CollectionActivity from 'components/Collection/CollectionActivity'
 import FilterAttribute from 'components/Filter/FilterAttribute'
+import ReactLinkify from 'react-linkify'
 
 const LIMIT = 8
 const LIMIT_ACTIVITY = 20
@@ -254,7 +255,17 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							</span>
 						</span>
 					</h4>
-					<p className="text-gray-200 mt-4 max-w-lg m-auto">{collection?.description}</p>
+					<ReactLinkify
+						componentDecorator={(decoratedHref, decoratedText, key) => (
+							<a target="blank" href={decoratedHref} key={key}>
+								{decoratedText}
+							</a>
+						)}
+					>
+						<p className="text-gray-200 mt-4 max-w-lg m-auto whitespace-pre-line break-words">
+							{collection?.description.replace(/\n\s*\n\s*\n/g, '\n\n')}
+						</p>
+					</ReactLinkify>
 					{currentUser === collection.creator_id && (
 						<div className="flex flex-row space-x-2 max-w-xs m-auto mt-4">
 							<Button onClick={addCard} size="md" className="w-40 m-auto">

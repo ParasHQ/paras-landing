@@ -169,7 +169,7 @@ const TokenDetail = ({ token, className }) => {
 							/>
 						)}
 					</div>
-					<div className="w-full h-full flex items-center justify-center p-2 lg:p-8 relative">
+					<div className="w-full h-full flex items-center justify-center p-2 lg:p-12 relative">
 						<Media
 							className="rounded-lg overflow-hidden"
 							url={token.metadata.media}

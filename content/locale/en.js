@@ -412,7 +412,7 @@ const faq = {
 	FrequentlyQuestions: 'Frequently Asked Questions',
 	WhatIsParas: 'What is Paras?',
 	DigitalCardMarketplace:
-		'Paras is a digital art card marketplace built on blockchain technology that offers true ownership and digital scarcity. Paras use <a href="https: /near.org" target="_blank">NEAR cryptocurrency</a> as the medium of exchange between creators and collectors to support cross border transactions.',
+		'Paras is a digital art card marketplace built on blockchain technology that offers true ownership and digital scarcity. Paras use <a href="https:/near.org" target="_blank">NEAR cryptocurrency</a> as the medium of exchange between creators and collectors to support cross border transactions.',
 	WhatIsBlockchain: 'What is blockchain?',
 	BlockchainIsTechnology:
 		'Blockchain is technology that allows everyone to truly own their data and digital assets. The data stored on blockchain is transparent and untempered which makes the ownership of certain assets provable and verifiable by everyone.',
@@ -424,10 +424,10 @@ const faq = {
 	HowDoStartCollecting: 'How do I start collecting digital cards?',
 	WhereCanGetNEAR: 'Where can I get some NEAR?',
 	CanGetNEARFrom:
-		'You can get NEAR from some crypto-exchange such as <a href="https://binance.com" target="blank">Binance</a>. When you got some NEAR from exchange, you can transfer it to your <a target="blank" href="https: /wallet.near.org">NEAR wallet</a> and you are good to go.',
+		'You can get NEAR from some crypto-exchange such as <a href="https://binance.com" target="blank">Binance</a>. When you got some NEAR from exchange, you can transfer it to your <a target="blank" href="https:/wallet.near.org">NEAR wallet</a> and you are good to go.',
 	HowDoBecomeArtist: 'How do I become a Paras Artist?',
 	CanStartApplying:
-		'You can start by applying as an artist <a target="blank" href="https: /forms.gle/QsZHqa2MKXpjckj98">here</a>. Our team will review your submission and we’ll tell you the result via email.',
+		'You can start by applying as an artist <a target="blank" href="https://docs.google.com/forms/d/e/1FAIpQLScqkh-sJJREv9UOtIjML5J6CdjPftJ0ACICPKxzRrAsoAuzJw/viewform">here</a>. Our team will review your submission and we’ll tell you the result via email.',
 	HowDoMakeCard: 'How do I make a digital art card?',
 	ADigitalCardOnParas:
 		'A digital art card on Paras follows the format of real world trading cards which are in portrait with ratio 64 : 89. The maximum file size is 30MB. Currently Paras only support image format such as png, jpg, jpeg, gifs, etc. Videos are not supported.',

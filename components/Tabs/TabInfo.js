@@ -101,9 +101,10 @@ const TabInfo = ({ localToken, isNFT }) => {
 								onClick={() => setShowModal('royalty')}
 							>
 								<p className="text-gray-100 font-semibold">
-									{Object.values(localToken.royalty).reduce((a, b) => {
-										return parseInt(a) + parseInt(b)
-									}, 0) / 100}
+									{Object.values(localToken.royalty).reduce(
+										(a, b) => parseInt(a) + parseInt(b),
+										0
+									) / 100}
 									%
 								</p>
 								<div className="pl-2 pt-0.5">
