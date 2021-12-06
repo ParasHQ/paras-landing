@@ -12,7 +12,7 @@ const CardLoader = (props) => (
 		foregroundColor="#282828"
 		{...props}
 	>
-		<rect x="0" y="0" rx="20" ry="20" width="275" height="380" />
+		<rect x="0" y="0" rx="11" ry="11" width="275" height="380" />
 		<rect x="78" y="435" rx="4" ry="4" width="120" height="20" />
 		<rect x="58" y="470" rx="4" ry="4" width="160" height="60" />
 		<rect x="68" y="550" rx="4" ry="4" width="140" height="20" />

@@ -7,6 +7,7 @@ import Scrollbars from 'react-custom-scrollbars'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import HomeTopUsersLoader from 'components/Home/Loaders/TopUsers'
 import { useIntl } from 'hooks/useIntl'
+
 const renderThumb = ({ style, ...props }) => {
 	return (
 		<div
@@ -18,6 +19,45 @@ const renderThumb = ({ style, ...props }) => {
 				backgroundColor: 'rgba(255, 255, 255, 0.1)',
 			}}
 		/>
+	)
+}
+
+const TopCollection = ({ collection, idx }) => {
+	const [colDetail, setColDetail] = useState({})
+
+	useEffect(async () => {
+		const res = await axios(`${process.env.V2_API_URL}/collections`, {
+			params: {
+				collection_id: collection.collection_id,
+			},
+		})
+		setColDetail(res.data.data.results[0])
+	}, [])
+
+	return (
+		<div className="my-3 flex items-center">
+			<p className="text-base text-gray-100 opacity-50 mr-3">{idx + 1}</p>
+			<Link href={`/collection/${collection.collection_id}`}>
+				<div className="flex-shrink-0 cursor-pointer w-12 h-12 rounded-full overflow-hidden bg-primary border-white border">
+					<img
+						src={parseImgUrl(colDetail?.media, null, {
+							width: `300`,
+						})}
+						className="object-cover"
+					/>
+				</div>
+			</Link>
+			<div className="ml-3 min-w-0">
+				{collection.collection_id && (
+					<Link href={`/collection/${collection.collection_id}`}>
+						<a className="text-gray-100 border-b-2 border-transparent hover:border-gray-100 font-semibold overflow-hidden overflow-ellipsis truncate">
+							{colDetail.collection}
+						</a>
+					</Link>
+				)}
+				<p className="text-base text-gray-400">{formatNearAmount(collection.total_sum)} Ⓝ</p>
+			</div>
+		</div>
 	)
 }
 
@@ -51,7 +91,7 @@ const TopUser = ({ user, idx }) => {
 					<LinkToProfile
 						accountId={user.account_id}
 						len={16}
-						className="text-gray-100 hover:border-gray-100 font-semibold text-lg"
+						className="text-gray-100 hover:border-gray-100 font-semibold"
 					/>
 				)}
 				<p className="text-base text-gray-400">{formatNearAmount(user.total_sum)} Ⓝ</p>
@@ -64,6 +104,7 @@ export const HomeTopUserList = () => {
 	const { localeLn } = useIntl()
 	const [topBuyerList, setTopBuyerList] = useState([])
 	const [topSellerList, setTopSellerList] = useState([])
+	const [topCollectionList, setTopCollectionList] = useState([])
 	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
@@ -79,6 +120,7 @@ export const HomeTopUserList = () => {
 		if (resp.data.data) {
 			setTopBuyerList(resp.data.data.buyers)
 			setTopSellerList(resp.data.data.sellers)
+			setTopCollectionList(resp.data.data.collections)
 			setIsLoading(false)
 		}
 	}
@@ -86,6 +128,58 @@ export const HomeTopUserList = () => {
 	return (
 		<div>
 			<div className="w-full mt-16">
+				<div className="flex items-center justify-between">
+					<p className="text-white font-semibold text-3xl">{localeLn('TopCollections')}</p>
+					<Link href="/activity/top-collections">
+						<a className="text-gray-400 hover:text-white cursor-pointer font-semibold flex items-center">
+							<span>{localeLn('More')}</span>
+							<svg
+								width="24"
+								height="24"
+								viewBox="0 0 24 24"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+								className="fill-current pl-1"
+							>
+								<path
+									fillRule="evenodd"
+									clipRule="evenodd"
+									d="M17.5858 13.0001H3V11.0001H17.5858L11.2929 4.70718L12.7071 3.29297L21.4142 12.0001L12.7071 20.7072L11.2929 19.293L17.5858 13.0001Z"
+								/>
+							</svg>
+						</a>
+					</Link>
+				</div>
+				<Scrollbars
+					renderThumbHorizontal={renderThumb}
+					autoHeight={true}
+					universal={true}
+					width={100}
+				>
+					{!isLoading ? (
+						<div className="w-full flex -mx-4 py-2 pb-4">
+							{topCollectionList.map((collection, idx) => {
+								return (
+									<div
+										key={idx}
+										style={{
+											width: `18rem`,
+										}}
+										className="flex-shrink-0 flex-grow-0 px-4"
+									>
+										<TopCollection collection={collection} idx={idx} />
+									</div>
+								)
+							})}
+						</div>
+					) : (
+						<div>
+							<HomeTopUsersLoader />
+						</div>
+					)}
+				</Scrollbars>
+			</div>
+			<div className="w-full mt-8">
 				<div className="flex items-center justify-between">
 					<p className="text-white font-semibold text-3xl">{localeLn('TopBuyers')}</p>
 					<Link href="/activity/top-buyers">

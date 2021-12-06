@@ -12,18 +12,28 @@ import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { parseImgUrl, parseSortQuery } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import { useIntl } from 'hooks/useIntl'
+import CollectionStats from 'components/Collection/CollectionStats'
+import CollectionActivity from 'components/Collection/CollectionActivity'
+import ReactLinkify from 'react-linkify'
 
 const LIMIT = 8
+const LIMIT_ACTIVITY = 20
 
 const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const currentUser = useStore((store) => store.currentUser)
 	const router = useRouter()
+	const { localeLn } = useIntl()
 
 	const [tokens, setTokens] = useState([])
 	const [page, setPage] = useState(0)
+	const [activityPage, setActivityPage] = useState(0)
+	const [stats, setStats] = useState({})
+	const [activities, setActivities] = useState([])
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
+	const [hasMoreActivities, setHasMoreActivities] = useState(true)
 
 	const fetchData = async () => {
 		if (!hasMore || isFetching) {
@@ -33,8 +43,17 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: tokensParams(page, router.query || serverQuery),
 		})
+
+		const stat = await axios(`${process.env.V2_API_URL}/collection-stats`, {
+			params: {
+				collection_id: collectionId,
+			},
+		})
+
+		const newStat = await stat.data.data.results
 		const newData = await res.data.data
 		const newTokens = [...tokens, ...newData.results]
+		setStats(newStat)
 		setTokens(newTokens)
 		setPage(page + 1)
 		if (newData.results.length < LIMIT) {
@@ -59,6 +78,12 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		updateFilter(router.query)
 	}, [router.query.sort, router.query.pmin, router.query.pmax])
 
+	useEffect(() => {
+		if (router.query.tab === 'activity') {
+			fetchCollectionActivity()
+		}
+	}, [router.query.tab])
+
 	const editCollection = () => {
 		router.push(`/collection/edit/${collectionId}`)
 	}
@@ -81,6 +106,17 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		return params
 	}
 
+	const activitiesParams = (_page = 0) => {
+		const params = {
+			collection_id: collectionId,
+			filter: 'sale',
+			__skip: _page * LIMIT_ACTIVITY,
+			__limit: LIMIT_ACTIVITY,
+		}
+
+		return params
+	}
+
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
@@ -95,6 +131,34 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		}
 
 		setIsFiltering(false)
+	}
+
+	const fetchCollectionActivity = async () => {
+		if (!hasMoreActivities) {
+			return
+		}
+
+		const res = await axios.get(`${process.env.V2_API_URL}/collection-activities`, {
+			params: activitiesParams(activityPage),
+		})
+
+		const newActivities = [...activities, ...res.data.data]
+		setActivities(newActivities)
+		setActivityPage(activityPage + 1)
+		if (res.data.data.length < LIMIT_ACTIVITY) {
+			setHasMoreActivities(false)
+		} else {
+			setHasMoreActivities(true)
+		}
+	}
+
+	const changeTab = (tab) => {
+		router.push({
+			query: {
+				...router.query,
+				tab: tab,
+			},
+		})
 	}
 
 	return (
@@ -153,7 +217,17 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							</span>
 						</span>
 					</h4>
-					<p className="text-gray-200 mt-4 max-w-lg m-auto">{collection?.description}</p>
+					<ReactLinkify
+						componentDecorator={(decoratedHref, decoratedText, key) => (
+							<a target="blank" href={decoratedHref} key={key}>
+								{decoratedText}
+							</a>
+						)}
+					>
+						<p className="text-gray-200 mt-4 max-w-lg m-auto whitespace-pre-line break-words">
+							{collection?.description.replace(/\n\s*\n\s*\n/g, '\n\n')}
+						</p>
+					</ReactLinkify>
 					{currentUser === collection.creator_id && (
 						<div className="flex flex-row space-x-2 max-w-xs m-auto mt-4">
 							<Button onClick={addCard} size="md" className="w-40 m-auto">
@@ -170,12 +244,64 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						</div>
 					)}
 				</div>
-				<div className="md:ml-8 z-10 flex items-end justify-end">
-					<FilterMarket isShowVerified={false} />
+				<div className="mb-10 sm:my-2 flex items-center justify-center">
+					<CollectionStats stats={stats} />
+				</div>
+				<div className="z-10 flex items-center justify-center relative">
+					<div className="flex justify-center mt-4 relative z-20">
+						<div className="flex mx-4">
+							<div className="px-4 relative" onClick={() => changeTab('items')}>
+								<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Items')}</h4>
+								{(router.query.tab === 'items' || router.query.tab === undefined) && (
+									<div
+										className="absolute left-0 right-0"
+										style={{
+											bottom: `-.25rem`,
+										}}
+									>
+										<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+									</div>
+								)}
+							</div>
+							<div className="px-4 relative" onClick={() => changeTab('activity')}>
+								<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Activity')}</h4>
+								{router.query.tab === 'activity' && (
+									<div
+										className="absolute left-0 right-0"
+										style={{
+											bottom: `-.25rem`,
+										}}
+									>
+										<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+									</div>
+								)}
+							</div>
+						</div>
+					</div>
+					{(router.query.tab === 'items' || router.query.tab === undefined) && (
+						<div className="flex sm:hidden">
+							<FilterMarket isShowVerified={false} />
+						</div>
+					)}
+					{(router.query.tab === 'items' || router.query.tab === undefined) && (
+						<div className="hidden sm:flex md:ml-8 z-10 items-center justify-end right-0 absolute w-full">
+							<div className="flex justify-center mt-4">
+								<div className="flex">
+									<FilterMarket isShowVerified={false} />
+								</div>
+							</div>
+						</div>
+					)}
 				</div>
 				<div className="mt-12 px-4">
 					{isFiltering ? (
 						<CardListLoader />
+					) : router.query.tab == 'activity' ? (
+						<CollectionActivity
+							activities={activities}
+							fetchData={fetchCollectionActivity}
+							hasMore={hasMoreActivities}
+						/>
 					) : (
 						<CardList name="market" tokens={tokens} fetchData={fetchData} hasMore={hasMore} />
 					)}

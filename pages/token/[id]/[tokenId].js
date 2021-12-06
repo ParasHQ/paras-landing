@@ -77,9 +77,9 @@ export async function getServerSideProps({ params }) {
 			},
 		})
 
-		const token = res.data.data.results[0]
+		const token = res.data.data.results[0] || null
 
-		return { props: { token } }
+		return { props: { token, errorCode: token || 404 } }
 	} catch (err) {
 		sentryCaptureException(err)
 		const errorCode = 404

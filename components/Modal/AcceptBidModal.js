@@ -7,23 +7,45 @@ import Button from 'components/Common/Button'
 
 const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitForm }) => {
 	const { localeLn } = useIntl()
-	const royaltyForArtist =
-		Object.keys(token.royalty).length === 0
-			? 0
-			: JSBI.divide(
-					JSBI.multiply(JSBI.BigInt(Object.values(token.royalty)[0]), JSBI.BigInt(data.price)),
-					JSBI.BigInt(10000)
-			  ).toString()
 
-	const serviceFee = JSBI.divide(
-		JSBI.multiply(JSBI.BigInt(500), JSBI.BigInt(data.price)),
-		JSBI.BigInt(10000)
-	).toString()
+	const calculatePriceDistribution = () => {
+		if (JSBI.greaterThan(JSBI.BigInt(data.price), JSBI.BigInt(0))) {
+			let fee = JSBI.BigInt(500)
 
-	const userWillGet = JSBI.subtract(
-		JSBI.BigInt(data.price),
-		JSBI.add(JSBI.BigInt(royaltyForArtist), JSBI.BigInt(serviceFee))
-	).toString()
+			const calcRoyalty =
+				Object.keys(token.royalty).length > 0
+					? JSBI.divide(
+							JSBI.multiply(
+								JSBI.BigInt(data.price),
+								JSBI.BigInt(
+									Object.values(token.royalty).reduce((a, b) => {
+										return parseInt(a) + parseInt(b)
+									}, 0)
+								)
+							),
+							JSBI.BigInt(10000)
+					  )
+					: JSBI.BigInt(0)
+
+			const calcFee = JSBI.divide(JSBI.multiply(JSBI.BigInt(data.price), fee), JSBI.BigInt(10000))
+
+			const cut = JSBI.add(calcRoyalty, calcFee)
+
+			const calcReceive = JSBI.subtract(JSBI.BigInt(data.price), cut)
+
+			return {
+				receive: formatNearAmount(calcReceive.toString()),
+				royalty: formatNearAmount(calcRoyalty.toString()),
+				fee: formatNearAmount(calcFee.toString()),
+			}
+		}
+
+		return {
+			receive: 0,
+			royalty: 0,
+			fee: 0,
+		}
+	}
 
 	return (
 		<Modal closeOnBgClick={false} closeOnEscape={false} close={onClose}>
@@ -45,18 +67,22 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 								{localeLn('RoyaltyForArtist')} (
 								{Object.keys(token.royalty).length === 0
 									? `None`
-									: `${Object.values(token.royalty)[0] / 100}%`}
+									: `${
+											Object.values(token.royalty).reduce((a, b) => {
+												return parseInt(a) + parseInt(b)
+											}, 0) / 100
+									  }%`}
 								)
 							</div>
-							<div>{formatNearAmount(royaltyForArtist)} Ⓝ</div>
+							<div>{calculatePriceDistribution().royalty} Ⓝ</div>
 						</div>
 						<div className="flex justify-between">
 							<div className="text-sm">{localeLn('ServiceFee')} (5%)</div>
-							<div>{formatNearAmount(serviceFee)} Ⓝ</div>
+							<div>{calculatePriceDistribution().fee} Ⓝ</div>
 						</div>
 						<div className="flex justify-between">
 							<div className="text-sm">{localeLn('YouWillGet')}</div>
-							<div>{formatNearAmount(userWillGet)} Ⓝ</div>
+							<div>{calculatePriceDistribution().receive} Ⓝ</div>
 						</div>
 					</div>
 					<div className="mt-4 text-center">

@@ -5,7 +5,7 @@ import Card from 'components/Card/Card'
 import ImgCrop from 'components/ImgCrop'
 import Nav from 'components/Nav'
 import useStore from 'lib/store'
-import { useForm, useFieldArray } from 'react-hook-form'
+import { useForm, useFieldArray, useWatch } from 'react-hook-form'
 import Modal from 'components/Modal'
 import { useRouter } from 'next/router'
 import near from 'lib/near'
@@ -15,7 +15,7 @@ import Footer from 'components/Footer'
 import { parseImgUrl, prettyBalance, readFileAsUrl } from 'utils/common'
 import { encodeImageToBlurhash } from 'lib/blurhash'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import { GAS_FEE, STORAGE_CREATE_SERIES_FEE } from 'config/constants'
+import { GAS_FEE, MAX_FILE_SIZE, STORAGE_CREATE_SERIES_FEE } from 'config/constants'
 import Button from 'components/Common/Button'
 import { InputText, InputTextarea } from 'components/Common/form'
 import CreateCollectionModal from 'components/Collection/CreateCollectionModal'
@@ -25,9 +25,58 @@ import Scrollbars from 'react-custom-scrollbars'
 
 const LIMIT = 10
 
+const calcRoyalties = (royalties) => {
+	return royalties
+		.filter((x) => !isNaN(parseFloat(x.value)))
+		.reduce((a, b) => {
+			return a + parseFloat(b.value)
+		}, 0)
+}
+
+const RoyaltyWatch = ({ control, append }) => {
+	const { localeLn } = useIntl()
+
+	const royalties = useWatch({
+		control,
+		name: 'royalties',
+		defaultValue: [],
+	})
+
+	return (
+		<div className="flex items-center justify-between mb-1">
+			<label className="block text-sm">
+				<span className="pr-1">{localeLn('Royalty')}</span>
+				{calcRoyalties(royalties) > 90 ? (
+					<span className="text-red-500 text-semibold">{calcRoyalties(royalties)}%</span>
+				) : (
+					<span className="text-semibold">{calcRoyalties(royalties)}%</span>
+				)}
+			</label>
+			<button
+				className="flex items-center"
+				disabled={royalties.length >= 10 || calcRoyalties(royalties) >= 90}
+				onClick={() => append({ accountId: '', value: '' })}
+			>
+				<span className="text-sm pr-2">Add</span>
+				<svg
+					width="14"
+					height="14"
+					viewBox="0 0 16 16"
+					fill="none"
+					className="cursor-pointer"
+					xmlns="http://www.w3.org/2000/svg"
+				>
+					<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
+				</svg>
+			</button>
+		</div>
+	)
+}
+
 const NewPage = () => {
 	const { localeLn } = useIntl()
 	const scrollBar = useRef()
+	const royaltyScrollBar = useRef()
 	const store = useStore()
 	const router = useRouter()
 	const toast = useToast()
@@ -36,6 +85,14 @@ const NewPage = () => {
 	const { fields, append, remove } = useFieldArray({
 		control,
 		name: 'attributes',
+	})
+	const {
+		fields: royaltyFields,
+		append: royaltyAppend,
+		remove: royaltyRemove,
+	} = useFieldArray({
+		control,
+		name: 'royalties',
 	})
 
 	const [showImgCrop, setShowImgCrop] = useState(false)
@@ -60,6 +117,8 @@ const NewPage = () => {
 
 	const [mediaHash, setMediaHash] = useState(null)
 	const [referenceHash, setReferenceHash] = useState(null)
+
+	const watchRoyalties = watch(`royalties`)
 
 	const uploadImageMetadata = async () => {
 		setIsUploading(true)
@@ -104,7 +163,7 @@ const NewPage = () => {
 		}
 	}
 
-	const creteSeriesNFT = async () => {
+	const createSeriesNFT = async () => {
 		try {
 			let params = {
 				creator_id: store.currentUser,
@@ -112,17 +171,21 @@ const NewPage = () => {
 					title: formInput.name,
 					media: mediaHash,
 					reference: referenceHash,
-					copies: parseInt(formInput.supply),
+					copies: parseFloat(formInput.supply),
 				},
 				price: parseNearAmount(formInput.amount || 0),
 			}
 
-			if (formInput.royalty !== 0) {
+			if (formInput.royalties?.length > 0) {
+				let formattedRoyalties = {}
+
+				formInput.royalties.forEach((r) => {
+					formattedRoyalties[r.accountId] = parseInt(parseFloat(r.value) * 100)
+				})
+
 				params = {
 					...params,
-					royalty: {
-						[store.currentUser]: parseInt(formInput.royalty) * 100,
-					},
+					royalty: formattedRoyalties,
 				}
 			}
 
@@ -158,8 +221,8 @@ const NewPage = () => {
 		setValue('supply', formInput.supply)
 		setValue('quantity', formInput.quantity)
 		setValue('amount', formInput.amount)
-		setValue('royalty', formInput.royalty)
 		setValue('attributes', formInput.attributes)
+		setValue('royalties', formInput.royalties)
 	}, [step])
 
 	const _updateValues = () => {
@@ -188,18 +251,30 @@ const NewPage = () => {
 	}
 
 	const _handleSubmitStep2 = (data) => {
-		const newFormInput = {
-			...formInput,
-			...data,
+		const totalRoyalties = data.royalties?.reduce((a, b) => {
+			return parseFloat(a) + parseFloat(b.value)
+		}, 0)
+
+		if (totalRoyalties > 90) {
+			setShowAlertErr('Maximum royalty is 90%')
+			return
+		} else if (data.royalties?.length > 10) {
+			setShowAlertErr('Maximum 10 accounts for royalty split')
+			return
+		} else {
+			const newFormInput = {
+				...formInput,
+				...data,
+			}
+			setFormInput(newFormInput)
+			setShowConfirmModal(true)
 		}
-		setFormInput(newFormInput)
-		setShowConfirmModal(true)
 	}
 
 	const _setImg = async (e) => {
 		if (e.target.files[0]) {
-			if (e.target.files[0].size > 20 * 1024 * 1024) {
-				setShowAlertErr('Maximum file size is 16 Mb')
+			if (e.target.files[0].size > MAX_FILE_SIZE) {
+				setShowAlertErr('Maximum file size is 30MB')
 				return
 			} else {
 				const newImgUrl = await readFileAsUrl(e.target.files[0])
@@ -382,7 +457,10 @@ const NewPage = () => {
 												<span>{localeLn('Receive')}: </span>
 												<span>
 													{prettyBalance(
-														Number(getValues('amount', 0) * ((95 - (formInput.royalty || 0)) / 100))
+														Number(
+															getValues('amount', 0) *
+																((95 - (calcRoyalties(watchRoyalties) || 0)) / 100)
+														)
 															.toPrecision(4)
 															.toString(),
 														0,
@@ -397,7 +475,7 @@ const NewPage = () => {
 																Number(
 																	store.nearUsdPrice *
 																		getValues('amount', 0) *
-																		((95 - (formInput.royalty || 0)) / 100)
+																		((95 - (calcRoyalties(watchRoyalties) || 0)) / 100)
 																)
 																	.toPrecision(4)
 																	.toString(),
@@ -409,12 +487,12 @@ const NewPage = () => {
 													)}
 												</span>
 											</div>
-											{formInput.royalty !== 0 && (
+											{watchRoyalties.length > 0 && (
 												<div className="flex items-center justify-between text-sm">
 													<span>{localeLn('Royalty')}: </span>
 													<span>
 														{prettyBalance(
-															Number(getValues('amount', 0) * (formInput.royalty / 100))
+															Number(getValues('amount', 0) * (calcRoyalties(watchRoyalties) / 100))
 																.toPrecision(4)
 																.toString(),
 															0,
@@ -429,7 +507,7 @@ const NewPage = () => {
 																	Number(
 																		store.nearUsdPrice *
 																			getValues('amount', 0) *
-																			(formInput.royalty / 100)
+																			(calcRoyalties(watchRoyalties) / 100)
 																	)
 																		.toPrecision(4)
 																		.toString(),
@@ -526,7 +604,7 @@ const NewPage = () => {
 								isDisabled={!(isUploading === 'success')}
 								isFullWidth
 								size="md"
-								onClick={creteSeriesNFT}
+								onClick={createSeriesNFT}
 							>
 								Confirm
 							</Button>
@@ -633,7 +711,7 @@ const NewPage = () => {
 										{localeLn('Next')}
 									</button>
 								</div>
-								<div className="text-sm">Choose Collection</div>
+								<div className="text-sm mt-2">Choose Collection</div>
 								<div id="collection::user" className="h-60vh overflow-auto">
 									<InfiniteScroll
 										dataLength={collectionList.length}
@@ -692,7 +770,7 @@ const NewPage = () => {
 									<input
 										className="cursor-pointer w-full opacity-0 absolute inset-0"
 										type="file"
-										accept="image/*"
+										accept="image/*,video/*"
 										onClick={(e) => {
 											e.target.value = null
 										}}
@@ -735,7 +813,12 @@ const NewPage = () => {
 														fill="rgba(229, 231, 235, 0.5)"
 													/>
 												</svg>
-												<p className="text-gray-200 mt-2 opacity-50">{localeLn('Maximum16mb')}</p>
+												<p className="text-sm text-gray-200 mt-2 opacity-50">
+													{localeLn('Maximum30MB')}
+												</p>
+												<p className="text-sm text-gray-200 opacity-50">
+													Supported image or video file
+												</p>
 											</div>
 										)}
 									</div>
@@ -752,7 +835,7 @@ const NewPage = () => {
 											{localeLn('Next')}
 										</button>
 									</div>
-									<div>
+									<div className="mt-2">
 										<label className="block text-sm">{localeLn('Name')}</label>
 										<InputText
 											autoComplete="off"
@@ -881,30 +964,47 @@ const NewPage = () => {
 										{localeLn('Next')}
 									</button>
 								</div>
-								<div>
-									<label className="block text-sm">{localeLn('Royalty')}</label>
-									<div className="relative">
-										<InputText
-											type="number"
-											name="royalty"
-											ref={register({
-												required: true,
-												min: 0,
-												max: 90,
-												validate: (value) => Number.isInteger(Number(value)),
-											})}
-											className={errors.royalty && 'error'}
-											placeholder="Royalty"
-										/>
-										<div className="font-bold absolute right-0 top-0 bottom-0 flex items-center justify-center">
-											<div className="pr-4">%</div>
-										</div>
-									</div>
-									<div className="mt-2 text-sm text-red-500">
-										{errors.royalty?.type === 'required' && `Royalty is required`}
-										{errors.royalty?.type === 'min' && `Minimum 0`}
-										{errors.royalty?.type === 'max' && `Maximum 90`}
-										{errors.royalty?.type === 'validate' && 'Only use rounded number'}
+								<div className="mt-2">
+									<div>
+										<RoyaltyWatch control={control} fields={royaltyFields} append={royaltyAppend} />
+										<Scrollbars ref={royaltyScrollBar} autoHeight autoHide>
+											{royaltyFields.map((attr, idx) => (
+												<div key={attr.id} className="flex space-x-2 items-center mb-2">
+													<InputText
+														ref={register({ required: true })}
+														name={`royalties.${idx}.accountId`}
+														className={`${
+															errors.royalties && errors.royalties[idx]?.accountId && 'error'
+														}`}
+														defaultValue={formInput.royalties?.[idx]?.accountId || ''}
+														placeholder="Account ID"
+													/>
+													<InputText
+														ref={register({ required: true })}
+														name={`royalties.${idx}.value`}
+														type="number"
+														className={`${
+															errors.royalties && errors.royalties[idx]?.value && 'error'
+														}`}
+														defaultValue={formInput.royalties?.[idx]?.value || ''}
+														placeholder="Value (10, 20, 30)"
+													/>
+													<div className="cursor-pointer" onClick={() => royaltyRemove(idx)}>
+														<svg
+															width="14"
+															height="14"
+															viewBox="0 0 16 16"
+															fill="none"
+															transform="rotate(45)"
+															className="relative z-10"
+															xmlns="http://www.w3.org/2000/svg"
+														>
+															<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
+														</svg>
+													</div>
+												</div>
+											))}
+										</Scrollbars>
 									</div>
 								</div>
 								<div className="mt-4">

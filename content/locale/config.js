@@ -19,6 +19,7 @@ export const config = ({
 	news,
 	search,
 	newCollection,
+	collection,
 }) => {
 	return {
 		defaultAll: {
@@ -70,6 +71,10 @@ export const config = ({
 			...common,
 			...activity,
 		},
+		'/activity/top-collections': {
+			...common,
+			...activity,
+		},
 		'/category-submission/[categoryId]': {
 			...common,
 			...categorySubmission,
@@ -98,11 +103,11 @@ export const config = ({
 			...common,
 			...publication,
 		},
-		'/publication/eidt/[pubId]': {
+		'/publication/edit/[pubId]': {
 			...common,
 			...publication,
 		},
-		'/publication/[create]': {
+		'/publication/create': {
 			...common,
 			...publication,
 		},
@@ -158,6 +163,10 @@ export const config = ({
 		'/search': {
 			...common,
 			...search,
+		},
+		'/collection/[collection_id]': {
+			...common,
+			...collection,
 		},
 	}
 }
