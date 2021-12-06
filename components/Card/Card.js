@@ -217,7 +217,7 @@ const Card = ({
 														.join(', ') || 'None'}
 												</h4>
 											</div>
-											<div className="flex items-end px-2 space-x-2">
+											<div className="flex items-end px-2 space-x-1">
 												<h4 style={{ fontSize: `0.5em` }}>Royalty:</h4>
 												<h4 style={{ fontSize: `0.5em` }}>{calculateRoyalty()}</h4>
 											</div>
