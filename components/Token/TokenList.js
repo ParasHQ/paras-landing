@@ -12,7 +12,7 @@ import TokenDetailModal from 'components/Token/TokenDetailModal'
 import { useIntl } from 'hooks/useIntl'
 import CardListLoader from 'components/Card/CardListLoader'
 
-const TokenList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnership = false }) => {
+const TokenList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 	const store = useStore()
 	const router = useRouter()
 	const containerRef = useRef()
@@ -58,8 +58,22 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnersh
 		}
 	}
 
-	const _getUserOwnership = (userId, ownership) => {
-		return ownership.some((ownership) => ownership.ownerId === userId)
+	const onClickSeeDetails = (token) => {
+		router.push(
+			{
+				pathname: router.pathname,
+				query: {
+					...router.query,
+					...{ tokenId: token.token_id },
+					...{ prevAs: router.asPath },
+				},
+			},
+			`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`,
+			{
+				shallow: true,
+				scroll: false,
+			}
+		)
 	}
 
 	return (
@@ -89,11 +103,7 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnersh
 						return (
 							<div
 								key={token.token_id}
-								className={`w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-4 relative ${
-									toggleOwnership &&
-									!_getUserOwnership(store.currentUser, token.ownerships) &&
-									'opacity-25'
-								}`}
+								className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-4 relative"
 							>
 								<Link
 									href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
@@ -109,30 +119,17 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnersh
 													width: `600`,
 													useOriginal: process.env.APP_ENV === 'production' ? false : true,
 												})}
-												onClick={() => {
-													router.push(
-														{
-															pathname: router.pathname,
-															query: {
-																...router.query,
-																...{ tokenId: token.token_id },
-																...{ prevAs: router.asPath },
-															},
-														},
-														`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`,
-														{
-															shallow: true,
-															scroll: false,
-														}
-													)
-												}}
 												imgBlur={token.metadata.blurhash}
+												flippable
 												token={{
 													title: token.metadata.title,
 													edition_id: token.edition_id,
 													collection: token.metadata.collection || token.contract_id,
 													copies: token.metadata.copies,
 													creatorId: token.metadata.creator_id || token.contract_id,
+													description: token.metadata.description,
+													royalty: token.royalty,
+													attributes: token.metadata.attributes,
 												}}
 											/>
 										</div>
@@ -140,7 +137,7 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnersh
 								</Link>
 								<div className="text-center">
 									<div className="mt-4">
-										<div className="p-2 pb-4">
+										<div className="p-2 pb-1">
 											<p className="text-gray-400 text-xs">{localeLn('OnSale')}</p>
 											<div className="text-gray-100 text-xl">
 												{price ? (
@@ -159,6 +156,21 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, toggleOwnersh
 												)}
 											</div>
 										</div>
+									</div>
+									<div className="pb-4">
+										<Link
+											href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
+										>
+											<a
+												onClick={(e) => {
+													e.preventDefault()
+													onClickSeeDetails(token)
+												}}
+												className="text-white border-b-2 border-white text-sm font-bold mb-2"
+											>
+												See Details
+											</a>
+										</Link>
 									</div>
 								</div>
 							</div>

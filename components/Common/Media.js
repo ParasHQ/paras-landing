@@ -10,6 +10,8 @@ const Media = ({ className, url, videoControls = false, videoMuted = true, video
 	useEffect(() => {
 		if (url) {
 			getMedia()
+		} else {
+			setIsLoading(false)
 		}
 	}, [url])
 
@@ -67,7 +69,7 @@ const Media = ({ className, url, videoControls = false, videoMuted = true, video
 	}
 
 	if (media?.type.includes('image')) {
-		return <img className="object-contain w-full h-full" src={media.url} />
+		return <img className={`object-contain w-full h-full ${className}`} src={media.url} />
 	}
 
 	if (media?.type.includes('video')) {

@@ -6,9 +6,16 @@ import * as Sentry from '@sentry/nextjs'
 
 Sentry.init({
 	dsn:
-		process.env.NODE_ENV === 'production'
+		process.env.NODE_ENV === 'production' && process.env.APP_ENV === 'production'
 			? 'https://1148bd7ae2364e64bcf607d8bc4cca8a@o989538.ingest.sentry.io/5946256'
 			: '',
+	ignoreErrors: [
+		'Network request failed',
+		'Failed Coingecko',
+		'Network Error',
+		'Failed to redirect to sign transaction',
+		'Request failed with status code 400',
+	],
 	// Adjust this value in production, or use tracesSampler for greater control
 	tracesSampleRate: 1.0,
 	environment: process.env.APP_ENV,
