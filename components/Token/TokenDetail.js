@@ -10,7 +10,7 @@ import TabOwners from 'components/Tabs/TabOwners'
 
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
 import near from 'lib/near'
-import { capitalize } from 'utils/common'
+import { capitalize, parseImgUrl } from 'utils/common'
 import TokenMoreModal from '../Modal/TokenMoreModal'
 import TokenShareModal from '../Modal/TokenShareModal'
 import TokenUpdatePriceModal from '../Modal/TokenUpdatePriceModal'
@@ -31,11 +31,13 @@ import PlaceBidModal from 'components/Modal/PlaceBidModal'
 import TabPublication from 'components/Tabs/TabPublication'
 import Media from 'components/Common/Media'
 import ReportModal from 'components/Modal/ReportModal'
+import Card from 'components/Card/Card'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState(null)
 	const [needDeposit, setNeedDeposit] = useState(true)
+	const [tokenDisplay, setTokenDisplay] = useState('detail')
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
 	const router = useRouter()
@@ -170,13 +172,46 @@ const TokenDetail = ({ token, className }) => {
 						)}
 					</div>
 					<div className="w-full h-full flex items-center justify-center p-2 lg:p-12 relative">
-						<Media
-							className="rounded-lg overflow-hidden"
-							url={token.metadata.media}
-							videoControls={true}
-							videoLoop={true}
-							videoMuted={true}
-						/>
+						{tokenDisplay === 'detail' ? (
+							<Media
+								className="rounded-lg overflow-hidden"
+								url={token.metadata.media}
+								videoControls={true}
+								videoLoop={true}
+								videoMuted={true}
+							/>
+						) : (
+							<div className="w-1/2 h-full md:w-full m-auto flex items-center">
+								<Card
+									imgUrl={parseImgUrl(token.metadata.media, null, {
+										width: `600`,
+										useOriginal: process.env.APP_ENV === 'production' ? false : true,
+									})}
+									imgBlur={token.metadata.blurhash}
+									token={{
+										title: token.metadata.title,
+										collection: token.metadata.collection || token.contract_id,
+										copies: token.metadata.copies,
+										creatorId: token.metadata.creator_id || token.contract_id,
+									}}
+								/>
+							</div>
+						)}
+						<div className="absolute top-0 right-0 text-white p-4 text-sm">
+							<span
+								className={`cursor-pointer ${tokenDisplay === 'detail' ? 'font-bold' : ''}`}
+								onClick={() => setTokenDisplay('detail')}
+							>
+								Detail
+							</span>
+							<span> / </span>
+							<span
+								className={`cursor-pointer ${tokenDisplay === 'card' ? 'font-bold' : ''}`}
+								onClick={() => setTokenDisplay('card')}
+							>
+								Card
+							</span>
+						</div>
 					</div>
 					<ArtistBanned creatorId={token.metadata.creator_id} />
 				</div>
