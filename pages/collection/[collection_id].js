@@ -15,6 +15,7 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useIntl } from 'hooks/useIntl'
 import CollectionStats from 'components/Collection/CollectionStats'
 import CollectionActivity from 'components/Collection/CollectionActivity'
+import FilterAttribute from 'components/Filter/FilterAttribute'
 import ReactLinkify from 'react-linkify'
 
 const LIMIT = 8
@@ -25,6 +26,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const router = useRouter()
 	const { localeLn } = useIntl()
 
+	const [attributes, setAttributes] = useState([])
 	const [tokens, setTokens] = useState([])
 	const [page, setPage] = useState(0)
 	const [activityPage, setActivityPage] = useState(0)
@@ -50,9 +52,17 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			},
 		})
 
+		const attributes = await axios(`${process.env.V2_API_URL}/collection-attributes`, {
+			params: {
+				collection_id: collectionId,
+			},
+		})
+
+		const newAttributes = await attributes.data.data.results
 		const newStat = await stat.data.data.results
 		const newData = await res.data.data
 		const newTokens = [...tokens, ...newData.results]
+		setAttributes(newAttributes)
 		setStats(newStat)
 		setTokens(newTokens)
 		setPage(page + 1)
@@ -76,7 +86,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	useEffect(() => {
 		updateFilter(router.query)
-	}, [router.query.sort, router.query.pmin, router.query.pmax])
+	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.attributes])
 
 	useEffect(() => {
 		if (router.query.tab === 'activity') {
@@ -93,7 +103,24 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const tokensParams = (_page = 0, query) => {
-		const params = {
+		let params = {}
+		if (query.attributes) {
+			const attributesQuery = JSON.parse(query.attributes)
+			attributesQuery.map((item) => {
+				const typeAttribute = Object.keys(item)[0]
+				const type = `attributes[${Object.keys(item)[0]}]`
+				const value = item[typeAttribute]
+
+				if (params[type]) {
+					params[type] += `||${value}`
+				} else {
+					params[type] = value
+				}
+			})
+		}
+
+		params = {
+			...params,
 			collection_id: collectionId,
 			exclude_total_burn: true,
 			__skip: _page * LIMIT,
@@ -157,6 +184,17 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			query: {
 				...router.query,
 				tab: tab,
+			},
+		})
+	}
+
+	const removeAttributeFilter = (index) => {
+		const url = JSON.parse(router.query.attributes)
+		url.splice(index, 1)
+		router.push({
+			query: {
+				...router.query,
+				attributes: JSON.stringify(url),
 			},
 		})
 	}
@@ -280,6 +318,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					</div>
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
 						<div className="flex sm:hidden">
+							<FilterAttribute attributes={attributes} />
 							<FilterMarket isShowVerified={false} />
 						</div>
 					)}
@@ -287,13 +326,33 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						<div className="hidden sm:flex md:ml-8 z-10 items-center justify-end right-0 absolute w-full">
 							<div className="flex justify-center mt-4">
 								<div className="flex">
+									<FilterAttribute attributes={attributes} />
 									<FilterMarket isShowVerified={false} />
 								</div>
 							</div>
 						</div>
 					)}
 				</div>
-				<div className="mt-12 px-4">
+				<div className="relative flex flex-row flex-wrap left-0 ml-5 mt-5 ">
+					{router.query.attributes &&
+						router.query.tab !== 'activity' &&
+						JSON.parse(router.query.attributes).map((type, index) => {
+							return (
+								<div key={index}>
+									<button
+										onClick={() => removeAttributeFilter(index)}
+										className="flex-grow rounded-md px-2 py-2 mr-2 my-1 border-2 border-gray-800 bg-blue-400 bg-opacity-10 text-sm cursor-pointer group hover:border-gray-700"
+									>
+										<span className=" text-gray-200">{Object.values(type)[0]}</span>{' '}
+										<span className="font-extralight text-gray-600 text-lg ml-1 group-hover:text-gray-500">
+											X
+										</span>
+									</button>
+								</div>
+							)
+						})}
+				</div>
+				<div className="mt-4 px-4">
 					{isFiltering ? (
 						<CardListLoader />
 					) : router.query.tab == 'activity' ? (
