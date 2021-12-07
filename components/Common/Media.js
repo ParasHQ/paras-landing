@@ -77,11 +77,13 @@ const Media = ({ className, url, videoControls = false, videoMuted = true, video
 			<video
 				className={`w-full h-full ${className}`}
 				autoPlay
+				playsInline
 				loop={videoLoop}
 				controls={videoControls}
 				muted={videoMuted}
-				src={media.url}
-			/>
+			>
+				<source type="video/mp4" src={media.url}></source>
+			</video>
 		)
 	}
 
