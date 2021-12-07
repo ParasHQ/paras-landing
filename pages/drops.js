@@ -109,7 +109,7 @@ export default function Drops() {
 	const timeline = [
 		{
 			date: `Dec 6th`,
-			note: [`NFT drop is live by offer`, `Drops will start on Dec 6th at 00.00 UTC`],
+			note: [`NFT drop is live by offer`, `Drops will start on Dec 6th at 05.00 UTC`],
 		},
 		{
 			date: 'Dec 10th',
@@ -512,7 +512,7 @@ const SpecialCard = ({
 							data-tip={`Total supply of the card`}
 						>
 							<div className="flex text-white justify-center">
-								<p className="text-gray-400 mr-1">{localeLn('CardSupply')}</p>
+								<p className="text-gray-400 mr-1">Supply</p>
 								<svg
 									width="16"
 									height="16"
@@ -535,10 +535,10 @@ const SpecialCard = ({
 						</div>
 						<div
 							className="flex flex-col cursor-default mb-4"
-							data-tip={`Card available for purchase`}
+							data-tip={`NFT available for purchase`}
 						>
 							<div className="flex text-white justify-center">
-								<p className="text-gray-400 mr-1">{localeLn('CardAvailable')}</p>
+								<p className="text-gray-400 mr-1">Available</p>
 								<svg
 									width="16"
 									height="16"
@@ -727,10 +727,10 @@ const SpecialCardBid = ({
 						<div className="md:flex md:items-center md:justify-center md:space-x-4">
 							<div
 								className="flex flex-col cursor-default mb-4"
-								data-tip={`Total supply of the card`}
+								data-tip={`Total supply of the NFT`}
 							>
 								<div className="flex text-white justify-center">
-									<p className="text-gray-400 mr-1">{localeLn('CardSupply')}</p>
+									<p className="text-gray-400 mr-1">Supply</p>
 									<svg
 										width="16"
 										height="16"
@@ -753,10 +753,10 @@ const SpecialCardBid = ({
 							</div>
 							<div
 								className="flex flex-col cursor-default mb-4"
-								data-tip={`Card available for purchase`}
+								data-tip={`NFT available for purchase`}
 							>
 								<div className="flex text-white justify-center">
-									<p className="text-gray-400 mr-1">{localeLn('CardAvailable')}</p>
+									<p className="text-gray-400 mr-1">Available</p>
 									<svg
 										width="16"
 										height="16"
