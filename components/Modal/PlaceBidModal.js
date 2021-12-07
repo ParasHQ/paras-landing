@@ -23,6 +23,7 @@ const HARD_CODE_TOKEN = {
 	61811: '15',
 	61736: '10',
 	61817: '10',
+	62386: '10',
 }
 
 const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuantity }) => {

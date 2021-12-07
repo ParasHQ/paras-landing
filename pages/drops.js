@@ -55,6 +55,11 @@ const specialBidTokens = [
 		supply: `1`,
 		price: 10,
 	},
+	{
+		tokenId: 62386,
+		supply: `1`,
+		price: 10,
+	},
 ]
 
 export const specialTokenId = [
