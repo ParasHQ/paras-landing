@@ -225,7 +225,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						)}
 					>
 						<p className="text-gray-200 mt-4 max-w-lg m-auto whitespace-pre-line break-words">
-							{collection?.description.replace(/\n\s*\n\s*\n/g, '\n\n')}
+							{collection?.description?.replace(/\n\s*\n\s*\n/g, '\n\n')}
 						</p>
 					</ReactLinkify>
 					{currentUser === collection.creator_id && (
