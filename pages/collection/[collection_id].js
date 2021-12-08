@@ -318,7 +318,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					</div>
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
 						<div className="flex sm:hidden">
-							<FilterAttribute attributes={attributes} />
+							{Object.keys(attributes).length > 0 && <FilterAttribute attributes={attributes} />}
 							<FilterMarket isShowVerified={false} />
 						</div>
 					)}
@@ -326,7 +326,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						<div className="hidden sm:flex md:ml-8 z-10 items-center justify-end right-0 absolute w-full">
 							<div className="flex justify-center mt-4">
 								<div className="flex">
-									<FilterAttribute attributes={attributes} />
+									{Object.keys(attributes).length > 0 && (
+										<FilterAttribute attributes={attributes} />
+									)}
 									<FilterMarket isShowVerified={false} />
 								</div>
 							</div>
