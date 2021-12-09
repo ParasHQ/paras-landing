@@ -147,7 +147,7 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 								ref={register({
 									required: true,
 									min: 0.01,
-									max: parseFloat(prettyBalance(userBalance.available, 24, 4)),
+									max: parseFloat(userBalance.available / 10 ** 24),
 								})}
 								className={`${errors.bidAmount && 'error'}`}
 								placeholder="Place your Offer"
