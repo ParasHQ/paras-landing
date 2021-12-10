@@ -74,16 +74,16 @@ const Media = ({ className, url, videoControls = false, videoMuted = true, video
 
 	if (media?.type.includes('video')) {
 		return (
-			<div className={className}>
-				<video
-					className="w-full h-full"
-					autoPlay
-					loop={videoLoop}
-					controls={videoControls}
-					muted={videoMuted}
-					src={media.url}
-				/>
-			</div>
+			<video
+				className={`w-full h-full ${className}`}
+				autoPlay
+				playsInline
+				loop={videoLoop}
+				controls={videoControls}
+				muted={videoMuted}
+			>
+				<source type="video/mp4" src={media.url}></source>
+			</video>
 		)
 	}
 
