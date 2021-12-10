@@ -214,7 +214,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 									/>
 								</div>
 							</div>
-							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
+							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative flex-nowrap disable-scrollbars md:-mb-4">
 								{tabDetail('info')}
 								{tabDetail('owners')}
 								{tabDetail('history')}
@@ -228,7 +228,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 							{activeTab === 'publication' && <TabPublication localToken={token} />}
 						</div>
 					</Scrollbars>
-					{isShowButton && (
+					{isShowButton ? (
 						<div className="p-3">
 							{token.is_non_mintable || token.total_mint === token.metadata.copies ? (
 								<div className="flex space-x-2">
@@ -283,6 +283,12 @@ const TokenSeriesDetail = ({ token, className }) => {
 									{`Place an offer`}
 								</Button>
 							)}
+						</div>
+					) : (
+						<div className="p-3">
+							<Button size="md" onClick={() => changeActiveTab('owners')} isFullWidth>
+								{localeLn('CheckOwners')}
+							</Button>
 						</div>
 					)}
 				</div>
