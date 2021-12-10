@@ -2,6 +2,7 @@ import Scrollbars from 'react-custom-scrollbars'
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
+import Button from 'components/Common/Button'
 
 const FilterAttribute = ({ attributes }) => {
 	const [attributeFilter, setAttributeFilter] = useState([])
@@ -41,9 +42,9 @@ const FilterAttribute = ({ attributes }) => {
 	}
 
 	return (
-		<div ref={filterModalRef} className="inline-block">
+		<div ref={filterModalRef} className="inline-block md:relative">
 			<div
-				className="mx-4 inline-flex cursor-pointer px-4 py-2 bg-dark-primary-2 button-wrapper rounded-md"
+				className="md:mx-4 inline-flex cursor-pointer px-4 py-2 bg-dark-primary-2 button-wrapper rounded-md"
 				onClick={() => setShowFilterModal(!showFilterModal)}
 			>
 				<svg
@@ -70,19 +71,14 @@ const FilterAttribute = ({ attributes }) => {
 				</h1>
 			</div>
 			{showFilterModal && (
-				<div
-					className="absolute max-w-xs md:max-w-full mr-4 sm:mr-4 z-20 mt-2 px-4 right-0 bg-dark-primary-2 rounded-md"
-					style={{
-						width: `22rem`,
-					}}
-				>
+				<div className="absolute mr-4 z-20 mt-2 right-0 bg-dark-primary-2 rounded-md w-72">
 					<Scrollbars
 						autoHeight
 						autoHeightMax={`30rem`}
 						renderView={(props) => <div {...props} id="scrollableDiv" />}
 					>
 						<div className=" p-4">
-							<h1 className="text-white font-semibold text-xl">{localeLn('Attributes')}</h1>
+							<h1 className="text-white font-semibold text-xl mb-2">{localeLn('Attributes')}</h1>
 							<div>
 								{Object.keys(attributes).map((attribute, index) => (
 									<AttributeItem
@@ -97,13 +93,10 @@ const FilterAttribute = ({ attributes }) => {
 							</div>
 						</div>
 					</Scrollbars>
-					<div className="py-4">
-						<button
-							onClick={onClickApply}
-							className="w-full outline-none rounded-md bg-transparent text-sm font-semibold py-2 bg-primary text-gray-100"
-						>
+					<div className="p-4">
+						<Button onClick={onClickApply} isFullWidth size="sm">
 							{localeLn('Apply')}
-						</button>
+						</Button>
 					</div>
 				</div>
 			)}
@@ -135,22 +128,21 @@ const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attribu
 		<div>
 			<button
 				onClick={() => setIsOpen(!isOpen)}
-				className="flex flex-row justify-end items-center w-full text-white rounded-md px-3 py-3 mr-2 border-2 border-gray-800"
+				className="flex flex-row justify-between items-center w-full text-white p-2"
 			>
-				<p className="flex-grow justify-self-start">{attribute}</p>
+				<p className="font-medium text-lg">{attribute}</p>
 				<svg
 					width="10"
 					height="10"
 					viewBox="0 0 21 19"
 					fill="none"
 					xmlns="http://www.w3.org/2000/svg"
-					className="flex-shrink"
 				>
 					<path d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z" fill="white" />
 				</svg>
 			</button>
 			{isOpen && (
-				<div className="max-w-sm mx-auto p-2 mb-3 border-2 border-gray-800 rounded-md">
+				<div className="max-w-sm mx-auto p-2 mb-3 rounded-md bg-blue-400 bg-opacity-5">
 					{Object.keys(attributes[attribute]).map((value, index) => {
 						return (
 							<div
@@ -161,9 +153,7 @@ const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attribu
 									<input
 										className="text-white w-4 h-4 mr-2 focus:ring-indigo-400 focus:ring-opacity-25 border border-gray-300 rounded cursor-pointer"
 										type="checkbox"
-										onChange={() => {
-											addAttribute({ [attribute]: value })
-										}}
+										onChange={() => addAttribute({ [attribute]: value })}
 										checked={checkIfObjectExist({ [attribute]: value })}
 									/>
 									<p className="font-thin text-white text-sm py-1 md:py-2">{value}</p>
