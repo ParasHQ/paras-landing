@@ -290,8 +290,8 @@ const Nav = () => {
 							</Link>
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block">
-							<a href="https://stats.paras.id" target="_blank" className="flex cursor-pointer ">
-								{localeLn('Stats')}
+							<a href="https://comic.paras.id" target="_blank" className="flex cursor-pointer ">
+								{localeLn('Comics')}
 							</a>
 						</div>
 						<div className="px-3">
@@ -356,8 +356,8 @@ const Nav = () => {
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
-								<a href="https://stats.paras.id" target="_blank" className="p-4 block w-full">
-									{localeLn('Stats')}
+								<a href="https://comic.paras.id" target="_blank" className="p-4 block w-full">
+									{localeLn('Comics')}
 								</a>
 							</div>
 						</div>
