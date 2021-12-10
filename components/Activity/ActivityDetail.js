@@ -309,8 +309,8 @@ const ActivityDetail = ({ activity }) => {
 
 	const fetchData = async () => {
 		const url = activity.token_id
-			? `${process.env.V2_API_URL}/token?token_id=${activity.token_id}`
-			: `${process.env.V2_API_URL}/token-series?token_series_id=${activity.token_series_id}`
+			? `${process.env.V2_API_URL}/token?token_id=${activity.token_id}&contract_id=${activity.contract_id}`
+			: `${process.env.V2_API_URL}/token-series?token_series_id=${activity.token_series_id}&contract_id=${activity.contract_id}`
 
 		const resp = await cachios.get(url, {
 			ttl: 60,
