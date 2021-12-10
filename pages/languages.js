@@ -101,6 +101,18 @@ const LanguagesPage = () => {
 							</div>
 						</div>
 
+						<div className="w-64 px-4 mb-12">
+							<div>Russian</div>
+							<div className="mt-2">
+								<a
+									onClick={() => setLang('ru')}
+									className="underline text-2xl text-gray-100 font-bold" /* href="/ru" */
+								>
+									Русский
+								</a>
+							</div>
+						</div>
+
 						<div className="w-64 px-4 mb-12 opacity-50">
 							<div>
 								French <span className="text-xs">(Needs Contributors)</span>
@@ -119,17 +131,6 @@ const LanguagesPage = () => {
 							<div className="mt-2">
 								<a className="underline text-2xl text-gray-100 font-bold" /* href="/ko" */>
 									한국어
-								</a>
-							</div>
-						</div>
-
-						<div className="w-64 px-4 mb-12 opacity-50">
-							<div>
-								Russian <span className="text-xs">(Needs Contributors)</span>
-							</div>
-							<div className="mt-2">
-								<a className="underline text-2xl text-gray-100 font-bold" /* href="/ru" */>
-									Русский
 								</a>
 							</div>
 						</div>
