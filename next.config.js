@@ -19,6 +19,7 @@ const moduleExports = {
 		NFT_CONTRACT_ID: process.env.NFT_CONTRACT_ID,
 		WHITELIST_CONTRACT_ID: process.env.WHITELIST_CONTRACT_ID,
 		REPORT_URL: process.env.REPORT_URL,
+		PARAS_TOKEN_CONTRACT: process.env.PARAS_TOKEN_CONTRACT,
 	},
 	async redirects() {
 		return [
@@ -33,7 +34,7 @@ const moduleExports = {
 		/**
 		 * Provide the locales you want to support in your application
 		 */
-		locales: ['en', 'zh', 'es'], //, "fr", "ko", "ru", "vi"],
+		locales: ['en', 'zh', 'es', 'ru'], //, "fr", "ko", "ru", "vi"],
 		/**
 		 * This is the default locale you want to be used when visiting
 		 * a non-locale prefixed path.

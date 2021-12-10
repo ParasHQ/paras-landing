@@ -157,6 +157,13 @@ function MyApp({ Component, pageProps }) {
 
 			store.setCurrentUser(currentUser.accountId)
 			store.setUserBalance(currentUser.balance)
+
+			const parasBalance = await near.wallet
+				.account()
+				.viewFunction(process.env.PARAS_TOKEN_CONTRACT, `ft_balance_of`, {
+					account_id: currentUser.accountId,
+				})
+			store.setParasBalance(parasBalance)
 		}
 		getNearUsdPrice()
 		store.setInitialized(true)

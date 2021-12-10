@@ -8,8 +8,9 @@ import Link from 'next/link'
 import useStore from 'lib/store'
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
-import { parseImgUrl, prettyBalance } from 'utils/common'
+import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
 import ChooseAccountModal from 'components/Modal/ChooseAccountModal'
+import Scrollbars from 'react-custom-scrollbars'
 
 const User = () => {
 	const store = useStore()
@@ -163,13 +164,38 @@ const User = () => {
 				)}
 			</div>
 			{showAccountModal && (
-				<div className="absolute right-0 w-56 pt-4 z-10">
-					<div className="p-2 shadow-inner bg-dark-primary-2 rounded-md overflow-hidden">
-						<div className="flex justify-between items-center">
-							<div className="px-2 text-gray-100">
-								<p className="truncate">{store.currentUser}</p>
-								<p className="text-lg">{prettyBalance(store.userBalance.available, 24, 4)} Ⓝ</p>
+				<div className="absolute right-0 w-64 pt-4 z-10" style={{ maxHeight: '90vh' }}>
+					<Scrollbars
+						autoHeight
+						autoHeightMax={'70vh'}
+						renderView={(props) => <div {...props} id="scrollableDiv" />}
+					>
+						<div className="p-2 shadow-inner bg-dark-primary-2 rounded-md overflow-hidden">
+							<div className="w-full px-2 text-gray-100">
+								<p className="truncate font-bold text-xl mb-2">
+									{prettyTruncate(store.currentUser, 18, 'address')}
+								</p>
 								<div>
+									<div className="flex justify-between items-end">
+										<p className="font-medium text-sm">NEAR</p>
+										<p className="font-medium">
+											{prettyBalance(store.userBalance.available, 24, 4)} Ⓝ
+										</p>
+									</div>
+									<div className="flex justify-between items-end">
+										<p className="font-medium text-sm">PARAS</p>
+										{store.parasBalance === 0 ? (
+											<a
+												className="text-sm text-gray-100 hover:opacity-75 font-normal"
+												href="https://app.ref.finance/#wrap.near|token.paras.near"
+												target="_blank"
+											>
+												{localeLn('NavGetParas')}
+											</a>
+										) : (
+											<p className="font-medium">{prettyBalance(store.parasBalance, 18, 4)} ℗</p>
+										)}
+									</div>
 									<a
 										className="text-sm text-gray-100 hover:opacity-75"
 										href="https://wallet.near.org/"
@@ -178,69 +204,63 @@ const User = () => {
 										{localeLn('NavViewWallet')}
 									</a>
 								</div>
-								<div
-									className="text-gray-200 hover:opacity-75 text-sm cursor-pointer"
-									onClick={onClickSwitchAccount}
-								>
-									{localeLn('NavSwitchAccount')}
-								</div>
 							</div>
-						</div>
-						<hr className="my-2" />
-						<div onClick={_createCard}>
-							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								{localeLn('NavCreateCard')}
-							</a>
-						</div>
-						<div onClick={_createColllection}>
-							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								{localeLn('NavCreateCollection')}
-							</a>
-						</div>
-						<div onClick={_createPublication}>
-							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								{localeLn('NavCreatePublication')}
-							</a>
-						</div>
-						<hr className="my-2" />
-						<Link href={`/${store.currentUser}`}>
-							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								{localeLn('NavMyProfile')}
-							</a>
-						</Link>
-						<Link href="/my-bids">
-							<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
-								{localeLn('NavMyBids')}
-							</a>
-						</Link>
-						<button
-							onClick={onClickEditProfile}
-							className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
-						>
-							{localeLn('EditProfile')}
-						</button>
-						{process.env.APP_ENV !== 'testnet' && (
+							<hr className="my-2" />
+							<div onClick={_createCard}>
+								<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
+									{localeLn('NavCreateCard')}
+								</a>
+							</div>
+							<div onClick={_createColllection}>
+								<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
+									{localeLn('NavCreateCollection')}
+								</a>
+							</div>
+							<div onClick={_createPublication}>
+								<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
+									{localeLn('NavCreatePublication')}
+								</a>
+							</div>
+							<hr className="my-2" />
+							<Link href={`/${store.currentUser}`}>
+								<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
+									{localeLn('NavMyProfile')}
+								</a>
+							</Link>
+							<Link href="/my-bids">
+								<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
+									{localeLn('NavMyBids')}
+								</a>
+							</Link>
 							<button
-								onClick={onClickSetting}
+								onClick={onClickEditProfile}
 								className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 							>
-								{localeLn('NavSettings')}
+								{localeLn('EditProfile')}
 							</button>
-						)}
-						<hr className="my-2" />
-						<div
-							className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
-							onClick={onClickSwitchAccount}
-						>
-							{localeLn('NavSwitchAccount')}
+							{process.env.APP_ENV !== 'testnet' && (
+								<button
+									onClick={onClickSetting}
+									className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+								>
+									{localeLn('NavSettings')}
+								</button>
+							)}
+							<hr className="my-2" />
+							<div
+								className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+								onClick={onClickSwitchAccount}
+							>
+								{localeLn('NavSwitchAccount')}
+							</div>
+							<p
+								onClick={_signOut}
+								className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+							>
+								{localeLn('NavLogOut')}
+							</p>
 						</div>
-						<p
-							onClick={_signOut}
-							className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
-						>
-							{localeLn('NavLogOut')}
-						</p>
-					</div>
+					</Scrollbars>
 				</div>
 			)}
 		</div>
