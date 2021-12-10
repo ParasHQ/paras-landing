@@ -65,7 +65,7 @@ const LanguagesPage = () => {
 				</div>
 				<div className="mt-8">
 					<div className="flex flex-wrap text-gray-100 px-24 py-4 justify-start">
-						<div className="w-64 px-4 mb-12">
+						<div className="md:w-1/4 px-4 mb-12">
 							<div>English</div>
 							<div className="mt-2">
 								<a
@@ -77,7 +77,7 @@ const LanguagesPage = () => {
 							</div>
 						</div>
 
-						<div className="w-64 px-4 mb-12">
+						<div className="md:w-1/4 px-4 mb-12">
 							<div>Simplified Chinese</div>
 							<div className="mt-2">
 								<a
@@ -89,7 +89,7 @@ const LanguagesPage = () => {
 							</div>
 						</div>
 
-						<div className="w-64 px-4 mb-12">
+						<div className="md:w-1/4 px-4 mb-12">
 							<div>Spanish</div>
 							<div className="mt-2">
 								<a
@@ -101,7 +101,7 @@ const LanguagesPage = () => {
 							</div>
 						</div>
 
-						<div className="w-64 px-4 mb-12">
+						<div className="md:w-1/4 px-4 mb-12">
 							<div>Russian</div>
 							<div className="mt-2">
 								<a
@@ -113,7 +113,7 @@ const LanguagesPage = () => {
 							</div>
 						</div>
 
-						<div className="w-64 px-4 mb-12 opacity-50">
+						<div className="md:w-1/4 px-4 mb-12 opacity-50">
 							<div>
 								French <span className="text-xs">(Needs Contributors)</span>
 							</div>
@@ -124,7 +124,7 @@ const LanguagesPage = () => {
 							</div>
 						</div>
 
-						<div className="w-64 px-4 mb-12 opacity-50">
+						<div className="md:w-1/4 px-4 mb-12 opacity-50">
 							<div>
 								Korean <span className="text-xs">(Needs Contributors)</span>
 							</div>
@@ -135,7 +135,7 @@ const LanguagesPage = () => {
 							</div>
 						</div>
 
-						<div className="w-64 px-4 mb-12 opacity-50">
+						<div className="md:w-1/4 px-4 mb-12 opacity-50">
 							<div>
 								Vietnamese <span className="text-xs">(Needs Contributors)</span>
 							</div>
