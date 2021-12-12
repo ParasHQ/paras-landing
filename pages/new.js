@@ -22,6 +22,7 @@ import CreateCollectionModal from 'components/Collection/CreateCollectionModal'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import Scrollbars from 'react-custom-scrollbars'
+import getConfig from 'config/near'
 
 const LIMIT = 10
 
@@ -96,6 +97,7 @@ const NewPage = () => {
 	})
 
 	const [showImgCrop, setShowImgCrop] = useState(false)
+	const [isLoading, setIsLoading] = useState(null)
 	const [imgFile, setImgFile] = useState('')
 	const [imgUrl, setImgUrl] = useState('')
 	const [step, setStep] = useState(0)
@@ -250,24 +252,70 @@ const NewPage = () => {
 		setStep(step + 1)
 	}
 
-	const _handleSubmitStep2 = (data) => {
-		const totalRoyalties = data.royalties?.reduce((a, b) => {
-			return parseFloat(a) + parseFloat(b.value)
-		}, 0)
+	const _handleSubmitStep2 = async (data) => {
+		setIsLoading(3)
 
-		if (totalRoyalties > 90) {
-			setShowAlertErr('Maximum royalty is 90%')
-			return
-		} else if (data.royalties?.length > 10) {
-			setShowAlertErr('Maximum 10 accounts for royalty split')
-			return
-		} else {
-			const newFormInput = {
-				...formInput,
-				...data,
+		try {
+			const totalRoyalties = data.royalties
+				?.map((r) => {
+					return {
+						accountId: r.accountId.trim(),
+						value: r.value,
+					}
+				})
+				.reduce((a, b) => {
+					return parseFloat(a) + parseFloat(b.value)
+				}, 0)
+
+			// check account id in royalties
+			if (data.royalties?.length > 0) {
+				for (const r of data.royalties) {
+					try {
+						const nearConfig = getConfig(process.env.APP_ENV || 'development')
+						const resp = await axios.post(nearConfig.nodeUrl, {
+							jsonrpc: '2.0',
+							id: 'dontcare',
+							method: 'query',
+							params: {
+								request_type: 'view_account',
+								finality: 'final',
+								account_id: r.accountId,
+							},
+						})
+						if (resp.data.error) {
+							throw new Error(`Account ${r.accountId} not exist`)
+						}
+					} catch (err) {
+						const message = err.message || 'Something went wrong, try again later'
+						toast.show({
+							text: <div className="font-semibold text-center text-sm">{message}</div>,
+							type: 'error',
+							duration: 2500,
+						})
+
+						setIsLoading(null)
+						return
+					}
+				}
 			}
-			setFormInput(newFormInput)
-			setShowConfirmModal(true)
+
+			if (totalRoyalties > 90) {
+				setShowAlertErr('Maximum royalty is 90%')
+				return
+			} else if (data.royalties?.length > 10) {
+				setShowAlertErr('Maximum 10 accounts for royalty split')
+				return
+			} else {
+				const newFormInput = {
+					...formInput,
+					...data,
+				}
+				setIsLoading(null)
+				setFormInput(newFormInput)
+				setShowConfirmModal(true)
+			}
+		} catch (err) {
+			sentryCaptureException(err)
 		}
 	}
 
@@ -960,7 +1008,11 @@ const NewPage = () => {
 								<div className="flex justify-between py-2">
 									<button onClick={_handleBack}>Back</button>
 									<div>{step + 1}/4</div>
-									<button type="submit" onClick={handleSubmit(_handleSubmitStep2)}>
+									<button
+										disabled={isLoading === 3}
+										type="submit"
+										onClick={handleSubmit(_handleSubmitStep2)}
+									>
 										{localeLn('Next')}
 									</button>
 								</div>
