@@ -41,7 +41,7 @@ const CategoryList = ({ listCategory, categoryId = '' }) => {
 								<a
 									className={`text-xl ${
 										category.category_id === categoryId ? 'text-gray-100' : 'text-gray-600'
-									} font-semibold`}
+									} font-semibold flex-shrink-0`}
 								>
 									<span>{category.name}</span>
 								</a>
