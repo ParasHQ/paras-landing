@@ -252,10 +252,31 @@ const ActivityLog = ({ query }) => {
 						</div>
 					</div>
 					<div
-						className={`relative pt-8 md:pt-20 md:w-1/3 md:block px-4 md:p-0 ${
+						className={`relative pt-8 md:pt-4 md:w-1/3 md:block px-4 md:p-0 ${
 							activityType === 'activity' && 'hidden'
 						} md:block`}
 					>
+						<div
+							className="flex cursor-pointer"
+							onClick={() => window.open('https://stats.paras.id', '_blank').focus()}
+						>
+							<div className="font-bold text-white text-3xl mb-4">Stats Page</div>
+							<svg
+								className="inline-block pl-1 -mt-2"
+								width="30"
+								height="30"
+								viewBox="0 0 24 24"
+								fill="none"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									fillRule="evenodd"
+									clipRule="evenodd"
+									d="M5 5V19H19V12H21V19C21 20.1 20.1 21 19 21H5C3.89 21 3 20.1 3 19V5C3 3.9 3.89 3 5 3H12V5H5ZM14 5V3H21V10H19V6.41L9.17 16.24L7.76 14.83L17.59 5H14Z"
+									fill="white"
+								/>
+							</svg>
+						</div>
 						<TopUsers data={topUser.buyers} userType={'buyer'} linkTo="/activity/top-buyers" />
 						<TopUsers
 							data={topUser.sellers}

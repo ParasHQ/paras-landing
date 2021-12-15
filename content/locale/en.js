@@ -12,6 +12,7 @@ const nav = {
 	CurrentlyWeOnly: 'Currently we only allow verified creator to create publication.',
 	NavJoinDiscord: 'Join Paras Discord',
 	NavViewWallet: 'View on NEAR Wallet',
+	NavGetParas: 'Get $PARAS on Ref',
 	NavSwitchAccount: 'Switch Account',
 	NavAddAccount: 'Add Account',
 	NavCreateCard: 'Create Card',
