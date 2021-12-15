@@ -172,18 +172,19 @@ const User = () => {
 					>
 						<div className="p-2 shadow-inner bg-dark-primary-2 rounded-md overflow-hidden">
 							<div className="w-full px-2 text-gray-100">
-								<p className="truncate font-bold text-xl mb-2">
+								<p className="truncate font-bold text-xl">
 									{prettyTruncate(store.currentUser, 18, 'address')}
 								</p>
+								<div className="w-6 bg-white mb-1" style={{ height: '0.10rem' }} />
 								<div>
 									<div className="flex justify-between items-end">
-										<p className="font-medium text-sm">NEAR</p>
+										<p className="font-medium text-sm opacity-80">NEAR</p>
 										<p className="font-medium">
 											{prettyBalance(store.userBalance.available, 24, 4)} Ⓝ
 										</p>
 									</div>
 									<div className="flex justify-between items-end">
-										<p className="font-medium text-sm">PARAS</p>
+										<p className="font-medium text-sm opacity-80">PARAS</p>
 										{store.parasBalance === 0 ? (
 											<a
 												className="text-sm text-gray-100 hover:opacity-75 font-normal"
