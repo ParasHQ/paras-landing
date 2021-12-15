@@ -11,6 +11,7 @@ import Setting from './Setting'
 import Cookies from 'js-cookie'
 import NotificationList from './Notification/NotificationList'
 import User from './User/User'
+import TokenNav from './Nav/TokenNav'
 
 const Nav = () => {
 	const [showMobileNav, setShowMobileNav] = useState(false)
@@ -263,12 +264,12 @@ const Nav = () => {
 						</div>
 					</div>
 					<div className="flex items-center -mx-4">
-						{/* <div className="px-3 text-gray-100 hidden md:block fireText">
+						{/* <div className="px-3 text-gray-100 hidden md:block fireText text-sm">
 							<Link href="/drops">
 								<a className="block w-full">{localeLn('Drops')}</a>
 							</Link>
 						</div> */}
-						<div className="px-3 text-gray-100 hidden md:block">
+						<div className="px-3 text-gray-100 hidden md:block text-sm">
 							{router.pathname === '/market' ? (
 								<a className="cursor-pointer" onClick={() => store.setMarketScrollPersist(0)}>
 									{localeLn('Market')}
@@ -279,20 +280,23 @@ const Nav = () => {
 								</Link>
 							)}
 						</div>
-						<div className="px-3 text-gray-100 hidden md:block">
+						<div className="px-3 text-gray-100 hidden md:block text-sm">
 							<Link href="/publication">
 								<a>{localeLn('Publication')}</a>
 							</Link>
 						</div>
-						<div className="px-3 text-gray-100 hidden md:block">
+						<div className="px-3 text-gray-100 hidden md:block text-sm">
 							<Link href="/activity">
 								<a>{localeLn('Activity')}</a>
 							</Link>
 						</div>
-						<div className="px-3 text-gray-100 hidden md:block">
+						<div className="px-3 text-gray-100 hidden md:block text-sm">
 							<a href="https://comic.paras.id" target="_blank" className="flex cursor-pointer ">
 								{localeLn('Comics')}
 							</a>
+						</div>
+						<div className="px-3 text-gray-100 hidden md:block text-sm">
+							<TokenNav />
 						</div>
 						<div className="px-3">
 							{store.currentUser ? (
@@ -358,6 +362,24 @@ const Nav = () => {
 							<div className="text-gray-100 ">
 								<a href="https://comic.paras.id" target="_blank" className="p-4 block w-full">
 									{localeLn('Comics')}
+								</a>
+							</div>
+							<div className="text-gray-100 ">
+								<a
+									href="https://ipfs.fleek.co/ipfs/bafybeihu6atdada45rmx4sszny6sahrzas4tuzrpuufdcpe6b63r6ugdce"
+									target="_blank"
+									className="p-4 block w-full"
+								>
+									{localeLn('Whitepaper')}
+								</a>
+							</div>
+							<div className="text-gray-100 ">
+								<a
+									href="https://app.ref.finance/#wrap.near|token.paras.near"
+									target="_blank"
+									className="p-4 block w-full"
+								>
+									{localeLn('NavGetParas')}
 								</a>
 							</div>
 						</div>
