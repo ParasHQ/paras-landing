@@ -27,7 +27,7 @@ const Nav = () => {
 	const { localeLn } = useIntl()
 	useEffect(() => {
 		const onClickEv = (e) => {
-			if (mobileNavRef && !mobileNavRef.current.contains(e.target)) {
+			if (mobileNavRef && !mobileNavRef?.current?.contains(e.target)) {
 				setShowMobileNav(false)
 			}
 		}
