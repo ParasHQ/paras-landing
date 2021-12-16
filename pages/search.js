@@ -238,7 +238,7 @@ const tokensParams = (_page = 0, query) => {
 	const params = {
 		search: query.q,
 		exclude_total_burn: true,
-		__sort: parseSortQuery(query.sort),
+		__sort: query.sort ? parseSortQuery(query.sort) : undefined,
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
 		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,

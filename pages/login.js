@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import near from 'lib/near'
@@ -6,9 +6,13 @@ import Nav from 'components/Nav'
 import useStore from 'lib/store'
 import Footer from 'components/Footer'
 import { useIntl } from 'hooks/useIntl'
+import Button from 'components/Common/Button'
+
 const LoginPage = () => {
 	const store = useStore()
 	const router = useRouter()
+	const [isLoading, setIsLoading] = useState(false)
+
 	const { localeLn } = useIntl()
 	useEffect(() => {
 		if (store.currentUser) {
@@ -17,6 +21,7 @@ const LoginPage = () => {
 	}, [store.currentUser])
 
 	const _signIn = () => {
+		setIsLoading(true)
 		near.login()
 	}
 
@@ -80,12 +85,9 @@ const LoginPage = () => {
 							</div>
 						</div>
 						<div className="mt-4">
-							<button
-								onClick={() => _signIn()}
-								className="outline-none h-12 w-full mt-4 rounded-md bg-transparent font-semibold px-4 py-2 bg-primary text-gray-100 "
-							>
-								{localeLn('LoginWithNEAR')}
-							</button>
+							<Button onClick={() => _signIn()} isFullWidth isDisabled={isLoading}>
+								{isLoading ? localeLn('LoadingLoading') : localeLn('LoginWithNEAR')}
+							</Button>
 						</div>
 						<div className="mt-8 text-center">
 							<a
