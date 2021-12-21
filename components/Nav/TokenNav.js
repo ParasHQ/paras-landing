@@ -29,8 +29,16 @@ const TokenNav = () => {
 
 	return (
 		<div ref={tokenNavRef} className="relative">
-			<div className="cursor-pointer text-center" onClick={toggleTokenModal}>
-				Token
+			<div className="cursor-pointer text-center flex items-center" onClick={toggleTokenModal}>
+				<span>Token</span>
+				<span>
+					<svg fill="none" width="16" height="16">
+						<path
+							d="M8 11.414l4.707-4.707a1 1 0 00-1.414-1.414L8 8.586 4.707 5.293a1 1 0 10-1.414 1.414L8 11.414z"
+							fill="#fff"
+						/>
+					</svg>
+				</span>
 			</div>
 			{openDetail && (
 				<div className="absolute right-0 max-w-xs w-48">

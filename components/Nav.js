@@ -27,7 +27,7 @@ const Nav = () => {
 	const { localeLn } = useIntl()
 	useEffect(() => {
 		const onClickEv = (e) => {
-			if (mobileNavRef && !mobileNavRef.current.contains(e.target)) {
+			if (mobileNavRef && !mobileNavRef?.current?.contains(e.target)) {
 				setShowMobileNav(false)
 			}
 		}
@@ -309,7 +309,7 @@ const Nav = () => {
 									</div>
 								</div>
 							) : (
-								<Link href="/login">
+								<Link href="/login" as={router.asPath}>
 									<a className="text-gray-100 ">{localeLn('Login')}</a>
 								</Link>
 							)}
