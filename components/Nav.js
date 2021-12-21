@@ -309,7 +309,7 @@ const Nav = () => {
 									</div>
 								</div>
 							) : (
-								<Link href="/login">
+								<Link href="/login" as={router.asPath}>
 									<a className="text-gray-100 ">{localeLn('Login')}</a>
 								</Link>
 							)}
