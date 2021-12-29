@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 import near from 'lib/near'
 import { useToast } from 'hooks/useToast'
 import {
+	checkIfCIDValid,
 	compressImg,
 	dataURLtoFile,
 	parseGetTokenIdfromUrl,
@@ -233,7 +234,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	const uploadThumbnail = async () => {
 		// eslint-disable-next-line no-unused-vars
 		const [protocol, path] = thumbnail.split('://')
-		if (protocol === 'ipfs') {
+		if (protocol === 'ipfs' || checkIfCIDValid(thumbnail)) {
 			return thumbnail
 		}
 
