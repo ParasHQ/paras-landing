@@ -140,6 +140,11 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
 	}
 }
 
+export const checkIfCIDValid = (url) => {
+	const cid = new CID(url)
+	return CID.isCID(cid)
+}
+
 export const dataURLtoFile = (dataurl, filename) => {
 	let arr = dataurl.split(','),
 		mime = arr[0].match(/:(.*?);/)[1],
