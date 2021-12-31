@@ -31,9 +31,6 @@ const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 		}
 
 		try {
-			if (receiverId === near.currentUser.accountId) {
-				throw new Error(`Cannot transfer to self`)
-			}
 			const nearConfig = getConfig(process.env.APP_ENV || 'development')
 			const resp = await axios.post(nearConfig.nodeUrl, {
 				jsonrpc: '2.0',
