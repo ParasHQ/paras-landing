@@ -10,12 +10,16 @@ import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackMintToken } from 'lib/ga'
+import axios from 'axios'
+import getConfig from 'config/near'
+import { useToast } from 'hooks/useToast'
 
 const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [isSelfMint, setIsSelfMint] = useState(true)
 	const [receiverId, setReceiverId] = useState('')
 	const { localeLn } = useIntl()
+	const toast = useToast()
 	const onTransfer = async () => {
 		if (!near.currentUser) {
 			setShowLogin(true)
@@ -23,7 +27,36 @@ const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 		}
 		const params = {
 			token_series_id: data.token_series_id,
-			receiver_id: isSelfMint ? near.currentUser.accountId : receiverId.toLocaleLowerCase(),
+			receiver_id: isSelfMint ? near.currentUser.accountId : receiverId,
+		}
+
+		try {
+			if (receiverId === near.currentUser.accountId) {
+				throw new Error(`Cannot transfer to self`)
+			}
+			const nearConfig = getConfig(process.env.APP_ENV || 'development')
+			const resp = await axios.post(nearConfig.nodeUrl, {
+				jsonrpc: '2.0',
+				id: 'dontcare',
+				method: 'query',
+				params: {
+					request_type: 'view_account',
+					finality: 'final',
+					account_id: receiverId,
+				},
+			})
+			if (resp.data.error) {
+				throw new Error(`Account ${receiverId} not exist`)
+			}
+		} catch (err) {
+			sentryCaptureException(err)
+			const message = err.message || 'Something went wrong, try again later'
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{message}</div>,
+				type: 'error',
+				duration: 2500,
+			})
+			return
 		}
 
 		trackMintToken(data.token_series_id)
