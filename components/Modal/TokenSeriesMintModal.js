@@ -23,7 +23,7 @@ const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 		}
 		const params = {
 			token_series_id: data.token_series_id,
-			receiver_id: isSelfMint ? near.currentUser.accountId : receiverId,
+			receiver_id: isSelfMint ? near.currentUser.accountId : receiverId.toLocaleLowerCase(),
 		}
 
 		trackMintToken(data.token_series_id)
