@@ -236,8 +236,8 @@ const SubmissionDetail = ({ submission, updateData }) => {
 								pathname: router.pathname,
 								query: {
 									...router.query,
-									...{ tokenSeriesId: localToken?.token_series_id },
-									...{ prevAs: router.asPath },
+									tokenSeriesId: localToken?.token_series_id,
+									contractId: localToken?.contract_id,
 								},
 							}}
 							as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}`}
