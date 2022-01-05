@@ -28,7 +28,10 @@ function TokenDetailModal({ tokens = [] }) {
 
 	useEffect(() => {
 		if (router.query.tokenId && activeToken === null) {
-			const token = tokens.find((token) => token?.token_id === router.query.tokenId)
+			const token = tokens.find(
+				(token) =>
+					token?.token_id === router.query.tokenId && token?.contract_id === router.query.contractId
+			)
 			setActiveToken(token)
 		} else {
 			setActiveToken(null)
