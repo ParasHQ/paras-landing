@@ -420,17 +420,13 @@ const ActivityDetail = ({ activity }) => {
 								<Link
 									href={{
 										pathname: router.pathname,
-										query: activity.token_id
-											? {
-													...router.query,
-													...{ tokenId: localToken?.token_id },
-													...{ prevAs: router.asPath },
-											  }
-											: {
-													...router.query,
-													...{ tokenSeriesId: localToken?.token_series_id },
-													...{ prevAs: router.asPath },
-											  },
+										query: {
+											...router.query,
+											...(activity.token_id
+												? { tokenId: localToken?.token_id }
+												: { tokenSeriesId: localToken?.token_series_id }),
+											contractId: localToken?.contract_id,
+										},
 									}}
 									as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
 										activity.token_id ? `/${localToken?.token_id}` : ''
