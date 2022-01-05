@@ -141,6 +141,7 @@ const CardInfo = {
 	SalePrice: 'Sale price',
 	Receive: 'Receive',
 	Royalty: 'Royalty',
+	Views: 'Views',
 	Fee: 'Fee',
 	Cancel: 'Cancel',
 	RemoveListing: 'Remove Listing',
