@@ -547,6 +547,7 @@ const CardPublication = ({ localToken, deleteCard }) => {
 					imgUrl={parseImgUrl(localToken.metadata.media, null, {
 						width: `600`,
 						useOriginal: process.env.APP_ENV === 'production' ? false : true,
+						isMediaCdn: localToken.isMediaCdn,
 					})}
 					imgBlur={localToken.metadata.blurhash}
 					token={{

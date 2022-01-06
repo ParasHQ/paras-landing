@@ -14,7 +14,7 @@ const ActivityDetailPage = ({ errorCode, activity, token }) => {
 	const headMeta = {
 		title: 'Activity — Paras',
 		description: descriptionMaker(activity, token),
-		image: `${parseImgUrl(token.metadata.media)}`,
+		image: `${parseImgUrl(token.metadata.media, null, { isMediaCdn: token.isMediaCdn })}`,
 	}
 
 	return (
