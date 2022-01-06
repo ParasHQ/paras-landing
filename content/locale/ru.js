@@ -136,6 +136,7 @@ const CardInfo = {
 	SalePrice: 'Цена Продажи',
 	Receive: 'Получить',
 	Royalty: 'Роялти',
+	Views: 'взгляды',
 	Fee: 'Комиссия',
 	Cancel: 'Отменить',
 	RemoveListing: 'Очистить Список',
