@@ -5,7 +5,7 @@ import Head from 'next/head'
 import Footer from 'components/Footer'
 import { useIntl } from 'hooks/useIntl'
 import Link from 'next/link'
-import { prettyTruncate } from 'utils/common'
+import { parseImgUrl, prettyTruncate } from 'utils/common'
 
 const LIMIT = 12
 
@@ -105,7 +105,10 @@ const Categories = () => {
 											<div className="w-1/2 h-full md:h-1/2 mb-4 rounded">
 												<img
 													className="object-cover w-full md:h-72 h-48 p-1"
-													src={`https://paras-cdn.imgix.net/${category?.token_preview[0].metadata.media}?w=200`}
+													src={parseImgUrl(
+														`https://paras-cdn.imgix.net/${category?.token_preview[0].metadata.media}?w=200`,
+														null
+													)}
 												/>
 											</div>
 											<div className="w-1/2 md:h-72 h-48">
@@ -113,13 +116,19 @@ const Categories = () => {
 													<div className="w-full md:h-1/2">
 														<img
 															className="object-cover w-full md:h-full h-24 p-1"
-															src={`https://paras-cdn.imgix.net/${category?.token_preview[1].metadata.media}?w=200`}
+															src={parseImgUrl(
+																`https://paras-cdn.imgix.net/${category?.token_preview[1].metadata.media}?w=200`,
+																null
+															)}
 														/>
 													</div>
 													<div className="w-full md:h-1/2">
 														<img
 															className="object-cover w-full md:h-full h-24 p-1"
-															src={`https://paras-cdn.imgix.net/${category?.token_preview[2].metadata.media}?w=200`}
+															src={parseImgUrl(
+																`https://paras-cdn.imgix.net/${category?.token_preview[2].metadata.media}?w=200`,
+																null
+															)}
 														/>
 													</div>
 												</div>
@@ -133,9 +142,15 @@ const Categories = () => {
 											<p className="text-xl hover:underline">{category.name}</p>
 										</a>
 									</Link>
-									<p className="-mt-1 mb-2 text-gray-400 text-sm">
-										{localeLn('CuratedBy')} {category.curators[0]}
-									</p>
+									<div className="flex flex-row -mt-1 mb-2 text-gray-400 text-sm">
+										<p className="w-28 text-sm">{localeLn('CuratedBy')}</p>
+										<div className="w-full">
+											<p>
+												{category.curators.map((curator) => curator)}
+												{category.curators.length > 1 && <span>, </span>}
+											</p>
+										</div>
+									</div>
 									<div
 										className="category-description text-gray-200 max-w-lg"
 										dangerouslySetInnerHTML={{
