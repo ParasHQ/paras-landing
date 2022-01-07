@@ -105,10 +105,10 @@ const Categories = () => {
 											<div className="w-1/2 h-full md:h-1/2 mb-4 rounded">
 												<img
 													className="object-cover w-full md:h-72 h-48 p-1"
-													src={parseImgUrl(
-														`https://paras-cdn.imgix.net/${category?.token_preview[0].metadata.media}?w=200`,
-														null
-													)}
+													src={parseImgUrl(category?.token_preview[0].metadata.media, null, {
+														width: `200`,
+														useOriginal: process.env.APP_ENV === 'production' ? false : true,
+													})}
 												/>
 											</div>
 											<div className="w-1/2 md:h-72 h-48">
@@ -116,19 +116,19 @@ const Categories = () => {
 													<div className="w-full md:h-1/2">
 														<img
 															className="object-cover w-full md:h-full h-24 p-1"
-															src={parseImgUrl(
-																`https://paras-cdn.imgix.net/${category?.token_preview[1].metadata.media}?w=200`,
-																null
-															)}
+															src={parseImgUrl(category?.token_preview[1].metadata.media, null, {
+																width: `200`,
+																useOriginal: process.env.APP_ENV === 'production' ? false : true,
+															})}
 														/>
 													</div>
 													<div className="w-full md:h-1/2">
 														<img
 															className="object-cover w-full md:h-full h-24 p-1"
-															src={parseImgUrl(
-																`https://paras-cdn.imgix.net/${category?.token_preview[2].metadata.media}?w=200`,
-																null
-															)}
+															src={parseImgUrl(category?.token_preview[2].metadata.media, null, {
+																width: `200`,
+																useOriginal: process.env.APP_ENV === 'production' ? false : true,
+															})}
 														/>
 													</div>
 												</div>
@@ -143,12 +143,9 @@ const Categories = () => {
 										</a>
 									</Link>
 									<div className="flex flex-row -mt-1 mb-2 text-gray-400 text-sm">
-										<p className="w-28 text-sm">{localeLn('CuratedBy')}</p>
+										<p className="w-32 text-sm">{localeLn('CuratedBy')}</p>
 										<div className="w-full">
-											<p>
-												{category.curators.map((curator) => curator)}
-												{category.curators.length > 1 && <span>, </span>}
-											</p>
+											<p>{category.curators.join(', ')}</p>
 										</div>
 									</div>
 									<div
