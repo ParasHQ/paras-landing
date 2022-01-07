@@ -386,7 +386,13 @@ const SpecialCard = ({
 						<div className="w-full m-auto">
 							<Card
 								special
-								imgUrl={localToken ? parseImgUrl(localToken.metadata.media) : parseImgUrl(imgUrl)}
+								imgUrl={
+									localToken
+										? parseImgUrl(localToken.metadata.media, null, {
+												isMediaCdn: localToken.isMediaCdn,
+										  })
+										: parseImgUrl(imgUrl, null)
+								}
 								imgBlur={blurhash}
 								disableFlip
 								token={{
