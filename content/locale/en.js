@@ -580,6 +580,12 @@ const collection = {
 	Type: 'Type',
 }
 
+const categories = {
+	Categories: 'Categories',
+	ExploreAllCategoriesOnParas: 'Explore All Categories on Paras',
+	CuratedBy: 'Curated by : ',
+}
+
 import { config } from './config.js'
 const data = {
 	common,
@@ -603,6 +609,7 @@ const data = {
 	search,
 	newCollection,
 	collection,
+	categories,
 }
 
 export const en = config(data)

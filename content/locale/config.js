@@ -20,6 +20,7 @@ export const config = ({
 	search,
 	newCollection,
 	collection,
+	categories,
 }) => {
 	return {
 		defaultAll: {
@@ -167,6 +168,10 @@ export const config = ({
 		'/collection/[collection_id]': {
 			...common,
 			...collection,
+		},
+		'/categories': {
+			...common,
+			...categories,
 		},
 	}
 }
