@@ -2,6 +2,7 @@ import CID from 'cids'
 import Compressor from 'compressorjs'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
+import crypto from 'crypto'
 
 TimeAgo.addLocale(en)
 export const timeAgo = new TimeAgo('en-US')
@@ -114,6 +115,15 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
 				transformationList.push('w=800')
 			}
 			return `https://paras-cdn.imgix.net/${cid}?${transformationList.join('&')}`
+		} else if (opts.isMediaCdn) {
+			const sha1Url = sha1(url)
+			let transformationList = []
+			if (opts.width) {
+				transformationList.push(`w=${opts.width}`)
+			} else {
+				transformationList.push('w=800')
+			}
+			return `https://paras-cdn.imgix.net/${sha1Url}?${transformationList.join('&')}`
 		}
 		return url
 	} else {
@@ -208,4 +218,11 @@ export const parseGetTokenIdfromUrl = (url) => {
 
 export const capitalize = (words) => {
 	return words[0].toUpperCase() + words.slice(1)
+}
+
+export default function sha1(data, encoding) {
+	return crypto
+		.createHash('sha1')
+		.update(data)
+		.digest(encoding || 'hex')
 }

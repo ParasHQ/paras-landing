@@ -151,6 +151,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 									imgUrl={parseImgUrl(token.metadata.media, null, {
 										width: `600`,
 										useOriginal: process.env.APP_ENV === 'production' ? false : true,
+										isMediaCdn: token.isMediaCdn,
 									})}
 									imgBlur={token.metadata.blurhash}
 									token={{
