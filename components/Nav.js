@@ -241,6 +241,7 @@ const Nav = () => {
 										onChange={(event) => setSearchQuery(event.target.value)}
 										placeholder={localeLn('SearchByTitle')}
 										className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-sm font-medium"
+										style={{ WebkitAppearance: 'none' }}
 									/>
 								</div>
 							</form>
