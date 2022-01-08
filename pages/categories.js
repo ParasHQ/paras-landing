@@ -102,7 +102,7 @@ const Categories = () => {
 								<Link href={`/market/${category.category_id}`} shallow={true}>
 									<a className="cursor-pointer">
 										<div className="flex flex-row flex-wrap md:h-72 h-48">
-											{!category.token_preview[0] ? (
+											{category.token_preview.length < 3 ? (
 												<div className="w-full h-full md:h-1/2 mb-4 rounded">
 													<img
 														className="object-cover w-full md:h-72 h-48 p-1"
@@ -129,9 +129,7 @@ const Categories = () => {
 																<img
 																	className="object-cover w-full md:h-full h-24 p-1"
 																	src={parseImgUrl(
-																		category.token_preview[1]
-																			? category?.token_preview[1]?.metadata.media
-																			: category.coverImg,
+																		category?.token_preview[1]?.metadata.media,
 																		null,
 																		{
 																			width: `200`,
@@ -145,9 +143,7 @@ const Categories = () => {
 																<img
 																	className="object-cover w-full md:h-full h-24 p-1"
 																	src={parseImgUrl(
-																		category.token_preview[2]
-																			? category?.token_preview[2]?.metadata.media
-																			: category.coverImg,
+																		category?.token_preview[2]?.metadata.media,
 																		null,
 																		{
 																			width: `200`,
