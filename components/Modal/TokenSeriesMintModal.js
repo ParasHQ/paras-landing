@@ -30,30 +30,32 @@ const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 			receiver_id: isSelfMint ? near.currentUser.accountId : receiverId,
 		}
 
-		try {
-			const nearConfig = getConfig(process.env.APP_ENV || 'development')
-			const resp = await axios.post(nearConfig.nodeUrl, {
-				jsonrpc: '2.0',
-				id: 'dontcare',
-				method: 'query',
-				params: {
-					request_type: 'view_account',
-					finality: 'final',
-					account_id: receiverId,
-				},
-			})
-			if (resp.data.error) {
-				throw new Error(`Account ${receiverId} not exist`)
+		if (!isSelfMint) {
+			try {
+				const nearConfig = getConfig(process.env.APP_ENV || 'development')
+				const resp = await axios.post(nearConfig.nodeUrl, {
+					jsonrpc: '2.0',
+					id: 'dontcare',
+					method: 'query',
+					params: {
+						request_type: 'view_account',
+						finality: 'final',
+						account_id: receiverId,
+					},
+				})
+				if (resp.data.error) {
+					throw new Error(`Account ${receiverId} not exist`)
+				}
+			} catch (err) {
+				sentryCaptureException(err)
+				const message = err.message || 'Something went wrong, try again later'
+				toast.show({
+					text: <div className="font-semibold text-center text-sm">{message}</div>,
+					type: 'error',
+					duration: 2500,
+				})
+				return
 			}
-		} catch (err) {
-			sentryCaptureException(err)
-			const message = err.message || 'Something went wrong, try again later'
-			toast.show({
-				text: <div className="font-semibold text-center text-sm">{message}</div>,
-				type: 'error',
-				duration: 2500,
-			})
-			return
 		}
 
 		trackMintToken(data.token_series_id)
