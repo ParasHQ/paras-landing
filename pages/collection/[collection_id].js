@@ -7,7 +7,6 @@ import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import useStore from 'lib/store'
 import Head from 'next/head'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { parseImgUrl, parseSortQuery } from 'utils/common'
@@ -17,6 +16,7 @@ import CollectionStats from 'components/Collection/CollectionStats'
 import CollectionActivity from 'components/Collection/CollectionActivity'
 import FilterAttribute from 'components/Filter/FilterAttribute'
 import ReactLinkify from 'react-linkify'
+import ArtistVerified from 'components/Common/ArtistVerified'
 
 const LIMIT = 8
 const LIMIT_ACTIVITY = 20
@@ -243,16 +243,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					{collection?.collection}
 				</h1>
 				<div className="m-4 mt-0 text-center relative">
-					<h4 className="text-xl text-gray-300 self-center">
-						<span>
-							collection by{' '}
-							<span className="font-semibold">
-								<Link href={`/${collection?.creator_id}/creation`}>
-									<a className="font-semibold text-white border-b-2 border-transparent hover:border-white">
-										{collection?.creator_id}
-									</a>
-								</Link>
-							</span>
+					<h4 className="text-xl flex justify-center text-gray-300 self-center">
+						<span>collection by</span>
+						<span className="flex flex-row ml-1">
+							<ArtistVerified token={tokens?.[0]} />
 						</span>
 					</h4>
 					<ReactLinkify
