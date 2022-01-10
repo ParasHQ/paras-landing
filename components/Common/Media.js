@@ -82,7 +82,7 @@ const Media = ({
 	if (media?.type.includes('video')) {
 		return (
 			<video
-				className={`w-full h-full ${className} ${videoPadding && 'md:pt-0 pt-8'}`}
+				className={`w-full h-full ${className} ${videoPadding ? 'md:pt-0 pt-8' : ''}`}
 				playsInline
 				loop={videoLoop}
 				controls={videoControls}
