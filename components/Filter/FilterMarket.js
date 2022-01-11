@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 
-const FilterMarket = ({ isShowVerified = true }) => {
+const FilterMarket = ({ isShowVerified = true, isShowNotForSale = true }) => {
 	const filterModalRef = useRef()
 	const router = useRouter()
 
@@ -12,6 +12,9 @@ const FilterMarket = ({ isShowVerified = true }) => {
 	const [maxPrice, setMaxPrice] = useState(router.query.pmax || '')
 	const [isVerified, setIsVerified] = useState(
 		router.query.is_verified ? router.query.is_verified === 'true' : true
+	)
+	const [isNotForSale, setIsNotForSale] = useState(
+		router.query.is_notforsale ? router.query.is_notforsale === 'true' : true
 	)
 	const { localeLn } = useIntl()
 
@@ -56,6 +59,11 @@ const FilterMarket = ({ isShowVerified = true }) => {
 			} else {
 				setIsVerified(true)
 			}
+			if (router.query.is_notforsale) {
+				setIsNotForSale(router.query.is_notforsale === 'true')
+			} else {
+				setIsNotForSale(false)
+			}
 		}
 	}, [router.query])
 
@@ -66,6 +74,7 @@ const FilterMarket = ({ isShowVerified = true }) => {
 			...(minPrice && { pmin: minPrice }),
 			...(maxPrice && { pmax: maxPrice }),
 			...(isShowVerified && { is_verified: isVerified }),
+			...(isShowNotForSale && { is_notforsale: isNotForSale }),
 		}
 
 		if (minPrice === '') {
@@ -74,6 +83,10 @@ const FilterMarket = ({ isShowVerified = true }) => {
 		if (maxPrice === '') {
 			delete query.pmax
 		}
+
+		if (isNotForSale && minPrice === '') query.pmin = 0
+		else if (isNotForSale && minPrice !== '') query.pmin = minPrice
+		else query.pmin = ''
 
 		router.push({
 			query: query,
@@ -154,6 +167,17 @@ const FilterMarket = ({ isShowVerified = true }) => {
 									onChange={() => {
 										setIsVerified(!isVerified)
 									}}
+								/>
+							</div>
+						)}
+						{isShowNotForSale && (
+							<div className="mt-2 flex items-center justify-between">
+								<h1 className="text-white font-semibold text-xl mt-2">For Sale Only</h1>
+								<input
+									className="w-auto"
+									type="checkbox"
+									defaultChecked={isNotForSale}
+									onChange={() => setIsNotForSale(!isNotForSale)}
 								/>
 							</div>
 						)}
