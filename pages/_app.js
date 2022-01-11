@@ -112,6 +112,10 @@ function MyApp({ Component, pageProps }) {
 
 	const _init = async () => {
 		await near.init()
+
+		// remove key query string
+		router.replace(router.asPath.split('?')[0], undefined, { shallow: true })
+
 		const currentUser = await near.currentUser
 
 		Sentry.configureScope((scope) => {
