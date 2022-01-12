@@ -123,7 +123,7 @@ const collection = ({ userProfile, accountId }) => {
 				<div className="flex justify-end mt-4 md:mb-14 md:-mr-4">
 					<FilterMarket isShowVerified={false} isCollectibles={true} />
 				</div>
-				<div className="-mt-6">
+				<div className="-mt-4 md:-mt-6">
 					<TokenList
 						name={scrollCollection}
 						tokens={tokens}

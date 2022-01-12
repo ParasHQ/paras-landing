@@ -128,7 +128,7 @@ const creation = ({ userProfile, accountId }) => {
 				<div className="flex justify-end mt-4 md:mb-14 md:-mr-4">
 					<FilterMarket isShowVerified={false} />
 				</div>
-				<div className="-mt-6">
+				<div className="-mt-4 md:-mt-6">
 					{isFiltering ? (
 						<CardListLoader />
 					) : (
