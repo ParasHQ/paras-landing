@@ -48,7 +48,7 @@ const FilterMarket = ({
 			} else {
 				setSortBy(isCollectibles ? filter[1].key : filter[0].key)
 			}
-			if (router.query.pmin) {
+			if (router.query.pmin && router.query.pmin !== '0') {
 				setMinPrice(router.query.pmin)
 			} else {
 				setMinPrice('')
@@ -89,10 +89,6 @@ const FilterMarket = ({
 		}
 
 		if (isNotForSale && minPrice === '') query.pmin = 0
-		else if (isNotForSale && minPrice !== '') query.pmin = minPrice
-		else if (!isNotForSale && minPrice === 0) query.pmin = ''
-		else if (!isNotForSale && minPrice !== '') query.pmin = minPrice
-		else query.pmin = ''
 
 		router.push({
 			query: query,
