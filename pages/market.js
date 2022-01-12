@@ -146,7 +146,6 @@ const tokensParams = (_page = 0, query) => {
 		__skip: _page * LIMIT,
 		__limit: LIMIT,
 		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
-		is_notforsale: typeof query.is_notforsale !== 'undefined' ? query.is_notforsale : true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 	}

@@ -59,7 +59,6 @@ const collection = ({ userProfile, accountId }) => {
 			__skip: _page * LIMIT,
 			__limit: LIMIT,
 			__sort: parseSortTokenQuery(query.sort),
-			is_notforsale: typeof query.is_notforsale !== 'undefined' ? query.is_notforsale : false,
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 		}
