@@ -125,31 +125,19 @@ const FilterMarket = ({
 					<div className="bg-dark-primary-2 rounded-md p-4">
 						<h1 className="text-white font-semibold text-xl">{localeLn('SortBy')}</h1>
 						<div>
-							{!isCollectibles
-								? filter.map((item) => (
-										<button
-											key={item.key}
-											className={`rounded-md text-white px-3 py-1 inline-block mb-2 mr-2 border-2 border-gray-800 ${
-												sortBy === item.key && 'bg-gray-800'
-											}`}
-											onClick={() => setSortBy(item.key)}
-										>
-											<p>{item.value}</p>
-										</button>
-								  ))
-								: filter
-										.filter((item) => item.key !== 'marketupdate')
-										.map((item) => (
-											<button
-												key={item.key}
-												className={`rounded-md text-white px-3 py-1 inline-block mb-2 mr-2 border-2 border-gray-800 ${
-													sortBy === item.key && 'bg-gray-800'
-												}`}
-												onClick={() => setSortBy(item.key)}
-											>
-												<p>{item.value}</p>
-											</button>
-										))}
+							{filter
+								.filter((item) => (isCollectibles ? item.key !== 'marketupdate' : item.key))
+								.map((item) => (
+									<button
+										key={item.key}
+										className={`rounded-md text-white px-3 py-1 inline-block mb-2 mr-2 border-2 border-gray-800 ${
+											sortBy === item.key && 'bg-gray-800'
+										}`}
+										onClick={() => setSortBy(item.key)}
+									>
+										<p>{item.value}</p>
+									</button>
+								))}
 						</div>
 						<h1 className="text-white font-semibold text-xl mt-2">{localeLn('Price')}</h1>
 						<form onSubmit={onClickApply} className={`flex w-full space-x-2`}>
