@@ -122,7 +122,7 @@ const collection = ({ userProfile, accountId }) => {
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'collection'} />
 				<div className="flex justify-end mt-4 md:mb-14 md:-mr-4">
-					<FilterMarket isShowVerified={false} />
+					<FilterMarket isShowVerified={false} isCollectibles={true} />
 				</div>
 				<div className="-mt-6">
 					<TokenList

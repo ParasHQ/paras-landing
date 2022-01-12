@@ -2,7 +2,11 @@ import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 
-const FilterMarket = ({ isShowVerified = true, isShowNotForSale = true }) => {
+const FilterMarket = ({
+	isShowVerified = true,
+	isShowNotForSale = true,
+	isCollectibles = false,
+}) => {
 	const filterModalRef = useRef()
 	const router = useRouter()
 
@@ -42,7 +46,7 @@ const FilterMarket = ({ isShowVerified = true, isShowNotForSale = true }) => {
 			if (router.query.sort) {
 				setSortBy(router.query.sort)
 			} else {
-				setSortBy(filter[0].key)
+				setSortBy(isCollectibles ? filter[1].key : filter[0].key)
 			}
 			if (router.query.pmin) {
 				setMinPrice(router.query.pmin)
@@ -86,6 +90,7 @@ const FilterMarket = ({ isShowVerified = true, isShowNotForSale = true }) => {
 
 		if (isNotForSale && minPrice === '') query.pmin = 0
 		else if (isNotForSale && minPrice !== '') query.pmin = minPrice
+		else if (!isNotForSale && minPrice === 0) query.pmin = ''
 		else query.pmin = ''
 
 		router.push({
@@ -120,17 +125,31 @@ const FilterMarket = ({ isShowVerified = true, isShowNotForSale = true }) => {
 					<div className="bg-dark-primary-2 rounded-md p-4">
 						<h1 className="text-white font-semibold text-xl">{localeLn('SortBy')}</h1>
 						<div>
-							{filter.map((item) => (
-								<button
-									key={item.key}
-									className={`rounded-md text-white px-3 py-1 inline-block mb-2 mr-2 border-2 border-gray-800 ${
-										sortBy === item.key && 'bg-gray-800'
-									}`}
-									onClick={() => setSortBy(item.key)}
-								>
-									<p>{item.value}</p>
-								</button>
-							))}
+							{!isCollectibles
+								? filter.map((item) => (
+										<button
+											key={item.key}
+											className={`rounded-md text-white px-3 py-1 inline-block mb-2 mr-2 border-2 border-gray-800 ${
+												sortBy === item.key && 'bg-gray-800'
+											}`}
+											onClick={() => setSortBy(item.key)}
+										>
+											<p>{item.value}</p>
+										</button>
+								  ))
+								: filter
+										.filter((item) => item.key !== 'marketupdate')
+										.map((item) => (
+											<button
+												key={item.key}
+												className={`rounded-md text-white px-3 py-1 inline-block mb-2 mr-2 border-2 border-gray-800 ${
+													sortBy === item.key && 'bg-gray-800'
+												}`}
+												onClick={() => setSortBy(item.key)}
+											>
+												<p>{item.value}</p>
+											</button>
+										))}
 						</div>
 						<h1 className="text-white font-semibold text-xl mt-2">{localeLn('Price')}</h1>
 						<form onSubmit={onClickApply} className={`flex w-full space-x-2`}>
