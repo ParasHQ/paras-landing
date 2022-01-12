@@ -76,7 +76,6 @@ const creation = ({ userProfile, accountId }) => {
 		})
 		setPage(1)
 		setTokens(res.data.data.results)
-		console.log('res.data.data.results (creation): ', res.data.data.results)
 		if (res.data.data.results.length < LIMIT) {
 			setHasMore(false)
 		} else {

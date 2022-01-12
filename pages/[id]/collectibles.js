@@ -6,6 +6,9 @@ import { useEffect, useState } from 'react'
 import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import Profile from 'components/Profile/Profile'
+import FilterMarket from 'components/Filter/FilterMarket'
+import { parseSortTokenQuery } from 'utils/common'
+import { parseNearAmount } from 'near-api-js/lib/utils/format'
 
 const LIMIT = 12
 
@@ -30,11 +33,7 @@ const collection = ({ userProfile, accountId }) => {
 
 		setIsFetching(true)
 		const res = await axios.get(`${process.env.V2_API_URL}/token`, {
-			params: {
-				owner_id: router.query.id,
-				__skip: page * LIMIT,
-				__limit: LIMIT,
-			},
+			params: tokensParams(page, router.query),
 		})
 		const newData = await res.data.data
 
@@ -47,6 +46,38 @@ const collection = ({ userProfile, accountId }) => {
 			setHasMore(true)
 		}
 		setIsFetching(false)
+	}
+
+	useEffect(() => {
+		updateFilter(router.query)
+	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.is_notforsale])
+
+	const tokensParams = (_page = 0, query) => {
+		const params = {
+			exclude_total_burn: true,
+			owner_id: accountId,
+			__skip: _page * LIMIT,
+			__limit: LIMIT,
+			__sort: parseSortTokenQuery(query.sort),
+			is_notforsale: typeof query.is_notforsale !== 'undefined' ? query.is_notforsale : false,
+			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
+			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
+		}
+
+		return params
+	}
+
+	const updateFilter = async (query) => {
+		const res = await axios(`${process.env.V2_API_URL}/token`, {
+			params: tokensParams(0, query),
+		})
+		setPage(1)
+		setTokens(res.data.data.results)
+		if (res.data.data.results.length < LIMIT) {
+			setHasMore(false)
+		} else {
+			setHasMore(true)
+		}
 	}
 
 	const headMeta = {
@@ -90,7 +121,10 @@ const collection = ({ userProfile, accountId }) => {
 			<Nav />
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'collection'} />
-				<div className="mt-8">
+				<div className="flex justify-end mt-4 md:mb-14 md:-mr-4">
+					<FilterMarket isShowVerified={false} />
+				</div>
+				<div className="-mt-6">
 					<TokenList
 						name={scrollCollection}
 						tokens={tokens}
