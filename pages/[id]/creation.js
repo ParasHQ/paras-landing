@@ -6,6 +6,10 @@ import CardList from 'components/TokenSeries/CardList'
 import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import Profile from 'components/Profile/Profile'
+import FilterMarket from 'components/Filter/FilterMarket'
+import { parseSortQuery } from 'utils/common'
+import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import CardListLoader from 'components/Card/CardListLoader'
 
 const LIMIT = 12
 
@@ -18,6 +22,7 @@ const creation = ({ userProfile, accountId }) => {
 	const [page, setPage] = useState(0)
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
+	const [isFiltering, setIsFiltering] = useState(true)
 
 	useEffect(async () => {
 		await fetchCreatorTokens()
@@ -30,12 +35,7 @@ const creation = ({ userProfile, accountId }) => {
 
 		setIsFetching(true)
 		const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
-			params: {
-				exclude_total_burn: true,
-				creator_id: router.query.id,
-				__skip: page * LIMIT,
-				__limit: LIMIT,
-			},
+			params: tokensParams(page, router.query),
 		})
 		const newData = await res.data.data
 
@@ -48,6 +48,40 @@ const creation = ({ userProfile, accountId }) => {
 			setHasMore(true)
 		}
 		setIsFetching(false)
+	}
+
+	useEffect(() => {
+		updateFilter(router.query)
+	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.is_notforsale])
+
+	const tokensParams = (_page = 0, query) => {
+		const params = {
+			exclude_total_burn: true,
+			creator_id: accountId,
+			__skip: _page * LIMIT,
+			__limit: LIMIT,
+			__sort: parseSortQuery(query.sort),
+			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
+			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
+		}
+
+		return params
+	}
+
+	const updateFilter = async (query) => {
+		setIsFiltering(true)
+		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
+			params: tokensParams(0, query),
+		})
+		setPage(1)
+		setTokens(res.data.data.results)
+		if (res.data.data.results.length < LIMIT) {
+			setHasMore(false)
+		} else {
+			setHasMore(true)
+		}
+
+		setIsFiltering(false)
 	}
 
 	const headMeta = {
@@ -91,13 +125,20 @@ const creation = ({ userProfile, accountId }) => {
 			<Nav />
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'creation'} />
-				<div className="mt-8">
-					<CardList
-						name={scrollCreation}
-						tokens={tokens}
-						fetchData={fetchCreatorTokens}
-						hasMore={hasMore}
-					/>
+				<div className="flex justify-end mt-4 md:mb-14 md:-mr-4">
+					<FilterMarket isShowVerified={false} />
+				</div>
+				<div className="-mt-4 md:-mt-6">
+					{isFiltering ? (
+						<CardListLoader />
+					) : (
+						<CardList
+							name={scrollCreation}
+							tokens={tokens}
+							fetchData={fetchCreatorTokens}
+							hasMore={hasMore}
+						/>
+					)}
 				</div>
 			</div>
 			<Footer />
