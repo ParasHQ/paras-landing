@@ -137,6 +137,7 @@ const CardInfo = {
 	SalePrice: 'Precio de venta',
 	Receive: 'Recibir',
 	Royalty: 'Regalía',
+	Views: 'Puntos De Vista',
 	Fee: 'Comisión',
 	Cancel: 'Cancelar',
 	RemoveListing: 'Eliminar listado',

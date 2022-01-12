@@ -3,7 +3,14 @@ import { parseImgUrl } from 'utils/common'
 import axios from 'axios'
 import FileType from 'file-type/browser'
 
-const Media = ({ className, url, videoControls = false, videoMuted = true, videoLoop = false }) => {
+const Media = ({
+	className,
+	url,
+	videoControls = false,
+	videoMuted = true,
+	videoLoop = false,
+	videoPadding = false,
+}) => {
 	const [media, setMedia] = useState(null)
 	const [isLoading, setIsLoading] = useState(true)
 
@@ -75,12 +82,13 @@ const Media = ({ className, url, videoControls = false, videoMuted = true, video
 	if (media?.type.includes('video')) {
 		return (
 			<video
-				className={`w-full h-full ${className}`}
-				autoPlay
+				className={`w-full h-full ${className} ${videoPadding ? 'md:pt-0 pt-8' : ''}`}
 				playsInline
 				loop={videoLoop}
 				controls={videoControls}
 				muted={videoMuted}
+				// onMouseOver={(event) => event.target.play()}
+				// onMouseOut={(event) => event.target.pause()}
 			>
 				<source type="video/mp4" src={media.url}></source>
 			</video>

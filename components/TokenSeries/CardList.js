@@ -65,8 +65,8 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 				pathname: router.pathname,
 				query: {
 					...router.query,
-					...{ tokenSeriesId: token.token_series_id },
-					...{ prevAs: router.asPath },
+					tokenSeriesId: token.token_series_id,
+					contractId: token.contract_id,
 				},
 			},
 			`/token/${token.contract_id}::${token.token_series_id}`,

@@ -140,6 +140,7 @@ const CardInfo = {
 	SalePrice: '售价',
 	Receive: '接收',
 	Royalty: '版税',
+	Views: '意見',
 	Fee: '费用',
 	Cancel: '取消',
 	RemoveListing: '删除列表',

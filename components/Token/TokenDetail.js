@@ -179,6 +179,7 @@ const TokenDetail = ({ token, className }) => {
 								videoControls={true}
 								videoLoop={true}
 								videoMuted={true}
+								videoPadding={false}
 							/>
 						) : (
 							<div className="w-1/2 h-full md:w-full m-auto flex items-center">

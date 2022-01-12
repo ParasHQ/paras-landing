@@ -141,6 +141,7 @@ const CardInfo = {
 	SalePrice: 'Sale price',
 	Receive: 'Receive',
 	Royalty: 'Royalty',
+	Views: 'Views',
 	Fee: 'Fee',
 	Cancel: 'Cancel',
 	RemoveListing: 'Remove Listing',
@@ -579,6 +580,12 @@ const collection = {
 	Type: 'Type',
 }
 
+const categories = {
+	Categories: 'Categories',
+	ExploreAllCategoriesOnParas: 'Explore All Categories on Paras',
+	CuratedBy: 'Curated by : ',
+}
+
 import { config } from './config.js'
 const data = {
 	common,
@@ -602,6 +609,7 @@ const data = {
 	search,
 	newCollection,
 	collection,
+	categories,
 }
 
 export const en = config(data)

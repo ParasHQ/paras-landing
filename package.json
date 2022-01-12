@@ -8,6 +8,7 @@
 		"start": "next start",
 		"lint": "next lint",
 		"format": "prettier --write .",
+		"prettier-check": "prettier --check .",
 		"prepare": "husky install"
 	},
 	"dependencies": {
