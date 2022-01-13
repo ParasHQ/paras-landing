@@ -19,8 +19,8 @@ const ActivityLog = ({ query }) => {
 	const {
 		activityList,
 		setActivityList,
-		activityListPage,
-		setActivityListPage,
+		activityListIdBefore,
+		setActivityListIdBefore,
 		activityListHasMore,
 		setActivityListHasMore,
 	} = useStore()
@@ -88,7 +88,7 @@ const ActivityLog = ({ query }) => {
 
 	const _fetchData = async (fetchQuery, initial = false) => {
 		const _activityList = initial ? [] : activityList
-		const _activityListPage = initial ? 0 : activityListPage
+		const _activityListIdBefore = initial ? null : activityListIdBefore
 		const _activityListHasMore = initial ? true : activityListHasMore
 
 		if (!_activityListHasMore || isFetching) {
@@ -103,7 +103,7 @@ const ActivityLog = ({ query }) => {
 
 			const res = await axios.get(`${process.env.V2_API_URL}/activities?${_filter}`, {
 				params: {
-					__skip: _activityListPage * FETCH_TOKENS_LIMIT,
+					_id_before: _activityListIdBefore,
 					__limit: FETCH_TOKENS_LIMIT,
 				},
 			})
@@ -111,11 +111,11 @@ const ActivityLog = ({ query }) => {
 
 			const newActivityList = [..._activityList, ...newData.results]
 			setActivityList(newActivityList)
-			setActivityListPage(_activityListPage + 1)
 			if (newData.results.length === 0) {
 				setActivityListHasMore(false)
 			} else {
 				setActivityListHasMore(true)
+				setActivityListIdBefore(newData.results[newData.results.length - 1]._id)
 			}
 		} catch (err) {
 			sentryCaptureException(err)

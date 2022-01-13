@@ -5,7 +5,7 @@ import Head from 'next/head'
 import Footer from 'components/Footer'
 import { useIntl } from 'hooks/useIntl'
 import Link from 'next/link'
-import { parseImgUrl, prettyTruncate } from 'utils/common'
+import { parseImgUrl } from 'utils/common'
 
 const LIMIT = 12
 
@@ -88,7 +88,7 @@ const Categories = () => {
 			</Head>
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12 px-5">
-				<div className="mb-20">
+				<div className="mb-10">
 					<h1 className="text-4xl font-bold text-gray-100 mb-2">{localeLn('Categories')}</h1>
 					<p className="text-xl text-gray-100">{localeLn('ExploreAllCategoriesOnParas')}</p>
 				</div>
@@ -172,12 +172,9 @@ const Categories = () => {
 											<p>{category.curators.join(', ')}</p>
 										</div>
 									</div>
-									<div
-										className="category-description text-gray-200 max-w-lg"
-										dangerouslySetInnerHTML={{
-											__html: prettyTruncate(category.description, 100, 'address'),
-										}}
-									></div>
+									<div className="category-description text-gray-200 max-w-lg">
+										<p className="truncate text-ellipsis">{category.description_short}</p>
+									</div>
 								</div>
 							</div>
 						)

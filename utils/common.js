@@ -208,6 +208,18 @@ export const parseSortQuery = (sort) => {
 	}
 }
 
+export const parseSortTokenQuery = (sort) => {
+	if (!sort || sort === 'cardcreate') {
+		return '_id::-1'
+	} else if (sort === 'cardcreateasc') {
+		return '_id::1'
+	} else if (sort === 'pricedesc') {
+		return 'price::-1'
+	} else if (sort === 'priceasc') {
+		return 'price::1'
+	}
+}
+
 export const parseGetTokenIdfromUrl = (url) => {
 	const pathname = new URL(url).pathname.split('/')
 	return {
