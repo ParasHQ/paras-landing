@@ -113,10 +113,9 @@ function MyApp({ Component, pageProps }) {
 	const _init = async () => {
 		await near.init()
 
-		// remove key query string
-		router.replace(router.asPath.split('?')[0], undefined, { shallow: true })
+		removeQueryTransactionFromNear()
 
-		const currentUser = await near.currentUser
+		const currentUser = near.currentUser
 
 		Sentry.configureScope((scope) => {
 			const user = currentUser ? { id: currentUser.accountId } : null
@@ -183,6 +182,17 @@ function MyApp({ Component, pageProps }) {
 				counter(url)
 			}
 		}
+	}
+
+	const removeQueryTransactionFromNear = () => {
+		const query = router.query
+		delete query.account_id
+		delete query.public_key
+		delete query.transactionHashes
+		delete query.all_keys
+		delete query.successLogin
+
+		router.replace({ pathname: router.pathname, query }, undefined, { shallow: true })
 	}
 
 	const getNearUsdPrice = async () => {
