@@ -112,7 +112,7 @@ function MyApp({ Component, pageProps }) {
 
 	const _init = async () => {
 		await near.init()
-
+    
 		removeQueryTransactionFromNear()
 
 		const currentUser = near.currentUser
