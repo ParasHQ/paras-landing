@@ -141,7 +141,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 					<div className="flex flex-1 bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 						<div>
 							<p className="text-sm text-white font-bold">{localeLn('Views')}</p>
-							<p className="text-gray-100 font-semibold">
+							<div className="text-gray-100 font-semibold">
 								<div className="flex gap-1 items-start">
 									<svg
 										className="w-5 h-5"
@@ -165,7 +165,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 									</svg>
 									{localToken.view}
 								</div>
-							</p>
+							</div>
 						</div>
 					</div>
 				)}
