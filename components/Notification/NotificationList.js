@@ -18,8 +18,8 @@ const NotificationList = () => {
 		setNotificationList,
 		notificationUnreadList,
 		setNotificationUnreadList,
-		notificationListPage,
-		setNotificationListPage,
+		notificationListIdBefore,
+		setNotificationListIdBefore,
 		notificationListHasMore,
 		setNotificationListHasMore,
 		userProfile,
@@ -30,8 +30,8 @@ const NotificationList = () => {
 		setNotificationList: state.setNotificationList,
 		notificationUnreadList: state.notificationUnreadList,
 		setNotificationUnreadList: state.setNotificationUnreadList,
-		notificationListPage: state.notificationListPage,
-		setNotificationListPage: state.setNotificationListPage,
+		notificationListIdBefore: state.notificationListIdBefore,
+		setNotificationListIdBefore: state.setNotificationListIdBefore,
 		notificationListHasMore: state.notificationListHasMore,
 		setNotificationListHasMore: state.setNotificationListHasMore,
 		userProfile: state.userProfile,
@@ -91,7 +91,7 @@ const NotificationList = () => {
 			const res = await axios.get(`${process.env.V2_API_URL}/activities/notifications`, {
 				params: {
 					account_id: currentUser,
-					__skip: notificationListPage * LIMIT,
+					_id_before: notificationListIdBefore,
 					__limit: LIMIT,
 				},
 				headers: {
@@ -105,11 +105,11 @@ const NotificationList = () => {
 			setNotificationUnreadList(unreadList)
 			setNotificationList(newNotificationList)
 
-			setNotificationListPage(notificationListPage + 1)
 			if (newData.results.length === 0) {
 				setNotificationListHasMore(false)
 			} else {
 				setNotificationListHasMore(true)
+				setNotificationListIdBefore(newData.results[newData.results.length - 1]._id)
 			}
 		} catch (err) {
 			sentryCaptureException(err)
