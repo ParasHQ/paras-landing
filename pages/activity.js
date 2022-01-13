@@ -111,8 +111,6 @@ const ActivityLog = ({ query }) => {
 
 			const newActivityList = [..._activityList, ...newData.results]
 			setActivityList(newActivityList)
-			console.log(newData)
-			console.log(newData.results[newData.results.length - 1])
 			setActivityListIdBefore(newData.results[newData.results.length - 1]._id)
 			if (newData.results.length === 0) {
 				setActivityListHasMore(false)
