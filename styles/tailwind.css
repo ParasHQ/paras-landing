@@ -56,6 +56,10 @@ input::-webkit-inner-spin-button {
 	margin: 0;
 }
 
+input:-internal-autofill-selected {
+	transition: background-color 600000s, color 600000s;
+}
+
 /* Firefox */
 input[type='number'] {
 	-moz-appearance: textfield;
