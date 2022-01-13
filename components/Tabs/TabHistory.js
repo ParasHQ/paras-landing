@@ -9,7 +9,7 @@ const FETCH_TOKENS_LIMIT = 12
 
 const TabHistory = ({ localToken }) => {
 	const [history, setHistory] = useState([])
-	const [page, setPage] = useState(0)
+	const [idBefore, setIdBefore] = useState(null)
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 	const { localeLn } = useIntl()
@@ -28,7 +28,7 @@ const TabHistory = ({ localToken }) => {
 		setIsFetching(true)
 
 		const params = {
-			__skip: page * FETCH_TOKENS_LIMIT,
+			_id_before: idBefore,
 			__limit: FETCH_TOKENS_LIMIT,
 		}
 
@@ -50,7 +50,7 @@ const TabHistory = ({ localToken }) => {
 		const _hasMore = newData.results.length < FETCH_TOKENS_LIMIT ? false : true
 
 		setHistory(newHistory)
-		setPage(page + 1)
+		setIdBefore(newData.results[newData.results.length - 1]._id)
 		setHasMore(_hasMore)
 
 		setIsFetching(false)
