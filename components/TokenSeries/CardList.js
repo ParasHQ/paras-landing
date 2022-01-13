@@ -94,7 +94,7 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 				dataLength={tokens.length}
 				next={fetchData}
 				hasMore={hasMore}
-				loader={<CardListLoader />}
+				loader={<CardListLoader length={4} />}
 				className="-mx-4"
 			>
 				<animated.div className="flex flex-wrap select-none">
