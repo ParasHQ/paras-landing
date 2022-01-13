@@ -50,7 +50,7 @@ const TabHistory = ({ localToken }) => {
 		const _hasMore = newData.results.length < FETCH_TOKENS_LIMIT ? false : true
 
 		setHistory(newHistory)
-		setIdBefore(newData.results[newData.results.length - 1]._id)
+		if (_hasMore) setIdBefore(newData.results[newData.results.length - 1]._id)
 		setHasMore(_hasMore)
 
 		setIsFetching(false)
