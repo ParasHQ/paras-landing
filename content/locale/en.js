@@ -338,6 +338,7 @@ const common = {
 	Chapter: 'Chapter',
 	ReadNow: 'Read Now',
 	FlaggedByPARASStealing: 'WARNING: This profile has been flagged by PARAS due to art stealing',
+	FlaggedByPARASFake: "WARNING: This account uses someone else's identity",
 	UseOwnRisk:
 		"Paras' smart contract is not yet audited by well-known security organization or firm. Use at your own risk!",
 	...token,
