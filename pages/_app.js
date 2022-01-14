@@ -110,10 +110,12 @@ function MyApp({ Component, pageProps }) {
 		storage.setItem('currentPath', `${globalThis?.location.pathname}${globalThis?.location.search}`)
 	}, [])
 
+	useEffect(() => {
+		removeQueryTransactionFromNear()
+	}, [router.isReady])
+
 	const _init = async () => {
 		await near.init()
-
-		removeQueryTransactionFromNear()
 
 		const currentUser = near.currentUser
 
@@ -186,13 +188,16 @@ function MyApp({ Component, pageProps }) {
 
 	const removeQueryTransactionFromNear = () => {
 		const query = router.query
-		delete query.account_id
-		delete query.public_key
-		delete query.transactionHashes
-		delete query.all_keys
-		delete query.successLogin
 
-		router.replace({ pathname: router.pathname, query }, undefined, { shallow: true })
+		if (query.successLogin || query.public_key || query.all_keys) {
+			delete query.account_id
+			delete query.public_key
+			delete query.transactionHashes
+			delete query.all_keys
+			delete query.successLogin
+
+			router.replace({ pathname: router.pathname, query }, undefined, { shallow: true })
+		}
 	}
 
 	const getNearUsdPrice = async () => {
