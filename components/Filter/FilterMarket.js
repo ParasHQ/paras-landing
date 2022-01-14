@@ -18,7 +18,7 @@ const FilterMarket = ({
 		router.query.is_verified ? router.query.is_verified === 'true' : true
 	)
 	const [isNotForSale, setIsNotForSale] = useState(
-		router.query.is_notforsale ? router.query.is_notforsale === 'true' : true
+		router.query.is_notforsale ? router.query.is_notforsale === 'true' : false
 	)
 	const { localeLn } = useIntl()
 
