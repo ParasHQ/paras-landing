@@ -3,7 +3,7 @@ module.exports = {
 		removeDeprecatedGapUtilities: true,
 		purgeLayersByDefault: true,
 	},
-	purge: ['./pages/**/*.js', './components/**/*.js', './hooks/**/*.js'],
+	purge: ['./pages/**/*.js', './components/**/*.js', './hooks/**/*.js', './constants/*.js'],
 	theme: {
 		fontFamily: {
 			body: ['Anybody', 'sans-serif'],
