@@ -365,7 +365,11 @@ const Nav = () => {
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
-								<a href="https://comic.paras.id" target="_blank" className="p-4 block w-full">
+								<a
+									href="https://comic.paras.id?utm_source=paras-marketplace&utm_medium=website&utm_campaign=nav"
+									target="_blank"
+									className="p-4 block w-full"
+								>
 									{localeLn('Comics')}
 								</a>
 							</div>
