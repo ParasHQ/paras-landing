@@ -76,7 +76,11 @@ const Media = ({
 	}
 
 	if (media?.type.includes('image')) {
-		return <img className={`object-contain w-full h-full ${className}`} src={media.url} />
+		const isPng = media?.type === 'image/png'
+		const pixelated = isPng ? 'pixelated' : ''
+		return (
+			<img className={`object-contain w-full h-full ${className} ${pixelated}`} src={media.url} />
+		)
 	}
 
 	if (media?.type.includes('video')) {
