@@ -292,7 +292,11 @@ const Nav = () => {
 							</Link>
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block text-sm">
-							<a href="https://comic.paras.id" target="_blank" className="flex cursor-pointer ">
+							<a
+								href="https://comic.paras.id?utm_source=paras-marketplace&utm_medium=website&utm_campaign=nav"
+								target="_blank"
+								className="flex cursor-pointer"
+							>
 								{localeLn('Comics')}
 							</a>
 						</div>
