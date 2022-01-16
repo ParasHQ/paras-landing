@@ -5,19 +5,26 @@ import Head from 'next/head'
 import Nav from 'components/Nav'
 import Footer from 'components/Footer'
 import { useIntl } from 'hooks/useIntl'
-import CollectionTransactionList from 'components/Activity/CollectionTransactionDetail'
+import TopActivityListLoader from 'components/Activity/TopActivityListLoader'
+import CollectionTransactionDetail from 'components/Activity/CollectionTransactionDetail'
+import TokenDetailModal from 'components/Token/TokenDetailModal'
 
 const LIMIT = 30
 
-const TopBuyersPage = () => {
-	const [usersData, setUsersData] = useState([])
+const TopCollectionsPage = () => {
+	const [topCollectionData, setTopCollectionData] = useState([])
+	const [isLoading, setIsLoading] = useState(false)
+	const [localToken, setLocalToken] = useState(null)
+
 	const { localeLn } = useIntl()
 
 	const _fetchData = async () => {
+		setIsLoading(true)
 		const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=${LIMIT}`)
 
-		const newUserData = [...usersData, ...res.data.data.collections]
-		setUsersData(newUserData)
+		const newData = [...topCollectionData, ...res.data.data.collections]
+		setTopCollectionData(newData)
+		setIsLoading(false)
 	}
 
 	useEffect(() => {
@@ -65,7 +72,21 @@ const TopBuyersPage = () => {
 					<p className="ml-2 text-gray-400 text-lg">{localeLn('In7Days')}</p>
 				</div>
 				<div className="mt-8 mx-4">
-					<CollectionTransactionList data={usersData} />
+					{isLoading ? (
+						<TopActivityListLoader />
+					) : (
+						<>
+							<TokenDetailModal tokens={[localToken]} />
+							{topCollectionData?.map((collection, idx) => (
+								<CollectionTransactionDetail
+									data={collection}
+									key={collection.collection_id}
+									idx={idx}
+									setLocalToken={setLocalToken}
+								/>
+							))}
+						</>
+					)}
 				</div>
 			</div>
 			<Footer />
@@ -73,4 +94,4 @@ const TopBuyersPage = () => {
 	)
 }
 
-export default TopBuyersPage
+export default TopCollectionsPage
