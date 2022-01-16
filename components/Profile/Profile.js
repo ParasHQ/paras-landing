@@ -186,8 +186,8 @@ const Profile = ({ userProfile, activeTab }) => {
 					</p>
 				</div>
 			)}
-			<div className="flex justify-center mt-4">
-				<div className="flex -mx-4">
+			<div className="flex flex-row md:justify-center overflow-auto mt-4 py-2 w-full">
+				<div className="flex flex-row">
 					<div
 						className="px-4 relative"
 						onClick={() => router.push(`/${router.query.id}/collectibles`)}
@@ -210,6 +210,22 @@ const Profile = ({ userProfile, activeTab }) => {
 					>
 						<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Creation')}</h4>
 						{activeTab === 'creation' && (
+							<div
+								className="absolute left-0 right-0"
+								style={{
+									bottom: `-.25rem`,
+								}}
+							>
+								<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+							</div>
+						)}
+					</div>
+					<div
+						className="px-4 relative"
+						onClick={() => router.push(`/${router.query.id}/collections`)}
+					>
+						<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Collections')}</h4>
+						{activeTab === 'collections' && (
 							<div
 								className="absolute left-0 right-0"
 								style={{
