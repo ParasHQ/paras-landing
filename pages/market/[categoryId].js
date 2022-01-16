@@ -12,6 +12,7 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CategoryList from 'components/CategoryList'
 import AddCategoryModal from 'components/Modal/AddCategoryModal'
 import { useIntl } from 'hooks/useIntl'
+import { parse } from 'query-string'
 const LIMIT = 12
 
 export default function Category({ serverQuery, categoryList, _categoryDetail }) {
@@ -95,15 +96,19 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 	const _fetchData = async (initial = false) => {
 		const _hasMore = initial ? true : hasMoreCategoryCard[categoryId]
 		const _tokens = initial ? [] : categoryCardList[categoryId]
-		const _page = initial ? 0 : pageCategoryCardList[categoryId]
+		const _page = initial ? {} : pageCategoryCardList[categoryId]
 
 		if (!_hasMore || isFetching) {
 			return
 		}
 
 		setIsFetching(true)
+		const params = tokensParams({
+			...(router.query || serverQuery),
+			..._page,
+		})
 		const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(_page, router.query || serverQuery),
+			params: params,
 		})
 		const newData = await res.data.data
 		const newTokens = [..._tokens, ...newData.results]
@@ -112,10 +117,13 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 			[categoryId]: newTokens,
 		}
 
+		const lastData = newData.results[newData.results.length - 1]
 		setCategoryCardList(newCategoryData)
 		setPageCategoryCardList({
 			...pageCategoryCardList,
-			[categoryId]: _page + 1,
+			[categoryId]: {
+				_id_next: lastData._id,
+			},
 		})
 		if (newData.results.length < LIMIT) {
 			setHasMoreCategoryCard({
@@ -126,6 +134,14 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 			setHasMoreCategoryCard({
 				...hasMoreCategoryCard,
 				[categoryId]: true,
+			})
+
+			setPageCategoryCardList({
+				...pageCategoryCardList,
+				[categoryId]: {
+					_id_next: lastData._id,
+					updated_at_next: params.__sort.includes('updated_at') ? lastData.updated_at : null,
+				},
 			})
 		}
 		setIsFetching(false)
@@ -300,16 +316,21 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 	)
 }
 
-const tokensParams = (_page = 0, query) => {
+const tokensParams = (query) => {
+	const parsedSortQuery = parseSortQuery(query.sort)
 	const params = {
 		category_id: query.categoryId,
 		exclude_total_burn: true,
-		__sort: parseSortQuery(query.sort),
-		__skip: _page * LIMIT,
+		__sort: parsedSortQuery,
 		__limit: LIMIT,
 		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
+		...(query._id_next && { _id_next: query._id_next }),
+		...(query.lowest_price_next &&
+			parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
+		...(query.updated_at_next &&
+			parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
 	}
 	return params
 }

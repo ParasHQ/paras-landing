@@ -28,7 +28,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	const [attributes, setAttributes] = useState([])
 	const [tokens, setTokens] = useState([])
-	const [page, setPage] = useState(0)
+	const [idNext, setIdNext] = useState(null)
+	const [lowestPriceNext, setLowestPriceNext] = useState(null)
+	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [activityPage, setActivityPage] = useState(0)
 	const [stats, setStats] = useState({})
 	const [activities, setActivities] = useState([])
@@ -42,8 +44,15 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			return
 		}
 		setIsFetching(true)
+		const params = tokensParams({
+			...(router.query || serverQuery),
+			_id_next: idNext,
+			lowest_price_next: lowestPriceNext,
+			updated_at_next: updatedAtNext,
+		})
+
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(page, router.query || serverQuery),
+			params: params,
 		})
 
 		const stat = await axios(`${process.env.V2_API_URL}/collection-stats`, {
@@ -65,11 +74,15 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		setAttributes(newAttributes)
 		setStats(newStat)
 		setTokens(newTokens)
-		setPage(page + 1)
 		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
+
+			const lastData = newData.results[newData.results.length - 1]
+			setIdNext(lastData._id)
+			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 		}
 		setIsFetching(false)
 	}
@@ -102,7 +115,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		router.push('/new')
 	}
 
-	const tokensParams = (_page = 0, query) => {
+	const tokensParams = (query) => {
 		let params = {}
 		if (query.attributes) {
 			const attributesQuery = JSON.parse(query.attributes)
@@ -119,15 +132,20 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			})
 		}
 
+		const parsedSortQuery = query ? parseSortQuery(query.sort) : null
 		params = {
 			...params,
 			collection_id: collectionId,
 			exclude_total_burn: true,
-			__skip: _page * LIMIT,
 			__limit: LIMIT,
-			__sort: query ? parseSortQuery(query.sort) : null,
+			__sort: parsedSortQuery,
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
+			...(query._id_next && { _id_next: query._id_next }),
+			...(query.lowest_price_next &&
+				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
+			...(query.updated_at_next &&
+				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
 		}
 
 		return params
@@ -146,15 +164,21 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
+		const params = tokensParams(query || serverQuery)
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(0, query || serverQuery),
+			params: params,
 		})
-		setPage(1)
+
 		setTokens(res.data.data.results)
 		if (res.data.data.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
+
+			const lastData = res.data.data.results[res.data.data.results.length - 1]
+			setIdNext(lastData._id)
+			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 		}
 
 		setIsFiltering(false)
