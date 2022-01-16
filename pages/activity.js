@@ -7,7 +7,7 @@ import Footer from 'components/Footer'
 import useStore from 'lib/store'
 import ActivityDetail from 'components/Activity/ActivityDetail'
 import { useRouter } from 'next/router'
-import TopUsers from 'components/Activity/TopUsers'
+import ActivityTopUsers from 'components/Activity/ActivityTopUsers'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import FilterActivity from 'components/Filter/FilterActivity'
 import { sentryCaptureException } from 'lib/sentry'
@@ -277,8 +277,12 @@ const ActivityLog = ({ query }) => {
 								/>
 							</svg>
 						</div>
-						<TopUsers data={topUser.buyers} userType={'buyer'} linkTo="/activity/top-buyers" />
-						<TopUsers
+						<ActivityTopUsers
+							data={topUser.buyers}
+							userType={'buyer'}
+							linkTo="/activity/top-buyers"
+						/>
+						<ActivityTopUsers
 							data={topUser.sellers}
 							userType={'seller'}
 							className="mt-12"

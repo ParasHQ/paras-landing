@@ -55,7 +55,7 @@ const TopCollection = ({ collection, idx }) => {
 						</a>
 					</Link>
 				)}
-				<p className="text-base text-gray-400">{formatNearAmount(collection.total_sum)} Ⓝ</p>
+				<p className="text-base text-gray-400">{formatNearAmount(collection.total_sum, 2)} Ⓝ</p>
 			</div>
 		</div>
 	)
@@ -94,7 +94,7 @@ const TopUser = ({ user, idx }) => {
 						className="text-gray-100 hover:border-gray-100 font-semibold"
 					/>
 				)}
-				<p className="text-base text-gray-400">{formatNearAmount(user.total_sum)} Ⓝ</p>
+				<p className="text-base text-gray-400">{formatNearAmount(user.total_sum, 2)} Ⓝ</p>
 			</div>
 		</div>
 	)
