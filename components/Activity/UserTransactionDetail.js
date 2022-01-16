@@ -6,32 +6,9 @@ import Scrollbars from 'react-custom-scrollbars'
 import LinkToProfile from '../LinkToProfile'
 
 import { parseImgUrl } from 'utils/common'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
-import TokenDetailModal from 'components/Token/TokenDetailModal'
 import TopTransactionCard, { renderThumb } from './TopTransactionCard'
-
-const UserTransactionList = ({ usersData, fetchData, hasMore, type }) => {
-	const [localToken, setLocalToken] = useState(null)
-
-	return (
-		<>
-			<TokenDetailModal tokens={[localToken]} />
-			<InfiniteScroll dataLength={usersData.length} next={fetchData} hasMore={hasMore}>
-				{usersData.map((user, idx) => (
-					<UserTransactionDetail
-						data={user}
-						key={user.account_id}
-						idx={idx}
-						type={type}
-						setLocalToken={setLocalToken}
-					/>
-				))}
-			</InfiniteScroll>
-		</>
-	)
-}
 
 const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => {
 	const [profile, setProfile] = useState({})
@@ -54,7 +31,7 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => 
 						<div className="cursor-pointer w-20 h-20 rounded-full overflow-hidden bg-primary">
 							<img
 								src={parseImgUrl(profile?.imgUrl, null, {
-									width: `300`,
+									width: `200`,
 								})}
 								className="object-cover"
 							/>
@@ -103,4 +80,4 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => 
 	)
 }
 
-export default UserTransactionList
+export default UserTransactionDetail
