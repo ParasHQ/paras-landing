@@ -6,26 +6,7 @@ import Scrollbars from 'react-custom-scrollbars'
 import { parseImgUrl } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
-import TokenDetailModal from 'components/Token/TokenDetailModal'
 import TopTransactionCard, { renderThumb } from './TopTransactionCard'
-
-const CollectionTransactionList = ({ data }) => {
-	const [localToken, setLocalToken] = useState(null)
-
-	return (
-		<>
-			<TokenDetailModal tokens={[localToken]} />
-			{data.map((user, idx) => (
-				<CollectionTransactionDetail
-					data={user}
-					key={user.account_id}
-					idx={idx}
-					setLocalToken={setLocalToken}
-				/>
-			))}
-		</>
-	)
-}
 
 const CollectionTransactionDetail = ({ data, idx, setLocalToken }) => {
 	const { localeLn } = useIntl()
@@ -51,7 +32,7 @@ const CollectionTransactionDetail = ({ data, idx, setLocalToken }) => {
 							<div className="cursor-pointer w-20 h-20 rounded-full overflow-hidden bg-primary">
 								<img
 									src={parseImgUrl(colDetail?.media, null, {
-										width: `300`,
+										width: `200`,
 									})}
 									className="object-cover"
 								/>
@@ -99,4 +80,4 @@ const CollectionTransactionDetail = ({ data, idx, setLocalToken }) => {
 	)
 }
 
-export default CollectionTransactionList
+export default CollectionTransactionDetail
