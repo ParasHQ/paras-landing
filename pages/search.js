@@ -84,6 +84,7 @@ export default function SearchPage({ searchQuery }) {
 				collection_search: encodeURIComponent(query.q),
 				__skip: 0,
 				__limit: LIMIT,
+				__sort: 'isCreator::-1',
 			},
 		})
 		if (resColl.data.data.results.length === LIMIT) {
