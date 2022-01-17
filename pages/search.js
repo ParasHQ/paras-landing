@@ -13,6 +13,7 @@ import { parseSortQuery } from 'utils/common'
 import CardListLoader from 'components/Card/CardListLoader'
 import { useIntl } from 'hooks/useIntl'
 import PublicationListScroll from 'components/Publication/PublicationListScroll'
+import CollectionList from 'components/Collection/CollectionList'
 
 const LIMIT = 12
 
@@ -30,6 +31,11 @@ export default function SearchPage({ searchQuery }) {
 	const [pubPage, setPubPage] = useState(0)
 	const [pubIsFetch, setPubIsFetch] = useState(false)
 	const [pubHasMore, setPubHasMore] = useState(false)
+
+	const [collections, setCollections] = useState([])
+	const [collPage, setCollPage] = useState(0)
+	const [collIsFetch, setCollIsFetch] = useState(false)
+	const [collHasMore, setCollHasMore] = useState(false)
 
 	const [isRefreshing, setIsRefreshing] = useState(false)
 	const [activeTab, setActiveTab] = useState('card')
@@ -71,6 +77,22 @@ export default function SearchPage({ searchQuery }) {
 			setPubHasMore(false)
 		}
 		setPublication(resPub.data.data.results)
+
+		// Collection
+		const resColl = await axios(`${process.env.V2_API_URL}/collections`, {
+			params: {
+				collection_search: encodeURIComponent(query.q),
+				__skip: 0,
+				__limit: LIMIT,
+			},
+		})
+		if (resColl.data.data.results.length === LIMIT) {
+			setCollPage(1)
+			setCollHasMore(true)
+		} else {
+			setCollHasMore(false)
+		}
+		setCollections(resColl.data.data.results)
 
 		setIsRefreshing(false)
 	}, [query.q, query.sort, query.pmin, query.pmax, query.is_verified])
@@ -133,6 +155,30 @@ export default function SearchPage({ searchQuery }) {
 		setPubIsFetch(false)
 	}
 
+	const _fetchCollectionData = async () => {
+		if (!collHasMore || collIsFetch) return
+
+		setCollIsFetch(true)
+		const res = await axios(`${process.env.V2_API_URL}/collections`, {
+			params: {
+				collection_search: query.q,
+				__skip: collPage * LIMIT,
+				__limit: LIMIT,
+			},
+		})
+		const newData = await res.data.data
+
+		const newColl = [...collections, ...newData.results]
+		setCollections(newColl)
+		setCollPage(collPage + 1)
+		if (newData.results.length < LIMIT) {
+			setCollHasMore(false)
+		} else {
+			setCollHasMore(true)
+		}
+		setCollIsFetch(false)
+	}
+
 	const headMeta = {
 		title: localeLn('Search{searchQuery}Paras', {
 			searchQuery: searchQuery,
@@ -189,6 +235,14 @@ export default function SearchPage({ searchQuery }) {
 							<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Cards</h4>
 							{activeTab === 'card' && (
 								<div className="absolute left-0 -bottom-1">
+									<div className="mx-auto w-8 h-1 bg-gray-100 hover:w-full"></div>
+								</div>
+							)}
+						</div>
+						<div className="mx-4 relative" onClick={() => setActiveTab('collections')}>
+							<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Collections</h4>
+							{activeTab === 'collections' && (
+								<div className="absolute left-0 -bottom-1">
 									<div className="mx-auto w-8 h-1 bg-gray-100"></div>
 								</div>
 							)}
@@ -220,6 +274,13 @@ export default function SearchPage({ searchQuery }) {
 								/>
 							</div>
 						))}
+					{activeTab === 'collections' && (
+						<CollectionList
+							data={collections}
+							fetchData={_fetchCollectionData}
+							hasMore={collHasMore}
+						/>
+					)}
 					{activeTab === 'publication' && (
 						<PublicationListScroll
 							data={publication}
@@ -249,7 +310,7 @@ const tokensParams = (_page = 0, query) => {
 }
 
 export async function getServerSideProps({ query }) {
-	const searchQuery = query.q
+	const searchQuery = query.q || ''
 
 	return { props: { searchQuery } }
 }

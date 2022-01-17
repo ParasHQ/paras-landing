@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { parseImgUrl } from 'utils/common'
 import { useRouter } from 'next/router'
 import Profile from 'components/Profile/Profile'
+import { generateFromString } from 'generate-avatar'
 
 const LIMIT = 12
 
@@ -98,10 +99,17 @@ const Collections = ({ userProfile, accountId }) => {
 												<div className="w-full h-full mb-4 rounded">
 													<img
 														className="object-cover w-full md:h-72 h-full p-1 transform ease-in-out duration-75 hover:scale-105"
-														src={parseImgUrl(category?.media, null, {
-															width: `200`,
-															useOriginal: process.env.APP_ENV === 'production' ? false : true,
-														})}
+														src={parseImgUrl(
+															category?.media ||
+																`data:image/svg+xml;utf8,${generateFromString(
+																	category.collection_id
+																)}`,
+															null,
+															{
+																width: `200`,
+																useOriginal: process.env.APP_ENV === 'production' ? false : true,
+															}
+														)}
 													/>
 												</div>
 											</div>
