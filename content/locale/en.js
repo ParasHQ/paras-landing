@@ -339,6 +339,7 @@ const common = {
 	ReadNow: 'Read Now',
 	FlaggedByPARASStealing: 'WARNING: This profile has been flagged by PARAS due to art stealing',
 	FlaggedByPARASFake: "WARNING: This account uses someone else's identity",
+	FlaggedByPARASHacked: 'WARNING: The account has been hacked. Please contact the original creator',
 	UseOwnRisk:
 		"Paras' smart contract is not yet audited by well-known security organization or firm. Use at your own risk!",
 	...token,
