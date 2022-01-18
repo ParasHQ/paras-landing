@@ -337,6 +337,8 @@ const common = {
 	ReadNow: 'Leer Ahora',
 	FlaggedByPARASStealing: 'ADVERTENCIA: PARAS ha marcado este perfil por robo de arte',
 	FlaggedByPARASFake: 'ADVERTENCIA: Esta cuenta utiliza la identidad de otra persona.',
+	FlaggedByPARASHacked:
+		'ADVERTENCIA: La cuenta ha sido pirateada. Por favor, póngase en contacto con el creador original.',
 	UseOwnRisk:
 		"El contrato inteligente de 'Paras' aún no ha sido auditado por una organización o empresa de seguridad reconocida. ¡Úselo bajo su propio riesgo!",
 	...token,
