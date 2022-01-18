@@ -77,7 +77,7 @@ const Media = ({
 
 	if (media?.type.includes('image')) {
 		const isPng = media?.type === 'image/png'
-		const pixelated = isPng ? 'pixelated' : ''
+		const pixelated = isPng ? '' : ''
 		return (
 			<img className={`object-contain w-full h-full ${className} ${pixelated}`} src={media.url} />
 		)
