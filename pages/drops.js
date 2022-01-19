@@ -403,6 +403,7 @@ const SpecialCard = ({
 									copies: localToken?.copies || cardSupplyText,
 									tokenId: localToken?.tokenId,
 									createdAt: localToken?.createdAt,
+									is_creator: localToken?.is_creator,
 								}}
 								initialRotate={{
 									x: 0,
