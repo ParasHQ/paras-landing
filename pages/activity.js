@@ -72,6 +72,8 @@ const ActivityLog = ({ query }) => {
 		return `type=${filter}&`
 	}
 
+	const _filterVerified = (is_verified = true) => `is_verified=${is_verified}&`
+
 	const _filterMinMax = (filter, min, max) => {
 		if (filter === 'mint' || filter === 'transfer' || filter === 'burn') {
 			return ''
@@ -99,7 +101,8 @@ const ActivityLog = ({ query }) => {
 		try {
 			const _filter =
 				_filterQuery(fetchQuery?.filter) +
-				_filterMinMax(fetchQuery?.filter, fetchQuery?.pmin, fetchQuery?.pmax)
+				_filterMinMax(fetchQuery?.filter, fetchQuery?.pmin, fetchQuery?.pmax) +
+				_filterVerified(fetchQuery?.is_verified)
 
 			const res = await axios.get(`${process.env.V2_API_URL}/activities?${_filter}`, {
 				params: {
