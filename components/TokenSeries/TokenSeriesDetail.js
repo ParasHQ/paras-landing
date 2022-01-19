@@ -160,6 +160,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 										collection: token.metadata.collection || token.contract_id,
 										copies: token.metadata.copies,
 										creatorId: token.metadata.creator_id || token.contract_id,
+										is_creator: token.is_creator,
 									}}
 								/>
 							</div>
