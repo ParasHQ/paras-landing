@@ -110,13 +110,14 @@ function MyApp({ Component, pageProps }) {
 		storage.setItem('currentPath', `${globalThis?.location.pathname}${globalThis?.location.search}`)
 	}, [])
 
+	useEffect(() => {
+		removeQueryTransactionFromNear()
+	}, [router.isReady])
+
 	const _init = async () => {
 		await near.init()
 
-		// remove key query string
-		router.replace(router.asPath.split('?')[0], undefined, { shallow: true })
-
-		const currentUser = await near.currentUser
+		const currentUser = near.currentUser
 
 		Sentry.configureScope((scope) => {
 			const user = currentUser ? { id: currentUser.accountId } : null
@@ -182,6 +183,20 @@ function MyApp({ Component, pageProps }) {
 			if (window) {
 				counter(url)
 			}
+		}
+	}
+
+	const removeQueryTransactionFromNear = () => {
+		const query = router.query
+
+		if (query.successLogin || query.public_key || query.all_keys) {
+			delete query.account_id
+			delete query.public_key
+			delete query.transactionHashes
+			delete query.all_keys
+			delete query.successLogin
+
+			router.replace({ pathname: router.pathname, query }, undefined, { shallow: true })
 		}
 	}
 

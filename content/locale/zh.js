@@ -330,6 +330,8 @@ const common = {
 	Chapter: 'Chapter',
 	ReadNow: 'Read Now',
 	FlaggedByPARASStealing: '警告：由于艺术品被盗，此配置文件已被PARAS标记',
+	FlaggedByPARASFake: '警告: 此帐号使用其他人的身份',
+	FlaggedByPARASHacked: '警告：该帐户已被黑客入侵。请联系原作者',
 	UseOwnRisk: 'Paras的智能合约尚未由知名安全组织或公司审计。使用风险自负！',
 	...token,
 	...tab,

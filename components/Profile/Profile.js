@@ -4,6 +4,7 @@ import { parseImgUrl, prettyTruncate } from 'utils/common'
 import CopyLink from '../Common/CopyLink'
 import { useIntl } from 'hooks/useIntl'
 import useStore from 'lib/store'
+import { flagColor, flagText } from 'constants/flag'
 
 const Profile = ({ userProfile, activeTab }) => {
 	const router = useRouter()
@@ -179,10 +180,14 @@ const Profile = ({ userProfile, activeTab }) => {
 					</div>
 				</div>
 			</div>
-			{profileData?.isBanned && (
+			{profileData?.flag && (
 				<div>
-					<p className="text-white text-sm mb-2 mt-2 p-1 bg-red-600 rounded-md font-bold w-full mx-auto px-8 text-center max-w-2xl">
-						{localeLn('FlaggedByPARASStealing')}
+					<p
+						className={`text-white text-sm mb-2 mt-2 p-1 rounded-md font-bold w-full mx-auto px-8 text-center max-w-2xl ${
+							flagColor[profileData?.flag]
+						}`}
+					>
+						{localeLn(flagText[profileData?.flag])}
 					</p>
 				</div>
 			)}

@@ -88,7 +88,7 @@ const Categories = () => {
 			</Head>
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12 px-5">
-				<div className="mb-20">
+				<div className="mb-10">
 					<h1 className="text-4xl font-bold text-gray-100 mb-2">{localeLn('Categories')}</h1>
 					<p className="text-xl text-gray-100">{localeLn('ExploreAllCategoriesOnParas')}</p>
 				</div>

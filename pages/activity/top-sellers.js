@@ -1,41 +1,36 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import router from 'next/router'
 import Head from 'next/head'
 
 import Nav from 'components/Nav'
 import Footer from 'components/Footer'
-import UserTransactionList from 'components/Activity/UserTransactionDetail'
 import { useIntl } from 'hooks/useIntl'
+import TopActivityListLoader from 'components/Activity/TopActivityListLoader'
+import UserTransactionDetail from 'components/Activity/UserTransactionDetail'
+import TokenDetailModal from 'components/Token/TokenDetailModal'
+
 const LIMIT = 30
 
-const TopSellersPage = ({ topUser }) => {
-	const [usersData, setUsersData] = useState(topUser.sellers)
-	const [page, setPage] = useState(1)
-	const [isFetching, setIsFetching] = useState(false)
-	const [hasMore, setHasMore] = useState(true)
+const TopSellersPage = () => {
+	const [usersData, setUsersData] = useState([])
+	const [localToken, setLocalToken] = useState(null)
+	const [isLoading, setIsLoading] = useState(false)
+
 	const { localeLn } = useIntl()
+
 	const _fetchData = async () => {
-		if (!hasMore || isFetching) {
-			return
-		}
+		setIsLoading(true)
+		const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=${LIMIT}`)
 
-		setIsFetching(true)
-		const res = await axios(
-			`${process.env.V2_API_URL}/activities/top-users?__skip=${page * LIMIT}__limit=${LIMIT}`
-		)
-
-		const newUserData = [...usersData, ...res.data.data.sellers]
-		setUsersData(newUserData)
-		setPage(page + 1)
-
-		if (page === 5) {
-			setHasMore(false)
-		} else {
-			setHasMore(true)
-		}
-		setIsFetching(false)
+		const newData = [...usersData, ...res.data.data.sellers]
+		setUsersData(newData)
+		setIsLoading(false)
 	}
+
+	useEffect(() => {
+		_fetchData()
+	}, [])
 
 	const headMeta = {
 		title: 'Top Sellers — Paras',
@@ -87,24 +82,27 @@ const TopSellersPage = ({ topUser }) => {
 					</span>
 				</p>
 				<div className="mt-8 mx-4">
-					<UserTransactionList
-						usersData={usersData}
-						fetchData={_fetchData}
-						hasMore={hasMore}
-						type={'seller'}
-					/>
+					{isLoading ? (
+						<TopActivityListLoader />
+					) : (
+						<>
+							<TokenDetailModal tokens={[localToken]} />
+							{usersData.map((user, idx) => (
+								<UserTransactionDetail
+									data={user}
+									key={user.account_id}
+									idx={idx}
+									type={'seller'}
+									setLocalToken={setLocalToken}
+								/>
+							))}
+						</>
+					)}
 				</div>
 			</div>
 			<Footer />
 		</div>
 	)
-}
-
-export async function getServerSideProps() {
-	const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=${LIMIT}`)
-	const topUser = res.data.data
-
-	return { props: { topUser } }
 }
 
 export default TopSellersPage

@@ -240,7 +240,7 @@ const Nav = () => {
 										value={searchQuery}
 										onChange={(event) => setSearchQuery(event.target.value)}
 										placeholder={localeLn('SearchByTitle')}
-										className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-sm font-medium"
+										className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-base md:text-sm font-medium"
 										style={{ WebkitAppearance: 'none' }}
 									/>
 								</div>
@@ -292,7 +292,11 @@ const Nav = () => {
 							</Link>
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block text-sm">
-							<a href="https://comic.paras.id" target="_blank" className="flex cursor-pointer ">
+							<a
+								href="https://comic.paras.id?utm_source=paras-marketplace&utm_medium=website&utm_campaign=nav"
+								target="_blank"
+								className="flex cursor-pointer"
+							>
 								{localeLn('Comics')}
 							</a>
 						</div>
@@ -361,7 +365,11 @@ const Nav = () => {
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
-								<a href="https://comic.paras.id" target="_blank" className="p-4 block w-full">
+								<a
+									href="https://comic.paras.id?utm_source=paras-marketplace&utm_medium=website&utm_campaign=nav"
+									target="_blank"
+									className="p-4 block w-full"
+								>
 									{localeLn('Comics')}
 								</a>
 							</div>
