@@ -30,7 +30,7 @@ const TokenNav = () => {
 	return (
 		<div ref={tokenNavRef} className="relative">
 			<div
-				className="cursor-pointer text-center flex items-center font-medium"
+				className="cursor-pointer text-center flex items-center font-medium relative fireText"
 				onClick={toggleTokenModal}
 			>
 				<span>Token</span>
@@ -56,6 +56,22 @@ const TokenNav = () => {
 						<path d="M16.1436 0L32.1436 16H0.143593L16.1436 0Z" fill="#26222C" />
 					</svg>
 					<div className="bg-dark-primary-2 w-full mt-3 p-1 rounded-md">
+						<div className="relative flex">
+							<a
+								className="p-2 button-wrapper rounded cursor-pointer w-full flex"
+								href="https://stake.paras.id"
+								target="_blank"
+							>
+								Stake Paras
+								<div
+									className="rounded-full bg-primary ml-1 w-2 h-2"
+									style={{
+										boxShadow: `rgb(83 97 255) 0px 0px 3px 1px`,
+									}}
+								></div>
+							</a>
+							<div className=""></div>
+						</div>
 						<a
 							className="p-2 button-wrapper rounded cursor-pointer block w-full"
 							href="https://ipfs.fleek.co/ipfs/bafybeihu6atdada45rmx4sszny6sahrzas4tuzrpuufdcpe6b63r6ugdce"
