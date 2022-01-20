@@ -58,17 +58,17 @@ const TokenNav = () => {
 					<div className="bg-dark-primary-2 w-full mt-3 p-1 rounded-md">
 						<div className="relative flex">
 							<a
-								className="p-2 button-wrapper rounded cursor-pointer w-full flex"
+								className="p-2 button-wrapper rounded cursor-pointer w-full flex justify-between items-center"
 								href="https://stake.paras.id"
 								target="_blank"
 							>
-								Stake Paras
-								<div
-									className="rounded-full bg-primary ml-1 w-2 h-2"
-									style={{
-										boxShadow: `rgb(83 97 255) 0px 0px 3px 1px`,
-									}}
-								></div>
+								<span>Stake Paras</span>
+								<span
+									className="bg-white text-primary font-bold rounded-full px-2 text-xs"
+									style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
+								>
+									new
+								</span>
 							</a>
 							<div className=""></div>
 						</div>
