@@ -82,7 +82,7 @@ const ChooseAccountModal = ({ show, onClose }) => {
 									{prettyTruncate(account.accountId, 24, 'address')}
 								</p>
 								<p className="text-white opacity-80">
-									{formatNearAmount(profileList[idx]?.balance.available || '', 2)} Ⓝ
+									{formatNearAmount(profileList[idx]?.balance?.available || '', 2)} Ⓝ
 								</p>
 							</div>
 							{currentUser === account.accountId && (
