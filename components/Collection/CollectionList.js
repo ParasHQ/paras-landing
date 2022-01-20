@@ -25,7 +25,7 @@ const CollectionList = ({ data, fetchData, hasMore }) => {
 			hasMore={hasMore}
 			loader={<CollectionListLoader />}
 		>
-			<div className="flex flex-wrap p-4">
+			<div className="flex flex-wrap pt-4">
 				{data.map((collection, index) => (
 					<div
 						key={index}
@@ -36,7 +36,7 @@ const CollectionList = ({ data, fetchData, hasMore }) => {
 								<div className="flex flex-row flex-wrap md:h-72 h-48">
 									<div className="w-full h-full mb-4 rounded">
 										<img
-											className="object-cover w-full md:h-72 h-full p-1 transform ease-in-out duration-75 hover:scale-105"
+											className="object-cover w-full md:h-72 h-full p-1 transform ease-in-out duration-200 hover:opacity-80 rounded-xl"
 											src={parseImgUrl(
 												collection?.media ||
 													`data:image/svg+xml;utf8,${generateFromString(collection.collection_id)}`,
@@ -54,7 +54,7 @@ const CollectionList = ({ data, fetchData, hasMore }) => {
 						<div className="text-white mt-4 md:mt-2">
 							<Link href={`/collection/${collection.collection_id}`} shallow={true}>
 								<a className="cursor-pointer">
-									<p className="grid grid-flow-col text-xl hover:underline">
+									<p className="grid grid-flow-col text-xl hover:underline font-bold">
 										{collection.collection}
 									</p>
 								</a>

@@ -257,12 +257,17 @@ export default function SearchPage({ searchQuery }) {
 							)}
 						</div>
 					</div>
+					<div className="justify-end mt-4 md:mt-0 hidden md:flex">
+						{activeTab === 'card' && <FilterMarket />}
+					</div>
+				</div>
+				<div className="flex md:hidden justify-end mt-4 md:mt-0">
 					{activeTab === 'card' && <FilterMarket />}
 				</div>
 				<div className="mt-4">
 					{activeTab === 'card' &&
 						(isRefreshing ? (
-							<div className="min-h-full border-2 border-dashed border-gray-800 rounded-md">
+							<div className="min-h-full">
 								<CardListLoader />
 							</div>
 						) : (
