@@ -391,6 +391,11 @@ const Nav = () => {
 									{localeLn('NavGetParas')}
 								</a>
 							</div>
+							<div className="text-gray-100 fireText">
+								<a className="p-4 block w-full" href="https://stake.paras.id" target="_blank">
+									Stake Paras
+								</a>
+							</div>
 						</div>
 					</div>
 				</div>
