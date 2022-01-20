@@ -29,11 +29,11 @@ const CollectionList = ({ data, fetchData, hasMore }) => {
 				{data.map((collection, index) => (
 					<div
 						key={index}
-						className="rounded-md overflow-hidden mb-12 md:mb-8 w-full md:w-1/3 px-4"
+						className="rounded-md overflow-hidden mb-12 md:mb-8 w-full md:w-1/3 md:px-4"
 					>
 						<Link href={`/collection/${collection.collection_id}`} shallow={true}>
 							<a className="cursor-pointer">
-								<div className="flex flex-row flex-wrap md:h-72 h-48">
+								<div className="flex flex-row flex-wrap md:h-72 h-80">
 									<div className="w-full h-full mb-4 rounded">
 										<img
 											className="object-cover w-full md:h-72 h-full p-1 transform ease-in-out duration-200 hover:opacity-80 rounded-xl"
