@@ -267,7 +267,7 @@ export default function SearchPage({ searchQuery }) {
 				<div className="mt-4">
 					{activeTab === 'card' &&
 						(isRefreshing ? (
-							<div className="min-h-full">
+							<div className="min-h-full px-4 md:px-0">
 								<CardListLoader />
 							</div>
 						) : (
@@ -281,11 +281,13 @@ export default function SearchPage({ searchQuery }) {
 							</div>
 						))}
 					{activeTab === 'collections' && (
-						<CollectionList
-							data={collections}
-							fetchData={_fetchCollectionData}
-							hasMore={collHasMore}
-						/>
+						<div className="px-4 md:px-0">
+							<CollectionList
+								data={collections}
+								fetchData={_fetchCollectionData}
+								hasMore={collHasMore}
+							/>
+						</div>
 					)}
 					{activeTab === 'publication' && (
 						<PublicationListScroll

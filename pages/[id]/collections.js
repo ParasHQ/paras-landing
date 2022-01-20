@@ -81,7 +81,7 @@ const Collections = ({ userProfile, accountId }) => {
 				<meta property="og:image" content={headMeta.image} />
 			</Head>
 			<Nav />
-			<div className="max-w-6xl relative m-auto py-12 px-5">
+			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'collections'} />
 				<div className="mt-4">
 					<CollectionList data={collections} fetchData={_fetchData} hasMore={hasMore} />
