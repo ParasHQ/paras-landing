@@ -169,6 +169,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 								collection: tokenData?.metadata.collection || tokenData?.contract_id,
 								copies: tokenData?.metadata.copies,
 								creatorId: tokenData?.metadata.creator_id || tokenData?.contract_id,
+								is_creator: tokenData?.is_creator,
 							}}
 						/>
 					</div>
