@@ -24,7 +24,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import Scrollbars from 'react-custom-scrollbars'
 import getConfig from 'config/near'
 
-const LIMIT = 10
+const LIMIT = 16
 
 const calcRoyalties = (royalties) => {
 	return royalties
