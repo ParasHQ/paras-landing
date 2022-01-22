@@ -2,13 +2,21 @@ import axios from 'axios'
 import Link from 'next/link'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
-import { prettyTruncate } from 'utils/common'
+import { parseImgUrl, prettyTruncate } from 'utils/common'
 import Media from 'components/Common/Media'
 
 const NotificationImage = ({ media }) => {
 	return (
 		<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-			<Media url={media} videoControls={false} videoMuted={true} videoLoop={true} />
+			<Media
+				url={parseImgUrl(media, null, {
+					width: '200',
+					useOriginal: process.env.APP_ENV !== 'production',
+				})}
+				videoControls={false}
+				videoMuted={true}
+				videoLoop={true}
+			/>
 		</div>
 	)
 }
