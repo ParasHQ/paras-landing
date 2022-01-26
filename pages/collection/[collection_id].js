@@ -251,7 +251,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					<h4 className="text-xl flex justify-center text-gray-300 self-center">
 						<span>collection by</span>
 						<span className="flex flex-row ml-1">
-							<ArtistVerified token={tokens?.[0]} />
+							<ArtistVerified
+								token={tokens?.[0] || { metadata: { creator_id: collection.creator_id } }}
+							/>
 						</span>
 					</h4>
 					<ReactLinkify
