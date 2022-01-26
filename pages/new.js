@@ -1088,6 +1088,7 @@ const NewPage = () => {
 													ref={register({
 														required: true,
 														min: 0,
+														max: 999999999,
 													})}
 													className={errors.amount && 'error'}
 													placeholder="Card price per pcs"
@@ -1105,6 +1106,7 @@ const NewPage = () => {
 											<div className="mt-2 text-sm text-red-500">
 												{errors.amount?.type === 'required' && `Sale price is required`}
 												{errors.amount?.type === 'min' && `Minimum 0`}
+												{errors.amount?.type === 'max' && `Maximum 999,999,999 Ⓝ`}
 											</div>
 										</>
 									)}

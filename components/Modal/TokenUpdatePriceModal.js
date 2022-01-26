@@ -10,9 +10,11 @@ import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackRemoveListingToken, trackUpdateListingToken } from 'lib/ga'
+import { useForm } from 'react-hook-form'
 
 const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
+	const { register, handleSubmit, errors } = useForm()
 	const { localeLn } = useIntl()
 	const onUpdateListing = async (e) => {
 		e.preventDefault()
@@ -128,20 +130,24 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 								{localeLn('NewPrice')}{' '}
 								{data.price && `(${localeLn('CurrentPrice')}: ${formatNearAmount(data.price)} Ⓝ)`}
 							</label>
-							<div
-								className={`flex justify-between rounded-md border-transparent w-full relative ${
-									null // errors.amount && 'error'
-								}`}
-							>
+							<div className="flex justify-between rounded-md border-transparent w-full relative">
 								<InputText
 									type="number"
-									name="new-price"
+									name="newPrice"
 									step="any"
 									value={newPrice}
 									onChange={(e) => setNewPrice(e.target.value)}
 									placeholder="Card price per pcs"
+									ref={register({
+										min: 0,
+										max: 999999999,
+									})}
 								/>
 								<div className="absolute inset-y-0 right-3 flex items-center text-white">Ⓝ</div>
+							</div>
+							<div className="mt-2 text-sm text-red-500">
+								{errors.newPrice?.type === 'min' && `Minimum 0`}
+								{errors.newPrice?.type === 'max' && `Maximum 999,999,999 Ⓝ`}
 							</div>
 							<div className="mt-2 text-gray-200 flex items-center justify-between">
 								<span>{localeLn('Receive')}:</span>
@@ -231,7 +237,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 								size="md"
 								isFullWidth
 								isDisabled={newPrice === ''}
-								onClick={onUpdateListing}
+								onClick={handleSubmit(onUpdateListing)}
 							>
 								{localeLn('UpdateListing')}
 							</Button>
