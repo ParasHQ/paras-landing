@@ -138,6 +138,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 									value={newPrice}
 									onChange={(e) => setNewPrice(e.target.value)}
 									placeholder="Card price per pcs"
+									className={errors.newPrice && 'error'}
 									ref={register({
 										min: 0,
 										max: 999999999,
