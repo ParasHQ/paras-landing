@@ -19,8 +19,10 @@ const creation = ({ userProfile, accountId }) => {
 	const scrollCreation = `${router.query.id}::creation`
 
 	const [tokens, setTokens] = useState([])
-	const [page, setPage] = useState(0)
 	const [hasMore, setHasMore] = useState(true)
+	const [idNext, setIdNext] = useState(null)
+	const [lowestPriceNext, setLowestPriceNext] = useState(null)
+	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(true)
 
@@ -34,18 +36,30 @@ const creation = ({ userProfile, accountId }) => {
 		}
 
 		setIsFetching(true)
+
+		const params = tokensParams({
+			...router.query,
+			_id_next: idNext,
+			lowest_price_next: lowestPriceNext,
+			updated_at_next: updatedAtNext,
+		})
+
 		const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(page, router.query),
+			params: params,
 		})
 		const newData = await res.data.data
 
 		const newTokens = [...(tokens || []), ...newData.results]
 		setTokens(newTokens)
-		setPage(page + 1)
 		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
+
+			const lastData = newData.results[newData.results.length - 1]
+			setIdNext(lastData._id)
+			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 		}
 		setIsFetching(false)
 	}
@@ -54,15 +68,20 @@ const creation = ({ userProfile, accountId }) => {
 		updateFilter(router.query)
 	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.is_notforsale])
 
-	const tokensParams = (_page = 0, query) => {
+	const tokensParams = (query) => {
+		const parsedSortQuery = parseSortQuery(query.sort)
 		const params = {
 			exclude_total_burn: true,
 			creator_id: accountId,
-			__skip: _page * LIMIT,
 			__limit: LIMIT,
-			__sort: parseSortQuery(query.sort),
+			__sort: parsedSortQuery,
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
+			...(query._id_next && { _id_next: query._id_next }),
+			...(query.lowest_price_next &&
+				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
+			...(query.updated_at_next &&
+				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
 		}
 
 		return params
@@ -70,15 +89,21 @@ const creation = ({ userProfile, accountId }) => {
 
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
+		const params = tokensParams(query)
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(0, query),
+			params: params,
 		})
-		setPage(1)
+
 		setTokens(res.data.data.results)
 		if (res.data.data.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
+
+			const lastData = res.data.data.results[res.data.data.results.length - 1]
+			setIdNext(lastData._id)
+			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 		}
 
 		setIsFiltering(false)

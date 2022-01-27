@@ -23,7 +23,9 @@ export default function SearchPage({ searchQuery }) {
 	const router = useRouter()
 
 	const [tokens, setTokens] = useState([])
-	const [page, setPage] = useState(0)
+	const [idNext, setIdNext] = useState(null)
+	const [lowestPriceNext, setLowestPriceNext] = useState(null)
+	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(false)
 
@@ -47,15 +49,22 @@ export default function SearchPage({ searchQuery }) {
 		window.scrollTo(0, 0)
 
 		/** Tokens */
+		const params = tokensParams({
+			...query,
+			search: encodeURIComponent(query.q),
+		})
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(0, {
-				...query,
-				search: encodeURIComponent(query.q),
-			}),
+			params: params,
 		})
 		if (res.data.data.results.length === LIMIT) {
-			setPage(1)
 			setHasMore(true)
+
+			const lastData = res.data.data.results[res.data.data.results.length - 1]
+			if (params.__sort) {
+				setIdNext(lastData._id)
+				params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+				params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+			}
 		} else {
 			setHasMore(false)
 		}
@@ -110,21 +119,28 @@ export default function SearchPage({ searchQuery }) {
 		}
 
 		setIsFetching(true)
+		const params = tokensParams({
+			...query,
+			search: encodeURIComponent(query.q),
+			_id_next: idNext,
+			lowest_price_next: lowestPriceNext,
+			updated_at_next: updatedAtNext,
+		})
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(page, {
-				...query,
-				search: encodeURIComponent(query.q),
-			}),
+			params: params,
 		})
 		const newData = await res.data.data
 
 		const newTokens = [...tokens, ...newData.results]
 		setTokens(newTokens)
-		setPage(page + 1)
 		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
+			const lastData = res.data.data.results[res.data.data.results.length - 1]
+			setIdNext(lastData._id)
 			setHasMore(true)
+			params.__sort?.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+			params.__sort?.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 		}
 		setIsFetching(false)
 	}
@@ -303,16 +319,21 @@ export default function SearchPage({ searchQuery }) {
 	)
 }
 
-const tokensParams = (_page = 0, query) => {
+const tokensParams = (query) => {
+	const parsedSortQuery = parseSortQuery(query?.sort)
 	const params = {
 		search: query.q,
 		exclude_total_burn: true,
-		__sort: query.sort ? parseSortQuery(query.sort) : undefined,
-		__skip: _page * LIMIT,
+		__sort: parsedSortQuery,
 		__limit: LIMIT,
+		_id_next: query._id_next,
 		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
+		...(query.lowest_price_next &&
+			parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
+		...(query.updated_at_next &&
+			parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
 	}
 	return params
 }
