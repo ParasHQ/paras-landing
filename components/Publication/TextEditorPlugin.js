@@ -8,6 +8,7 @@ import createLinkPlugin from '@draft-js-plugins/anchor'
 import createInlineToolbarPlugin from '@draft-js-plugins/inline-toolbar'
 import createLinkifyPlugin from '@draft-js-plugins/linkify'
 import createVideoPlugin from '@draft-js-plugins/video'
+import createDividerPlugin from '@draft-js-plugins/divider'
 
 import toolbarStyles from 'styles/toolbar.module.css'
 import inlineToolbarStyles from 'styles/inlinetoolbar.module.css'
@@ -21,6 +22,19 @@ const focusPlugin = createFocusPlugin({
 		focused: 'border-transparent rounded-md border-4 -m-0.5',
 		unfocused: 'border-transparent rounded-md border-4 -m-0.5',
 	},
+})
+
+const decorator = composeDecorators(focusPlugin.decorator)
+
+const dividerPlugin = createDividerPlugin({
+	decorator: decorator,
+	dividerComponent: () => (
+		<div className="flex justify-center items-center gap-8 my-14">
+			<div className="w-1 h-1 rounded-full bg-white"></div>
+			<div className="w-1 h-1 rounded-full bg-white"></div>
+			<div className="w-1 h-1 rounded-full bg-white"></div>
+		</div>
+	),
 })
 
 const linkifyPlugin = createLinkifyPlugin({
@@ -76,7 +90,8 @@ const plugins = [
 	linkPlugin,
 	inlineToolbarPlugin,
 	linkifyPlugin,
+	dividerPlugin,
 	videoPlugin,
 ]
 
-export { plugins, Toolbar, InlineToolbar, linkPlugin, imagePlugin, videoPlugin }
+export { plugins, Toolbar, InlineToolbar, linkPlugin, dividerPlugin, imagePlugin, videoPlugin }
