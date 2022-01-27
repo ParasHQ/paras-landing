@@ -119,6 +119,7 @@ const NewPage = () => {
 
 	const [mediaHash, setMediaHash] = useState(null)
 	const [referenceHash, setReferenceHash] = useState(null)
+	const [fileType, setFileType] = useState(null)
 
 	const watchRoyalties = watch(`royalties`)
 
@@ -133,6 +134,7 @@ const NewPage = () => {
 			creator_id: store.currentUser,
 			attributes: formInput.attributes,
 			blurhash: blurhash,
+			mime_type: fileType,
 		})
 		const blob = new Blob([reference], { type: 'text/plain' })
 
@@ -328,7 +330,7 @@ const NewPage = () => {
 				const newImgUrl = await readFileAsUrl(e.target.files[0])
 				setImgFile(e.target.files[0])
 				setImgUrl(newImgUrl)
-
+				setFileType(e.target.files[0].type)
 				encodeBlurhash(newImgUrl)
 			}
 		}
@@ -1086,6 +1088,7 @@ const NewPage = () => {
 													ref={register({
 														required: true,
 														min: 0,
+														max: 999999999,
 													})}
 													className={errors.amount && 'error'}
 													placeholder="Card price per pcs"
@@ -1103,6 +1106,7 @@ const NewPage = () => {
 											<div className="mt-2 text-sm text-red-500">
 												{errors.amount?.type === 'required' && `Sale price is required`}
 												{errors.amount?.type === 'min' && `Minimum 0`}
+												{errors.amount?.type === 'max' && `Maximum 999,999,999 Ⓝ`}
 											</div>
 										</>
 									)}

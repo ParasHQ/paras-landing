@@ -17,6 +17,7 @@ import CollectionActivity from 'components/Collection/CollectionActivity'
 import FilterAttribute from 'components/Filter/FilterAttribute'
 import ReactLinkify from 'react-linkify'
 import ArtistVerified from 'components/Common/ArtistVerified'
+import { generateFromString } from 'generate-avatar'
 
 const LIMIT = 8
 const LIMIT_ACTIVITY = 20
@@ -232,9 +233,13 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				<div className="flex items-center m-auto justify-center mb-4">
 					<div className="w-32 h-32 overflow-hidden bg-primary shadow-inner">
 						<img
-							src={parseImgUrl(collection?.media, null, {
-								width: `300`,
-							})}
+							src={parseImgUrl(
+								collection?.media ||
+									`data:image/svg+xml;utf8,${generateFromString(collection.collection_id)}`,
+								{
+									width: `300`,
+								}
+							)}
 							className="w-full object-cover"
 						/>
 					</div>
@@ -246,7 +251,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					<h4 className="text-xl flex justify-center text-gray-300 self-center break-words">
 						<span>collection by</span>
 						<span className="flex flex-row ml-1">
-							<ArtistVerified token={tokens?.[0]} />
+							<ArtistVerified
+								token={tokens?.[0] || { metadata: { creator_id: collection.creator_id } }}
+							/>
 						</span>
 					</h4>
 					<ReactLinkify

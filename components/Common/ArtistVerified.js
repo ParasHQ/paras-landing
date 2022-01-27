@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 import ReactTooltip from 'react-tooltip'
 
-const ArtistVerified = ({ token }) => {
+const ArtistVerified = ({ token, collection }) => {
 	const [artistData, setArtistData] = useState(null)
 	const [showTooltip, setShowTooltip] = useState(false)
 
@@ -42,8 +42,8 @@ const ArtistVerified = ({ token }) => {
 					</a>
 				</Link>
 			</span>
-			{artistData?.isCreator && (
-				<span data-tip="Verified Creator" className="ml-1">
+			{(artistData?.isCreator || collection?.isCreator) && (
+				<span data-tip="Verified Creator">
 					<svg
 						width="18"
 						height="17"
