@@ -12,7 +12,7 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CategoryList from 'components/CategoryList'
 import AddCategoryModal from 'components/Modal/AddCategoryModal'
 import { useIntl } from 'hooks/useIntl'
-import { parse } from 'query-string'
+
 const LIMIT = 12
 
 export default function Category({ serverQuery, categoryList, _categoryDetail }) {
@@ -119,12 +119,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 
 		const lastData = newData.results[newData.results.length - 1]
 		setCategoryCardList(newCategoryData)
-		setPageCategoryCardList({
-			...pageCategoryCardList,
-			[categoryId]: {
-				_id_next: lastData._id,
-			},
-		})
+
 		if (newData.results.length < LIMIT) {
 			setHasMoreCategoryCard({
 				...hasMoreCategoryCard,
@@ -141,6 +136,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 				[categoryId]: {
 					_id_next: lastData._id,
 					updated_at_next: params.__sort.includes('updated_at') ? lastData.updated_at : null,
+					lowest_price_next: params.__sort.includes('lowest_price') ? lastData.lowest_price : null,
 				},
 			})
 		}

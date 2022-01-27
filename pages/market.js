@@ -11,7 +11,6 @@ import { parseSortQuery } from 'utils/common'
 import CardListLoader from 'components/Card/CardListLoader'
 import CategoryList from 'components/CategoryList'
 import { useIntl } from 'hooks/useIntl'
-import { parse } from 'query-string'
 
 const LIMIT = 12
 
