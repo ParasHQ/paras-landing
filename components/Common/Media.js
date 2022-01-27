@@ -87,36 +87,32 @@ const Media = ({
 
 	if (media?.type.includes('video')) {
 		return (
-			<div className=" relative">
-				{!videoControls && (
-					<>
-						{playVideoButton && (
-							<div
-								className=" absolute bg-gray-200 p-2 rounded-full right-5 bottom-5 z-30"
-								onClick={async (e) => {
-									e.preventDefault()
-									e.stopPropagation()
-									setPlayVideo(true)
-								}}
-							>
-								<svg
-									className="relative z-10"
-									width="20"
-									height="20"
-									viewBox="0 0 24 24"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path
-										fillRule="evenodd"
-										clipRule="evenodd"
-										d="M5 20.9999V2.99993C5 2.20876 5.87525 1.73092 6.54076 2.15875L20.5408 11.1587C21.1531 11.5524 21.1531 12.4475 20.5408 12.8411L6.54076 21.8411C5.87525 22.2689 5 21.7911 5 20.9999Z"
-										fill="rgba(0,0,0,0.8)"
-									/>
-								</svg>
-							</div>
-						)}
-					</>
+			<div className="relative">
+				{!videoControls && playVideoButton && (
+					<div
+						className=" absolute bg-gray-200 p-2 rounded-full right-5 bottom-5 z-30"
+						onClick={async (e) => {
+							e.preventDefault()
+							e.stopPropagation()
+							setPlayVideo(true)
+						}}
+					>
+						<svg
+							className="relative z-10"
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								fillRule="evenodd"
+								clipRule="evenodd"
+								d="M5 20.9999V2.99993C5 2.20876 5.87525 1.73092 6.54076 2.15875L20.5408 11.1587C21.1531 11.5524 21.1531 12.4475 20.5408 12.8411L6.54076 21.8411C5.87525 22.2689 5 21.7911 5 20.9999Z"
+								fill="rgba(0,0,0,0.8)"
+							/>
+						</svg>
+					</div>
 				)}
 				<video
 					className={`w-full h-full ${className} ${videoPadding ? 'md:pt-0 pt-8' : ''}`}
@@ -128,25 +124,21 @@ const Media = ({
 					<source type="video/mp4" src={media.url}></source>
 				</video>
 				{playVideo && (
-					<>
-						<div
-							className=" bg-black w-full h-full absolute inset-0 z-40 flex items-center"
-							onClick={(e) => {
-								e.preventDefault()
-								e.stopPropagation()
-								setPlayVideo(false)
-							}}
-						>
-							<Media
-								className="rounded-lg overflow-hidden"
-								url={media.url}
-								videoControls={true}
-								videoLoop={true}
-								videoMuted={true}
-								videoPadding={true}
-							/>
-						</div>
-					</>
+					<video
+						className={`w-full h-full absolute inset-0 rounded-lg overflow-hidden z-40 md:pt-0 pt-8 `}
+						playsInline
+						loop={true}
+						controls={true}
+						muted={true}
+						autoPlay
+						onClick={(e) => {
+							e.preventDefault()
+							e.stopPropagation()
+							setPlayVideo(false)
+						}}
+					>
+						<source type="video/mp4" src={media.url}></source>
+					</video>
 				)}
 			</div>
 		)
