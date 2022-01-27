@@ -15,9 +15,9 @@ import { useIntl } from 'hooks/useIntl'
 import CollectionStats from 'components/Collection/CollectionStats'
 import CollectionActivity from 'components/Collection/CollectionActivity'
 import FilterAttribute from 'components/Filter/FilterAttribute'
-import ReactLinkify from 'react-linkify'
 import ArtistVerified from 'components/Common/ArtistVerified'
 import { generateFromString } from 'generate-avatar'
+import LineClampText from 'components/Common/LineClampText'
 
 const LIMIT = 8
 const LIMIT_ACTIVITY = 20
@@ -256,17 +256,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							/>
 						</span>
 					</h4>
-					<ReactLinkify
-						componentDecorator={(decoratedHref, decoratedText, key) => (
-							<a target="blank" href={decoratedHref} key={key}>
-								{decoratedText}
-							</a>
-						)}
-					>
-						<p className="text-gray-200 mt-4 max-w-lg m-auto whitespace-pre-line break-words">
-							{collection?.description?.replace(/\n\s*\n\s*\n/g, '\n\n')}
-						</p>
-					</ReactLinkify>
+					<LineClampText
+						className="text-gray-200 mt-4 max-w-lg m-auto whitespace-pre-line break-words"
+						text={collection?.description}
+					/>
 					{currentUser === collection.creator_id && (
 						<div className="flex flex-row space-x-2 max-w-xs m-auto mt-4">
 							<Button onClick={addCard} size="md" className="w-40 m-auto">
