@@ -42,7 +42,7 @@ const CollectionList = ({ data, fetchData, hasMore }) => {
 													`data:image/svg+xml;utf8,${generateFromString(collection.collection_id)}`,
 												null,
 												{
-													width: `200`,
+													width: `600`,
 													useOriginal: process.env.APP_ENV === 'production' ? false : true,
 												}
 											)}
