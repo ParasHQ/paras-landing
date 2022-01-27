@@ -90,7 +90,7 @@ const Media = ({
 			<div className="relative">
 				{!videoControls && playVideoButton && (
 					<div
-						className=" absolute bg-gray-200 p-2 rounded-full right-5 bottom-5 z-30"
+						className=" absolute bg-gray-200 p-2 rounded-full right-3 md:right-5 bottom-3 md:bottom-5 z-30"
 						onClick={async (e) => {
 							e.preventDefault()
 							e.stopPropagation()
@@ -125,7 +125,7 @@ const Media = ({
 				</video>
 				{playVideo && (
 					<video
-						className={`w-full h-full absolute inset-0 rounded-lg overflow-hidden z-40 md:pt-0 pt-8 `}
+						className={`w-full h-full absolute inset-0 rounded-lg overflow-hidden z-40 pt-0 `}
 						playsInline
 						loop={true}
 						controls={true}
