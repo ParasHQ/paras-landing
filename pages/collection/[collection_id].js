@@ -244,11 +244,11 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						/>
 					</div>
 				</div>
-				<h1 className="text-4xl font-bold text-gray-100 mx-4 text-center">
+				<h1 className="text-4xl font-bold text-gray-100 mx-4 text-center break-words">
 					{collection?.collection}
 				</h1>
 				<div className="m-4 mt-0 text-center relative">
-					<h4 className="text-xl flex justify-center text-gray-300 self-center">
+					<h4 className="text-xl flex justify-center text-gray-300 self-center break-words">
 						<span>collection by</span>
 						<span className="flex flex-row ml-1">
 							<ArtistVerified
