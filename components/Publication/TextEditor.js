@@ -168,7 +168,7 @@ const TextEditor = ({
 	)
 }
 
-const { DividerButton } = dividerPlugin
+let { DividerButton } = dividerPlugin
 
 const ImageButton = ({ theme, onChange }) => {
 	const { localeLn } = useIntl()

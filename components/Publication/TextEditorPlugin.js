@@ -19,8 +19,8 @@ import { parseImgUrl } from 'utils/common'
 
 const focusPlugin = createFocusPlugin({
 	theme: {
-		focused: 'mx-auto my-32 w-10 border-t-8 border-white border-dotted -m-0.5',
-		unfocused: 'mx-auto my-32 w-10 border-t-8 border-white border-dotted -m-0.5',
+		focused: 'border-transparent rounded-md border-4 -m-0.5',
+		unfocused: 'border-transparent rounded-md border-4 -m-0.5',
 	},
 })
 
@@ -28,6 +28,13 @@ const decorator = composeDecorators(focusPlugin.decorator)
 
 const dividerPlugin = createDividerPlugin({
 	decorator: decorator,
+	dividerComponent: () => (
+		<div className="flex justify-center items-center gap-8 my-14">
+			<div className="w-1 h-1 rounded-full bg-white"></div>
+			<div className="w-1 h-1 rounded-full bg-white"></div>
+			<div className="w-1 h-1 rounded-full bg-white"></div>
+		</div>
+	),
 })
 
 const linkifyPlugin = createLinkifyPlugin({
