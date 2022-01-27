@@ -162,9 +162,10 @@ export default function SearchPage({ searchQuery }) {
 		setCollIsFetch(true)
 		const res = await axios(`${process.env.V2_API_URL}/collections`, {
 			params: {
-				collection_search: query.q,
+				collection_search: encodeURIComponent(query.q),
 				__skip: collPage * LIMIT,
 				__limit: LIMIT,
+				__sort: 'isCreator::-1',
 			},
 		})
 		const newData = await res.data.data
