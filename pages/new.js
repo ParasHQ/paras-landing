@@ -243,6 +243,12 @@ const NewPage = () => {
 	}
 
 	const _handleSubmitStep1 = (data) => {
+		if (data.attributes) {
+			data.attributes.map((trait) => {
+				trait.trait_type = trait.trait_type.trim()
+				trait.value = trait.value.trim()
+			})
+		}
 		const newFormInput = {
 			...formInput,
 			...data,
