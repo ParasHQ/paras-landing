@@ -16,8 +16,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
 	const { register, handleSubmit, errors } = useForm()
 	const { localeLn } = useIntl()
-	const onUpdateListing = async (e) => {
-		e.preventDefault()
+	const onUpdateListing = async () => {
 		if (!near.currentUser) {
 			return
 		}
