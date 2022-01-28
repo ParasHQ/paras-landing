@@ -363,6 +363,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 										onClick={() => removeAttributeFilter(index)}
 										className="flex-grow rounded-md px-4 py-1 mr-2 my-1 border-2 border-gray-800 bg-blue-400 bg-opacity-10 text-sm cursor-pointer group hover:border-gray-700"
 									>
+										<span className=" text-gray-500 font-bold">{Object.keys(type)[0] + ' : '}</span>{' '}
 										<span className=" text-gray-200">{Object.values(type)[0]}</span>{' '}
 										<span className="font-extralight text-gray-600 text-lg ml-1 group-hover:text-gray-500">
 											x
