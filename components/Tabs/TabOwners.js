@@ -29,7 +29,7 @@ const TabOwners = ({ localToken }) => {
 
 	useEffect(() => {
 		if (localToken.token_series_id) {
-			fetchTokens([], 0)
+			fetchTokens([], null)
 		}
 	}, [])
 
@@ -71,14 +71,14 @@ const TabOwners = ({ localToken }) => {
 		}
 	}
 
-	const fetchTokens = async (currentData, page) => {
+	const fetchTokens = async (currentData, _id_next) => {
 		setIsFetching(true)
 
 		const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
 			params: {
 				token_series_id: localToken.token_series_id,
 				contract_id: localToken.contract_id,
-				__skip: page * FETCH_TOKENS_LIMIT,
+				_id_next: _id_next,
 				__limit: FETCH_TOKENS_LIMIT,
 				__sort: '_id::1',
 			},
@@ -90,7 +90,7 @@ const TabOwners = ({ localToken }) => {
 		setTokens(newData)
 
 		if (respData.length === FETCH_TOKENS_LIMIT) {
-			fetchTokens(newData, page + 1)
+			fetchTokens(newData, respData[respData.length - 1]._id)
 		} else {
 			setIsFetching(false)
 		}

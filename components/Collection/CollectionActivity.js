@@ -124,6 +124,7 @@ const CollectionActivity = ({ activities, fetchData, hasMore }) => {
 																videoLoop={true}
 																videoMuted={true}
 																autoPlay={false}
+																playVideoButton={false}
 															/>
 														</a>
 													</Link>

@@ -16,8 +16,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
 	const { register, handleSubmit, errors } = useForm()
 	const { localeLn } = useIntl()
-	const onUpdateListing = async (e) => {
-		e.preventDefault()
+	const onUpdateListing = async () => {
 		if (!near.currentUser) {
 			return
 		}
@@ -138,6 +137,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 									value={newPrice}
 									onChange={(e) => setNewPrice(e.target.value)}
 									placeholder="Card price per pcs"
+									className={errors.newPrice && 'error'}
 									ref={register({
 										min: 0,
 										max: 999999999,
