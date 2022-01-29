@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
+import near from 'lib/near'
 
 const DraftPublication = () => {
 	const draftModalRef = useRef()
@@ -22,7 +23,10 @@ const DraftPublication = () => {
 
 	useEffect(() => {
 		const draftStorage = JSON.parse(localStorage.getItem('draft-publication'))
-		setDataDraftPublication(draftStorage)
+		const currentUserDraft = draftStorage?.filter(
+			(item) => near.currentUser.accountId === item.author_id
+		)
+		setDataDraftPublication(currentUserDraft)
 	}, [showDraftModal])
 
 	const editDraft = (_id) => {
@@ -33,7 +37,6 @@ const DraftPublication = () => {
 	const deleteDraft = (_id) => {
 		const deleteItem = dataDraftPublication.filter((item) => item._id !== _id)
 		localStorage.setItem('draft-publication', JSON.stringify(deleteItem))
-		if (dataDraftPublication.length === 1) localStorage.removeItem('draft-publication')
 		setShowDraftModal(false)
 	}
 
@@ -71,7 +74,7 @@ const DraftPublication = () => {
 					<div className="bg-dark-primary-2 rounded-md p-4">
 						<h1 className="text-white font-semibold text-xl mb-2">My Draft</h1>
 						<div className="overflow-y-scroll">
-							{dataDraftPublication ? (
+							{dataDraftPublication.length !== 0 ? (
 								dataDraftPublication?.map((draft, index) => {
 									return (
 										<>
