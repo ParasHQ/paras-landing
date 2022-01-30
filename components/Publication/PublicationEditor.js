@@ -19,6 +19,7 @@ import usePreventRouteChangeIf from 'hooks/usePreventRouteChange'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { v4 as uuidv4 } from 'uuid'
+import DraftPublication from 'components/Draft/DraftPublication'
 
 let redirectUrl = null
 
@@ -52,11 +53,20 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [isDraftIn, setIsDraftIn] = useState(false)
 	const [searchToken, setSearchToken] = useState('')
+	const [currentDraftStorage, setCurrentDraftStorage] = useState()
 	const currentUser = near.currentUser
 	const uid = uuidv4()
 
 	useEffect(() => {
 		if (pubDetail !== null) setIsPubDetail(true)
+	}, [])
+
+	useEffect(() => {
+		const draftStorage = JSON.parse(localStorage.getItem('draft-publication'))
+		const currentUserDraft = draftStorage?.filter(
+			(item) => item.author_id === currentUser?.accountId
+		)
+		setCurrentDraftStorage(currentUserDraft)
 	}, [])
 
 	useEffect(() => {
@@ -229,14 +239,21 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 	}
 
 	const saveDraft = async () => {
-		if (!thumbnail || !subTitle) {
+		let checkTotalDraft = false
+		if (!window.location.href.includes('edit')) checkTotalDraft = currentDraftStorage?.length >= 10
+		if (!thumbnail || !subTitle || checkTotalDraft) {
 			let error = []
 			if (!thumbnail) error.push('Thumbnail')
 			if (!subTitle) error.push('Description')
 
 			toast.show({
 				text: (
-					<div className="font-semibold text-center text-sm">{error.join(' and ')} is required</div>
+					<div className="font-semibold text-center text-sm">
+						{' '}
+						{checkTotalDraft
+							? 'The maximum number of drafts is 10 drafts'
+							: error.join(' and ') + 'is required'}
+					</div>
 				),
 				type: 'error',
 				duration: null,
@@ -266,7 +283,10 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 
 		let draftStorage = JSON.parse(localStorage.getItem('draft-publication')) || []
 		const draftCurrentEdit = JSON.parse(localStorage.getItem('edit-draft'))
-		const checkDraft = draftStorage.find((item) => item._id === draftCurrentEdit[0]._id)
+		let checkDraft = []
+		if (draftCurrentEdit !== null) {
+			checkDraft = draftStorage.find((item) => item._id === draftCurrentEdit[0]._id)
+		}
 
 		if (checkDraft && window.location.href.includes('edit')) {
 			checkDraft.title = data.title
@@ -596,7 +616,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 					</div>
 				</div>
 			)}
-			<div className="max-w-3xl mx-auto px-4 pt-8">
+			<div className="flex items-center max-w-3xl mx-auto px-4 pt-8">
 				<button
 					className="font-semibold py-3 w-32 rounded-md bg-primary text-white"
 					onClick={onPressContinue}
@@ -604,6 +624,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 				>
 					{localeLn('Continue')}
 				</button>
+				<DraftPublication onCreatePublication />
 			</div>
 		</div>
 	)
