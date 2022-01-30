@@ -2,11 +2,7 @@ import cachios from 'cachios'
 import Avatar from 'components/Common/Avatar'
 import Button from 'components/Common/Button'
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
-import TokenStorageModal from 'components/Modal/TokenStorageModal'
 import TokenUpdatePriceModal from 'components/Modal/TokenUpdatePriceModal'
-import { STORAGE_ADD_MARKET_FEE } from 'config/constants'
-import JSBI from 'jsbi'
-import near from 'lib/near'
 import { sentryCaptureException } from 'lib/sentry'
 import useStore from 'lib/store'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
@@ -23,9 +19,6 @@ const TabOwners = ({ localToken }) => {
 	const [showModal, setShowModal] = useState(null)
 	const [sortBy, setSortBy] = useState()
 	const { localeLn } = useIntl()
-	const { currentUser } = useStore((state) => ({
-		currentUser: state.currentUser,
-	}))
 
 	useEffect(() => {
 		if (localToken.token_series_id) {
@@ -38,38 +31,6 @@ const TabOwners = ({ localToken }) => {
 			changeSortBy(sortBy)
 		}
 	}, [sortBy, isFetching])
-
-	const hasStorageBalance = async (token) => {
-		try {
-			if (!token.approval_id) {
-				const currentStorage = await near.wallet
-					.account()
-					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `storage_balance_of`, {
-						account_id: currentUser,
-					})
-
-				const supplyPerOwner = await near.wallet
-					.account()
-					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_supply_by_owner_id`, {
-						account_id: currentUser,
-					})
-
-				const usedStorage = JSBI.multiply(
-					JSBI.BigInt(parseInt(supplyPerOwner) + 1),
-					JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
-				)
-
-				if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
-					return true
-				}
-				return false
-			} else {
-				return true
-			}
-		} catch (err) {
-			sentryCaptureException(err)
-		}
-	}
 
 	const fetchTokens = async (currentData, _id_next) => {
 		setIsFetching(true)
@@ -98,12 +59,7 @@ const TabOwners = ({ localToken }) => {
 
 	const onUpdateListing = async (token) => {
 		setActiveToken(token)
-		const hasBalance = await hasStorageBalance(token)
-		if (hasBalance) {
-			setShowModal('update')
-		} else {
-			setShowModal('storage')
-		}
+		setShowModal('update')
 	}
 
 	const onDismissModal = () => {
@@ -182,13 +138,6 @@ const TabOwners = ({ localToken }) => {
 			{showModal === 'update' && (
 				<TokenUpdatePriceModal
 					show={showModal === 'update'}
-					onClose={onDismissModal}
-					data={activeToken}
-				/>
-			)}
-			{showModal === 'storage' && (
-				<TokenStorageModal
-					show={showModal === 'storage'}
 					onClose={onDismissModal}
 					data={activeToken}
 				/>
