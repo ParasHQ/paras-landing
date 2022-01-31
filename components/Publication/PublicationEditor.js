@@ -241,18 +241,12 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 	const saveDraft = async () => {
 		let checkTotalDraft = false
 		if (!window.location.href.includes('edit')) checkTotalDraft = currentDraftStorage?.length >= 10
-		if (!thumbnail || !subTitle || checkTotalDraft) {
-			let error = []
-			if (!thumbnail) error.push('Thumbnail')
-			if (!subTitle) error.push('Description')
-
+		if (checkTotalDraft) {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
 						{' '}
-						{checkTotalDraft
-							? 'The maximum number of drafts is 10 drafts'
-							: error.join(' and ') + 'is required'}
+						{checkTotalDraft && 'The maximum number of drafts is 10 drafts'}
 					</div>
 				),
 				type: 'error',
@@ -344,22 +338,23 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 
 	const uploadThumbnail = async () => {
 		// eslint-disable-next-line no-unused-vars
-		const [protocol, path] = thumbnail.split('://')
-		if (protocol === 'ipfs') {
-			return thumbnail
+		if (thumbnail !== undefined) {
+			const [protocol, path] = thumbnail.split('://')
+			if (protocol === 'ipfs') {
+				return thumbnail
+			}
+
+			const formData = new FormData()
+			formData.append('files', dataURLtoFile(thumbnail), 'thumbnail')
+
+			const resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+					authorization: await near.authToken(),
+				},
+			})
+			return resp.data.data[0]
 		}
-
-		const formData = new FormData()
-		formData.append('files', dataURLtoFile(thumbnail), 'thumbnail')
-
-		const resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data',
-				authorization: await near.authToken(),
-			},
-		})
-
-		return resp.data.data[0]
 	}
 
 	const updateThumbnail = async (e) => {
