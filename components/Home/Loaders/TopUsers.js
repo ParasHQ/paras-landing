@@ -22,13 +22,7 @@ const HomeTopUsersLoader = () => {
 		<div className="w-full grid grid-rows-3 grid-flow-col py-2 pb-4 overflow-x-auto top-user-scroll">
 			{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((x) => {
 				return (
-					<div
-						key={x}
-						className="flex-shrink-0 flex-grow-0 px-2"
-						style={{
-							width: `18rem`,
-						}}
-					>
+					<div key={x} className="flex-shrink-0 flex-grow-0 px-2 w-72">
 						<TopUserLoader />
 					</div>
 				)

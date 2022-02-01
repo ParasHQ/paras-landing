@@ -36,7 +36,7 @@ const TopCollection = ({ collection, idx }) => {
 				{collection.collection_id && (
 					<Link href={`/collection/${collection.collection_id}`}>
 						<a className="text-gray-100 border-b-2 border-transparent hover:border-gray-100 font-semibold overflow-hidden overflow-ellipsis truncate">
-							{colDetail.collection}
+							{colDetail?.collection}
 						</a>
 					</Link>
 				)}
@@ -142,13 +142,7 @@ export const HomeTopUserList = () => {
 							className="flex items-center gap-2 cursor-pointer"
 							onClick={() => setShowTopModal(!showTopModal)}
 						>
-							<h1 className="text-white font-semibold text-3xl capitalize">
-								{topUserType === 'top-collections'
-									? localeLn('TopCollections')
-									: topUserType === 'top-buyers'
-									? localeLn('TopBuyers')
-									: localeLn('TopSellers')}
-							</h1>
+							<h1 className="text-white font-semibold text-3xl capitalize">{topUserType}</h1>
 							<svg
 								viewBox="0 0 11 7"
 								fill="whites"
@@ -193,15 +187,7 @@ export const HomeTopUserList = () => {
 							</div>
 						)}
 					</div>
-					<Link
-						href={`/activity/${
-							topUserType === 'top-collections'
-								? 'top-collections'
-								: topUserType === 'top-buyers'
-								? 'top-buyers'
-								: 'top-sellers'
-						}`}
-					>
+					<Link href={`/activity/${topUserType}`}>
 						<a className="text-gray-400 hover:text-white cursor-pointer font-semibold flex items-center">
 							<span>{localeLn('More')}</span>
 							<svg
@@ -221,82 +207,41 @@ export const HomeTopUserList = () => {
 						</a>
 					</Link>
 				</div>
-				{topUserType === 'top-collections' && (
-					<div className="w-full mt-4">
-						{!isLoading ? (
-							<div className="w-full grid grid-rows-3 grid-flow-col py-2 pb-4 overflow-x-scroll top-user-scroll">
-								{topCollectionList.map((collection, idx) => {
+				<div className="w-full mt-4">
+					{!isLoading ? (
+						<div className="w-full grid grid-rows-3 grid-flow-col py-2 pb-4 overflow-x-scroll top-user-scroll">
+							{topUserType === 'top-collections' &&
+								topCollectionList.map((collection, idx) => {
 									return (
-										<div
-											key={idx}
-											style={{
-												width: `18rem`,
-											}}
-											className="flex-shrink-0 flex-grow-0 px-2"
-										>
+										<div key={idx} className="flex-shrink-0 flex-grow-0 px-2 w-72">
 											<TopCollection collection={collection} idx={idx} />
 										</div>
 									)
 								})}
-							</div>
-						) : (
-							<div>
-								<HomeTopUsersLoader />
-							</div>
-						)}
-					</div>
-				)}
+							{topUserType === 'top-buyers' &&
+								topBuyerList.map((user, idx) => {
+									return (
+										<div key={idx} className="flex-shrink-0 flex-grow-0 px-2 w-72">
+											<TopUser user={user} idx={idx} />
+										</div>
+									)
+								})}
+							{topUserType === 'top-sellers' &&
+								topSellerList.map((user, idx) => {
+									return (
+										<div key={idx} className="flex-shrink-0 flex-grow-0 px-2 w-72">
+											<TopUser user={user} idx={idx} />
+										</div>
+									)
+								})}
+						</div>
+					) : (
+						<div>
+							<HomeTopUsersLoader />
+						</div>
+					)}
+				</div>
 			</div>
-			{topUserType === 'top-buyers' && (
-				<div className="w-full mt-4">
-					{!isLoading ? (
-						<div className="w-full grid grid-rows-3 grid-flow-col py-2 pb-4 overflow-x-auto top-user-scroll">
-							{topBuyerList.map((user, idx) => {
-								return (
-									<div
-										key={idx}
-										style={{
-											width: `18rem`,
-										}}
-										className="flex-shrink-0 flex-grow-0 px-2"
-									>
-										<TopUser user={user} idx={idx} />
-									</div>
-								)
-							})}
-						</div>
-					) : (
-						<div>
-							<HomeTopUsersLoader />
-						</div>
-					)}
-				</div>
-			)}
-			{topUserType === 'top-sellers' && (
-				<div className="w-full mt-4">
-					{!isLoading ? (
-						<div className="w-full grid grid-rows-3 grid-flow-col py-2 pb-4 overflow-x-auto top-user-scroll">
-							{topSellerList.map((user, idx) => {
-								return (
-									<div
-										key={idx}
-										style={{
-											width: `18rem`,
-										}}
-										className="flex-shrink-0 flex-grow-0 px-2"
-									>
-										<TopUser user={user} idx={idx} />
-									</div>
-								)
-							})}
-						</div>
-					) : (
-						<div>
-							<HomeTopUsersLoader />
-						</div>
-					)}
-				</div>
-			)}
 		</div>
 	)
 }
