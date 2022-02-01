@@ -580,6 +580,7 @@ const collection = {
 	To: 'To',
 	Time: 'Time',
 	Type: 'Type',
+	NoActivity: 'No Activity',
 }
 
 const categories = {

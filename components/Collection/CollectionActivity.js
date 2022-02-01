@@ -96,6 +96,16 @@ const CollectionActivity = ({ activities, fetchData, hasMore }) => {
 						})}
 					</div>
 				</div>
+				{activities.length === 0 && !hasMore && (
+					<div className="w-full">
+						<div className="m-auto text-2xl text-gray-600 font-semibold py-5 text-center">
+							<div className="w-40 m-auto">
+								<img src="/cardstack.png" className="opacity-75" />
+							</div>
+							<p className="mt-4">{localeLn('NoActivities')}</p>
+						</div>
+					</div>
+				)}
 				<InfiniteScroll
 					dataLength={activities.length}
 					next={fetchData}
