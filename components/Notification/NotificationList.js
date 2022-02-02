@@ -206,7 +206,11 @@ const NotificationList = () => {
 										{notificationList.map((notif) => {
 											return (
 												<div key={notif._id}>
-													<NotificationItem notif={notif} currentUser={currentUser} />
+													<NotificationItem
+														notif={notif}
+														currentUser={currentUser}
+														notificationModal={(e) => setShowAccountModal(e)}
+													/>
 												</div>
 											)
 										})}
