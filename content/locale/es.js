@@ -44,6 +44,7 @@ const home = {
 	LastSold: 'Última vendida',
 	Featured: 'Destacada',
 	Latest: 'Más reciente',
+	TopCollections: 'Principales Colecciones',
 	TopBuyers: 'Principales Compradores',
 	TopSellers: 'Principales Vendedores',
 	NewestCards: 'Nuevas Cartas',

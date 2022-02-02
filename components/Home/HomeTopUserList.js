@@ -133,6 +133,18 @@ export const HomeTopUserList = () => {
 		}
 	}
 
+	const topUserTitle = (currentType) => {
+		switch (currentType) {
+			case 'top-collections':
+				return localeLn('TopCollections')
+			case 'top-buyers':
+				localeLn('TopBuyers')
+				return localeLn('TopBuyers')
+			case 'top-sellers':
+				return localeLn('TopSellers')
+		}
+	}
+
 	return (
 		<div>
 			<div className="w-full mt-16">
@@ -142,7 +154,9 @@ export const HomeTopUserList = () => {
 							className="flex items-center gap-2 cursor-pointer"
 							onClick={() => setShowTopModal(!showTopModal)}
 						>
-							<h1 className="text-white font-semibold text-3xl capitalize">{topUserType}</h1>
+							<h1 className="text-white font-semibold text-3xl capitalize">
+								{topUserTitle(topUserType)}
+							</h1>
 							<svg
 								viewBox="0 0 11 7"
 								fill="whites"

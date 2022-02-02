@@ -43,6 +43,7 @@ const home = {
 	LastSold: 'Последние Продажи',
 	Featured: 'Рекомендации',
 	Latest: 'Последнее',
+	TopCollections: 'Топовые Коллекции',
 	TopBuyers: 'Топовые Покупатели',
 	TopSellers: 'Топовые Продавцы',
 	NewestCards: 'Самые новые Карточки',
