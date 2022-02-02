@@ -37,8 +37,27 @@ const TokenDetail = ({ token, className }) => {
 	const router = useRouter()
 
 	useEffect(() => {
-		setActiveTab('info')
-	}, [router.query.tokenId])
+		TabNotification(router.query.tab)
+	}, [router.query.tab])
+
+	const TabNotification = (tab) => {
+		switch (tab) {
+			case 'owners':
+				setActiveTab('owners')
+				break
+			case 'history':
+				setActiveTab('history')
+				break
+			case 'offers':
+				setActiveTab('offers')
+				break
+			case 'publication':
+				setActiveTab('publication')
+				break
+			default:
+				setActiveTab('info')
+		}
+	}
 
 	const changeActiveTab = (tab) => {
 		setActiveTab(tab)
