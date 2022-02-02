@@ -32,16 +32,32 @@ const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState(null)
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
-	const { currentUser } = useStore((state) => ({
-		currentUser: state.currentUser,
-	}))
+	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
 	const router = useRouter()
 
 	useEffect(() => {
-		if (router.query.tab === 'offers') setActiveTab('offers')
-		else setActiveTab('info')
+		TabNotification(router.query.tab)
 	}, [router.query.tab])
+
+	const TabNotification = (tab) => {
+		switch (tab) {
+			case 'owners':
+				setActiveTab('owners')
+				break
+			case 'history':
+				setActiveTab('history')
+				break
+			case 'offers':
+				setActiveTab('offers')
+				break
+			case 'publication':
+				setActiveTab('publication')
+				break
+			default:
+				setActiveTab('info')
+		}
+	}
 
 	const changeActiveTab = (tab) => {
 		setActiveTab(tab)
