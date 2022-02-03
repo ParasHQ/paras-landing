@@ -18,7 +18,7 @@ import FilterAttribute from 'components/Filter/FilterAttribute'
 import ReactLinkify from 'react-linkify'
 import ArtistVerified from 'components/Common/ArtistVerified'
 import { generateFromString } from 'generate-avatar'
-import ConfirmDeleteModal from 'components/Modal/DeleteCollectionModal'
+import DeleteCollectionModal from 'components/Modal/DeleteCollectionModal'
 import near from 'lib/near'
 import { sentryCaptureException } from 'lib/sentry'
 import { useToast } from 'hooks/useToast'
@@ -282,7 +282,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				<meta property="og:image" content={headMeta.image} />
 			</Head>
 			<Nav />
-			<ConfirmDeleteModal
+			<DeleteCollectionModal
 				show={deleteModal}
 				onClose={onShowDeleteModal}
 				onSubmit={onDelete}
