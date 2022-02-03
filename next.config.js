@@ -20,6 +20,7 @@ const moduleExports = {
 		WHITELIST_CONTRACT_ID: process.env.WHITELIST_CONTRACT_ID,
 		REPORT_URL: process.env.REPORT_URL,
 		PARAS_TOKEN_CONTRACT: process.env.PARAS_TOKEN_CONTRACT,
+		GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID,
 	},
 	async redirects() {
 		return [
