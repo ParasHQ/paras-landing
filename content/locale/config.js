@@ -19,6 +19,7 @@ export const config = ({
 	news,
 	search,
 	newCollection,
+	deleteCollection,
 	collection,
 	categories,
 }) => {
@@ -168,6 +169,7 @@ export const config = ({
 		'/collection/[collection_id]': {
 			...common,
 			...collection,
+			...deleteCollection,
 		},
 		'/categories': {
 			...common,

@@ -528,6 +528,15 @@ const newCollection = {
 	Logo: 'Logo',
 	CreatingLoading: 'Creando...',
 }
+const deleteCollection = {
+	DeleteTitle: 'Borrar Confirmación',
+	DeleteText: 'Estás seguro de que quieres eliminar esta colección?',
+	DeleteCancel: `Cancelar`,
+	Delete: `Eliminar`,
+	Loading: `Cargando`,
+	DeleteSuccess: `Eliminar la colección fue un éxito`,
+	DeleteFailed: `Algo salió mal, inténtalo de nuevo más tarde.`,
+}
 const search = {
 	'Search{searchQuery}Paras': 'Buscar {searchQuery} — Paras',
 	SearchResult: 'Resultado de la búsqueda',
@@ -555,6 +564,7 @@ const data = {
 	news,
 	search,
 	newCollection,
+	deleteCollection,
 }
 
 export const es = config(data)
