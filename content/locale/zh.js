@@ -552,6 +552,15 @@ const newCollection = {
 	Logo: 'Logo',
 	CreatingLoading: '创建中...',
 }
+const deleteCollection = {
+	DeleteTitle: 'Delete Confirmation',
+	DeleteText: '您确定要删除此收藏吗?',
+	DeleteCancel: `取消`,
+	Delete: `删除`,
+	Loading: `正在加载`,
+	DeleteSuccess: `删除收藏成功`,
+	DeleteFailed: `出了点问题，请稍后再试`,
+}
 const search = {
 	'Search{searchQuery}Paras': '查询 {searchQuery} — Paras',
 	SearchResult: '查询结果',
@@ -578,6 +587,7 @@ const data = {
 	news,
 	search,
 	newCollection,
+	deleteCollection,
 }
 
 export const zh = config(data)

@@ -18,6 +18,10 @@ import FilterAttribute from 'components/Filter/FilterAttribute'
 import ReactLinkify from 'react-linkify'
 import ArtistVerified from 'components/Common/ArtistVerified'
 import { generateFromString } from 'generate-avatar'
+import ConfirmDeleteModal from 'components/Modal/DeleteCollectionModal'
+import near from 'lib/near'
+import { sentryCaptureException } from 'lib/sentry'
+import { useToast } from 'hooks/useToast'
 
 const LIMIT = 8
 const LIMIT_ACTIVITY = 20
@@ -37,6 +41,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [isFiltering, setIsFiltering] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
 	const [hasMoreActivities, setHasMoreActivities] = useState(true)
+	const [deleteModal, setDeleteModal] = useState(false)
+	const [deleteLoading, setDeleteLoading] = useState(false)
+	const toast = useToast()
 
 	const fetchData = async () => {
 		if (!hasMore || isFetching) {
@@ -200,6 +207,52 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		})
 	}
 
+	const onShowDeleteModal = () => {
+		setDeleteModal((prev) => !prev)
+	}
+
+	const onDelete = async () => {
+		const formData = new FormData()
+		formData.append('creator_id', currentUser)
+		formData.append('collection_id', collectionId)
+		const options = {
+			method: 'DELETE',
+			url: `${process.env.V2_API_URL}/collections`,
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				Authorization: await near.authToken(),
+			},
+			data: formData,
+		}
+		setDeleteLoading(true)
+		try {
+			const resp = await axios.request(options)
+			if (resp) {
+				setDeleteModal(false)
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">{localeLn(`DeleteSuccess`)}</div>
+					),
+					type: 'success',
+					duration: 1000,
+				})
+				setTimeout(() => {
+					router.push(`/${currentUser}/collections`)
+				}, 1000)
+			}
+			setDeleteLoading(false)
+		} catch (err) {
+			sentryCaptureException(err)
+			const msg = err.response?.data?.message || `${localeLn(`DeleteFailed`)}`
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{msg}</div>,
+				type: 'error',
+				duration: 1000,
+			})
+			setDeleteLoading(false)
+		}
+	}
+
 	return (
 		<div className="min-h-screen bg-black">
 			<div
@@ -229,6 +282,12 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				<meta property="og:image" content={headMeta.image} />
 			</Head>
 			<Nav />
+			<ConfirmDeleteModal
+				show={deleteModal}
+				onClose={onShowDeleteModal}
+				onSubmit={onDelete}
+				loading={deleteLoading}
+			/>
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="flex items-center m-auto justify-center mb-4">
 					<div className="w-32 h-32 overflow-hidden bg-primary shadow-inner">
@@ -280,6 +339,29 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							>
 								Edit
 							</Button>
+							{!isFetching && tokens.length < 1 && (
+								<div className="cursor-pointer flex items-center" onClick={onShowDeleteModal}>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										className="icon icon-tabler icon-tabler-trash"
+										width={30}
+										height={30}
+										viewBox="0 0 24 24"
+										strokeWidth="1.5"
+										stroke="#ff2825"
+										fill="none"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									>
+										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+										<line x1={4} y1={7} x2={20} y2={7} />
+										<line x1={10} y1={11} x2={10} y2={17} />
+										<line x1={14} y1={11} x2={14} y2={17} />
+										<path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+										<path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+									</svg>
+								</div>
+							)}
 						</div>
 					)}
 				</div>
