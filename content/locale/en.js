@@ -584,7 +584,7 @@ const collection = {
 }
 const deleteCollection = {
 	DeleteTitle: 'Delete Confirmation',
-	DeleteText: 'Are you sure you wan to delete this collection?',
+	DeleteText: 'Are you sure you want to delete this collection?',
 	DeleteCancel: `Cancel`,
 	Delete: `Delete`,
 	Loading: `Loading`,

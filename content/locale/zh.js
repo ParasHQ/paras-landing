@@ -554,7 +554,7 @@ const newCollection = {
 	CreatingLoading: '创建中...',
 }
 const deleteCollection = {
-	DeleteTitle: 'Delete Confirmation',
+	DeleteTitle: '删除确认',
 	DeleteText: '您确定要删除此收藏吗?',
 	DeleteCancel: `取消`,
 	Delete: `删除`,
