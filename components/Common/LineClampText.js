@@ -41,7 +41,7 @@ const LineClampText = ({ text = '', lineClamp = 8, style = {}, className = '' })
 			</ReactLinkify>
 			{isTextTruncated() && clamp && (
 				<p
-					className="text-white opacity-80 text-sm hover:opacity-100 my-2 cursor-pointer"
+					className="text-white underline text-sm hover:opacity-100 my-2 cursor-pointer"
 					onClick={() => setClamp(false)}
 				>
 					{localeLn('More')}
