@@ -9,6 +9,7 @@ import * as locales from '../content/locale'
 import { getLanguage } from '../content/locale'
 import * as gtag from 'lib/gtag'
 import cookie from 'lib/cookie'
+import Script from 'next/script'
 
 import '../styles/font.css'
 import '../styles/tailwind.css'
@@ -22,6 +23,7 @@ import ToastProvider from 'hooks/useToast'
 import { SWRConfig } from 'swr'
 import * as Sentry from '@sentry/nextjs'
 import { sentryCaptureException } from 'lib/sentry'
+import { GTM_ID, pageview } from 'lib/gtm'
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
@@ -74,6 +76,7 @@ function MyApp({ Component, pageProps }) {
 			if (window) {
 				counter(url)
 			}
+			pageview(url)
 		}
 
 		if (process.env.APP_ENV === 'production') {
@@ -179,6 +182,7 @@ function MyApp({ Component, pageProps }) {
 
 			if (window && window.gtag) {
 				gtag.pageview(url)
+				pageview
 			}
 			if (window) {
 				counter(url)
@@ -212,26 +216,42 @@ function MyApp({ Component, pageProps }) {
 	}
 
 	return (
-		<div>
-			<IntlProvider
-				locale={locale}
-				defaultLocale={defaultLocale}
-				messages={messages}
-				onError={(err) => {
-					if (err.code === 'MISSING_TRANSLATION') {
-						// console.warn('Missing translation', err.message)
-						return
-					}
-					throw err
+		<>
+			{/* Google Tag Manager - Global base code */}
+			{/* eslint-disable @next/next/inline-script-id */}
+			<Script
+				strategy="afterInteractive"
+				dangerouslySetInnerHTML={{
+					__html: `
+            (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer', '${GTM_ID}');
+          `,
 				}}
-			>
-				<SWRConfig value={{}}>
-					<ToastProvider>
-						<Component {...pageProps} />
-					</ToastProvider>
-				</SWRConfig>
-			</IntlProvider>
-		</div>
+			/>
+			<div>
+				<IntlProvider
+					locale={locale}
+					defaultLocale={defaultLocale}
+					messages={messages}
+					onError={(err) => {
+						if (err.code === 'MISSING_TRANSLATION') {
+							// console.warn('Missing translation', err.message)
+							return
+						}
+						throw err
+					}}
+				>
+					<SWRConfig value={{}}>
+						<ToastProvider>
+							<Component {...pageProps} />
+						</ToastProvider>
+					</SWRConfig>
+				</IntlProvider>
+			</div>
+		</>
 	)
 }
 
