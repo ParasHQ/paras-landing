@@ -182,11 +182,11 @@ function MyApp({ Component, pageProps }) {
 
 			if (window && window.gtag) {
 				gtag.pageview(url)
-				pageview
 			}
 			if (window) {
 				counter(url)
 			}
+			pageview(url)
 		}
 	}
 
