@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Scrollbars from 'react-custom-scrollbars'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
@@ -28,6 +28,7 @@ import PlaceBidModal from 'components/Modal/PlaceBidModal'
 import TabPublication from 'components/Tabs/TabPublication'
 import ReportModal from 'components/Modal/ReportModal'
 import Card from 'components/Card/Card'
+import { useRouter } from 'next/router'
 
 const TokenSeriesDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -39,9 +40,34 @@ const TokenSeriesDetail = ({ token, className }) => {
 	}
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
 
+	const router = useRouter()
+
 	const isShowButton =
 		token.contract_id === process.env.NFT_CONTRACT_ID ||
 		process.env.WHITELIST_CONTRACT_ID.split(',').includes(token.contract_id)
+
+	useEffect(() => {
+		TabNotification(router.query.tab)
+	}, [router.query.tab])
+
+	const TabNotification = (tab) => {
+		switch (tab) {
+			case 'owners':
+				setActiveTab('owners')
+				break
+			case 'history':
+				setActiveTab('history')
+				break
+			case 'offers':
+				setActiveTab('offers')
+				break
+			case 'publication':
+				setActiveTab('publication')
+				break
+			default:
+				setActiveTab('info')
+		}
+	}
 
 	const tabDetail = (tab) => {
 		return (

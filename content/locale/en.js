@@ -582,7 +582,15 @@ const collection = {
 	Type: 'Type',
 	NoActivity: 'No Activity',
 }
-
+const deleteCollection = {
+	DeleteTitle: 'Delete Confirmation',
+	DeleteText: 'Are you sure you want to delete this collection?',
+	DeleteCancel: `Cancel`,
+	Delete: `Delete`,
+	Loading: `Loading`,
+	DeleteSuccess: `Delete collection was success`,
+	DeleteFailed: `Something went wrong, try again later.`,
+}
 const categories = {
 	Categories: 'Categories',
 	ExploreAllCategoriesOnParas: 'Explore All Categories on Paras',
@@ -611,6 +619,7 @@ const data = {
 	news,
 	search,
 	newCollection,
+	deleteCollection,
 	collection,
 	categories,
 }
