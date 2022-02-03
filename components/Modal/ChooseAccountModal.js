@@ -23,7 +23,7 @@ const ChooseAccountModal = ({ show, onClose }) => {
 		}
 
 		const fetchSingleUser = async ({ accountId }) => {
-			const account = await near.wallet._near.account(accountId)
+			const account = await near.wallet?._near?.account(accountId)
 			const balance = await account.getAccountBalance()
 			return cachios
 				.get(`${process.env.V2_API_URL}/profiles`, {

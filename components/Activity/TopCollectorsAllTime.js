@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { parseImgUrl } from 'utils/common'
 import LinkToProfile from '../LinkToProfile'
 import { useIntl } from 'hooks/useIntl'
+import { sentryCaptureException } from 'lib/sentry'
 
 const TopCollectorsAllTime = ({ className }) => {
 	const { localeLn } = useIntl()
@@ -15,7 +16,7 @@ const TopCollectorsAllTime = ({ className }) => {
 				const res = await axios('https://whales.apollo42.app/api/paras')
 				setData(res.data.data)
 			} catch (error) {
-				console.log(error)
+				sentryCaptureException(error)
 			}
 		}
 		fetchCollectors()
