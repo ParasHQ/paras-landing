@@ -44,6 +44,7 @@ const home = {
 	LastSold: '最近售出',
 	Featured: '特色',
 	Latest: '最新',
+	TopCollections: 'Top 收藏品',
 	TopBuyers: 'Top 买家',
 	TopSellers: 'Top 卖家',
 	NewestCards: '最新卡片',

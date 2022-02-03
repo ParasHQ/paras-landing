@@ -51,7 +51,13 @@ const Edit = ({ pubDetail }) => {
 			</Head>
 			<Nav />
 			<div className="relative">
-				<PublicationEditor isEdit={true} pubDetail={pubDetail} />
+				{typeof window !== 'undefined' && (
+					<PublicationEditor
+						isEdit={true}
+						pubDetail={pubDetail}
+						draftDetail={JSON.parse(localStorage.getItem('edit-draft'))}
+					/>
+				)}
 			</div>
 			<Footer />
 		</div>

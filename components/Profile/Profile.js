@@ -5,6 +5,7 @@ import CopyLink from '../Common/CopyLink'
 import { useIntl } from 'hooks/useIntl'
 import useStore from 'lib/store'
 import { flagColor, flagText } from 'constants/flag'
+import LineClampText from 'components/Common/LineClampText'
 
 const Profile = ({ userProfile, activeTab }) => {
 	const router = useRouter()
@@ -89,9 +90,7 @@ const Profile = ({ userProfile, activeTab }) => {
 							</CopyLink>
 						</div>
 					</div>
-					<p className="mt-2 text-gray-300 whitespace-pre-line">
-						{profileData?.bio?.replace(/\n\s*\n\s*\n/g, '\n\n')}
-					</p>
+					<LineClampText text={profileData?.bio} />
 					<div className="flex items-center justify-center space-x-2">
 						{profileData?.website && (
 							<a

@@ -9,23 +9,18 @@ import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
-import near from 'lib/near'
 import { capitalize, parseImgUrl } from 'utils/common'
 import TokenMoreModal from '../Modal/TokenMoreModal'
 import TokenShareModal from '../Modal/TokenShareModal'
 import TokenUpdatePriceModal from '../Modal/TokenUpdatePriceModal'
-import JSBI from 'jsbi'
-import TokenStorageModal from '../Modal/TokenStorageModal'
 import TokenBurnModal from '../Modal/TokenBurnModal'
 import TokenTransferModal from '../Modal/TokenTransferModal'
 import useStore from 'lib/store'
-import { STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import TabHistory from '../Tabs/TabHistory'
 import LoginModal from '../Modal/LoginModal'
 import ArtistVerified from '../Common/ArtistVerified'
 import ArtistBanned from '../Common/ArtistBanned'
 import { useIntl } from 'hooks/useIntl'
-import { sentryCaptureException } from 'lib/sentry'
 import TabOffers from 'components/Tabs/TabOffers'
 import PlaceBidModal from 'components/Modal/PlaceBidModal'
 import TabPublication from 'components/Tabs/TabPublication'
@@ -36,52 +31,31 @@ import Card from 'components/Card/Card'
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState(null)
-	const [needDeposit, setNeedDeposit] = useState(true)
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
 	const router = useRouter()
 
 	useEffect(() => {
-		if (currentUser) {
-			setTimeout(() => {
-				checkStorageBalance()
-			}, 250)
-		}
-	}, [currentUser])
+		TabNotification(router.query.tab)
+	}, [router.query.tab])
 
-	useEffect(() => {
-		setActiveTab('info')
-	}, [router.query.tokenId])
-
-	const checkStorageBalance = async () => {
-		try {
-			if (!token.approval_id) {
-				const currentStorage = await near.wallet
-					.account()
-					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `storage_balance_of`, {
-						account_id: currentUser,
-					})
-
-				const supplyPerOwner = await near.wallet
-					.account()
-					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_supply_by_owner_id`, {
-						account_id: currentUser,
-					})
-
-				const usedStorage = JSBI.multiply(
-					JSBI.BigInt(parseInt(supplyPerOwner) + 1),
-					JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
-				)
-
-				if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
-					setNeedDeposit(false)
-				}
-			} else {
-				setNeedDeposit(false)
-			}
-		} catch (err) {
-			sentryCaptureException(err)
+	const TabNotification = (tab) => {
+		switch (tab) {
+			case 'owners':
+				setActiveTab('owners')
+				break
+			case 'history':
+				setActiveTab('history')
+				break
+			case 'offers':
+				setActiveTab('offers')
+				break
+			case 'publication':
+				setActiveTab('publication')
+				break
+			default:
+				setActiveTab('info')
 		}
 	}
 
@@ -271,17 +245,7 @@ const TokenDetail = ({ token, className }) => {
 						{token.owner_id === currentUser && (
 							<div className="flex flex-wrap space-x-4">
 								<div className="w-full flex-1">
-									<Button
-										size="md"
-										onClick={() => {
-											if (needDeposit) {
-												setShowModal('storage')
-											} else {
-												setShowModal('updatePrice')
-											}
-										}}
-										isFullWidth
-									>
+									<Button size="md" onClick={() => setShowModal('updatePrice')} isFullWidth>
 										{localeLn('UpdateListing')}
 									</Button>
 								</div>
@@ -312,7 +276,6 @@ const TokenDetail = ({ token, className }) => {
 							size="md"
 							variant="ghosts"
 							onClick={() => router.push(`/token/${token.contract_id}::${token.token_series_id}`)}
-							isFullWidth
 						>
 							{localeLn('SeeTokenSeries')}
 						</div>
@@ -336,7 +299,6 @@ const TokenDetail = ({ token, className }) => {
 				onClose={onDismissModal}
 				data={token}
 			/>
-			<TokenStorageModal show={showModal === 'storage'} onClose={onDismissModal} data={token} />
 			<TokenBurnModal show={showModal === 'burn'} onClose={onDismissModal} data={token} />
 			<TokenBuyModal show={showModal === 'buy'} onClose={onDismissModal} data={token} />
 			<TokenTransferModal show={showModal === 'transfer'} onClose={onDismissModal} data={token} />
