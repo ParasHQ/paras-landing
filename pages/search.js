@@ -94,6 +94,7 @@ export default function SearchPage({ searchQuery }) {
 				__skip: 0,
 				__limit: LIMIT,
 				__sort: 'isCreator::-1',
+				__showEmpty: false,
 			},
 		})
 		if (resColl.data.data.results.length === LIMIT) {
@@ -182,6 +183,7 @@ export default function SearchPage({ searchQuery }) {
 				__skip: collPage * LIMIT,
 				__limit: LIMIT,
 				__sort: 'isCreator::-1',
+				__showEmpty: false,
 			},
 		})
 		const newData = await res.data.data
