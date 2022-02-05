@@ -140,20 +140,23 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			})
 		}
 
-		const parsedSortQuery = query ? parseSortQuery(query.sort) : null
+		const parsedSortQuery = query ? parseSortQuery(query.sort, true) : null
 		params = {
 			...params,
 			collection_id: collectionId,
 			exclude_total_burn: true,
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
-			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
+			...(query.pmin ? { min_price: parseNearAmount(query.pmin) } : { min_price: 0 }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
 			...(query.lowest_price_next &&
 				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 			...(query.updated_at_next &&
 				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+		}
+		if (query.pmin === undefined && query.is_notforsale === 'false') {
+			delete params.min_price
 		}
 
 		return params
@@ -429,7 +432,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 									{Object.keys(attributes).length > 0 && (
 										<FilterAttribute attributes={attributes} />
 									)}
-									<FilterMarket isShowVerified={false} />
+									<FilterMarket isShowVerified={false} defaultMinPrice={true} />
 								</div>
 							</div>
 						</div>
