@@ -337,8 +337,8 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 	}
 
 	const uploadThumbnail = async () => {
-		// eslint-disable-next-line no-unused-vars
 		if (thumbnail !== undefined) {
+			// eslint-disable-next-line no-unused-vars
 			const [protocol, path] = thumbnail.split('://')
 			if (protocol === 'ipfs') {
 				return thumbnail
@@ -673,7 +673,7 @@ const CardPublication = ({ localToken, deleteCard }) => {
 						title: localToken.metadata.title,
 						collection: localToken.metadata.collection || localToken.contract_id,
 						copies: localToken.metadata.copies,
-						creatorId: localToken.metadata.creator_id || localToken.contract_id,
+						creatorId: localToken.creator_id || localToken.contract_id,
 						is_creator: localToken.is_creator,
 					}}
 				/>
