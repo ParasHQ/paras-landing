@@ -471,7 +471,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 								</div>
 							)
 						})}
-					{router.query.attributes && JSON.parse(router.query.attributes)?.length >= 1 && (
+					{router.query.attributes && JSON.parse(router.query.attributes)?.length > 1 && (
 						<div
 							className=" text-gray-400 hover:text-opacity-70 cursor-pointer my-1 flex items-center"
 							onClick={removeAllAttributesFilter}
