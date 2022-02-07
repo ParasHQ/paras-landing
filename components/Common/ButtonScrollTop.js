@@ -4,12 +4,14 @@ const ButtonScrollTop = ({ className }) => {
 	const [isScrollTop, setIsScrollTop] = useState(false)
 
 	useEffect(() => {
-		if (typeof window !== 'undefined') {
-			window.addEventListener('scroll', () => {
-				if (window.pageYOffset > 200) setIsScrollTop(true)
-				else setIsScrollTop(false)
-			})
+		const checkScroll = () => {
+			if (window.pageYOffset > 200 && !isScrollTop) setIsScrollTop(true)
+			else setIsScrollTop(false)
 		}
+
+		window.addEventListener('scroll', checkScroll)
+
+		return () => window.removeEventListener('scroll', checkScroll)
 	}, [])
 
 	return (
