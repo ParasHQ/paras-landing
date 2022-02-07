@@ -11,6 +11,7 @@ import { parseSortQuery } from 'utils/common'
 import CardListLoader from 'components/Card/CardListLoader'
 import CategoryList from 'components/CategoryList'
 import { useIntl } from 'hooks/useIntl'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 12
 
@@ -150,6 +151,7 @@ function MarketPage({ serverQuery }) {
 						<CardList name="market" tokens={tokens} fetchData={_fetchData} hasMore={hasMore} />
 					)}
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>

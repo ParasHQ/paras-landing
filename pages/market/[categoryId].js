@@ -12,6 +12,7 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CategoryList from 'components/CategoryList'
 import AddCategoryModal from 'components/Modal/AddCategoryModal'
 import { useIntl } from 'hooks/useIntl'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 12
 
@@ -306,6 +307,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 						/>
 					)}
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>
