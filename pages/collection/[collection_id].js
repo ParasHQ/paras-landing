@@ -234,6 +234,15 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		})
 	}
 
+	const removeAllAttributesFilter = () => {
+		router.push({
+			query: {
+				...router.query,
+				attributes: `[]`,
+			},
+		})
+	}
+
 	const onShowDeleteModal = () => {
 		setDeleteModal((prev) => !prev)
 	}
@@ -421,7 +430,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					</div>
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
 						<div className="flex sm:hidden">
-							{Object.keys(attributes).length > 0 && <FilterAttribute attributes={attributes} />}
+							{Object.keys(attributes).length > 0 && (
+								<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
+							)}
 							<FilterMarket isShowVerified={false} />
 						</div>
 					)}
@@ -430,7 +441,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							<div className="flex justify-center mt-4">
 								<div className="flex">
 									{Object.keys(attributes).length > 0 && (
-										<FilterAttribute attributes={attributes} />
+										<FilterAttribute
+											onClearAll={removeAllAttributesFilter}
+											attributes={attributes}
+										/>
 									)}
 									<FilterMarket isShowVerified={false} defaultMinPrice={true} />
 								</div>
@@ -457,6 +471,14 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 								</div>
 							)
 						})}
+					{router.query.attributes && JSON.parse(router.query.attributes)?.length >= 1 && (
+						<div
+							className=" text-gray-400 hover:text-opacity-70 cursor-pointer my-1 flex items-center"
+							onClick={removeAllAttributesFilter}
+						>
+							Clear All
+						</div>
+					)}
 				</div>
 				<div className="mt-4 px-4">
 					{isFiltering ? (
