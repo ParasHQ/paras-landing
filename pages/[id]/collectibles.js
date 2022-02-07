@@ -9,6 +9,7 @@ import Profile from 'components/Profile/Profile'
 import FilterMarket from 'components/Filter/FilterMarket'
 import { parseSortTokenQuery } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 12
 
@@ -147,6 +148,7 @@ const collection = ({ userProfile, accountId }) => {
 						hasMore={hasMore}
 					/>
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>

@@ -22,6 +22,7 @@ import near from 'lib/near'
 import { sentryCaptureException } from 'lib/sentry'
 import { useToast } from 'hooks/useToast'
 import LineClampText from 'components/Common/LineClampText'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 8
 const LIMIT_ACTIVITY = 20
@@ -468,6 +469,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						<CardList name="market" tokens={tokens} fetchData={fetchData} hasMore={hasMore} />
 					)}
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>

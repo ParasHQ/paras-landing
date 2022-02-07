@@ -6,6 +6,7 @@ import Footer from 'components/Footer'
 import { useIntl } from 'hooks/useIntl'
 import Link from 'next/link'
 import { parseImgUrl } from 'utils/common'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 12
 
@@ -180,6 +181,7 @@ const Categories = () => {
 						)
 					})}
 				</div>
+				<ButtonScrollTop className="-mr-5" />
 			</div>
 			<Footer />
 		</div>

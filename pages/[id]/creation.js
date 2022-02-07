@@ -10,6 +10,7 @@ import FilterMarket from 'components/Filter/FilterMarket'
 import { parseSortQuery } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CardListLoader from 'components/Card/CardListLoader'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 12
 
@@ -165,6 +166,7 @@ const creation = ({ userProfile, accountId }) => {
 						/>
 					)}
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>
