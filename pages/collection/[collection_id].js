@@ -485,6 +485,12 @@ export async function getServerSideProps({ params }) {
 		},
 	})
 
+	if (!resp.data.data.results[0]) {
+		return {
+			notFound: true,
+		}
+	}
+
 	return {
 		props: {
 			collectionId: params.collection_id,

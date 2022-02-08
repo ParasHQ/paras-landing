@@ -54,7 +54,7 @@ const FeaturedPost = ({ post = {} }) => {
 								</a>
 							</Link>
 						) : (
-							<a key={idx} href={url.url} target="_blank">
+							<a key={idx} href={url.url} target="_blank" rel="noreferrer">
 								{url.type === 'primary' && (
 									<span className="mr-2 outline-none rounded-md bg-transparent text-sm font-semibold border-2 p-2 text-gray-100 bg-primary border-primary leading-relaxed">
 										{url.name}

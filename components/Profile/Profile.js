@@ -101,6 +101,7 @@ const Profile = ({ userProfile, activeTab }) => {
 								}
 								className="mt-2 mb-4"
 								target="_blank"
+								rel="noreferrer"
 							>
 								<svg width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
 									<path
@@ -117,6 +118,7 @@ const Profile = ({ userProfile, activeTab }) => {
 								href={'https://instagram.com/' + profileData?.instagramId}
 								className="mt-2 mb-4"
 								target="_blank"
+								rel="noreferrer"
 							>
 								<svg
 									viewBox="0 0 511 511.9"
@@ -136,6 +138,7 @@ const Profile = ({ userProfile, activeTab }) => {
 								href={'https://twitter.com/' + profileData?.twitterId}
 								className="mt-2 mb-4"
 								target="_blank"
+								rel="noreferrer"
 							>
 								<svg
 									height="18"
@@ -161,6 +164,7 @@ const Profile = ({ userProfile, activeTab }) => {
 								}
 								className="mt-2 mb-4"
 								target="_blank"
+								rel="noreferrer"
 							>
 								<svg
 									width="20"

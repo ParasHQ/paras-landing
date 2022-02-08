@@ -67,6 +67,7 @@ const User = () => {
 								href="https://discord.paras.id"
 								target="_blank"
 								className="cursor-pointer border-b-2 border-gray-900"
+								rel="noreferrer"
 							>
 								{localeLn('NavJoinDiscord')}
 							</a>
@@ -190,6 +191,7 @@ const User = () => {
 												className="text-sm text-gray-100 hover:opacity-75 font-normal"
 												href="https://app.ref.finance/#wrap.near|token.paras.near"
 												target="_blank"
+												rel="noreferrer"
 											>
 												{localeLn('NavGetParas')}
 											</a>
@@ -201,6 +203,7 @@ const User = () => {
 										className="text-sm text-gray-100 hover:opacity-75"
 										href="https://wallet.near.org/"
 										target="_blank"
+										rel="noreferrer"
 									>
 										{localeLn('NavViewWallet')}
 									</a>

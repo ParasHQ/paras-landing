@@ -13,7 +13,7 @@ import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 12
 
-const collection = ({ userProfile, accountId }) => {
+const Collection = ({ userProfile, accountId }) => {
 	const router = useRouter()
 
 	const scrollCollection = `${router.query.id}::collection`
@@ -155,7 +155,7 @@ const collection = ({ userProfile, accountId }) => {
 	)
 }
 
-export default collection
+export default Collection
 
 export async function getServerSideProps({ params }) {
 	const profileRes = await axios.get(`${process.env.V2_API_URL}/profiles`, {
