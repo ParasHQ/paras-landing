@@ -193,36 +193,20 @@ export const checkUrl = (str) => {
 }
 
 export const parseSortQuery = (sort, defaultMinPrice = false) => {
-	if (defaultMinPrice === true) {
-		if (!sort) {
-			return 'lowest_price::1'
-		} else if (sort === 'marketupdate') {
-			return 'updated_at::-1'
-		} else if (sort === 'marketupdateasc') {
-			return 'updated_at::1'
-		} else if (sort === 'cardcreate') {
-			return '_id::-1'
-		} else if (sort === 'cardcreateasc') {
-			return '_id::1'
-		} else if (sort === 'pricedesc') {
-			return 'lowest_price::-1'
-		} else if (sort === 'priceasc') {
-			return 'lowest_price::1'
-		}
-	} else {
-		if (!sort || sort === 'marketupdate') {
-			return 'updated_at::-1'
-		} else if (sort === 'marketupdateasc') {
-			return 'updated_at::1'
-		} else if (sort === 'cardcreate') {
-			return '_id::-1'
-		} else if (sort === 'cardcreateasc') {
-			return '_id::1'
-		} else if (sort === 'pricedesc') {
-			return 'lowest_price::-1'
-		} else if (sort === 'priceasc') {
-			return 'lowest_price::1'
-		}
+	if (!sort) {
+		return defaultMinPrice ? 'lowest_price::1' : 'updated_at::-1'
+	} else if (sort === 'marketupdate') {
+		return 'updated_at::-1'
+	} else if (sort === 'marketupdateasc') {
+		return 'updated_at::1'
+	} else if (sort === 'cardcreate') {
+		return '_id::-1'
+	} else if (sort === 'cardcreateasc') {
+		return '_id::1'
+	} else if (sort === 'pricedesc') {
+		return 'lowest_price::-1'
+	} else if (sort === 'priceasc') {
+		return 'lowest_price::1'
 	}
 }
 
