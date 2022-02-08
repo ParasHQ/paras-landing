@@ -94,6 +94,7 @@ const LoginPage = () => {
 								href="https://faucet.paras.id"
 								target="_blank"
 								className="text-gray-200 hover:text-white font-semibold border-b-2 cursor-pointer text-sm"
+								rel="noreferrer"
 							>
 								{localeLn('CreateFreeNEARAccount')}
 							</a>

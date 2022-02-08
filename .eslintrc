@@ -14,12 +14,9 @@
 		"react-hooks/exhaustive-deps": "off",
 		"@next/next/link-passhref": "off",
 		"@next/next/no-img-element": "off",
-		"react/jsx-no-target-blank": "off",
-		"react/no-unescaped-entities": "off",
 		"jsx-a11y/alt-text": "off",
 		"no-unused-vars": "warn",
 		"no-useless-catch": "warn",
-		"no-mixed-spaces-and-tabs": "off",
 		"no-console": "warn"
 	}
 }
