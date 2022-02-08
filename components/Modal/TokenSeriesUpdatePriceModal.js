@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import near from 'lib/near'
@@ -13,9 +13,27 @@ import { trackRemoveListingTokenSeries, trackUpdateListingTokenSeries } from 'li
 import { useForm } from 'react-hook-form'
 
 const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
+	const [txFee, setTxFee] = useState(null)
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
 	const { register, handleSubmit, errors } = useForm()
 	const { localeLn } = useIntl()
+
+	useEffect(() => {
+		const getTxFee = async () => {
+			const contractForCall =
+				process.env.NFT_CONTRACT_ID === data.contract_id
+					? data.contract_id
+					: process.env.MARKETPLACE_CONTRACT_ID
+			const txFeeContract = await near.wallet
+				.account()
+				.viewFunction(contractForCall, `get_transaction_fee`)
+			setTxFee(txFeeContract)
+		}
+
+		if (show) {
+			getTxFee()
+		}
+	}, [show])
 
 	const onUpdateListing = async () => {
 		if (!near.currentUser) {
@@ -67,7 +85,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 
 	const calculatePriceDistribution = () => {
 		if (newPrice && JSBI.greaterThan(JSBI.BigInt(parseNearAmount(newPrice)), JSBI.BigInt(0))) {
-			let fee = JSBI.BigInt(500)
+			const fee = JSBI.BigInt(txFee.current_fee || 0)
 
 			const calcRoyalty =
 				Object.values(data.royalty).length > 0

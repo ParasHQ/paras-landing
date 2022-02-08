@@ -16,9 +16,23 @@ import useStore from 'lib/store'
 const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
 	const [needDeposit, setNeedDeposit] = useState(true)
+	const [txFee, setTxFee] = useState(null)
 	const { register, handleSubmit, errors } = useForm()
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
+
+	useEffect(() => {
+		const getTxFee = async () => {
+			const txFeeContract = await near.wallet
+				.account()
+				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_transaction_fee`)
+			setTxFee(txFeeContract)
+		}
+
+		if (show) {
+			getTxFee()
+		}
+	}, [show])
 
 	useEffect(() => {
 		if (currentUser) {
@@ -139,7 +153,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 
 	const calculatePriceDistribution = () => {
 		if (newPrice && JSBI.greaterThan(JSBI.BigInt(parseNearAmount(newPrice)), JSBI.BigInt(0))) {
-			let fee = JSBI.BigInt(500)
+			const fee = JSBI.BigInt(txFee.current_fee || 0)
 
 			const calcRoyalty =
 				Object.keys(data.royalty).length > 0

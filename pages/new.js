@@ -120,6 +120,7 @@ const NewPage = () => {
 	const [mediaHash, setMediaHash] = useState(null)
 	const [referenceHash, setReferenceHash] = useState(null)
 	const [fileType, setFileType] = useState(null)
+	const [txFee, setTxFee] = useState(null)
 
 	const watchRoyalties = watch(`royalties`)
 
@@ -353,6 +354,16 @@ const NewPage = () => {
 		}
 	}, [store.initialized])
 
+	useEffect(() => {
+		const getTxFee = async () => {
+			const txFeeContract = await near.wallet
+				.account()
+				.viewFunction(process.env.NFT_CONTRACT_ID, `get_transaction_fee`)
+			setTxFee(txFeeContract)
+		}
+		getTxFee()
+	}, [])
+
 	const fetchCollectionUser = async () => {
 		if (!hasMore || isFetching) {
 			return
@@ -580,7 +591,7 @@ const NewPage = () => {
 												<span>{localeLn('Fee')}: </span>
 												<span>
 													{prettyBalance(
-														Number(getValues('amount', 0) * 0.05)
+														Number((getValues('amount', 0) * (txFee.current_fee || 0)) / 10000)
 															.toPrecision(4)
 															.toString(),
 														0,
