@@ -6,6 +6,7 @@ const FilterMarket = ({
 	isShowVerified = true,
 	isShowNotForSale = true,
 	isCollectibles = false,
+	defaultMinPrice = false,
 }) => {
 	const filterModalRef = useRef()
 	const router = useRouter()
@@ -39,14 +40,14 @@ const FilterMarket = ({
 	// update filter state based on query
 	useEffect(() => {
 		if (router.pathname === '/search') {
-			setSortBy(filter[0].key)
+			setSortBy(defaultMinPrice ? filter[3].key : filter[0].key)
 			setMinPrice('')
 			setMaxPrice('')
 		} else {
 			if (router.query.sort) {
 				setSortBy(router.query.sort)
 			} else {
-				setSortBy(isCollectibles ? filter[1].key : filter[0].key)
+				setSortBy(isCollectibles ? filter[1].key : defaultMinPrice ? filter[3].key : filter[0].key)
 			}
 			if (router.query.pmin && router.query.pmin !== '0') {
 				setMinPrice(router.query.pmin)
@@ -66,7 +67,7 @@ const FilterMarket = ({
 			if (router.query.is_notforsale) {
 				setIsNotForSale(router.query.is_notforsale === 'true')
 			} else {
-				setIsNotForSale(false)
+				setIsNotForSale(defaultMinPrice ? true : false)
 			}
 		}
 	}, [router.query])
@@ -86,6 +87,11 @@ const FilterMarket = ({
 		}
 		if (maxPrice === '') {
 			delete query.pmax
+		}
+		if (defaultMinPrice) {
+			if (!isNotForSale) {
+				delete query.pmin
+			}
 		}
 
 		if (isNotForSale && minPrice === '') query.pmin = 0

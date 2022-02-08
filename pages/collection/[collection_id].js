@@ -141,20 +141,23 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			})
 		}
 
-		const parsedSortQuery = query ? parseSortQuery(query.sort) : null
+		const parsedSortQuery = query ? parseSortQuery(query.sort, true) : null
 		params = {
 			...params,
 			collection_id: collectionId,
 			exclude_total_burn: true,
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
-			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
+			...(query.pmin ? { min_price: parseNearAmount(query.pmin) } : { min_price: 0 }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
 			...(query.lowest_price_next &&
 				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 			...(query.updated_at_next &&
 				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+		}
+		if (query.pmin === undefined && query.is_notforsale === 'false') {
+			delete params.min_price
 		}
 
 		return params
@@ -228,6 +231,15 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			query: {
 				...router.query,
 				attributes: JSON.stringify(url),
+			},
+		})
+	}
+
+	const removeAllAttributesFilter = () => {
+		router.push({
+			query: {
+				...router.query,
+				attributes: `[]`,
 			},
 		})
 	}
@@ -419,7 +431,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					</div>
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
 						<div className="flex sm:hidden">
-							{Object.keys(attributes).length > 0 && <FilterAttribute attributes={attributes} />}
+							{Object.keys(attributes).length > 0 && (
+								<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
+							)}
 							<FilterMarket isShowVerified={false} />
 						</div>
 					)}
@@ -428,9 +442,12 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							<div className="flex justify-center mt-4">
 								<div className="flex">
 									{Object.keys(attributes).length > 0 && (
-										<FilterAttribute attributes={attributes} />
+										<FilterAttribute
+											onClearAll={removeAllAttributesFilter}
+											attributes={attributes}
+										/>
 									)}
-									<FilterMarket isShowVerified={false} />
+									<FilterMarket isShowVerified={false} defaultMinPrice={true} />
 								</div>
 							</div>
 						</div>
@@ -455,6 +472,14 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 								</div>
 							)
 						})}
+					{router.query.attributes && JSON.parse(router.query.attributes)?.length > 1 && (
+						<div
+							className=" text-gray-400 hover:text-opacity-70 cursor-pointer my-1 flex items-center"
+							onClick={removeAllAttributesFilter}
+						>
+							Clear All
+						</div>
+					)}
 				</div>
 				<div className="mt-4 px-4">
 					{isFiltering ? (
