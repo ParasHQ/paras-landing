@@ -58,7 +58,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		notif.token_id ? `/${notif.token_id}` : ''
 	}`
 
-	if (!token || notif.from === currentUser) {
+	if (!token) {
 		return null
 	}
 
