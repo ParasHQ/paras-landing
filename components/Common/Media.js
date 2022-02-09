@@ -87,10 +87,10 @@ const Media = ({
 
 	if (media?.type.includes('video')) {
 		return (
-			<div className="relative">
+			<div className="relative w-full mx-auto h-full">
 				{!videoControls && playVideoButton && (
 					<div
-						className=" absolute bg-gray-200 p-2 rounded-full right-3 md:right-5 bottom-3 md:bottom-5 z-30"
+						className=" absolute bg-gray-200 p-2 rounded-full right-3 md:right-5 z-30 bottom-1/10"
 						onClick={async (e) => {
 							e.preventDefault()
 							e.stopPropagation()
@@ -129,12 +129,14 @@ const Media = ({
 						playsInline
 						loop={true}
 						controls={true}
-						muted={true}
+						muted={false}
 						autoPlay
 						onClick={(e) => {
-							e.preventDefault()
-							e.stopPropagation()
-							setPlayVideo(false)
+							if (navigator.userAgent.indexOf('Chrome') !== -1) {
+								e.preventDefault()
+								e.stopPropagation()
+								setPlayVideo(false)
+							}
 						}}
 					>
 						<source type="video/mp4" src={media.url}></source>
