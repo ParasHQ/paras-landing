@@ -18,31 +18,56 @@ import Card from '../Card/Card'
 import usePreventRouteChangeIf from 'hooks/usePreventRouteChange'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import { v4 as uuidv4 } from 'uuid'
+import DraftPublication from 'components/Draft/DraftPublication'
 
 let redirectUrl = null
 
-const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
+const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] }) => {
 	const toast = useToast()
 	const router = useRouter()
 	const { localeLn } = useIntl()
 	const [preventLeaving, setPreventLeaving] = useState(true)
 	const [showLeavingConfirmation, setShowLeavingConfirmation] = useState(false)
+	const [isPubDetail, setIsPubDetail] = useState(false)
 
 	usePreventRouteChangeIf(preventLeaving, (url) => {
 		redirectUrl = url
 		setShowLeavingConfirmation(true)
 	})
 
-	const [title, setTitle] = useState(convertTextToEditorState(pubDetail?.title))
-	const [subTitle, setSubTitle] = useState(pubDetail?.description || '')
-	const [thumbnail, setThumbnail] = useState(pubDetail?.thumbnail)
-	const [content, setContent] = useState(generateEditorState(pubDetail?.content))
+	const [title, setTitle] = useState(
+		convertTextToEditorState(pubDetail?.title || draftDetail[0]?.title)
+	)
+	const [subTitle, setSubTitle] = useState(
+		pubDetail?.description || draftDetail[0]?.description || ''
+	)
+	const [thumbnail, setThumbnail] = useState(pubDetail?.thumbnail || draftDetail[0]?.thumbnail)
+	const [content, setContent] = useState(
+		generateEditorState(pubDetail?.content || draftDetail[0]?.content)
+	)
 	const [showAlertErr, setShowAlertErr] = useState(false)
 	const [embeddedCards, setEmbeddedCards] = useState([])
 
 	const [showModal, setShowModal] = useState(null)
 	const [isSubmitting, setIsSubmitting] = useState(false)
+	const [isDraftIn, setIsDraftIn] = useState(false)
 	const [searchToken, setSearchToken] = useState('')
+	const [currentDraftStorage, setCurrentDraftStorage] = useState()
+	const currentUser = near.currentUser
+	const uid = uuidv4()
+
+	useEffect(() => {
+		if (pubDetail !== null) setIsPubDetail(true)
+	}, [])
+
+	useEffect(() => {
+		const draftStorage = JSON.parse(localStorage.getItem('draft-publication'))
+		const currentUserDraft = draftStorage?.filter(
+			(item) => item.author_id === currentUser?.accountId
+		)
+		setCurrentDraftStorage(currentUserDraft)
+	}, [])
 
 	useEffect(() => {
 		if (isEdit) {
@@ -52,7 +77,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 
 	const fetchToken = async () => {
 		let token = []
-		pubDetail.contract_token_ids?.map(async (tokenId) => {
+		pubDetail?.contract_token_ids?.map(async (tokenId) => {
 			const [contractTokenId, token_id] = tokenId.split('/')
 			const [contractId, tokenSeriesId] = contractTokenId.split('::')
 
@@ -179,14 +204,26 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 
 		try {
 			const url = `${process.env.V2_API_URL}/publications`
-			const res = await axios({
-				url: isEdit ? url + `/${pubDetail._id}` : url,
-				method: isEdit ? 'put' : 'post',
-				data: data,
-				headers: {
-					authorization: await near.authToken(),
-				},
-			})
+			const res = await axios(
+				!isPubDetail && draftDetail.length > 0
+					? {
+							url: url,
+							method: 'post',
+							data: data,
+							headers: {
+								authorization: await near.authToken(),
+							},
+					  }
+					: {
+							url: isEdit ? url + `/${pubDetail._id}` : url,
+							method: isEdit ? 'put' : 'post',
+							data: data,
+							headers: {
+								authorization: await near.authToken(),
+							},
+					  }
+			)
+			if (!isPubDetail && draftDetail.length > 0) deleteDraft(draftDetail[0]._id)
 			const pub = res.data.data
 			const routerUrl = `/publication/${pub.slug}-${pub._id}`
 			setTimeout(() => {
@@ -199,6 +236,75 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			setIsSubmitting(false)
 			setPreventLeaving(true)
 		}
+	}
+
+	const saveDraft = async () => {
+		let checkTotalDraft = false
+		if (!window.location.href.includes('edit')) checkTotalDraft = currentDraftStorage?.length >= 10
+		if (checkTotalDraft) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{' '}
+						{checkTotalDraft && 'The maximum number of drafts is 10 drafts'}
+					</div>
+				),
+				type: 'error',
+				duration: null,
+			})
+			return
+		}
+
+		setIsDraftIn(true)
+		setPreventLeaving(false)
+
+		const entityMap = await uploadImage()
+		const _thumbnail = await uploadThumbnail()
+
+		const data = {
+			_id: uid,
+			author_id: currentUser.accountId,
+			title: title.getCurrentContent().getPlainText(),
+			draft: true,
+			thumbnail: _thumbnail,
+			description: subTitle,
+			content: {
+				blocks: convertToRaw(content.getCurrentContent()).blocks,
+				entityMap: entityMap,
+			},
+			contract_token_ids: getTokenIds(),
+		}
+
+		let draftStorage = JSON.parse(localStorage.getItem('draft-publication')) || []
+		const draftCurrentEdit = JSON.parse(localStorage.getItem('edit-draft'))
+		let checkDraft = []
+		if (draftCurrentEdit !== null) {
+			checkDraft = draftStorage.find((item) => item._id === draftCurrentEdit[0]._id)
+		}
+
+		if (checkDraft && window.location.href.includes('edit')) {
+			checkDraft.title = data.title
+			checkDraft.thumbnail = data.thumbnail
+			checkDraft.description = data.subTitle
+			checkDraft.content = data.content
+			checkDraft.contract_token_ids = data.contract_token_ids
+			draftStorage.push(checkDraft)
+			draftStorage.pop()
+			localStorage.setItem('draft-publication', JSON.stringify(draftStorage))
+		} else {
+			draftStorage.push(data)
+			localStorage.setItem('draft-publication', JSON.stringify(draftStorage))
+		}
+
+		const routerUrl = `/${currentUser.accountId}/publication`
+		router.push(routerUrl)
+	}
+
+	const deleteDraft = (_id) => {
+		const dataDraftPublication = JSON.parse(localStorage.getItem('draft-publication'))
+		const deleteItem = dataDraftPublication.filter((item) => item._id !== _id)
+		localStorage.setItem('draft-publication', JSON.stringify(deleteItem))
+		if (dataDraftPublication.length === 1) localStorage.removeItem('draft-publication')
 	}
 
 	const uploadImage = async () => {
@@ -232,22 +338,23 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 
 	const uploadThumbnail = async () => {
 		// eslint-disable-next-line no-unused-vars
-		const [protocol, path] = thumbnail.split('://')
-		if (protocol === 'ipfs') {
-			return thumbnail
+		if (thumbnail !== undefined) {
+			const [protocol, path] = thumbnail.split('://')
+			if (protocol === 'ipfs') {
+				return thumbnail
+			}
+
+			const formData = new FormData()
+			formData.append('files', dataURLtoFile(thumbnail), 'thumbnail')
+
+			const resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+					authorization: await near.authToken(),
+				},
+			})
+			return resp.data.data[0]
 		}
-
-		const formData = new FormData()
-		formData.append('files', dataURLtoFile(thumbnail), 'thumbnail')
-
-		const resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data',
-				authorization: await near.authToken(),
-			},
-		})
-
-		return resp.data.data[0]
 	}
 
 	const updateThumbnail = async (e) => {
@@ -405,13 +512,24 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 									className={`resize-none focus:border-gray-100 h-24`}
 									placeholder="Preview Description"
 								/>
-								<button
-									className="font-semibold mt-3 py-3 w-40 rounded-md bg-primary text-white"
-									disabled={isSubmitting}
-									onClick={postPublication}
-								>
-									{isSubmitting ? 'Publishing...' : 'Publish'}
-								</button>
+								<div className="flex gap-4">
+									<button
+										className="font-semibold mt-3 py-3 w-40 rounded-md bg-primary text-white"
+										disabled={isSubmitting}
+										onClick={postPublication}
+									>
+										{isSubmitting ? 'Publishing...' : 'Publish'}
+									</button>
+									{!isPubDetail && (
+										<button
+											className="font-semibold mt-3 py-3 w-40 rounded-md border-2 border-white text-white"
+											disabled={isDraftIn}
+											onClick={saveDraft}
+										>
+											{isDraftIn ? 'Draft in...' : 'Draft'}
+										</button>
+									)}
+								</div>
 							</div>
 						</div>
 					</div>
@@ -493,7 +611,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 					</div>
 				</div>
 			)}
-			<div className="max-w-3xl mx-auto px-4 pt-8">
+			<div className="flex items-center max-w-3xl mx-auto px-4 pt-8">
 				<button
 					className="font-semibold py-3 w-32 rounded-md bg-primary text-white"
 					onClick={onPressContinue}
@@ -501,6 +619,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				>
 					{localeLn('Continue')}
 				</button>
+				<DraftPublication onCreatePublication />
 			</div>
 		</div>
 	)

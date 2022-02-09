@@ -1,23 +1,65 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import near from 'lib/near'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
-import { GAS_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
+import { GAS_FEE, STORAGE_ADD_MARKET_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackRemoveListingToken, trackUpdateListingToken } from 'lib/ga'
 import { useForm } from 'react-hook-form'
+import useStore from 'lib/store'
 
 const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
+	const [needDeposit, setNeedDeposit] = useState(true)
 	const { register, handleSubmit, errors } = useForm()
+	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
-	const onUpdateListing = async (e) => {
-		e.preventDefault()
+
+	useEffect(() => {
+		if (currentUser) {
+			setTimeout(() => {
+				checkStorageBalance()
+			}, 250)
+		}
+	}, [currentUser])
+
+	const checkStorageBalance = async () => {
+		try {
+			if (!data.approval_id) {
+				const currentStorage = await near.wallet
+					.account()
+					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `storage_balance_of`, {
+						account_id: currentUser,
+					})
+
+				const supplyPerOwner = await near.wallet
+					.account()
+					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_supply_by_owner_id`, {
+						account_id: currentUser,
+					})
+
+				const usedStorage = JSBI.multiply(
+					JSBI.BigInt(parseInt(supplyPerOwner) + 1),
+					JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
+				)
+
+				if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
+					setNeedDeposit(false)
+				}
+			} else {
+				setNeedDeposit(false)
+			}
+		} catch (err) {
+			sentryCaptureException(err)
+		}
+	}
+
+	const onUpdateListing = async () => {
 		if (!near.currentUser) {
 			return
 		}
@@ -25,6 +67,23 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 		trackUpdateListingToken(data.token_id)
 
 		try {
+			const txs = []
+
+			if (needDeposit) {
+				txs.push({
+					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
+					functionCalls: [
+						{
+							methodName: 'storage_deposit',
+							contractId: process.env.MARKETPLACE_CONTRACT_ID,
+							args: { receiver_id: near.currentUser.accountId },
+							attachedDeposit: STORAGE_ADD_MARKET_FEE,
+							gas: GAS_FEE,
+						},
+					],
+				})
+			}
+
 			const params = {
 				token_id: data.token_id,
 				account_id: process.env.MARKETPLACE_CONTRACT_ID,
@@ -34,13 +93,20 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 					ft_token_id: `near`,
 				}),
 			}
-			await near.wallet.account().functionCall({
-				contractId: data.contract_id,
-				methodName: `nft_approve`,
-				args: params,
-				gas: GAS_FEE,
-				attachedDeposit: data.approval_id ? `1` : STORAGE_APPROVE_FEE,
+			txs.push({
+				receiverId: data.contract_id,
+				functionCalls: [
+					{
+						methodName: 'nft_approve',
+						contractId: data.contract_id,
+						args: params,
+						attachedDeposit: data.approval_id ? `1` : STORAGE_APPROVE_FEE,
+						gas: GAS_FEE,
+					},
+				],
 			})
+
+			return await near.executeMultipleTransactions(txs)
 		} catch (err) {
 			sentryCaptureException(err)
 		}
@@ -112,6 +178,16 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 		}
 	}
 
+	const getStorageFee = () => {
+		if (needDeposit) {
+			return (
+				parseFloat(formatNearAmount(STORAGE_APPROVE_FEE)) +
+				parseFloat(formatNearAmount(STORAGE_ADD_MARKET_FEE))
+			)
+		}
+		return formatNearAmount(STORAGE_APPROVE_FEE)
+	}
+
 	return (
 		<Modal isShow={show} closeOnBgClick={false} closeOnEscape={false} close={onClose}>
 			<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative">
@@ -138,6 +214,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 									value={newPrice}
 									onChange={(e) => setNewPrice(e.target.value)}
 									placeholder="Card price per pcs"
+									className={errors.newPrice && 'error'}
 									ref={register({
 										min: 0,
 										max: 999999999,
@@ -220,7 +297,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 										<div className="text-white my-1">
 											<div className="flex justify-between">
 												<div className="text-sm">{localeLn('StorageFee')}</div>
-												<div className="text">{formatNearAmount(STORAGE_APPROVE_FEE)} Ⓝ</div>
+												<div className="text">{getStorageFee()} Ⓝ</div>
 											</div>
 										</div>
 									</div>

@@ -43,6 +43,7 @@ const home = {
 	LastSold: 'Последние Продажи',
 	Featured: 'Рекомендации',
 	Latest: 'Последнее',
+	TopCollections: 'Топовые Коллекции',
 	TopBuyers: 'Топовые Покупатели',
 	TopSellers: 'Топовые Продавцы',
 	NewestCards: 'Самые новые Карточки',
@@ -561,6 +562,15 @@ const newCollection = {
 	Logo: 'Лого',
 	CreatingLoading: 'Создание...',
 }
+const deleteCollection = {
+	DeleteTitle: 'Удалить подтверждение',
+	DeleteText: 'Вы уверены, что хотите удалить эту коллекцию?',
+	DeleteCancel: `Отмена`,
+	Delete: `Удалить`,
+	Loading: `Загрузка`,
+	DeleteSuccess: `Коллекция удалена успешно`,
+	DeleteFailed: `Что-то пошло не так, повторите попытку позже.`,
+}
 const search = {
 	'Search{searchQuery}Paras': 'Поиск {searchQuery} — Paras',
 	SearchResult: 'Результаты Поиска',
@@ -588,6 +598,7 @@ const data = {
 	news,
 	search,
 	newCollection,
+	deleteCollection,
 }
 
 export const ru = config(data)

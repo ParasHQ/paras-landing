@@ -178,7 +178,8 @@ export const HomePublicationList = () => {
 								ref={sliderRef}
 								beforeChange={(current, next) => setFeaturedSlideIdx(next)}
 								dots={false}
-								autoplay={false}
+								autoplay={true}
+								autoplaySpeed={4000}
 								infinite={true}
 								slidesToShow={1}
 								slidesToScroll={1}

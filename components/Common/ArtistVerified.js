@@ -43,7 +43,7 @@ const ArtistVerified = ({ token, collection }) => {
 				</Link>
 			</span>
 			{(artistData?.isCreator || collection?.isCreator) && (
-				<span data-tip="Verified Creator">
+				<span data-tip="Verified Creator" className="ml-1">
 					<svg
 						width="18"
 						height="17"
