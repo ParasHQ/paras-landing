@@ -196,29 +196,34 @@ const FilterMarket = ({
 								</button>
 							))}
 						{isShowVerified && (
-							<div className="mt-2 flex items-center justify-between">
-								<h1 className="text-white font-semibold text-xl mt-2">Verified Only</h1>
-								<input
-									id="put-marketplace"
-									className="w-auto"
-									type="checkbox"
-									defaultChecked={isVerified}
-									onChange={() => {
-										setIsVerified(!isVerified)
-									}}
-								/>
-							</div>
+							<label htmlFor="put-marketplace">
+								<div className="mt-2 flex items-center justify-between">
+									<h1 className="text-white font-semibold text-xl mt-2">Verified Only</h1>
+									<input
+										id="put-marketplace"
+										className="w-auto"
+										type="checkbox"
+										defaultChecked={isVerified}
+										onChange={() => {
+											setIsVerified(!isVerified)
+										}}
+									/>
+								</div>
+							</label>
 						)}
 						{isShowNotForSale && (
-							<div className="mt-2 flex items-center justify-between">
-								<h1 className="text-white font-semibold text-xl mt-2">For Sale Only</h1>
-								<input
-									className="w-auto"
-									type="checkbox"
-									defaultChecked={isNotForSale}
-									onChange={() => setIsNotForSale(!isNotForSale)}
-								/>
-							</div>
+							<label htmlFor="put-forsale-only">
+								<div className="mt-2 flex items-center justify-between">
+									<h1 className="text-white font-semibold text-xl mt-2">For Sale Only</h1>
+									<input
+										id="put-forsale-only"
+										className="w-auto"
+										type="checkbox"
+										defaultChecked={isNotForSale}
+										onChange={() => setIsNotForSale(!isNotForSale)}
+									/>
+								</div>
+							</label>
 						)}
 						<button
 							onClick={onClickApply}
