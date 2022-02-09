@@ -154,11 +154,9 @@ const TokenSeriesDetail = ({ token, className }) => {
 		// For external contract
 		if (!isShowButton) {
 			return (
-				<div className="p-3">
-					<Button size="md" onClick={() => changeActiveTab('owners')} isFullWidth>
-						{localeLn('CheckOwners')}
-					</Button>
-				</div>
+				<Button size="md" onClick={() => changeActiveTab('owners')} isFullWidth>
+					{localeLn('CheckOwners')}
+				</Button>
 			)
 		}
 
