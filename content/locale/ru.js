@@ -61,6 +61,7 @@ const market = {
 	All: 'Всё',
 	Filter: 'Фильтр',
 	SortBy: 'Сортировать по',
+	CopiesOfCard: 'Копии карты',
 	CategoryParas: 'Категории — Paras',
 	OnlyAllowWhitelisted:
 		'На данный момент только подтверждённые Художники могут создавать Карточки на Paras.',

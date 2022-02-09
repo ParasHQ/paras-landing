@@ -14,6 +14,9 @@ const FilterMarket = ({
 	const [sortBy, setSortBy] = useState(router.query.sort || filter[0].key)
 	const [minPrice, setMinPrice] = useState(router.query.pmin || '')
 	const [maxPrice, setMaxPrice] = useState(router.query.pmax || '')
+	const [sortCopies, setSortCopies] = useState(
+		router.query.min_copies === undefined ? 'undefined' : router.query.min_copies
+	)
 	const [isVerified, setIsVerified] = useState(
 		router.query.is_verified ? router.query.is_verified === 'true' : true
 	)
@@ -58,6 +61,11 @@ const FilterMarket = ({
 			} else {
 				setMaxPrice('')
 			}
+			if (router.query.min_copies) {
+				setSortCopies(router.query.min_copies)
+			} else {
+				setSortCopies('undefined')
+			}
 			if (router.query.is_verified) {
 				setIsVerified(router.query.is_verified === 'true')
 			} else {
@@ -88,6 +96,17 @@ const FilterMarket = ({
 			delete query.pmax
 		}
 
+		if (sortCopies === 'undefined') {
+			delete query.min_copies
+			delete query.max_copies
+		} else if (sortCopies === '1') {
+			query.min_copies = 1
+			query.max_copies = 1
+		} else if (sortCopies === '2') {
+			query.min_copies = 2
+			delete query.max_copies
+		}
+
 		if (isNotForSale && minPrice === '') query.pmin = 0
 
 		router.push({
@@ -95,6 +114,7 @@ const FilterMarket = ({
 		})
 		setShowFilterModal(false)
 	}
+
 	return (
 		<div ref={filterModalRef} className="inline-block">
 			<div
@@ -160,6 +180,21 @@ const FilterMarket = ({
 							</div>
 							<input type="submit" className="hidden" />
 						</form>
+						{!isCollectibles && (
+							<h1 className="text-white font-semibold text-xl mt-4">{localeLn('CopiesOfCard')}</h1>
+						)}
+						{!isCollectibles &&
+							filterCopies.map((item) => (
+								<button
+									key={item.key}
+									className={`rounded-md text-white px-3 py-1 inline-block mr-2 border-2 border-gray-800 ${
+										sortCopies === item.key && 'bg-gray-800'
+									}`}
+									onClick={() => setSortCopies(item.key)}
+								>
+									<p>{item.value}</p>
+								</button>
+							))}
 						{isShowVerified && (
 							<div className="mt-2 flex items-center justify-between">
 								<h1 className="text-white font-semibold text-xl mt-2">Verified Only</h1>
@@ -222,6 +257,21 @@ const filter = [
 	{
 		key: 'priceasc',
 		value: 'Lowest Price',
+	},
+]
+
+const filterCopies = [
+	{
+		key: 'undefined',
+		value: 'All',
+	},
+	{
+		key: '1',
+		value: '1 of 1',
+	},
+	{
+		key: '2',
+		value: 'Multiple',
 	},
 ]
 
