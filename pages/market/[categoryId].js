@@ -64,10 +64,24 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 	}, [categoryId])
 
 	useEffect(() => {
-		if (router.query.sort || router.query.pmin || router.query.pmax || router.query.is_verified) {
+		if (
+			router.query.sort ||
+			router.query.pmin ||
+			router.query.pmax ||
+			router.query.min_copies ||
+			router.query.max_copies ||
+			router.query.is_verified
+		) {
 			updateFilter()
 		}
-	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.is_verified])
+	}, [
+		router.query.sort,
+		router.query.pmin,
+		router.query.pmax,
+		router.query.min_copies,
+		router.query.max_copies,
+		router.query.is_verified,
+	])
 
 	useEffect(() => {
 		const onClickEv = (e) => {
@@ -329,6 +343,8 @@ const tokensParams = (query) => {
 			parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 		...(query.updated_at_next &&
 			parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+		...(query.min_copies && { min_copies: query.min_copies }),
+		...(query.max_copies && { max_copies: query.max_copies }),
 	}
 	return params
 }

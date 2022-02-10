@@ -65,6 +65,7 @@ const market = {
 	All: 'All',
 	Filter: 'Filter',
 	SortBy: 'Sort by',
+	CopiesOfCard: 'Copies of Card',
 	CategoryParas: 'Category — Paras',
 	OnlyAllowWhitelisted:
 		'Currently we only allow whitelisted Artist to create their digital art card on Paras.',

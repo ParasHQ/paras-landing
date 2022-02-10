@@ -108,7 +108,14 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	useEffect(() => {
 		updateFilter(router.query)
-	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.attributes])
+	}, [
+		router.query.sort,
+		router.query.pmin,
+		router.query.pmax,
+		router.query.min_copies,
+		router.query.max_copies,
+		router.query.attributes,
+	])
 
 	useEffect(() => {
 		if (router.query.tab === 'activity') {
@@ -155,6 +162,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 			...(query.updated_at_next &&
 				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+			...(query.min_copies && { min_copies: query.min_copies }),
+			...(query.max_copies && { max_copies: query.max_copies }),
 		}
 		if (query.pmin === undefined && query.is_notforsale === 'false') {
 			delete params.min_price
