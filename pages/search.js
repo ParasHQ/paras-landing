@@ -49,10 +49,7 @@ export default function SearchPage({ searchQuery }) {
 		window.scrollTo(0, 0)
 
 		/** Tokens */
-		const params = tokensParams({
-			...query,
-			search: encodeURIComponent(query.q),
-		})
+		const params = tokensParams(query)
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
 		})
@@ -90,7 +87,7 @@ export default function SearchPage({ searchQuery }) {
 		// Collection
 		const resColl = await axios(`${process.env.V2_API_URL}/collections`, {
 			params: {
-				collection_search: encodeURIComponent(query.q),
+				collection_search: query.q,
 				__skip: 0,
 				__limit: LIMIT,
 				__sort: 'isCreator::-1',
@@ -121,7 +118,6 @@ export default function SearchPage({ searchQuery }) {
 		setIsFetching(true)
 		const params = tokensParams({
 			...query,
-			search: encodeURIComponent(query.q),
 			_id_next: idNext,
 			lowest_price_next: lowestPriceNext,
 			updated_at_next: updatedAtNext,
