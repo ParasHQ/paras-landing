@@ -1006,10 +1006,7 @@ const NewPage = () => {
 														defaultValue={formInput.attributes?.[idx]?.value || ''}
 														placeholder="Value"
 													/>
-													<div
-														className="cursor-pointer bg-gray- self-center"
-														onClick={() => remove(idx)}
-													>
+													<div className="cursor-pointer self-center" onClick={() => remove(idx)}>
 														<svg
 															width="14"
 															height="14"
