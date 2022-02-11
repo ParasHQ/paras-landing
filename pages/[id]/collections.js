@@ -6,6 +6,7 @@ import Footer from 'components/Footer'
 import { useRouter } from 'next/router'
 import Profile from 'components/Profile/Profile'
 import CollectionList from 'components/Collection/CollectionList'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 12
 
@@ -86,6 +87,7 @@ const Collections = ({ userProfile, accountId }) => {
 				<div className="mt-4">
 					<CollectionList data={collections} fetchData={_fetchData} hasMore={hasMore} />
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>

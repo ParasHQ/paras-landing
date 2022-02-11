@@ -65,6 +65,7 @@ const market = {
 	All: 'All',
 	Filter: 'Filter',
 	SortBy: 'Sort by',
+	CopiesOfCard: 'Copies of Card',
 	CategoryParas: 'Category — Paras',
 	OnlyAllowWhitelisted:
 		'Currently we only allow whitelisted Artist to create their digital art card on Paras.',
@@ -292,6 +293,8 @@ const modal = {
 	Deposit: 'Deposit',
 	AreAboutToSend: 'You are about to send',
 	MintedBy: 'minted by',
+	DynamicTxFee:
+		'If you make the transaction before {date} you will be charged {fee}% transaction fee.',
 }
 const tab = {
 	BoughtFrom: 'bought from',

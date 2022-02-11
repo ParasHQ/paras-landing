@@ -46,6 +46,7 @@ const Footer = () => {
 							href="https://ipfs.fleek.co/ipfs/bafybeihu6atdada45rmx4sszny6sahrzas4tuzrpuufdcpe6b63r6ugdce"
 							target="_blank"
 							className="flex cursor-pointer "
+							rel="noreferrer"
 						>
 							{localeLn('Whitepaper')}
 						</a>
@@ -53,7 +54,12 @@ const Footer = () => {
 				</div>
 				<div className="flex flex-wrap justify-center md:justify-start -mx-2">
 					<div className="flex items-center pt-2 px-2">
-						<a href="https://twitter.com/ParasHQ" target="_blank" className="flex cursor-pointer ">
+						<a
+							href="https://twitter.com/ParasHQ"
+							target="_blank"
+							className="flex cursor-pointer "
+							rel="noreferrer"
+						>
 							{localeLn('Twitter')}
 						</a>
 					</div>
@@ -62,12 +68,18 @@ const Footer = () => {
 							href="https://instagram.com/paras.hq"
 							target="_blank"
 							className="flex cursor-pointer "
+							rel="noreferrer"
 						>
 							{localeLn('Instagram')}
 						</a>
 					</div>
 					<div className="flex items-center pt-2 px-2">
-						<a href="https://t.me/parashq" target="_blank" className="flex cursor-pointer ">
+						<a
+							href="https://t.me/parashq"
+							target="_blank"
+							className="flex cursor-pointer "
+							rel="noreferrer"
+						>
 							{localeLn('Telegram')}
 						</a>
 					</div>
@@ -76,6 +88,7 @@ const Footer = () => {
 							href="https://discord.gg/vWR2XBNupg"
 							target="_blank"
 							className="flex cursor-pointer "
+							rel="noreferrer"
 						>
 							{localeLn('Discord')}
 						</a>
@@ -109,7 +122,7 @@ const Footer = () => {
 					<p className="mx-2">|</p>
 					<div className="flex items-center text-sm">
 						<p>{localeLn('PoweredBy')}</p>
-						<a href="https://near.org" target="_blank">
+						<a href="https://near.org" target="_blank" rel="noreferrer">
 							<svg
 								className="mx-2"
 								width="16"
@@ -145,7 +158,7 @@ const Footer = () => {
 								fill="#cbd5e0"
 							/>
 						</svg>
-						<a href="https://ipfs.io" target="_blank">
+						<a href="https://ipfs.io" target="_blank" rel="noreferrer">
 							<svg
 								width="22"
 								height="22"

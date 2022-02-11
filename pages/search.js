@@ -94,6 +94,7 @@ export default function SearchPage({ searchQuery }) {
 				__skip: 0,
 				__limit: LIMIT,
 				__sort: 'isCreator::-1',
+				__showEmpty: false,
 			},
 		})
 		if (resColl.data.data.results.length === LIMIT) {
@@ -105,7 +106,15 @@ export default function SearchPage({ searchQuery }) {
 		setCollections(resColl.data.data.results)
 
 		setIsRefreshing(false)
-	}, [query.q, query.sort, query.pmin, query.pmax, query.is_verified])
+	}, [
+		query.q,
+		query.sort,
+		query.pmin,
+		query.pmax,
+		query.min_copies,
+		query.max_copies,
+		query.is_verified,
+	])
 
 	useEffect(() => {
 		return () => {
@@ -182,6 +191,7 @@ export default function SearchPage({ searchQuery }) {
 				__skip: collPage * LIMIT,
 				__limit: LIMIT,
 				__sort: 'isCreator::-1',
+				__showEmpty: false,
 			},
 		})
 		const newData = await res.data.data
@@ -335,6 +345,8 @@ const tokensParams = (query) => {
 			parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 		...(query.updated_at_next &&
 			parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+		...(query.min_copies && { min_copies: query.min_copies }),
+		...(query.max_copies && { max_copies: query.max_copies }),
 	}
 	return params
 }

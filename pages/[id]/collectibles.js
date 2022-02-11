@@ -9,10 +9,11 @@ import Profile from 'components/Profile/Profile'
 import FilterMarket from 'components/Filter/FilterMarket'
 import { parseSortTokenQuery } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 12
 
-const collection = ({ userProfile, accountId }) => {
+const Collection = ({ userProfile, accountId }) => {
 	const router = useRouter()
 
 	const scrollCollection = `${router.query.id}::collection`
@@ -147,13 +148,14 @@ const collection = ({ userProfile, accountId }) => {
 						hasMore={hasMore}
 					/>
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>
 	)
 }
 
-export default collection
+export default Collection
 
 export async function getServerSideProps({ params }) {
 	const profileRes = await axios.get(`${process.env.V2_API_URL}/profiles`, {

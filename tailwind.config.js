@@ -12,6 +12,10 @@ module.exports = {
 			opacity: {
 				15: '0.15',
 			},
+			spacing: {
+				'1/20': '5%',
+				'1/10': '10%',
+			},
 			height: {
 				'100vh': '100vh',
 				'90vh': '90vh',

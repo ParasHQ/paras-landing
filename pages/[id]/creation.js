@@ -10,10 +10,11 @@ import FilterMarket from 'components/Filter/FilterMarket'
 import { parseSortQuery } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CardListLoader from 'components/Card/CardListLoader'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 12
 
-const creation = ({ userProfile, accountId }) => {
+const Creation = ({ userProfile, accountId }) => {
 	const router = useRouter()
 
 	const scrollCreation = `${router.query.id}::creation`
@@ -66,7 +67,14 @@ const creation = ({ userProfile, accountId }) => {
 
 	useEffect(() => {
 		updateFilter(router.query)
-	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.is_notforsale])
+	}, [
+		router.query.sort,
+		router.query.pmin,
+		router.query.pmax,
+		router.query.min_copies,
+		router.query.max_copies,
+		router.query.is_notforsale,
+	])
 
 	const tokensParams = (query) => {
 		const parsedSortQuery = parseSortQuery(query.sort)
@@ -82,6 +90,8 @@ const creation = ({ userProfile, accountId }) => {
 				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 			...(query.updated_at_next &&
 				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+			...(query.min_copies && { min_copies: query.min_copies }),
+			...(query.max_copies && { max_copies: query.max_copies }),
 		}
 
 		return params
@@ -165,13 +175,14 @@ const creation = ({ userProfile, accountId }) => {
 						/>
 					)}
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>
 	)
 }
 
-export default creation
+export default Creation
 
 export async function getServerSideProps({ params }) {
 	const profileRes = await axios.get(`${process.env.V2_API_URL}/profiles`, {

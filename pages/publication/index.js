@@ -9,6 +9,7 @@ import Link from 'next/link'
 import useStore from 'lib/store'
 import { useIntl } from 'hooks/useIntl'
 import PublicationListScroll from 'components/Publication/PublicationListScroll'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 6
 
@@ -224,6 +225,7 @@ const Publication = () => {
 						/>
 					)}
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>
