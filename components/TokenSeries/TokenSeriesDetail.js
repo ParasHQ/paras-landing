@@ -245,14 +245,14 @@ const TokenSeriesDetail = ({ token, className }) => {
 							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative flex-nowrap disable-scrollbars md:-mb-4">
 								{tabDetail('info')}
 								{tabDetail('owners')}
-								{tabDetail('history')}
 								{tabDetail('offers')}
+								{tabDetail('history')}
 								{tabDetail('publication')}
 							</div>
 							{activeTab === 'info' && <TabInfo localToken={token} />}
 							{activeTab === 'owners' && <TabOwners localToken={token} />}
-							{activeTab === 'history' && <TabHistory localToken={token} />}
 							{activeTab === 'offers' && <TabOffers localToken={token} />}
+							{activeTab === 'history' && <TabHistory localToken={token} />}
 							{activeTab === 'publication' && <TabPublication localToken={token} />}
 						</div>
 					</Scrollbars>
