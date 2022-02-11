@@ -17,7 +17,7 @@ import { encodeImageToBlurhash } from 'lib/blurhash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { GAS_FEE, MAX_FILE_SIZE, STORAGE_CREATE_SERIES_FEE } from 'config/constants'
 import Button from 'components/Common/Button'
-import { InputText, InputTextarea } from 'components/Common/form'
+import { InputText, InputTextarea, InputTextAuto } from 'components/Common/form'
 import CreateCollectionModal from 'components/Collection/CreateCollectionModal'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
@@ -120,6 +120,7 @@ const NewPage = () => {
 	const [mediaHash, setMediaHash] = useState(null)
 	const [referenceHash, setReferenceHash] = useState(null)
 	const [fileType, setFileType] = useState(null)
+	const [attributeKey, setAttributeKey] = useState([])
 
 	const watchRoyalties = watch(`royalties`)
 
@@ -227,6 +228,20 @@ const NewPage = () => {
 		setValue('amount', formInput.amount)
 		setValue('attributes', formInput.attributes)
 		setValue('royalties', formInput.royalties)
+
+		if (step === 2) {
+			const getAttributeKeys = async () => {
+				const res = await axios.get(`${process.env.V2_API_URL}/collection-attributes`, {
+					params: {
+						collection_id: choosenCollection.collection_id,
+					},
+				})
+				const attributes = await res.data.data.results
+				const newAttribute = Object.keys(attributes)
+				setAttributeKey(newAttribute)
+			}
+			getAttributeKeys()
+		}
 	}, [step])
 
 	const _updateValues = () => {
@@ -972,15 +987,15 @@ const NewPage = () => {
 										</div>
 										<Scrollbars ref={scrollBar} autoHeight autoHide>
 											{fields.map((attr, idx) => (
-												<div key={attr.id} className="flex space-x-2 items-center mb-2">
-													<InputText
+												<div key={attr.id} className="flex space-x-2 items-start mb-2">
+													<InputTextAuto
 														ref={register({ required: true })}
 														name={`attributes.${idx}.trait_type`}
 														className={`${
 															errors.attributes && errors.attributes[idx]?.trait_type && 'error'
 														}`}
-														defaultValue={formInput.attributes?.[idx]?.trait_type || ''}
 														placeholder="Type"
+														suggestionList={attributeKey}
 													/>
 													<InputText
 														ref={register({ required: true })}
@@ -991,7 +1006,10 @@ const NewPage = () => {
 														defaultValue={formInput.attributes?.[idx]?.value || ''}
 														placeholder="Value"
 													/>
-													<div className="cursor-pointer" onClick={() => remove(idx)}>
+													<div
+														className="cursor-pointer bg-gray- self-center"
+														onClick={() => remove(idx)}
+													>
 														<svg
 															width="14"
 															height="14"
