@@ -61,6 +61,7 @@ const market = {
 	All: 'Всё',
 	Filter: 'Фильтр',
 	SortBy: 'Сортировать по',
+	CopiesOfCard: 'Копии карты',
 	CategoryParas: 'Категории — Paras',
 	OnlyAllowWhitelisted:
 		'На данный момент только подтверждённые Художники могут создавать Карточки на Paras.',
@@ -291,6 +292,8 @@ const modal = {
 	Deposit: 'Депозит',
 	AreAboutToSend: 'Вы собираетесь отправить',
 	MintedBy: 'изготовлено',
+	DynamicTxFee:
+		'If you make the transaction before {date} you will be charged {fee}% transaction fee.',
 }
 const tab = {
 	BoughtFrom: 'куплено у',

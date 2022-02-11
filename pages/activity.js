@@ -15,6 +15,7 @@ import { sentryCaptureException } from 'lib/sentry'
 const FETCH_TOKENS_LIMIT = 10
 import { useIntl } from 'hooks/useIntl'
 import TopCollectorsAllTime from 'components/Activity/TopCollectorsAllTime'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const ActivityLog = ({ query }) => {
 	const {
@@ -293,6 +294,7 @@ const ActivityLog = ({ query }) => {
 							linkTo="/activity/top-sellers"
 						/>
 						<TopCollectorsAllTime className="mt-12" />
+						<ButtonScrollTop />
 					</div>
 				</div>
 				<Footer />

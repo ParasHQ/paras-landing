@@ -141,8 +141,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 			return false
 		}
 		return (
-			currentUser === token.metadata.creator_id ||
-			(!token.metadata.creator_id && currentUser === token.contract_id)
+			currentUser === token.creator_id || (!token.creator_id && currentUser === token.contract_id)
 		)
 	}
 
@@ -185,7 +184,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 										title: token.metadata.title,
 										collection: token.metadata.collection || token.contract_id,
 										copies: token.metadata.copies,
-										creatorId: token.metadata.creator_id || token.contract_id,
+										creatorId: token.creator_id || token.contract_id,
 										is_creator: token.is_creator,
 									}}
 								/>
@@ -207,7 +206,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 							</span>
 						</div>
 					</div>
-					<ArtistBanned creatorId={token.metadata.creator_id} />
+					<ArtistBanned creatorId={token.creator_id} />
 				</div>
 				<div className="h-1/2 lg:h-full flex flex-col w-full lg:w-2/5 lg:max-w-2xl bg-gray-700">
 					<Scrollbars

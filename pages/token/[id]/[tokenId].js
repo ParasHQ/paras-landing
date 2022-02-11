@@ -8,7 +8,7 @@ import { parseImgUrl } from 'utils/common'
 import { sentryCaptureException } from 'lib/sentry'
 
 const getCreatorId = (token) => {
-	return token.metadata.creator_id || token.contract_id
+	return token.creator_id || token.contract_id
 }
 
 const TokenPage = ({ errorCode, token }) => {

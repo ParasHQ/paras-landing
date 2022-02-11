@@ -64,6 +64,7 @@ const market = {
 	All: '全部',
 	Filter: 'Filter',
 	SortBy: '排序',
+	CopiesOfCard: '卡副本',
 	CategoryParas: 'Category — Paras',
 	OnlyAllowWhitelisted:
 		'Currently we only allow whitelisted Artist to create their digital art card on Paras.',
@@ -284,6 +285,8 @@ const modal = {
 	Deposit: '存款',
 	AreAboutToSend: 'You are about to send',
 	MintedBy: 'minted by',
+	DynamicTxFee:
+		'If you make the transaction before {date} you will be charged {fee}% transaction fee.',
 }
 const tab = {
 	BoughtFrom: '买自',

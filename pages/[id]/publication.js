@@ -11,6 +11,7 @@ import near from 'lib/near'
 import useStore from 'lib/store'
 import PublicationListScroll from 'components/Publication/PublicationListScroll'
 import DraftPublication from 'components/Draft/DraftPublication'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 const LIMIT = 6
 
 const Publication = ({ userProfile, accountId }) => {
@@ -137,6 +138,7 @@ const Publication = ({ userProfile, accountId }) => {
 						</div>
 					)}
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>

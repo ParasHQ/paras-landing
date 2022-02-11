@@ -231,7 +231,7 @@ const TabOffers = ({ localToken }) => {
 				ttl: 30,
 			})
 
-			const creatorId = localToken.metadata.creator_id || localToken.contract_id
+			const creatorId = localToken.creator_id || localToken.contract_id
 
 			if (ownershipResp.data.data.results[0]) {
 				setIsOwned(`owner::series::${ownershipResp.data.data.results[0].token_id}`)

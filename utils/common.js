@@ -192,8 +192,10 @@ export const checkUrl = (str) => {
 	return !!pattern.test(str)
 }
 
-export const parseSortQuery = (sort) => {
-	if (!sort || sort === 'marketupdate') {
+export const parseSortQuery = (sort, defaultMinPrice = false) => {
+	if (!sort) {
+		return defaultMinPrice ? 'lowest_price::1' : 'updated_at::-1'
+	} else if (sort === 'marketupdate') {
 		return 'updated_at::-1'
 	} else if (sort === 'marketupdateasc') {
 		return 'updated_at::1'

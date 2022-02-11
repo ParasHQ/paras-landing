@@ -344,22 +344,22 @@ const SpecialCard = ({
 		}
 	}
 
-	const _getLowestPrice = (ownerships = []) => {
-		const marketDataList = ownerships
-			.filter((ownership) => ownership.marketData)
-			.map((ownership) => ownership.marketData.amount)
-			.sort((a, b) => a - b)
-		return marketDataList[0]
-	}
+	// const _getLowestPrice = (ownerships = []) => {
+	// 	const marketDataList = ownerships
+	// 		.filter((ownership) => ownership.marketData)
+	// 		.map((ownership) => ownership.marketData.amount)
+	// 		.sort((a, b) => a - b)
+	// 	return marketDataList[0]
+	// }
 
-	const getCardAvailable = (ownerships = []) => {
-		let total = 0
-		const marketDataList = ownerships
-			.filter((ownership) => ownership.marketData)
-			.map((ownership) => ownership.marketData.quantity)
-		total = marketDataList.reduce((a, b) => a + b, 0)
-		return total
-	}
+	// const getCardAvailable = (ownerships = []) => {
+	// 	let total = 0
+	// 	const marketDataList = ownerships
+	// 		.filter((ownership) => ownership.marketData)
+	// 		.map((ownership) => ownership.marketData.quantity)
+	// 	total = marketDataList.reduce((a, b) => a + b, 0)
+	// 	return total
+	// }
 	const { localeLn } = useIntl()
 
 	return (
