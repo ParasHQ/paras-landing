@@ -292,6 +292,8 @@ const modal = {
 	Deposit: 'Депозит',
 	AreAboutToSend: 'Вы собираетесь отправить',
 	MintedBy: 'изготовлено',
+	DynamicTxFee:
+		'If you make the transaction before {date} you will be charged {fee}% transaction fee.',
 }
 const tab = {
 	BoughtFrom: 'куплено у',

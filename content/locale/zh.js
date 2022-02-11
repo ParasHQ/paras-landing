@@ -285,6 +285,8 @@ const modal = {
 	Deposit: '存款',
 	AreAboutToSend: 'You are about to send',
 	MintedBy: 'minted by',
+	DynamicTxFee:
+		'If you make the transaction before {date} you will be charged {fee}% transaction fee.',
 }
 const tab = {
 	BoughtFrom: '买自',
