@@ -45,8 +45,11 @@ const TabOwners = ({ localToken }) => {
 			},
 			ttl: 120,
 		})
-		const respData = resp.data.data.results
-		const newData = [...currentData, ...respData]
+		let respData = resp.data.data.results
+		let saleOwner = respData.filter((token) => token.price)
+		let nonSaleOwner = respData.filter((token) => !token.price)
+		saleOwner = saleOwner.sort((a, b) => a.price - b.price)
+		const newData = [...currentData, ...saleOwner, ...nonSaleOwner]
 
 		setTokens(newData)
 
@@ -106,7 +109,7 @@ const TabOwners = ({ localToken }) => {
 						<select
 							className="py-1 rounded-md bg-gray-800 text-white focus:outline-none outline-none text-right"
 							onChange={(e) => setSortBy(e.target.value)}
-							defaultValue="editionasc"
+							defaultValue="priceasc"
 							value={sortBy}
 						>
 							<option value="editionasc">Edition Low-High</option>
