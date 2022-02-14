@@ -46,6 +46,10 @@ const TokenSeriesDetail = ({ token, className }) => {
 		token.contract_id === process.env.NFT_CONTRACT_ID ||
 		process.env.WHITELIST_CONTRACT_ID.split(',').includes(token.contract_id)
 
+	const disableOfferContract = process.env.DISABLE_OFFER_CONTRACT_ID.split(',').includes(
+		token.contract_id
+	)
+
 	useEffect(() => {
 		TabNotification(router.query.tab)
 	}, [router.query.tab])
@@ -143,6 +147,83 @@ const TokenSeriesDetail = ({ token, className }) => {
 		return (
 			currentUser === token.creator_id || (!token.creator_id && currentUser === token.contract_id)
 		)
+	}
+
+	const tokenSeriesButton = () => {
+		// For external contract
+		if (!isShowButton) {
+			return (
+				<Button size="md" onClick={() => changeActiveTab('owners')} isFullWidth>
+					{localeLn('CheckOwners')}
+				</Button>
+			)
+		}
+
+		if (token.is_non_mintable || token.total_mint === token.metadata.copies) {
+			return (
+				<div className="flex space-x-2">
+					<Button size="md" onClick={() => changeActiveTab('owners')} isFullWidth>
+						{localeLn('CheckOwners')}
+					</Button>
+					{!disableOfferContract && (
+						<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
+							{`Place an offer`}
+						</Button>
+					)}
+				</div>
+			)
+		} else if (isCreator()) {
+			return (
+				<div className="flex flex-wrap space-x-4">
+					<div className="w-full flex-1">
+						<Button size="md" onClick={onClickMint} isFullWidth>
+							{localeLn('Mint')}
+						</Button>
+					</div>
+					<div className="w-full flex-1">
+						<Button size="md" onClick={onClickUpdatePrice} isFullWidth>
+							{localeLn('UpdatePrice')}
+						</Button>
+					</div>
+				</div>
+			)
+		} else if (token.price) {
+			return (
+				<>
+					<div className="flex space-x-2">
+						<Button size="md" onClick={onClickBuy} isFullWidth>
+							{token.price === '0' ? 'Free' : `Buy for ${formatNearAmount(token.price)} Ⓝ`}
+						</Button>
+						{!disableOfferContract && (
+							<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
+								{`Place an offer`}
+							</Button>
+						)}
+					</div>
+					{token.lowest_price &&
+						parseFloat(formatNearAmount(token.price)) >
+							parseFloat(formatNearAmount(token.lowest_price)) && (
+							<Button
+								size="md"
+								className="mt-2"
+								variant="secondary"
+								onClick={() => setActiveTab('owners')}
+								isFullWidth
+							>
+								{localeLn('BuyFor{price}On', {
+									price: formatNearAmount(token.lowest_price),
+								})}
+							</Button>
+						)}
+				</>
+			)
+		} else {
+			return (
+				<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
+					{`Place an offer`}
+				</Button>
+			)
+		}
 	}
 
 	return (
@@ -256,69 +337,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 							{activeTab === 'publication' && <TabPublication localToken={token} />}
 						</div>
 					</Scrollbars>
-					{isShowButton ? (
-						<div className="p-3">
-							{token.is_non_mintable || token.total_mint === token.metadata.copies ? (
-								<div className="flex space-x-2">
-									<Button size="md" onClick={() => changeActiveTab('owners')} isFullWidth>
-										{localeLn('CheckOwners')}
-									</Button>
-									<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
-										{`Place an offer`}
-									</Button>
-								</div>
-							) : isCreator() ? (
-								<div className="flex flex-wrap space-x-4">
-									<div className="w-full flex-1">
-										<Button size="md" onClick={onClickMint} isFullWidth>
-											{localeLn('Mint')}
-										</Button>
-									</div>
-									<div className="w-full flex-1">
-										<Button size="md" onClick={onClickUpdatePrice} isFullWidth>
-											{localeLn('UpdatePrice')}
-										</Button>
-									</div>
-								</div>
-							) : token.price ? (
-								<>
-									<div className="flex space-x-2">
-										<Button size="md" onClick={onClickBuy} isFullWidth>
-											{token.price === '0' ? 'Free' : `Buy for ${formatNearAmount(token.price)} Ⓝ`}
-										</Button>
-										<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
-											{`Place an offer`}
-										</Button>
-									</div>
-									{token.lowest_price &&
-										parseFloat(formatNearAmount(token.price)) >
-											parseFloat(formatNearAmount(token.lowest_price)) && (
-											<Button
-												size="md"
-												className="mt-2"
-												variant="secondary"
-												onClick={() => setActiveTab('owners')}
-												isFullWidth
-											>
-												{localeLn('BuyFor{price}On', {
-													price: formatNearAmount(token.lowest_price),
-												})}
-											</Button>
-										)}
-								</>
-							) : (
-								<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
-									{`Place an offer`}
-								</Button>
-							)}
-						</div>
-					) : (
-						<div className="p-3">
-							<Button size="md" onClick={() => changeActiveTab('owners')} isFullWidth>
-								{localeLn('CheckOwners')}
-							</Button>
-						</div>
-					)}
+					<div className="p-3">{tokenSeriesButton()}</div>
 				</div>
 			</div>
 			<TokenSeriesBuyModal
