@@ -16,6 +16,7 @@ const FETCH_TOKENS_LIMIT = 10
 import { useIntl } from 'hooks/useIntl'
 import TopCollectorsAllTime from 'components/Activity/TopCollectorsAllTime'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
+import ActivityListLoader from 'components/Activity/ActivityListLoader'
 
 const ActivityLog = ({ query }) => {
 	const {
@@ -245,6 +246,7 @@ const ActivityLog = ({ query }) => {
 								dataLength={activityList.length}
 								next={_fetchDataWrapper}
 								hasMore={activityListHasMore}
+								loader={<ActivityListLoader />}
 							>
 								{activityList.map((act) => {
 									return (
