@@ -14,6 +14,7 @@ import CardListLoader from 'components/Card/CardListLoader'
 import { useIntl } from 'hooks/useIntl'
 import PublicationListScroll from 'components/Publication/PublicationListScroll'
 import CollectionList from 'components/Collection/CollectionList'
+import CollectionListLoader from 'components/Collection/CollectionListLoader'
 
 const LIMIT = 12
 
@@ -40,7 +41,7 @@ export default function SearchPage({ searchQuery }) {
 	const [collHasMore, setCollHasMore] = useState(false)
 
 	const [isRefreshing, setIsRefreshing] = useState(false)
-	const [activeTab, setActiveTab] = useState('card')
+	const [activeTab, setActiveTab] = useState('collections')
 
 	const { query } = router
 
@@ -255,19 +256,19 @@ export default function SearchPage({ searchQuery }) {
 				</div>
 				<div className="flex justify-between items-end h-12">
 					<div className="flex">
-						<div className="mx-4 relative" onClick={() => setActiveTab('card')}>
-							<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Cards</h4>
-							{activeTab === 'card' && (
-								<div className="absolute left-0 -bottom-1">
-									<div className="mx-auto w-8 h-1 bg-gray-100 hover:w-full"></div>
-								</div>
-							)}
-						</div>
 						<div className="mx-4 relative" onClick={() => setActiveTab('collections')}>
 							<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Collections</h4>
 							{activeTab === 'collections' && (
 								<div className="absolute left-0 -bottom-1">
 									<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+								</div>
+							)}
+						</div>
+						<div className="mx-4 relative" onClick={() => setActiveTab('card')}>
+							<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Cards</h4>
+							{activeTab === 'card' && (
+								<div className="absolute left-0 -bottom-1">
+									<div className="mx-auto w-8 h-1 bg-gray-100 hover:w-full"></div>
 								</div>
 							)}
 						</div>
@@ -303,15 +304,21 @@ export default function SearchPage({ searchQuery }) {
 								/>
 							</div>
 						))}
-					{activeTab === 'collections' && (
-						<div className="px-4 md:px-0">
-							<CollectionList
-								data={collections}
-								fetchData={_fetchCollectionData}
-								hasMore={collHasMore}
-							/>
-						</div>
-					)}
+					{activeTab === 'collections' &&
+						(isRefreshing ? (
+							<div className="min-h-full px-4 md:px-0">
+								<CollectionListLoader />
+							</div>
+						) : (
+							<div className="px-4 md:px-0">
+								<CollectionList
+									data={collections}
+									fetchData={_fetchCollectionData}
+									hasMore={collHasMore}
+									page="search"
+								/>
+							</div>
+						))}
 					{activeTab === 'publication' && (
 						<PublicationListScroll
 							data={publication}
