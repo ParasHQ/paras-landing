@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import Media from 'components/Common/Media'
+import { parseImgUrl } from 'utils/common'
 
 const Card = ({
 	imgUrl,
 	imgWidth = 640,
 	imgHeight = 890,
 	token,
+	profileCollection,
+	type,
 	onClick = () => {},
 	flippable = false,
 }) => {
@@ -128,8 +131,22 @@ const Card = ({
 								</p>
 							</div>
 							<div className="card-content my-2 relative flex flex-grow h-0">
+								{token._is_the_reference_merged !== undefined &&
+									!token._is_the_reference_merged &&
+									type === 'collection' && (
+										<>
+											<div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40 backdrop-filter backdrop-blur-lg backdrop-saturate-200 z-10" />
+											<div
+												className="absolute top-0 left-0 w-full h-full bg-cover bg-white"
+												style={{ backgroundImage: `url(${parseImgUrl(profileCollection)})` }}
+											/>
+										</>
+									)}
 								<Media
 									className="mx-auto h-full object-contain relative z-10"
+									token={token}
+									profileCollection={profileCollection}
+									type={type}
 									url={imgUrl}
 									videoControls={false}
 									videoMuted={true}
@@ -211,6 +228,8 @@ const Card = ({
 							<div className="bg-white opacity-10 absolute inset-0">
 								<Media
 									className="mx-auto h-full object-cover relative z-10 img-hor-vert"
+									token={token}
+									profileCollection={profileCollection}
 									url={imgUrl}
 									videoControls={false}
 									videoMuted={true}

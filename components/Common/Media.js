@@ -5,6 +5,9 @@ import FileType from 'file-type/browser'
 
 const Media = ({
 	className,
+	token,
+	profileCollection,
+	type,
 	url,
 	videoControls = false,
 	videoMuted = true,
@@ -72,6 +75,27 @@ const Media = ({
 							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
 						></path>
 					</svg>
+				</div>
+			</div>
+		)
+	}
+
+	if (
+		token?._is_the_reference_merged !== undefined &&
+		!token._is_the_reference_merged &&
+		type === 'collection'
+	) {
+		return (
+			<div className={className}>
+				<div className="flex items-center justify-center w-full h-full">
+					<div className="z-20">
+						<img
+							src={parseImgUrl(profileCollection)}
+							width={100}
+							className="mx-auto rounded-full"
+						/>
+						<h4 className="text-white text-sm mt-4">Content not available yet</h4>
+					</div>
 				</div>
 			</div>
 		)

@@ -500,7 +500,14 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							hasMore={hasMoreActivities}
 						/>
 					) : (
-						<CardList name="market" tokens={tokens} fetchData={fetchData} hasMore={hasMore} />
+						<CardList
+							name="market"
+							tokens={tokens}
+							fetchData={fetchData}
+							hasMore={hasMore}
+							profileCollection={collection.media}
+							type="collection"
+						/>
 					)}
 				</div>
 				<ButtonScrollTop />
