@@ -244,7 +244,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		})
 	}
 
-  const removeAllAttributesFilter = () => {
+	const removeAllAttributesFilter = () => {
 		router.push({
 			query: {
 				...router.query,
