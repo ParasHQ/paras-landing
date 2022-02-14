@@ -131,7 +131,7 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 													description: token.metadata.description,
 													royalty: token.royalty,
 													attributes: token.metadata.attributes,
-													_is_the_reference_merged: false,
+													_is_the_reference_merged: token._is_the_reference_merged,
 												}}
 												profileCollection={profileCollection}
 												type={type}
