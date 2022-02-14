@@ -132,26 +132,34 @@ const Card = ({
 							</div>
 							<div className="card-content my-2 relative flex flex-grow h-0">
 								{token._is_the_reference_merged !== undefined &&
-									!token._is_the_reference_merged &&
-									type === 'collection' && (
-										<>
-											<div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40 backdrop-filter backdrop-blur-lg backdrop-saturate-200 z-10" />
-											<div
-												className="absolute top-0 left-0 w-full h-full bg-cover bg-white"
-												style={{ backgroundImage: `url(${parseImgUrl(profileCollection)})` }}
-											/>
-										</>
-									)}
-								<Media
-									className="mx-auto h-full object-contain relative z-10"
-									token={token}
-									profileCollection={profileCollection}
-									type={type}
-									url={imgUrl}
-									videoControls={false}
-									videoMuted={true}
-									videoLoop={true}
-								/>
+								!token._is_the_reference_merged &&
+								type === 'collection' ? (
+									<>
+										<div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40 backdrop-filter backdrop-blur-lg backdrop-saturate-200 z-10" />
+										<div
+											className="absolute top-0 left-0 w-full h-full bg-cover bg-white"
+											style={{ backgroundImage: `url(${parseImgUrl(profileCollection)})` }}
+										/>
+										<div className="flex items-center justify-center w-full h-full">
+											<div className="z-20">
+												<img
+													src={parseImgUrl(profileCollection)}
+													width={100}
+													className="mx-auto rounded-full"
+												/>
+												<h4 className="text-white text-sm mt-4">Content not available yet</h4>
+											</div>
+										</div>
+									</>
+								) : (
+									<Media
+										className="mx-auto h-full object-contain relative z-10"
+										url={imgUrl}
+										videoControls={false}
+										videoMuted={true}
+										videoLoop={true}
+									/>
+								)}
 							</div>
 							<div className="px-2 mt-auto">
 								<div className="flex justify-between">
@@ -226,15 +234,34 @@ const Card = ({
 							style={{ transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)` }}
 						>
 							<div className="bg-white opacity-10 absolute inset-0">
-								<Media
-									className="mx-auto h-full object-cover relative z-10 img-hor-vert"
-									token={token}
-									profileCollection={profileCollection}
-									url={imgUrl}
-									videoControls={false}
-									videoMuted={true}
-									videoLoop={true}
-								/>
+								{token._is_the_reference_merged !== undefined &&
+								!token._is_the_reference_merged &&
+								type === 'collection' ? (
+									<>
+										<div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40 backdrop-filter backdrop-blur-lg backdrop-saturate-200 z-10" />
+										<div
+											className="absolute top-0 left-0 w-full h-full bg-cover bg-white"
+											style={{ backgroundImage: `url(${parseImgUrl(profileCollection)})` }}
+										/>
+										<div className="flex items-center justify-center w-full h-full">
+											<div className="z-20">
+												<img
+													src={parseImgUrl(profileCollection)}
+													width={100}
+													className="mx-auto rounded-full"
+												/>
+											</div>
+										</div>
+									</>
+								) : (
+									<Media
+										className="mx-auto h-full object-cover relative z-10 img-hor-vert"
+										url={imgUrl}
+										videoControls={false}
+										videoMuted={true}
+										videoLoop={true}
+									/>
+								)}
 							</div>
 							<div className="card-bg relative z-10">
 								<div
