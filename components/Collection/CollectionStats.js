@@ -25,7 +25,7 @@ const CollectionStats = ({ stats }) => {
 			</div>
 			<div className="text-center block p-3 sm:p-5">
 				<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
-					{formatNearAmount(stats.volume, 2) + ' Ⓝ' || '0 Ⓝ'}
+					{formatNearAmount(stats.volume, 2) + ' Ⓝ'}
 				</p>
 				<p className="text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg">
 					{localeLn('TotalVolume')}
