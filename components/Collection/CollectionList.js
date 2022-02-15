@@ -4,7 +4,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import CollectionListLoader from './CollectionListLoader'
 import { generateFromString } from 'generate-avatar'
 
-const CollectionList = ({ data, fetchData, hasMore }) => {
+const CollectionList = ({ data, fetchData, hasMore, page }) => {
 	if (data.length === 0 && !hasMore) {
 		return (
 			<div className="w-full">
@@ -28,7 +28,9 @@ const CollectionList = ({ data, fetchData, hasMore }) => {
 				{data.map((collection, index) => (
 					<div
 						key={index}
-						className="rounded-md overflow-hidden mb-12 md:mb-8 w-full md:w-1/3 md:px-4"
+						className={`rounded-md overflow-hidden mb-12 md:mb-8 w-full md:w-1/3 md:px-4 ${
+							collection?.isCreator || page !== 'search' ? 'opacity-100' : 'opacity-60'
+						}`}
 					>
 						<Link href={`/collection/${collection.collection_id}`} shallow={true}>
 							<a className="cursor-pointer">

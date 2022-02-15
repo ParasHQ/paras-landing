@@ -22,6 +22,7 @@ import near from 'lib/near'
 import { sentryCaptureException } from 'lib/sentry'
 import { useToast } from 'hooks/useToast'
 import LineClampText from 'components/Common/LineClampText'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 8
 const LIMIT_ACTIVITY = 20
@@ -107,7 +108,14 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	useEffect(() => {
 		updateFilter(router.query)
-	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.attributes])
+	}, [
+		router.query.sort,
+		router.query.pmin,
+		router.query.pmax,
+		router.query.min_copies,
+		router.query.max_copies,
+		router.query.attributes,
+	])
 
 	useEffect(() => {
 		if (router.query.tab === 'activity') {
@@ -140,20 +148,25 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			})
 		}
 
-		const parsedSortQuery = query ? parseSortQuery(query.sort) : null
+		const parsedSortQuery = query ? parseSortQuery(query.sort, true) : null
 		params = {
 			...params,
 			collection_id: collectionId,
 			exclude_total_burn: true,
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
-			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
+			...(query.pmin ? { min_price: parseNearAmount(query.pmin) } : { min_price: 0 }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
 			...(query.lowest_price_next &&
 				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 			...(query.updated_at_next &&
 				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+			...(query.min_copies && { min_copies: query.min_copies }),
+			...(query.max_copies && { max_copies: query.max_copies }),
+		}
+		if (query.pmin === undefined && query.is_notforsale === 'false') {
+			delete params.min_price
 		}
 
 		return params
@@ -227,6 +240,15 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			query: {
 				...router.query,
 				attributes: JSON.stringify(url),
+			},
+		})
+	}
+
+	const removeAllAttributesFilter = () => {
+		router.push({
+			query: {
+				...router.query,
+				attributes: `[]`,
 			},
 		})
 	}
@@ -418,7 +440,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					</div>
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
 						<div className="flex sm:hidden">
-							{Object.keys(attributes).length > 0 && <FilterAttribute attributes={attributes} />}
+							{Object.keys(attributes).length > 0 && (
+								<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
+							)}
 							<FilterMarket isShowVerified={false} />
 						</div>
 					)}
@@ -427,9 +451,12 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							<div className="flex justify-center mt-4">
 								<div className="flex">
 									{Object.keys(attributes).length > 0 && (
-										<FilterAttribute attributes={attributes} />
+										<FilterAttribute
+											onClearAll={removeAllAttributesFilter}
+											attributes={attributes}
+										/>
 									)}
-									<FilterMarket isShowVerified={false} />
+									<FilterMarket isShowVerified={false} defaultMinPrice={true} />
 								</div>
 							</div>
 						</div>
@@ -454,6 +481,14 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 								</div>
 							)
 						})}
+					{router.query.attributes && JSON.parse(router.query.attributes)?.length > 1 && (
+						<div
+							className=" text-gray-400 hover:text-opacity-70 cursor-pointer my-1 flex items-center"
+							onClick={removeAllAttributesFilter}
+						>
+							Clear All
+						</div>
+					)}
 				</div>
 				<div className="mt-4 px-4">
 					{isFiltering ? (
@@ -465,9 +500,17 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							hasMore={hasMoreActivities}
 						/>
 					) : (
-						<CardList name="market" tokens={tokens} fetchData={fetchData} hasMore={hasMore} />
+						<CardList
+							name="market"
+							tokens={tokens}
+							fetchData={fetchData}
+							hasMore={hasMore}
+							profileCollection={collection.media}
+							type="collection"
+						/>
 					)}
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>
@@ -482,6 +525,12 @@ export async function getServerSideProps({ params }) {
 			collection_id: params.collection_id,
 		},
 	})
+
+	if (!resp.data.data.results[0]) {
+		return {
+			notFound: true,
+		}
+	}
 
 	return {
 		props: {

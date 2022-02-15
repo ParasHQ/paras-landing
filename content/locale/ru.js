@@ -291,6 +291,8 @@ const modal = {
 	Deposit: 'Депозит',
 	AreAboutToSend: 'Вы собираетесь отправить',
 	MintedBy: 'изготовлено',
+	DynamicTxFee:
+		'If you make the transaction before {date} you will be charged {fee}% transaction fee.',
 }
 const tab = {
 	BoughtFrom: 'куплено у',
@@ -327,6 +329,7 @@ const common = {
 	Accept: 'Принять',
 	Filter: 'Сортировать',
 	FilterBy: 'Сортировать по',
+	CopiesOfCard: 'Копии карты',
 	Price: 'Цене',
 	Apply: 'Принять',
 	Comics: 'Комиксы',

@@ -284,6 +284,8 @@ const modal = {
 	Deposit: '存款',
 	AreAboutToSend: 'You are about to send',
 	MintedBy: 'minted by',
+	DynamicTxFee:
+		'If you make the transaction before {date} you will be charged {fee}% transaction fee.',
 }
 const tab = {
 	BoughtFrom: '买自',
@@ -321,6 +323,7 @@ const common = {
 	Accept: '接受',
 	Filter: 'Filter',
 	FilterBy: '过滤',
+	CopiesOfCard: '卡副本',
 	Price: '价格',
 	Apply: '申请',
 	Comics: '漫画',

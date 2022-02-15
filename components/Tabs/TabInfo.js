@@ -1,7 +1,7 @@
 import TokenInfoCopy from 'components/TokenInfoCopy'
 import Link from 'next/link'
 import ReactLinkify from 'react-linkify'
-import { parseImgUrl } from 'utils/common'
+import { parseImgUrl, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { Fragment, useState } from 'react'
 import { useRouter } from 'next/router'
@@ -109,7 +109,9 @@ const TabInfo = ({ localToken, isNFT }) => {
 					<div>
 						<p className="text-sm text-white font-bold">{localeLn('Owner')}</p>
 						<Link href={`/${localToken.owner_id}`}>
-							<a className="text-gray-100 font-semibold hover:opacity-80">{localToken.owner_id}</a>
+							<a className="text-gray-100 font-semibold hover:opacity-80 truncate">
+								{prettyTruncate(localToken.owner_id, 30, 'address')}
+							</a>
 						</Link>
 					</div>
 				</div>

@@ -32,6 +32,7 @@ const TopCollectorsAllTime = ({ className }) => {
 					className="text-gray-400 hover:text-white cursor-pointer font-semibold flex items-center"
 					href="https://paras.apollo42.app/"
 					target="_blank"
+					rel="noreferrer"
 				>
 					<span>{localeLn('More')}</span>
 					<svg
