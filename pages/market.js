@@ -11,6 +11,7 @@ import { parseSortQuery } from 'utils/common'
 import CardListLoader from 'components/Card/CardListLoader'
 import CategoryList from 'components/CategoryList'
 import { useIntl } from 'hooks/useIntl'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 12
 
@@ -35,7 +36,14 @@ function MarketPage({ serverQuery }) {
 
 	useEffect(() => {
 		updateFilter(router.query)
-	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.is_verified])
+	}, [
+		router.query.sort,
+		router.query.pmin,
+		router.query.pmax,
+		router.query.min_copies,
+		router.query.max_copies,
+		router.query.is_verified,
+	])
 
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
@@ -150,6 +158,7 @@ function MarketPage({ serverQuery }) {
 						<CardList name="market" tokens={tokens} fetchData={_fetchData} hasMore={hasMore} />
 					)}
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>
@@ -170,6 +179,8 @@ const tokensParams = (query) => {
 			parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 		...(query.updated_at_next &&
 			parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+		...(query.min_copies && { min_copies: query.min_copies }),
+		...(query.max_copies && { max_copies: query.max_copies }),
 	}
 	return params
 }

@@ -6,19 +6,41 @@ import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE, STORAGE_ADD_MARKET_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
-import { IconX } from 'components/Icons'
+import { IconInfo, IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackRemoveListingToken, trackUpdateListingToken } from 'lib/ga'
 import { useForm } from 'react-hook-form'
 import useStore from 'lib/store'
+import Tooltip from 'components/Common/Tooltip'
+import { parseDate } from 'utils/common'
 
 const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
 	const [needDeposit, setNeedDeposit] = useState(true)
+	const [txFee, setTxFee] = useState(null)
 	const { register, handleSubmit, errors } = useForm()
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
+
+	const showTooltipTxFee = (txFee?.next_fee || 0) > (txFee?.current_fee || 0)
+	const tooltipTxFeeText = localeLn('DynamicTxFee', {
+		date: parseDate((txFee?.start_time || 0) * 1000),
+		fee: (txFee?.current_fee || 0) / 100,
+	})
+
+	useEffect(() => {
+		const getTxFee = async () => {
+			const txFeeContract = await near.wallet
+				.account()
+				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_transaction_fee`)
+			setTxFee(txFeeContract)
+		}
+
+		if (show) {
+			getTxFee()
+		}
+	}, [show])
 
 	useEffect(() => {
 		if (currentUser) {
@@ -139,7 +161,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 
 	const calculatePriceDistribution = () => {
 		if (newPrice && JSBI.greaterThan(JSBI.BigInt(parseNearAmount(newPrice)), JSBI.BigInt(0))) {
-			let fee = JSBI.BigInt(500)
+			const fee = JSBI.BigInt(txFee?.current_fee || 0)
 
 			const calcRoyalty =
 				Object.keys(data.royalty).length > 0
@@ -226,7 +248,11 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 								{errors.newPrice?.type === 'min' && `Minimum 0`}
 								{errors.newPrice?.type === 'max' && `Maximum 999,999,999 Ⓝ`}
 							</div>
-							<div className="mt-2 text-gray-200 flex items-center justify-between">
+							<div
+								className={`flex items-center justify-between ${
+									showTooltipTxFee ? 'text-gray-300' : 'text-gray-200'
+								}`}
+							>
 								<span>{localeLn('Receive')}:</span>
 								<span>{calculatePriceDistribution().receive} Ⓝ</span>
 								{/* {prettyBalance(
@@ -241,7 +267,11 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
                   4
                 )} */}
 							</div>
-							<div className="text-gray-200 flex items-center justify-between">
+							<div
+								className={`flex items-center justify-between ${
+									showTooltipTxFee ? 'text-gray-300' : 'text-gray-200'
+								}`}
+							>
 								<span>{localeLn('Royalty')}:</span>
 								<span>{calculatePriceDistribution().royalty} Ⓝ</span>
 								{/* {prettyBalance(
@@ -268,9 +298,31 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
                 )}
                 ) */}
 							</div>
-							<div className="text-gray-200 flex items-center justify-between">
-								<span>{localeLn('Fee')}:</span>
-								<span> {calculatePriceDistribution().fee} Ⓝ</span>
+							<div
+								className={`flex items-center justify-between ${
+									showTooltipTxFee ? 'font-bold text-white' : 'text-gray-200'
+								}`}
+							>
+								<Tooltip
+									id="text-fee"
+									show={showTooltipTxFee}
+									text={tooltipTxFeeText}
+									className="font-normal"
+								>
+									<span>
+										{localeLn('Fee')}
+										{showTooltipTxFee && <IconInfo size={10} color="#ffffff" />}:
+									</span>
+								</Tooltip>
+								<Tooltip
+									id="text-number"
+									show={showTooltipTxFee}
+									text={tooltipTxFeeText}
+									className="font-normal"
+									place="left"
+								>
+									<span> {calculatePriceDistribution().fee} Ⓝ</span>
+								</Tooltip>
 								{/* {prettyBalance(
                   Number(watch('amount', 0) * 0.05)
                     .toPrecision(4)

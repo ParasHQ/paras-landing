@@ -12,7 +12,7 @@ import { useIntl } from 'hooks/useIntl'
 import TokenSeriesDetailModal from './TokenSeriesDetailModal'
 import CardListLoader from 'components/Card/CardListLoader'
 
-const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
+const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollection, type }) => {
 	const store = useStore()
 	const router = useRouter()
 	const containerRef = useRef()
@@ -131,7 +131,10 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 													description: token.metadata.description,
 													royalty: token.royalty,
 													attributes: token.metadata.attributes,
+													_is_the_reference_merged: token._is_the_reference_merged,
 												}}
+												profileCollection={profileCollection}
+												type={type}
 											/>
 										</div>
 									</a>

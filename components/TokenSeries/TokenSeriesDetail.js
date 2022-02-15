@@ -46,9 +46,9 @@ const TokenSeriesDetail = ({ token, className }) => {
 		token.contract_id === process.env.NFT_CONTRACT_ID ||
 		process.env.WHITELIST_CONTRACT_ID.split(',').includes(token.contract_id)
 
-	const disableOfferContract = process.env.DISABLE_OFFER_CONTRACT_ID.split(',').includes(
-		token.contract_id
-	)
+	const disableOfferContract = (process.env.DISABLE_OFFER_CONTRACT_ID || '')
+		.split(',')
+		.includes(token.contract_id)
 
 	useEffect(() => {
 		TabNotification(router.query.tab)
@@ -327,14 +327,14 @@ const TokenSeriesDetail = ({ token, className }) => {
 							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative flex-nowrap disable-scrollbars md:-mb-4">
 								{tabDetail('info')}
 								{tabDetail('owners')}
-								{tabDetail('history')}
 								{tabDetail('offers')}
+								{tabDetail('history')}
 								{tabDetail('publication')}
 							</div>
 							{activeTab === 'info' && <TabInfo localToken={token} />}
 							{activeTab === 'owners' && <TabOwners localToken={token} />}
-							{activeTab === 'history' && <TabHistory localToken={token} />}
 							{activeTab === 'offers' && <TabOffers localToken={token} />}
+							{activeTab === 'history' && <TabHistory localToken={token} />}
 							{activeTab === 'publication' && <TabPublication localToken={token} />}
 						</div>
 					</Scrollbars>

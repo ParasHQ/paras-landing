@@ -62,6 +62,7 @@ const market = {
 	All: 'Todo',
 	Filter: 'Filtrar',
 	SortBy: 'Ordenar por',
+	CopiesOfCard: 'Copias de Tarjeta',
 	CategoryParas: 'Categoria — Paras',
 	OnlyAllowWhitelisted:
 		'Actualmente, solo permitimos que los artistas incluidos en la lista blanca creen su tarjetas de arte digitales en Paras',
@@ -291,6 +292,8 @@ const modal = {
 	Deposit: 'Depositar',
 	AreAboutToSend: 'Estás a punto de envíar',
 	MintedBy: 'minteado por',
+	DynamicTxFee:
+		'If you make the transaction before {date} you will be charged {fee}% transaction fee.',
 }
 const tab = {
 	BoughtFrom: 'comprado de',

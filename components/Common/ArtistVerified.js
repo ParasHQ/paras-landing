@@ -3,6 +3,7 @@ import cachios from 'cachios'
 import { useEffect, useState } from 'react'
 
 import ReactTooltip from 'react-tooltip'
+import { prettyTruncate } from 'utils/common'
 
 const ArtistVerified = ({ token, collection }) => {
 	const [artistData, setArtistData] = useState(null)
@@ -38,7 +39,7 @@ const ArtistVerified = ({ token, collection }) => {
 					}
 				>
 					<a className="text-white font-semibold border-b-2 border-transparent hover:border-white">
-						{getCreatorId()}
+						{prettyTruncate(getCreatorId(), 30, 'address')}
 					</a>
 				</Link>
 			</span>

@@ -61,6 +61,7 @@ const TokenNav = () => {
 								className="p-2 button-wrapper rounded cursor-pointer w-full flex justify-between items-center"
 								href="https://stake.paras.id"
 								target="_blank"
+								rel="noreferrer"
 							>
 								<span>Stake Paras</span>
 								<span
@@ -76,6 +77,7 @@ const TokenNav = () => {
 							className="p-2 button-wrapper rounded cursor-pointer block w-full"
 							href="https://ipfs.fleek.co/ipfs/bafybeihu6atdada45rmx4sszny6sahrzas4tuzrpuufdcpe6b63r6ugdce"
 							target="_blank"
+							rel="noreferrer"
 						>
 							{localeLn('Whitepaper')}
 						</a>
@@ -83,6 +85,7 @@ const TokenNav = () => {
 							className="p-2 button-wrapper rounded cursor-pointer block w-full"
 							href="https://app.ref.finance/#wrap.near|token.paras.near"
 							target="_blank"
+							rel="noreferrer"
 						>
 							{localeLn('NavGetParas')}
 						</a>

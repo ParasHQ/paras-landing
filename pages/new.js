@@ -12,17 +12,19 @@ import near from 'lib/near'
 import Head from 'next/head'
 import { useToast } from 'hooks/useToast'
 import Footer from 'components/Footer'
-import { parseImgUrl, prettyBalance, readFileAsUrl } from 'utils/common'
+import { parseDate, parseImgUrl, prettyBalance, readFileAsUrl } from 'utils/common'
 import { encodeImageToBlurhash } from 'lib/blurhash'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { GAS_FEE, MAX_FILE_SIZE, STORAGE_CREATE_SERIES_FEE } from 'config/constants'
 import Button from 'components/Common/Button'
-import { InputText, InputTextarea } from 'components/Common/form'
+import { InputText, InputTextarea, InputTextAuto } from 'components/Common/form'
 import CreateCollectionModal from 'components/Collection/CreateCollectionModal'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import Scrollbars from 'react-custom-scrollbars'
 import getConfig from 'config/near'
+import Tooltip from 'components/Common/Tooltip'
+import { IconInfo } from 'components/Icons'
 
 const LIMIT = 16
 
@@ -120,8 +122,15 @@ const NewPage = () => {
 	const [mediaHash, setMediaHash] = useState(null)
 	const [referenceHash, setReferenceHash] = useState(null)
 	const [fileType, setFileType] = useState(null)
+	const [attributeKey, setAttributeKey] = useState([])
+	const [txFee, setTxFee] = useState(null)
 
 	const watchRoyalties = watch(`royalties`)
+	const showTooltipTxFee = (txFee?.next_fee || 0) > (txFee?.current_fee || 0)
+	const tooltipTxFeeText = localeLn('DynamicTxFee', {
+		date: parseDate((txFee?.start_time || 0) * 1000),
+		fee: (txFee?.current_fee || 0) / 100,
+	})
 
 	const uploadImageMetadata = async () => {
 		setIsUploading(true)
@@ -227,6 +236,20 @@ const NewPage = () => {
 		setValue('amount', formInput.amount)
 		setValue('attributes', formInput.attributes)
 		setValue('royalties', formInput.royalties)
+
+		if (step === 2) {
+			const getAttributeKeys = async () => {
+				const res = await axios.get(`${process.env.V2_API_URL}/collection-attributes`, {
+					params: {
+						collection_id: choosenCollection.collection_id,
+					},
+				})
+				const attributes = await res.data.data.results
+				const newAttribute = Object.keys(attributes)
+				setAttributeKey(newAttribute)
+			}
+			getAttributeKeys()
+		}
 	}, [step])
 
 	const _updateValues = () => {
@@ -353,6 +376,18 @@ const NewPage = () => {
 		}
 	}, [store.initialized])
 
+	useEffect(() => {
+		const getTxFee = async () => {
+			const txFeeContract = await near.wallet
+				.account()
+				.viewFunction(process.env.NFT_CONTRACT_ID, `get_transaction_fee`)
+			setTxFee(txFeeContract)
+		}
+		if (store.currentUser) {
+			getTxFee()
+		}
+	}, [store.currentUser])
+
 	const fetchCollectionUser = async () => {
 		if (!hasMore || isFetching) {
 			return
@@ -465,7 +500,7 @@ const NewPage = () => {
 									imgUrl={parseImgUrl(imgUrl)}
 									token={{
 										title: formInput.name,
-										collection: formInput.collection,
+										collection: choosenCollection.collection,
 										creatorId: store.currentUser,
 										copies: formInput.supply,
 									}}
@@ -481,10 +516,10 @@ const NewPage = () => {
 								<h1 className="mt-4 text-2xl font-bold text-white tracking-tight">
 									{localeLn('MarketData')}
 								</h1>
-								<div className="text-white opacity-80">
+								<div className="text-white">
 									{isOnSale && (
 										<>
-											<div className="flex items-center justify-between text-sm mt-2">
+											<div className="flex items-center justify-between text-sm mt-2 opacity-80">
 												<span>Price: </span>
 												<span>
 													{prettyBalance(
@@ -509,7 +544,7 @@ const NewPage = () => {
 													)}
 												</span>
 											</div>
-											<div className="flex items-center justify-between text-sm">
+											<div className="flex items-center justify-between text-sm opacity-80">
 												<span>{localeLn('Receive')}: </span>
 												<span>
 													{prettyBalance(
@@ -576,11 +611,25 @@ const NewPage = () => {
 													</span>
 												</div>
 											)}
-											<div className="flex items-center justify-between text-sm">
-												<span>{localeLn('Fee')}: </span>
+											<div
+												className={`flex items-center justify-between text-sm ${
+													showTooltipTxFee ? 'font-bold' : 'opacity-80'
+												}`}
+											>
+												<Tooltip
+													id="text-fee"
+													show={showTooltipTxFee}
+													text={tooltipTxFeeText}
+													className="font-normal"
+												>
+													<span>
+														{localeLn('Fee')}
+														{showTooltipTxFee && <IconInfo size={10} color="#ffffff" />}:
+													</span>
+												</Tooltip>
 												<span>
 													{prettyBalance(
-														Number(getValues('amount', 0) * 0.05)
+														Number((getValues('amount', 0) * (txFee?.current_fee || 0)) / 10000)
 															.toPrecision(4)
 															.toString(),
 														0,
@@ -970,10 +1019,10 @@ const NewPage = () => {
 												<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
 											</svg>
 										</div>
-										<Scrollbars ref={scrollBar} autoHeight autoHide>
+										<Scrollbars ref={scrollBar} autoHeight={false} style={{ height: '200px' }}>
 											{fields.map((attr, idx) => (
-												<div key={attr.id} className="flex space-x-2 items-center mb-2">
-													<InputText
+												<div key={attr.id} className="flex space-x-2 items-start mb-2">
+													<InputTextAuto
 														ref={register({ required: true })}
 														name={`attributes.${idx}.trait_type`}
 														className={`${
@@ -981,6 +1030,7 @@ const NewPage = () => {
 														}`}
 														defaultValue={formInput.attributes?.[idx]?.trait_type || ''}
 														placeholder="Type"
+														suggestionList={attributeKey}
 													/>
 													<InputText
 														ref={register({ required: true })}
@@ -991,7 +1041,7 @@ const NewPage = () => {
 														defaultValue={formInput.attributes?.[idx]?.value || ''}
 														placeholder="Value"
 													/>
-													<div className="cursor-pointer" onClick={() => remove(idx)}>
+													<div className="cursor-pointer self-center" onClick={() => remove(idx)}>
 														<svg
 															width="14"
 															height="14"
