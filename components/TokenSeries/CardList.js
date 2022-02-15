@@ -126,7 +126,7 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 													title: token.metadata.title,
 													collection: token.metadata.collection || token.contract_id,
 													copies: token.metadata.copies,
-													creatorId: token.creator_id || token.contract_id,
+													creatorId: token.metadata.creator_id || token.contract_id,
 													is_creator: token.is_creator,
 													description: token.metadata.description,
 													royalty: token.royalty,

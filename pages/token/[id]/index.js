@@ -7,7 +7,7 @@ import Footer from 'components/Footer'
 import { parseImgUrl } from 'utils/common'
 
 const getCreatorId = (token) => {
-	return token.creator_id || token.contract_id
+	return token.metadata.creator_id || token.creator_id || token.contract_id
 }
 
 const TokenSeriesPage = ({ errorCode, token }) => {

@@ -44,7 +44,7 @@ const ActivityLoaderMobile = (props) => (
 
 const ActivityListLoader = () =>
 	[...Array(5).keys()].map((k) => (
-		<div key={k} className="border-2 border-dashed border-gray-800 rounded-md my-4">
+		<div key={k} className="border-2 border-dashed border-gray-800 rounded-md my-4 mt-6">
 			<ActivityLoader />
 			<ActivityLoaderMobile />
 		</div>

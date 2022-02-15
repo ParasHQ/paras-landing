@@ -168,7 +168,7 @@ const TokenDetail = ({ token, className }) => {
 										title: token.metadata.title,
 										collection: token.metadata.collection || token.contract_id,
 										copies: token.metadata.copies,
-										creatorId: token.creator_id || token.contract_id,
+										creatorId: token.metadata.creator_id || token.contract_id,
 										is_creator: token.is_creator,
 									}}
 								/>
@@ -190,7 +190,7 @@ const TokenDetail = ({ token, className }) => {
 							</span>
 						</div>
 					</div>
-					<ArtistBanned creatorId={token.creator_id} />
+					<ArtistBanned creatorId={token.metadata.creator_id} />
 				</div>
 				<div className="h-1/2 lg:h-full flex flex-col w-full lg:w-2/5 lg:max-w-2xl bg-gray-700">
 					<Scrollbars

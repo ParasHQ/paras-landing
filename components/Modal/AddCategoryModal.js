@@ -24,7 +24,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 		if (!tokenData) {
 			return null
 		}
-		return tokenData.creator_id || tokenData.contract_id
+		return tokenData.metadata.creator_id || tokenData.contract_id
 	}
 
 	const fetchToken = async () => {
@@ -168,7 +168,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 								edition_id: tokenData?.edition_id,
 								collection: tokenData?.metadata.collection || tokenData?.contract_id,
 								copies: tokenData?.metadata.copies,
-								creatorId: tokenData?.creator_id || tokenData?.contract_id,
+								creatorId: tokenData?.metadata.creator_id || tokenData?.contract_id,
 								is_creator: tokenData?.is_creator,
 							}}
 						/>
