@@ -1,7 +1,6 @@
 import { useContext } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import FilterMarket from 'components/Filter/FilterMarket'
 import { useIntl } from 'hooks/useIntl'
 import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu'
 
@@ -14,8 +13,8 @@ const CategoryList = ({ listCategory, categoryId = '' }) => {
 	}
 
 	return (
-		<div className="md:flex justify-between items-center mt-8">
-			<div className="md:w-10/12 px-2">
+		<div className="mt-8">
+			<div className="px-2">
 				<ScrollMenu
 					LeftArrow={LeftArrow}
 					RightArrow={RightArrow}
@@ -47,9 +46,6 @@ const CategoryList = ({ listCategory, categoryId = '' }) => {
 							/>
 						))}
 				</ScrollMenu>
-			</div>
-			<div className="flex justify-end mt-2 md:mt-0">
-				<FilterMarket />
 			</div>
 		</div>
 	)
