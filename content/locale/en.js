@@ -578,6 +578,7 @@ const collection = {
 	Activity: 'Activity',
 	TotalMinted: 'Total Minted',
 	TotalOwners: 'Total Owners',
+	TotalVolume: 'Total Volume',
 	FloorPrice: 'Floor Price',
 	AveragePrice: 'Average Price',
 	Collection: 'Collection',

@@ -407,7 +407,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						</div>
 					)}
 				</div>
-				<div className="mb-10 sm:my-2 flex items-center justify-center">
+				<div className="mb-10 sm:my-2 flex flex-wrap items-center justify-center px-4">
 					<CollectionStats stats={stats} />
 				</div>
 				<div className="z-10 flex items-center justify-center relative">
