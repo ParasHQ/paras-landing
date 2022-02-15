@@ -225,7 +225,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 							edition_id: localToken?.edition_id,
 							collection: localToken?.metadata.collection || localToken?.contract_id,
 							copies: localToken?.metadata.copies,
-							creatorId: localToken?.creator_id || localToken?.contract_id,
+							creatorId: localToken?.metadata.creator_id || localToken?.contract_id,
 							is_creator: localToken?.is_creator,
 						}}
 					/>

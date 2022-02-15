@@ -383,8 +383,10 @@ const NewPage = () => {
 				.viewFunction(process.env.NFT_CONTRACT_ID, `get_transaction_fee`)
 			setTxFee(txFeeContract)
 		}
-		getTxFee()
-	}, [])
+		if (store.currentUser) {
+			getTxFee()
+		}
+	}, [store.currentUser])
 
 	const fetchCollectionUser = async () => {
 		if (!hasMore || isFetching) {
@@ -498,7 +500,7 @@ const NewPage = () => {
 									imgUrl={parseImgUrl(imgUrl)}
 									token={{
 										title: formInput.name,
-										collection: formInput.collection,
+										collection: choosenCollection.collection,
 										creatorId: store.currentUser,
 										copies: formInput.supply,
 									}}
@@ -1017,7 +1019,7 @@ const NewPage = () => {
 												<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
 											</svg>
 										</div>
-										<Scrollbars ref={scrollBar} autoHeight autoHide>
+										<Scrollbars ref={scrollBar} autoHeight={false} style={{ height: '200px' }}>
 											{fields.map((attr, idx) => (
 												<div key={attr.id} className="flex space-x-2 items-start mb-2">
 													<InputTextAuto
@@ -1026,6 +1028,7 @@ const NewPage = () => {
 														className={`${
 															errors.attributes && errors.attributes[idx]?.trait_type && 'error'
 														}`}
+														defaultValue={formInput.attributes?.[idx]?.trait_type || ''}
 														placeholder="Type"
 														suggestionList={attributeKey}
 													/>

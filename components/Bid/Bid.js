@@ -102,7 +102,7 @@ const Bid = ({ data, type }) => {
 				ttl: 30,
 			})
 
-			const creatorId = token.creator_id || token.contract_id
+			const creatorId = token.metadata.creator_id || token.contract_id
 
 			if (ownershipResp.data.data.results[0]) {
 				setIsOwned(`owner::series::${ownershipResp.data.data.results[0].token_id}`)
@@ -253,7 +253,7 @@ const Bid = ({ data, type }) => {
 								title: token.metadata.title,
 								collection: token.metadata.collection || token.contract_id,
 								copies: token.metadata.copies,
-								creatorId: token.creator_id || token.contract_id,
+								creatorId: token.metadata.creator_id || token.contract_id,
 								is_creator: token.is_creator,
 							}}
 						/>
