@@ -422,7 +422,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
 						<div className="flex sm:hidden">
 							{Object.keys(attributes).length > 0 && <FilterAttribute attributes={attributes} />}
-							<FilterMarket isShowVerified={false} />
+							<FilterMarket isShowVerified={false} defaultMinPrice={true} />
 						</div>
 					)}
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
