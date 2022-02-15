@@ -32,6 +32,7 @@ const InputTextAuto = forwardRef(
 				<input
 					ref={ref}
 					className={inputStyle}
+					onBlur={() => setShowSuggestion(false)}
 					onChange={(e) => _onChange(e.target.value)}
 					value={value}
 					{...rest}
