@@ -14,7 +14,7 @@ const InputTextAuto = forwardRef(
 			isError ? 'input-text--error' : ''
 		}`
 
-		const [value, setValue] = useState('')
+		const [value, setValue] = useState(rest.devaultValue)
 		const [showSuggestion, setShowSuggestion] = useState(false)
 
 		const filteredSuggestion =
@@ -28,7 +28,7 @@ const InputTextAuto = forwardRef(
 		}
 
 		return (
-			<div className="static w-full">
+			<div className="relative w-full">
 				<input
 					ref={ref}
 					className={inputStyle}
@@ -37,12 +37,12 @@ const InputTextAuto = forwardRef(
 					{...rest}
 				/>
 				<div
-					className={`w-full inline-block z-30 ${
+					className={`w-full z-30 ${
 						showSuggestion && filteredSuggestion.length > 0 ? 'block' : 'hidden'
 					}`}
 				>
-					<div className="relative z-30 inline-block text-sm rounded font-thin w-full mt-2 bg-gray-500 border-gray-500 border-2 bg-opacity-30">
-						<Scrollbars autoHeight autoHeightMin={0} autoHeightMax={100}>
+					<div className="absolute z-30 inline-block text-sm font-thin w-full bg-gray-600 rounded-md overflow-hidden mt-1 shadow-xl">
+						<Scrollbars autoHeight autoHeightMin={0} autoHeightMax={120}>
 							{filteredSuggestion.map((s, index) => {
 								return (
 									<div
@@ -54,8 +54,7 @@ const InputTextAuto = forwardRef(
 										}}
 										className="cursor-pointer hover:bg-gray-500"
 									>
-										<p className="p-2 text-opacity-70">{s}</p>
-										<hr />
+										<p className="p-2 text-opacity-70 text-xs">{s}</p>
 									</div>
 								)
 							})}
