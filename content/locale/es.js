@@ -62,7 +62,6 @@ const market = {
 	All: 'Todo',
 	Filter: 'Filtrar',
 	SortBy: 'Ordenar por',
-	CopiesOfCard: 'Copias de Tarjeta',
 	CategoryParas: 'Categoria — Paras',
 	OnlyAllowWhitelisted:
 		'Actualmente, solo permitimos que los artistas incluidos en la lista blanca creen su tarjetas de arte digitales en Paras',
@@ -330,6 +329,7 @@ const common = {
 	Accept: 'Aceptar',
 	Filter: 'Filtrar',
 	FilterBy: 'Filtrar por',
+	CopiesOfCard: 'Copias de Tarjeta',
 	Price: 'Precio',
 	Apply: 'Aplicar',
 	Comics: 'Comics',
