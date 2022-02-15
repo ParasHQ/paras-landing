@@ -443,7 +443,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							{Object.keys(attributes).length > 0 && (
 								<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
 							)}
-							<FilterMarket isShowVerified={false} />
+							<FilterMarket isShowVerified={false} defaultMinPrice={true} />
 						</div>
 					)}
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
