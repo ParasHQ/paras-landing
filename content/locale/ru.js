@@ -61,7 +61,6 @@ const market = {
 	All: 'Всё',
 	Filter: 'Фильтр',
 	SortBy: 'Сортировать по',
-	CopiesOfCard: 'Копии карты',
 	CategoryParas: 'Категории — Paras',
 	OnlyAllowWhitelisted:
 		'На данный момент только подтверждённые Художники могут создавать Карточки на Paras.',
@@ -330,6 +329,7 @@ const common = {
 	Accept: 'Принять',
 	Filter: 'Сортировать',
 	FilterBy: 'Сортировать по',
+	CopiesOfCard: 'Копии карты',
 	Price: 'Цене',
 	Apply: 'Принять',
 	Comics: 'Комиксы',
