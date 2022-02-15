@@ -7,13 +7,14 @@ import { sentryCaptureException } from 'lib/sentry'
 import useStore from 'lib/store'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 const FETCH_TOKENS_LIMIT = 100
 
 const TabOwners = ({ localToken }) => {
 	const [tokens, setTokens] = useState([])
+	const tokenRef = useRef([])
 	const [isFetching, setIsFetching] = useState(false)
 	const [activeToken, setActiveToken] = useState(null)
 	const [showModal, setShowModal] = useState(null)
@@ -46,16 +47,17 @@ const TabOwners = ({ localToken }) => {
 			ttl: 120,
 		})
 		let respData = resp.data.data.results
-		let saleOwner = respData.filter((token) => token.price)
-		let nonSaleOwner = respData.filter((token) => !token.price)
-		saleOwner = saleOwner.sort((a, b) => a.price - b.price)
-		const newData = [...currentData, ...saleOwner, ...nonSaleOwner]
+		const newData = [...currentData, ...respData]
 
-		setTokens(newData)
+		tokenRef.current = newData
 
 		if (respData.length === FETCH_TOKENS_LIMIT) {
 			fetchTokens(newData, respData[respData.length - 1]._id)
 		} else {
+			let saleOwner = tokenRef.current.flat().filter((token) => token.price)
+			let nonSaleOwner = tokenRef.current.flat().filter((token) => !token.price)
+			saleOwner = saleOwner.sort((a, b) => a.price - b.price)
+			setTokens([...saleOwner, ...nonSaleOwner])
 			setIsFetching(false)
 		}
 	}
@@ -98,7 +100,11 @@ const TabOwners = ({ localToken }) => {
 
 	return (
 		<div>
-			{!isFetching && tokens.length === 0 ? (
+			{isFetching ? (
+				<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
+					<div className="text-white">Loading...</div>
+				</div>
+			) : tokens.length === 0 ? (
 				<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 					<div className="text-white">{localeLn('NoOwnersBecome')}</div>
 				</div>
