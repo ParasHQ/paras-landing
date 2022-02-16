@@ -84,19 +84,17 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 							</div>
 						</div>
 						{profileData?.flag && (
-							<>
-								<div className="z-20 bottom-0 flex items-center justify-center px-4 mt-4 w-full">
-									<p
-										className={`text-white text-sm m-2 mt-2 p-1 font-bold w-full mx-auto px-4 text-center rounded-md ${'bg-red-600'}`}
-									>
-										{localeLn('FlaggedByPARASStealing')}
-									</p>
-								</div>
-								<p className="text-white mt-4 text-sm text-center opacity-90">
-									{localeLn('RedirectedToconfirm')}
+							<div className="z-20 bottom-0 flex items-center justify-center px-4 mt-4 w-full">
+								<p
+									className={`text-white text-sm m-2 mt-2 p-1 font-bold w-full mx-auto px-4 text-center rounded-md ${'bg-red-600'}`}
+								>
+									{localeLn('FlaggedByPARASStealing')}
 								</p>
-							</>
+							</div>
 						)}
+						<p className="text-white mt-4 text-sm text-center opacity-90">
+							{localeLn('RedirectedToconfirm')}
+						</p>
 						<div className="mt-6">
 							<Button
 								size="md"
