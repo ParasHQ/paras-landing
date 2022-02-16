@@ -158,7 +158,7 @@ const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attribu
 									/>
 									<p className="font-thin text-white text-sm py-1 md:py-2">{value}</p>
 									<p className="font-thin text-right flex-grow text-gray-500 text-sm py-1 md:py-2">
-										{attributes[attribute][value]}
+										{attributes[attribute][value].count}
 									</p>
 								</label>
 								<br />

@@ -3,14 +3,16 @@ import Link from 'next/link'
 import ReactLinkify from 'react-linkify'
 import { parseImgUrl } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
-import { Fragment, useState } from 'react'
+import { Fragment, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import TokenRoyaltyModal from 'components/Modal/TokenRoyaltyModal'
+import axios from 'axios'
 
 const TabInfo = ({ localToken, isNFT }) => {
 	const { localeLn } = useIntl()
 	const router = useRouter()
 	const [showModal, setShowModal] = useState('')
+	const [attributeRarity, setAttributeRarity] = useState([])
 
 	const collection = localToken.metadata.collection_id
 		? {
@@ -21,6 +23,22 @@ const TabInfo = ({ localToken, isNFT }) => {
 				id: localToken.contract_id,
 				name: localToken.contract_id,
 		  }
+
+	useEffect(() => {
+		if (localToken.metadata.attributes && attributeRarity.length === 0) {
+			getRarity(localToken.metadata.attributes)
+		}
+	}, [attributeRarity])
+
+	const getRarity = async (attributes) => {
+		const res = await axios.post(`${process.env.V2_API_URL}/rarity`, {
+			collection_id: collection.id,
+			attributes: attributes,
+		})
+
+		const newAttribute = await res.data.data
+		setAttributeRarity(newAttribute)
+	}
 
 	return (
 		<div>
@@ -174,14 +192,28 @@ const TabInfo = ({ localToken, isNFT }) => {
 				<div className="flex bg-gray-800 mt-3 p-3 pb-1 rounded-md shadow-md">
 					<div>
 						<p className="text-sm text-white font-bold mb-2">{localeLn('Attributes')}</p>
-						<div className="flex flex-wrap">
-							{localToken.metadata.attributes.map((attr, idx) => (
+						<div className="grid grid-cols-3 whitespace-nowrap">
+							{attributeRarity?.map((attr, idx) => (
 								<div
 									key={idx}
-									className="px-2 py-1 rounded-md border border-gray-700 flex space-x-1 mr-2 mb-2"
+									className="p-2 rounded-md border text-center border-gray-700 space-x-1 mr-2 mb-2 overflow-x-visible hover:border-gray-400"
 								>
-									<p className="text-white opacity-80 text-sm">{attr.trait_type}</p>
-									<p className="text-white font-medium text-sm">{attr.value}</p>
+									<a
+										href={`/collection/${collection.id}/?attributes=[${JSON.stringify({
+											[attr.trait_type]: attr.value,
+										})}]`}
+									>
+										<p className="text-white font-light opacity-70 text-sm truncate">
+											{attr.trait_type}
+										</p>
+										<p className="text-white font-medium text-sm truncate mb-1">{attr.value}</p>
+										<p className="text-gray-300 font-light opacity-70 text-sm">
+											{attr.rarity?.rarity > 1
+												? Math.round(attr.rarity?.rarity)
+												: attr.rarity?.rarity.toFixed(2)}
+											% rarity
+										</p>
+									</a>
 								</div>
 							))}
 						</div>
