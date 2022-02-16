@@ -11,11 +11,12 @@ import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackBuyTokenSeries, trackBuyTokenSeriesImpression } from 'lib/ga'
 import useProfileData from 'hooks/useProfileData'
+import { flagColor, flagText } from 'constants/flag'
 
 const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
-	const profileData = useProfileData(data.metadata.creator_id)
+	const creatorData = useProfileData(data.metadata.creator_id)
 
 	const { localeLn } = useIntl()
 
@@ -83,12 +84,14 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 								</div>
 							</div>
 						</div>
-						{profileData?.flag && (
+						{creatorData?.flag && (
 							<div className="z-20 bottom-0 flex items-center justify-center px-4 mt-4 w-full">
 								<p
-									className={`text-white text-sm m-2 mt-2 p-1 font-bold w-full mx-auto px-4 text-center rounded-md ${'bg-red-600'}`}
+									className={`text-white text-sm m-2 mt-2 p-1 font-bold w-full mx-auto px-4 text-center rounded-md ${
+										flagColor[creatorData?.flag]
+									}`}
 								>
-									{localeLn('FlaggedByPARASStealing')}
+									{localeLn(flagText[creatorData?.flag])}
 								</p>
 							</div>
 						)}
@@ -99,7 +102,7 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 							<Button
 								size="md"
 								isFullWidth
-								onClick={() => (profileData?.flag ? setShowBannedConfirm(true) : onBuyToken())}
+								onClick={() => (creatorData?.flag ? setShowBannedConfirm(true) : onBuyToken())}
 							>
 								{data.price !== '0' ? 'Buy' : 'Get for Free'}
 							</Button>
@@ -118,12 +121,12 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 						</div>
 					</div>
 					<div className="w-full text-white bg-red-600 p-2 rounded-md text-center mt-2 mb-6">
-						{localeLn('FlaggedByPARASStealing')}
+						{localeLn(flagText[creatorData?.flag])}
 					</div>
 					<div className="w-full text-white text-center">{localeLn('AreYouSureBuy')}</div>
 					<button
 						className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
-						onClick={() => onBuyToken()}
+						onClick={onBuyToken}
 					>
 						{localeLn('IUnderstand')}
 					</button>
