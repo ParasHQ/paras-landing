@@ -23,6 +23,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import { useToast } from 'hooks/useToast'
 import LineClampText from 'components/Common/LineClampText'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
+import ArtistBanned from 'components/Common/ArtistBanned'
 
 const LIMIT = 8
 const LIMIT_ACTIVITY = 20
@@ -364,6 +365,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					<LineClampText
 						className="text-gray-200 mt-4 max-w-lg m-auto whitespace-pre-line break-words"
 						text={collection?.description}
+					/>
+					<ArtistBanned
+						creatorId={collection.creator_id}
+						className="max-w-2xl mx-auto relative -mb-4"
 					/>
 					{currentUser === collection.creator_id && (
 						<div className="flex flex-row space-x-2 max-w-xs m-auto mt-4">
