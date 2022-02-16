@@ -10,9 +10,14 @@ import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackBuyTokenSeries, trackBuyTokenSeriesImpression } from 'lib/ga'
+import useProfileData from 'hooks/useProfileData'
+import { flagColor, flagText } from 'constants/flag'
 
 const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
+	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
+	const creatorData = useProfileData(data.metadata.creator_id)
+
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
@@ -79,15 +84,52 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 								</div>
 							</div>
 						</div>
+						{creatorData?.flag && (
+							<div className="z-20 bottom-0 flex items-center justify-center px-4 mt-4 w-full">
+								<p
+									className={`text-white text-sm m-2 mt-2 p-1 font-bold w-full mx-auto px-4 text-center rounded-md ${
+										flagColor[creatorData?.flag]
+									}`}
+								>
+									{localeLn(flagText[creatorData?.flag])}
+								</p>
+							</div>
+						)}
 						<p className="text-white mt-4 text-sm text-center opacity-90">
 							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
-							<Button size="md" isFullWidth onClick={onBuyToken}>
+							<Button
+								size="md"
+								isFullWidth
+								onClick={() => (creatorData?.flag ? setShowBannedConfirm(true) : onBuyToken())}
+							>
 								{data.price !== '0' ? 'Buy' : 'Get for Free'}
 							</Button>
 						</div>
 					</div>
+				</div>
+			</Modal>
+			<Modal isShow={showBannedConfirm} close={() => setShowBannedConfirm(false)}>
+				<div className="w-full max-w-sm p-4 m-auto bg-gray-800 rounded-md overflow-y-auto max-h-screen relative">
+					<h1 className="text-2xl font-bold text-white text-center tracking-tight">
+						{localeLn('Warning')}
+					</h1>
+					<div className="absolute right-0 top-0 pr-4 pt-4">
+						<div className="cursor-pointer" onClick={() => setShowBannedConfirm(false)}>
+							<IconX onClick={onClose} />
+						</div>
+					</div>
+					<div className="w-full text-white bg-red-600 p-2 rounded-md text-center mt-2 mb-6">
+						{localeLn(flagText[creatorData?.flag])}
+					</div>
+					<div className="w-full text-white text-center">{localeLn('AreYouSureBuy')}</div>
+					<button
+						className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+						onClick={onBuyToken}
+					>
+						{localeLn('IUnderstand')}
+					</button>
 				</div>
 			</Modal>
 			<LoginModal onClose={() => setShowLogin(false)} show={showLogin} />
