@@ -108,14 +108,24 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 				</div>
 			</Modal>
 			<Modal isShow={showBannedConfirm} close={() => setShowBannedConfirm(false)}>
-				<div className="w-full max-w-sm p-4 m-auto bg-gray-800 rounded-md overflow-y-auto max-h-screen">
-					<div className="w-full text-white mb-2">{localeLn('FlaggedByPARASStealing')}</div>
-					<div className="w-full text-white">{'Are you sure to buy this card?'}</div>
+				<div className="w-full max-w-sm p-4 m-auto bg-gray-800 rounded-md overflow-y-auto max-h-screen relative">
+					<h1 className="text-2xl font-bold text-white text-center tracking-tight">
+						{localeLn('Warning')}
+					</h1>
+					<div className="absolute right-0 top-0 pr-4 pt-4">
+						<div className="cursor-pointer" onClick={() => setShowBannedConfirm(false)}>
+							<IconX onClick={onClose} />
+						</div>
+					</div>
+					<div className="w-full text-white bg-red-600 p-2 rounded-md text-center mt-2 mb-6">
+						{localeLn('FlaggedByPARASStealing')}
+					</div>
+					<div className="w-full text-white text-center">{localeLn('AreYouSureBuy')}</div>
 					<button
 						className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
-						// onClick={() => setShowAlertErr(false)}
+						onClick={() => onBuyToken()}
 					>
-						I understand
+						{localeLn('IUnderstand')}
 					</button>
 				</div>
 			</Modal>
