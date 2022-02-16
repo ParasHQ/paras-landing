@@ -117,11 +117,11 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 					</h1>
 					<div className="absolute right-0 top-0 pr-4 pt-4">
 						<div className="cursor-pointer" onClick={() => setShowBannedConfirm(false)}>
-							<IconX onClick={onClose} />
+							<IconX />
 						</div>
 					</div>
 					<div className="w-full text-white bg-red-600 p-2 rounded-md text-center mt-2 mb-6">
-						{localeLn(flagText[creatorData?.flag])}
+						{localeLn(flagText[creatorData?.flag] || '')}
 					</div>
 					<div className="w-full text-white text-center">{localeLn('AreYouSureBuy')}</div>
 					<button
