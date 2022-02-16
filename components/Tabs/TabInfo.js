@@ -6,7 +6,7 @@ import { useIntl } from 'hooks/useIntl'
 import { Fragment, useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import TokenRoyaltyModal from 'components/Modal/TokenRoyaltyModal'
-import axios from 'axios'
+import cachios from 'cachios'
 import StillReferenceModal from 'components/Modal/StillReferenceModal'
 
 const TabInfo = ({ localToken, isNFT }) => {
@@ -32,9 +32,10 @@ const TabInfo = ({ localToken, isNFT }) => {
 	}, [attributeRarity])
 
 	const getRarity = async (attributes) => {
-		const res = await axios.post(`${process.env.V2_API_URL}/rarity`, {
+		const res = await cachios.post(`${process.env.V2_API_URL}/rarity`, {
 			collection_id: collection.id,
 			attributes: attributes,
+			ttl: 120,
 		})
 
 		const newAttribute = await res.data.data
