@@ -194,6 +194,28 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		)
 	}
 
+	if (notif.type === 'notification_royalty') {
+		return (
+			<div>
+				<Link href={url}>
+					<a>
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={token.metadata?.media} />
+							<div className="pl-2 text-gray-200">
+								received {formatNearAmount(notif.royalty)} Ⓝ royalty from{' '}
+								<span className="font-medium text-gray-100">{token.metadata?.title}</span> secondary
+								sale
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
 	if (notif.type === 'notification_add_offer') {
 		return (
 			<div>
