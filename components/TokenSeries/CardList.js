@@ -67,9 +67,18 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 					...router.query,
 					tokenSeriesId: token.token_series_id,
 					contractId: token.contract_id,
+					from: 'collection',
+					collection_id: token.metadata?.collection_id,
 				},
 			},
-			`/token/${token.contract_id}::${token.token_series_id}`,
+			{
+				pathname: `/token/${token.contract_id}::${token.token_series_id}`,
+				query: {
+					...router.query,
+					from: 'collection',
+					collection_id: token.metadata?.collection_id,
+				},
+			},
 			{
 				shallow: true,
 				scroll: false,

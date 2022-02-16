@@ -75,7 +75,23 @@ const TokenSeriesPage = ({ errorCode, token }) => {
 	)
 }
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps({ params, query }) {
+	if (query.from && query.transactionHashes && query.from === 'collection') {
+		let coll_id = query.collection_id
+		delete query.transactionHashes
+		delete query.from
+		delete query.collection_id
+		delete query.id
+		var queryString = Object.keys(query)
+			.map((key) => `${key}=${query[key]}`)
+			.join('&')
+		return {
+			redirect: {
+				destination: `/collection/${coll_id}?${queryString}`,
+			},
+		}
+	}
+
 	const [contractId, tokenSeriesId] = params.id.split('::')
 
 	const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
