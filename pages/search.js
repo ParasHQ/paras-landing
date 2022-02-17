@@ -14,6 +14,7 @@ import CardListLoader from 'components/Card/CardListLoader'
 import { useIntl } from 'hooks/useIntl'
 import PublicationListScroll from 'components/Publication/PublicationListScroll'
 import CollectionList from 'components/Collection/CollectionList'
+import CollectionListLoader from 'components/Collection/CollectionListLoader'
 
 const LIMIT = 12
 
@@ -23,7 +24,9 @@ export default function SearchPage({ searchQuery }) {
 	const router = useRouter()
 
 	const [tokens, setTokens] = useState([])
-	const [page, setPage] = useState(0)
+	const [idNext, setIdNext] = useState(null)
+	const [lowestPriceNext, setLowestPriceNext] = useState(null)
+	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(false)
 
@@ -38,7 +41,7 @@ export default function SearchPage({ searchQuery }) {
 	const [collHasMore, setCollHasMore] = useState(false)
 
 	const [isRefreshing, setIsRefreshing] = useState(false)
-	const [activeTab, setActiveTab] = useState('card')
+	const [activeTab, setActiveTab] = useState('collections')
 
 	const { query } = router
 
@@ -47,15 +50,19 @@ export default function SearchPage({ searchQuery }) {
 		window.scrollTo(0, 0)
 
 		/** Tokens */
+		const params = tokensParams(query)
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(0, {
-				...query,
-				search: encodeURIComponent(query.q),
-			}),
+			params: params,
 		})
 		if (res.data.data.results.length === LIMIT) {
-			setPage(1)
 			setHasMore(true)
+
+			const lastData = res.data.data.results[res.data.data.results.length - 1]
+			if (params.__sort) {
+				setIdNext(lastData._id)
+				params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+				params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+			}
 		} else {
 			setHasMore(false)
 		}
@@ -81,10 +88,11 @@ export default function SearchPage({ searchQuery }) {
 		// Collection
 		const resColl = await axios(`${process.env.V2_API_URL}/collections`, {
 			params: {
-				collection_search: encodeURIComponent(query.q),
+				collection_search: query.q,
 				__skip: 0,
 				__limit: LIMIT,
 				__sort: 'isCreator::-1',
+				__showEmpty: false,
 			},
 		})
 		if (resColl.data.data.results.length === LIMIT) {
@@ -96,7 +104,15 @@ export default function SearchPage({ searchQuery }) {
 		setCollections(resColl.data.data.results)
 
 		setIsRefreshing(false)
-	}, [query.q, query.sort, query.pmin, query.pmax, query.is_verified])
+	}, [
+		query.q,
+		query.sort,
+		query.pmin,
+		query.pmax,
+		query.min_copies,
+		query.max_copies,
+		query.is_verified,
+	])
 
 	useEffect(() => {
 		return () => {
@@ -110,21 +126,27 @@ export default function SearchPage({ searchQuery }) {
 		}
 
 		setIsFetching(true)
+		const params = tokensParams({
+			...query,
+			_id_next: idNext,
+			lowest_price_next: lowestPriceNext,
+			updated_at_next: updatedAtNext,
+		})
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(page, {
-				...query,
-				search: encodeURIComponent(query.q),
-			}),
+			params: params,
 		})
 		const newData = await res.data.data
 
 		const newTokens = [...tokens, ...newData.results]
 		setTokens(newTokens)
-		setPage(page + 1)
 		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
+			const lastData = res.data.data.results[res.data.data.results.length - 1]
+			setIdNext(lastData._id)
 			setHasMore(true)
+			params.__sort?.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+			params.__sort?.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 		}
 		setIsFetching(false)
 	}
@@ -166,6 +188,7 @@ export default function SearchPage({ searchQuery }) {
 				__skip: collPage * LIMIT,
 				__limit: LIMIT,
 				__sort: 'isCreator::-1',
+				__showEmpty: false,
 			},
 		})
 		const newData = await res.data.data
@@ -185,7 +208,7 @@ export default function SearchPage({ searchQuery }) {
 		title: localeLn('Search{searchQuery}Paras', {
 			searchQuery: searchQuery,
 		}),
-		description: `Explore and collect ${searchQuery} digital art cards on Paras. All-in-one social digital art card marketplace for creators and collectors.`,
+		description: `Explore and collect ${searchQuery} digital art NFT on Paras. All-in-one social digital art NFT marketplace for creators and collectors.`,
 	}
 
 	return (
@@ -233,19 +256,19 @@ export default function SearchPage({ searchQuery }) {
 				</div>
 				<div className="flex justify-between items-end h-12">
 					<div className="flex">
-						<div className="mx-4 relative" onClick={() => setActiveTab('card')}>
-							<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Cards</h4>
-							{activeTab === 'card' && (
-								<div className="absolute left-0 -bottom-1">
-									<div className="mx-auto w-8 h-1 bg-gray-100 hover:w-full"></div>
-								</div>
-							)}
-						</div>
 						<div className="mx-4 relative" onClick={() => setActiveTab('collections')}>
 							<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Collections</h4>
 							{activeTab === 'collections' && (
 								<div className="absolute left-0 -bottom-1">
 									<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+								</div>
+							)}
+						</div>
+						<div className="mx-4 relative" onClick={() => setActiveTab('card')}>
+							<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Cards</h4>
+							{activeTab === 'card' && (
+								<div className="absolute left-0 -bottom-1">
+									<div className="mx-auto w-8 h-1 bg-gray-100 hover:w-full"></div>
 								</div>
 							)}
 						</div>
@@ -281,15 +304,21 @@ export default function SearchPage({ searchQuery }) {
 								/>
 							</div>
 						))}
-					{activeTab === 'collections' && (
-						<div className="px-4 md:px-0">
-							<CollectionList
-								data={collections}
-								fetchData={_fetchCollectionData}
-								hasMore={collHasMore}
-							/>
-						</div>
-					)}
+					{activeTab === 'collections' &&
+						(isRefreshing ? (
+							<div className="min-h-full px-4 md:px-0">
+								<CollectionListLoader />
+							</div>
+						) : (
+							<div className="px-4 md:px-0">
+								<CollectionList
+									data={collections}
+									fetchData={_fetchCollectionData}
+									hasMore={collHasMore}
+									page="search"
+								/>
+							</div>
+						))}
 					{activeTab === 'publication' && (
 						<PublicationListScroll
 							data={publication}
@@ -304,16 +333,23 @@ export default function SearchPage({ searchQuery }) {
 	)
 }
 
-const tokensParams = (_page = 0, query) => {
+const tokensParams = (query) => {
+	const parsedSortQuery = parseSortQuery(query?.sort)
 	const params = {
 		search: query.q,
 		exclude_total_burn: true,
-		__sort: query.sort ? parseSortQuery(query.sort) : undefined,
-		__skip: _page * LIMIT,
+		__sort: parsedSortQuery,
 		__limit: LIMIT,
+		_id_next: query._id_next,
 		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
+		...(query.lowest_price_next &&
+			parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
+		...(query.updated_at_next &&
+			parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+		...(query.min_copies && { min_copies: query.min_copies }),
+		...(query.max_copies && { max_copies: query.max_copies }),
 	}
 	return params
 }

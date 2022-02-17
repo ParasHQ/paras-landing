@@ -44,6 +44,7 @@ const home = {
 	LastSold: 'Última vendida',
 	Featured: 'Destacada',
 	Latest: 'Más reciente',
+	TopCollections: 'Principales Colecciones',
 	TopBuyers: 'Principales Compradores',
 	TopSellers: 'Principales Vendedores',
 	NewestCards: 'Nuevas Cartas',
@@ -221,15 +222,18 @@ const publication = {
 	Community: 'Comunidad',
 	MaximumSize3MB: 'Tamaño maximo de archivo 3MB',
 	AddCardToPublication: 'Añadir tarjeta a tu publicación',
+	AddCollectionToPublication: 'Añadir tarjeta a tu publicación',
 	TokenIDIsCardId:
 		'TokenID es la identificación de su tarjeta. Puede encontrar su TokenID en https://paras.id/token/[TokenID]',
 	AddCard: 'Añadir Tarjeta',
+	AddCollection: 'Agregar Colección',
 	Thumbnail: 'Miniatura',
 	UpdateThumbnail3MB: 'Actualizar Miniatura (Max. 3MB)',
 	Title: 'Titulo',
 	SureToLeavepage:
 		'¿Estás seguro de querer abandonar la página? Vas a perder cualquier cambio no publicado',
 	CardCollectibles: 'Tarjetas Coleccionables',
+	Collections: 'Colecciones',
 	Continue: 'Continuar',
 	Delete: 'Borrar',
 	CardNotMentioned: 'Tarjeta no mencionada en ninguna publicación',
@@ -290,6 +294,8 @@ const modal = {
 	Deposit: 'Depositar',
 	AreAboutToSend: 'Estás a punto de envíar',
 	MintedBy: 'minteado por',
+	DynamicTxFee:
+		'If you make the transaction before {date} you will be charged {fee}% transaction fee.',
 }
 const tab = {
 	BoughtFrom: 'comprado de',
@@ -326,6 +332,7 @@ const common = {
 	Accept: 'Aceptar',
 	Filter: 'Filtrar',
 	FilterBy: 'Filtrar por',
+	CopiesOfCard: 'Copias de Tarjeta',
 	Price: 'Precio',
 	Apply: 'Aplicar',
 	Comics: 'Comics',
@@ -527,6 +534,15 @@ const newCollection = {
 	Logo: 'Logo',
 	CreatingLoading: 'Creando...',
 }
+const deleteCollection = {
+	DeleteTitle: 'Borrar Confirmación',
+	DeleteText: 'Estás seguro de que quieres eliminar esta colección?',
+	DeleteCancel: `Cancelar`,
+	Delete: `Eliminar`,
+	Loading: `Cargando`,
+	DeleteSuccess: `Eliminar la colección fue un éxito`,
+	DeleteFailed: `Algo salió mal, inténtalo de nuevo más tarde.`,
+}
 const search = {
 	'Search{searchQuery}Paras': 'Buscar {searchQuery} — Paras',
 	SearchResult: 'Resultado de la búsqueda',
@@ -554,6 +570,7 @@ const data = {
 	news,
 	search,
 	newCollection,
+	deleteCollection,
 }
 
 export const es = config(data)

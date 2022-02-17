@@ -19,6 +19,7 @@ import {
 	imagePlugin,
 	InlineToolbar,
 	linkPlugin,
+	dividerPlugin,
 	plugins,
 	Toolbar,
 	videoPlugin,
@@ -34,6 +35,7 @@ const TextEditor = ({
 	hideTitle = false,
 	setTitle = () => {},
 	showCardModal,
+	showCollectionModal,
 	setContent = () => {},
 }) => {
 	const { localeLn } = useIntl()
@@ -154,9 +156,11 @@ const TextEditor = ({
 								<BlockquoteButton {...externalProps} />
 								<CodeBlockButton {...externalProps} />
 								<linkPlugin.LinkButton {...externalProps} onOverrideContent={() => {}} />
+								<DividerButton {...externalProps} />
 								<ImageButton {...externalProps} onChange={onAddLocalImage} />
 								<VideoButton {...externalProps} onAddVideo={onAddVideo} />
 								<CardButton {...externalProps} onClick={showCardModal} />
+								<CollectionButton {...externalProps} onClick={showCollectionModal} />
 							</div>
 						)}
 					</Toolbar>
@@ -165,6 +169,8 @@ const TextEditor = ({
 		</div>
 	)
 }
+
+let { DividerButton } = dividerPlugin
 
 const ImageButton = ({ theme, onChange }) => {
 	const { localeLn } = useIntl()
@@ -191,6 +197,15 @@ const CardButton = ({ theme, onClick }) => {
 	return (
 		<button className={`${theme.customButton} ${theme.button} px-2`} onClick={onClick}>
 			{localeLn('Card')}
+		</button>
+	)
+}
+
+const CollectionButton = ({ theme, onClick }) => {
+	const { localeLn } = useIntl()
+	return (
+		<button className={`${theme.customButton} ${theme.button} px-2`} onClick={onClick}>
+			{localeLn('Collection')}
 		</button>
 	)
 }

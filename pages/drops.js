@@ -95,7 +95,7 @@ export default function Drops() {
 				<title>{localeLn('ParasXMTVRS')}</title>
 				<meta
 					name="description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
 				/>
 				<meta name="twitter:title" content="Paras X MTVRS NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
@@ -103,7 +103,7 @@ export default function Drops() {
 				<meta name="twitter:url" content="https://paras.id" />
 				<meta
 					name="twitter:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
 				/>
 				<meta
 					name="twitter:image"
@@ -114,7 +114,7 @@ export default function Drops() {
 				<meta property="og:site_name" content="Paras X MTVRS NFT Drops" />
 				<meta
 					property="og:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta
@@ -344,22 +344,22 @@ const SpecialCard = ({
 		}
 	}
 
-	const _getLowestPrice = (ownerships = []) => {
-		const marketDataList = ownerships
-			.filter((ownership) => ownership.marketData)
-			.map((ownership) => ownership.marketData.amount)
-			.sort((a, b) => a - b)
-		return marketDataList[0]
-	}
+	// const _getLowestPrice = (ownerships = []) => {
+	// 	const marketDataList = ownerships
+	// 		.filter((ownership) => ownership.marketData)
+	// 		.map((ownership) => ownership.marketData.amount)
+	// 		.sort((a, b) => a - b)
+	// 	return marketDataList[0]
+	// }
 
-	const getCardAvailable = (ownerships = []) => {
-		let total = 0
-		const marketDataList = ownerships
-			.filter((ownership) => ownership.marketData)
-			.map((ownership) => ownership.marketData.quantity)
-		total = marketDataList.reduce((a, b) => a + b, 0)
-		return total
-	}
+	// const getCardAvailable = (ownerships = []) => {
+	// 	let total = 0
+	// 	const marketDataList = ownerships
+	// 		.filter((ownership) => ownership.marketData)
+	// 		.map((ownership) => ownership.marketData.quantity)
+	// 	total = marketDataList.reduce((a, b) => a + b, 0)
+	// 	return total
+	// }
 	const { localeLn } = useIntl()
 
 	return (

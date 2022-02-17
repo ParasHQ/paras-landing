@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import Media from 'components/Common/Media'
+import { parseImgUrl } from 'utils/common'
 
 const Card = ({
 	imgUrl,
 	imgWidth = 640,
 	imgHeight = 890,
 	token,
+	profileCollection,
+	type,
 	onClick = () => {},
 	flippable = false,
 }) => {
@@ -19,6 +22,14 @@ const Card = ({
 	const [dimension, setDimension] = useState({ width: 0, height: 0 })
 	const [rotate, setRotate] = useState(initialRotate)
 	const [isShowFront, setIsShowFront] = useState(true)
+	const wrapperRef = useRef()
+	const descRef = useRef()
+	const attrRef = useRef()
+	const royaltyRef = useRef()
+	const [classDescAttr, setClassDescAttr] = useState({
+		desc: false,
+		attr: false,
+	})
 
 	const { localeLn } = useIntl()
 
@@ -44,6 +55,17 @@ const Card = ({
 		updateSize()
 		return () => window.removeEventListener('resize', updateSize)
 	}, [containerRef])
+
+	useEffect(() => {
+		if (
+			descRef.current?.clientHeight +
+				attrRef.current?.clientHeight +
+				royaltyRef.current?.clientHeight >
+			wrapperRef.current?.clientHeight - 16
+		) {
+			setClassDescAttr((prev) => ({ ...prev, desc: true, attr: true }))
+		}
+	}, [wrapperRef.current])
 
 	const handleMouseMove = (e) => {
 		const bbox = cardRef.current.getBoundingClientRect()
@@ -128,13 +150,35 @@ const Card = ({
 								</p>
 							</div>
 							<div className="card-content my-2 relative flex flex-grow h-0">
-								<Media
-									className="mx-auto h-full object-contain relative z-10"
-									url={imgUrl}
-									videoControls={false}
-									videoMuted={true}
-									videoLoop={true}
-								/>
+								{token._is_the_reference_merged !== undefined &&
+								!token._is_the_reference_merged &&
+								type === 'collection' ? (
+									<>
+										<div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40 backdrop-filter backdrop-blur-lg backdrop-saturate-200 z-10" />
+										<div
+											className="absolute top-0 left-0 w-full h-full bg-cover bg-white"
+											style={{ backgroundImage: `url(${parseImgUrl(profileCollection)})` }}
+										/>
+										<div className="flex items-center justify-center w-full h-full">
+											<div className="z-20">
+												<img
+													src={parseImgUrl(profileCollection)}
+													width={100}
+													className="mx-auto rounded-full"
+												/>
+												<h4 className="text-white text-sm mt-4">Content not available yet</h4>
+											</div>
+										</div>
+									</>
+								) : (
+									<Media
+										className="mx-auto h-full object-contain relative z-10"
+										url={imgUrl}
+										videoControls={false}
+										videoMuted={true}
+										videoLoop={true}
+									/>
+								)}
 							</div>
 							<div className="px-2 mt-auto">
 								<div className="flex justify-between">
@@ -209,13 +253,34 @@ const Card = ({
 							style={{ transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)` }}
 						>
 							<div className="bg-white opacity-10 absolute inset-0">
-								<Media
-									className="mx-auto h-full object-cover relative z-10 img-hor-vert"
-									url={imgUrl}
-									videoControls={false}
-									videoMuted={true}
-									videoLoop={true}
-								/>
+								{token._is_the_reference_merged !== undefined &&
+								!token._is_the_reference_merged &&
+								type === 'collection' ? (
+									<>
+										<div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40 backdrop-filter backdrop-blur-lg backdrop-saturate-200 z-10" />
+										<div
+											className="absolute top-0 left-0 w-full h-full bg-cover bg-white"
+											style={{ backgroundImage: `url(${parseImgUrl(profileCollection)})` }}
+										/>
+										<div className="flex items-center justify-center w-full h-full">
+											<div className="z-20">
+												<img
+													src={parseImgUrl(profileCollection)}
+													width={100}
+													className="mx-auto rounded-full"
+												/>
+											</div>
+										</div>
+									</>
+								) : (
+									<Media
+										className="mx-auto h-full object-cover relative z-10 img-hor-vert"
+										url={imgUrl}
+										videoControls={false}
+										videoMuted={true}
+										videoLoop={true}
+									/>
+								)}
 							</div>
 							<div className="card-bg relative z-10">
 								<div
@@ -223,26 +288,38 @@ const Card = ({
 									style={{ fontSize: `${dimension.width / 14}px`, padding: `.3em` }}
 								>
 									<div className="h-full border-gray-400 border-2">
-										<div className="py-2 overflow-hidden" style={{ height: '90%' }}>
-											<div className="mb-2">
+										<div
+											className="py-2 overflow-hidden"
+											style={{ height: '90%' }}
+											ref={wrapperRef}
+										>
+											<div className="mb-2" ref={descRef}>
 												<h4 className="px-2 truncate" style={{ fontSize: `0.75em` }}>
 													Description
 												</h4>
-												<h4 className="px-2 whitespace-pre-line" style={{ fontSize: `0.5em` }}>
+												<h4
+													className={`px-2 whitespace-pre-line ${
+														classDescAttr.desc && `line-clamp-12`
+													}`}
+													style={{ fontSize: `0.5em` }}
+												>
 													{token.description?.replace(/\n\s*\n\s*\n/g, '\n\n')}
 												</h4>
 											</div>
-											<div className="mb-2">
+											<div className="mb-2" ref={attrRef}>
 												<h4 className="px-2 truncate" style={{ fontSize: `0.75em` }}>
 													{'Attributes'}
 												</h4>
-												<h4 className="px-2" style={{ fontSize: `0.5em` }}>
+												<h4
+													className={`px-2 ${classDescAttr.attr && `line-clamp-4`}`}
+													style={{ fontSize: `0.5em` }}
+												>
 													{token.attributes
 														?.map(({ value, trait_type }) => `${trait_type} ${value}`)
 														.join(', ') || 'None'}
 												</h4>
 											</div>
-											<div className="flex items-end px-2 space-x-1">
+											<div className="flex items-end px-2 space-x-1" ref={royaltyRef}>
 												<h4 style={{ fontSize: `0.5em` }}>Royalty:</h4>
 												<h4 style={{ fontSize: `0.5em` }}>{calculateRoyalty()}</h4>
 											</div>

@@ -192,8 +192,10 @@ export const checkUrl = (str) => {
 	return !!pattern.test(str)
 }
 
-export const parseSortQuery = (sort) => {
-	if (!sort || sort === 'marketupdate') {
+export const parseSortQuery = (sort, defaultMinPrice = false) => {
+	if (!sort) {
+		return defaultMinPrice ? 'lowest_price::1' : 'updated_at::-1'
+	} else if (sort === 'marketupdate') {
 		return 'updated_at::-1'
 	} else if (sort === 'marketupdateasc') {
 		return 'updated_at::1'
@@ -225,6 +227,13 @@ export const parseGetTokenIdfromUrl = (url) => {
 	return {
 		token_series_id: pathname[2],
 		token_id: pathname[3],
+	}
+}
+
+export const parseGetCollectionIdfromUrl = (url) => {
+	const pathname = new URL(url).pathname.split('/')
+	return {
+		collection_id: pathname[2],
 	}
 }
 

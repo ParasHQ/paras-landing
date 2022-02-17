@@ -95,6 +95,14 @@
   dependencies:
     clsx "^1.0.4"
 
+"@draft-js-plugins/divider@^4.1.1":
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/@draft-js-plugins/divider/-/divider-4.1.1.tgz#9764e35366f17f0114d189276db45a9e81e08c05"
+  integrity sha512-dl3ZleveBEOQjP+QquMfv3QWcLeG27uEceEcCO6YahEVESrGyui6TbBrFayyIVSUkDkro3XYsRrLIxBO7dyqPw==
+  dependencies:
+    clsx "^1.0.4"
+    prop-types "^15.5.8"
+
 "@draft-js-plugins/editor@^4.0.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@draft-js-plugins/editor/-/editor-4.1.0.tgz#1861fb257ba51ecbd031b8a3d84ee0809de1504e"
@@ -1349,6 +1357,11 @@ compressorjs@^1.0.7:
     blueimp-canvas-to-blob "^3.28.0"
     is-blob "^2.1.0"
 
+compute-scroll-into-view@^1.0.17:
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/compute-scroll-into-view/-/compute-scroll-into-view-1.0.17.tgz#6a88f18acd9d42e9cf4baa6bec7e0522607ab7ab"
+  integrity sha512-j4dx+Fb0URmzbwwMUrhqWM2BEWHdFGx+qZ9qqASHRPqvTYdqvWnHg0H1hIbcyLnvgnoNAVMlwkepyqM3DaIFUg==
+
 concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
@@ -1463,7 +1476,7 @@ cross-fetch@^3.0.4:
   dependencies:
     node-fetch "2.6.1"
 
-cross-spawn@^7.0.0, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
+cross-spawn@^7.0.0, cross-spawn@^7.0.1, cross-spawn@^7.0.2, cross-spawn@^7.0.3:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.3.tgz#f73a85b9d5d41d045551c177e2882d4ac85728a6"
   integrity sha512-iRDPJKUPVEND7dHPO8rkbOnPpyDygcDFtWjpeWNCgy8WP2rXcxXL8TskReQl6OrB2G7+UJrags1q15Fudc7G6w==
@@ -1718,6 +1731,26 @@ domain-browser@^1.1.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/domain-browser/-/domain-browser-1.2.0.tgz#3d31f50191a6749dd1375a7f522e823d42e54eda"
   integrity sha512-jnjyiM6eRyZl2H+W8Q/zLMA481hzi0eszAaBUzIVnmYVDBbnLxVNnfu1HgEBvCbL+71FrxMl3E6lpKH7Ge3OXA==
+
+dotenv-cli@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/dotenv-cli/-/dotenv-cli-4.1.1.tgz#26a59fbb25876008985a15fa366b416607e8372c"
+  integrity sha512-XvKv1pa+UBrsr3CtLGBsR6NdsoS7znqaHUf4Knj0eZO+gOI/hjj9KgWDP+KjpfEbj6wAba1UpbhaP9VezNkWhg==
+  dependencies:
+    cross-spawn "^7.0.1"
+    dotenv "^8.1.0"
+    dotenv-expand "^5.1.0"
+    minimist "^1.1.3"
+
+dotenv-expand@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/dotenv-expand/-/dotenv-expand-5.1.0.tgz#3fbaf020bfd794884072ea26b1e9791d45a629f0"
+  integrity sha512-YXQl1DSa4/PQyRfgrv6aoNjhasp/p4qs9FjJ4q4cQk+8m4r6k4ZSiEyytKG8f8W9gi8WsQtIObNmKd+tMzNTmA==
+
+dotenv@^8.1.0:
+  version "8.6.0"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.6.0.tgz#061af664d19f7f4d8fc6e4ff9b584ce237adcb8b"
+  integrity sha512-IrPdXQsk2BbzvCBGBOTmmSH5SodmqZNt4ERAZDmW4CT+tL8VtvinqywuANaFu4bOMWki16nqf0e4oC0QIaDr/g==
 
 draft-js@^0.11.7:
   version "0.11.7"
@@ -3331,7 +3364,7 @@ minimatch@^3.0.4:
   dependencies:
     brace-expansion "^1.1.7"
 
-minimist@^1.1.1, minimist@^1.2.0, minimist@^1.2.5:
+minimist@^1.1.1, minimist@^1.1.3, minimist@^1.2.0, minimist@^1.2.5:
   version "1.2.5"
   resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
   integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
@@ -4579,6 +4612,13 @@ react-hook-form@^6.10.0:
   resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-6.15.8.tgz#725c139d308c431c4611e4b9d85a49f01cfc0e7a"
   integrity sha512-prq82ofMbnRyj5wqDe8hsTRcdR25jQ+B8KtCS7BLCzjFHAwNuCjRwzPuP4eYLsEBjEIeYd6try+pdLdw0kPkpg==
 
+react-horizontal-scrolling-menu@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/react-horizontal-scrolling-menu/-/react-horizontal-scrolling-menu-2.7.0.tgz#aa892b89023dfa1726b0b31b2bd264e8ffac89b4"
+  integrity sha512-2Fv5rXdrJ146YWwjkCcAzmtUcMIFa6Pl4VTFs0T01eseudDQj0Kl2IxugKKfq3hgCbEV98qU5leGIC2OHXAoxQ==
+  dependencies:
+    smooth-scroll-into-view-if-needed "^1.1.32"
+
 react-infinite-scroll-component@^5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/react-infinite-scroll-component/-/react-infinite-scroll-component-5.1.0.tgz#3c0043cd17c6857c25d3ca7aa4171e0c33ce8023"
@@ -4897,6 +4937,13 @@ scheduler@^0.20.1:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
 
+scroll-into-view-if-needed@^2.2.28:
+  version "2.2.29"
+  resolved "https://registry.yarnpkg.com/scroll-into-view-if-needed/-/scroll-into-view-if-needed-2.2.29.tgz#551791a84b7e2287706511f8c68161e4990ab885"
+  integrity sha512-hxpAR6AN+Gh53AdAimHM6C8oTN1ppwVZITihix+WqalywBeFcQ6LdQP5ABNl26nX8GTEL7VT+b8lKpdqq65wXg==
+  dependencies:
+    compute-scroll-into-view "^1.0.17"
+
 semver-compare@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/semver-compare/-/semver-compare-1.0.0.tgz#0dee216a1c941ab37e9efb1788f6afc5ff5537fc"
@@ -5017,6 +5064,13 @@ slick-carousel@^1.8.1:
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/slick-carousel/-/slick-carousel-1.8.1.tgz#a4bfb29014887bb66ce528b90bd0cda262cc8f8d"
   integrity sha512-XB9Ftrf2EEKfzoQXt3Nitrt/IPbT+f1fgqBdoxO3W/+JYvtEOW6EgxnWfr9GH6nmULv7Y2tPmEX3koxThVmebA==
+
+smooth-scroll-into-view-if-needed@^1.1.32:
+  version "1.1.33"
+  resolved "https://registry.yarnpkg.com/smooth-scroll-into-view-if-needed/-/smooth-scroll-into-view-if-needed-1.1.33.tgz#2c7b88c82784c69030cb0489b9df584e94e01533"
+  integrity sha512-crS8NfAaoPrtVYOCMSAnO2vHRgUp22NiiDgEQ7YiaAy5xe2jmR19Jm+QdL8+97gO8ENd7PUyQIAQojJyIiyRHw==
+  dependencies:
+    scroll-into-view-if-needed "^2.2.28"
 
 source-map-js@^0.6.2:
   version "0.6.2"

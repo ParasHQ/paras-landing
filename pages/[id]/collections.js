@@ -6,6 +6,7 @@ import Footer from 'components/Footer'
 import { useRouter } from 'next/router'
 import Profile from 'components/Profile/Profile'
 import CollectionList from 'components/Collection/CollectionList'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 12
 
@@ -46,7 +47,7 @@ const Collections = ({ userProfile, accountId }) => {
 
 	const headMeta = {
 		title: `${accountId} — Paras`,
-		description: `See digital card collections from ${accountId}. ${userProfile?.bio || ''}`,
+		description: `See NFT digital card collections from ${accountId}. ${userProfile?.bio || ''}`,
 		image: userProfile?.imgUrl
 			? `${process.env.V2_API_URL}/socialCard/avatar/${userProfile.imgUrl.split('://')[1]}`
 			: `https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png`,
@@ -86,6 +87,7 @@ const Collections = ({ userProfile, accountId }) => {
 				<div className="mt-4">
 					<CollectionList data={collections} fetchData={_fetchData} hasMore={hasMore} />
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>

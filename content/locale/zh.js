@@ -44,6 +44,7 @@ const home = {
 	LastSold: '最近售出',
 	Featured: '特色',
 	Latest: '最新',
+	TopCollections: 'Top 收藏品',
 	TopBuyers: 'Top 买家',
 	TopSellers: 'Top 卖家',
 	NewestCards: '最新卡片',
@@ -215,14 +216,17 @@ const publication = {
 	Community: '社区',
 	MaximumSize3MB: '最大文件大小3MB',
 	AddCardToPublication: '将卡片添加到出版物中',
+	AddCollectionToPublication: '將卡片添加到您的出版物',
 	TokenIDIsCardId:
 		'TokenID is your card id. You can find your TokenID at https: /paras.id/token/[TokenID]',
 	AddCard: '添加卡片',
+	AddCollection: '添加收藏',
 	Thumbnail: '缩略图',
 	UpdateThumbnail3MB: '更新 缩略图 (Max. 3MB)',
 	Title: '标题',
 	SureToLeavepage: '你确定要离开这个页面吗？您将丢失任何未发布的更改',
 	CardCollectibles: '卡片收藏品',
+	Collections: '收藏品',
 	Continue: '继续',
 	Delete: '删除',
 	CardNotMentioned: '未在任何出版物中提及的卡片',
@@ -283,6 +287,8 @@ const modal = {
 	Deposit: '存款',
 	AreAboutToSend: 'You are about to send',
 	MintedBy: 'minted by',
+	DynamicTxFee:
+		'If you make the transaction before {date} you will be charged {fee}% transaction fee.',
 }
 const tab = {
 	BoughtFrom: '买自',
@@ -320,6 +326,7 @@ const common = {
 	Accept: '接受',
 	Filter: 'Filter',
 	FilterBy: '过滤',
+	CopiesOfCard: '卡副本',
 	Price: '价格',
 	Apply: '申请',
 	Comics: '漫画',
@@ -552,6 +559,15 @@ const newCollection = {
 	Logo: 'Logo',
 	CreatingLoading: '创建中...',
 }
+const deleteCollection = {
+	DeleteTitle: '删除确认',
+	DeleteText: '您确定要删除此收藏吗?',
+	DeleteCancel: `取消`,
+	Delete: `删除`,
+	Loading: `正在加载`,
+	DeleteSuccess: `删除收藏成功`,
+	DeleteFailed: `出了点问题，请稍后再试`,
+}
 const search = {
 	'Search{searchQuery}Paras': '查询 {searchQuery} — Paras',
 	SearchResult: '查询结果',
@@ -578,6 +594,7 @@ const data = {
 	news,
 	search,
 	newCollection,
+	deleteCollection,
 }
 
 export const zh = config(data)

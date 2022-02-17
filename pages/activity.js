@@ -15,6 +15,8 @@ import { sentryCaptureException } from 'lib/sentry'
 const FETCH_TOKENS_LIMIT = 10
 import { useIntl } from 'hooks/useIntl'
 import TopCollectorsAllTime from 'components/Activity/TopCollectorsAllTime'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
+import ActivityListLoader from 'components/Activity/ActivityListLoader'
 
 const ActivityLog = ({ query }) => {
 	const {
@@ -147,27 +149,27 @@ const ActivityLog = ({ query }) => {
 					<title>{localeLn('ActivityParas')}</title>
 					<meta
 						name="description"
-						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+						content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
 					/>
 
-					<meta name="twitter:title" content="Paras — Digital Art Cards Market" />
+					<meta name="twitter:title" content="Paras — Digital Art NFT Marketplace" />
 					<meta name="twitter:card" content="summary_large_image" />
 					<meta name="twitter:site" content="@ParasHQ" />
 					<meta name="twitter:url" content="https://paras.id" />
 					<meta
 						name="twitter:description"
-						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+						content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
 					/>
 					<meta
 						name="twitter:image"
 						content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 					/>
 					<meta property="og:type" content="website" />
-					<meta property="og:title" content="Paras — Digital Art Cards Market" />
-					<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
+					<meta property="og:title" content="Paras — Digital Art NFT Marketplace" />
+					<meta property="og:site_name" content="Paras — Digital Art NFT Marketplace" />
 					<meta
 						property="og:description"
-						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+						content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
 					/>
 					<meta property="og:url" content="https://paras.id" />
 					<meta
@@ -244,6 +246,7 @@ const ActivityLog = ({ query }) => {
 								dataLength={activityList.length}
 								next={_fetchDataWrapper}
 								hasMore={activityListHasMore}
+								loader={<ActivityListLoader />}
 							>
 								{activityList.map((act) => {
 									return (
@@ -293,6 +296,7 @@ const ActivityLog = ({ query }) => {
 							linkTo="/activity/top-sellers"
 						/>
 						<TopCollectorsAllTime className="mt-12" />
+						<ButtonScrollTop />
 					</div>
 				</div>
 				<Footer />

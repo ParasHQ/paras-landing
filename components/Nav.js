@@ -124,7 +124,7 @@ const Nav = () => {
 				)}
 
 				{/* Banner for special event */}
-				<div
+				{/* <div
 					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
 				>
 					<div className="px-10 py-1 md:p-0 ">
@@ -137,7 +137,7 @@ const Nav = () => {
 							here
 						</a>
 					</div>
-				</div>
+				</div> */}
 
 				{process.env.APP_ENV !== 'production' && (
 					<div
@@ -296,6 +296,7 @@ const Nav = () => {
 								href="https://comic.paras.id?utm_source=paras-marketplace&utm_medium=website&utm_campaign=nav"
 								target="_blank"
 								className="flex cursor-pointer"
+								rel="noreferrer"
 							>
 								{localeLn('Comics')}
 							</a>
@@ -369,6 +370,7 @@ const Nav = () => {
 									href="https://comic.paras.id?utm_source=paras-marketplace&utm_medium=website&utm_campaign=nav"
 									target="_blank"
 									className="p-4 block w-full"
+									rel="noreferrer"
 								>
 									{localeLn('Comics')}
 								</a>
@@ -378,6 +380,7 @@ const Nav = () => {
 									href="https://ipfs.fleek.co/ipfs/bafybeihu6atdada45rmx4sszny6sahrzas4tuzrpuufdcpe6b63r6ugdce"
 									target="_blank"
 									className="p-4 block w-full"
+									rel="noreferrer"
 								>
 									{localeLn('Whitepaper')}
 								</a>
@@ -387,12 +390,18 @@ const Nav = () => {
 									href="https://app.ref.finance/#wrap.near|token.paras.near"
 									target="_blank"
 									className="p-4 block w-full"
+									rel="noreferrer"
 								>
 									{localeLn('NavGetParas')}
 								</a>
 							</div>
 							<div className="text-gray-100 fireText">
-								<a className="p-4 block w-full" href="https://stake.paras.id" target="_blank">
+								<a
+									className="p-4 block w-full"
+									href="https://stake.paras.id"
+									target="_blank"
+									rel="noreferrer"
+								>
 									Stake Paras
 								</a>
 							</div>

@@ -43,6 +43,7 @@ const home = {
 	LastSold: 'Последние Продажи',
 	Featured: 'Рекомендации',
 	Latest: 'Последнее',
+	TopCollections: 'Топовые Коллекции',
 	TopBuyers: 'Топовые Покупатели',
 	TopSellers: 'Топовые Продавцы',
 	NewestCards: 'Самые новые Карточки',
@@ -221,15 +222,18 @@ const publication = {
 	Community: 'Сообщество',
 	MaximumSize3MB: 'Максимальный размер файла 3MB',
 	AddCardToPublication: 'Добавить карточку в вашу публикацию',
+	AddCollectionToPublication: 'Добавьте карточку в свою публикацию',
 	TokenIDIsCardId:
 		'ID токена это адрес вашей карточки. Вы можете найти ID вашего токена здесь: https://paras.id/token/[TokenID]',
 	AddCard: 'Добавить Карточку',
+	AddCollection: 'Добавить коллекцию',
 	Thumbnail: 'Миниатюра',
 	UpdateThumbnail3MB: 'Обновить Миниатюру (Max. 3MB)',
 	Title: 'Заголовок',
 	SureToLeavepage:
 		'Вы уверены, что хотите покинуть страницу? Все несохранённые данные будут утеряны',
 	CardCollectibles: 'Коллекции Карточек',
+	Collections: 'Коллекции',
 	Continue: 'Продолжить',
 	Delete: 'Удалить',
 	CardNotMentioned: 'Карточка не указана в публикации',
@@ -290,6 +294,8 @@ const modal = {
 	Deposit: 'Депозит',
 	AreAboutToSend: 'Вы собираетесь отправить',
 	MintedBy: 'изготовлено',
+	DynamicTxFee:
+		'If you make the transaction before {date} you will be charged {fee}% transaction fee.',
 }
 const tab = {
 	BoughtFrom: 'куплено у',
@@ -326,6 +332,7 @@ const common = {
 	Accept: 'Принять',
 	Filter: 'Сортировать',
 	FilterBy: 'Сортировать по',
+	CopiesOfCard: 'Копии карты',
 	Price: 'Цене',
 	Apply: 'Принять',
 	Comics: 'Комиксы',
@@ -561,6 +568,15 @@ const newCollection = {
 	Logo: 'Лого',
 	CreatingLoading: 'Создание...',
 }
+const deleteCollection = {
+	DeleteTitle: 'Удалить подтверждение',
+	DeleteText: 'Вы уверены, что хотите удалить эту коллекцию?',
+	DeleteCancel: `Отмена`,
+	Delete: `Удалить`,
+	Loading: `Загрузка`,
+	DeleteSuccess: `Коллекция удалена успешно`,
+	DeleteFailed: `Что-то пошло не так, повторите попытку позже.`,
+}
 const search = {
 	'Search{searchQuery}Paras': 'Поиск {searchQuery} — Paras',
 	SearchResult: 'Результаты Поиска',
@@ -588,6 +604,7 @@ const data = {
 	news,
 	search,
 	newCollection,
+	deleteCollection,
 }
 
 export const ru = config(data)

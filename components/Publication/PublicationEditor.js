@@ -8,6 +8,7 @@ import { useToast } from 'hooks/useToast'
 import {
 	compressImg,
 	dataURLtoFile,
+	parseGetCollectionIdfromUrl,
 	parseGetTokenIdfromUrl,
 	parseImgUrl,
 	readFileAsUrl,
@@ -18,41 +19,70 @@ import Card from '../Card/Card'
 import usePreventRouteChangeIf from 'hooks/usePreventRouteChange'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import { v4 as uuidv4 } from 'uuid'
+import DraftPublication from 'components/Draft/DraftPublication'
+import { generateFromString } from 'generate-avatar'
 
 let redirectUrl = null
 
-const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
+const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] }) => {
 	const toast = useToast()
 	const router = useRouter()
 	const { localeLn } = useIntl()
 	const [preventLeaving, setPreventLeaving] = useState(true)
 	const [showLeavingConfirmation, setShowLeavingConfirmation] = useState(false)
+	const [isPubDetail, setIsPubDetail] = useState(false)
 
 	usePreventRouteChangeIf(preventLeaving, (url) => {
 		redirectUrl = url
 		setShowLeavingConfirmation(true)
 	})
 
-	const [title, setTitle] = useState(convertTextToEditorState(pubDetail?.title))
-	const [subTitle, setSubTitle] = useState(pubDetail?.description || '')
-	const [thumbnail, setThumbnail] = useState(pubDetail?.thumbnail)
-	const [content, setContent] = useState(generateEditorState(pubDetail?.content))
+	const [title, setTitle] = useState(
+		convertTextToEditorState(pubDetail?.title || draftDetail[0]?.title)
+	)
+	const [subTitle, setSubTitle] = useState(
+		pubDetail?.description || draftDetail[0]?.description || ''
+	)
+	const [thumbnail, setThumbnail] = useState(pubDetail?.thumbnail || draftDetail[0]?.thumbnail)
+	const [content, setContent] = useState(
+		generateEditorState(pubDetail?.content || draftDetail[0]?.content)
+	)
 	const [showAlertErr, setShowAlertErr] = useState(false)
 	const [embeddedCards, setEmbeddedCards] = useState([])
+	const [embeddedCollections, setEmbeddedCollections] = useState([])
 
 	const [showModal, setShowModal] = useState(null)
 	const [isSubmitting, setIsSubmitting] = useState(false)
+	const [isDraftIn, setIsDraftIn] = useState(false)
 	const [searchToken, setSearchToken] = useState('')
+	const [searchCollection, setSearchCollection] = useState('')
+	const [currentDraftStorage, setCurrentDraftStorage] = useState()
+	const currentUser = near.currentUser
+	const uid = uuidv4()
+
+	useEffect(() => {
+		if (pubDetail !== null) setIsPubDetail(true)
+	}, [])
+
+	useEffect(() => {
+		const draftStorage = JSON.parse(localStorage.getItem('draft-publication'))
+		const currentUserDraft = draftStorage?.filter(
+			(item) => item.author_id === currentUser?.accountId
+		)
+		setCurrentDraftStorage(currentUserDraft)
+	}, [])
 
 	useEffect(() => {
 		if (isEdit) {
 			fetchToken()
+			fetchCollection()
 		}
 	}, [])
 
 	const fetchToken = async () => {
 		let token = []
-		pubDetail.contract_token_ids?.map(async (tokenId) => {
+		pubDetail?.contract_token_ids?.map(async (tokenId) => {
 			const [contractTokenId, token_id] = tokenId.split('/')
 			const [contractId, tokenSeriesId] = contractTokenId.split('::')
 
@@ -73,6 +103,24 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			const _token = (await res.data.data.results[0]) || null
 			token = [...token, _token]
 			setEmbeddedCards(token)
+		})
+	}
+
+	const fetchCollection = async () => {
+		let collection = []
+		pubDetail?.collection_ids?.map(async (collectionId) => {
+			const url = process.env.V2_API_URL
+			const res = await axios({
+				url: url + `/collections`,
+				method: 'GET',
+				params: {
+					collection_id: collectionId,
+				},
+			})
+
+			const _collection = (await res.data.data.results[0]) || null
+			collection = [...collection, _collection]
+			setEmbeddedCollections(collection)
 		})
 	}
 
@@ -122,6 +170,32 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 		showToast('Please enter correct url')
 	}
 
+	const getDataFromCollectionId = async () => {
+		const { collection_id } = parseGetCollectionIdfromUrl(searchCollection)
+
+		if (embeddedCollections.some((col) => col.collection_id === collection_id)) {
+			showToast('You have added this collection')
+			return
+		}
+
+		const res = await axios.get(`${process.env.V2_API_URL}/collections`, {
+			params: {
+				collection_id: collection_id,
+			},
+		})
+
+		const collection = (await res.data.data.results[0]) || null
+
+		if (collection) {
+			setEmbeddedCollections([...embeddedCollections, collection])
+			setShowModal(null)
+			setSearchCollection('')
+		} else {
+			showToast('Please enter correct url')
+		}
+		return
+	}
+
 	const getTokenIds = () => {
 		return embeddedCards.map((token) => {
 			let tokenId = `${token.contract_id}::${token.token_series_id}`
@@ -130,6 +204,10 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			}
 			return tokenId
 		})
+	}
+
+	const getCollectionIds = () => {
+		return embeddedCollections.map((coll) => coll.collection_id)
 	}
 
 	const showToast = (msg, type = 'error') => {
@@ -142,6 +220,12 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 
 	const showCardModal = () => {
 		embeddedCards.length === 6 ? showToast('Maximum 6 cards') : setShowModal('card')
+	}
+
+	const showCollectionModal = () => {
+		embeddedCollections.length === 6
+			? showToast('Maximum 6 collection')
+			: setShowModal('collection')
 	}
 
 	const postPublication = async () => {
@@ -175,18 +259,31 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				entityMap: entityMap,
 			},
 			contract_token_ids: getTokenIds(),
+			collection_ids: getCollectionIds(),
 		}
 
 		try {
 			const url = `${process.env.V2_API_URL}/publications`
-			const res = await axios({
-				url: isEdit ? url + `/${pubDetail._id}` : url,
-				method: isEdit ? 'put' : 'post',
-				data: data,
-				headers: {
-					authorization: await near.authToken(),
-				},
-			})
+			const res = await axios(
+				!isPubDetail && draftDetail.length > 0
+					? {
+							url: url,
+							method: 'post',
+							data: data,
+							headers: {
+								authorization: await near.authToken(),
+							},
+					  }
+					: {
+							url: isEdit ? url + `/${pubDetail._id}` : url,
+							method: isEdit ? 'put' : 'post',
+							data: data,
+							headers: {
+								authorization: await near.authToken(),
+							},
+					  }
+			)
+			if (!isPubDetail && draftDetail.length > 0) deleteDraft(draftDetail[0]._id)
 			const pub = res.data.data
 			const routerUrl = `/publication/${pub.slug}-${pub._id}`
 			setTimeout(() => {
@@ -199,6 +296,75 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 			setIsSubmitting(false)
 			setPreventLeaving(true)
 		}
+	}
+
+	const saveDraft = async () => {
+		let checkTotalDraft = false
+		if (!window.location.href.includes('edit')) checkTotalDraft = currentDraftStorage?.length >= 10
+		if (checkTotalDraft) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{' '}
+						{checkTotalDraft && 'The maximum number of drafts is 10 drafts'}
+					</div>
+				),
+				type: 'error',
+				duration: null,
+			})
+			return
+		}
+
+		setIsDraftIn(true)
+		setPreventLeaving(false)
+
+		const entityMap = await uploadImage()
+		const _thumbnail = await uploadThumbnail()
+
+		const data = {
+			_id: uid,
+			author_id: currentUser.accountId,
+			title: title.getCurrentContent().getPlainText(),
+			draft: true,
+			thumbnail: _thumbnail,
+			description: subTitle,
+			content: {
+				blocks: convertToRaw(content.getCurrentContent()).blocks,
+				entityMap: entityMap,
+			},
+			contract_token_ids: getTokenIds(),
+		}
+
+		let draftStorage = JSON.parse(localStorage.getItem('draft-publication')) || []
+		const draftCurrentEdit = JSON.parse(localStorage.getItem('edit-draft'))
+		let checkDraft = []
+		if (draftCurrentEdit !== null) {
+			checkDraft = draftStorage.find((item) => item._id === draftCurrentEdit[0]._id)
+		}
+
+		if (checkDraft && window.location.href.includes('edit')) {
+			checkDraft.title = data.title
+			checkDraft.thumbnail = data.thumbnail
+			checkDraft.description = data.subTitle
+			checkDraft.content = data.content
+			checkDraft.contract_token_ids = data.contract_token_ids
+			draftStorage.push(checkDraft)
+			draftStorage.pop()
+			localStorage.setItem('draft-publication', JSON.stringify(draftStorage))
+		} else {
+			draftStorage.push(data)
+			localStorage.setItem('draft-publication', JSON.stringify(draftStorage))
+		}
+
+		const routerUrl = `/${currentUser.accountId}/publication`
+		router.push(routerUrl)
+	}
+
+	const deleteDraft = (_id) => {
+		const dataDraftPublication = JSON.parse(localStorage.getItem('draft-publication'))
+		const deleteItem = dataDraftPublication.filter((item) => item._id !== _id)
+		localStorage.setItem('draft-publication', JSON.stringify(deleteItem))
+		if (dataDraftPublication.length === 1) localStorage.removeItem('draft-publication')
 	}
 
 	const uploadImage = async () => {
@@ -231,23 +397,24 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 	}
 
 	const uploadThumbnail = async () => {
-		// eslint-disable-next-line no-unused-vars
-		const [protocol, path] = thumbnail.split('://')
-		if (protocol === 'ipfs') {
-			return thumbnail
+		if (thumbnail !== undefined) {
+			// eslint-disable-next-line no-unused-vars
+			const [protocol, path] = thumbnail.split('://')
+			if (protocol === 'ipfs') {
+				return thumbnail
+			}
+
+			const formData = new FormData()
+			formData.append('files', dataURLtoFile(thumbnail), 'thumbnail')
+
+			const resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
+				headers: {
+					'Content-Type': 'multipart/form-data',
+					authorization: await near.authToken(),
+				},
+			})
+			return resp.data.data[0]
 		}
-
-		const formData = new FormData()
-		formData.append('files', dataURLtoFile(thumbnail), 'thumbnail')
-
-		const resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
-			headers: {
-				'Content-Type': 'multipart/form-data',
-				authorization: await near.authToken(),
-			},
-		})
-
-		return resp.data.data[0]
 	}
 
 	const updateThumbnail = async (e) => {
@@ -308,6 +475,42 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 								onClick={getDataFromTokenId}
 							>
 								{localeLn('AddCard')}
+							</button>
+						</div>
+					</div>
+				</Modal>
+			)}
+			{showModal === 'collection' && (
+				<Modal
+					close={() => {
+						setShowModal(null)
+					}}
+					closeOnBgClick={true}
+					closeOnEscape={true}
+				>
+					<div className="w-full max-w-md p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
+						<div className="m-auto">
+							<label className="mb-4 block text-white text-2xl font-bold">
+								{localeLn('AddCollectionToPublication')}
+							</label>
+							<input
+								type="text"
+								name="video"
+								onChange={(e) => setSearchCollection(e.target.value)}
+								value={searchCollection}
+								className={`resize-none h-auto focus:border-gray-100 mb-4 text-black`}
+								placeholder="Url of the Collection"
+							/>
+							<p className="text-gray-300 text-sm italic">
+								Please input the link of your collection
+							</p>
+							<p className="text-gray-300 text-sm italic">https://paras.id/collection/paradigm</p>
+							<button
+								className="font-semibold mt-4 py-3 w-full rounded-md bg-primary text-white"
+								disabled={!searchCollection}
+								onClick={getDataFromCollectionId}
+							>
+								{localeLn('AddCollection')}
 							</button>
 						</div>
 					</div>
@@ -405,13 +608,24 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 									className={`resize-none focus:border-gray-100 h-24`}
 									placeholder="Preview Description"
 								/>
-								<button
-									className="font-semibold mt-3 py-3 w-40 rounded-md bg-primary text-white"
-									disabled={isSubmitting}
-									onClick={postPublication}
-								>
-									{isSubmitting ? 'Publishing...' : 'Publish'}
-								</button>
+								<div className="flex gap-4">
+									<button
+										className="font-semibold mt-3 py-3 w-40 rounded-md bg-primary text-white"
+										disabled={isSubmitting}
+										onClick={postPublication}
+									>
+										{isSubmitting ? 'Publishing...' : 'Publish'}
+									</button>
+									{!isPubDetail && (
+										<button
+											className="font-semibold mt-3 py-3 w-40 rounded-md border-2 border-white text-white"
+											disabled={isDraftIn}
+											onClick={saveDraft}
+										>
+											{isDraftIn ? 'Draft in...' : 'Draft'}
+										</button>
+									)}
+								</div>
 							</div>
 						</div>
 					</div>
@@ -465,8 +679,37 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 					setTitle={setTitle}
 					onPressAddCard={getDataFromTokenId}
 					showCardModal={showCardModal}
+					showCollectionModal={showCollectionModal}
 				/>
 			</div>
+			{embeddedCollections.length !== 0 && (
+				<div className="max-w-4xl mx-auto px-4 pt-16">
+					<div className="rounded-md p-4 md:p-8">
+						<h4 className="text-white font-semibold text-3xl mb-4 text-center">
+							{localeLn('Collections')}
+						</h4>
+						<div
+							className={`md:flex md:flex-wrap ${
+								embeddedCollections.length <= 3 && 'justify-center'
+							}`}
+						>
+							{embeddedCollections.map((coll, key) => (
+								<div key={key} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-4">
+									<CollectionPublication
+										localCollection={coll}
+										onDelete={() => {
+											const temp = embeddedCollections.filter(
+												(x) => x.collection_id != coll.collection_id
+											)
+											setEmbeddedCollections(temp)
+										}}
+									/>
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+			)}
 			{embeddedCards.length !== 0 && (
 				<div className="max-w-4xl mx-auto px-4 pt-16">
 					<div className=" border-2 border-dashed border-gray-800 rounded-md p-4 md:p-8">
@@ -493,7 +736,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 					</div>
 				</div>
 			)}
-			<div className="max-w-3xl mx-auto px-4 pt-8">
+			<div className="flex items-center max-w-3xl mx-auto px-4 pt-8">
 				<button
 					className="font-semibold py-3 w-32 rounded-md bg-primary text-white"
 					onClick={onPressContinue}
@@ -501,6 +744,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null }) => {
 				>
 					{localeLn('Continue')}
 				</button>
+				<DraftPublication onCreatePublication />
 			</div>
 		</div>
 	)
@@ -574,6 +818,47 @@ const CardPublication = ({ localToken, deleteCard }) => {
 				{localeLn('Delete')}
 			</div>
 		</Fragment>
+	)
+}
+
+const CollectionPublication = ({ localCollection, onDelete }) => {
+	const { localeLn } = useIntl()
+	return (
+		<div className="flex flex-col">
+			<div className="w-full h-full rounded">
+				<img
+					className="object-cover w-full md:h-56 h-full transform ease-in-out duration-200 hover:opacity-80 rounded-xl"
+					src={parseImgUrl(
+						localCollection?.media ||
+							`data:image/svg+xml;utf8,${generateFromString(localCollection?.collection_id)}`,
+						null,
+						{
+							width: `600`,
+							useOriginal: process.env.APP_ENV === 'production' ? false : true,
+						}
+					)}
+				/>
+			</div>
+			<a
+				href={`/collection/${localCollection?.collection_id}`}
+				className="cursor-pointer"
+				target={`_blank`}
+			>
+				<p
+					title={localCollection?.collection}
+					className="text-2xl font-bold truncate hover:underline text-white mt-4"
+				>
+					{localCollection?.collection}
+				</p>
+			</a>
+			<div className="flex flex-row flex-wrap text-sm text-gray-400 items-center w-full">
+				<span className="mr-1">collection by</span>
+				<span className="truncate font-semibold">{localCollection?.creator_id}</span>
+			</div>
+			<div className="text-red-600 text-sm cursor-pointer mt-2" onClick={onDelete}>
+				{localeLn('Delete')}
+			</div>
+		</div>
 	)
 }
 

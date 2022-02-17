@@ -21,7 +21,7 @@ const NotificationImage = ({ media }) => {
 	)
 }
 
-const NotificationItem = ({ notif, currentUser }) => {
+const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 	const [token, setToken] = useState({})
 
 	useEffect(() => {
@@ -68,7 +68,10 @@ const NotificationItem = ({ notif, currentUser }) => {
 				<div>
 					<Link href={url}>
 						<a>
-							<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+							<div
+								className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+								onClick={() => notificationModal(false)}
+							>
 								<NotificationImage media={token.metadata?.media} />
 								<div className="pl-2 text-gray-300">
 									bought <span className="font-medium text-gray-100">{token.metadata?.title}</span>{' '}
@@ -85,7 +88,10 @@ const NotificationItem = ({ notif, currentUser }) => {
 			<div>
 				<Link href={url}>
 					<a>
-						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-300">
 								Creator minted #{token.edition_id || token.token_id} to {notif.to}
@@ -102,7 +108,10 @@ const NotificationItem = ({ notif, currentUser }) => {
 			<div>
 				<Link href={url}>
 					<a>
-						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-300">burned #{token.edition_id || token.token_id}</div>
 						</div>
@@ -118,7 +127,10 @@ const NotificationItem = ({ notif, currentUser }) => {
 				<div>
 					<Link href={url}>
 						<a>
-							<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+							<div
+								className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+								onClick={() => notificationModal(false)}
+							>
 								<NotificationImage media={token.metadata?.media} />
 								<div className="pl-2 text-gray-300">
 									sold <span className="font-medium text-gray-100">{token.metadata?.title}</span>
@@ -138,7 +150,10 @@ const NotificationItem = ({ notif, currentUser }) => {
 				<div>
 					<Link href={url}>
 						<a>
-							<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+							<div
+								className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+								onClick={() => notificationModal(false)}
+							>
 								<NotificationImage media={token.metadata?.media} />
 								<div className="pl-2 text-gray-300">
 									received{' '}
@@ -161,7 +176,10 @@ const NotificationItem = ({ notif, currentUser }) => {
 			<div>
 				<Link href={url}>
 					<a>
-						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-200">
 								sold <span className="font-medium text-gray-100">{token.metadata?.title}</span>
@@ -176,12 +194,37 @@ const NotificationItem = ({ notif, currentUser }) => {
 		)
 	}
 
-	if (notif.type === 'notification_add_offer') {
+	if (notif.type === 'notification_royalty') {
 		return (
 			<div>
 				<Link href={url}>
 					<a>
-						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={token.metadata?.media} />
+							<div className="pl-2 text-gray-200">
+								received {formatNearAmount(notif.royalty)} Ⓝ royalty from{' '}
+								<span className="font-medium text-gray-100">{token.metadata?.title}</span> secondary
+								sale
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_add_offer') {
+		return (
+			<div>
+				<Link href={`${url}?tab=offers`}>
+					<a>
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-100">
 								<span className="font-semibold">{notif.from}</span> offer{' '}
@@ -201,7 +244,10 @@ const NotificationItem = ({ notif, currentUser }) => {
 			<div>
 				<Link href={url}>
 					<a>
-						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-100">
 								Token <span className="font-semibold">{token.metadata?.title}</span> submission has
@@ -220,7 +266,10 @@ const NotificationItem = ({ notif, currentUser }) => {
 			<div>
 				<Link href={url}>
 					<a>
-						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-100">
 								Token <span className="font-semibold">{token.metadata?.title}</span> submission has

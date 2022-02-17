@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import Button from 'components/Common/Button'
 
-const FilterAttribute = ({ attributes }) => {
+const FilterAttribute = ({ attributes, onClearAll }) => {
 	const [attributeFilter, setAttributeFilter] = useState([])
 	const router = useRouter()
 	const filterModalRef = useRef()
@@ -98,6 +98,17 @@ const FilterAttribute = ({ attributes }) => {
 							{localeLn('Apply')}
 						</Button>
 					</div>
+					{router.query.attributes && JSON.parse(router.query.attributes)?.length >= 1 && (
+						<div
+							className=" text-gray-400 hover:text-opacity-70 transition duration-150 ease-in-out  cursor-pointer my-1 flex items-center justify-center px-4 pb-2 text-xs"
+							onClick={() => {
+								onClearAll()
+								setShowFilterModal(false)
+							}}
+						>
+							Clear All
+						</div>
+					)}
 				</div>
 			)}
 		</div>

@@ -9,16 +9,18 @@ import Profile from 'components/Profile/Profile'
 import FilterMarket from 'components/Filter/FilterMarket'
 import { parseSortTokenQuery } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 12
 
-const collection = ({ userProfile, accountId }) => {
+const Collection = ({ userProfile, accountId }) => {
 	const router = useRouter()
 
 	const scrollCollection = `${router.query.id}::collection`
 
 	const [tokens, setTokens] = useState([])
-	const [page, setPage] = useState(0)
+	const [idNext, setIdNext] = useState(null)
+	const [priceNext, setPriceNext] = useState(null)
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 
@@ -32,18 +34,26 @@ const collection = ({ userProfile, accountId }) => {
 		}
 
 		setIsFetching(true)
+		const params = tokensParams({
+			...router.query,
+			_id_next: idNext,
+			price_next: priceNext,
+		})
 		const res = await axios.get(`${process.env.V2_API_URL}/token`, {
-			params: tokensParams(page, router.query),
+			params: params,
 		})
 		const newData = await res.data.data
 
 		const newTokens = [...(tokens || []), ...newData.results]
 		setTokens(newTokens)
-		setPage(page + 1)
 		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
+
+			const lastData = newData.results[newData.results.length - 1]
+			setIdNext(lastData._id)
+			params.__sort.includes('price') && setPriceNext(lastData.price)
 		}
 		setIsFetching(false)
 	}
@@ -52,36 +62,43 @@ const collection = ({ userProfile, accountId }) => {
 		updateFilter(router.query)
 	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.is_notforsale])
 
-	const tokensParams = (_page = 0, query) => {
+	const tokensParams = (query) => {
+		const parsedSortQuery = parseSortTokenQuery(query.sort)
 		const params = {
 			exclude_total_burn: true,
 			owner_id: accountId,
-			__skip: _page * LIMIT,
 			__limit: LIMIT,
-			__sort: parseSortTokenQuery(query.sort),
+			__sort: parsedSortQuery,
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
+			...(query._id_next && { _id_next: query._id_next }),
+			...(query.price_next &&
+				parsedSortQuery.includes('price') && { price_next: query.price_next }),
 		}
 
 		return params
 	}
 
 	const updateFilter = async (query) => {
+		const params = tokensParams(query)
 		const res = await axios(`${process.env.V2_API_URL}/token`, {
-			params: tokensParams(0, query),
+			params: params,
 		})
-		setPage(1)
 		setTokens(res.data.data.results)
 		if (res.data.data.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
+
+			const lastData = res.data.data.results[res.data.data.results.length - 1]
+			setIdNext(lastData._id)
+			params.__sort.includes('price') && setPriceNext(lastData.price)
 		}
 	}
 
 	const headMeta = {
 		title: `${accountId} — Paras`,
-		description: `See digital card collectibles and creations from ${accountId}. ${
+		description: `See NFT digital card collectibles and creations from ${accountId}. ${
 			userProfile?.bio || ''
 		}`,
 		image: userProfile?.imgUrl
@@ -131,13 +148,14 @@ const collection = ({ userProfile, accountId }) => {
 						hasMore={hasMore}
 					/>
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>
 	)
 }
 
-export default collection
+export default Collection
 
 export async function getServerSideProps({ params }) {
 	const profileRes = await axios.get(`${process.env.V2_API_URL}/profiles`, {

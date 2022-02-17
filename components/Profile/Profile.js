@@ -5,6 +5,7 @@ import CopyLink from '../Common/CopyLink'
 import { useIntl } from 'hooks/useIntl'
 import useStore from 'lib/store'
 import { flagColor, flagText } from 'constants/flag'
+import LineClampText from 'components/Common/LineClampText'
 
 const Profile = ({ userProfile, activeTab }) => {
 	const router = useRouter()
@@ -89,9 +90,7 @@ const Profile = ({ userProfile, activeTab }) => {
 							</CopyLink>
 						</div>
 					</div>
-					<p className="mt-2 text-gray-300 whitespace-pre-line">
-						{profileData?.bio?.replace(/\n\s*\n\s*\n/g, '\n\n')}
-					</p>
+					<LineClampText text={profileData?.bio} />
 					<div className="flex items-center justify-center space-x-2">
 						{profileData?.website && (
 							<a
@@ -102,6 +101,7 @@ const Profile = ({ userProfile, activeTab }) => {
 								}
 								className="mt-2 mb-4"
 								target="_blank"
+								rel="noreferrer"
 							>
 								<svg width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
 									<path
@@ -118,6 +118,7 @@ const Profile = ({ userProfile, activeTab }) => {
 								href={'https://instagram.com/' + profileData?.instagramId}
 								className="mt-2 mb-4"
 								target="_blank"
+								rel="noreferrer"
 							>
 								<svg
 									viewBox="0 0 511 511.9"
@@ -137,6 +138,7 @@ const Profile = ({ userProfile, activeTab }) => {
 								href={'https://twitter.com/' + profileData?.twitterId}
 								className="mt-2 mb-4"
 								target="_blank"
+								rel="noreferrer"
 							>
 								<svg
 									height="18"
@@ -162,6 +164,7 @@ const Profile = ({ userProfile, activeTab }) => {
 								}
 								className="mt-2 mb-4"
 								target="_blank"
+								rel="noreferrer"
 							>
 								<svg
 									width="20"

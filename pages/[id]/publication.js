@@ -7,8 +7,11 @@ import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import Profile from 'components/Profile/Profile'
 import PublicationCardListLoader from 'components/Publication/PublicationCardListLoader'
+import near from 'lib/near'
 import useStore from 'lib/store'
 import PublicationListScroll from 'components/Publication/PublicationListScroll'
+import DraftPublication from 'components/Draft/DraftPublication'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 const LIMIT = 6
 
 const Publication = ({ userProfile, accountId }) => {
@@ -21,6 +24,7 @@ const Publication = ({ userProfile, accountId }) => {
 	} = useStore()
 
 	const [isFetching, setIsFetching] = useState(false)
+	const currentUser = near.currentUser
 
 	useEffect(() => {
 		if (router.isReady && !usersPublicationList[router.query.id]) {
@@ -68,7 +72,7 @@ const Publication = ({ userProfile, accountId }) => {
 	}
 	const headMeta = {
 		title: `${accountId} — Paras`,
-		description: `See digital card collectibles and creations from ${accountId}. ${
+		description: `See NFT digital card collectibles and creations from ${accountId}. ${
 			userProfile?.bio || ''
 		}`,
 		image: userProfile?.imgUrl
@@ -107,6 +111,11 @@ const Publication = ({ userProfile, accountId }) => {
 			<Nav />
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'publication'} />
+				{accountId === currentUser?.accountId && (
+					<div className="flex justify-end mt-4 -mb-4 md:mb-10 md:-mr-4">
+						<DraftPublication isShowVerified={false} />
+					</div>
+				)}
 				<div>
 					{!usersPublicationList[router.query.id] ? (
 						<div className="mt-4 -mx-2">
@@ -129,6 +138,7 @@ const Publication = ({ userProfile, accountId }) => {
 						</div>
 					)}
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>

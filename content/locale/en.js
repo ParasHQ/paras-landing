@@ -224,14 +224,17 @@ const publication = {
 	Community: 'Community',
 	MaximumSize3MB: 'Maximum file size 3MB',
 	AddCardToPublication: 'Add card to your publication',
+	AddCollectionToPublication: 'Add card to your publication',
 	TokenIDIsCardId:
 		'TokenID is your card id. You can find your TokenID at https: /paras.id/token/[TokenID]',
 	AddCard: 'Add Card',
+	AddCollection: 'Add Collection',
 	Thumbnail: 'Thumbnail',
 	UpdateThumbnail3MB: 'Update Thumbnail (Max. 3MB)',
 	Title: 'Title',
 	SureToLeavepage: 'Are you sure to leave this page? You will lose any unpublished changes',
 	CardCollectibles: 'Card Collectibles',
+	Collections: 'Collections',
 	Continue: 'Continue',
 	Delete: 'Delete',
 	CardNotMentioned: 'Card not mentioned in any publication',
@@ -292,6 +295,8 @@ const modal = {
 	Deposit: 'Deposit',
 	AreAboutToSend: 'You are about to send',
 	MintedBy: 'minted by',
+	DynamicTxFee:
+		'If you make the transaction before {date} you will be charged {fee}% transaction fee.',
 }
 const tab = {
 	BoughtFrom: 'bought from',
@@ -328,6 +333,7 @@ const common = {
 	Accept: 'Accept',
 	Filter: 'Filter',
 	FilterBy: 'Filter by',
+	CopiesOfCard: 'Copies of Card',
 	Price: 'Price',
 	Apply: 'Apply',
 	Comics: 'Comics',
@@ -572,6 +578,7 @@ const collection = {
 	Activity: 'Activity',
 	TotalMinted: 'Total Minted',
 	TotalOwners: 'Total Owners',
+	TotalVolume: 'Total Volume',
 	FloorPrice: 'Floor Price',
 	AveragePrice: 'Average Price',
 	Collection: 'Collection',
@@ -580,8 +587,17 @@ const collection = {
 	To: 'To',
 	Time: 'Time',
 	Type: 'Type',
+	NoActivity: 'No Activity',
 }
-
+const deleteCollection = {
+	DeleteTitle: 'Delete Confirmation',
+	DeleteText: 'Are you sure you want to delete this collection?',
+	DeleteCancel: `Cancel`,
+	Delete: `Delete`,
+	Loading: `Loading`,
+	DeleteSuccess: `Delete collection was success`,
+	DeleteFailed: `Something went wrong, try again later.`,
+}
 const categories = {
 	Categories: 'Categories',
 	ExploreAllCategoriesOnParas: 'Explore All Categories on Paras',
@@ -610,6 +626,7 @@ const data = {
 	news,
 	search,
 	newCollection,
+	deleteCollection,
 	collection,
 	categories,
 }

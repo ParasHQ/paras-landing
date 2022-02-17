@@ -10,9 +10,11 @@ const Media = ({
 	videoMuted = true,
 	videoLoop = false,
 	videoPadding = false,
+	playVideoButton = true,
 }) => {
 	const [media, setMedia] = useState(null)
 	const [isLoading, setIsLoading] = useState(true)
+	const [playVideo, setPlayVideo] = useState(false)
 
 	useEffect(() => {
 		if (url) {
@@ -20,7 +22,7 @@ const Media = ({
 		} else {
 			setIsLoading(false)
 		}
-	}, [url])
+	}, [url, playVideo])
 
 	const getMedia = async () => {
 		try {
@@ -85,17 +87,62 @@ const Media = ({
 
 	if (media?.type.includes('video')) {
 		return (
-			<video
-				className={`w-full h-full ${className} ${videoPadding ? 'md:pt-0 pt-8' : ''}`}
-				playsInline
-				loop={videoLoop}
-				controls={videoControls}
-				muted={videoMuted}
-				// onMouseOver={(event) => event.target.play()}
-				// onMouseOut={(event) => event.target.pause()}
-			>
-				<source type="video/mp4" src={media.url}></source>
-			</video>
+			<div className="relative w-full mx-auto h-full">
+				{!videoControls && playVideoButton && (
+					<div
+						className=" absolute bg-gray-200 p-2 rounded-full right-3 md:right-5 z-30 bottom-1/10"
+						onClick={async (e) => {
+							e.preventDefault()
+							e.stopPropagation()
+							setPlayVideo(true)
+						}}
+					>
+						<svg
+							className="relative z-10"
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								fillRule="evenodd"
+								clipRule="evenodd"
+								d="M5 20.9999V2.99993C5 2.20876 5.87525 1.73092 6.54076 2.15875L20.5408 11.1587C21.1531 11.5524 21.1531 12.4475 20.5408 12.8411L6.54076 21.8411C5.87525 22.2689 5 21.7911 5 20.9999Z"
+								fill="rgba(0,0,0,0.8)"
+							/>
+						</svg>
+					</div>
+				)}
+				<video
+					className={`w-full h-full ${className} ${videoPadding ? 'md:pt-0 pt-8' : ''}`}
+					playsInline
+					loop={videoLoop}
+					controls={videoControls}
+					muted={videoMuted}
+				>
+					<source type="video/mp4" src={media.url}></source>
+				</video>
+				{playVideo && (
+					<video
+						className={`w-full h-full absolute inset-0 rounded-lg overflow-hidden z-40 pt-0 `}
+						playsInline
+						loop={true}
+						controls={true}
+						muted={false}
+						autoPlay
+						onClick={(e) => {
+							if (navigator.userAgent.indexOf('Chrome') !== -1) {
+								e.preventDefault()
+								e.stopPropagation()
+								setPlayVideo(false)
+							}
+						}}
+					>
+						<source type="video/mp4" src={media.url}></source>
+					</video>
+				)}
+			</div>
 		)
 	}
 

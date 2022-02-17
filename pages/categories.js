@@ -6,6 +6,7 @@ import Footer from 'components/Footer'
 import { useIntl } from 'hooks/useIntl'
 import Link from 'next/link'
 import { parseImgUrl } from 'utils/common'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 12
 
@@ -58,7 +59,7 @@ const Categories = () => {
 				<title>{localeLn('Categories')}</title>
 				<meta
 					name="description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
 				/>
 
 				<meta name="twitter:title" content="Market — Paras" />
@@ -67,7 +68,7 @@ const Categories = () => {
 				<meta name="twitter:url" content="https://paras.id" />
 				<meta
 					name="twitter:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
 				/>
 				<meta
 					name="twitter:image"
@@ -78,7 +79,7 @@ const Categories = () => {
 				<meta property="og:site_name" content="Market — Paras" />
 				<meta
 					property="og:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta
@@ -180,6 +181,7 @@ const Categories = () => {
 						)
 					})}
 				</div>
+				<ButtonScrollTop className="-mr-5" />
 			</div>
 			<Footer />
 		</div>

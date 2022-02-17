@@ -15,9 +15,15 @@ import { useIntl } from 'hooks/useIntl'
 import CollectionStats from 'components/Collection/CollectionStats'
 import CollectionActivity from 'components/Collection/CollectionActivity'
 import FilterAttribute from 'components/Filter/FilterAttribute'
-import ReactLinkify from 'react-linkify'
 import ArtistVerified from 'components/Common/ArtistVerified'
 import { generateFromString } from 'generate-avatar'
+import DeleteCollectionModal from 'components/Modal/DeleteCollectionModal'
+import near from 'lib/near'
+import { sentryCaptureException } from 'lib/sentry'
+import { useToast } from 'hooks/useToast'
+import LineClampText from 'components/Common/LineClampText'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
+import ArtistBanned from 'components/Common/ArtistBanned'
 
 const LIMIT = 8
 const LIMIT_ACTIVITY = 20
@@ -29,7 +35,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	const [attributes, setAttributes] = useState([])
 	const [tokens, setTokens] = useState([])
-	const [page, setPage] = useState(0)
+	const [idNext, setIdNext] = useState(null)
+	const [lowestPriceNext, setLowestPriceNext] = useState(null)
+	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [activityPage, setActivityPage] = useState(0)
 	const [stats, setStats] = useState({})
 	const [activities, setActivities] = useState([])
@@ -37,14 +45,24 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [isFiltering, setIsFiltering] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
 	const [hasMoreActivities, setHasMoreActivities] = useState(true)
+	const [deleteModal, setDeleteModal] = useState(false)
+	const [deleteLoading, setDeleteLoading] = useState(false)
+	const toast = useToast()
 
 	const fetchData = async () => {
 		if (!hasMore || isFetching) {
 			return
 		}
 		setIsFetching(true)
+		const params = tokensParams({
+			...(router.query || serverQuery),
+			_id_next: idNext,
+			lowest_price_next: lowestPriceNext,
+			updated_at_next: updatedAtNext,
+		})
+
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(page, router.query || serverQuery),
+			params: params,
 		})
 
 		const stat = await axios(`${process.env.V2_API_URL}/collection-stats`, {
@@ -66,11 +84,15 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		setAttributes(newAttributes)
 		setStats(newStat)
 		setTokens(newTokens)
-		setPage(page + 1)
 		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
+
+			const lastData = newData.results[newData.results.length - 1]
+			setIdNext(lastData._id)
+			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 		}
 		setIsFetching(false)
 	}
@@ -87,7 +109,14 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	useEffect(() => {
 		updateFilter(router.query)
-	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.attributes])
+	}, [
+		router.query.sort,
+		router.query.pmin,
+		router.query.pmax,
+		router.query.min_copies,
+		router.query.max_copies,
+		router.query.attributes,
+	])
 
 	useEffect(() => {
 		if (router.query.tab === 'activity') {
@@ -103,7 +132,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		router.push('/new')
 	}
 
-	const tokensParams = (_page = 0, query) => {
+	const tokensParams = (query) => {
 		let params = {}
 		if (query.attributes) {
 			const attributesQuery = JSON.parse(query.attributes)
@@ -120,15 +149,25 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			})
 		}
 
+		const parsedSortQuery = query ? parseSortQuery(query.sort, true) : null
 		params = {
 			...params,
 			collection_id: collectionId,
 			exclude_total_burn: true,
-			__skip: _page * LIMIT,
 			__limit: LIMIT,
-			__sort: query ? parseSortQuery(query.sort) : null,
-			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
+			__sort: parsedSortQuery,
+			...(query.pmin ? { min_price: parseNearAmount(query.pmin) } : { min_price: 0 }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
+			...(query._id_next && { _id_next: query._id_next }),
+			...(query.lowest_price_next &&
+				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
+			...(query.updated_at_next &&
+				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+			...(query.min_copies && { min_copies: query.min_copies }),
+			...(query.max_copies && { max_copies: query.max_copies }),
+		}
+		if (query.pmin === undefined && query.is_notforsale === 'false') {
+			delete params.min_price
 		}
 
 		return params
@@ -147,15 +186,21 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
+		const params = tokensParams(query || serverQuery)
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(0, query || serverQuery),
+			params: params,
 		})
-		setPage(1)
+
 		setTokens(res.data.data.results)
 		if (res.data.data.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
+
+			const lastData = res.data.data.results[res.data.data.results.length - 1]
+			setIdNext(lastData._id)
+			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 		}
 
 		setIsFiltering(false)
@@ -200,6 +245,61 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		})
 	}
 
+	const removeAllAttributesFilter = () => {
+		router.push({
+			query: {
+				...router.query,
+				attributes: `[]`,
+			},
+		})
+	}
+
+	const onShowDeleteModal = () => {
+		setDeleteModal((prev) => !prev)
+	}
+
+	const onDelete = async () => {
+		const formData = new FormData()
+		formData.append('creator_id', currentUser)
+		formData.append('collection_id', collectionId)
+		const options = {
+			method: 'DELETE',
+			url: `${process.env.V2_API_URL}/collections`,
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				Authorization: await near.authToken(),
+			},
+			data: formData,
+		}
+		setDeleteLoading(true)
+		try {
+			const resp = await axios.request(options)
+			if (resp) {
+				setDeleteModal(false)
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">{localeLn(`DeleteSuccess`)}</div>
+					),
+					type: 'success',
+					duration: 1000,
+				})
+				setTimeout(() => {
+					router.push(`/${currentUser}/collections`)
+				}, 1000)
+			}
+			setDeleteLoading(false)
+		} catch (err) {
+			sentryCaptureException(err)
+			const msg = err.response?.data?.message || `${localeLn(`DeleteFailed`)}`
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{msg}</div>,
+				type: 'error',
+				duration: 1000,
+			})
+			setDeleteLoading(false)
+		}
+	}
+
 	return (
 		<div className="min-h-screen bg-black">
 			<div
@@ -229,6 +329,12 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				<meta property="og:image" content={headMeta.image} />
 			</Head>
 			<Nav />
+			<DeleteCollectionModal
+				show={deleteModal}
+				onClose={onShowDeleteModal}
+				onSubmit={onDelete}
+				loading={deleteLoading}
+			/>
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="flex items-center m-auto justify-center mb-4">
 					<div className="w-32 h-32 overflow-hidden bg-primary shadow-inner">
@@ -256,17 +362,14 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							/>
 						</span>
 					</h4>
-					<ReactLinkify
-						componentDecorator={(decoratedHref, decoratedText, key) => (
-							<a target="blank" href={decoratedHref} key={key}>
-								{decoratedText}
-							</a>
-						)}
-					>
-						<p className="text-gray-200 mt-4 max-w-lg m-auto whitespace-pre-line break-words">
-							{collection?.description?.replace(/\n\s*\n\s*\n/g, '\n\n')}
-						</p>
-					</ReactLinkify>
+					<LineClampText
+						className="text-gray-200 mt-4 max-w-lg m-auto whitespace-pre-line break-words"
+						text={collection?.description}
+					/>
+					<ArtistBanned
+						creatorId={collection.creator_id}
+						className="max-w-2xl mx-auto relative -mb-4"
+					/>
 					{currentUser === collection.creator_id && (
 						<div className="flex flex-row space-x-2 max-w-xs m-auto mt-4">
 							<Button onClick={addCard} size="md" className="w-40 m-auto">
@@ -280,10 +383,33 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							>
 								Edit
 							</Button>
+							{!isFetching && tokens.length < 1 && (
+								<div className="cursor-pointer flex items-center" onClick={onShowDeleteModal}>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										className="icon icon-tabler icon-tabler-trash"
+										width={30}
+										height={30}
+										viewBox="0 0 24 24"
+										strokeWidth="1.5"
+										stroke="#ff2825"
+										fill="none"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									>
+										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+										<line x1={4} y1={7} x2={20} y2={7} />
+										<line x1={10} y1={11} x2={10} y2={17} />
+										<line x1={14} y1={11} x2={14} y2={17} />
+										<path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+										<path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+									</svg>
+								</div>
+							)}
 						</div>
 					)}
 				</div>
-				<div className="mb-10 sm:my-2 flex items-center justify-center">
+				<div className="mb-10 sm:my-2 flex flex-wrap items-center justify-center px-4">
 					<CollectionStats stats={stats} />
 				</div>
 				<div className="z-10 flex items-center justify-center relative">
@@ -319,8 +445,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					</div>
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
 						<div className="flex sm:hidden">
-							{Object.keys(attributes).length > 0 && <FilterAttribute attributes={attributes} />}
-							<FilterMarket isShowVerified={false} />
+							{Object.keys(attributes).length > 0 && (
+								<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
+							)}
+							<FilterMarket isShowVerified={false} defaultMinPrice={true} />
 						</div>
 					)}
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
@@ -328,9 +456,12 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							<div className="flex justify-center mt-4">
 								<div className="flex">
 									{Object.keys(attributes).length > 0 && (
-										<FilterAttribute attributes={attributes} />
+										<FilterAttribute
+											onClearAll={removeAllAttributesFilter}
+											attributes={attributes}
+										/>
 									)}
-									<FilterMarket isShowVerified={false} />
+									<FilterMarket isShowVerified={false} defaultMinPrice={true} />
 								</div>
 							</div>
 						</div>
@@ -346,6 +477,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 										onClick={() => removeAttributeFilter(index)}
 										className="flex-grow rounded-md px-4 py-1 mr-2 my-1 border-2 border-gray-800 bg-blue-400 bg-opacity-10 text-sm cursor-pointer group hover:border-gray-700"
 									>
+										<span className=" text-gray-500 font-bold">{Object.keys(type)[0] + ' : '}</span>{' '}
 										<span className=" text-gray-200">{Object.values(type)[0]}</span>{' '}
 										<span className="font-extralight text-gray-600 text-lg ml-1 group-hover:text-gray-500">
 											x
@@ -354,6 +486,14 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 								</div>
 							)
 						})}
+					{router.query.attributes && JSON.parse(router.query.attributes)?.length > 1 && (
+						<div
+							className=" text-gray-400 hover:text-opacity-70 cursor-pointer my-1 flex items-center"
+							onClick={removeAllAttributesFilter}
+						>
+							Clear All
+						</div>
+					)}
 				</div>
 				<div className="mt-4 px-4">
 					{isFiltering ? (
@@ -365,9 +505,17 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							hasMore={hasMoreActivities}
 						/>
 					) : (
-						<CardList name="market" tokens={tokens} fetchData={fetchData} hasMore={hasMore} />
+						<CardList
+							name="market"
+							tokens={tokens}
+							fetchData={fetchData}
+							hasMore={hasMore}
+							profileCollection={collection.media}
+							type="collection"
+						/>
 					)}
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>
@@ -382,6 +530,12 @@ export async function getServerSideProps({ params }) {
 			collection_id: params.collection_id,
 		},
 	})
+
+	if (!resp.data.data.results[0]) {
+		return {
+			notFound: true,
+		}
+	}
 
 	return {
 		props: {
