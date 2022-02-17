@@ -214,10 +214,12 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			params: activitiesParams(activityPage),
 		})
 
-		const newActivities = [...activities, ...res.data.data]
+		const resActivities = (await res.data.data) || []
+
+		const newActivities = [...activities, ...resActivities]
 		setActivities(newActivities)
 		setActivityPage(activityPage + 1)
-		if (res.data.data.length < LIMIT_ACTIVITY) {
+		if (resActivities < LIMIT_ACTIVITY) {
 			setHasMoreActivities(false)
 		} else {
 			setHasMoreActivities(true)
