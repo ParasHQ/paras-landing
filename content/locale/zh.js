@@ -64,7 +64,6 @@ const market = {
 	All: '全部',
 	Filter: 'Filter',
 	SortBy: '排序',
-	CopiesOfCard: '卡副本',
 	CategoryParas: 'Category — Paras',
 	OnlyAllowWhitelisted:
 		'Currently we only allow whitelisted Artist to create their digital art card on Paras.',
@@ -324,6 +323,7 @@ const common = {
 	Accept: '接受',
 	Filter: 'Filter',
 	FilterBy: '过滤',
+	CopiesOfCard: '卡副本',
 	Price: '价格',
 	Apply: '申请',
 	Comics: '漫画',

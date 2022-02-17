@@ -156,7 +156,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
 			lookup_token: true,
-			...(query.pmin ? { min_price: parseNearAmount(query.pmin) } : { min_price: 0 }),
+			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
 			...(query.lowest_price_next &&
@@ -444,7 +444,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							{Object.keys(attributes).length > 0 && (
 								<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
 							)}
-							<FilterMarket isShowVerified={false} />
+							<FilterMarket isShowVerified={false} defaultMinPrice={true} />
 						</div>
 					)}
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
