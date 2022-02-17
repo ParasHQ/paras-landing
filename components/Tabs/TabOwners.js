@@ -94,11 +94,7 @@ const TabOwners = ({ localToken }) => {
 
 	return (
 		<div>
-			{isFetching ? (
-				<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
-					<div className="text-white">Loading...</div>
-				</div>
-			) : tokens.length === 0 ? (
+			{!isFetching && tokens.length === 0 ? (
 				<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 					<div className="text-white">{localeLn('NoOwnersBecome')}</div>
 				</div>
