@@ -343,7 +343,7 @@ const common = {
 	ShareNow: 'Share Now',
 	Chapter: 'Chapter',
 	ReadNow: 'Read Now',
-	FlaggedByPARASStealing: 'WARNING: This profile has been flagged by PARAS due to art stealing',
+	FlaggedByPARASStealing: 'WARNING: This creator has been flagged by PARAS due to art stealing',
 	FlaggedByPARASFake: "WARNING: This account uses someone else's identity",
 	FlaggedByPARASHacked: 'WARNING: The account has been hacked. Please contact the original creator',
 	UseOwnRisk:

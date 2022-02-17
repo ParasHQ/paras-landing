@@ -342,7 +342,8 @@ const common = {
 	ShareNow: 'Compartir Ahora',
 	Chapter: 'Capítulo',
 	ReadNow: 'Leer Ahora',
-	FlaggedByPARASStealing: 'ADVERTENCIA: PARAS ha marcado este perfil por robo de arte',
+	FlaggedByPARASStealing:
+		'ADVERTENCIA: Este creador ha sido señalado por PARAS debido al robo de arte.',
 	FlaggedByPARASFake: 'ADVERTENCIA: Esta cuenta utiliza la identidad de otra persona.',
 	FlaggedByPARASHacked:
 		'ADVERTENCIA: La cuenta ha sido pirateada. Por favor, póngase en contacto con el creador original.',
