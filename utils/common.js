@@ -230,6 +230,13 @@ export const parseGetTokenIdfromUrl = (url) => {
 	}
 }
 
+export const parseGetCollectionIdfromUrl = (url) => {
+	const pathname = new URL(url).pathname.split('/')
+	return {
+		collection_id: pathname[2],
+	}
+}
+
 export const capitalize = (words) => {
 	return words[0].toUpperCase() + words.slice(1)
 }
