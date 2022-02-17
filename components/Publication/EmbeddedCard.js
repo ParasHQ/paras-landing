@@ -10,6 +10,7 @@ import useStore from 'lib/store'
 import JSBI from 'jsbi'
 import { useIntl } from 'hooks/useIntl'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
+import TokenDetailModal from 'components/Token/TokenDetailModal'
 
 const EmbeddedCard = ({ tokenId }) => {
 	const store = useStore()
@@ -50,7 +51,8 @@ const EmbeddedCard = ({ tokenId }) => {
 	return (
 		<Fragment>
 			<TokenSeriesDetailModal tokens={[token]} />
-			<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
+			<TokenDetailModal tokens={[token]} />
+			<Link href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id || ''}`}>
 				<a
 					onClick={(e) => {
 						e.preventDefault()
@@ -70,10 +72,11 @@ const EmbeddedCard = ({ tokenId }) => {
 										query: {
 											...router.query,
 											tokenSeriesId: token.token_series_id,
+											tokenId: token.token_id,
 											contractId: token.contract_id,
 										},
 									},
-									`/token/${token.contract_id}::${token.token_series_id}`,
+									`/token/${token.contract_id}::${token.token_series_id}/${token.token_id || ''}`,
 									{
 										shallow: true,
 										scroll: false,
