@@ -173,6 +173,11 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 	const getDataFromCollectionId = async () => {
 		const { collection_id } = parseGetCollectionIdfromUrl(searchCollection)
 
+		if (embeddedCollections.some((col) => col.collection_id === collection_id)) {
+			showToast('You have added this collection')
+			return
+		}
+
 		const res = await axios.get(`${process.env.V2_API_URL}/collections`, {
 			params: {
 				collection_id: collection_id,
@@ -499,9 +504,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 							<p className="text-gray-300 text-sm italic">
 								Please input the link of your collection
 							</p>
-							<p className="text-gray-300 text-sm italic">
-								https://paras.id/collection/collection1-by-parasnear
-							</p>{' '}
+							<p className="text-gray-300 text-sm italic">https://paras.id/collection/paradigm</p>
 							<button
 								className="font-semibold mt-4 py-3 w-full rounded-md bg-primary text-white"
 								disabled={!searchCollection}
@@ -824,7 +827,7 @@ const CollectionPublication = ({ localCollection, onDelete }) => {
 		<div className="flex flex-col">
 			<div className="w-full h-full rounded">
 				<img
-					className="object-cover w-full md:h-72 h-ful transform ease-in-out duration-200 hover:opacity-80 rounded-xl"
+					className="object-cover w-full md:h-56 h-full transform ease-in-out duration-200 hover:opacity-80 rounded-xl"
 					src={parseImgUrl(
 						localCollection?.media ||
 							`data:image/svg+xml;utf8,${generateFromString(localCollection?.collection_id)}`,

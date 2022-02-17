@@ -30,13 +30,13 @@ const EmbeddedCollection = ({ collectionId }) => {
 	if (!collection) return null
 
 	return (
-		<div className="flex flex-col">
+		<div>
 			<Link href={`/collection/${collection.collection_id}`} shallow={true}>
 				<a className="cursor-pointer">
-					<div className="flex flex-row flex-wrap md:h-72 h-80">
+					<div className="flex flex-row flex-wrap md:h-60 h-72">
 						<div className="w-full h-full mb-4 rounded">
 							<img
-								className="object-cover w-full md:h-72 h-full transform ease-in-out duration-200 hover:opacity-80 rounded-xl"
+								className="object-cover w-full md:h-60 h-full transform ease-in-out duration-200 hover:opacity-80 rounded-xl"
 								src={parseImgUrl(
 									collection?.media ||
 										`data:image/svg+xml;utf8,${generateFromString(collection?.collection_id)}`,
@@ -51,19 +51,17 @@ const EmbeddedCollection = ({ collectionId }) => {
 					</div>
 				</a>
 			</Link>
-			<Link href={`/collection/${collection.collection_id}`} shallow={true}>
-				<a className="cursor-pointer">
-					<p className="grid grid-flow-col text-xl hover:underline font-bold">
-						{collection?.collection}
-					</p>
-				</a>
-			</Link>
+			<div className="mt-4">
+				<Link href={`/collection/${collection.collection_id}`} shallow={true}>
+					<a className="text-2xl hover:underline font-bold text-white">{collection?.collection}</a>
+				</Link>
+			</div>
 			<div className="flex flex-row flex-wrap text-sm text-gray-400 items-center w-full">
 				<span className="mr-1">collection by</span>
 				<Link href={`/${collection.creator_id}`} shallow={true}>
 					<a>
 						<span className="cursor-pointer truncate hover:text-gray-300 hover:underline">
-							{collection.creator_id}
+							{collection?.creator_id}
 						</span>
 					</a>
 				</Link>
