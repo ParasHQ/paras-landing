@@ -75,7 +75,7 @@ const FilterMarket = ({
 			if (router.query.is_notforsale) {
 				setIsNotForSale(router.query.is_notforsale === 'true')
 			} else {
-				setIsNotForSale(defaultMinPrice ? true : false)
+				setIsNotForSale(false)
 			}
 		}
 	}, [router.query])
