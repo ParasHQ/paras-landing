@@ -336,7 +336,7 @@ const common = {
 	ShareNow: '立即分享',
 	Chapter: 'Chapter',
 	ReadNow: 'Read Now',
-	FlaggedByPARASStealing: '警告：由于艺术品被盗，PARAS已标记此配置文件',
+	FlaggedByPARASStealing: '警告：此创作者因盗窃艺术品而被 PARAS 标记',
 	FlaggedByPARASFake: '警告：此帐户使用其他人的身份',
 	FlaggedByPARASHacked: '警告：该帐户已被黑客入侵。请联系原作艺术家',
 	UseOwnRisk: 'Paras的智能合约尚未由知名安全组织或公司审计。使用风险自负！',
