@@ -225,15 +225,18 @@ const publication = {
 	Community: 'Сообщество',
 	MaximumSize3MB: 'Максимальный размер файла 3MB',
 	AddCardToPublication: 'Добавить карточку в вашу публикацию',
+	AddCollectionToPublication: 'Добавьте карточку в свою публикацию',
 	TokenIDIsCardId:
 		'ID токена это адрес вашей карточки. Вы можете найти ID вашего токена здесь: https://paras.id/token/[TokenID]',
 	AddCard: 'Добавить Карточку',
+	AddCollection: 'Добавить коллекцию',
 	Thumbnail: 'Миниатюра',
 	UpdateThumbnail3MB: 'Обновить Миниатюру (Max. 3MB)',
 	Title: 'Заголовок',
 	SureToLeavepage:
 		'Вы уверены, что хотите покинуть страницу? Все несохранённые данные будут утеряны',
 	CardCollectibles: 'Коллекции Карточек',
+	Collections: 'Коллекции',
 	Continue: 'Продолжить',
 	Delete: 'Удалить',
 	CardNotMentioned: 'Карточка не указана в публикации',
