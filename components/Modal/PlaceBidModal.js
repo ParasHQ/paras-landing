@@ -142,8 +142,8 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 							{localeLn('AboutToBid')} <b>{data.metadata.title}</b>.
 						</p>
 						<form
-							onSubmit={handleSubmit(() =>
-								creatorData?.flag ? setShowBannedConfirm(true) : onPlaceBid
+							onSubmit={handleSubmit((bidQuantity) =>
+								creatorData?.flag ? setShowBannedConfirm(true) : onPlaceBid(bidQuantity)
 							)}
 						>
 							<div className="mt-4 ">
@@ -194,11 +194,6 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 							</p>
 							<div className="">
 								<Button
-									onClick={() =>
-										creatorData?.flag
-											? bidAmount && setShowBannedConfirm(true)
-											: onPlaceBid(watch(bidAmount))
-									}
 									disabled={isSubmitting}
 									className="mt-4"
 									isFullWidth
@@ -215,10 +210,9 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 			{showBannedConfirm && (
 				<BannedConfirmModal
 					creatorData={creatorData}
-					action={onPlaceBid}
+					action={() => onPlaceBid(watch(bidAmount))}
 					setIsShow={(e) => setShowBannedConfirm(e)}
 					onClose={onClose}
-					event={watch(bidAmount)}
 					type="offer"
 				/>
 			)}

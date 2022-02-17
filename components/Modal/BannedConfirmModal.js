@@ -4,19 +4,8 @@ import { flagText } from 'constants/flag'
 import { useIntl } from 'hooks/useIntl'
 import React from 'react'
 
-const BannedConfirmModal = ({ creatorData, action, event, setIsShow, onClose, type }) => {
+const BannedConfirmModal = ({ creatorData, action, setIsShow, onClose }) => {
 	const { localeLn } = useIntl()
-
-	const onSubmit = () => {
-		switch (type) {
-			case 'offer':
-				action(event)
-				break
-			default:
-				action()
-				break
-		}
-	}
 
 	return (
 		<Modal close={() => setIsShow(false)}>
@@ -35,7 +24,7 @@ const BannedConfirmModal = ({ creatorData, action, event, setIsShow, onClose, ty
 				<div className="w-full text-white text-center">{localeLn('AreYouSureBuy')}</div>
 				<button
 					className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
-					onClick={onSubmit}
+					onClick={action}
 				>
 					{localeLn('IUnderstand')}
 				</button>
