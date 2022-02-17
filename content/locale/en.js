@@ -255,6 +255,7 @@ const profile = {
 	Save: 'Save',
 	GetNotifiedForTransaction: 'Get notified for your transaction on Paras',
 	Notification: 'Notification',
+	MinPriceOffer: 'Minimum Offer Price',
 	GetFirstNotifiedFor: 'Get first notified for upcoming drops!',
 	MaximumSize3MB: 'Maximum file size 3MB',
 	Image: 'Image',
