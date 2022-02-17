@@ -62,35 +62,17 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 
 	const onClickSeeDetails = (token) => {
 		const lookupToken = token.token
-		if (lookupToken) {
-			router.push(
-				{
-					pathname: router.pathname,
-					query: {
-						...router.query,
-						tokenId: lookupToken.token_id,
-						contractId: lookupToken.contract_id,
-					},
-				},
-				`/token/${lookupToken.contract_id}::${lookupToken.token_series_id}/${lookupToken.token_id}`,
-				{
-					shallow: true,
-					scroll: false,
-				}
-			)
-			return
-		}
-
 		router.push(
 			{
 				pathname: router.pathname,
 				query: {
 					...router.query,
-					tokenSeriesId: token.token_series_id,
 					contractId: token.contract_id,
+					tokenSeriesId: token.token_series_id,
+					tokenId: lookupToken?.token_id || '',
 				},
 			},
-			`/token/${token.contract_id}::${token.token_series_id}`,
+			`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`,
 			{
 				shallow: true,
 				scroll: false,
