@@ -243,14 +243,14 @@ const TabInfo = ({ localToken, isNFT }) => {
 				)}
 			</div>
 			{localToken.metadata.attributes && (
-				<div className="flex bg-gray-800 mt-3 p-3 pb-1 rounded-md shadow-md">
+				<div className="flex bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 					<div>
 						<p className="text-sm text-white font-bold mb-2">{localeLn('Attributes')}</p>
-						<div className="grid grid-cols-3 whitespace-nowrap">
+						<div className="grid grid-cols-3 gap-3 whitespace-nowrap">
 							{attributeRarity?.map((attr, idx) => (
 								<div
 									key={idx}
-									className="p-2 rounded-md border text-center border-gray-700 space-x-1 mr-2 mb-2 overflow-x-visible hover:border-gray-400"
+									className="p-2 rounded-md border text-center border-gray-700 space-x-1 overflow-x-visible hover:border-gray-400"
 								>
 									<a
 										href={`/collection/${collection.id}/?attributes=[${JSON.stringify({
