@@ -3,20 +3,25 @@ import Link from 'next/link'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
+import Media from 'components/Common/Media'
 
 const NotificationImage = ({ media }) => {
 	return (
 		<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
-			<img
-				src={parseImgUrl(media, null, {
-					width: `300`,
+			<Media
+				url={parseImgUrl(media, null, {
+					width: '200',
+					useOriginal: process.env.APP_ENV !== 'production',
 				})}
+				videoControls={false}
+				videoMuted={true}
+				videoLoop={true}
 			/>
 		</div>
 	)
 }
 
-const NotificationItem = ({ notif, currentUser }) => {
+const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 	const [token, setToken] = useState({})
 
 	useEffect(() => {
@@ -63,7 +68,10 @@ const NotificationItem = ({ notif, currentUser }) => {
 				<div>
 					<Link href={url}>
 						<a>
-							<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+							<div
+								className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+								onClick={() => notificationModal(false)}
+							>
 								<NotificationImage media={token.metadata?.media} />
 								<div className="pl-2 text-gray-300">
 									bought <span className="font-medium text-gray-100">{token.metadata?.title}</span>{' '}
@@ -80,7 +88,10 @@ const NotificationItem = ({ notif, currentUser }) => {
 			<div>
 				<Link href={url}>
 					<a>
-						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-300">
 								Creator minted #{token.edition_id || token.token_id} to {notif.to}
@@ -97,7 +108,10 @@ const NotificationItem = ({ notif, currentUser }) => {
 			<div>
 				<Link href={url}>
 					<a>
-						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-300">burned #{token.edition_id || token.token_id}</div>
 						</div>
@@ -113,7 +127,10 @@ const NotificationItem = ({ notif, currentUser }) => {
 				<div>
 					<Link href={url}>
 						<a>
-							<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+							<div
+								className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+								onClick={() => notificationModal(false)}
+							>
 								<NotificationImage media={token.metadata?.media} />
 								<div className="pl-2 text-gray-300">
 									sold <span className="font-medium text-gray-100">{token.metadata?.title}</span>
@@ -133,7 +150,10 @@ const NotificationItem = ({ notif, currentUser }) => {
 				<div>
 					<Link href={url}>
 						<a>
-							<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+							<div
+								className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+								onClick={() => notificationModal(false)}
+							>
 								<NotificationImage media={token.metadata?.media} />
 								<div className="pl-2 text-gray-300">
 									received{' '}
@@ -156,7 +176,10 @@ const NotificationItem = ({ notif, currentUser }) => {
 			<div>
 				<Link href={url}>
 					<a>
-						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-200">
 								sold <span className="font-medium text-gray-100">{token.metadata?.title}</span>
@@ -174,9 +197,12 @@ const NotificationItem = ({ notif, currentUser }) => {
 	if (notif.type === 'notification_add_offer') {
 		return (
 			<div>
-				<Link href={url}>
+				<Link href={`${url}?tab=offers`}>
 					<a>
-						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-100">
 								<span className="font-semibold">{notif.from}</span> offer{' '}
@@ -196,7 +222,10 @@ const NotificationItem = ({ notif, currentUser }) => {
 			<div>
 				<Link href={url}>
 					<a>
-						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-100">
 								Token <span className="font-semibold">{token.metadata?.title}</span> submission has
@@ -215,7 +244,10 @@ const NotificationItem = ({ notif, currentUser }) => {
 			<div>
 				<Link href={url}>
 					<a>
-						<div className="cursor-pointer p-2 rounded-md button-wrapper flex items-center">
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-100">
 								Token <span className="font-semibold">{token.metadata?.title}</span> submission has

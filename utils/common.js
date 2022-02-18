@@ -2,6 +2,7 @@ import CID from 'cids'
 import Compressor from 'compressorjs'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
+import crypto from 'crypto'
 
 TimeAgo.addLocale(en)
 export const timeAgo = new TimeAgo('en-US')
@@ -49,7 +50,7 @@ export const prettyBalance = (balance, decimals = 18, len = 8) => {
 }
 
 export const prettyTruncate = (str = '', len = 8, type) => {
-	if (str.length > len) {
+	if (str && str.length > len) {
 		if (type === 'address') {
 			const front = Math.ceil(len / 2)
 			const back = str.length - (len - front)
@@ -114,6 +115,15 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
 				transformationList.push('w=800')
 			}
 			return `https://paras-cdn.imgix.net/${cid}?${transformationList.join('&')}`
+		} else if (opts.isMediaCdn) {
+			const sha1Url = sha1(url)
+			let transformationList = []
+			if (opts.width) {
+				transformationList.push(`w=${opts.width}`)
+			} else {
+				transformationList.push('w=800')
+			}
+			return `https://paras-cdn.imgix.net/${sha1Url}?${transformationList.join('&')}`
 		}
 		return url
 	} else {
@@ -182,8 +192,10 @@ export const checkUrl = (str) => {
 	return !!pattern.test(str)
 }
 
-export const parseSortQuery = (sort) => {
-	if (!sort || sort === 'marketupdate') {
+export const parseSortQuery = (sort, defaultMinPrice = false) => {
+	if (!sort) {
+		return defaultMinPrice ? 'lowest_price::1' : 'updated_at::-1'
+	} else if (sort === 'marketupdate') {
 		return 'updated_at::-1'
 	} else if (sort === 'marketupdateasc') {
 		return 'updated_at::1'
@@ -198,6 +210,18 @@ export const parseSortQuery = (sort) => {
 	}
 }
 
+export const parseSortTokenQuery = (sort) => {
+	if (!sort || sort === 'cardcreate') {
+		return '_id::-1'
+	} else if (sort === 'cardcreateasc') {
+		return '_id::1'
+	} else if (sort === 'pricedesc') {
+		return 'price::-1'
+	} else if (sort === 'priceasc') {
+		return 'price::1'
+	}
+}
+
 export const parseGetTokenIdfromUrl = (url) => {
 	const pathname = new URL(url).pathname.split('/')
 	return {
@@ -208,4 +232,11 @@ export const parseGetTokenIdfromUrl = (url) => {
 
 export const capitalize = (words) => {
 	return words[0].toUpperCase() + words.slice(1)
+}
+
+export default function sha1(data, encoding) {
+	return crypto
+		.createHash('sha1')
+		.update(data)
+		.digest(encoding || 'hex')
 }

@@ -9,77 +9,53 @@ import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
-import near from 'lib/near'
-import { capitalize } from 'utils/common'
+import { capitalize, parseImgUrl } from 'utils/common'
 import TokenMoreModal from '../Modal/TokenMoreModal'
 import TokenShareModal from '../Modal/TokenShareModal'
 import TokenUpdatePriceModal from '../Modal/TokenUpdatePriceModal'
-import JSBI from 'jsbi'
-import TokenStorageModal from '../Modal/TokenStorageModal'
 import TokenBurnModal from '../Modal/TokenBurnModal'
 import TokenTransferModal from '../Modal/TokenTransferModal'
 import useStore from 'lib/store'
-import { STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import TabHistory from '../Tabs/TabHistory'
 import LoginModal from '../Modal/LoginModal'
 import ArtistVerified from '../Common/ArtistVerified'
 import ArtistBanned from '../Common/ArtistBanned'
 import { useIntl } from 'hooks/useIntl'
-import { sentryCaptureException } from 'lib/sentry'
 import TabOffers from 'components/Tabs/TabOffers'
 import PlaceBidModal from 'components/Modal/PlaceBidModal'
 import TabPublication from 'components/Tabs/TabPublication'
 import Media from 'components/Common/Media'
 import ReportModal from 'components/Modal/ReportModal'
+import Card from 'components/Card/Card'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState(null)
-	const [needDeposit, setNeedDeposit] = useState(true)
+	const [tokenDisplay, setTokenDisplay] = useState('detail')
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
 	const router = useRouter()
 
 	useEffect(() => {
-		if (currentUser) {
-			setTimeout(() => {
-				checkStorageBalance()
-			}, 250)
-		}
-	}, [currentUser])
+		TabNotification(router.query.tab)
+	}, [router.query.tab])
 
-	useEffect(() => {
-		setActiveTab('info')
-	}, [router.query.tokenId])
-
-	const checkStorageBalance = async () => {
-		try {
-			if (!token.approval_id) {
-				const currentStorage = await near.wallet
-					.account()
-					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `storage_balance_of`, {
-						account_id: currentUser,
-					})
-
-				const supplyPerOwner = await near.wallet
-					.account()
-					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_supply_by_owner_id`, {
-						account_id: currentUser,
-					})
-
-				const usedStorage = JSBI.multiply(
-					JSBI.BigInt(parseInt(supplyPerOwner) + 1),
-					JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
-				)
-
-				if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
-					setNeedDeposit(false)
-				}
-			} else {
-				setNeedDeposit(false)
-			}
-		} catch (err) {
-			sentryCaptureException(err)
+	const TabNotification = (tab) => {
+		switch (tab) {
+			case 'owners':
+				setActiveTab('owners')
+				break
+			case 'history':
+				setActiveTab('history')
+				break
+			case 'offers':
+				setActiveTab('offers')
+				break
+			case 'publication':
+				setActiveTab('publication')
+				break
+			default:
+				setActiveTab('info')
 		}
 	}
 
@@ -170,13 +146,49 @@ const TokenDetail = ({ token, className }) => {
 						)}
 					</div>
 					<div className="w-full h-full flex items-center justify-center p-2 lg:p-12 relative">
-						<Media
-							className="rounded-lg overflow-hidden"
-							url={token.metadata.media}
-							videoControls={true}
-							videoLoop={true}
-							videoMuted={true}
-						/>
+						{tokenDisplay === 'detail' ? (
+							<Media
+								className="rounded-lg overflow-hidden"
+								url={token.metadata.media}
+								videoControls={true}
+								videoLoop={true}
+								videoMuted={true}
+								videoPadding={false}
+							/>
+						) : (
+							<div className="w-1/2 h-full md:w-full m-auto flex items-center">
+								<Card
+									imgUrl={parseImgUrl(token.metadata.media, null, {
+										width: `600`,
+										useOriginal: process.env.APP_ENV === 'production' ? false : true,
+										isMediaCdn: token.isMediaCdn,
+									})}
+									imgBlur={token.metadata.blurhash}
+									token={{
+										title: token.metadata.title,
+										collection: token.metadata.collection || token.contract_id,
+										copies: token.metadata.copies,
+										creatorId: token.metadata.creator_id || token.contract_id,
+										is_creator: token.is_creator,
+									}}
+								/>
+							</div>
+						)}
+						<div className="absolute top-0 right-0 text-white p-4 text-sm">
+							<span
+								className={`cursor-pointer ${tokenDisplay === 'detail' ? 'font-bold' : ''}`}
+								onClick={() => setTokenDisplay('detail')}
+							>
+								Detail
+							</span>
+							<span> / </span>
+							<span
+								className={`cursor-pointer ${tokenDisplay === 'card' ? 'font-bold' : ''}`}
+								onClick={() => setTokenDisplay('card')}
+							>
+								Card
+							</span>
+						</div>
 					</div>
 					<ArtistBanned creatorId={token.metadata.creator_id} />
 				</div>
@@ -217,15 +229,15 @@ const TokenDetail = ({ token, className }) => {
 							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
 								{tabDetail('info')}
 								{tabDetail('owners')}
-								{tabDetail('history')}
 								{tabDetail('offers')}
+								{tabDetail('history')}
 								{tabDetail('publication')}
 							</div>
 
 							{activeTab === 'info' && <TabInfo localToken={token} isNFT={true} />}
 							{activeTab === 'owners' && <TabOwners localToken={token} />}
-							{activeTab === 'history' && <TabHistory localToken={token} />}
 							{activeTab === 'offers' && <TabOffers localToken={token} />}
+							{activeTab === 'history' && <TabHistory localToken={token} />}
 							{activeTab === 'publication' && <TabPublication localToken={token} />}
 						</div>
 					</Scrollbars>
@@ -233,17 +245,7 @@ const TokenDetail = ({ token, className }) => {
 						{token.owner_id === currentUser && (
 							<div className="flex flex-wrap space-x-4">
 								<div className="w-full flex-1">
-									<Button
-										size="md"
-										onClick={() => {
-											if (needDeposit) {
-												setShowModal('storage')
-											} else {
-												setShowModal('updatePrice')
-											}
-										}}
-										isFullWidth
-									>
+									<Button size="md" onClick={() => setShowModal('updatePrice')} isFullWidth>
 										{localeLn('UpdateListing')}
 									</Button>
 								</div>
@@ -274,7 +276,6 @@ const TokenDetail = ({ token, className }) => {
 							size="md"
 							variant="ghosts"
 							onClick={() => router.push(`/token/${token.contract_id}::${token.token_series_id}`)}
-							isFullWidth
 						>
 							{localeLn('SeeTokenSeries')}
 						</div>
@@ -298,7 +299,6 @@ const TokenDetail = ({ token, className }) => {
 				onClose={onDismissModal}
 				data={token}
 			/>
-			<TokenStorageModal show={showModal === 'storage'} onClose={onDismissModal} data={token} />
 			<TokenBurnModal show={showModal === 'burn'} onClose={onDismissModal} data={token} />
 			<TokenBuyModal show={showModal === 'buy'} onClose={onDismissModal} data={token} />
 			<TokenTransferModal show={showModal === 'transfer'} onClose={onDismissModal} data={token} />

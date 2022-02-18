@@ -18,8 +18,8 @@ const NotificationList = () => {
 		setNotificationList,
 		notificationUnreadList,
 		setNotificationUnreadList,
-		notificationListPage,
-		setNotificationListPage,
+		notificationListIdBefore,
+		setNotificationListIdBefore,
 		notificationListHasMore,
 		setNotificationListHasMore,
 		userProfile,
@@ -30,8 +30,8 @@ const NotificationList = () => {
 		setNotificationList: state.setNotificationList,
 		notificationUnreadList: state.notificationUnreadList,
 		setNotificationUnreadList: state.setNotificationUnreadList,
-		notificationListPage: state.notificationListPage,
-		setNotificationListPage: state.setNotificationListPage,
+		notificationListIdBefore: state.notificationListIdBefore,
+		setNotificationListIdBefore: state.setNotificationListIdBefore,
 		notificationListHasMore: state.notificationListHasMore,
 		setNotificationListHasMore: state.setNotificationListHasMore,
 		userProfile: state.userProfile,
@@ -41,7 +41,7 @@ const NotificationList = () => {
 	const accModalRef = useRef()
 
 	const [isFetching, setIsFetching] = useState(false)
-	const [showAccountModal, setShowAccountModal] = useState(false)
+	const [showNotificationModal, setShowNotificationModal] = useState(false)
 	const [hasNotification, setHasNotification] = useState(false)
 	const { localeLn } = useIntl()
 	useEffect(() => {
@@ -53,21 +53,21 @@ const NotificationList = () => {
 	useEffect(() => {
 		const onClickEv = (e) => {
 			if (accModalRef.current?.contains && !accModalRef.current?.contains(e.target)) {
-				setShowAccountModal(false)
+				setShowNotificationModal(false)
 			}
 		}
 
-		if (showAccountModal) {
+		if (showNotificationModal) {
 			document.body.addEventListener('click', onClickEv)
 		}
 
 		return () => {
 			document.body.removeEventListener('click', onClickEv)
 		}
-	}, [showAccountModal])
+	}, [showNotificationModal])
 
 	useEffect(() => {
-		if (showAccountModal) {
+		if (showNotificationModal) {
 			_fetchData()
 			if (hasNotification) {
 				setHasNotification(false)
@@ -75,10 +75,10 @@ const NotificationList = () => {
 				setUserProfile(newProfile)
 			}
 		}
-	}, [showAccountModal, notificationUnreadList])
+	}, [showNotificationModal, notificationUnreadList])
 
 	const toggleAccountModal = () => {
-		setShowAccountModal(!showAccountModal)
+		setShowNotificationModal(!showNotificationModal)
 	}
 
 	const _fetchData = async () => {
@@ -91,7 +91,7 @@ const NotificationList = () => {
 			const res = await axios.get(`${process.env.V2_API_URL}/activities/notifications`, {
 				params: {
 					account_id: currentUser,
-					__skip: notificationListPage * LIMIT,
+					_id_before: notificationListIdBefore,
 					__limit: LIMIT,
 				},
 				headers: {
@@ -105,11 +105,11 @@ const NotificationList = () => {
 			setNotificationUnreadList(unreadList)
 			setNotificationList(newNotificationList)
 
-			setNotificationListPage(notificationListPage + 1)
 			if (newData.results.length === 0) {
 				setNotificationListHasMore(false)
 			} else {
 				setNotificationListHasMore(true)
+				setNotificationListIdBefore(newData.results[newData.results.length - 1]._id)
 			}
 		} catch (err) {
 			sentryCaptureException(err)
@@ -153,7 +153,7 @@ const NotificationList = () => {
 						</div>
 					</div>
 				</div>
-				{showAccountModal && (
+				{showNotificationModal && (
 					<div
 						className="absolute bottom-0 right-0 z-20"
 						style={{
@@ -174,7 +174,7 @@ const NotificationList = () => {
 					</div>
 				)}
 			</div>
-			{showAccountModal && (
+			{showNotificationModal && (
 				<Fragment>
 					<div
 						className="absolute right-0 p-4 z-10 max-w-full md:max-w-none"
@@ -206,7 +206,11 @@ const NotificationList = () => {
 										{notificationList.map((notif) => {
 											return (
 												<div key={notif._id}>
-													<NotificationItem notif={notif} currentUser={currentUser} />
+													<NotificationItem
+														notif={notif}
+														currentUser={currentUser}
+														notificationModal={setShowNotificationModal}
+													/>
 												</div>
 											)
 										})}

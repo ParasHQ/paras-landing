@@ -226,6 +226,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 							collection: localToken?.metadata.collection || localToken?.contract_id,
 							copies: localToken?.metadata.copies,
 							creatorId: localToken?.metadata.creator_id || localToken?.contract_id,
+							is_creator: localToken?.is_creator,
 						}}
 					/>
 				</div>
@@ -236,8 +237,8 @@ const SubmissionDetail = ({ submission, updateData }) => {
 								pathname: router.pathname,
 								query: {
 									...router.query,
-									...{ tokenSeriesId: localToken?.token_series_id },
-									...{ prevAs: router.asPath },
+									tokenSeriesId: localToken?.token_series_id,
+									contractId: localToken?.contract_id,
 								},
 							}}
 							as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}`}

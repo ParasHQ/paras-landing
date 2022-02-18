@@ -19,6 +19,7 @@ import {
 	imagePlugin,
 	InlineToolbar,
 	linkPlugin,
+	dividerPlugin,
 	plugins,
 	Toolbar,
 	videoPlugin,
@@ -154,6 +155,7 @@ const TextEditor = ({
 								<BlockquoteButton {...externalProps} />
 								<CodeBlockButton {...externalProps} />
 								<linkPlugin.LinkButton {...externalProps} onOverrideContent={() => {}} />
+								<DividerButton {...externalProps} />
 								<ImageButton {...externalProps} onChange={onAddLocalImage} />
 								<VideoButton {...externalProps} onAddVideo={onAddVideo} />
 								<CardButton {...externalProps} onClick={showCardModal} />
@@ -165,6 +167,8 @@ const TextEditor = ({
 		</div>
 	)
 }
+
+let { DividerButton } = dividerPlugin
 
 const ImageButton = ({ theme, onChange }) => {
 	const { localeLn } = useIntl()

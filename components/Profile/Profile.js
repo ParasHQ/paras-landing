@@ -4,6 +4,8 @@ import { parseImgUrl, prettyTruncate } from 'utils/common'
 import CopyLink from '../Common/CopyLink'
 import { useIntl } from 'hooks/useIntl'
 import useStore from 'lib/store'
+import { flagColor, flagText } from 'constants/flag'
+import LineClampText from 'components/Common/LineClampText'
 
 const Profile = ({ userProfile, activeTab }) => {
 	const router = useRouter()
@@ -88,9 +90,7 @@ const Profile = ({ userProfile, activeTab }) => {
 							</CopyLink>
 						</div>
 					</div>
-					<p className="mt-2 text-gray-300 whitespace-pre-line">
-						{profileData?.bio?.replace(/\n\s*\n\s*\n/g, '\n\n')}
-					</p>
+					<LineClampText text={profileData?.bio} />
 					<div className="flex items-center justify-center space-x-2">
 						{profileData?.website && (
 							<a
@@ -101,6 +101,7 @@ const Profile = ({ userProfile, activeTab }) => {
 								}
 								className="mt-2 mb-4"
 								target="_blank"
+								rel="noreferrer"
 							>
 								<svg width="18" height="18" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
 									<path
@@ -117,6 +118,7 @@ const Profile = ({ userProfile, activeTab }) => {
 								href={'https://instagram.com/' + profileData?.instagramId}
 								className="mt-2 mb-4"
 								target="_blank"
+								rel="noreferrer"
 							>
 								<svg
 									viewBox="0 0 511 511.9"
@@ -136,6 +138,7 @@ const Profile = ({ userProfile, activeTab }) => {
 								href={'https://twitter.com/' + profileData?.twitterId}
 								className="mt-2 mb-4"
 								target="_blank"
+								rel="noreferrer"
 							>
 								<svg
 									height="18"
@@ -161,6 +164,7 @@ const Profile = ({ userProfile, activeTab }) => {
 								}
 								className="mt-2 mb-4"
 								target="_blank"
+								rel="noreferrer"
 							>
 								<svg
 									width="20"
@@ -179,15 +183,19 @@ const Profile = ({ userProfile, activeTab }) => {
 					</div>
 				</div>
 			</div>
-			{profileData?.isBanned && (
+			{profileData?.flag && (
 				<div>
-					<p className="text-white text-sm mb-2 mt-2 p-1 bg-red-600 rounded-md font-bold w-full mx-auto px-8 text-center max-w-2xl">
-						{localeLn('FlaggedByPARASStealing')}
+					<p
+						className={`text-white text-sm mb-2 mt-2 p-1 rounded-md font-bold w-full mx-auto px-8 text-center max-w-2xl ${
+							flagColor[profileData?.flag]
+						}`}
+					>
+						{localeLn(flagText[profileData?.flag])}
 					</p>
 				</div>
 			)}
-			<div className="flex justify-center mt-4">
-				<div className="flex -mx-4">
+			<div className="flex flex-row md:justify-center overflow-auto mt-4 py-2 w-full">
+				<div className="flex flex-row">
 					<div
 						className="px-4 relative"
 						onClick={() => router.push(`/${router.query.id}/collectibles`)}
@@ -210,6 +218,22 @@ const Profile = ({ userProfile, activeTab }) => {
 					>
 						<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Creation')}</h4>
 						{activeTab === 'creation' && (
+							<div
+								className="absolute left-0 right-0"
+								style={{
+									bottom: `-.25rem`,
+								}}
+							>
+								<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+							</div>
+						)}
+					</div>
+					<div
+						className="px-4 relative"
+						onClick={() => router.push(`/${router.query.id}/collections`)}
+					>
+						<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Collections')}</h4>
+						{activeTab === 'collections' && (
 							<div
 								className="absolute left-0 right-0"
 								style={{

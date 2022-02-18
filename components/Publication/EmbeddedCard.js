@@ -61,6 +61,7 @@ const EmbeddedCard = ({ tokenId }) => {
 							imgUrl={parseImgUrl(token.metadata.media, null, {
 								width: `600`,
 								useOriginal: process.env.APP_ENV === 'production' ? false : true,
+								isMediaCdn: token.isMediaCdn,
 							})}
 							onClick={() => {
 								router.push(
@@ -68,8 +69,8 @@ const EmbeddedCard = ({ tokenId }) => {
 										pathname: router.pathname,
 										query: {
 											...router.query,
-											...{ tokenSeriesId: token.token_series_id },
-											...{ prevAs: router.asPath },
+											tokenSeriesId: token.token_series_id,
+											contractId: token.contract_id,
 										},
 									},
 									`/token/${token.contract_id}::${token.token_series_id}`,
@@ -85,6 +86,7 @@ const EmbeddedCard = ({ tokenId }) => {
 								collection: token.metadata.collection || token.contract_id,
 								copies: token.metadata.copies,
 								creatorId: token.metadata.creator_id || token.contract_id,
+								is_creator: token.is_creator,
 							}}
 						/>
 					</div>

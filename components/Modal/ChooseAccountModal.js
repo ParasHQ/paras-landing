@@ -23,7 +23,7 @@ const ChooseAccountModal = ({ show, onClose }) => {
 		}
 
 		const fetchSingleUser = async ({ accountId }) => {
-			const account = await near.wallet._near.account(accountId)
+			const account = await near.wallet?._near?.account(accountId)
 			const balance = await account.getAccountBalance()
 			return cachios
 				.get(`${process.env.V2_API_URL}/profiles`, {
@@ -82,7 +82,7 @@ const ChooseAccountModal = ({ show, onClose }) => {
 									{prettyTruncate(account.accountId, 24, 'address')}
 								</p>
 								<p className="text-white opacity-80">
-									{formatNearAmount(profileList[idx]?.balance.available || '', 2)} Ⓝ
+									{formatNearAmount(profileList[idx]?.balance?.available || '', 2)} Ⓝ
 								</p>
 							</div>
 							{currentUser === account.accountId && (

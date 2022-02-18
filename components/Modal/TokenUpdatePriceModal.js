@@ -1,21 +1,87 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import near from 'lib/near'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
-import { GAS_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
-import { IconX } from 'components/Icons'
+import { GAS_FEE, STORAGE_ADD_MARKET_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
+import { IconInfo, IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackRemoveListingToken, trackUpdateListingToken } from 'lib/ga'
+import { useForm } from 'react-hook-form'
+import useStore from 'lib/store'
+import Tooltip from 'components/Common/Tooltip'
+import { parseDate } from 'utils/common'
 
 const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
+	const [needDeposit, setNeedDeposit] = useState(true)
+	const [txFee, setTxFee] = useState(null)
+	const { register, handleSubmit, errors } = useForm()
+	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
-	const onUpdateListing = async (e) => {
-		e.preventDefault()
+
+	const showTooltipTxFee = (txFee?.next_fee || 0) > (txFee?.current_fee || 0)
+	const tooltipTxFeeText = localeLn('DynamicTxFee', {
+		date: parseDate((txFee?.start_time || 0) * 1000),
+		fee: (txFee?.current_fee || 0) / 100,
+	})
+
+	useEffect(() => {
+		const getTxFee = async () => {
+			const txFeeContract = await near.wallet
+				.account()
+				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_transaction_fee`)
+			setTxFee(txFeeContract)
+		}
+
+		if (show) {
+			getTxFee()
+		}
+	}, [show])
+
+	useEffect(() => {
+		if (currentUser) {
+			setTimeout(() => {
+				checkStorageBalance()
+			}, 250)
+		}
+	}, [currentUser])
+
+	const checkStorageBalance = async () => {
+		try {
+			if (!data.approval_id) {
+				const currentStorage = await near.wallet
+					.account()
+					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `storage_balance_of`, {
+						account_id: currentUser,
+					})
+
+				const supplyPerOwner = await near.wallet
+					.account()
+					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_supply_by_owner_id`, {
+						account_id: currentUser,
+					})
+
+				const usedStorage = JSBI.multiply(
+					JSBI.BigInt(parseInt(supplyPerOwner) + 1),
+					JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
+				)
+
+				if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
+					setNeedDeposit(false)
+				}
+			} else {
+				setNeedDeposit(false)
+			}
+		} catch (err) {
+			sentryCaptureException(err)
+		}
+	}
+
+	const onUpdateListing = async () => {
 		if (!near.currentUser) {
 			return
 		}
@@ -23,6 +89,23 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 		trackUpdateListingToken(data.token_id)
 
 		try {
+			const txs = []
+
+			if (needDeposit) {
+				txs.push({
+					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
+					functionCalls: [
+						{
+							methodName: 'storage_deposit',
+							contractId: process.env.MARKETPLACE_CONTRACT_ID,
+							args: { receiver_id: near.currentUser.accountId },
+							attachedDeposit: STORAGE_ADD_MARKET_FEE,
+							gas: GAS_FEE,
+						},
+					],
+				})
+			}
+
 			const params = {
 				token_id: data.token_id,
 				account_id: process.env.MARKETPLACE_CONTRACT_ID,
@@ -32,13 +115,20 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 					ft_token_id: `near`,
 				}),
 			}
-			await near.wallet.account().functionCall({
-				contractId: data.contract_id,
-				methodName: `nft_approve`,
-				args: params,
-				gas: GAS_FEE,
-				attachedDeposit: data.approval_id ? `1` : STORAGE_APPROVE_FEE,
+			txs.push({
+				receiverId: data.contract_id,
+				functionCalls: [
+					{
+						methodName: 'nft_approve',
+						contractId: data.contract_id,
+						args: params,
+						attachedDeposit: data.approval_id ? `1` : STORAGE_APPROVE_FEE,
+						gas: GAS_FEE,
+					},
+				],
 			})
+
+			return await near.executeMultipleTransactions(txs)
 		} catch (err) {
 			sentryCaptureException(err)
 		}
@@ -71,7 +161,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 
 	const calculatePriceDistribution = () => {
 		if (newPrice && JSBI.greaterThan(JSBI.BigInt(parseNearAmount(newPrice)), JSBI.BigInt(0))) {
-			let fee = JSBI.BigInt(500)
+			const fee = JSBI.BigInt(txFee?.current_fee || 0)
 
 			const calcRoyalty =
 				Object.keys(data.royalty).length > 0
@@ -110,6 +200,16 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 		}
 	}
 
+	const getStorageFee = () => {
+		if (needDeposit) {
+			return (
+				parseFloat(formatNearAmount(STORAGE_APPROVE_FEE)) +
+				parseFloat(formatNearAmount(STORAGE_ADD_MARKET_FEE))
+			)
+		}
+		return formatNearAmount(STORAGE_APPROVE_FEE)
+	}
+
 	return (
 		<Modal isShow={show} closeOnBgClick={false} closeOnEscape={false} close={onClose}>
 			<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative">
@@ -128,22 +228,31 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 								{localeLn('NewPrice')}{' '}
 								{data.price && `(${localeLn('CurrentPrice')}: ${formatNearAmount(data.price)} Ⓝ)`}
 							</label>
-							<div
-								className={`flex justify-between rounded-md border-transparent w-full relative ${
-									null // errors.amount && 'error'
-								}`}
-							>
+							<div className="flex justify-between rounded-md border-transparent w-full relative">
 								<InputText
 									type="number"
-									name="new-price"
+									name="newPrice"
 									step="any"
 									value={newPrice}
 									onChange={(e) => setNewPrice(e.target.value)}
 									placeholder="Card price per pcs"
+									className={errors.newPrice && 'error'}
+									ref={register({
+										min: 0,
+										max: 999999999,
+									})}
 								/>
 								<div className="absolute inset-y-0 right-3 flex items-center text-white">Ⓝ</div>
 							</div>
-							<div className="mt-2 text-gray-200 flex items-center justify-between">
+							<div className="mt-2 text-sm text-red-500">
+								{errors.newPrice?.type === 'min' && `Minimum 0`}
+								{errors.newPrice?.type === 'max' && `Maximum 999,999,999 Ⓝ`}
+							</div>
+							<div
+								className={`flex items-center justify-between ${
+									showTooltipTxFee ? 'text-gray-300' : 'text-gray-200'
+								}`}
+							>
 								<span>{localeLn('Receive')}:</span>
 								<span>{calculatePriceDistribution().receive} Ⓝ</span>
 								{/* {prettyBalance(
@@ -158,7 +267,11 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
                   4
                 )} */}
 							</div>
-							<div className="text-gray-200 flex items-center justify-between">
+							<div
+								className={`flex items-center justify-between ${
+									showTooltipTxFee ? 'text-gray-300' : 'text-gray-200'
+								}`}
+							>
 								<span>{localeLn('Royalty')}:</span>
 								<span>{calculatePriceDistribution().royalty} Ⓝ</span>
 								{/* {prettyBalance(
@@ -185,9 +298,31 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
                 )}
                 ) */}
 							</div>
-							<div className="text-gray-200 flex items-center justify-between">
-								<span>{localeLn('Fee')}:</span>
-								<span> {calculatePriceDistribution().fee} Ⓝ</span>
+							<div
+								className={`flex items-center justify-between ${
+									showTooltipTxFee ? 'font-bold text-white' : 'text-gray-200'
+								}`}
+							>
+								<Tooltip
+									id="text-fee"
+									show={showTooltipTxFee}
+									text={tooltipTxFeeText}
+									className="font-normal"
+								>
+									<span>
+										{localeLn('Fee')}
+										{showTooltipTxFee && <IconInfo size={10} color="#ffffff" />}:
+									</span>
+								</Tooltip>
+								<Tooltip
+									id="text-number"
+									show={showTooltipTxFee}
+									text={tooltipTxFeeText}
+									className="font-normal"
+									place="left"
+								>
+									<span> {calculatePriceDistribution().fee} Ⓝ</span>
+								</Tooltip>
 								{/* {prettyBalance(
                   Number(watch('amount', 0) * 0.05)
                     .toPrecision(4)
@@ -214,7 +349,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 										<div className="text-white my-1">
 											<div className="flex justify-between">
 												<div className="text-sm">{localeLn('StorageFee')}</div>
-												<div className="text">{formatNearAmount(STORAGE_APPROVE_FEE)} Ⓝ</div>
+												<div className="text">{getStorageFee()} Ⓝ</div>
 											</div>
 										</div>
 									</div>
@@ -231,7 +366,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 								size="md"
 								isFullWidth
 								isDisabled={newPrice === ''}
-								onClick={onUpdateListing}
+								onClick={handleSubmit(onUpdateListing)}
 							>
 								{localeLn('UpdateListing')}
 							</Button>

@@ -309,8 +309,8 @@ const ActivityDetail = ({ activity }) => {
 
 	const fetchData = async () => {
 		const url = activity.token_id
-			? `${process.env.V2_API_URL}/token?token_id=${activity.token_id}`
-			: `${process.env.V2_API_URL}/token-series?token_series_id=${activity.token_series_id}`
+			? `${process.env.V2_API_URL}/token?token_id=${activity.token_id}&contract_id=${activity.contract_id}`
+			: `${process.env.V2_API_URL}/token-series?token_series_id=${activity.token_series_id}&contract_id=${activity.contract_id}`
 
 		const resp = await cachios.get(url, {
 			ttl: 60,
@@ -409,6 +409,7 @@ const ActivityDetail = ({ activity }) => {
 								collection: localToken?.metadata.collection || localToken?.contract_id,
 								copies: localToken?.metadata.copies,
 								creatorId: localToken?.metadata.creator_id || localToken?.contract_id,
+								is_creator: localToken?.is_creator,
 							}}
 						/>
 					</div>
@@ -420,17 +421,13 @@ const ActivityDetail = ({ activity }) => {
 								<Link
 									href={{
 										pathname: router.pathname,
-										query: activity.token_id
-											? {
-													...router.query,
-													...{ tokenId: localToken?.token_id },
-													...{ prevAs: router.asPath },
-											  }
-											: {
-													...router.query,
-													...{ tokenSeriesId: localToken?.token_series_id },
-													...{ prevAs: router.asPath },
-											  },
+										query: {
+											...router.query,
+											...(activity.token_id
+												? { tokenId: localToken?.token_id }
+												: { tokenSeriesId: localToken?.token_series_id }),
+											contractId: localToken?.contract_id,
+										},
 									}}
 									as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
 										activity.token_id ? `/${localToken?.token_id}` : ''

@@ -12,6 +12,7 @@ import { useIntl } from 'hooks/useIntl'
 
 export default function Home() {
 	const [showVideoModal, setShowVideoModal] = useState(false)
+
 	const { localeLn } = useIntl()
 
 	return (

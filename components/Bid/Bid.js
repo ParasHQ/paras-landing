@@ -226,6 +226,7 @@ const Bid = ({ data, type }) => {
 							imgUrl={parseImgUrl(token.metadata.media, null, {
 								width: `600`,
 								useOriginal: process.env.APP_ENV === 'production' ? false : true,
+								isMediaCdn: token.isMediaCdn,
 							})}
 							onClick={() => {
 								router.push(
@@ -233,9 +234,9 @@ const Bid = ({ data, type }) => {
 										pathname: router.pathname,
 										query: {
 											...router.query,
-											...{ tokenSeriesId: token.token_series_id },
-											...{ tokenId: token.token_id },
-											...{ prevAs: router.asPath },
+											tokenSeriesId: token.token_series_id,
+											tokenId: token.token_id,
+											contractId: token.contract_id,
 										},
 									},
 									token.token_id
@@ -253,6 +254,7 @@ const Bid = ({ data, type }) => {
 								collection: token.metadata.collection || token.contract_id,
 								copies: token.metadata.copies,
 								creatorId: token.metadata.creator_id || token.contract_id,
+								is_creator: token.is_creator,
 							}}
 						/>
 					</div>
@@ -263,9 +265,9 @@ const Bid = ({ data, type }) => {
 									pathname: router.pathname,
 									query: {
 										...router.query,
-										...{ tokenSeriesId: token.token_series_id },
-										...{ tokenId: token.token_id },
-										...{ prevAs: router.asPath },
+										tokenSeriesId: token.token_series_id,
+										tokenId: token.token_id,
+										contractId: token.contract_id,
 									},
 								}}
 								as={

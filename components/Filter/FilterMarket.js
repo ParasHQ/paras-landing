@@ -1,7 +1,13 @@
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
-const FilterMarket = ({ isShowVerified = true }) => {
+
+const FilterMarket = ({
+	isShowVerified = true,
+	isShowNotForSale = true,
+	isCollectibles = false,
+	defaultMinPrice = false,
+}) => {
 	const filterModalRef = useRef()
 	const router = useRouter()
 
@@ -9,14 +15,20 @@ const FilterMarket = ({ isShowVerified = true }) => {
 	const [sortBy, setSortBy] = useState(router.query.sort || filter[0].key)
 	const [minPrice, setMinPrice] = useState(router.query.pmin || '')
 	const [maxPrice, setMaxPrice] = useState(router.query.pmax || '')
+	const [sortCopies, setSortCopies] = useState(
+		router.query.min_copies === undefined ? 'undefined' : router.query.min_copies
+	)
 	const [isVerified, setIsVerified] = useState(
 		router.query.is_verified ? router.query.is_verified === 'true' : true
+	)
+	const [isNotForSale, setIsNotForSale] = useState(
+		router.query.is_notforsale ? router.query.is_notforsale === 'true' : false
 	)
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
 		const onClickEv = (e) => {
-			if (!filterModalRef.current.contains(e.target)) {
+			if (filterModalRef.current?.contains && !filterModalRef.current.contains(e.target)) {
 				setShowFilterModal(false)
 			}
 		}
@@ -26,21 +38,21 @@ const FilterMarket = ({ isShowVerified = true }) => {
 		return () => {
 			document.body.removeEventListener('click', onClickEv)
 		}
-	}, [])
+	}, [showFilterModal])
 
 	// update filter state based on query
 	useEffect(() => {
 		if (router.pathname === '/search') {
-			setSortBy(filter[0].key)
+			setSortBy(defaultMinPrice ? filter[3].key : filter[0].key)
 			setMinPrice('')
 			setMaxPrice('')
 		} else {
 			if (router.query.sort) {
 				setSortBy(router.query.sort)
 			} else {
-				setSortBy(filter[0].key)
+				setSortBy(isCollectibles ? filter[1].key : defaultMinPrice ? filter[3].key : filter[0].key)
 			}
-			if (router.query.pmin) {
+			if (router.query.pmin && router.query.pmin !== '0') {
 				setMinPrice(router.query.pmin)
 			} else {
 				setMinPrice('')
@@ -50,10 +62,20 @@ const FilterMarket = ({ isShowVerified = true }) => {
 			} else {
 				setMaxPrice('')
 			}
+			if (router.query.min_copies) {
+				setSortCopies(router.query.min_copies)
+			} else {
+				setSortCopies('undefined')
+			}
 			if (router.query.is_verified) {
 				setIsVerified(router.query.is_verified === 'true')
 			} else {
 				setIsVerified(true)
+			}
+			if (router.query.is_notforsale) {
+				setIsNotForSale(router.query.is_notforsale === 'true')
+			} else {
+				setIsNotForSale(false)
 			}
 		}
 	}, [router.query])
@@ -65,6 +87,7 @@ const FilterMarket = ({ isShowVerified = true }) => {
 			...(minPrice && { pmin: minPrice }),
 			...(maxPrice && { pmax: maxPrice }),
 			...(isShowVerified && { is_verified: isVerified }),
+			...(isShowNotForSale && { is_notforsale: isNotForSale }),
 		}
 
 		if (minPrice === '') {
@@ -73,12 +96,31 @@ const FilterMarket = ({ isShowVerified = true }) => {
 		if (maxPrice === '') {
 			delete query.pmax
 		}
+		if (defaultMinPrice) {
+			if (!isNotForSale) {
+				delete query.pmin
+			}
+		}
+
+		if (sortCopies === 'undefined') {
+			delete query.min_copies
+			delete query.max_copies
+		} else if (sortCopies === '1') {
+			query.min_copies = 1
+			query.max_copies = 1
+		} else if (sortCopies === '2') {
+			query.min_copies = 2
+			delete query.max_copies
+		}
+
+		if (isNotForSale && minPrice === '') query.pmin = 0
 
 		router.push({
 			query: query,
 		})
 		setShowFilterModal(false)
 	}
+
 	return (
 		<div ref={filterModalRef} className="inline-block">
 			<div
@@ -106,17 +148,19 @@ const FilterMarket = ({ isShowVerified = true }) => {
 					<div className="bg-dark-primary-2 rounded-md p-4">
 						<h1 className="text-white font-semibold text-xl">{localeLn('SortBy')}</h1>
 						<div>
-							{filter.map((item) => (
-								<button
-									key={item.key}
-									className={`rounded-md text-white px-3 py-1 inline-block mb-2 mr-2 border-2 border-gray-800 ${
-										sortBy === item.key && 'bg-gray-800'
-									}`}
-									onClick={() => setSortBy(item.key)}
-								>
-									<p>{item.value}</p>
-								</button>
-							))}
+							{filter
+								.filter((item) => (isCollectibles ? item.key !== 'marketupdate' : item.key))
+								.map((item) => (
+									<button
+										key={item.key}
+										className={`rounded-md text-white px-3 py-1 inline-block mb-2 mr-2 border-2 border-gray-800 ${
+											sortBy === item.key && 'bg-gray-800'
+										}`}
+										onClick={() => setSortBy(item.key)}
+									>
+										<p>{item.value}</p>
+									</button>
+								))}
 						</div>
 						<h1 className="text-white font-semibold text-xl mt-2">{localeLn('Price')}</h1>
 						<form onSubmit={onClickApply} className={`flex w-full space-x-2`}>
@@ -142,19 +186,50 @@ const FilterMarket = ({ isShowVerified = true }) => {
 							</div>
 							<input type="submit" className="hidden" />
 						</form>
+						{!isCollectibles && (
+							<h1 className="text-white font-semibold text-xl mt-4">{localeLn('CopiesOfCard')}</h1>
+						)}
+						{!isCollectibles &&
+							filterCopies.map((item) => (
+								<button
+									key={item.key}
+									className={`rounded-md text-white px-3 py-1 inline-block mr-2 border-2 border-gray-800 ${
+										sortCopies === item.key && 'bg-gray-800'
+									}`}
+									onClick={() => setSortCopies(item.key)}
+								>
+									<p>{item.value}</p>
+								</button>
+							))}
 						{isShowVerified && (
-							<div className="mt-2 flex items-center justify-between">
-								<h1 className="text-white font-semibold text-xl mt-2">Verified Only</h1>
-								<input
-									id="put-marketplace"
-									className="w-auto"
-									type="checkbox"
-									defaultChecked={isVerified}
-									onChange={() => {
-										setIsVerified(!isVerified)
-									}}
-								/>
-							</div>
+							<label htmlFor="put-marketplace">
+								<div className="mt-2 flex items-center justify-between">
+									<h1 className="text-white font-semibold text-xl mt-2">Verified Only</h1>
+									<input
+										id="put-marketplace"
+										className="w-auto"
+										type="checkbox"
+										defaultChecked={isVerified}
+										onChange={() => {
+											setIsVerified(!isVerified)
+										}}
+									/>
+								</div>
+							</label>
+						)}
+						{isShowNotForSale && (
+							<label htmlFor="put-forsale-only">
+								<div className="mt-2 flex items-center justify-between">
+									<h1 className="text-white font-semibold text-xl mt-2">For Sale Only</h1>
+									<input
+										id="put-forsale-only"
+										className="w-auto"
+										type="checkbox"
+										defaultChecked={isNotForSale}
+										onChange={() => setIsNotForSale(!isNotForSale)}
+									/>
+								</div>
+							</label>
 						)}
 						<button
 							onClick={onClickApply}
@@ -193,6 +268,21 @@ const filter = [
 	{
 		key: 'priceasc',
 		value: 'Lowest Price',
+	},
+]
+
+const filterCopies = [
+	{
+		key: 'undefined',
+		value: 'All',
+	},
+	{
+		key: '1',
+		value: '1 of 1',
+	},
+	{
+		key: '2',
+		value: 'Multiple',
 	},
 ]
 

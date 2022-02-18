@@ -44,6 +44,7 @@ const home = {
 	LastSold: '最近售出',
 	Featured: '特色',
 	Latest: '最新',
+	TopCollections: 'Top 收藏品',
 	TopBuyers: 'Top 买家',
 	TopSellers: 'Top 卖家',
 	NewestCards: '最新卡片',
@@ -140,6 +141,7 @@ const CardInfo = {
 	SalePrice: '售价',
 	Receive: '接收',
 	Royalty: '版税',
+	Views: '意見',
 	Fee: '费用',
 	Cancel: '取消',
 	RemoveListing: '删除列表',
@@ -282,6 +284,8 @@ const modal = {
 	Deposit: '存款',
 	AreAboutToSend: 'You are about to send',
 	MintedBy: 'minted by',
+	DynamicTxFee:
+		'If you make the transaction before {date} you will be charged {fee}% transaction fee.',
 }
 const tab = {
 	BoughtFrom: '买自',
@@ -319,6 +323,7 @@ const common = {
 	Accept: '接受',
 	Filter: 'Filter',
 	FilterBy: '过滤',
+	CopiesOfCard: '卡副本',
 	Price: '价格',
 	Apply: '申请',
 	Comics: '漫画',
@@ -329,6 +334,8 @@ const common = {
 	Chapter: 'Chapter',
 	ReadNow: 'Read Now',
 	FlaggedByPARASStealing: '警告：由于艺术品被盗，此配置文件已被PARAS标记',
+	FlaggedByPARASFake: '警告: 此帐号使用其他人的身份',
+	FlaggedByPARASHacked: '警告：该帐户已被黑客入侵。请联系原作者',
 	UseOwnRisk: 'Paras的智能合约尚未由知名安全组织或公司审计。使用风险自负！',
 	...token,
 	...tab,
@@ -549,6 +556,15 @@ const newCollection = {
 	Logo: 'Logo',
 	CreatingLoading: '创建中...',
 }
+const deleteCollection = {
+	DeleteTitle: '删除确认',
+	DeleteText: '您确定要删除此收藏吗?',
+	DeleteCancel: `取消`,
+	Delete: `删除`,
+	Loading: `正在加载`,
+	DeleteSuccess: `删除收藏成功`,
+	DeleteFailed: `出了点问题，请稍后再试`,
+}
 const search = {
 	'Search{searchQuery}Paras': '查询 {searchQuery} — Paras',
 	SearchResult: '查询结果',
@@ -575,6 +591,7 @@ const data = {
 	news,
 	search,
 	newCollection,
+	deleteCollection,
 }
 
 export const zh = config(data)

@@ -12,6 +12,8 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CategoryList from 'components/CategoryList'
 import AddCategoryModal from 'components/Modal/AddCategoryModal'
 import { useIntl } from 'hooks/useIntl'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
+
 const LIMIT = 12
 
 export default function Category({ serverQuery, categoryList, _categoryDetail }) {
@@ -62,10 +64,24 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 	}, [categoryId])
 
 	useEffect(() => {
-		if (router.query.sort || router.query.pmin || router.query.pmax || router.query.is_verified) {
+		if (
+			router.query.sort ||
+			router.query.pmin ||
+			router.query.pmax ||
+			router.query.min_copies ||
+			router.query.max_copies ||
+			router.query.is_verified
+		) {
 			updateFilter()
 		}
-	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.is_verified])
+	}, [
+		router.query.sort,
+		router.query.pmin,
+		router.query.pmax,
+		router.query.min_copies,
+		router.query.max_copies,
+		router.query.is_verified,
+	])
 
 	useEffect(() => {
 		const onClickEv = (e) => {
@@ -95,15 +111,19 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 	const _fetchData = async (initial = false) => {
 		const _hasMore = initial ? true : hasMoreCategoryCard[categoryId]
 		const _tokens = initial ? [] : categoryCardList[categoryId]
-		const _page = initial ? 0 : pageCategoryCardList[categoryId]
+		const _page = initial ? {} : pageCategoryCardList[categoryId]
 
 		if (!_hasMore || isFetching) {
 			return
 		}
 
 		setIsFetching(true)
+		const params = tokensParams({
+			...(router.query || serverQuery),
+			..._page,
+		})
 		const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(_page, router.query || serverQuery),
+			params: params,
 		})
 		const newData = await res.data.data
 		const newTokens = [..._tokens, ...newData.results]
@@ -112,11 +132,9 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 			[categoryId]: newTokens,
 		}
 
+		const lastData = newData.results[newData.results.length - 1]
 		setCategoryCardList(newCategoryData)
-		setPageCategoryCardList({
-			...pageCategoryCardList,
-			[categoryId]: _page + 1,
-		})
+
 		if (newData.results.length < LIMIT) {
 			setHasMoreCategoryCard({
 				...hasMoreCategoryCard,
@@ -126,6 +144,15 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 			setHasMoreCategoryCard({
 				...hasMoreCategoryCard,
 				[categoryId]: true,
+			})
+
+			setPageCategoryCardList({
+				...pageCategoryCardList,
+				[categoryId]: {
+					_id_next: lastData._id,
+					updated_at_next: params.__sort.includes('updated_at') ? lastData.updated_at : null,
+					lowest_price_next: params.__sort.includes('lowest_price') ? lastData.lowest_price : null,
+				},
 			})
 		}
 		setIsFetching(false)
@@ -282,7 +309,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 				</div>
 				<div className="mt-8 px-4">
 					{!categoryCardList[categoryId] || isFiltering ? (
-						<div className="min-h-full border-2 border-dashed border-gray-800 rounded-md">
+						<div className="min-h-full">
 							<CardListLoader />
 						</div>
 					) : (
@@ -294,22 +321,30 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 						/>
 					)}
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>
 	)
 }
 
-const tokensParams = (_page = 0, query) => {
+const tokensParams = (query) => {
+	const parsedSortQuery = parseSortQuery(query.sort)
 	const params = {
 		category_id: query.categoryId,
 		exclude_total_burn: true,
-		__sort: parseSortQuery(query.sort),
-		__skip: _page * LIMIT,
+		__sort: parsedSortQuery,
 		__limit: LIMIT,
 		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
+		...(query._id_next && { _id_next: query._id_next }),
+		...(query.lowest_price_next &&
+			parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
+		...(query.updated_at_next &&
+			parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+		...(query.min_copies && { min_copies: query.min_copies }),
+		...(query.max_copies && { max_copies: query.max_copies }),
 	}
 	return params
 }

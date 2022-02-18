@@ -11,6 +11,7 @@ import Setting from './Setting'
 import Cookies from 'js-cookie'
 import NotificationList from './Notification/NotificationList'
 import User from './User/User'
+import TokenNav from './Nav/TokenNav'
 
 const Nav = () => {
 	const [showMobileNav, setShowMobileNav] = useState(false)
@@ -26,7 +27,7 @@ const Nav = () => {
 	const { localeLn } = useIntl()
 	useEffect(() => {
 		const onClickEv = (e) => {
-			if (mobileNavRef && !mobileNavRef.current.contains(e.target)) {
+			if (mobileNavRef && !mobileNavRef?.current?.contains(e.target)) {
 				setShowMobileNav(false)
 			}
 		}
@@ -127,9 +128,9 @@ const Nav = () => {
 					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
 				>
 					<div className="px-10 py-1 md:p-0 ">
-						Check out Degens Syndicate's NFT Drops & Paras' Card4Card now
+						{`Prepare your best arts for Card4Card on Jan 28th! Read more info `}
 						<a
-							href="https://paras.id/publication/card4card-is-back-this-october-616d7ceeee25ff5cc2b63053"
+							href="https://paras.id/publication/first-card4card-in-2022-61ed5a50cd08b4959dde48b7"
 							target="_blank"
 							className="font-bold cursor-pointer hover:underline"
 						>
@@ -239,7 +240,8 @@ const Nav = () => {
 										value={searchQuery}
 										onChange={(event) => setSearchQuery(event.target.value)}
 										placeholder={localeLn('SearchByTitle')}
-										className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-sm font-medium"
+										className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-base md:text-sm font-medium"
+										style={{ WebkitAppearance: 'none' }}
 									/>
 								</div>
 							</form>
@@ -263,12 +265,12 @@ const Nav = () => {
 						</div>
 					</div>
 					<div className="flex items-center -mx-4">
-						<div className="px-3 text-gray-100 hidden md:block fireText">
+						{/* <div className="px-3 text-gray-100 hidden md:block fireText text-sm">
 							<Link href="/drops">
 								<a className="block w-full">{localeLn('Drops')}</a>
 							</Link>
-						</div>
-						<div className="px-3 text-gray-100 hidden md:block">
+						</div> */}
+						<div className="px-3 text-gray-100 hidden md:block text-sm">
 							{router.pathname === '/market' ? (
 								<a className="cursor-pointer" onClick={() => store.setMarketScrollPersist(0)}>
 									{localeLn('Market')}
@@ -279,20 +281,28 @@ const Nav = () => {
 								</Link>
 							)}
 						</div>
-						<div className="px-3 text-gray-100 hidden md:block">
+						<div className="px-3 text-gray-100 hidden md:block text-sm">
 							<Link href="/publication">
 								<a>{localeLn('Publication')}</a>
 							</Link>
 						</div>
-						<div className="px-3 text-gray-100 hidden md:block">
+						<div className="px-3 text-gray-100 hidden md:block text-sm">
 							<Link href="/activity">
 								<a>{localeLn('Activity')}</a>
 							</Link>
 						</div>
-						<div className="px-3 text-gray-100 hidden md:block">
-							<a href="https://stats.paras.id" target="_blank" className="flex cursor-pointer ">
-								{localeLn('Stats')}
+						<div className="px-3 text-gray-100 hidden md:block text-sm">
+							<a
+								href="https://comic.paras.id?utm_source=paras-marketplace&utm_medium=website&utm_campaign=nav"
+								target="_blank"
+								className="flex cursor-pointer"
+								rel="noreferrer"
+							>
+								{localeLn('Comics')}
 							</a>
+						</div>
+						<div className="px-3 text-gray-100 hidden md:block text-sm">
+							<TokenNav />
 						</div>
 						<div className="px-3">
 							{store.currentUser ? (
@@ -305,7 +315,7 @@ const Nav = () => {
 									</div>
 								</div>
 							) : (
-								<Link href="/login">
+								<Link href="/login" as={router.asPath}>
 									<a className="text-gray-100 ">{localeLn('Login')}</a>
 								</Link>
 							)}
@@ -356,8 +366,43 @@ const Nav = () => {
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
-								<a href="https://stats.paras.id" target="_blank" className="p-4 block w-full">
-									{localeLn('Stats')}
+								<a
+									href="https://comic.paras.id?utm_source=paras-marketplace&utm_medium=website&utm_campaign=nav"
+									target="_blank"
+									className="p-4 block w-full"
+									rel="noreferrer"
+								>
+									{localeLn('Comics')}
+								</a>
+							</div>
+							<div className="text-gray-100 ">
+								<a
+									href="https://ipfs.fleek.co/ipfs/bafybeihu6atdada45rmx4sszny6sahrzas4tuzrpuufdcpe6b63r6ugdce"
+									target="_blank"
+									className="p-4 block w-full"
+									rel="noreferrer"
+								>
+									{localeLn('Whitepaper')}
+								</a>
+							</div>
+							<div className="text-gray-100 ">
+								<a
+									href="https://app.ref.finance/#wrap.near|token.paras.near"
+									target="_blank"
+									className="p-4 block w-full"
+									rel="noreferrer"
+								>
+									{localeLn('NavGetParas')}
+								</a>
+							</div>
+							<div className="text-gray-100 fireText">
+								<a
+									className="p-4 block w-full"
+									href="https://stake.paras.id"
+									target="_blank"
+									rel="noreferrer"
+								>
+									Stake Paras
 								</a>
 							</div>
 						</div>

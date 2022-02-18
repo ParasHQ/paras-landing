@@ -64,8 +64,8 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 				pathname: router.pathname,
 				query: {
 					...router.query,
-					...{ tokenId: token.token_id },
-					...{ prevAs: router.asPath },
+					tokenId: token.token_id,
+					contractId: token.contract_id,
 				},
 			},
 			`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`,
@@ -93,7 +93,7 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 				dataLength={tokens.length}
 				next={fetchData}
 				hasMore={hasMore}
-				loader={<CardListLoader />}
+				loader={<CardListLoader length={4} />}
 				className="-mx-4"
 			>
 				<animated.div className="flex flex-wrap select-none">
@@ -118,6 +118,7 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 												imgUrl={parseImgUrl(token.metadata.media, null, {
 													width: `600`,
 													useOriginal: process.env.APP_ENV === 'production' ? false : true,
+													isMediaCdn: token.isMediaCdn,
 												})}
 												imgBlur={token.metadata.blurhash}
 												flippable
@@ -127,6 +128,7 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 													collection: token.metadata.collection || token.contract_id,
 													copies: token.metadata.copies,
 													creatorId: token.metadata.creator_id || token.contract_id,
+													is_creator: token.is_creator,
 													description: token.metadata.description,
 													royalty: token.royalty,
 													attributes: token.metadata.attributes,

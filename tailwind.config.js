@@ -3,7 +3,7 @@ module.exports = {
 		removeDeprecatedGapUtilities: true,
 		purgeLayersByDefault: true,
 	},
-	purge: ['./pages/**/*.js', './components/**/*.js', './hooks/**/*.js'],
+	purge: ['./pages/**/*.js', './components/**/*.js', './hooks/**/*.js', './constants/*.js'],
 	theme: {
 		fontFamily: {
 			body: ['Anybody', 'sans-serif'],
@@ -11,6 +11,10 @@ module.exports = {
 		extend: {
 			opacity: {
 				15: '0.15',
+			},
+			spacing: {
+				'1/20': '5%',
+				'1/10': '10%',
 			},
 			height: {
 				'100vh': '100vh',

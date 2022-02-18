@@ -12,6 +12,7 @@ const nav = {
 	CurrentlyWeOnly: 'Currently we only allow verified creator to create publication.',
 	NavJoinDiscord: 'Join Paras Discord',
 	NavViewWallet: 'View on NEAR Wallet',
+	NavGetParas: 'Get $PARAS on Ref',
 	NavSwitchAccount: 'Switch Account',
 	NavAddAccount: 'Add Account',
 	NavCreateCard: 'Create Card',
@@ -140,6 +141,7 @@ const CardInfo = {
 	SalePrice: 'Sale price',
 	Receive: 'Receive',
 	Royalty: 'Royalty',
+	Views: 'Views',
 	Fee: 'Fee',
 	Cancel: 'Cancel',
 	RemoveListing: 'Remove Listing',
@@ -290,6 +292,8 @@ const modal = {
 	Deposit: 'Deposit',
 	AreAboutToSend: 'You are about to send',
 	MintedBy: 'minted by',
+	DynamicTxFee:
+		'If you make the transaction before {date} you will be charged {fee}% transaction fee.',
 }
 const tab = {
 	BoughtFrom: 'bought from',
@@ -326,6 +330,7 @@ const common = {
 	Accept: 'Accept',
 	Filter: 'Filter',
 	FilterBy: 'Filter by',
+	CopiesOfCard: 'Copies of Card',
 	Price: 'Price',
 	Apply: 'Apply',
 	Comics: 'Comics',
@@ -336,6 +341,8 @@ const common = {
 	Chapter: 'Chapter',
 	ReadNow: 'Read Now',
 	FlaggedByPARASStealing: 'WARNING: This profile has been flagged by PARAS due to art stealing',
+	FlaggedByPARASFake: "WARNING: This account uses someone else's identity",
+	FlaggedByPARASHacked: 'WARNING: The account has been hacked. Please contact the original creator',
 	UseOwnRisk:
 		"Paras' smart contract is not yet audited by well-known security organization or firm. Use at your own risk!",
 	...token,
@@ -576,6 +583,21 @@ const collection = {
 	To: 'To',
 	Time: 'Time',
 	Type: 'Type',
+	NoActivity: 'No Activity',
+}
+const deleteCollection = {
+	DeleteTitle: 'Delete Confirmation',
+	DeleteText: 'Are you sure you want to delete this collection?',
+	DeleteCancel: `Cancel`,
+	Delete: `Delete`,
+	Loading: `Loading`,
+	DeleteSuccess: `Delete collection was success`,
+	DeleteFailed: `Something went wrong, try again later.`,
+}
+const categories = {
+	Categories: 'Categories',
+	ExploreAllCategoriesOnParas: 'Explore All Categories on Paras',
+	CuratedBy: 'Curated by : ',
 }
 
 import { config } from './config.js'
@@ -600,7 +622,9 @@ const data = {
 	news,
 	search,
 	newCollection,
+	deleteCollection,
 	collection,
+	categories,
 }
 
 export const en = config(data)

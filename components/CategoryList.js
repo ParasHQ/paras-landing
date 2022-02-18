@@ -30,6 +30,11 @@ const CategoryList = ({ listCategory, categoryId = '' }) => {
 							{localeLn('All')}
 						</a>
 					</Link>
+					<span className="text-xl text-gray-600 font-semibold">|</span>
+					<Link href="/categories" shallow={true}>
+						<a className={`text-xl text-gray-600 font-semibold`}>{localeLn('Categories')}</a>
+					</Link>
+					<span className="text-xl text-gray-600 font-semibold">|</span>
 					{listCategory
 						.filter((category) => !category.isHide)
 						.map((category) => (
@@ -41,7 +46,7 @@ const CategoryList = ({ listCategory, categoryId = '' }) => {
 								<a
 									className={`text-xl ${
 										category.category_id === categoryId ? 'text-gray-100' : 'text-gray-600'
-									} font-semibold`}
+									} font-semibold flex-shrink-0`}
 								>
 									<span>{category.name}</span>
 								</a>

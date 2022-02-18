@@ -3,16 +3,17 @@ import cachios from 'cachios'
 import { useEffect, useState } from 'react'
 
 import ReactTooltip from 'react-tooltip'
+import { prettyTruncate } from 'utils/common'
 
-const ArtistVerified = ({ token }) => {
+const ArtistVerified = ({ token, collection }) => {
 	const [artistData, setArtistData] = useState(null)
 	const [showTooltip, setShowTooltip] = useState(false)
 
 	useEffect(async () => {
-		if (token.metadata.creator_id) {
+		if (token?.metadata.creator_id) {
 			const profileRes = await cachios.get(`${process.env.V2_API_URL}/profiles`, {
 				params: {
-					accountId: token.metadata.creator_id,
+					accountId: token?.metadata.creator_id,
 				},
 				ttl: 600,
 			})
@@ -23,7 +24,7 @@ const ArtistVerified = ({ token }) => {
 	}, [token])
 
 	const getCreatorId = () => {
-		return token.metadata.creator_id || token.contract_id
+		return token?.metadata.creator_id || token?.contract_id
 	}
 
 	return (
@@ -32,17 +33,17 @@ const ArtistVerified = ({ token }) => {
 			<span className="font-semibold">
 				<Link
 					href={
-						token.metadata.creator_id
+						token?.metadata.creator_id
 							? `/${getCreatorId()}/creation`
 							: `/collection/${getCreatorId()}`
 					}
 				>
 					<a className="text-white font-semibold border-b-2 border-transparent hover:border-white">
-						{getCreatorId()}
+						{prettyTruncate(getCreatorId(), 30, 'address')}
 					</a>
 				</Link>
 			</span>
-			{artistData?.isCreator && (
+			{(artistData?.isCreator || collection?.isCreator) && (
 				<span data-tip="Verified Creator" className="ml-1">
 					<svg
 						width="18"

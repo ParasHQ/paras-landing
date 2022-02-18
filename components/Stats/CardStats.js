@@ -19,8 +19,8 @@ const CardStats = ({ cardsData, fetchData, hasMore }) => {
 				pathname: router.pathname,
 				query: {
 					...router.query,
-					...{ tokenId: localToken?.tokenId },
-					...{ prevAs: router.asPath },
+					tokenId: localToken?.token_id,
+					contractId: localToken?.contract_id,
 				},
 			},
 			`/token/${localToken?.tokenId}`,

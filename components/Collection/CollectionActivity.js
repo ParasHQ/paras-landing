@@ -4,7 +4,8 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { useIntl } from 'hooks/useIntl'
 import { useState } from 'react'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
-import { parseImgUrl, prettyTruncate, timeAgo } from 'utils/common'
+import { prettyTruncate, timeAgo } from 'utils/common'
+import Media from 'components/Common/Media'
 
 const HEADERS = [
 	{
@@ -95,6 +96,16 @@ const CollectionActivity = ({ activities, fetchData, hasMore }) => {
 						})}
 					</div>
 				</div>
+				{activities.length === 0 && !hasMore && (
+					<div className="w-full">
+						<div className="m-auto text-2xl text-gray-600 font-semibold py-5 text-center">
+							<div className="w-40 m-auto">
+								<img src="/cardstack.png" className="opacity-75" />
+							</div>
+							<p className="mt-4">{localeLn('NoActivities')}</p>
+						</div>
+					</div>
+				)}
 				<InfiniteScroll
 					dataLength={activities.length}
 					next={fetchData}
@@ -110,17 +121,20 @@ const CollectionActivity = ({ activities, fetchData, hasMore }) => {
 										onClick={() => showDetail(index)}
 									>
 										<div className="flex md:col-span-2 items-center md:cursor-pointer">
-											<div className="w-1/4 bg-blue-900 rounded z-20">
+											<div className="w-1/4 bg-blue-900 rounded-lg z-20">
 												{activity?.data?.[0]?.metadata.media && (
 													<Link
 														href={`/token/${activity.contract_id}::${activity.token_series_id}`}
 													>
 														<a>
-															<img
-																src={parseImgUrl(activity?.data?.[0]?.metadata.media, null, {
-																	width: `200`,
-																})}
-																className="bg-cover"
+															<Media
+																className="rounded-lg overflow-hidden"
+																url={activity?.data?.[0]?.metadata.media}
+																videoControls={false}
+																videoLoop={true}
+																videoMuted={true}
+																autoPlay={false}
+																playVideoButton={false}
 															/>
 														</a>
 													</Link>

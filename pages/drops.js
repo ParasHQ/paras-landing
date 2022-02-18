@@ -228,9 +228,7 @@ export default function Drops() {
 								both on the number of volumes and transactions — and improving for the community.
 							</p>
 							<p className="text-gray-200 mt-4">
-								We want to thank our community who supportively believes in us. Paras will not be as
-								we are now without the help of our creators, collectors, token holders, and backers
-								- hence we are proudly present: "Paras 1st Anniversary: 1 of 1 NFT Auction".
+								{`We want to thank our community who supportively believes in us. Paras will not be as we are now without the help of our creators, collectors, token holders, and backers - hence we are proudly present: "Paras 1st Anniversary: 1 of 1 NFT Auction".`}
 							</p>
 							<p className="text-gray-200 mt-4">
 								Check full information about the event{' '}
@@ -436,8 +434,8 @@ const SpecialCard = ({
 					pathname: router.pathname,
 					query: {
 						...router.query,
-						...{ tokenSeriesId: localToken.token_series_id },
-						...{ prevAs: router.asPath },
+						tokenSeriesId: localToken.token_series_id,
+						contractId: localToken.contract_id,
 					},
 				},
 				`/token/${localToken.contract_id}::${localToken.token_series_id}`,
@@ -475,7 +473,13 @@ const SpecialCard = ({
 						<div className="w-full m-auto">
 							<Card
 								special
-								imgUrl={localToken ? parseImgUrl(localToken.metadata.media) : parseImgUrl(imgUrl)}
+								imgUrl={
+									localToken
+										? parseImgUrl(localToken.metadata.media, null, {
+												isMediaCdn: localToken.isMediaCdn,
+										  })
+										: parseImgUrl(imgUrl, null)
+								}
 								imgBlur={blurhash}
 								disableFlip
 								token={{
@@ -486,6 +490,7 @@ const SpecialCard = ({
 									copies: localToken?.copies || cardSupplyText,
 									tokenId: localToken?.tokenId,
 									createdAt: localToken?.createdAt,
+									is_creator: localToken?.is_creator,
 								}}
 								initialRotate={{
 									x: 0,

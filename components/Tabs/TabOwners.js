@@ -2,11 +2,7 @@ import cachios from 'cachios'
 import Avatar from 'components/Common/Avatar'
 import Button from 'components/Common/Button'
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
-import TokenStorageModal from 'components/Modal/TokenStorageModal'
 import TokenUpdatePriceModal from 'components/Modal/TokenUpdatePriceModal'
-import { STORAGE_ADD_MARKET_FEE } from 'config/constants'
-import JSBI from 'jsbi'
-import near from 'lib/near'
 import { sentryCaptureException } from 'lib/sentry'
 import useStore from 'lib/store'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
@@ -23,13 +19,10 @@ const TabOwners = ({ localToken }) => {
 	const [showModal, setShowModal] = useState(null)
 	const [sortBy, setSortBy] = useState()
 	const { localeLn } = useIntl()
-	const { currentUser } = useStore((state) => ({
-		currentUser: state.currentUser,
-	}))
 
 	useEffect(() => {
 		if (localToken.token_series_id) {
-			fetchTokens([], 0)
+			fetchTokens([], null)
 		}
 	}, [])
 
@@ -39,46 +32,14 @@ const TabOwners = ({ localToken }) => {
 		}
 	}, [sortBy, isFetching])
 
-	const hasStorageBalance = async (token) => {
-		try {
-			if (!token.approval_id) {
-				const currentStorage = await near.wallet
-					.account()
-					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `storage_balance_of`, {
-						account_id: currentUser,
-					})
-
-				const supplyPerOwner = await near.wallet
-					.account()
-					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_supply_by_owner_id`, {
-						account_id: currentUser,
-					})
-
-				const usedStorage = JSBI.multiply(
-					JSBI.BigInt(parseInt(supplyPerOwner) + 1),
-					JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
-				)
-
-				if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
-					return true
-				}
-				return false
-			} else {
-				return true
-			}
-		} catch (err) {
-			sentryCaptureException(err)
-		}
-	}
-
-	const fetchTokens = async (currentData, page) => {
+	const fetchTokens = async (currentData, _id_next) => {
 		setIsFetching(true)
 
 		const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
 			params: {
 				token_series_id: localToken.token_series_id,
 				contract_id: localToken.contract_id,
-				__skip: page * FETCH_TOKENS_LIMIT,
+				_id_next: _id_next,
 				__limit: FETCH_TOKENS_LIMIT,
 				__sort: '_id::1',
 			},
@@ -90,7 +51,7 @@ const TabOwners = ({ localToken }) => {
 		setTokens(newData)
 
 		if (respData.length === FETCH_TOKENS_LIMIT) {
-			fetchTokens(newData, page + 1)
+			fetchTokens(newData, respData[respData.length - 1]._id)
 		} else {
 			setIsFetching(false)
 		}
@@ -98,12 +59,7 @@ const TabOwners = ({ localToken }) => {
 
 	const onUpdateListing = async (token) => {
 		setActiveToken(token)
-		const hasBalance = await hasStorageBalance(token)
-		if (hasBalance) {
-			setShowModal('update')
-		} else {
-			setShowModal('storage')
-		}
+		setShowModal('update')
 	}
 
 	const onDismissModal = () => {
@@ -186,13 +142,6 @@ const TabOwners = ({ localToken }) => {
 					data={activeToken}
 				/>
 			)}
-			{showModal === 'storage' && (
-				<TokenStorageModal
-					show={showModal === 'storage'}
-					onClose={onDismissModal}
-					data={activeToken}
-				/>
-			)}
 		</div>
 	)
 }
@@ -245,10 +194,10 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 						<p className="ml-2 text-white font-semibold">{localeLn('Burned')}</p>
 					)}
 				</div>
-				<div>
+				<div className="pl-4 overflow-hidden">
 					<Link href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}>
 						<a className="hover:opacity-80">
-							<p className="text-white font-semibold">
+							<p className="text-white font-semibold truncate">
 								{token.contract_id === process.env.NFT_CONTRACT_ID
 									? `${localeLn('Edition')} #${token.edition_id}`
 									: `#${token.token_id}`}

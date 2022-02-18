@@ -44,6 +44,7 @@ const home = {
 	LastSold: 'Última vendida',
 	Featured: 'Destacada',
 	Latest: 'Más reciente',
+	TopCollections: 'Principales Colecciones',
 	TopBuyers: 'Principales Compradores',
 	TopSellers: 'Principales Vendedores',
 	NewestCards: 'Nuevas Cartas',
@@ -137,6 +138,7 @@ const CardInfo = {
 	SalePrice: 'Precio de venta',
 	Receive: 'Recibir',
 	Royalty: 'Regalía',
+	Views: 'Puntos De Vista',
 	Fee: 'Comisión',
 	Cancel: 'Cancelar',
 	RemoveListing: 'Eliminar listado',
@@ -289,6 +291,8 @@ const modal = {
 	Deposit: 'Depositar',
 	AreAboutToSend: 'Estás a punto de envíar',
 	MintedBy: 'minteado por',
+	DynamicTxFee:
+		'If you make the transaction before {date} you will be charged {fee}% transaction fee.',
 }
 const tab = {
 	BoughtFrom: 'comprado de',
@@ -325,6 +329,7 @@ const common = {
 	Accept: 'Aceptar',
 	Filter: 'Filtrar',
 	FilterBy: 'Filtrar por',
+	CopiesOfCard: 'Copias de Tarjeta',
 	Price: 'Precio',
 	Apply: 'Aplicar',
 	Comics: 'Comics',
@@ -335,6 +340,9 @@ const common = {
 	Chapter: 'Capítulo',
 	ReadNow: 'Leer Ahora',
 	FlaggedByPARASStealing: 'ADVERTENCIA: PARAS ha marcado este perfil por robo de arte',
+	FlaggedByPARASFake: 'ADVERTENCIA: Esta cuenta utiliza la identidad de otra persona.',
+	FlaggedByPARASHacked:
+		'ADVERTENCIA: La cuenta ha sido pirateada. Por favor, póngase en contacto con el creador original.',
 	UseOwnRisk:
 		"El contrato inteligente de 'Paras' aún no ha sido auditado por una organización o empresa de seguridad reconocida. ¡Úselo bajo su propio riesgo!",
 	...token,
@@ -523,6 +531,15 @@ const newCollection = {
 	Logo: 'Logo',
 	CreatingLoading: 'Creando...',
 }
+const deleteCollection = {
+	DeleteTitle: 'Borrar Confirmación',
+	DeleteText: 'Estás seguro de que quieres eliminar esta colección?',
+	DeleteCancel: `Cancelar`,
+	Delete: `Eliminar`,
+	Loading: `Cargando`,
+	DeleteSuccess: `Eliminar la colección fue un éxito`,
+	DeleteFailed: `Algo salió mal, inténtalo de nuevo más tarde.`,
+}
 const search = {
 	'Search{searchQuery}Paras': 'Buscar {searchQuery} — Paras',
 	SearchResult: 'Resultado de la búsqueda',
@@ -550,6 +567,7 @@ const data = {
 	news,
 	search,
 	newCollection,
+	deleteCollection,
 }
 
 export const es = config(data)

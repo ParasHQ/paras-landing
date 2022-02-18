@@ -18,7 +18,10 @@ const moduleExports = {
 		MARKETPLACE_CONTRACT_ID: process.env.MARKETPLACE_CONTRACT_ID,
 		NFT_CONTRACT_ID: process.env.NFT_CONTRACT_ID,
 		WHITELIST_CONTRACT_ID: process.env.WHITELIST_CONTRACT_ID,
+		DISABLE_OFFER_CONTRACT_ID: process.env.DISABLE_OFFER_CONTRACT_ID,
 		REPORT_URL: process.env.REPORT_URL,
+		PARAS_TOKEN_CONTRACT: process.env.PARAS_TOKEN_CONTRACT,
+		GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID,
 	},
 	async redirects() {
 		return [
@@ -33,7 +36,7 @@ const moduleExports = {
 		/**
 		 * Provide the locales you want to support in your application
 		 */
-		locales: ['en', 'zh', 'es'], //, "fr", "ko", "ru", "vi"],
+		locales: ['en', 'zh', 'es', 'ru'], //, "fr", "ko", "ru", "vi"],
 		/**
 		 * This is the default locale you want to be used when visiting
 		 * a non-locale prefixed path.

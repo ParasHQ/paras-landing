@@ -19,7 +19,9 @@ export const config = ({
 	news,
 	search,
 	newCollection,
+	deleteCollection,
 	collection,
+	categories,
 }) => {
 	return {
 		defaultAll: {
@@ -167,6 +169,11 @@ export const config = ({
 		'/collection/[collection_id]': {
 			...common,
 			...collection,
+			...deleteCollection,
+		},
+		'/categories': {
+			...common,
+			...categories,
 		},
 	}
 }

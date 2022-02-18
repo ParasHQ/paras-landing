@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import Media from 'components/Common/Media'
+import { parseImgUrl } from 'utils/common'
 
 const Card = ({
 	imgUrl,
 	imgWidth = 640,
 	imgHeight = 890,
 	token,
+	profileCollection,
+	type,
 	onClick = () => {},
 	flippable = false,
 }) => {
@@ -128,20 +131,67 @@ const Card = ({
 								</p>
 							</div>
 							<div className="card-content my-2 relative flex flex-grow h-0">
-								<Media
-									className="mx-auto h-full object-contain relative z-10"
-									url={imgUrl}
-									videoControls={false}
-									videoMuted={true}
-									videoLoop={true}
-								/>
+								{token._is_the_reference_merged !== undefined &&
+								!token._is_the_reference_merged &&
+								type === 'collection' ? (
+									<>
+										<div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40 backdrop-filter backdrop-blur-lg backdrop-saturate-200 z-10" />
+										<div
+											className="absolute top-0 left-0 w-full h-full bg-cover bg-white"
+											style={{ backgroundImage: `url(${parseImgUrl(profileCollection)})` }}
+										/>
+										<div className="flex items-center justify-center w-full h-full">
+											<div className="z-20">
+												<img
+													src={parseImgUrl(profileCollection)}
+													width={100}
+													className="mx-auto rounded-full"
+												/>
+												<h4 className="text-white text-sm mt-4">Content not available yet</h4>
+											</div>
+										</div>
+									</>
+								) : (
+									<Media
+										className="mx-auto h-full object-contain relative z-10"
+										url={imgUrl}
+										videoControls={false}
+										videoMuted={true}
+										videoLoop={true}
+									/>
+								)}
 							</div>
 							<div className="px-2 mt-auto">
 								<div className="flex justify-between">
-									<div className="w-1/2">
-										<p className="text-white truncate" style={{ fontSize: `.6em` }}>
+									<div className="w-1/2 flex items-center">
+										<p className="text-white truncate mr-1" style={{ fontSize: `.6em` }}>
 											{token.creatorId}
 										</p>
+										{token.is_creator && (
+											<svg
+												width="12"
+												height="12"
+												viewBox="0 0 18 17"
+												className="leading-3 mb-1"
+												fill="none"
+												xmlns="http://www.w3.org/2000/svg"
+											>
+												<path
+													d="M17.8095 8.5L15.8343 6.24143L16.1095 3.25429L13.1871 2.59048L11.6571 0L8.90476 1.1819L6.15238 0L4.62238 2.58238L1.7 3.2381L1.97524 6.23333L0 8.5L1.97524 10.7586L1.7 13.7538L4.62238 14.4176L6.15238 17L8.90476 15.81L11.6571 16.9919L13.1871 14.4095L16.1095 13.7457L15.8343 10.7586L17.8095 8.5Z"
+													fill="white"
+												/>
+												<path
+													d="M7.3956 12.1429L5.66675 6.494H7.62684L8.74022 10.9039H9.06951L10.1855 5.66675H12.1429L10.4141 12.1429H7.3956Z"
+													fill="#0816B3"
+												/>
+												<path
+													fillRule="evenodd"
+													clipRule="evenodd"
+													d="M10.1191 5.26196H14.4169L13.6074 6.88101H10.1191V5.26196Z"
+													fill="#0816B3"
+												/>
+											</svg>
+										)}
 									</div>
 									<div className="w-1/2 text-right">
 										<p className="text-white" style={{ fontSize: `.6em` }}>
@@ -184,13 +234,34 @@ const Card = ({
 							style={{ transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)` }}
 						>
 							<div className="bg-white opacity-10 absolute inset-0">
-								<Media
-									className="mx-auto h-full object-cover relative z-10 img-hor-vert"
-									url={imgUrl}
-									videoControls={false}
-									videoMuted={true}
-									videoLoop={true}
-								/>
+								{token._is_the_reference_merged !== undefined &&
+								!token._is_the_reference_merged &&
+								type === 'collection' ? (
+									<>
+										<div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-40 backdrop-filter backdrop-blur-lg backdrop-saturate-200 z-10" />
+										<div
+											className="absolute top-0 left-0 w-full h-full bg-cover bg-white"
+											style={{ backgroundImage: `url(${parseImgUrl(profileCollection)})` }}
+										/>
+										<div className="flex items-center justify-center w-full h-full">
+											<div className="z-20">
+												<img
+													src={parseImgUrl(profileCollection)}
+													width={100}
+													className="mx-auto rounded-full"
+												/>
+											</div>
+										</div>
+									</>
+								) : (
+									<Media
+										className="mx-auto h-full object-cover relative z-10 img-hor-vert"
+										url={imgUrl}
+										videoControls={false}
+										videoMuted={true}
+										videoLoop={true}
+									/>
+								)}
 							</div>
 							<div className="card-bg relative z-10">
 								<div

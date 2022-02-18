@@ -11,6 +11,7 @@ import { parseSortQuery } from 'utils/common'
 import CardListLoader from 'components/Card/CardListLoader'
 import CategoryList from 'components/CategoryList'
 import { useIntl } from 'hooks/useIntl'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const LIMIT = 12
 
@@ -19,7 +20,9 @@ function MarketPage({ serverQuery }) {
 	const router = useRouter()
 
 	const [tokens, setTokens] = useState([])
-	const [page, setPage] = useState(0)
+	const [idNext, setIdNext] = useState(null)
+	const [lowestPriceNext, setLowestPriceNext] = useState(null)
+	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(true)
 	const [hasMore, setHasMore] = useState(true)
@@ -33,19 +36,31 @@ function MarketPage({ serverQuery }) {
 
 	useEffect(() => {
 		updateFilter(router.query)
-	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.is_verified])
+	}, [
+		router.query.sort,
+		router.query.pmin,
+		router.query.pmax,
+		router.query.min_copies,
+		router.query.max_copies,
+		router.query.is_verified,
+	])
 
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
+		const params = tokensParams(query || serverQuery)
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(0, query || serverQuery),
+			params: params,
 		})
-		setPage(1)
 		setTokens(res.data.data.results)
 		if (res.data.data.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
+
+			const lastData = res.data.data.results[res.data.data.results.length - 1]
+			setIdNext(lastData._id)
+			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 		}
 		setIsFiltering(false)
 	}
@@ -60,17 +75,27 @@ function MarketPage({ serverQuery }) {
 			return
 		}
 		setIsFetching(true)
+		const params = tokensParams({
+			...(router.query || serverQuery),
+			_id_next: idNext,
+			lowest_price_next: lowestPriceNext,
+			updated_at_next: updatedAtNext,
+		})
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
-			params: tokensParams(page, router.query || serverQuery),
+			params: params,
 		})
 		const newData = await res.data.data
 		const newTokens = [...tokens, ...newData.results]
 		setTokens(newTokens)
-		setPage(page + 1)
 		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
+
+			const lastData = newData.results[newData.results.length - 1]
+			setIdNext(lastData._id)
+			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 		}
 		setIsFetching(false)
 	}
@@ -133,21 +158,29 @@ function MarketPage({ serverQuery }) {
 						<CardList name="market" tokens={tokens} fetchData={_fetchData} hasMore={hasMore} />
 					)}
 				</div>
+				<ButtonScrollTop />
 			</div>
 			<Footer />
 		</div>
 	)
 }
 
-const tokensParams = (_page = 0, query) => {
+const tokensParams = (query) => {
+	const parsedSortQuery = parseSortQuery(query.sort)
 	const params = {
 		exclude_total_burn: true,
-		__sort: parseSortQuery(query.sort),
-		__skip: _page * LIMIT,
+		__sort: parsedSortQuery,
 		__limit: LIMIT,
 		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
+		...(query._id_next && { _id_next: query._id_next }),
+		...(query.lowest_price_next &&
+			parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
+		...(query.updated_at_next &&
+			parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+		...(query.min_copies && { min_copies: query.min_copies }),
+		...(query.max_copies && { max_copies: query.max_copies }),
 	}
 	return params
 }

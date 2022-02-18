@@ -9,6 +9,9 @@ const FilterActivity = ({ onClickFilter }) => {
 	const [filterBy, setFilterBy] = useState(router.query.filter || filter[0].key)
 	const [minPrice, setMinPrice] = useState(router.query.pmin || '')
 	const [maxPrice, setMaxPrice] = useState(router.query.pmax || '')
+	const [isVerified, setIsVerified] = useState(
+		router.query.is_verified ? router.query.is_verified === 'true' : true
+	)
 	const { localeLn } = useIntl()
 	useEffect(() => {
 		const onClickEv = (e) => {
@@ -27,6 +30,7 @@ const FilterActivity = ({ onClickFilter }) => {
 	const onClickApply = async () => {
 		const query = {
 			filter: filterBy,
+			is_verified: isVerified,
 			...(minPrice && { pmin: minPrice }),
 			...(maxPrice && { pmax: maxPrice }),
 		}
@@ -98,6 +102,18 @@ const FilterActivity = ({ onClickFilter }) => {
 							</div>
 							<input type="submit" className="hidden" />
 						</form>
+						<div className="mt-2 flex items-center justify-between">
+							<h1 className="text-white font-semibold text-xl mt-2">Verified Only</h1>
+							<input
+								id="put-marketplace"
+								className="w-auto"
+								type="checkbox"
+								defaultChecked={isVerified}
+								onChange={() => {
+									setIsVerified(!isVerified)
+								}}
+							/>
+						</div>
 						<button
 							onClick={onClickApply}
 							className="w-full outline-none mt-4 rounded-md bg-transparent text-sm font-semibold py-2 bg-primary text-gray-100"
