@@ -111,8 +111,10 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
 			let transformationList = []
 			if (opts.width) {
 				transformationList.push(`w=${opts.width}`)
+				transformationList.push(`auto=format,compress`)
 			} else {
 				transformationList.push('w=800')
+				transformationList.push(`auto=format,compress`)
 			}
 			return `https://paras-cdn.imgix.net/${cid}?${transformationList.join('&')}`
 		} else if (opts.isMediaCdn) {
@@ -120,8 +122,10 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
 			let transformationList = []
 			if (opts.width) {
 				transformationList.push(`w=${opts.width}`)
+				transformationList.push(`auto=format,compress`)
 			} else {
 				transformationList.push('w=800')
+				transformationList.push(`auto=format,compress`)
 			}
 			return `https://paras-cdn.imgix.net/${sha1Url}?${transformationList.join('&')}`
 		}
@@ -140,8 +144,10 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
 			let transformationList = []
 			if (opts.width) {
 				transformationList.push(`w=${opts.width}`)
+				transformationList.push(`auto=format,compress`)
 			} else {
 				transformationList.push('w=800')
+				transformationList.push(`auto=format,compress`)
 			}
 			return `https://paras-cdn.imgix.net/${cid}?${transformationList.join('&')}`
 		} catch (err) {
