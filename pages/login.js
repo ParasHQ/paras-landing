@@ -89,7 +89,8 @@ const LoginPage = () => {
 								{isLoading ? localeLn('LoadingLoading') : localeLn('LoginWithNEAR')}
 							</Button>
 						</div>
-						<div className="mt-8 text-center">
+						{/* Faucet balance is empty */}
+						{/* <div className="mt-8 text-center">
 							<a
 								href="https://faucet.paras.id"
 								target="_blank"
@@ -98,7 +99,7 @@ const LoginPage = () => {
 							>
 								{localeLn('CreateFreeNEARAccount')}
 							</a>
-						</div>
+						</div> */}
 					</div>
 				</div>
 				<div className="mt-auto">

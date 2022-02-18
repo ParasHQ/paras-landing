@@ -155,6 +155,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			exclude_total_burn: true,
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
+			lookup_token: true,
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
