@@ -4,10 +4,12 @@ import { useEffect, useState } from 'react'
 import { useToast } from 'hooks/useToast'
 import near from 'lib/near'
 import { useIntl } from 'hooks/useIntl'
+import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 const Setting = ({ close }) => {
 	const { localeLn } = useIntl()
 	const toast = useToast()
 	const [email, setEmail] = useState('')
+	const [minPriceOffer, setMinPriceOffer] = useState('')
 	const [preferences, setPreferences] = useState(['nft-drops', 'newsletter', 'notification'])
 	const [initialSetting, setInitialSetting] = useState(null)
 	const [isUpdating, setIsUpdating] = useState(false)
@@ -27,6 +29,7 @@ const Setting = ({ close }) => {
 		if (data) {
 			setEmail(data.email)
 			setPreferences(data.preferences)
+			setMinPriceOffer(formatNearAmount(data.minPriceOffer))
 			setInitialSetting(data)
 		}
 		setIsLoading(false)
@@ -37,7 +40,7 @@ const Setting = ({ close }) => {
 		try {
 			const resp = await Axios.put(
 				`${process.env.V2_API_URL}/credentials/mail`,
-				{ email, preferences },
+				{ email, preferences, minPriceOffer: parseNearAmount(minPriceOffer) },
 				{ headers: { authorization: await near.authToken() } }
 			)
 			const message = resp.data.data
@@ -75,6 +78,7 @@ const Setting = ({ close }) => {
 	const checkIfSettingUnedited = () => {
 		return (
 			initialSetting?.email === email &&
+			initialSetting?.minPriceOffer === minPriceOffer &&
 			initialSetting?.preferences.sort().join() === preferences.sort().join()
 		)
 	}
@@ -161,6 +165,23 @@ const Setting = ({ close }) => {
 									value={preferences.includes('notification')}
 									onChange={() => updatePreferences('notification')}
 								/>
+							</div>
+							<div className="text-gray-100 flex justify-between items-center gap-2 my-2">
+								<div>
+									<div className="text-lg">{localeLn('MinPriceOffer')}</div>
+									<div className="text-gray-100 opacity-75 text-sm">
+										Set the minimum offer you want for each collectibles
+									</div>
+								</div>
+								<div className="flex w-6/12 text-black bg-gray-300 p-2 rounded-md focus:bg-gray-100 mt-0.5 mb-2">
+									<input
+										type="number"
+										value={minPriceOffer}
+										onChange={(e) => setMinPriceOffer(e.target.value)}
+										className="clear pr-2"
+									/>
+									<div className="inline-block">Ⓝ</div>
+								</div>
 							</div>
 						</>
 					) : (
