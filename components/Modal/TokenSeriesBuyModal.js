@@ -10,9 +10,15 @@ import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackBuyTokenSeries, trackBuyTokenSeriesImpression } from 'lib/ga'
+import useProfileData from 'hooks/useProfileData'
+import { flagColor, flagText } from 'constants/flag'
+import BannedConfirmModal from './BannedConfirmModal'
 
 const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
+	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
+	const creatorData = useProfileData(data.metadata.creator_id)
+
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
@@ -79,17 +85,40 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 								</div>
 							</div>
 						</div>
+						{creatorData?.flag && (
+							<div className="z-20 bottom-0 flex items-center justify-center px-4 mt-4 w-full">
+								<p
+									className={`text-white text-sm m-2 mt-2 p-1 font-bold w-full mx-auto px-4 text-center rounded-md ${
+										flagColor[creatorData?.flag]
+									}`}
+								>
+									{localeLn(flagText[creatorData?.flag])}
+								</p>
+							</div>
+						)}
 						<p className="text-white mt-4 text-sm text-center opacity-90">
 							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
-							<Button size="md" isFullWidth onClick={onBuyToken}>
+							<Button
+								size="md"
+								isFullWidth
+								onClick={() => (creatorData?.flag ? setShowBannedConfirm(true) : onBuyToken())}
+							>
 								{data.price !== '0' ? 'Buy' : 'Get for Free'}
 							</Button>
 						</div>
 					</div>
 				</div>
 			</Modal>
+			{showBannedConfirm && (
+				<BannedConfirmModal
+					creatorData={creatorData}
+					action={onBuyToken}
+					setIsShow={(e) => setShowBannedConfirm(e)}
+					onClose={onClose}
+				/>
+			)}
 			<LoginModal onClose={() => setShowLogin(false)} show={showLogin} />
 		</>
 	)
