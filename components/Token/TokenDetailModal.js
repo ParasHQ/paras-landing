@@ -30,9 +30,18 @@ function TokenDetailModal({ tokens = [] }) {
 		if (router.query.tokenId && activeToken === null) {
 			const token = tokens.find(
 				(token) =>
-					token?.token_id === router.query.tokenId && token?.contract_id === router.query.contractId
+					(token?.token_id === router.query.tokenId ||
+						token?.token_series_id === router.query.tokenId) &&
+					token?.contract_id === router.query.contractId
 			)
-			setActiveToken(token)
+			if (token?.token) {
+				setActiveToken({
+					...token.token,
+					price: token.price || token.lowest_price,
+				})
+			} else {
+				setActiveToken(token)
+			}
 		} else {
 			setActiveToken(null)
 		}
