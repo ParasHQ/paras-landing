@@ -29,7 +29,7 @@ const Setting = ({ close }) => {
 		if (data) {
 			setEmail(data.email)
 			setPreferences(data.preferences)
-			setMinPriceOffer(formatNearAmount(data.minPriceOffer))
+			setMinPriceOffer(data.minPriceOffer !== null ? formatNearAmount(data.minPriceOffer) : 0)
 			setInitialSetting(data)
 		}
 		setIsLoading(false)
@@ -190,7 +190,7 @@ const Setting = ({ close }) => {
 						</div>
 					)}
 					<button
-						disabled={checkIfSettingUnedited() || email === ''}
+						disabled={checkIfSettingUnedited() || email === '' || minPriceOffer === ''}
 						className="outline-none h-12 w-full mt-4 rounded-md bg-transparent text-sm font-semibold border-none px-4 py-2 bg-primary text-gray-100"
 						onClick={updateEmail}
 					>
