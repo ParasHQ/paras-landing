@@ -41,7 +41,7 @@ const Button = ({
 			buttonSizeStyle = 'py-3 px-20 text-base'
 			break
 		case 'md':
-			buttonSizeStyle = 'py-3 px-8 text-sm'
+			buttonSizeStyle = 'py-3 px-4 text-sm'
 			break
 		case 'sm':
 			buttonSizeStyle = 'py-2 px-4 text-xs'
