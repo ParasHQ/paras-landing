@@ -1,8 +1,8 @@
+import { useContext } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import FilterMarket from 'components/Filter/FilterMarket'
-import Scrollbars from 'react-custom-scrollbars'
 import { useIntl } from 'hooks/useIntl'
+import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu'
 
 const CategoryList = ({ listCategory, categoryId = '' }) => {
 	const router = useRouter()
@@ -13,65 +13,97 @@ const CategoryList = ({ listCategory, categoryId = '' }) => {
 	}
 
 	return (
-		<div className="mt-6 flex items-end justify-between">
-			<Scrollbars
-				renderThumbHorizontal={renderThumb}
-				autoHeight={true}
-				universal={true}
-				width={100}
-			>
-				<div className="flex items-center px-4 text-white space-x-6 whitespace-no-wrap">
+		<div className="mt-8">
+			<div className="px-2">
+				<ScrollMenu
+					LeftArrow={LeftArrow}
+					RightArrow={RightArrow}
+					wrapperClassName="flex items-center"
+					scrollContainerClassName="top-user-scroll"
+				>
 					<Link href="/market" shallow={true}>
 						<a
 							className={`text-xl ${
 								router.pathname === '/market' ? 'text-gray-100' : 'text-gray-600'
-							} font-semibold`}
+							} font-semibold px-4`}
 						>
 							{localeLn('All')}
 						</a>
 					</Link>
 					<span className="text-xl text-gray-600 font-semibold">|</span>
 					<Link href="/categories" shallow={true}>
-						<a className={`text-xl text-gray-600 font-semibold`}>{localeLn('Categories')}</a>
+						<a className={`text-xl text-gray-600 font-semibold px-4`}>{localeLn('Categories')}</a>
 					</Link>
 					<span className="text-xl text-gray-600 font-semibold">|</span>
 					{listCategory
 						.filter((category) => !category.isHide)
 						.map((category) => (
-							<Link
+							<Categories
 								key={category.category_id}
-								href={`/market/${category.category_id}`}
-								shallow={true}
-							>
-								<a
-									className={`text-xl ${
-										category.category_id === categoryId ? 'text-gray-100' : 'text-gray-600'
-									} font-semibold flex-shrink-0`}
-								>
-									<span>{category.name}</span>
-								</a>
-							</Link>
+								itemId={category.category_id}
+								title={category.name}
+								categoryId={categoryId}
+							/>
 						))}
-				</div>
-			</Scrollbars>
-			<div className="md:ml-8 z-10">
-				<FilterMarket />
+				</ScrollMenu>
 			</div>
 		</div>
 	)
 }
 
-const renderThumb = ({ style, ...props }) => {
+const Categories = ({ itemId, title, categoryId }) => {
 	return (
-		<div
-			{...props}
-			style={{
-				...style,
-				cursor: 'pointer',
-				borderRadius: 'inherit',
-				backgroundColor: 'rgba(255, 255, 255, 0.1)',
-			}}
-		/>
+		<Link href={`/market/${itemId}`} shallow={true}>
+			<a
+				className={`text-xl ${
+					itemId === categoryId ? 'text-gray-100' : 'text-gray-600'
+				} font-semibold flex-shrink-0`}
+			>
+				<span className="flex items-center px-4 space-x-6 whitespace-nowrap">{title}</span>
+			</a>
+		</Link>
+	)
+}
+
+const LeftArrow = () => {
+	const { isFirstItemVisible, scrollPrev } = useContext(VisibilityContext)
+
+	return (
+		<div disabled={isFirstItemVisible} onClick={() => scrollPrev()}>
+			<svg
+				className="w-10 h-10 text-white cursor-pointer"
+				fill="currentColor"
+				viewBox="0 0 20 20"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<path
+					fillRule="evenodd"
+					d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+					clipRule="evenodd"
+				></path>
+			</svg>
+		</div>
+	)
+}
+
+const RightArrow = () => {
+	const { isLastItemVisible, scrollNext } = useContext(VisibilityContext)
+
+	return (
+		<div disabled={isLastItemVisible} onClick={() => scrollNext()}>
+			<svg
+				className="w-10 h-10 text-white cursor-pointer"
+				fill="currentColor"
+				viewBox="0 0 20 20"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<path
+					fillRule="evenodd"
+					d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+					clipRule="evenodd"
+				></path>
+			</svg>
+		</div>
 	)
 }
 

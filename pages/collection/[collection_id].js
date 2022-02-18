@@ -23,6 +23,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import { useToast } from 'hooks/useToast'
 import LineClampText from 'components/Common/LineClampText'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
+import ArtistBanned from 'components/Common/ArtistBanned'
 
 const LIMIT = 8
 const LIMIT_ACTIVITY = 20
@@ -368,6 +369,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						className="text-gray-200 mt-4 max-w-lg m-auto whitespace-pre-line break-words"
 						text={collection?.description}
 					/>
+					<ArtistBanned
+						creatorId={collection.creator_id}
+						className="max-w-2xl mx-auto relative -mb-4"
+					/>
 					{currentUser === collection.creator_id && (
 						<div className="flex flex-row space-x-2 max-w-xs m-auto mt-4">
 							<Button onClick={addCard} size="md" className="w-40 m-auto">
@@ -407,7 +412,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						</div>
 					)}
 				</div>
-				<div className="mb-10 sm:my-2 flex items-center justify-center">
+				<div className="mb-10 sm:my-2 flex flex-wrap items-center justify-center px-4">
 					<CollectionStats stats={stats} />
 				</div>
 				<div className="z-10 flex items-center justify-center relative">

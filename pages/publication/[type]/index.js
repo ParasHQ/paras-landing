@@ -19,6 +19,7 @@ import near from 'lib/near'
 import EmbeddedCard from 'components/Publication/EmbeddedCard'
 import { useToast } from 'hooks/useToast'
 import { sentryCaptureException } from 'lib/sentry'
+import EmbeddedCollection from 'components/Publication/EmbeddedCollection'
 
 const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const store = useStore()
@@ -295,6 +296,26 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							/>
 						)}
 					</div>
+					{pubDetail.collection_ids && pubDetail.collection_ids.length !== 0 && (
+						<div className="max-w-4xl mx-auto px-4 pt-16">
+							<div className="rounded-md p-2 md:p-4">
+								<h4 className="text-white font-semibold text-3xl md:mb-4 text-center">
+									Collections
+								</h4>
+								<div
+									className={`flex flex-wrap ${
+										pubDetail.contract_token_ids.length <= 3 && 'justify-center'
+									}`}
+								>
+									{pubDetail.collection_ids?.map((collectionId, index) => (
+										<div key={index} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-4">
+											<EmbeddedCollection collectionId={collectionId} />
+										</div>
+									))}
+								</div>
+							</div>
+						</div>
+					)}
 					{pubDetail.contract_token_ids && pubDetail.contract_token_ids.length !== 0 && (
 						<div className="max-w-4xl mx-auto px-4 pt-16">
 							<div className=" border-2 border-dashed border-gray-800 rounded-md p-4 md:p-8">

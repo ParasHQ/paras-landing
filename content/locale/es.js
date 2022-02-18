@@ -225,15 +225,18 @@ const publication = {
 	Community: 'Comunidad',
 	MaximumSize3MB: 'Tamaño maximo de archivo 3MB',
 	AddCardToPublication: 'Añadir tarjeta a tu publicación',
+	AddCollectionToPublication: 'Añadir tarjeta a tu publicación',
 	TokenIDIsCardId:
 		'TokenID es la identificación de su tarjeta. Puede encontrar su TokenID en https://paras.id/token/[TokenID]',
 	AddCard: 'Añadir Tarjeta',
+	AddCollection: 'Agregar Colección',
 	Thumbnail: 'Miniatura',
 	UpdateThumbnail3MB: 'Actualizar Miniatura (Max. 3MB)',
 	Title: 'Titulo',
 	SureToLeavepage:
 		'¿Estás seguro de querer abandonar la página? Vas a perder cualquier cambio no publicado',
 	CardCollectibles: 'Tarjetas Coleccionables',
+	Collections: 'Colecciones',
 	Continue: 'Continuar',
 	Delete: 'Borrar',
 	CardNotMentioned: 'Tarjeta no mencionada en ninguna publicación',
