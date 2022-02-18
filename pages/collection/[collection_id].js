@@ -357,9 +357,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					{collection?.collection}
 				</h1>
 				<div className="m-4 mt-0 text-center relative">
-					<h4 className="text-xl flex justify-center text-gray-300 self-center break-words">
+					<h4 className="text-xl md:flex justify-center text-gray-300 self-center break-words">
 						<span>collection by</span>
-						<span className="flex flex-row ml-1">
+						<span className="flex flex-row ml-1 justify-center">
 							<ArtistVerified
 								token={tokens?.[0] || { metadata: { creator_id: collection.creator_id } }}
 							/>
@@ -415,7 +415,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				<div className="mb-10 sm:my-2 flex flex-wrap items-center justify-center px-4">
 					<CollectionStats stats={stats} />
 				</div>
-				<div className="z-10 flex items-center justify-center relative">
+				<div className="z-20 flex items-center justify-center relative">
 					<div className="flex justify-center mt-4 relative z-20">
 						<div className="flex mx-4">
 							<div className="px-4 relative" onClick={() => changeTab('items')}>
