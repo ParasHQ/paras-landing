@@ -13,52 +13,32 @@ import { useIntl } from 'hooks/useIntl'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 import Countdown from 'react-countdown'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
+import TokenDetailModal from 'components/Token/TokenDetailModal'
 
 const specialBidTokens = [
 	{
-		tokenId: 62036,
+		contractId: 'nearnautnft.near',
+		tokenSeriesId: 'token-naut-16426909392387',
+		tokenId: 'token-naut-16426909392387',
 		supply: `1`,
-		price: 10,
+		price: 5,
+		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
 	},
 	{
-		tokenId: 61752,
+		contractId: 'nearnautnft.near',
+		tokenSeriesId: 'token-naut-16427135491760',
+		tokenId: 'token-naut-16427135491760',
 		supply: `1`,
-		price: 10,
+		price: 5,
+		blurhash: 'UnN]gxW?}|s.xYNMX8ob$vW=V|t1XBw]osW-',
 	},
 	{
-		tokenId: 61776,
+		contractId: 'nearnautnft.near',
+		tokenSeriesId: 'token-naut-16427135491768',
+		tokenId: 'token-naut-16427135491768',
 		supply: `1`,
-		price: 15,
-	},
-	{
-		tokenId: 61880,
-		supply: `1`,
-		price: 10,
-	},
-	{
-		tokenId: 61601,
-		supply: `1`,
-		price: 13,
-	},
-	{
-		tokenId: 61811,
-		supply: `1`,
-		price: 15,
-	},
-	{
-		tokenId: 61736,
-		supply: `1`,
-		price: 10,
-	},
-	{
-		tokenId: 61817,
-		supply: `1`,
-		price: 10,
-	},
-	{
-		tokenId: 62386,
-		supply: `1`,
-		price: 10,
+		price: 5,
+		blurhash: 'UhFI?,#?LmJ~$,izSwbuF:SKwOt6TESxj=ob',
 	},
 ]
 
@@ -108,12 +88,12 @@ export default function Drops() {
 	const { localeLn } = useIntl()
 	const timeline = [
 		{
-			date: `Dec 6th`,
-			note: [`NFT drop is live by offer`, `Drops will start on Dec 6th at 05.00 UTC`],
+			date: `Feb 23th`,
+			note: [`NFT drop is live by offer`, `Drops will start on Feb 23th at 00.00 UTC`],
 		},
 		{
-			date: 'Dec 10th',
-			note: [`NFT drop will end on Dec 10th at 23.59 UTC`],
+			date: 'Feb 25th',
+			note: [`NFT drop will end on Feb 25th at 23.59 UTC`],
 		},
 	]
 
@@ -128,12 +108,12 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>Paras 1st Anniversary - NFT Drops</title>
+				<title>Paras X Nearnauts - NFT Drops</title>
 				<meta
 					name="description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
-				<meta name="twitter:title" content="Paras 1st Anniversary - NFT Drops" />
+				<meta name="twitter:title" content="Paras X Nearnauts - NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -146,8 +126,8 @@ export default function Drops() {
 					content="https://ipfs.io/ipfs/bafybeidy2nrxi4zeva7wscjtcw7itxzffc3gw5xfl6hyjxoctbj6zes4b4"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Paras 1st Anniversary - NFT Drops" />
-				<meta property="og:site_name" content="Paras 1st Anniversary - NFT Drops" />
+				<meta property="og:title" content="Paras X Nearnauts - NFT Drops" />
+				<meta property="og:site_name" content="Paras X Nearnauts - NFT Drops" />
 				<meta
 					property="og:description"
 					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
@@ -169,6 +149,7 @@ export default function Drops() {
 				}}
 			/>
 			<TokenSeriesDetailModal tokens={[token]} />
+			<TokenDetailModal tokens={[token]} />
 			<div className="max-w-2xl m-auto py-12 min-h-full relative z-10">
 				<div className="flex items-center justify-center m-4 md:m-0">
 					<div className="text-center px-4 whitespace-pre-wrap">
@@ -206,13 +187,13 @@ export default function Drops() {
 								</svg>
 							</div>
 							{/* <p className="text-gray-100 ml-2 font-bold text-2xl">x</p> */}
-							<p className="text-gray-100 ml-2 font-bold text-2xl">{'1st Anniversary'}</p>
+							<p className="text-gray-100 ml-2 font-bold text-2xl">{'X Nearnauts'}</p>
 						</div>
 						<h1 className="text-white font-bold text-6xl mt-4 mb-2">{localeLn('NFTDrops')}</h1>
-						<img
+						{/* <img
 							className="m-auto"
 							src="https://ipfs.io/ipfs/bafybeidy2nrxi4zeva7wscjtcw7itxzffc3gw5xfl6hyjxoctbj6zes4b4"
-						/>
+						/> */}
 						{/* <div className="text-center flex justify-center">
 							<video width="320" height="180" autoPlay loop muted>
 								<source
@@ -223,19 +204,16 @@ export default function Drops() {
 						</div> */}
 						<div className="max-w-xl m-auto">
 							<p className="text-gray-200 mt-4">
-								December 7th becomes a momentous day for Paras. One year ago, our platform
-								officially launched as an NFT marketplace. Since then, we have only kept thriving —
-								both on the number of volumes and transactions — and improving for the community.
-							</p>
-							<p className="text-gray-200 mt-4">
-								{`We want to thank our community who supportively believes in us. Paras will not be as we are now without the help of our creators, collectors, token holders, and backers - hence we are proudly present: "Paras 1st Anniversary: 1 of 1 NFT Auction".`}
+								How would you like to get your hands on a rank 1 NEARNaut? Well now is your chance!
+								The NEARNauts team are launching a charity auction of a number of rare Nauts,
+								including the fully iridescent rank 1!
 							</p>
 							<p className="text-gray-200 mt-4">
 								Check full information about the event{' '}
 								<span>
 									<a
 										target="blank"
-										href="https://paras.id/publication/paras-1st-anniversary-1-of-1-nft-auction-61adc0a1eb19987b01ce7eef"
+										href="https://paras.id/publication/nearnauts-rank-1-charity-auction-620cdd1517dbeec00ad0bc0b"
 										className="text-white mt-4 font-bold underline"
 									>
 										here
@@ -246,7 +224,7 @@ export default function Drops() {
 								<div className="text-white font-bold mb-2">Limited time only</div>
 								<Countdown
 									className="text-white text-2xl font-bold"
-									date={1639180799000}
+									date={1645833599000}
 									renderer={({ formatted }) => (
 										<div className="text-white flex justify-center items-center font-bold">
 											<div className="w-1/4 md:w-20">
@@ -288,8 +266,8 @@ export default function Drops() {
 					<SpecialCardBid
 						key={idx}
 						tokenId={specialBidToken.tokenId}
+						contractId={specialBidToken.contractId}
 						onClick={setToken}
-						titleCard={specialBidToken.title}
 						price={specialBidToken.price}
 						priceOriginal={null}
 						cardSupplyText={specialBidToken.supply}
@@ -562,9 +540,9 @@ const SpecialCard = ({
 							</div>
 							{localToken ? (
 								<p className="text-gray-100 text-lg font-semibold">
-									{`${localToken.metadata.copies - (localToken.total_mint || 0)} / ${
-										localToken.metadata.copies
-									}`}
+									{`${
+										(localToken.metadata.copies || cardSupplyText) - (localToken.total_mint || 0)
+									} / ${localToken.metadata.copies || cardSupplyText}`}
 								</p>
 							) : (
 								<p className="text-gray-100 text-lg font-semibold">{cardAvailableText}</p>
@@ -598,10 +576,11 @@ const SpecialCardBid = ({
 	tokenId,
 	onClick,
 	imgUrl,
-	titleCard,
+	contractId,
 	cardSupplyText,
 	cardAvailableText,
 	price,
+	blurhash,
 }) => {
 	const [localToken, setLocalToken] = useState(null)
 	const [offers, setOffers] = useState([])
@@ -617,8 +596,9 @@ const SpecialCardBid = ({
 	const fetchToken = async () => {
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: {
-				contract_id: 'x.paras.near',
+				contract_id: contractId,
 				token_series_id: tokenId,
+				lookup_token: true,
 			},
 		})
 		const token = (await res.data.data.results[0]) || null
@@ -631,7 +611,7 @@ const SpecialCardBid = ({
 				token_series_id: tokenId,
 				__skip: 0,
 				__limit: 1,
-				contract_id: 'x.paras.near',
+				contract_id: contractId,
 			},
 		})
 
@@ -641,6 +621,7 @@ const SpecialCardBid = ({
 	}
 
 	const onPressBuyNow = () => {
+		const lookupToken = localToken.token
 		if (localToken) {
 			onClick(localToken)
 			router.push(
@@ -648,11 +629,15 @@ const SpecialCardBid = ({
 					pathname: router.pathname,
 					query: {
 						...router.query,
-						...{ tokenSeriesId: localToken.token_series_id },
-						...{ prevAs: router.asPath },
+						tokenSeriesId: localToken.token_series_id,
+						tokenId: lookupToken?.token_id || '',
+						contractId: localToken.contract_id,
+						prevAs: router.asPath,
 					},
 				},
-				`/token/${localToken.contract_id}::${localToken.token_series_id}`,
+				`/token/${localToken.contract_id}::${localToken.token_series_id}/${
+					lookupToken?.token_id || ''
+				}`,
 				{
 					shallow: true,
 					scroll: false,
@@ -670,7 +655,9 @@ const SpecialCardBid = ({
 				<div className="overflow-hidden rounded-xl w-full h-full opacity-50">
 					{localToken && (
 						<Blurhash
-							hash={localToken?.metadata.blurhash || 'U47e#,HX%kmoUuvZyEn3L#qERJgH4Tu1Dip0'}
+							hash={
+								localToken?.metadata.blurhash || blurhash || 'U47e#,HX%kmoUuvZyEn3L#qERJgH4Tu1Dip0'
+							}
 							width={`100%`}
 							height={`100%`}
 							resolutionX={32}
@@ -684,7 +671,7 @@ const SpecialCardBid = ({
 				<div className="static m-auto">
 					<div className="">
 						<h1 className="text-white mb-8 text-2xl font-bold text-center truncate px-8">
-							{localToken?.metadata.title || titleCard}
+							{localToken?.metadata.title}
 						</h1>
 						<div className="m-8">
 							<div className="w-full m-auto">
@@ -694,14 +681,14 @@ const SpecialCardBid = ({
 									imgBlur={localToken?.metadata.blurhash}
 									flippable
 									token={{
-										name: localToken?.metadata.name,
-										collection: localToken?.metadata.collection,
+										title: localToken?.metadata.title,
+										collection: localToken?.metadata.collection || localToken?.contract_id,
+										copies: localToken?.metadata.copies,
+										creatorId: localToken?.metadata.creator_id || localToken?.contract_id,
+										is_creator: localToken?.is_creator,
 										description: localToken?.metadata.description,
-										creatorId: localToken?.creator_id,
-										copies: localToken?.copies || cardSupplyText,
-										tokenId: localToken?.tokenId,
-										createdAt: localToken?.createdAt,
 										royalty: localToken?.royalty,
+										attributes: localToken?.metadata.attributes,
 									}}
 									initialRotate={{
 										x: 0,
@@ -780,9 +767,9 @@ const SpecialCardBid = ({
 								</div>
 								{localToken ? (
 									<p className="text-gray-100 text-lg font-semibold">
-										{`${localToken.metadata.copies - (localToken.total_mint || 0)} / ${
-											localToken.metadata.copies
-										}`}
+										{`${
+											(localToken.metadata.copies || cardSupplyText) - (localToken.total_mint || 0)
+										} / ${localToken.metadata.copies || cardSupplyText}`}
 									</p>
 								) : (
 									<p className="text-gray-100 text-lg font-semibold">{cardAvailableText}</p>

@@ -18,15 +18,9 @@ import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
 
 const HARD_CODE_TOKEN = {
-	62036: '10',
-	61752: '10',
-	61776: '15',
-	61880: '10',
-	61601: '13',
-	61811: '15',
-	61736: '10',
-	61817: '10',
-	62386: '10',
+	'token-naut-16427135491768': '5',
+	'token-naut-16426909392387': '5',
+	'token-naut-16427135491760': '5',
 }
 
 const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuantity }) => {
