@@ -88,7 +88,7 @@ export async function getServerSideProps({ params }) {
 
 	const token = res.data.data.results[0] || null
 
-	if (token.token) {
+	if (token?.token && token?.token.token_id === tokenSeriesId) {
 		return {
 			redirect: {
 				destination: `/token/${contractId}::${tokenSeriesId}/${token.token.token_id}`,
