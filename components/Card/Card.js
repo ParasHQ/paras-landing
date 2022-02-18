@@ -22,6 +22,14 @@ const Card = ({
 	const [dimension, setDimension] = useState({ width: 0, height: 0 })
 	const [rotate, setRotate] = useState(initialRotate)
 	const [isShowFront, setIsShowFront] = useState(true)
+	const wrapperRef = useRef()
+	const descRef = useRef()
+	const attrRef = useRef()
+	const royaltyRef = useRef()
+	const [classDescAttr, setClassDescAttr] = useState({
+		desc: false,
+		attr: false,
+	})
 
 	const { localeLn } = useIntl()
 
@@ -47,6 +55,17 @@ const Card = ({
 		updateSize()
 		return () => window.removeEventListener('resize', updateSize)
 	}, [containerRef])
+
+	useEffect(() => {
+		if (
+			descRef.current?.clientHeight +
+				attrRef.current?.clientHeight +
+				royaltyRef.current?.clientHeight >
+			wrapperRef.current?.clientHeight - 16
+		) {
+			setClassDescAttr((prev) => ({ ...prev, desc: true, attr: true }))
+		}
+	}, [wrapperRef.current])
 
 	const handleMouseMove = (e) => {
 		const bbox = cardRef.current.getBoundingClientRect()
@@ -269,26 +288,38 @@ const Card = ({
 									style={{ fontSize: `${dimension.width / 14}px`, padding: `.3em` }}
 								>
 									<div className="h-full border-gray-400 border-2">
-										<div className="py-2 overflow-hidden" style={{ height: '90%' }}>
-											<div className="mb-2">
+										<div
+											className="py-2 overflow-hidden"
+											style={{ height: '90%' }}
+											ref={wrapperRef}
+										>
+											<div className="mb-2" ref={descRef}>
 												<h4 className="px-2 truncate" style={{ fontSize: `0.75em` }}>
 													Description
 												</h4>
-												<h4 className="px-2 whitespace-pre-line" style={{ fontSize: `0.5em` }}>
+												<h4
+													className={`px-2 whitespace-pre-line ${
+														classDescAttr.desc && `line-clamp-12`
+													}`}
+													style={{ fontSize: `0.5em` }}
+												>
 													{token.description?.replace(/\n\s*\n\s*\n/g, '\n\n')}
 												</h4>
 											</div>
-											<div className="mb-2">
+											<div className="mb-2" ref={attrRef}>
 												<h4 className="px-2 truncate" style={{ fontSize: `0.75em` }}>
 													{'Attributes'}
 												</h4>
-												<h4 className="px-2" style={{ fontSize: `0.5em` }}>
+												<h4
+													className={`px-2 ${classDescAttr.attr && `line-clamp-4`}`}
+													style={{ fontSize: `0.5em` }}
+												>
 													{token.attributes
 														?.map(({ value, trait_type }) => `${trait_type} ${value}`)
 														.join(', ') || 'None'}
 												</h4>
 											</div>
-											<div className="flex items-end px-2 space-x-2">
+											<div className="flex items-end px-2 space-x-1" ref={royaltyRef}>
 												<h4 style={{ fontSize: `0.5em` }}>Royalty:</h4>
 												<h4 style={{ fontSize: `0.5em` }}>{calculateRoyalty()}</h4>
 											</div>

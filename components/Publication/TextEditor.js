@@ -35,6 +35,7 @@ const TextEditor = ({
 	hideTitle = false,
 	setTitle = () => {},
 	showCardModal,
+	showCollectionModal,
 	setContent = () => {},
 }) => {
 	const { localeLn } = useIntl()
@@ -159,6 +160,7 @@ const TextEditor = ({
 								<ImageButton {...externalProps} onChange={onAddLocalImage} />
 								<VideoButton {...externalProps} onAddVideo={onAddVideo} />
 								<CardButton {...externalProps} onClick={showCardModal} />
+								<CollectionButton {...externalProps} onClick={showCollectionModal} />
 							</div>
 						)}
 					</Toolbar>
@@ -195,6 +197,15 @@ const CardButton = ({ theme, onClick }) => {
 	return (
 		<button className={`${theme.customButton} ${theme.button} px-2`} onClick={onClick}>
 			{localeLn('Card')}
+		</button>
+	)
+}
+
+const CollectionButton = ({ theme, onClick }) => {
+	const { localeLn } = useIntl()
+	return (
+		<button className={`${theme.customButton} ${theme.button} px-2`} onClick={onClick}>
+			{localeLn('Collection')}
 		</button>
 	)
 }

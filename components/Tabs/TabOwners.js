@@ -41,13 +41,12 @@ const TabOwners = ({ localToken }) => {
 				contract_id: localToken.contract_id,
 				_id_next: _id_next,
 				__limit: FETCH_TOKENS_LIMIT,
-				__sort: '_id::1',
+				__sort: 'price::1',
 			},
 			ttl: 120,
 		})
-		const respData = resp.data.data.results
+		let respData = resp.data.data.results
 		const newData = [...currentData, ...respData]
-
 		setTokens(newData)
 
 		if (respData.length === FETCH_TOKENS_LIMIT) {
@@ -106,7 +105,7 @@ const TabOwners = ({ localToken }) => {
 						<select
 							className="py-1 rounded-md bg-gray-800 text-white focus:outline-none outline-none text-right"
 							onChange={(e) => setSortBy(e.target.value)}
-							defaultValue="editionasc"
+							defaultValue="priceasc"
 							value={sortBy}
 						>
 							<option value="editionasc">Edition Low-High</option>

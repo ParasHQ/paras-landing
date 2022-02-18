@@ -23,6 +23,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import { useToast } from 'hooks/useToast'
 import LineClampText from 'components/Common/LineClampText'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
+import ArtistBanned from 'components/Common/ArtistBanned'
 
 const LIMIT = 8
 const LIMIT_ACTIVITY = 20
@@ -356,9 +357,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					{collection?.collection}
 				</h1>
 				<div className="m-4 mt-0 text-center relative">
-					<h4 className="text-xl flex justify-center text-gray-300 self-center break-words">
+					<h4 className="text-xl md:flex justify-center text-gray-300 self-center break-words">
 						<span>collection by</span>
-						<span className="flex flex-row ml-1">
+						<span className="flex flex-row ml-1 justify-center">
 							<ArtistVerified
 								token={tokens?.[0] || { metadata: { creator_id: collection.creator_id } }}
 							/>
@@ -367,6 +368,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					<LineClampText
 						className="text-gray-200 mt-4 max-w-lg m-auto whitespace-pre-line break-words"
 						text={collection?.description}
+					/>
+					<ArtistBanned
+						creatorId={collection.creator_id}
+						className="max-w-2xl mx-auto relative -mb-4"
 					/>
 					{currentUser === collection.creator_id && (
 						<div className="flex flex-row space-x-2 max-w-xs m-auto mt-4">
@@ -407,10 +412,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						</div>
 					)}
 				</div>
-				<div className="mb-10 sm:my-2 flex items-center justify-center">
+				<div className="mb-10 sm:my-2 flex flex-wrap items-center justify-center px-4">
 					<CollectionStats stats={stats} />
 				</div>
-				<div className="z-10 flex items-center justify-center relative">
+				<div className="z-20 flex items-center justify-center relative">
 					<div className="flex justify-center mt-4 relative z-20">
 						<div className="flex mx-4">
 							<div className="px-4 relative" onClick={() => changeTab('items')}>
