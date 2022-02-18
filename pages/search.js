@@ -342,6 +342,7 @@ const tokensParams = (query) => {
 		__limit: LIMIT,
 		_id_next: query._id_next,
 		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
+		lookup_token: true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 		...(query.lowest_price_next &&

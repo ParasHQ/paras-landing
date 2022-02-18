@@ -156,6 +156,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			exclude_total_burn: true,
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
+			lookup_token: true,
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
@@ -215,10 +216,12 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			params: activitiesParams(activityPage),
 		})
 
-		const newActivities = [...activities, ...res.data.data]
+		const resActivities = (await res.data.data) || []
+
+		const newActivities = [...activities, ...resActivities]
 		setActivities(newActivities)
 		setActivityPage(activityPage + 1)
-		if (res.data.data.length < LIMIT_ACTIVITY) {
+		if (resActivities < LIMIT_ACTIVITY) {
 			setHasMoreActivities(false)
 		} else {
 			setHasMoreActivities(true)

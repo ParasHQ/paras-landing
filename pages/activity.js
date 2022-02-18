@@ -232,11 +232,6 @@ const ActivityLog = ({ query }) => {
 								activityType === 'top-users' && 'hidden'
 							} md:block`}
 						>
-							{activityList.length === 0 && activityListHasMore && (
-								<div className="border-2 border-gray-800 border-dashed mt-4 p-2 rounded-md text-center">
-									<p className="text-gray-300 py-8">{localeLn('Loading')}</p>
-								</div>
-							)}
 							{activityList.length === 0 && !activityListHasMore && (
 								<div className="border-2 border-gray-800 border-dashed mt-4 p-2 rounded-md text-center">
 									<p className="text-gray-300 py-8">{localeLn('NoTransactions')}</p>
