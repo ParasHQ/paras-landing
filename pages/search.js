@@ -208,7 +208,7 @@ export default function SearchPage({ searchQuery }) {
 		title: localeLn('Search{searchQuery}Paras', {
 			searchQuery: searchQuery,
 		}),
-		description: `Explore and collect ${searchQuery} digital art NFT on Paras. All-in-one social digital art NFT marketplace for creators and collectors.`,
+		description: `Explore and collect ${searchQuery} digital art cards on Paras. All-in-one social digital art card marketplace for creators and collectors.`,
 	}
 
 	return (
@@ -342,6 +342,7 @@ const tokensParams = (query) => {
 		__limit: LIMIT,
 		_id_next: query._id_next,
 		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
+		lookup_token: true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 		...(query.lowest_price_next &&

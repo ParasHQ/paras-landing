@@ -11,6 +11,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { useIntl } from 'hooks/useIntl'
 import TokenSeriesDetailModal from './TokenSeriesDetailModal'
 import CardListLoader from 'components/Card/CardListLoader'
+import TokenDetailModal from 'components/Token/TokenDetailModal'
 
 const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollection, type }) => {
 	const store = useStore()
@@ -60,19 +61,23 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 	}
 
 	const onClickSeeDetails = (token) => {
+		const lookupToken = token.token
 		router.push(
 			{
 				pathname: router.pathname,
 				query: {
 					...router.query,
-					tokenSeriesId: token.token_series_id,
 					contractId: token.contract_id,
+					tokenSeriesId: token.token_series_id,
+					tokenId: lookupToken?.token_id || '',
 					from: 'collection',
 					collection_id: token.metadata?.collection_id,
 				},
 			},
 			{
-				pathname: `/token/${token.contract_id}::${token.token_series_id}`,
+				pathname: `/token/${token.contract_id}::${token.token_series_id}/${
+					lookupToken?.token_id || ''
+				}`,
 				query: {
 					...router.query,
 					from: 'collection',
@@ -89,6 +94,7 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 	return (
 		<div ref={containerRef} className="rounded-md p-4 md:p-0">
 			<TokenSeriesDetailModal tokens={tokens} />
+			<TokenDetailModal tokens={tokens} />
 			{tokens.length === 0 && !hasMore && (
 				<div className="w-full">
 					<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">

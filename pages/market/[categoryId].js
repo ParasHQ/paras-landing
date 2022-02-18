@@ -181,7 +181,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 					content={`Create, trade, and collect ${(categoryDetail
 						? categoryDetail.name
 						: _categoryDetail.name
-					).toLowerCase()} NFT digital card collectibles`}
+					).toLowerCase()} digital card collectibles`}
 				/>
 
 				<meta
@@ -196,7 +196,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 					content={`Create, trade, and collect ${(categoryDetail
 						? categoryDetail.name
 						: _categoryDetail.name
-					).toLowerCase()} NFT digital card collectibles`}
+					).toLowerCase()} digital card collectibles`}
 				/>
 				<meta
 					name="twitter:image"
@@ -216,7 +216,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 					content={`Create, trade, and collect ${(categoryDetail
 						? categoryDetail.name
 						: _categoryDetail.name
-					).toLowerCase()} NFT digital card collectibles`}
+					).toLowerCase()} digital card collectibles`}
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta
@@ -342,6 +342,7 @@ const tokensParams = (query) => {
 		__sort: parsedSortQuery,
 		__limit: LIMIT,
 		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
+		lookup_token: true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 		...(query._id_next && { _id_next: query._id_next }),

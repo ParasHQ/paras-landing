@@ -149,27 +149,27 @@ const ActivityLog = ({ query }) => {
 					<title>{localeLn('ActivityParas')}</title>
 					<meta
 						name="description"
-						content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
+						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 					/>
 
-					<meta name="twitter:title" content="Paras — Digital Art NFT Marketplace" />
+					<meta name="twitter:title" content="Paras — Digital Art Cards Market" />
 					<meta name="twitter:card" content="summary_large_image" />
 					<meta name="twitter:site" content="@ParasHQ" />
 					<meta name="twitter:url" content="https://paras.id" />
 					<meta
 						name="twitter:description"
-						content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
+						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 					/>
 					<meta
 						name="twitter:image"
 						content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 					/>
 					<meta property="og:type" content="website" />
-					<meta property="og:title" content="Paras — Digital Art NFT Marketplace" />
-					<meta property="og:site_name" content="Paras — Digital Art NFT Marketplace" />
+					<meta property="og:title" content="Paras — Digital Art Cards Market" />
+					<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
 					<meta
 						property="og:description"
-						content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
+						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 					/>
 					<meta property="og:url" content="https://paras.id" />
 					<meta
@@ -232,11 +232,6 @@ const ActivityLog = ({ query }) => {
 								activityType === 'top-users' && 'hidden'
 							} md:block`}
 						>
-							{activityList.length === 0 && activityListHasMore && (
-								<div className="border-2 border-gray-800 border-dashed mt-4 p-2 rounded-md text-center">
-									<p className="text-gray-300 py-8">{localeLn('Loading')}</p>
-								</div>
-							)}
 							{activityList.length === 0 && !activityListHasMore && (
 								<div className="border-2 border-gray-800 border-dashed mt-4 p-2 rounded-md text-center">
 									<p className="text-gray-300 py-8">{localeLn('NoTransactions')}</p>

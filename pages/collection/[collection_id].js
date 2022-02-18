@@ -23,6 +23,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import { useToast } from 'hooks/useToast'
 import LineClampText from 'components/Common/LineClampText'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
+import ArtistBanned from 'components/Common/ArtistBanned'
 
 const LIMIT = 8
 const LIMIT_ACTIVITY = 20
@@ -155,7 +156,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			exclude_total_burn: true,
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
-			...(query.pmin ? { min_price: parseNearAmount(query.pmin) } : { min_price: 0 }),
+			lookup_token: true,
+			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
 			...(query.lowest_price_next &&
@@ -214,10 +216,12 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			params: activitiesParams(activityPage),
 		})
 
-		const newActivities = [...activities, ...res.data.data]
+		const resActivities = (await res.data.data) || []
+
+		const newActivities = [...activities, ...resActivities]
 		setActivities(newActivities)
 		setActivityPage(activityPage + 1)
-		if (res.data.data.length < LIMIT_ACTIVITY) {
+		if (resActivities < LIMIT_ACTIVITY) {
 			setHasMoreActivities(false)
 		} else {
 			setHasMoreActivities(true)
@@ -364,6 +368,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					<LineClampText
 						className="text-gray-200 mt-4 max-w-lg m-auto whitespace-pre-line break-words"
 						text={collection?.description}
+					/>
+					<ArtistBanned
+						creatorId={collection.creator_id}
+						className="max-w-2xl mx-auto relative -mb-4"
 					/>
 					{currentUser === collection.creator_id && (
 						<div className="flex flex-row space-x-2 max-w-xs m-auto mt-4">

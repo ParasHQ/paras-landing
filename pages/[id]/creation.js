@@ -83,6 +83,7 @@ const Creation = ({ userProfile, accountId }) => {
 			creator_id: accountId,
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
+			lookup_token: true,
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
@@ -121,7 +122,7 @@ const Creation = ({ userProfile, accountId }) => {
 
 	const headMeta = {
 		title: `${accountId} — Paras`,
-		description: `See NFT digital card collectibles and creations from ${accountId}. ${
+		description: `See digital card collectibles and creations from ${accountId}. ${
 			userProfile?.bio || ''
 		}`,
 		image: userProfile?.imgUrl
