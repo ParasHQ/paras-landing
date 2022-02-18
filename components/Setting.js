@@ -9,7 +9,7 @@ const Setting = ({ close }) => {
 	const { localeLn } = useIntl()
 	const toast = useToast()
 	const [email, setEmail] = useState('')
-	const [minPriceOffer, setMinPriceOffer] = useState('')
+	const [minPriceOffer, setMinPriceOffer] = useState('0')
 	const [preferences, setPreferences] = useState(['nft-drops', 'newsletter', 'notification'])
 	const [initialSetting, setInitialSetting] = useState(null)
 	const [isUpdating, setIsUpdating] = useState(false)
@@ -170,7 +170,7 @@ const Setting = ({ close }) => {
 								<div>
 									<div className="text-lg">{localeLn('MinPriceOffer')}</div>
 									<div className="text-gray-100 opacity-75 text-sm">
-										Set the minimum offer you want for each collectibles
+										Set the minimum offer you want for your collectibles
 									</div>
 								</div>
 								<div className="flex w-6/12 text-black bg-gray-300 p-2 rounded-md focus:bg-gray-100 mt-0.5 mb-2">
