@@ -143,11 +143,11 @@ const TabInfo = ({ localToken, isNFT }) => {
 					</Link>
 				</div>
 			</div>
-			{localToken.categories.length !== 0 && (
+			{localToken.categories && localToken.categories.length !== 0 && (
 				<div className="flex bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 					<div>
 						<p className="text-sm text-white font-bold">{localeLn('FeaturedIn')}</p>
-						{localToken.categories.map((cat, idx) => (
+						{localToken.categories?.map((cat, idx) => (
 							<Fragment key={idx}>
 								<span
 									onClick={() => router.push(`/market/${cat.category_id}`)}

@@ -145,6 +145,9 @@ const CardInfo = {
 	CollectDigitalCard: 'Colecciona Tarjetas de Arte Digital que tu verdaderamente puedes poseer.',
 	GoToLogin: 'Ir a inicio de sesión',
 	ConfirmBuy: 'Confirmar Compra',
+	Warning: 'Advertencia',
+	AreYouSureBuy: 'Estás segura de comprar esta tarjeta?',
+	IUnderstand: 'Entiendo',
 	BuyQuantityAvailable: 'Comprar cantidad (Available for buy',
 	YouWillRedirectedTo: 'Serás redirigido a NEAR Web Wallet para confirmar tu transacción',
 	ConfirmTransfer: 'Confirmar Transferencia',
@@ -342,7 +345,8 @@ const common = {
 	ShareNow: 'Compartir Ahora',
 	Chapter: 'Capítulo',
 	ReadNow: 'Leer Ahora',
-	FlaggedByPARASStealing: 'ADVERTENCIA: PARAS ha marcado este perfil por robo de arte',
+	FlaggedByPARASStealing:
+		'ADVERTENCIA: Este creador ha sido señalado por PARAS debido al robo de arte.',
 	FlaggedByPARASFake: 'ADVERTENCIA: Esta cuenta utiliza la identidad de otra persona.',
 	FlaggedByPARASHacked:
 		'ADVERTENCIA: La cuenta ha sido pirateada. Por favor, póngase en contacto con el creador original.',
