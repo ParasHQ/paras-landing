@@ -181,7 +181,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 					content={`Create, trade, and collect ${(categoryDetail
 						? categoryDetail.name
 						: _categoryDetail.name
-					).toLowerCase()} NFT digital card collectibles`}
+					).toLowerCase()} digital card collectibles`}
 				/>
 
 				<meta
@@ -196,7 +196,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 					content={`Create, trade, and collect ${(categoryDetail
 						? categoryDetail.name
 						: _categoryDetail.name
-					).toLowerCase()} NFT digital card collectibles`}
+					).toLowerCase()} digital card collectibles`}
 				/>
 				<meta
 					name="twitter:image"
@@ -216,7 +216,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 					content={`Create, trade, and collect ${(categoryDetail
 						? categoryDetail.name
 						: _categoryDetail.name
-					).toLowerCase()} NFT digital card collectibles`}
+					).toLowerCase()} digital card collectibles`}
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta
