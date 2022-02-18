@@ -34,7 +34,7 @@ const AllCategory = () => {
 				<title>{localeLn('CategoryParas')}</title>
 				<meta
 					name="description"
-					content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
+					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
 
 				<meta name="twitter:title" content="Market — Paras" />
@@ -43,7 +43,7 @@ const AllCategory = () => {
 				<meta name="twitter:url" content="https://paras.id" />
 				<meta
 					name="twitter:description"
-					content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
+					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
 				<meta
 					name="twitter:image"
@@ -54,7 +54,7 @@ const AllCategory = () => {
 				<meta property="og:site_name" content="Market — Paras" />
 				<meta
 					property="og:description"
-					content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
+					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta
