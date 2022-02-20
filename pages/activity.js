@@ -31,6 +31,7 @@ const ActivityLog = ({ query }) => {
 	const modalRef = useRef()
 
 	const [isFetching, setIsFetching] = useState(false)
+	const [isFetchingTop, setIsFetchingTop] = useState(false)
 	const [topUser, setTopUser] = useState([])
 	const [showModal, setShowModal] = useState(false)
 	const [activityType, setActivityType] = useState('activity')
@@ -50,6 +51,7 @@ const ActivityLog = ({ query }) => {
 	})
 
 	useEffect(async () => {
+		setIsFetchingTop(true)
 		if (query) {
 			_fetchData(query, true)
 		} else {
@@ -57,6 +59,7 @@ const ActivityLog = ({ query }) => {
 		}
 		const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=5`)
 		setTopUser(res.data.data)
+		setIsFetchingTop(false)
 	}, [])
 
 	const onClickFilter = (query) => {
@@ -283,12 +286,14 @@ const ActivityLog = ({ query }) => {
 							data={topUser.buyers}
 							userType={'buyer'}
 							linkTo="/activity/top-buyers"
+							isFetching={isFetchingTop}
 						/>
 						<ActivityTopUsers
 							data={topUser.sellers}
 							userType={'seller'}
 							className="mt-12"
 							linkTo="/activity/top-sellers"
+							isFetching={isFetchingTop}
 						/>
 						<TopCollectorsAllTime className="mt-12" />
 						<ButtonScrollTop />
