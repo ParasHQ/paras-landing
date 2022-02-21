@@ -19,6 +19,12 @@ const CreateCollection = ({ onFinishCreate }) => {
 
 	const [collectionName, setCollectionName] = useState('')
 	const [collectionDesc, setCollectionDesc] = useState('')
+	const [collectionSocialMedia, setCollectionSocialMedia] = useState({
+		website: '',
+		weibo: '',
+		twitter: '',
+		instagram: '',
+	})
 
 	const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -40,11 +46,16 @@ const CreateCollection = ({ onFinishCreate }) => {
 
 		const formData = new FormData()
 		if (imgFile) {
-			formData.append('file', imgFile)
+			formData.append('files', imgFile)
 		}
 		formData.append('collection', collectionName)
 		formData.append('description', collectionDesc)
 		formData.append('creator_id', currentUser)
+		formData.append('files', imgFile)
+		formData.append('twitter', collectionSocialMedia.twitter)
+		formData.append('instagram', collectionSocialMedia.instagram)
+		formData.append('website', collectionSocialMedia.website)
+		formData.append('weibo', collectionSocialMedia.weibo)
 
 		try {
 			const resp = await Axios.post(`${process.env.V2_API_URL}/collections`, formData, {
@@ -141,6 +152,46 @@ const CreateCollection = ({ onFinishCreate }) => {
 					onChange={(e) => setCollectionDesc(e.target.value)}
 					className="mt-2 resize-none h-24 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
 				/>
+				<div className="text-white mt-4">{localeLn('Website')}</div>
+				<InputText
+					value={collectionSocialMedia.website}
+					onChange={(e) =>
+						setCollectionSocialMedia((prev) => ({ ...prev, website: e.target.value }))
+					}
+					className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
+					placeholder="Website"
+				/>
+				<div className="text-white mt-4">{localeLn('Weibo URL')}</div>
+				<InputText
+					value={collectionSocialMedia.weibo}
+					onChange={(e) => setCollectionSocialMedia((prev) => ({ ...prev, weibo: e.target.value }))}
+					className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
+					placeholder="Weibo URL"
+				/>
+				<div className="flex space-x-4">
+					<div className="w-full md:w-1/2">
+						<div className="text-white mt-4">Instagram</div>
+						<InputText
+							value={collectionSocialMedia.instagram}
+							onChange={(e) =>
+								setCollectionSocialMedia((prev) => ({ ...prev, instagram: e.target.value }))
+							}
+							className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
+							placeholder="Username"
+						/>
+					</div>
+					<div className="w-full md:w-1/2">
+						<div className="text-white mt-4">Twitter</div>
+						<InputText
+							value={collectionSocialMedia.twitter}
+							onChange={(e) =>
+								setCollectionSocialMedia((prev) => ({ ...prev, twitter: e.target.value }))
+							}
+							className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
+							placeholder="Username"
+						/>
+					</div>
+				</div>
 				<Button
 					isDisabled={
 						isSubmitting || imgUrl === '' || collectionName === '' || collectionDesc === ''
