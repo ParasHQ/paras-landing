@@ -4,8 +4,9 @@ import { useEffect, useState } from 'react'
 import { parseImgUrl, prettyBalance } from 'utils/common'
 import LinkToProfile from '../LinkToProfile'
 import { useIntl } from 'hooks/useIntl'
+import TopUserLoader from './TopUserLoader'
 
-const TopUsers = ({ data = [], className, userType = 'buyer', linkTo }) => {
+const TopUsers = ({ data = [], className, userType = 'buyer', linkTo, isFetching }) => {
 	const { localeLn } = useIntl()
 	return (
 		<div className={className}>
@@ -33,9 +34,11 @@ const TopUsers = ({ data = [], className, userType = 'buyer', linkTo }) => {
 					</a>
 				</Link>
 			</div>
-			{data?.map((user, idx) => (
-				<TopUser key={idx} user={user} idx={idx} />
-			))}
+			{isFetching ? (
+				<TopUserLoader />
+			) : (
+				data?.map((user, idx) => <TopUser key={idx} user={user} idx={idx} />)
+			)}
 		</div>
 	)
 }
