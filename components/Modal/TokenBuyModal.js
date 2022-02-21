@@ -5,6 +5,7 @@ import near from 'lib/near'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import { GAS_FEE_150 } from 'config/constants'
+import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackBuyToken, trackBuyTokenImpression } from 'lib/ga'
@@ -56,7 +57,12 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 	return (
 		<>
 			<Modal isShow={show} closeOnBgClick={false} closeOnEscape={false} close={onClose}>
-				<div className="max-w-sm w-full p-4 bg-gray-800 m-4 md:m-auto rounded-md">
+				<div className="max-w-sm w-full p-4 bg-gray-800 m-4 md:m-auto rounded-md relative">
+					<div className="absolute right-0 top-0 pr-4 pt-4">
+						<div className="cursor-pointer" onClick={onClose}>
+							<IconX />
+						</div>
+					</div>
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
 							{localeLn('ConfirmBuy')}
