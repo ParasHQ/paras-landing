@@ -16,7 +16,7 @@ import cachios from 'cachios'
 import {
 	GAS_FEE,
 	GAS_FEE_150,
-	GAS_FEE_300,
+	GAS_FEE_200,
 	STORAGE_APPROVE_FEE,
 	STORAGE_MINT_FEE,
 } from 'config/constants'
@@ -159,7 +159,7 @@ const Bid = ({ data, type }) => {
 					contractId: data.contract_id,
 					methodName: `nft_mint_and_approve`,
 					args: params,
-					gas: GAS_FEE_300,
+					gas: GAS_FEE_200,
 					attachedDeposit: JSBI.add(
 						JSBI.BigInt(STORAGE_APPROVE_FEE),
 						JSBI.BigInt(STORAGE_MINT_FEE)
