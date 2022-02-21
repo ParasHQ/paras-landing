@@ -1,5 +1,5 @@
 import { animated } from 'react-spring'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Card from 'components/Card/Card'
 import { parseImgUrl, prettyBalance } from 'utils/common'
 import Link from 'next/link'
@@ -11,13 +11,18 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
 import { useIntl } from 'hooks/useIntl'
 import CardListLoader from 'components/Card/CardListLoader'
+import MarketTokenModal from 'components/Modal/MarketTokenModal'
 
 const TokenList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 	const store = useStore()
 	const router = useRouter()
 	const containerRef = useRef()
 	const animValuesRef = useRef(store.marketScrollPersist[name])
+	const [activeToken, setActiveToken] = useState(null)
+	const [modalType, setModalType] = useState(null)
+	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
+
 	useEffect(() => {
 		animValuesRef.current = store.marketScrollPersist[name]
 	}, [store.marketScrollPersist[name]])
@@ -76,9 +81,41 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 		)
 	}
 
+	const onCloseModal = () => {
+		setActiveToken(null)
+		setModalType(null)
+	}
+
+	const actionButtonText = (token) => {
+		const price = token.price
+
+		if (token.owner_id === currentUser) {
+			return localeLn('UpdateListing')
+		}
+
+		return price ? 'Buy Now' : 'Place Offer'
+	}
+
+	const actionButtonClick = (token) => {
+		const price = token.price
+
+		setActiveToken(token)
+		if (token.owner_id === currentUser) {
+			setModalType('updatelisting')
+		} else {
+			setModalType(price ? 'buy' : 'offer')
+		}
+	}
+
 	return (
 		<div ref={containerRef} className="rounded-md p-4 md:p-0">
 			<TokenDetailModal tokens={tokens} />
+			<MarketTokenModal
+				useNFTModal
+				activeToken={activeToken}
+				onCloseModal={onCloseModal}
+				modalType={modalType}
+			/>
 			{tokens.length === 0 && !hasMore && (
 				<div className="w-full">
 					<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">
@@ -108,11 +145,7 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 								<Link
 									href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
 								>
-									<a
-										onClick={(e) => {
-											e.preventDefault()
-										}}
-									>
+									<a onClick={(e) => e.preventDefault()}>
 										<div className="w-full m-auto">
 											<Card
 												imgUrl={parseImgUrl(token.metadata.media, null, {
@@ -137,42 +170,46 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 										</div>
 									</a>
 								</Link>
-								<div className="text-center">
-									<div className="mt-4">
-										<div className="p-2 pb-1">
-											<p className="text-gray-400 text-xs">{localeLn('OnSale')}</p>
-											<div className="text-gray-100 text-xl">
-												{price ? (
-													<div>
-														<div>{prettyBalance(price, 24, 4)} Ⓝ</div>
-														{store.nearUsdPrice !== 0 && (
-															<div className="text-xs text-gray-400">
-																~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 4)}
-															</div>
-														)}
-													</div>
-												) : (
-													<div className="line-through text-red-600">
-														<span className="text-gray-100">{localeLn('SALE')}</span>
+								<div className="mt-4 px-1">
+									<p className="text-gray-400 text-xs">{localeLn('OnSale')}</p>
+									<div className="text-gray-100 text-2xl">
+										{price ? (
+											<div className="flex items-baseline space-x-1">
+												<div className="truncate">{prettyBalance(price, 24, 4)} Ⓝ</div>
+												{store.nearUsdPrice !== 0 && (
+													<div className="text-xs text-gray-400 truncate">
+														~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 4)}
 													</div>
 												)}
 											</div>
-										</div>
+										) : (
+											<div className="line-through text-red-600">
+												<span className="text-gray-100">{localeLn('SALE')}</span>
+											</div>
+										)}
 									</div>
-									<div className="pb-4">
-										<Link
-											href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
+									<div className="flex justify-between items-end">
+										<p
+											className="font-bold text-white cursor-pointer"
+											onClick={() => actionButtonClick(token)}
 										>
-											<a
-												onClick={(e) => {
-													e.preventDefault()
-													onClickSeeDetails(token)
-												}}
-												className="text-white border-b-2 border-white text-sm font-bold mb-2"
+											{actionButtonText(token)}
+										</p>
+										<div>
+											<Link
+												href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
 											>
-												See Details
-											</a>
-										</Link>
+												<a
+													onClick={(e) => {
+														e.preventDefault()
+														onClickSeeDetails(token)
+													}}
+													className="text-gray-300 underline text-sm"
+												>
+													See Details
+												</a>
+											</Link>
+										</div>
 									</div>
 								</div>
 							</div>
