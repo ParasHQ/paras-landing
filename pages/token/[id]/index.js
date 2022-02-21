@@ -82,10 +82,20 @@ export async function getServerSideProps({ params }) {
 		params: {
 			contract_id: contractId,
 			token_series_id: tokenSeriesId,
+			lookup_token: true,
 		},
 	})
 
 	const token = res.data.data.results[0] || null
+
+	if (token.token) {
+		return {
+			redirect: {
+				destination: `/token/${contractId}::${tokenSeriesId}/${token.token.token_id}`,
+				permanent: false,
+			},
+		}
+	}
 
 	const errorCode = token ? false : 404
 

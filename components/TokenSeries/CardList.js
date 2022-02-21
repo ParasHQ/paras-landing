@@ -1,5 +1,5 @@
 import { animated } from 'react-spring'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Card from 'components/Card/Card'
 import { parseImgUrl, prettyBalance } from 'utils/common'
 import Link from 'next/link'
@@ -11,12 +11,17 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { useIntl } from 'hooks/useIntl'
 import TokenSeriesDetailModal from './TokenSeriesDetailModal'
 import CardListLoader from 'components/Card/CardListLoader'
+import TokenDetailModal from 'components/Token/TokenDetailModal'
+import MarketTokenModal from 'components/Modal/MarketTokenModal'
 
 const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollection, type }) => {
 	const store = useStore()
 	const router = useRouter()
 	const containerRef = useRef()
 	const animValuesRef = useRef(store.marketScrollPersist[name])
+	const [activeToken, setActiveToken] = useState(null)
+	const [modalType, setModalType] = useState(null)
+	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
@@ -60,16 +65,18 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 	}
 
 	const onClickSeeDetails = (token) => {
+		const lookupToken = token.token
 		router.push(
 			{
 				pathname: router.pathname,
 				query: {
 					...router.query,
-					tokenSeriesId: token.token_series_id,
 					contractId: token.contract_id,
+					tokenSeriesId: token.token_series_id,
+					tokenId: lookupToken?.token_id || '',
 				},
 			},
-			`/token/${token.contract_id}::${token.token_series_id}`,
+			`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`,
 			{
 				shallow: true,
 				scroll: false,
@@ -77,9 +84,51 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 		)
 	}
 
+	const onCloseModal = () => {
+		setActiveToken(null)
+		setModalType(null)
+	}
+
+	const actionButtonText = (token) => {
+		const price = token.lowest_price || token.price
+
+		if (
+			currentUser === token.metadata.creator_id ||
+			(!token.metadata.creator_id && currentUser === token.contract_id)
+		) {
+			return localeLn('UpdatePrice')
+		} else if (token.token && token.token.owner_id === currentUser) {
+			return localeLn('UpdateListing')
+		}
+
+		return price ? 'Buy Now' : 'Place Offer'
+	}
+
+	const actionButtonClick = (token) => {
+		const price = token.lowest_price || token.price
+
+		setActiveToken(token)
+		if (
+			currentUser === token.metadata.creator_id ||
+			(!token.metadata.creator_id && currentUser === token.contract_id)
+		) {
+			setModalType('updatelisting')
+		} else if (token.token && token.token.owner_id === currentUser) {
+			setModalType('updatelisting')
+		} else {
+			setModalType(price ? 'buy' : 'offer')
+		}
+	}
+
 	return (
 		<div ref={containerRef} className="rounded-md p-4 md:p-0">
 			<TokenSeriesDetailModal tokens={tokens} />
+			<TokenDetailModal tokens={tokens} />
+			<MarketTokenModal
+				activeToken={activeToken}
+				onCloseModal={onCloseModal}
+				modalType={modalType}
+			/>
 			{tokens.length === 0 && !hasMore && (
 				<div className="w-full">
 					<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">
@@ -107,12 +156,7 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 								className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-4 relative"
 							>
 								<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
-									<a
-										href={`/token/${token.contract_id}::${token.token_series_id}`}
-										onClick={(e) => {
-											e.preventDefault()
-										}}
-									>
+									<a onClick={(e) => e.preventDefault()}>
 										<div className="w-full m-auto">
 											<Card
 												imgUrl={parseImgUrl(token.metadata.media, null, {
@@ -139,40 +183,50 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 										</div>
 									</a>
 								</Link>
-								<div className="text-center">
-									<div className="mt-4">
-										<div className="p-2 pb-1">
-											<p className="text-gray-400 text-xs">{localeLn('StartFrom')}</p>
-											<div className="text-gray-100 text-xl">
-												{price ? (
-													<div>
-														<div>{prettyBalance(price, 24, 4)} Ⓝ</div>
-														{store.nearUsdPrice !== 0 && (
-															<div className="text-xs text-gray-400">
-																~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 4)}
-															</div>
-														)}
-													</div>
-												) : (
-													<div className="line-through text-red-600">
-														<span className="text-gray-100">{localeLn('SALE')}</span>
+								<div className="mt-4 px-1">
+									<p className="text-gray-400 text-xs">
+										{token.token || token.metadata.copies === 1
+											? localeLn('OnSale')
+											: localeLn('StartFrom')}
+									</p>
+									<div className="text-gray-100 text-2xl">
+										{price ? (
+											<div className="flex items-baseline space-x-1">
+												<div className="truncate">
+													{price === '0' ? localeLn('Free') : `${prettyBalance(price, 24, 4)} Ⓝ`}
+												</div>
+												{price !== '0' && store.nearUsdPrice !== 0 && (
+													<div className="text-xs text-gray-400 truncate">
+														~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 4)}
 													</div>
 												)}
 											</div>
-										</div>
+										) : (
+											<div className="line-through text-red-600">
+												<span className="text-gray-100">{localeLn('SALE')}</span>
+											</div>
+										)}
 									</div>
-									<div className="pb-4">
-										<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
-											<a
-												onClick={(e) => {
-													e.preventDefault()
-													onClickSeeDetails(token)
-												}}
-												className="text-white border-b-2 border-white text-sm font-bold mb-2"
-											>
-												See Details
-											</a>
-										</Link>
+									<div className="flex justify-between items-end">
+										<p
+											className="font-bold text-white cursor-pointer"
+											onClick={() => actionButtonClick(token)}
+										>
+											{actionButtonText(token)}
+										</p>
+										<div>
+											<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
+												<a
+													onClick={(e) => {
+														e.preventDefault()
+														onClickSeeDetails(token)
+													}}
+													className="text-gray-300 underline text-sm"
+												>
+													See Details
+												</a>
+											</Link>
+										</div>
 									</div>
 								</div>
 							</div>

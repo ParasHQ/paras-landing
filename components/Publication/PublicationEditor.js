@@ -8,6 +8,7 @@ import { useToast } from 'hooks/useToast'
 import {
 	compressImg,
 	dataURLtoFile,
+	parseGetCollectionIdfromUrl,
 	parseGetTokenIdfromUrl,
 	parseImgUrl,
 	readFileAsUrl,
@@ -20,6 +21,7 @@ import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { v4 as uuidv4 } from 'uuid'
 import DraftPublication from 'components/Draft/DraftPublication'
+import { generateFromString } from 'generate-avatar'
 
 let redirectUrl = null
 
@@ -48,11 +50,13 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 	)
 	const [showAlertErr, setShowAlertErr] = useState(false)
 	const [embeddedCards, setEmbeddedCards] = useState([])
+	const [embeddedCollections, setEmbeddedCollections] = useState([])
 
 	const [showModal, setShowModal] = useState(null)
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [isDraftIn, setIsDraftIn] = useState(false)
 	const [searchToken, setSearchToken] = useState('')
+	const [searchCollection, setSearchCollection] = useState('')
 	const [currentDraftStorage, setCurrentDraftStorage] = useState()
 	const currentUser = near.currentUser
 	const uid = uuidv4()
@@ -72,6 +76,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 	useEffect(() => {
 		if (isEdit) {
 			fetchToken()
+			fetchCollection()
 		}
 	}, [])
 
@@ -98,6 +103,24 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 			const _token = (await res.data.data.results[0]) || null
 			token = [...token, _token]
 			setEmbeddedCards(token)
+		})
+	}
+
+	const fetchCollection = async () => {
+		let collection = []
+		pubDetail?.collection_ids?.map(async (collectionId) => {
+			const url = process.env.V2_API_URL
+			const res = await axios({
+				url: url + `/collections`,
+				method: 'GET',
+				params: {
+					collection_id: collectionId,
+				},
+			})
+
+			const _collection = (await res.data.data.results[0]) || null
+			collection = [...collection, _collection]
+			setEmbeddedCollections(collection)
 		})
 	}
 
@@ -147,6 +170,32 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 		showToast('Please enter correct url')
 	}
 
+	const getDataFromCollectionId = async () => {
+		const { collection_id } = parseGetCollectionIdfromUrl(searchCollection)
+
+		if (embeddedCollections.some((col) => col.collection_id === collection_id)) {
+			showToast('You have added this collection')
+			return
+		}
+
+		const res = await axios.get(`${process.env.V2_API_URL}/collections`, {
+			params: {
+				collection_id: collection_id,
+			},
+		})
+
+		const collection = (await res.data.data.results[0]) || null
+
+		if (collection) {
+			setEmbeddedCollections([...embeddedCollections, collection])
+			setShowModal(null)
+			setSearchCollection('')
+		} else {
+			showToast('Please enter correct url')
+		}
+		return
+	}
+
 	const getTokenIds = () => {
 		return embeddedCards.map((token) => {
 			let tokenId = `${token.contract_id}::${token.token_series_id}`
@@ -155,6 +204,10 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 			}
 			return tokenId
 		})
+	}
+
+	const getCollectionIds = () => {
+		return embeddedCollections.map((coll) => coll.collection_id)
 	}
 
 	const showToast = (msg, type = 'error') => {
@@ -167,6 +220,12 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 
 	const showCardModal = () => {
 		embeddedCards.length === 6 ? showToast('Maximum 6 cards') : setShowModal('card')
+	}
+
+	const showCollectionModal = () => {
+		embeddedCollections.length === 6
+			? showToast('Maximum 6 collection')
+			: setShowModal('collection')
 	}
 
 	const postPublication = async () => {
@@ -200,6 +259,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 				entityMap: entityMap,
 			},
 			contract_token_ids: getTokenIds(),
+			collection_ids: getCollectionIds(),
 		}
 
 		try {
@@ -420,6 +480,42 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 					</div>
 				</Modal>
 			)}
+			{showModal === 'collection' && (
+				<Modal
+					close={() => {
+						setShowModal(null)
+					}}
+					closeOnBgClick={true}
+					closeOnEscape={true}
+				>
+					<div className="w-full max-w-md p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
+						<div className="m-auto">
+							<label className="mb-4 block text-white text-2xl font-bold">
+								{localeLn('AddCollectionToPublication')}
+							</label>
+							<input
+								type="text"
+								name="video"
+								onChange={(e) => setSearchCollection(e.target.value)}
+								value={searchCollection}
+								className={`resize-none h-auto focus:border-gray-100 mb-4 text-black`}
+								placeholder="Url of the Collection"
+							/>
+							<p className="text-gray-300 text-sm italic">
+								Please input the link of your collection
+							</p>
+							<p className="text-gray-300 text-sm italic">https://paras.id/collection/paradigm</p>
+							<button
+								className="font-semibold mt-4 py-3 w-full rounded-md bg-primary text-white"
+								disabled={!searchCollection}
+								onClick={getDataFromCollectionId}
+							>
+								{localeLn('AddCollection')}
+							</button>
+						</div>
+					</div>
+				</Modal>
+			)}
 			{showModal === 'final' && (
 				<Modal close={() => setShowModal(null)} closeOnBgClick={false} closeOnEscape={false}>
 					<div className="w-full max-h-screen max-w-3xl p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden overflow-y-auto">
@@ -583,8 +679,37 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 					setTitle={setTitle}
 					onPressAddCard={getDataFromTokenId}
 					showCardModal={showCardModal}
+					showCollectionModal={showCollectionModal}
 				/>
 			</div>
+			{embeddedCollections.length !== 0 && (
+				<div className="max-w-4xl mx-auto px-4 pt-16">
+					<div className="rounded-md p-4 md:p-8">
+						<h4 className="text-white font-semibold text-3xl mb-4 text-center">
+							{localeLn('Collections')}
+						</h4>
+						<div
+							className={`md:flex md:flex-wrap ${
+								embeddedCollections.length <= 3 && 'justify-center'
+							}`}
+						>
+							{embeddedCollections.map((coll, key) => (
+								<div key={key} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-4">
+									<CollectionPublication
+										localCollection={coll}
+										onDelete={() => {
+											const temp = embeddedCollections.filter(
+												(x) => x.collection_id != coll.collection_id
+											)
+											setEmbeddedCollections(temp)
+										}}
+									/>
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+			)}
 			{embeddedCards.length !== 0 && (
 				<div className="max-w-4xl mx-auto px-4 pt-16">
 					<div className=" border-2 border-dashed border-gray-800 rounded-md p-4 md:p-8">
@@ -693,6 +818,47 @@ const CardPublication = ({ localToken, deleteCard }) => {
 				{localeLn('Delete')}
 			</div>
 		</Fragment>
+	)
+}
+
+const CollectionPublication = ({ localCollection, onDelete }) => {
+	const { localeLn } = useIntl()
+	return (
+		<div className="flex flex-col">
+			<div className="w-full h-full rounded">
+				<img
+					className="object-cover w-full md:h-56 h-full transform ease-in-out duration-200 hover:opacity-80 rounded-xl"
+					src={parseImgUrl(
+						localCollection?.media ||
+							`data:image/svg+xml;utf8,${generateFromString(localCollection?.collection_id)}`,
+						null,
+						{
+							width: `600`,
+							useOriginal: process.env.APP_ENV === 'production' ? false : true,
+						}
+					)}
+				/>
+			</div>
+			<a
+				href={`/collection/${localCollection?.collection_id}`}
+				className="cursor-pointer"
+				target={`_blank`}
+			>
+				<p
+					title={localCollection?.collection}
+					className="text-2xl font-bold truncate hover:underline text-white mt-4"
+				>
+					{localCollection?.collection}
+				</p>
+			</a>
+			<div className="flex flex-row flex-wrap text-sm text-gray-400 items-center w-full">
+				<span className="mr-1">collection by</span>
+				<span className="truncate font-semibold">{localCollection?.creator_id}</span>
+			</div>
+			<div className="text-red-600 text-sm cursor-pointer mt-2" onClick={onDelete}>
+				{localeLn('Delete')}
+			</div>
+		</div>
 	)
 }
 

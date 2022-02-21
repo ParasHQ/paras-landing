@@ -12,6 +12,7 @@ import CardListLoader from 'components/Card/CardListLoader'
 import CategoryList from 'components/CategoryList'
 import { useIntl } from 'hooks/useIntl'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
+import FilterMarket from 'components/Filter/FilterMarket'
 
 const LIMIT = 12
 
@@ -145,8 +146,13 @@ function MarketPage({ serverQuery }) {
 			</Head>
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
-				<div className="flex justify-center mb-4">
-					<h1 className="text-4xl font-bold text-gray-100 text-center">{localeLn('Market')}</h1>
+				<div className="grid grid-cols-3 mb-4">
+					<h1 className="col-start-2 col-span-1 text-4xl font-bold text-gray-100 text-center">
+						{localeLn('Market')}
+					</h1>
+					<div className="grid justify-items-end">
+						<FilterMarket />
+					</div>
 				</div>
 				<CategoryList listCategory={store.cardCategory} />
 				<div className="mt-4 px-4">
@@ -172,6 +178,7 @@ const tokensParams = (query) => {
 		__sort: parsedSortQuery,
 		__limit: LIMIT,
 		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
+		lookup_token: true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 		...(query._id_next && { _id_next: query._id_next }),

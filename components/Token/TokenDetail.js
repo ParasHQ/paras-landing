@@ -271,14 +271,16 @@ const TokenDetail = ({ token, className }) => {
 								{`Place an offer`}
 							</Button>
 						)}
-						<div
-							className="mt-2 text-center text-white cursor-pointer hover:opacity-80 text-sm"
-							size="md"
-							variant="ghosts"
-							onClick={() => router.push(`/token/${token.contract_id}::${token.token_series_id}`)}
-						>
-							{localeLn('SeeTokenSeries')}
-						</div>
+						{token.token_series_id !== token.token_id && (
+							<div
+								className="mt-2 text-center text-white cursor-pointer hover:opacity-80 text-sm"
+								size="md"
+								variant="ghosts"
+								onClick={() => router.push(`/token/${token.contract_id}::${token.token_series_id}`)}
+							>
+								{localeLn('SeeTokenSeries')}
+							</div>
+						)}
 					</div>
 				</div>
 			</div>

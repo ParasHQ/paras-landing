@@ -33,7 +33,9 @@ function TokenSeriesDetailModal({ tokens = [] }) {
 					token?.token_series_id === router.query.tokenSeriesId &&
 					token?.contract_id === router.query.contractId
 			)
-			setActiveToken(token)
+			if (token?.token === undefined || token?.token.token_id !== router.query.tokenSeriesId) {
+				setActiveToken(token)
+			}
 		} else {
 			setActiveToken(null)
 		}
