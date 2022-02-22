@@ -14,8 +14,11 @@ import { sentryCaptureException } from 'lib/sentry'
 const CreateCollection = ({ onFinishCreate }) => {
 	const { localeLn } = useIntl()
 	const [showImgCrop, setShowImgCrop] = useState(false)
+	const [showCoverCrop, setShowCoverCrop] = useState(false)
 	const [imgFile, setImgFile] = useState({})
+	const [coverFile, setCoverFile] = useState({})
 	const [imgUrl, setImgUrl] = useState('')
+	const [coverUrl, setCoverUrl] = useState('')
 
 	const [collectionName, setCollectionName] = useState('')
 	const [collectionDesc, setCollectionDesc] = useState('')
@@ -33,6 +36,13 @@ const CreateCollection = ({ onFinishCreate }) => {
 		}
 	}
 
+	const _setCover = async (e) => {
+		if (e.target.files[0]) {
+			setCoverFile(e.target.files[0])
+			setShowCoverCrop(true)
+		}
+	}
+
 	const _submit = async (e) => {
 		e.preventDefault()
 
@@ -40,7 +50,10 @@ const CreateCollection = ({ onFinishCreate }) => {
 
 		const formData = new FormData()
 		if (imgFile) {
-			formData.append('file', imgFile)
+			formData.append('files', imgFile)
+		}
+		if (coverFile) {
+			formData.append('files', coverFile)
 		}
 		formData.append('collection', collectionName)
 		formData.append('description', collectionDesc)
@@ -103,27 +116,70 @@ const CreateCollection = ({ onFinishCreate }) => {
 					}}
 				/>
 			)}
+			{showCoverCrop && (
+				<ImgCrop
+					input={coverFile}
+					size={{
+						width: 1024,
+						height: 384,
+					}}
+					left={() => setShowCoverCrop(false)}
+					right={(res) => {
+						setCoverUrl(res.payload.imgUrl)
+						setCoverFile(res.payload.imgFile)
+						setShowCoverCrop(false)
+					}}
+				/>
+			)}
 			<div className="relative max-w-3xl m-auto p-4">
 				<div className="text-white font-bold text-4xl">{localeLn('NavCreateCollection')}</div>
-				<div className="text-white mt-4">{localeLn('Logo')}</div>
-				<div className="relative cursor-pointer w-32 h-32 overflow-hidden rounded-md mt-2">
-					<input
-						className="cursor-pointer w-full opacity-0 absolute inset-0"
-						type="file"
-						accept="image/*"
-						onChange={_setImg}
-						onClick={(e) => {
-							e.target.value = null
-						}}
-					/>
-					<div className="flex items-center justify-center">
-						<div className="w-32 h-32 overflow-hidden bg-primary shadow-inner">
-							<img
-								src={parseImgUrl(imgUrl, null, {
-									width: `300`,
-								})}
-								className="w-full object-cover"
+				<div className="md:flex gap-8">
+					<div>
+						<div className="text-white mt-4">{localeLn('Logo')}</div>
+						<div className="relative cursor-pointer w-32 h-32 overflow-hidden rounded-md mt-2">
+							<input
+								className="cursor-pointer w-full opacity-0 absolute inset-0"
+								type="file"
+								accept="image/*"
+								onChange={_setImg}
+								onClick={(e) => {
+									e.target.value = null
+								}}
 							/>
+							<div className="flex items-center justify-center">
+								<div className="w-32 h-32 overflow-hidden bg-primary shadow-inner">
+									<img
+										src={parseImgUrl(imgUrl, null, {
+											width: `300`,
+										})}
+										className="w-full object-cover"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div className="text-white mt-4">{localeLn('Cover')}</div>
+						<div className="relative cursor-pointer w-64 h-32 overflow-hidden rounded-md mt-2">
+							<input
+								className="cursor-pointer w-full opacity-0 absolute inset-0"
+								type="file"
+								accept="image/*"
+								onChange={_setCover}
+								onClick={(e) => {
+									e.target.value = null
+								}}
+							/>
+							<div className="flex items-center justify-center">
+								<div className="w-64 h-32 overflow-hidden bg-primary shadow-inner">
+									<img
+										src={parseImgUrl(coverUrl, null, {
+											width: `300`,
+										})}
+										className={`w-full ${coverUrl && 'h-full'} object-cover`}
+									/>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
