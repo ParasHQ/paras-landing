@@ -370,7 +370,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						text={collection?.description}
 					/>
 					<div className="flex items-center justify-center space-x-2">
-						{collection?.website && (
+						{collection.socialMedia?.website && (
 							<a
 								href={
 									!/^https?:\/\//i.test(collection?.website)
@@ -391,7 +391,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 								</svg>
 							</a>
 						)}
-						{collection?.instagramId && (
+						{collection.socialMedia?.instagram && (
 							<a
 								href={'https://instagram.com/' + collection?.instagramId}
 								className="mt-2 mb-4"
@@ -411,7 +411,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 								</svg>
 							</a>
 						)}
-						{collection?.twitterId && (
+						{collection.socialMedia?.twitter && (
 							<a
 								href={'https://twitter.com/' + collection?.twitterId}
 								className="mt-2 mb-4"
@@ -433,7 +433,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 								</svg>
 							</a>
 						)}
-						{collection?.weiboUrl && (
+						{collection.socialMedia?.weibo && (
 							<a
 								href={
 									!/^https?:\/\//i.test(collection?.weiboUrl)

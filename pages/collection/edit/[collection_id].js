@@ -74,7 +74,6 @@ const CollectionPageEdit = ({ collectionId }) => {
 		formData.append('collection_id', collectionId)
 		formData.append('description', collectionDesc)
 		formData.append('creator_id', currentUser)
-		formData.append('files', imgFile)
 		formData.append('twitter', collectionSocialMedia.twitter)
 		formData.append('instagram', collectionSocialMedia.instagram)
 		formData.append('website', collectionSocialMedia.website)

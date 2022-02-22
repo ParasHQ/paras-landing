@@ -51,7 +51,6 @@ const CreateCollection = ({ onFinishCreate }) => {
 		formData.append('collection', collectionName)
 		formData.append('description', collectionDesc)
 		formData.append('creator_id', currentUser)
-		formData.append('files', imgFile)
 		formData.append('twitter', collectionSocialMedia.twitter)
 		formData.append('instagram', collectionSocialMedia.instagram)
 		formData.append('website', collectionSocialMedia.website)
