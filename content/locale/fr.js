@@ -440,105 +440,104 @@ const p404 = {
 const license = {
 	LicenseParas: 'License — Paras',
 	NFTLicense: 'NFT License',
-	Overview: 'Overview',
-	LicenseHelpsDefine: `The NFT License helps define the rights of both owners or collectors
-  of the non-fungible tokens (NFTs) as well as artists working with
-  NFTs. The NFT License is designed to balance two concerns:`,
-	LicenseProtectingCreators: 'Protecting the hard work and ingenuity of creators',
+	Overview: 'Aperçu',
+	LicenseHelpsDefine: `La licence NFT aide à définir les droits des propriétaires ou des collectionneurs
+  des jetons non fongibles (NFT) ainsi que des artistes travaillant avec
+  NFT. La licence NFT est conçue pour équilibrer deux préoccupations:`,
+	LicenseProtectingCreators: `Protéger le travail acharné et l'ingéniosité des créateurs`,
 	LicenseGrantingOwners:
-		'Granting owners or collectors the freedom and flexibility to fully enjoy their non-fungible tokens',
-	LicenseAnyNFT: 'Any NFT project can use this license.',
-	LicenseContentIsYours: 'The Content is Yours',
-	LicenseArtistsOwnRights: `Artists own all the rights to the content they create and post on Paras.
-  Of course, if the content wasn’t yours to begin with, putting it on
-  Paras doesn’t make it yours. Don’t submit content you don’t hold the
-  copyright for (unless you have permission).`,
-	LicenseArtistsAreResponsible: `Artists are responsible for the content they post. This means all risks
-  related to its publication and display, including someone else’s
-  reliance on its accuracy and any claims relating to intellectual
-  property or other legal rights.`,
-	LicenseWhatAmI: 'What am I allowed to do with the art associated with my NFT?',
-	LicenseYouBroadRights: `You have broad rights to use the art associated with your NFT. In the
-  case of a Digital Art Card (DAC), you can do any of the following:`,
-	LicenseUseDAC: 'Use the DAC for your own personal, non-commercial use;',
-	LicenseUseDACWhen: `Use the DAC when you’re on a marketplace that allows the purchase and
-  sale of your card, so long as the marketplace cryptographically
-  verifies that you are the owner;`,
-	LicenseUseDACOn: `Use the DAC when you’re on a third-party website or app that allows
-  the inclusion, involvement, or participation of your card so long as
-  the website/app cryptographically verifies that you are the owner, and
-  the DAC doesn’t stay on the website/app after you’ve left; and`,
+		'Accorder aux propriétaires ou aux collectionneurs la liberté et la flexibilité de profiter pleinement de leurs jetons non fongibles',
+	LicenseAnyNFT: 'Tout projet NFT peut utiliser cette licence.',
+	LicenseContentIsYours: 'Le contenu est à vous',
+	LicenseArtistsOwnRights: `Les artistes possèdent tous les droits sur le contenu qu'ils créent et publient sur Paras.
+  Bien sûr, si le contenu n'était pas le vôtre au départ, le fait de le publier sur Paras n'en fait pas vôtre. Ne soumettez pas de contenu dont vous ne détenez pas le
+  droit d'auteur pour (sauf si vous avez la permission).`,
+	LicenseArtistsAreResponsible: `Les artistes sont responsables du contenu qu'ils publient. Cela signifie tous les risques
+  liés à sa publication et à son affichage, y compris ceux de quelqu'un d'autre
+  la confiance dans son exactitude et toute réclamation relative à la propriété intellectuelle
+  propriété ou autres droits légaux.`,
+	LicenseWhatAmI: `Que suis-je autorisé à faire avec l'art associé à mon NFT??`,
+	LicenseYouBroadRights: `Vous disposez de droits étendus pour utiliser l'art associé à votre NFT. Dans le
+  cas d'une carte d'art numérique(CAN), vous pouvez effectuer l'une des opérations suivantes:`,
+	LicenseUseDAC: 'Utilisez le CAN pour votre usage personnel et non commercial;',
+	LicenseUseDACWhen: `Utilisez la CAN lorsque vous êtes sur une place de marché qui permet l'achat et
+  vente de votre carte, tant que le marché cryptographiquement
+  vérifie que vous êtes le propriétaire;`,
+	LicenseUseDACOn: `Utilisez le CAN lorsque vous êtes sur un site Web ou une application tiers qui permet
+  l'inclusion, l'implication ou la participation de votre carte tant que
+  le site Web/l'application vérifie cryptographiquement que vous êtes le propriétaire, et
+  le DAC ne reste pas sur le site Web/l'application après votre départ; et`,
 
-	LicenseArtAssociated: 'What am I NOT allowed to do with the art associated with my NFT?',
+	LicenseArtAssociated: `Qu'est-ce que je ne suis PAS autorisé à faire avec l'art associé à mon NFT ?`,
 	LicenseAreNotAppropriate:
-		'There are a few things that aren’t appropriate uses for your NFT art. They include:',
-	LicenseModifyingArt: 'Modifying the art;',
+		'Il y a quelques choses qui ne sont pas des utilisations appropriées pour votre art NFT. Ils comprennent:',
+	LicenseModifyingArt: `Modifier l'art;`,
 	LicenseUsingForCommercialize:
-		'Using the art for commercialize purpose without asking from the creator/artist permission',
-	LicenseSellThirdParty: 'Using the art to market or sell third-party products;',
+		`Utilisation de l'art à des fins de commercialisation sans demander l'autorisation du créateur/artiste`,
+	LicenseSellThirdParty: `Utiliser l'art pour commercialiser ou vendre des produits tiers`,
 	LicenseImagesHatred:
-		'Using the art in connection with images of hatred, violence, or other inappropriate behavior; or',
+		`Utiliser l'art en relation avec des images de haine, de violence ou d'autres comportements inappropriés ; ou`,
 	LicenseTryingTrademark:
-		'Trying to trademark your art, or otherwise acquire intellectual property rights in it.',
+		`Essayer de déposer votre art ou d'acquérir autrement des droits de propriété intellectuelle sur celui-ci`,
 	Version10: 'Version 1.0',
-	LicenseDefinitions: '1. Definitions.',
+	LicenseDefinitions: '1. Définitions.',
 	LicenseArtMeans:
-		'“Art” means any art, design, and drawings that may be associated with an NFT that you Own.',
-	LicenseNFTMeans: `"NFT" means any blockchain-tracked, non-fungible token.`,
-	LicenseConcerningAnNFT: `“Own” means, concerning an NFT, an NFT that you have purchased or
-  otherwise rightfully acquired from a legitimate source, where proof of
-  such purchase is recorded on the relevant blockchain. “Purchased NFT”
-  means an NFT that you Own. “Third Party IP” means any third party patent
-  rights (including, without limitation, patent applications and
-  disclosures), copyrights, trade secrets, trademarks, know-how, or any
-  other intellectual property rights recognized in any country or
-  jurisdiction in the world.`,
-	LicensePurchasedNFT: `“Purchased NFT” means an NFT that you Own. “Third Party IP” means any
-  third party patent rights (including, without limitation, patent
-  applications and disclosures), copyrights, trade secrets, trademarks,
-  know-how, or any other intellectual property rights recognized in any
-  country or jurisdiction in the world.`,
-	LicenseThirdPartyIP: `“Third Party IP” means any third party patent rights (including, without
-      limitation, patent applications and disclosures), copyrights, trade
-      secrets, trademarks, know-how, or any other intellectual property rights
-      recognized in any country or jurisdiction in the world.`,
-	LicenseOwnership: '2. Ownership.',
-	LicenseYouAcknowledge: `You acknowledge and agree that the Artist (or, as applicable, its
-      licensors) owns all legal right, title, and interest in and to the Art,
-      and all intellectual property rights therein. The rights that you have
-      in and to the Art are limited to those described in this License. The
-      artist reserves all rights in and to the Art not expressly granted to
-      you in this License.`,
+		'"Art" désigne tout art, conception et dessin pouvant être associé à un NFT que vous possédez.',
+	LicenseNFTMeans: `"NFT" désigne tout jeton non fongible suivi par blockchain.`,
+	LicenseConcerningAnNFT: `« Propriétaire » désigne, concernant un NFT, un NFT que vous avez acheté ou
+  légitimement acquis auprès d'une source légitime, où la preuve de
+  cet achat est enregistré sur la blockchain correspondante. "NFT acheté"
+  signifie un NFT que vous possédez. « PI de tiers » désigne tout brevet de tiers
+  droits (y compris, sans s'y limiter, les demandes de brevet et
+  divulgations), droits d'auteur, secrets commerciaux, marques, savoir-faire ou tout
+  autres droits de propriété intellectuelle reconnus dans tout pays ou
+  compétence dans le monde.`,
+	LicensePurchasedNFT: `« NFT acheté » désigne un NFT que vous possédez. « PI de tiers » désigne tout
+  les droits de brevet de tiers (y compris, sans s'y limiter, les droits de brevet
+  demandes et divulgations), droits d'auteur, secrets commerciaux, marques de commerce,
+  savoir-faire, ou tout autre droit de propriété intellectuelle reconnu dans tout
+  pays ou juridiction dans le monde.`,
+	LicenseThirdPartyIP: `« PI de tiers » désigne tout droit de brevet de tiers (y compris, sans
+    limitation, demandes et divulgations de brevets), droits d'auteur, commerce
+    secrets, marques, savoir-faire ou tout autre droit de propriété intellectuelle
+    reconnu dans n'importe quel pays ou juridiction dans le monde.`,
+	LicenseOwnership: '2. Possession.',
+	LicenseYouAcknowledge: `Vous reconnaissez et acceptez que l'Artiste (ou, le cas échéant, ses
+    concédants de licence) détient tous les droits, titres et intérêts légaux sur l'art,
+    et tous les droits de propriété intellectuelle y afférents. Les droits que vous avez
+    dans et à l'Art sont limités à ceux décrits dans cette Licence. le
+    l'artiste se réserve tous les droits sur l'art non expressément accordés à
+    vous dans cette licence.`,
 	LicenseLicense: '3. License.',
-	LicenseGeneralUse: `General Use. Subject to your continued compliance with the terms of
-  this License, Artist grants you a worldwide, non-exclusive,
-  non-transferable, royalty-free license to use, copy, and display the
-  Art for your Purchased NFTs, solely for the following purposes:`,
-	LicenseForYourPersonal: 'for your own personal, non-commercial use;',
+	LicenseGeneralUse: `Usage général. Sous réserve de votre respect continu des conditions de
+  cette licence, l'artiste vous accorde une licence mondiale, non exclusive,
+  licence non transférable et libre de redevance pour utiliser, copier et afficher le
+  Art pour vos NFT achetés, uniquement aux fins suivantes:`,
+	LicenseForYourPersonal: 'pour votre usage personnel et non commercial;',
 	LicenseAsPartMarketplace:
-		'as part of a marketplace that permits the purchase and sale of your NFTs, provided that the marketplace cryptographically verifies each NFT owner’s rights to display the Art for their Purchased NFTs to ensure that only the actual owner can display the Art; or',
+		`dans le cadre d'un marché qui permet l'achat et la vente de vos NFT, à condition que le marché vérifie de manière cryptographique les droits de chaque propriétaire de NFT d'afficher l'Art pour leurs NFT achetés afin de s'assurer que seul le propriétaire réel peut afficher l'Art ; ou`,
 	LicenseThirdPartyWebsite:
-		'as part of a third-party website or application that permits the inclusion, involvement, or participation of your NFTs, provided that the website/application cryptographically verifies each NFT owner’s rights to display the Art for their Purchased NFTs to ensure that only the actual owner can display the Art, and provided that the Art is no longer visible once the owner of the Purchased NFT leaves the website/application.',
+		`dans le cadre d'un site Web ou d'une application tiers qui permet l'inclusion, l'implication ou la participation de vos NFT, à condition que le site Web / l'application vérifie de manière cryptographique les droits de chaque propriétaire de NFT d'afficher l'Art pour leurs NFT achetés afin de s'assurer que seul le propriétaire réel peut afficher l'Art, et à condition que l'Art ne soit plus visible une fois que le propriétaire du NFT acheté quitte le site Web/l'application`,
 	LicenseCommercialUse:
-		'Commercial Use. Subject to your continued compliance with the terms of this License, Artist grants you a limited, worldwide, non-exclusive, non-transferable license to use, copy, and display the Art for your Purchased NFTs to commercialize your own merchandise that includes, contains or consists of the Art for your Purchased NFTs .',
+		`Un usage commercial. Sous réserve de votre respect continu des termes de cette licence, l'artiste vous accorde une licence limitée, mondiale, non exclusive et non transférable pour utiliser, copier et afficher l'art pour vos NFT achetés afin de commercialiser votre propre marchandise qui comprend, contient ou consiste en l'art pour vos NFT achetés.`,
 	LicenseRestrictions: '4. Restrictions.',
 	LicenseYouAgree:
-		'You agree that you may not, nor permit any third party to do or attempt to do any of the foregoing without Artist’s express prior written consent in each case: i) use the Art for your Purchased NFTs in connection with images, videos, or other forms of media that depict hatred, intolerance, violence, cruelty, or anything else that could reasonably be found to constitute hate speech or otherwise infringe upon the rights of others; To the extent that Art associated with your Purchased NFTs contains Third Party IP (e.g., licensed intellectual property from a celebrity, athlete, or other public figures), you understand and agree as follows:',
+		`Vous acceptez que vous ne pouvez pas, ni permettre à un tiers de faire ou de tenter de faire ce qui précède sans le consentement écrit préalable exprès de l'artiste dans chaque cas : i) utiliser l'art pour vos NFT achetés en relation avec des images, des vidéos ou d'autres les formes de médias qui dépeignent la haine, l'intolérance, la violence, la cruauté ou toute autre chose qui pourrait raisonnablement être considérée comme constituant un discours de haine ou portant autrement atteinte aux droits d'autrui ; Dans la mesure où l'Art associé à vos NFT achetés contient une IP de tiers (par exemple, la propriété intellectuelle sous licence d'une célébrité, d'un athlète ou d'autres personnalités publiques), vous comprenez et acceptez ce qui suit :`,
 	LicenseHaveRightTo:
-		'that you will not have the right to use such Third Party IP in any way except as incorporated in the Art, and subject to the license and restrictions contained herein;',
-	LicenseInSection3: 'that the Commercial Use license in Section 3(b) above will not apply;',
+		`que vous n'aurez pas le droit d'utiliser cette IP de tiers de quelque manière que ce soit, sauf de la manière incorporée dans l'Art, et sous réserve de la licence et des restrictions contenues dans les présentes ;`,
+	LicenseInSection3: `que la licence d'utilisation commerciale de la section 3(b) ci-dessus ne s'appliquera pas ;`,
 	LicenseDependingOn:
-		'that, depending on the nature of the license granted from the owner of the Third Party IP, Artist may need to pass through additional restrictions on your ability to use the Complete Art; and',
+		`que, selon la nature de la licence accordée par le propriétaire de la PI tierce, l'Artiste peut avoir besoin de passer par des restrictions supplémentaires sur votre capacité à utiliser l'Art complet ; et`,
 	LicenseToTheExtent:
-		'to the extent that the Artist informs you of such additional restrictions in writing (email is permissible), you will be responsible for complying with all such restrictions from the date that you receive the notice, and that failure to do so will be deemed a breach of this license. The restriction in Section 4 will survive the expiration or termination of this License.',
-	LicenseTermsOf: '5. Terms of License.',
+		`dans la mesure où l'Artiste vous informe de ces restrictions supplémentaires par écrit (le courrier électronique est autorisé), vous serez responsable de vous conformer à toutes ces restrictions à compter de la date à laquelle vous recevez l'avis, et ce non-respect sera considéré comme une violation de cette licence. La restriction de la section 4 survivra à l'expiration ou à la résiliation de cette licence.`,
+	LicenseTermsOf: '5. Termes de la license.',
 	LicenseTheLicenseGranted:
-		'The license granted in Section 3 above applies only to the extent that you continue to Own the applicable Purchased NFT. If at any time you sell, trade, donate, give away, transfer, or otherwise dispose of your Purchased NFT for any reason, the license granted in Section 3 will immediately expire concerning those NFTs without the requirement of notice, and you will have no further rights in or to the Art for those NFTs.',
+		`La licence accordée dans la section 3 ci-dessus s'applique uniquement dans la mesure où vous continuez à être propriétaire du NFT acheté applicable. Si, à tout moment, vous vendez, échangez, donnez, donnez, transférez ou cédez de quelque manière que ce soit votre NFT acheté pour quelque raison que ce soit, la licence accordée à la section 3 expirera immédiatement concernant ces NFT sans exigence de préavis, et vous n'aurez aucune d'autres droits dans ou sur l'Art pour ces NFT.`,
 }
 const languages = {
-	LanguagesParas: 'Languages — Paras',
-	Languages: 'Languages',
-	AvailableInFollowingLang: 'Paras is available in the following languages:',
+	LanguagesParas: 'Langues — Paras',
+	Languages: 'Langues',
+	AvailableInFollowingLang: 'Paras est disponible dans les langues suivantes:',
 }
 const myBids = {
 	MyBidsParas: 'My Bids — Paras',
