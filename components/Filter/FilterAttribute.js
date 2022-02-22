@@ -71,7 +71,7 @@ const FilterAttribute = ({ attributes, onClearAll }) => {
 				</h1>
 			</div>
 			{showFilterModal && (
-				<div className="absolute mr-4 z-20 mt-2 right-0 bg-dark-primary-2 rounded-md w-72">
+				<div className="absolute mr-4 z-20 mt-2 right-0 bg-dark-primary-2 rounded-md w-80">
 					<Scrollbars
 						autoHeight
 						autoHeightMax={`30rem`}
@@ -169,7 +169,11 @@ const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attribu
 									/>
 									<p className="font-thin text-white text-sm py-1 md:py-2">{value}</p>
 									<p className="font-thin text-right flex-grow text-gray-500 text-sm py-1 md:py-2">
-										{attributes[attribute][value].count}
+										{attributes[attribute][value].count} (
+										{attributes[attribute][value].rarity?.rarity > 1
+											? Math.round(attributes[attribute][value].rarity)
+											: attributes[attribute][value].rarity.toFixed(2)}
+										%)
 									</p>
 								</label>
 								<br />
