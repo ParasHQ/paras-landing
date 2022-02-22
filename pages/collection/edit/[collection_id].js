@@ -22,9 +22,8 @@ const CollectionPageEdit = ({ collectionId }) => {
 	const [collectionDesc, setCollectionDesc] = useState('')
 	const [collectionSocialMedia, setCollectionSocialMedia] = useState({
 		website: '',
-		weibo: '',
 		twitter: '',
-		instagram: '',
+		discord: '',
 	})
 
 	const [isSubmitting, setIsSubmitting] = useState(false)
@@ -55,9 +54,8 @@ const CollectionPageEdit = ({ collectionId }) => {
 		setCollectionDesc(collectionData.description)
 		setCollectionSocialMedia({
 			twitter: collectionData.socialMedia?.twitter,
-			instagram: collectionData.socialMedia?.instagram,
 			website: collectionData.socialMedia?.website,
-			weibo: collectionData.socialMedia?.weibo,
+			discord: collectionData.socialMedia?.discord,
 		})
 		setImgUrl(collectionData.media)
 	}
@@ -75,9 +73,8 @@ const CollectionPageEdit = ({ collectionId }) => {
 		formData.append('description', collectionDesc)
 		formData.append('creator_id', currentUser)
 		formData.append('twitter', collectionSocialMedia.twitter)
-		formData.append('instagram', collectionSocialMedia.instagram)
 		formData.append('website', collectionSocialMedia.website)
-		formData.append('weibo', collectionSocialMedia.weibo)
+		formData.append('discord', collectionSocialMedia.discord)
 
 		try {
 			const resp = await axios.put(`${process.env.V2_API_URL}/collections`, formData, {
@@ -205,25 +202,7 @@ const CollectionPageEdit = ({ collectionId }) => {
 					className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
 					placeholder="Website"
 				/>
-				<div className="text-white mt-4">Weibo URL</div>
-				<InputText
-					value={collectionSocialMedia.weibo}
-					onChange={(e) => setCollectionSocialMedia((prev) => ({ ...prev, weibo: e.target.value }))}
-					className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
-					placeholder="Weibo URL"
-				/>
-				<div className="flex space-x-4">
-					<div className="w-full md:w-1/2">
-						<div className="text-white mt-4">Instagram</div>
-						<InputText
-							value={collectionSocialMedia.instagram}
-							onChange={(e) =>
-								setCollectionSocialMedia((prev) => ({ ...prev, instagram: e.target.value }))
-							}
-							className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
-							placeholder="Username"
-						/>
-					</div>
+				<div className="block md:flex md:space-x-4">
 					<div className="w-full md:w-1/2">
 						<div className="text-white mt-4">Twitter</div>
 						<InputText
@@ -233,6 +212,17 @@ const CollectionPageEdit = ({ collectionId }) => {
 							}
 							className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
 							placeholder="Username"
+						/>
+					</div>
+					<div className="w-full md:w-1/2">
+						<div className="text-white mt-4">Discord</div>
+						<InputText
+							value={collectionSocialMedia.discord}
+							onChange={(e) =>
+								setCollectionSocialMedia((prev) => ({ ...prev, discord: e.target.value }))
+							}
+							className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
+							placeholder="Server"
 						/>
 					</div>
 				</div>

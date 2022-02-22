@@ -11,7 +11,7 @@ import { useRouter } from 'next/router'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 
-const CreateCollection = ({ onFinishCreate }) => {
+const CreateCollection = ({ onFinishCreate, oneGrid }) => {
 	const { localeLn } = useIntl()
 	const [showImgCrop, setShowImgCrop] = useState(false)
 	const [imgFile, setImgFile] = useState({})
@@ -21,9 +21,8 @@ const CreateCollection = ({ onFinishCreate }) => {
 	const [collectionDesc, setCollectionDesc] = useState('')
 	const [collectionSocialMedia, setCollectionSocialMedia] = useState({
 		website: '',
-		weibo: '',
 		twitter: '',
-		instagram: '',
+		discord: '',
 	})
 
 	const [isSubmitting, setIsSubmitting] = useState(false)
@@ -52,9 +51,8 @@ const CreateCollection = ({ onFinishCreate }) => {
 		formData.append('description', collectionDesc)
 		formData.append('creator_id', currentUser)
 		formData.append('twitter', collectionSocialMedia.twitter)
-		formData.append('instagram', collectionSocialMedia.instagram)
 		formData.append('website', collectionSocialMedia.website)
-		formData.append('weibo', collectionSocialMedia.weibo)
+		formData.append('discord', collectionSocialMedia.discord)
 
 		try {
 			const resp = await Axios.post(`${process.env.V2_API_URL}/collections`, formData, {
@@ -160,35 +158,38 @@ const CreateCollection = ({ onFinishCreate }) => {
 					className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
 					placeholder="Website"
 				/>
-				<div className="text-white mt-4">{localeLn('Weibo URL')}</div>
-				<InputText
-					value={collectionSocialMedia.weibo}
-					onChange={(e) => setCollectionSocialMedia((prev) => ({ ...prev, weibo: e.target.value }))}
-					className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
-					placeholder="Weibo URL"
-				/>
-				<div className="flex space-x-4">
-					<div className="w-full md:w-1/2">
-						<div className="text-white mt-4">Instagram</div>
-						<InputText
-							value={collectionSocialMedia.instagram}
-							onChange={(e) =>
-								setCollectionSocialMedia((prev) => ({ ...prev, instagram: e.target.value }))
-							}
-							className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
-							placeholder="Username"
-						/>
-					</div>
-					<div className="w-full md:w-1/2">
+				<div className={`block ${!oneGrid && `md:flex md:space-x-4`}`}>
+					<div className={`w-full ${!oneGrid && `md:w-1/2`}`}>
 						<div className="text-white mt-4">Twitter</div>
-						<InputText
-							value={collectionSocialMedia.twitter}
-							onChange={(e) =>
-								setCollectionSocialMedia((prev) => ({ ...prev, twitter: e.target.value }))
-							}
-							className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
-							placeholder="Username"
-						/>
+						<div className="relative">
+							<InputText
+								value={collectionSocialMedia.twitter}
+								onChange={(e) =>
+									setCollectionSocialMedia((prev) => ({ ...prev, twitter: e.target.value }))
+								}
+								className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10 pl-44"
+								placeholder="Username"
+							/>
+							<div className="absolute left-0 top-0 flex items-center text-white text-opacity-40 h-full px-2">
+								https://twitter.com/
+							</div>
+						</div>
+					</div>
+					<div className={`w-full ${!oneGrid && `md:w-1/2`}`}>
+						<div className="text-white mt-4">Discord</div>
+						<div className="relative">
+							<InputText
+								value={collectionSocialMedia.discord}
+								onChange={(e) =>
+									setCollectionSocialMedia((prev) => ({ ...prev, discord: e.target.value }))
+								}
+								className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10 pl-40"
+								placeholder="username"
+							/>
+							<div className="absolute left-0 top-0 flex items-center text-white text-opacity-40 h-full px-2">
+								https://discord.gg/
+							</div>
+						</div>
 					</div>
 				</div>
 				<Button
