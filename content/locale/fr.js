@@ -578,18 +578,18 @@ const collection = {
 	NoActivity: `Pas d'activité`,
 }
 const deleteCollection = {
-	DeleteTitle: 'Delete Confirmation',
-	DeleteText: 'Are you sure you want to delete this collection?',
-	DeleteCancel: `Cancel`,
-	Delete: `Delete`,
-	Loading: `Loading`,
-	DeleteSuccess: `Delete collection was success`,
-	DeleteFailed: `Something went wrong, try again later.`,
+	DeleteTitle: 'Confirmation de suppression',
+	DeleteText: 'Voulez-vous vraiment supprimer cette collection ??',
+	DeleteCancel: `Annuler`,
+	Delete: `Supprimer`,
+	Loading: `Chargement`,
+	DeleteSuccess: `Collection supprimée avec succès`,
+	DeleteFailed: `Quelque chose s'est mal passé, réessayez plus tard.`,
 }
 const categories = {
-	Categories: 'Categories',
-	ExploreAllCategoriesOnParas: 'Explore All Categories on Paras',
-	CuratedBy: 'Curated by : ',
+	Categories: 'Catégories',
+	ExploreAllCategoriesOnParas: 'Explorer toutes les catégories sur Paras',
+	CuratedBy: 'Organisé par : ',
 }
 
 import { config } from './config.js'
