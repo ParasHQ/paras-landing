@@ -173,7 +173,8 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 								/>
 								<div className="mt-2 text-sm text-red-500">
 									{errors.bidAmount?.type === 'required' && `Offer amount is required`}
-									{errors.bidAmount?.type === 'min' && `Minimum 0.01 Ⓝ`}
+									{errors.bidAmount?.type === 'min' &&
+										(HARD_CODE_TOKEN[data.token_series_id] ? `Minimum 5 Ⓝ` : `Minimum 0.01 Ⓝ`)}
 									{errors.bidAmount?.type === 'max' && `You don't have enough balance`}
 								</div>
 							</div>
