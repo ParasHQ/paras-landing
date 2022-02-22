@@ -540,42 +540,42 @@ const languages = {
 	AvailableInFollowingLang: 'Paras est disponible dans les langues suivantes:',
 }
 const myBids = {
-	MyBidsParas: 'My Bids — Paras',
-	MyBids: 'My Bids',
-	ReceivedBids: 'Received Bids',
-	NoActiveBid: 'You have no active bid',
+	MyBidsParas: 'Mes enchères — Paras',
+	MyBids: 'Mes enchères',
+	ReceivedBids: 'Enchères reçues',
+	NoActiveBid: `Vous n'avez pas d'enchères actives`,
 }
 const news = {
-	CreateNewCardParas: 'Create New Card — Paras',
-	MarketData: 'Market Data',
-	RecommendedRatio6489: 'Recommended ratio 64 : 89',
-	Maximum30MB: 'Maximum size 30MB',
-	OnlyWantCreate: 'if you only want to create card without selling',
+	CreateNewCardParas: 'Créer une nouvelle carte — Paras',
+	MarketData: 'Données du marché',
+	RecommendedRatio6489: 'Ratio recommandé 64 : 89',
+	Maximum30MB: 'Taille maximum 30MB',
+	OnlyWantCreate: 'si vous souhaitez uniquement créer une carte sans vendre',
 }
 const newCollection = {
-	CreateNewCollectionParas: 'Create New Collection — Paras',
-	CreateCollectionSuccess: 'Create collection success',
+	CreateNewCollectionParas: 'Créer une nouvelle collection — Paras',
+	CreateCollectionSuccess: 'Création de la nouvelle collection avec succès',
 	Logo: 'Logo',
-	CreatingLoading: 'Creating...',
+	CreatingLoading: 'Création...',
 }
 const search = {
-	'Search{searchQuery}Paras': 'Search {searchQuery} — Paras',
-	SearchResult: 'Search Result',
+	'Search{searchQuery}Paras': 'Recherche {searchQuery} — Paras',
+	SearchResult: 'Résultats de la recherche',
 }
 const collection = {
-	Items: 'Items',
-	Activity: 'Activity',
-	TotalMinted: 'Total Minted',
-	TotalOwners: 'Total Owners',
-	FloorPrice: 'Floor Price',
-	AveragePrice: 'Average Price',
+	Items: 'Articles',
+	Activity: 'Activité',
+	TotalMinted: 'Total minté',
+	TotalOwners: 'Total propriétaire',
+	FloorPrice: 'Prix minimum',
+	AveragePrice: 'Prix moyen',
 	Collection: 'Collection',
-	Price: 'Price',
-	From: 'From',
-	To: 'To',
-	Time: 'Time',
+	Price: 'Prix',
+	From: 'De',
+	To: 'à',
+	Time: 'Temps',
 	Type: 'Type',
-	NoActivity: 'No Activity',
+	NoActivity: `Pas d'activité`,
 }
 const deleteCollection = {
 	DeleteTitle: 'Delete Confirmation',
