@@ -101,6 +101,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		title: collection.collection,
 		description: collection.description,
 		image: parseImgUrl(collection.media, null, { useOriginal: true }),
+		cover: parseImgUrl(collection.cover, null, { useOriginal: true }),
 	}
 
 	useEffect(() => {
@@ -340,7 +341,17 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			/>
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="flex items-center m-auto justify-center mb-4">
-					<div className="w-32 h-32 overflow-hidden bg-primary shadow-inner">
+					<div
+						className={`absolute top-0 left-0 w-full h-60 bg-center bg-cover ${
+							headMeta.cover === null ? 'bg-primary' : 'bg-dark-primary-2'
+						}`}
+						style={{ backgroundImage: `url(${parseImgUrl(headMeta.cover)})` }}
+					/>
+					<div
+						className={`w-32 h-32 overflow-hidden ${
+							headMeta.image === null ? 'bg-primary' : 'bg-dark-primary-2'
+						} shadow-inner z-20 rounded-full mt-32`}
+					>
 						<img
 							src={parseImgUrl(
 								collection?.media ||
@@ -349,7 +360,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 									width: `300`,
 								}
 							)}
-							className="w-full object-cover"
+							className="w-full object-cover rounded-full border-4 border-black"
 						/>
 					</div>
 				</div>

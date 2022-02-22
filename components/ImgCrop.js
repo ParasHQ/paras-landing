@@ -3,6 +3,7 @@ import { readFileAsUrl } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 let cropper = null
 let height = 0
+let width = 0
 
 const ImgCrop = ({
 	input,
@@ -14,7 +15,7 @@ const ImgCrop = ({
 	left,
 	right,
 }) => {
-	const offsetY = 16
+	const offset = 16
 	const containerRef = useRef(null)
 	const [imgUrl, setImgUrl] = useState('')
 	const [firstLoad, setFirstLoad] = useState(true)
@@ -29,17 +30,26 @@ const ImgCrop = ({
 
 	useEffect(() => {
 		if (containerRef) {
-			height = containerRef.current.offsetWidth - offsetY
+			height = containerRef.current.offsetWidth - offset
+			width = containerRef.current.offsetHeight - offset
 		}
 	}, [containerRef])
 
 	useEffect(() => {
 		if (typeof window !== 'undefined' && imgUrl.length > 0) {
 			const Croppie = require('croppie')
-			const vWidth = height * (size.width / size.height)
-			const vHeight = height
+			let vWidth
+			let vHeight
+			if (size.width > size.height) {
+				vWidth = width
+				vHeight = width * (size.height / size.width)
+			} else {
+				vWidth = height * (size.width / size.height)
+				vHeight = height
+			}
+
 			cropper = new Croppie(document.getElementById('new-img'), {
-				boundary: { width: `100%`, height: vHeight },
+				boundary: { width: width, height: height },
 				viewport: { width: vWidth, height: vHeight, type: type },
 			})
 			setFirstLoad(false)

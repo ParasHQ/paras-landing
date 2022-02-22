@@ -103,10 +103,10 @@ const ProfileEdit = ({ close }) => {
 					<ImgCrop
 						input={imgFile}
 						size={{
-							width: 512,
+							width: 2512,
 							height: 512,
 						}}
-						type="circle"
+						// type="circle"
 						left={() => setShowImgCrop(false)}
 						right={(res) => {
 							setImgUrl(res.payload.imgUrl)
