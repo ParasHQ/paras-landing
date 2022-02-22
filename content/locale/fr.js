@@ -391,54 +391,51 @@ const activity = {
 	PlacedOffer: 'Offres placées',
 }
 const categorySubmission = {
-	DontHavePermission: 'You dont have permission',
-	CategorySubmission: 'Category submission',
-	NoCardSubmission: 'No Card Submission Found',
-	'To{categoryId}Category': 'to {categoryId} category',
-	'From{categoryId}Category': 'from {categoryId} category',
-	RejectTheCard: 'Reject the card',
-	GoingToReject: 'You are going to reject',
+	DontHavePermission: `Vous n'êtes pas autorisé`,
+	CategorySubmission: 'Soumettre une catégorie',
+	NoCardSubmission: 'Pas de soumission de carte trouvée',
+	'To{categoryId}Category': 'à {categoryId} catégorie',
+	'From{categoryId}Category': 'de {categoryId} catégorie',
+	RejectTheCard: 'Rejeter la carte',
+	GoingToReject: 'Vous êtes sur le point de rejeter',
 }
 const event = {
 	//none
 }
 
 const verify = {
-	HomeTitle: 'Paras — Digital Art Cards Market',
-	EmailIsVerified: 'Your Email is verified',
-	VerificationError: 'Verification Error',
-	LinkVerificationExpired: 'Your link verification has expired',
-	BackToMarket: 'back to market',
+	HomeTitle: `Paras — Marché d'art digital`,
+	EmailIsVerified: 'Votre email est vérifié',
+	VerificationError: 'Erreur de vérification',
+	LinkVerificationExpired: 'Votre lien de vérification est expiré',
+	BackToMarket: 'retour au marché',
 }
 const faq = {
-	FrequentlyQuestionsParas: 'Frequently Asked Questions — Paras',
-	FrequentlyQuestions: 'Frequently Asked Questions',
-	WhatIsParas: 'What is Paras?',
-	DigitalCardMarketplace:
-		'Paras is a digital art card marketplace built on blockchain technology that offers true ownership and digital scarcity. Paras use <a href="https:/near.org" target="_blank">NEAR cryptocurrency</a> as the medium of exchange between creators and collectors to support cross border transactions.',
-	WhatIsBlockchain: 'What is blockchain?',
-	BlockchainIsTechnology:
-		'Blockchain is technology that allows everyone to truly own their data and digital assets. The data stored on blockchain is transparent and untempered which makes the ownership of certain assets provable and verifiable by everyone.',
-	WhatIsCryptocurrency: 'What is cryptocurrency & digital asset?',
+	FrequentlyQuestionsParas: 'Foire aux questions — Paras',
+	FrequentlyQuestions: 'Foire aux questions',
+	WhatIsParas: `Qu'est-ce que Paras?`,
+	DigitalCardMarketplace: `Paras est un marché de cartes d'art digital construit sur une technologie blockchain qui permet la véritable possession et la rareté digital. Paras utilise <a href="https:/near.org" target="_blank">NEAR cryptocurrency</a> en tant que monnaie d'échange entre les créateurs et les collectionneurs pour soutenir les transactions transfrontalière`,
+	WhatIsBlockchain: `Qu'est-ce que la blockchain?`,
+	BlockchainIsTechnology: `La blockchain est une technologie qui permet à chacun d'être véritablement propriétaire de ses données et de ses actifs numériques. Les données stockées sur la blockchain sont transparentes et non tempérées ce qui rend la propriété de certains actifs prouvable et vérifiable par tous`,
+	WhatIsCryptocurrency: `Qu'est-ce que sont les crypto-monnaies et les actifs digitaux ?`,
 	BothCryptocurrencyDigital:
-		'Both cryptocurrency & digital assets use blockchain technology to handle the ownership and their transactions. Cryptocurrency enables cross border settlement between multiple parties that are accessible by everyone. Digital assets such as artwork that are stored in blockchain can easily be transferred globally without any barrier.',
-	YouNeedNEARAccount:
-		'You need NEAR account & some NEAR coin to start collecting the digital cards. You can start exploring the marketplace and find the card collectibles that you like and see if it is still available for sale. You can buy the digital card from other collectors or straight from the creators. When you bought one, that card will truly be yours and you can hold it, sell it or trade it in the future.',
-	HowDoStartCollecting: 'How do I start collecting digital cards?',
-	WhereCanGetNEAR: 'Where can I get some NEAR?',
+    `La crypto-monnaie et les actifs numériques utilisent la technologie blockchain pour gérer la propriété et leurs transactions. La crypto-monnaie permet un règlement transfrontalier entre plusieurs parties accessible à tous. Les actifs numériques tels que les œuvres d'art qui sont stockées dans la blockchain peuvent facilement être transférés à l'échelle mondiale sans aucune barrière.`,
+	YouNeedNEARAccount: `Vous avez besoin d'un compte NEAR et de NEAR tokens pour commencer à collecter les cartes numériques. Vous pouvez commencer à explorer le marché et trouver les objets de collection de cartes que vous aimez et voir s'ils sont toujours disponibles à la vente. Vous pouvez acheter la carte numérique auprès d'autres collectionneurs ou directement auprès des créateurs. Lorsque vous en avez acheté une, cette carte vous appartiendra vraiment et vous pourrez la conserver, la vendre ou l'échanger à l'avenir.`,
+	HowDoStartCollecting: `Comment puis-je commencer a collectionner les cartes d'art digital ?`,
+	WhereCanGetNEAR: 'Ou puis-je acheter des NEAR?',
 	CanGetNEARFrom:
-		'You can get NEAR from some crypto-exchange such as <a href="https://binance.com" target="blank">Binance</a>. When you got some NEAR from exchange, you can transfer it to your <a target="blank" href="https:/wallet.near.org">NEAR wallet</a> and you are good to go.',
-	HowDoBecomeArtist: 'How do I become a Paras Artist?',
+		'Vous pouvez acheter des NEAR sur des exchanges tels que <a href="https://binance.com" target="blank">Binance</a>. Une fois que vous avez acheté des NEAR, vous pouvez les transférer à votre <a target="blank" href="https:/wallet.near.org">NEAR wallet</a> et vous êtes prêt à commencer.',
+	HowDoBecomeArtist: 'Comment puis-je demander un artist Paras?',
 	CanStartApplying:
-		'You can start by applying as an artist <a target="blank" href="https://docs.google.com/forms/d/e/1FAIpQLScqkh-sJJREv9UOtIjML5J6CdjPftJ0ACICPKxzRrAsoAuzJw/viewform">here</a>. Our team will review your submission and we’ll tell you the result via email.',
-	HowDoMakeCard: 'How do I make a digital art card?',
+		'Vous pouvez soumettre une candidature <a target="blank" href="https://docs.google.com/forms/d/e/1FAIpQLScqkh-sJJREv9UOtIjML5J6CdjPftJ0ACICPKxzRrAsoAuzJw/viewform">ici</a>. Notre équipe va analysez votre dossier et vous reviendra par e-mail.',
+	HowDoMakeCard: `Comment puis-je faire des cartes d'art digital ?`,
 	ADigitalCardOnParas:
-		'A digital art card on Paras follows the format of real world trading cards which are in portrait with ratio 64 : 89. The maximum file size is 30MB. Currently Paras only support image format such as png, jpg, jpeg, gifs, etc. Videos are not supported.',
+		`Une carte d'art digital sur Paras suit le format des cartes à collectionner du monde réel qui sont présentée en portrait avec un ratio 64 : 89. La taille maximum est de 30MB. Pour l'instant, Paras ne supporte ques les formats image, tels que : png, jpg, jpeg, gifs, etc. Les vidéos ne sont pas supportées.`,
 }
 const p404 = {
-	NotFoundParas: 'Not Found — Paras',
-	PageNotFound: 'PAGE NOT FOUND',
-	BackToMarket: 'Back to Market',
+	NotFoundParas: 'Non trouvé — Paras',
+	PageNotFound: 'Page non trouvée',
+	BackToMarket: 'Retour au marché',
 }
 const license = {
 	LicenseParas: 'License — Paras',
