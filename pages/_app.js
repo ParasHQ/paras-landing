@@ -24,6 +24,7 @@ import { SWRConfig } from 'swr'
 import * as Sentry from '@sentry/nextjs'
 import { sentryCaptureException } from 'lib/sentry'
 import { GTM_ID, pageview } from 'lib/gtm'
+import SuccessTransactionModal from 'components/Modal/SuccessTransactionModal'
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
@@ -247,6 +248,7 @@ function MyApp({ Component, pageProps }) {
 					<SWRConfig value={{}}>
 						<ToastProvider>
 							<Component {...pageProps} />
+							<SuccessTransactionModal />
 						</ToastProvider>
 					</SWRConfig>
 				</IntlProvider>
