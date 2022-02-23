@@ -47,6 +47,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [hasMoreActivities, setHasMoreActivities] = useState(true)
 	const [deleteModal, setDeleteModal] = useState(false)
 	const [deleteLoading, setDeleteLoading] = useState(false)
+	const [dailyVolume, setDailyVolume] = useState([])
 	const toast = useToast()
 
 	const fetchData = async () => {
@@ -121,6 +122,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	useEffect(() => {
 		if (router.query.tab === 'activity') {
 			fetchCollectionActivity()
+			fetchCollectionDailyVolume()
 		}
 	}, [router.query.tab])
 
@@ -226,6 +228,17 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		} else {
 			setHasMoreActivities(true)
 		}
+	}
+
+	const fetchCollectionDailyVolume = async () => {
+		const res = await axios.get(`${process.env.V2_API_URL}/collection-daily`, {
+			params: {
+				collection_id: collectionId,
+			},
+		})
+
+		const newDailyVolume = await res.data.data.volume_daily
+		setDailyVolume(newDailyVolume)
 	}
 
 	const changeTab = (tab) => {
@@ -504,6 +517,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					) : router.query.tab == 'activity' ? (
 						<CollectionActivity
 							activities={activities}
+							dailyVolume={dailyVolume}
 							fetchData={fetchCollectionActivity}
 							hasMore={hasMoreActivities}
 						/>
