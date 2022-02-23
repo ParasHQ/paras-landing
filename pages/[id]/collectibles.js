@@ -10,6 +10,7 @@ import FilterMarket from 'components/Filter/FilterMarket'
 import { parseSortTokenQuery } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
+import FilterDisplay from 'components/Filter/FilterDisplay'
 
 const LIMIT = 12
 
@@ -23,6 +24,7 @@ const Collection = ({ userProfile, accountId }) => {
 	const [priceNext, setPriceNext] = useState(null)
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
+	const [display, setDisplay] = useState('large')
 
 	useEffect(async () => {
 		await fetchOwnerTokens(true)
@@ -96,6 +98,12 @@ const Collection = ({ userProfile, accountId }) => {
 		}
 	}
 
+	const onClickDisplay = (typeDisplay) => {
+		setTokens([])
+		fetchOwnerTokens()
+		setDisplay(typeDisplay)
+	}
+
 	const headMeta = {
 		title: `${accountId} — Paras`,
 		description: `See digital card collectibles and creations from ${accountId}. ${
@@ -139,6 +147,20 @@ const Collection = ({ userProfile, accountId }) => {
 				<Profile userProfile={userProfile} activeTab={'collection'} />
 				<div className="flex justify-end mt-4 md:mb-14 md:-mr-4">
 					<FilterMarket isShowVerified={false} isCollectibles={true} />
+					<FilterDisplay
+						type={`large`}
+						active={display === 'large' ? true : false}
+						onClickDisplay={() => {
+							onClickDisplay(`large`)
+						}}
+					/>
+					<FilterDisplay
+						type={`small`}
+						active={display === 'small' ? true : false}
+						onClickDisplay={() => {
+							onClickDisplay(`small`)
+						}}
+					/>
 				</div>
 				<div className="-mt-4 md:-mt-6">
 					<TokenList
@@ -146,6 +168,7 @@ const Collection = ({ userProfile, accountId }) => {
 						tokens={tokens}
 						fetchData={fetchOwnerTokens}
 						hasMore={hasMore}
+						displayType={display}
 					/>
 				</div>
 				<ButtonScrollTop />
