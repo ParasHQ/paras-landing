@@ -3,6 +3,7 @@ import Button from 'components/Common/Button'
 import Media from 'components/Common/Media'
 import Modal from 'components/Common/Modal'
 import { IconX } from 'components/Icons'
+import getConfig from 'config/near'
 import near from 'lib/near'
 import useStore from 'lib/store'
 import { useRouter } from 'next/router'
@@ -98,6 +99,10 @@ const SuccessTransactionModal = () => {
 	const tokenUrl = `${window.location.hostname}/token/${token.contract_id}::${
 		token.token_series_id
 	}${token.token_id ? `/${token.token_id}` : ''}`
+	const explorerUrl =
+		getConfig(process.env.APP_ENV || 'development').explorerUrl +
+		'/transactions/' +
+		router.query.transactionHashes
 
 	return (
 		<Modal isShow={showModal} close={onCloseModal} className="p-8">
@@ -126,9 +131,11 @@ const SuccessTransactionModal = () => {
 					</div>
 					<div className="p-3 bg-gray-700 rounded-md mt-2 mb-4">
 						<p className="text-gray-300 text-sm">Transaction Hash</p>
-						<p className="text-white hover:underline cursor-pointer overflow-hidden overflow-ellipsis">
-							{router.query.transactionHashes}
-						</p>
+						<a href={explorerUrl} target="_blank" rel="noreferrer">
+							<p className="text-white hover:underline cursor-pointer overflow-hidden overflow-ellipsis">
+								{router.query.transactionHashes}
+							</p>
+						</a>
 					</div>
 					<div className="flex justify-between px-1 mb-4">
 						<p className="text-sm text-white">Share to:</p>
