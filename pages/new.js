@@ -102,7 +102,7 @@ const NewPage = () => {
 	const [isLoading, setIsLoading] = useState(null)
 	const [imgFile, setImgFile] = useState('')
 	const [imgUrl, setImgUrl] = useState('')
-	const [step, setStep] = useState(2)
+	const [step, setStep] = useState(0)
 	const [isUploading, setIsUploading] = useState(false)
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
 	const [showCreatingModal, setShowCreatingModal] = useState(false)
