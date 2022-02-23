@@ -21,9 +21,7 @@ const SuccessTransactionModal = () => {
 	const [showModal, setShowModal] = useState(false)
 	const [token, setToken] = useState(null)
 	const [transactionType, setTransactionType] = useState('')
-	const { currentUser } = useStore((state) => ({
-		currentUser: state.currentUser,
-	}))
+	const currentUser = useStore((state) => state.currentUser)
 	const router = useRouter()
 
 	useEffect(() => {

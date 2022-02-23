@@ -24,9 +24,7 @@ const FETCH_TOKENS_LIMIT = 12
 
 const Offer = ({ data, onAcceptOffer, hideButton }) => {
 	const [profile, setProfile] = useState({})
-	const { currentUser } = useStore((state) => ({
-		currentUser: state.currentUser,
-	}))
+	const currentUser = useStore((state) => state.currentUser)
 
 	useEffect(() => {
 		if (data.buyer_id) {
