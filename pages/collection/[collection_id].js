@@ -306,6 +306,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const onClickDisplay = (typeDisplay) => {
+		setHasMore(true)
+		setIdNext(null)
+		setLowestPriceNext(null)
 		setTokens([])
 		fetchData()
 		setDisplay(typeDisplay)
@@ -466,20 +469,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 									)}
 									<FilterMarket isShowVerified={false} defaultMinPrice={true} />
 									<div className="hidden lg:flex mt-0 mr-4">
-										<FilterDisplay
-											type={`large`}
-											active={display === 'large' ? true : false}
-											onClickDisplay={() => {
-												onClickDisplay(`large`)
-											}}
-										/>
-										<FilterDisplay
-											type={`small`}
-											active={display === 'small' ? true : false}
-											onClickDisplay={() => {
-												onClickDisplay(`small`)
-											}}
-										/>
+										<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 									</div>
 								</div>
 							</div>
@@ -495,20 +485,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							<FilterMarket isShowVerified={false} defaultMinPrice={true} />
 						</div>
 					)}
-					<FilterDisplay
-						type={`large`}
-						active={display === 'large' ? true : false}
-						onClickDisplay={() => {
-							onClickDisplay(`large`)
-						}}
-					/>
-					<FilterDisplay
-						type={`small`}
-						active={display === 'small' ? true : false}
-						onClickDisplay={() => {
-							onClickDisplay(`small`)
-						}}
-					/>
+					<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 				</div>
 				<div className="relative flex flex-row flex-wrap left-0 ml-5 mt-5 ">
 					{router.query.attributes &&

@@ -123,6 +123,9 @@ const Creation = ({ userProfile, accountId }) => {
 	}
 
 	const onClickDisplay = (typeDisplay) => {
+		setHasMore(true)
+		setIdNext(null)
+		setLowestPriceNext(null)
 		setTokens([])
 		fetchCreatorTokens()
 		setDisplay(typeDisplay)
@@ -171,20 +174,7 @@ const Creation = ({ userProfile, accountId }) => {
 				<Profile userProfile={userProfile} activeTab={'creation'} />
 				<div className="flex justify-end mt-4 md:mb-14 md:-mr-4">
 					<FilterMarket isShowVerified={false} />
-					<FilterDisplay
-						type={`large`}
-						active={display === 'large' ? true : false}
-						onClickDisplay={() => {
-							onClickDisplay(`large`)
-						}}
-					/>
-					<FilterDisplay
-						type={`small`}
-						active={display === 'small' ? true : false}
-						onClickDisplay={() => {
-							onClickDisplay(`small`)
-						}}
-					/>
+					<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 				</div>
 				<div className="-mt-4 md:-mt-6">
 					{isFiltering ? (

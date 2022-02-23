@@ -104,6 +104,9 @@ function MarketPage({ serverQuery }) {
 	}
 
 	const onClickDisplay = (typeDisplay) => {
+		setHasMore(true)
+		setIdNext(null)
+		setLowestPriceNext(null)
 		setTokens([])
 		_fetchData()
 		setDisplay(typeDisplay)
@@ -163,20 +166,7 @@ function MarketPage({ serverQuery }) {
 							<FilterMarket />
 						</div>
 						<div className="flex mr-2 md:mx-4">
-							<FilterDisplay
-								type={`large`}
-								active={display === 'large' ? true : false}
-								onClickDisplay={() => {
-									onClickDisplay(`large`)
-								}}
-							/>
-							<FilterDisplay
-								type={`small`}
-								active={display === 'small' ? true : false}
-								onClickDisplay={() => {
-									onClickDisplay(`small`)
-								}}
-							/>
+							<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 						</div>
 					</div>
 				</div>
