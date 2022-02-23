@@ -1047,7 +1047,7 @@ const NewPage = () => {
 															height="14"
 															viewBox="0 0 16 16"
 															fill="none"
-															transform="rotate(45)"
+															style={{ transform: 'rotate(45deg)' }}
 															className="relative z-10"
 															xmlns="http://www.w3.org/2000/svg"
 														>
@@ -1105,7 +1105,7 @@ const NewPage = () => {
 															height="14"
 															viewBox="0 0 16 16"
 															fill="none"
-															transform="rotate(45)"
+															style={{ transform: 'rotate(45deg)' }}
 															className="relative z-10"
 															xmlns="http://www.w3.org/2000/svg"
 														>
