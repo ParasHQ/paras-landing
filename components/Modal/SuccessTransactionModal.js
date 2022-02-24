@@ -6,6 +6,7 @@ import { IconX } from 'components/Icons'
 import getConfig from 'config/near'
 import near from 'lib/near'
 import useStore from 'lib/store'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import {
@@ -21,7 +22,7 @@ import { decodeBase64 } from 'utils/common'
 const SuccessTransactionModal = () => {
 	const [showModal, setShowModal] = useState(false)
 	const [token, setToken] = useState(null)
-	const [transactionType, setTransactionType] = useState('')
+	const [txDetail, setTxDetail] = useState(null)
 	const currentUser = useStore((state) => state.currentUser)
 	const router = useRouter()
 
@@ -37,9 +38,9 @@ const SuccessTransactionModal = () => {
 
 				for (const action of actions) {
 					const { FunctionCall } = action
+					const args = JSON.parse(decodeBase64(FunctionCall.args))
 
 					if (FunctionCall.method_name === 'nft_buy') {
-						const args = JSON.parse(decodeBase64(FunctionCall.args))
 						const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
 							params: {
 								contract_id: receiver_id,
@@ -47,12 +48,9 @@ const SuccessTransactionModal = () => {
 							},
 						})
 						setToken(res.data.data.results[0])
+						setTxDetail({ ...FunctionCall, args })
 						setShowModal(true)
-						setTransactionType('nft_buy')
-
-						return
 					} else if (FunctionCall.method_name === 'buy') {
-						const args = JSON.parse(decodeBase64(FunctionCall.args))
 						const res = await axios.get(`${process.env.V2_API_URL}/token`, {
 							params: {
 								contract_id: args.nft_contract_id,
@@ -60,10 +58,22 @@ const SuccessTransactionModal = () => {
 							},
 						})
 						setToken(res.data.data.results[0])
+						setTxDetail({ ...FunctionCall, args })
 						setShowModal(true)
-						setTransactionType('buy')
-
-						return
+					} else if (FunctionCall.method_name === 'add_offer') {
+						const res = await axios.get(
+							`${process.env.V2_API_URL}/${args.token_id ? 'token' : 'token-series'}`,
+							{
+								params: {
+									contract_id: args.nft_contract_id,
+									token_id: args.token_id,
+									token_series_id: args.token_series_id,
+								},
+							}
+						)
+						setToken(res.data.data.results[0])
+						setTxDetail({ ...FunctionCall, args })
+						setShowModal(true)
 					}
 				}
 			}
@@ -86,14 +96,6 @@ const SuccessTransactionModal = () => {
 		router.replace({ pathname: router.pathname, query }, undefined, { shallow: true })
 	}
 
-	const onClickSeeToken = () => {
-		const url = `/token/${token.contract_id}::${token.token_series_id}${
-			token.token_id ? `/${token.token_id}` : ''
-		}`
-		router.push(url)
-		onCloseModal()
-	}
-
 	if (!showModal || !token) return null
 
 	const tokenUrl = `${window.location.hostname}/token/${token.contract_id}::${
@@ -104,6 +106,14 @@ const SuccessTransactionModal = () => {
 		'/transactions/' +
 		router.query.transactionHashes
 
+	const onClickSeeToken = () => {
+		const url = `/token/${token.contract_id}::${token.token_series_id}${
+			token.token_id ? `/${token.token_id}` : ''
+		}${txDetail.method_name === 'add_offer' ? '?tab=offers' : ''}`
+		router.push(url)
+		onCloseModal()
+	}
+
 	return (
 		<Modal isShow={showModal} close={onCloseModal} className="p-8">
 			<div className="max-w-sm w-full p-4 bg-gray-800 md:m-auto rounded-md relative">
@@ -113,9 +123,20 @@ const SuccessTransactionModal = () => {
 					</div>
 				</div>
 				<div>
-					<h1 className="text-2xl font-bold text-white tracking-tight">Purchase Success</h1>
+					<h1 className="text-2xl font-bold text-white tracking-tight">
+						{txDetail.method_name === 'add_offer' ? 'Offer Success' : 'Purchase Success'}
+					</h1>
 					<p className="text-white mt-2">
-						You successfully purchase <b>{token.metadata.title}</b>
+						{txDetail.method_name === 'add_offer' ? (
+							<>
+								You successfully offer <b>{token.metadata.title}</b> for{' '}
+								{formatNearAmount(txDetail.args.price)} Ⓝ
+							</>
+						) : (
+							<>
+								You successfully purchase <b>{token.metadata.title}</b>
+							</>
+						)}
 					</p>
 					<div className="p-4">
 						<div className="w-2/3 m-auto h-56">
