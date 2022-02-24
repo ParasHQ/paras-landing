@@ -205,25 +205,35 @@ const CollectionPageEdit = ({ collectionId }) => {
 				<div className="block md:flex md:space-x-4">
 					<div className="w-full md:w-1/2">
 						<div className="text-white mt-4">Twitter</div>
-						<InputText
-							value={collectionSocialMedia.twitter}
-							onChange={(e) =>
-								setCollectionSocialMedia((prev) => ({ ...prev, twitter: e.target.value }))
-							}
-							className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
-							placeholder="Username"
-						/>
+						<div className="relative">
+							<InputText
+								value={collectionSocialMedia.twitter}
+								onChange={(e) =>
+									setCollectionSocialMedia((prev) => ({ ...prev, twitter: e.target.value }))
+								}
+								className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10 pl-44"
+								placeholder="Username"
+							/>
+							<div className="absolute left-0 top-0 flex items-center text-white text-opacity-40 h-full px-2">
+								https://twitter.com/
+							</div>
+						</div>
 					</div>
 					<div className="w-full md:w-1/2">
 						<div className="text-white mt-4">Discord</div>
-						<InputText
-							value={collectionSocialMedia.discord}
-							onChange={(e) =>
-								setCollectionSocialMedia((prev) => ({ ...prev, discord: e.target.value }))
-							}
-							className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
-							placeholder="Server"
-						/>
+						<div className="relative">
+							<InputText
+								value={collectionSocialMedia.discord}
+								onChange={(e) =>
+									setCollectionSocialMedia((prev) => ({ ...prev, discord: e.target.value }))
+								}
+								className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10 pl-40"
+								placeholder="Username"
+							/>
+							<div className="absolute left-0 top-0 flex items-center text-white text-opacity-40 h-full px-2">
+								https://discord.gg/
+							</div>
+						</div>
 					</div>
 				</div>
 				<Button
