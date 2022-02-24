@@ -12,7 +12,7 @@ const nav = {
 	CurrentlyWeOnly: `Pour l'instant, nous autorisons uniquement les créateurs vérifiés à créer une publication.`,
 	NavJoinDiscord: 'Rejoindre le Discord de Paras',
 	NavViewWallet: 'Voir sur le Wallet NEAR',
-	NavGetParas: 'Get $PARAS on Ref', //!!
+	NavGetParas: 'Obtenir des $PARAS sur Ref', 
 	NavSwitchAccount: 'Changer de compte',
 	NavAddAccount: 'Ajouter un compte',
 	NavCreateCard: 'Créer une carte',
@@ -42,7 +42,7 @@ const footer = {
 const home = {
 	HomeTitle: `Paras — Marché de cartes d'art digital`,
 	LastSold: 'Dernier vendu',
-	Featured: 'Featured', //!!
+	Featured: 'En vendette',
 	Latest: 'Dernier',
 	TopBuyers: 'Top acheteurs',
 	TopSellers: 'Top vendeurs',
@@ -71,7 +71,7 @@ const market = {
 	Open: 'Ouvert',
 	SubmitExistingCards: 'Soumettre des cartes existantes',
 	CreateNewCard: 'Créer une nouvelle carte',
-	Curators: 'Conversateur', //!!
+	Curators: 'Conversateur',
 	PleaseEnterTokenID: 'Entrez, svp, un Token ID correct.',
 	NotCreatorOfCard: `Vous n'êtes pas le créateur de cette carte.`,
 	ThankForsubmission: 'Merci pour votre soumission.',
@@ -79,7 +79,7 @@ const market = {
 	SubmitCardTo: 'Soumettre votre carte à ',
 	CuratorsCardSubmission:
 		'*Les conservateurs examineront votre soumissions de carte, veuillez vous assurer que la carte appartient à cette catégorie.',
-	OnlyCreatorAllowedSubmit: '*Only the creator that allowed to submit their card', //!!
+	OnlyCreatorAllowedSubmit: '*Seuls les créateurs peuvent soumettre leurs cartes',
 	YouWillAdd: 'Vous allez ajouter',
 	To: 'À',
 }
