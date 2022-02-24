@@ -1,11 +1,12 @@
 import { useRouter } from 'next/router'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useContext, useEffect, useState } from 'react'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
 import CopyLink from '../Common/CopyLink'
 import { useIntl } from 'hooks/useIntl'
 import useStore from 'lib/store'
 import { flagColor, flagText } from 'constants/flag'
 import LineClampText from 'components/Common/LineClampText'
+import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu'
 
 const Profile = ({ userProfile, activeTab }) => {
 	const router = useRouter()
@@ -194,76 +195,145 @@ const Profile = ({ userProfile, activeTab }) => {
 					</p>
 				</div>
 			)}
-			<div className="flex flex-row md:justify-center overflow-auto mt-4 py-2 w-full">
-				<div className="flex flex-row">
-					<div
-						className="px-4 relative"
-						onClick={() => router.push(`/${router.query.id}/collectibles`)}
-					>
-						<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Collectibles')}</h4>
-						{activeTab === 'collection' && (
+			<div className="hidden sm:block">
+				<div className="flex flex-row sm:justify-center overflow-auto mt-4 py-2 w-full">
+					<div className="flex flex-row">
+						{TabItems.map((tab) => (
 							<div
-								className="absolute left-0 right-0"
-								style={{
-									bottom: `-.25rem`,
-								}}
+								key={tab.title}
+								className="px-4 relative"
+								onClick={() => router.push(`/${router.query.id}/${tab.linkUrl}`)}
 							>
-								<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+								<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn(tab.title)}</h4>
+								{activeTab === tab.activeTab && (
+									<div
+										className="absolute left-0 right-0"
+										style={{
+											bottom: `-.25rem`,
+										}}
+									>
+										<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+									</div>
+								)}
 							</div>
-						)}
-					</div>
-					<div
-						className="px-4 relative"
-						onClick={() => router.push(`/${router.query.id}/creation`)}
-					>
-						<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Creation')}</h4>
-						{activeTab === 'creation' && (
-							<div
-								className="absolute left-0 right-0"
-								style={{
-									bottom: `-.25rem`,
-								}}
-							>
-								<div className="mx-auto w-8 h-1 bg-gray-100"></div>
-							</div>
-						)}
-					</div>
-					<div
-						className="px-4 relative"
-						onClick={() => router.push(`/${router.query.id}/collections`)}
-					>
-						<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Collections')}</h4>
-						{activeTab === 'collections' && (
-							<div
-								className="absolute left-0 right-0"
-								style={{
-									bottom: `-.25rem`,
-								}}
-							>
-								<div className="mx-auto w-8 h-1 bg-gray-100"></div>
-							</div>
-						)}
-					</div>
-					<div
-						className="px-4 relative"
-						onClick={() => router.push(`/${router.query.id}/publication`)}
-					>
-						<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Publication')}</h4>
-						{activeTab === 'publication' && (
-							<div
-								className="absolute left-0 right-0"
-								style={{
-									bottom: `-.25rem`,
-								}}
-							>
-								<div className="mx-auto w-8 h-1 bg-gray-100"></div>
-							</div>
-						)}
+						))}
 					</div>
 				</div>
+			</div>
+			<div className="sm:hidden">
+				<TabProfileMobile activeTab={activeTab} />
 			</div>
 		</Fragment>
 	)
 }
 
+const TabProfileMobile = ({ activeTab }) => {
+	return (
+		<div className="mt-4 py-2">
+			<ScrollMenu
+				LeftArrow={LeftArrow}
+				RightArrow={RightArrow}
+				wrapperClassName="flex items-center"
+				scrollContainerClassName="top-user-scroll"
+			>
+				{TabItems.map((tab) => (
+					<TabProfile
+						key={tab.title}
+						itemId={tab.activeTab}
+						title={tab.title}
+						linkUrl={tab.linkUrl}
+						activeTab={activeTab}
+					/>
+				))}
+			</ScrollMenu>
+		</div>
+	)
+}
+
+const TabProfile = ({ itemId, title, linkUrl, activeTab }) => {
+	const router = useRouter()
+	const { localeLn } = useIntl()
+
+	return (
+		<div className="px-4 relative" onClick={() => router.push(`/${router.query.id}/${linkUrl}`)}>
+			<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn(title)}</h4>
+			{activeTab === itemId && (
+				<div
+					className="absolute left-0 right-0"
+					style={{
+						bottom: `-.10rem`,
+					}}
+				>
+					<div className="mx-auto w-8 h-1.5 bg-gray-100"></div>
+				</div>
+			)}
+		</div>
+	)
+}
+
+const LeftArrow = () => {
+	const { isFirstItemVisible, scrollPrev } = useContext(VisibilityContext)
+
+	return (
+		<div disabled={isFirstItemVisible} onClick={() => scrollPrev()}>
+			<svg
+				className="w-10 h-10 text-white cursor-pointer"
+				fill="currentColor"
+				viewBox="0 0 20 20"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<path
+					fillRule="evenodd"
+					d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+					clipRule="evenodd"
+				></path>
+			</svg>
+		</div>
+	)
+}
+
+const RightArrow = () => {
+	const { isLastItemVisible, scrollNext } = useContext(VisibilityContext)
+
+	return (
+		<div disabled={isLastItemVisible} onClick={() => scrollNext()}>
+			<svg
+				className="w-10 h-10 text-white cursor-pointer"
+				fill="currentColor"
+				viewBox="0 0 20 20"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<path
+					fillRule="evenodd"
+					d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+					clipRule="evenodd"
+				></path>
+			</svg>
+		</div>
+	)
+}
+
 export default Profile
+
+const TabItems = [
+	{
+		title: 'Collectibles',
+		linkUrl: 'collectibles',
+		activeTab: 'collection',
+	},
+	{
+		title: 'Creation',
+		linkUrl: 'creation',
+		activeTab: 'creation',
+	},
+	{
+		title: 'Collections',
+		linkUrl: 'collections',
+		activeTab: 'collections',
+	},
+	{
+		title: 'Publication',
+		linkUrl: 'publication',
+		activeTab: 'publication',
+	},
+]
