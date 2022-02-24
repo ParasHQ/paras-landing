@@ -13,8 +13,10 @@ const ProfileEdit = ({ close }) => {
 	const { localeLn } = useIntl()
 	const store = useStore()
 	const toast = useToast()
+	const [coverFile, setCoverFile] = useState()
+	const [coverUrl, setCoverUrl] = useState(store.userProfile.coverUrl || '')
 	const [showImgCrop, setShowImgCrop] = useState(false)
-	const [imgFile, setImgFile] = useState({})
+	const [imgFile, setImgFile] = useState()
 	const [imgUrl, setImgUrl] = useState(store.userProfile.imgUrl || '')
 
 	const [bio, setBio] = useState(store.userProfile.bio || '')
@@ -22,6 +24,7 @@ const ProfileEdit = ({ close }) => {
 	const [weibo, setWeibo] = useState(store.userProfile.weiboUrl || '')
 	const [instagram, setInstagram] = useState(store.userProfile.instagramId || '')
 	const [twitter, setTwitter] = useState(store.userProfile.twitterId || '')
+	const [showCoverCrop, setShowCoverCrop] = useState(false)
 	const [isSubmitting, setIsSubmitting] = useState(false)
 
 	const _submit = async (e) => {
@@ -57,7 +60,10 @@ const ProfileEdit = ({ close }) => {
 
 		const formData = new FormData()
 		if (imgFile) {
-			formData.append('file', imgFile)
+			formData.append('files', imgFile, 'logo')
+		}
+		if (coverFile) {
+			formData.append('files', coverFile, 'cover')
 		}
 		formData.append('bio', bio)
 		formData.append('website', website)
@@ -96,6 +102,13 @@ const ProfileEdit = ({ close }) => {
 		}
 	}
 
+	const _setCover = async (e) => {
+		if (e.target.files[0]) {
+			setCoverFile(e.target.files[0])
+			setShowCoverCrop(true)
+		}
+	}
+
 	return (
 		<div>
 			<Scrollbars autoHeight autoHeightMax="85vh">
@@ -115,32 +128,70 @@ const ProfileEdit = ({ close }) => {
 						}}
 					/>
 				)}
+				{showCoverCrop && (
+					<ImgCrop
+						input={coverFile}
+						size={{
+							width: 1024,
+							height: 384,
+						}}
+						left={() => setShowCoverCrop(false)}
+						right={(res) => {
+							setCoverUrl(res.payload.imgUrl)
+							setCoverFile(res.payload.imgFile)
+							setShowCoverCrop(false)
+						}}
+					/>
+				)}
 				<div className="m-auto">
 					<h1 className="text-2xl font-bold text-gray-100 tracking-tight">
 						{localeLn('Edit Profile')}
 					</h1>
-					<div className="mt-4 mx-auto relative cursor-pointer w-32 h-32 rounded-full overflow-hidden">
+					<div className="relative cursor-pointer w-full h-32 overflow-hidden rounded-md mt-2">
 						<input
 							className="cursor-pointer w-full opacity-0 absolute inset-0"
 							type="file"
 							accept="image/*"
-							onChange={_setImg}
+							onChange={_setCover}
 							onClick={(e) => {
 								e.target.value = null
 							}}
 						/>
 						<div className="flex items-center justify-center">
-							<div className="w-32 h-32 rounded-full overflow-hidden bg-primary shadow-inner">
+							<div className="w-full h-32 overflow-hidden bg-primary shadow-inner">
 								<img
-									src={parseImgUrl(imgUrl, null, {
+									src={parseImgUrl(coverUrl, null, {
 										width: `300`,
 									})}
-									className="w-full object-cover"
+									className={`w-full ${coverUrl && 'h-full'} object-cover`}
 								/>
 							</div>
 						</div>
 					</div>
-					<div className="mt-2">
+					<div className="absolute top-28 inset-x-0 mt-4 mx-auto cursor-pointer w-20 h-20 rounded-full overflow-hidden border-4 border-dark-primary-2">
+						<div>
+							<input
+								className="cursor-pointer w-full opacity-0 absolute inset-0"
+								type="file"
+								accept="image/*"
+								onChange={_setImg}
+								onClick={(e) => {
+									e.target.value = null
+								}}
+							/>
+							<div className="flex items-center justify-center">
+								<div className="w-20 h-20 rounded-full overflow-hidden bg-primary shadow-inner">
+									<img
+										src={parseImgUrl(imgUrl, null, {
+											width: `300`,
+										})}
+										className="w-full rounded-full object-cover"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div className="mt-12">
 						<label className="block text-sm text-gray-100">{localeLn('Bio')}</label>
 						<textarea
 							type="text"
