@@ -4,6 +4,7 @@ import { InputTextarea, InputText } from 'components/Common/form'
 import Footer from 'components/Footer'
 import ImgCrop from 'components/ImgCrop'
 import Nav from 'components/Nav'
+import { useIntl } from 'hooks/useIntl'
 import { useToast } from 'hooks/useToast'
 import near from 'lib/near'
 import { sentryCaptureException } from 'lib/sentry'
@@ -14,9 +15,13 @@ import { useEffect, useState } from 'react'
 import { parseImgUrl } from 'utils/common'
 
 const CollectionPageEdit = ({ collectionId }) => {
+	const { localeLn } = useIntl()
 	const [showImgCrop, setShowImgCrop] = useState(false)
-	const [imgFile, setImgFile] = useState({})
+	const [showCoverCrop, setShowCoverCrop] = useState(false)
+	const [imgFile, setImgFile] = useState()
+	const [coverFile, setCoverFile] = useState()
 	const [imgUrl, setImgUrl] = useState('')
+	const [coverUrl, setCoverUrl] = useState('')
 
 	const [collectionName, setCollectionName] = useState('')
 	const [collectionDesc, setCollectionDesc] = useState('')
@@ -43,6 +48,13 @@ const CollectionPageEdit = ({ collectionId }) => {
 		}
 	}
 
+	const _setCover = async (e) => {
+		if (e.target.files[0]) {
+			setCoverFile(e.target.files[0])
+			setShowCoverCrop(true)
+		}
+	}
+
 	const fetchCollection = async () => {
 		const resp = await axios.get(`${process.env.V2_API_URL}/collections`, {
 			params: {
@@ -58,6 +70,7 @@ const CollectionPageEdit = ({ collectionId }) => {
 			discord: collectionData.socialMedia?.discord,
 		})
 		setImgUrl(collectionData.media)
+		setCoverUrl(collectionData.cover)
 	}
 
 	const _submit = async (e) => {
@@ -67,7 +80,10 @@ const CollectionPageEdit = ({ collectionId }) => {
 
 		const formData = new FormData()
 		if (imgFile) {
-			formData.append('files', imgFile)
+			formData.append('files', imgFile, 'logo')
+		}
+		if (coverFile) {
+			formData.append('files', coverFile, 'cover')
 		}
 		formData.append('collection_id', collectionId)
 		formData.append('description', collectionDesc)
@@ -119,7 +135,7 @@ const CollectionPageEdit = ({ collectionId }) => {
 				<title>Create New Collection — Paras</title>
 				<meta
 					name="description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 
 				<meta name="twitter:title" content="Market — Paras" />
@@ -128,7 +144,7 @@ const CollectionPageEdit = ({ collectionId }) => {
 				<meta name="twitter:url" content="https://paras.id" />
 				<meta
 					name="twitter:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 				<meta
 					name="twitter:image"
@@ -139,7 +155,7 @@ const CollectionPageEdit = ({ collectionId }) => {
 				<meta property="og:site_name" content="Market — Paras" />
 				<meta
 					property="og:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta
@@ -163,27 +179,70 @@ const CollectionPageEdit = ({ collectionId }) => {
 					}}
 				/>
 			)}
+			{showCoverCrop && (
+				<ImgCrop
+					input={coverFile}
+					size={{
+						width: 1024,
+						height: 384,
+					}}
+					left={() => setShowCoverCrop(false)}
+					right={(res) => {
+						setCoverUrl(res.payload.imgUrl)
+						setCoverFile(res.payload.imgFile)
+						setShowCoverCrop(false)
+					}}
+				/>
+			)}
 			<div className="relative max-w-3xl m-auto py-12 px-4">
 				<div className="text-white font-bold text-4xl">Edit collection {collectionName}</div>
-				<div className="text-white mt-4">Logo</div>
-				<div className="relative cursor-pointer w-32 h-32 overflow-hidden rounded-md mt-2">
-					<input
-						className="cursor-pointer w-full opacity-0 absolute inset-0"
-						type="file"
-						accept="image/*"
-						onChange={_setImg}
-						onClick={(e) => {
-							e.target.value = null
-						}}
-					/>
-					<div className="flex items-center justify-center">
-						<div className="w-32 h-32 overflow-hidden bg-primary shadow-inner">
-							<img
-								src={parseImgUrl(imgUrl, null, {
-									width: `300`,
-								})}
-								className="w-full object-cover"
+				<div className="md:flex gap-8">
+					<div>
+						<div className="text-white mt-4">{localeLn('Logo')}</div>
+						<div className="relative cursor-pointer w-32 h-32 overflow-hidden rounded-md mt-2">
+							<input
+								className="cursor-pointer w-full opacity-0 absolute inset-0"
+								type="file"
+								accept="image/*"
+								onChange={_setImg}
+								onClick={(e) => {
+									e.target.value = null
+								}}
 							/>
+							<div className="flex items-center justify-center">
+								<div className="w-32 h-32 overflow-hidden bg-primary shadow-inner">
+									<img
+										src={parseImgUrl(imgUrl, null, {
+											width: `300`,
+										})}
+										className="w-full object-cover"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div className="text-white mt-4">{localeLn('Cover')}</div>
+						<div className="relative cursor-pointer w-64 h-32 overflow-hidden rounded-md mt-2">
+							<input
+								className="cursor-pointer w-full opacity-0 absolute inset-0"
+								type="file"
+								accept="image/*"
+								onChange={_setCover}
+								onClick={(e) => {
+									e.target.value = null
+								}}
+							/>
+							<div className="flex items-center justify-center">
+								<div className="w-64 h-32 overflow-hidden bg-primary shadow-inner">
+									<img
+										src={parseImgUrl(coverUrl, null, {
+											width: 300,
+										})}
+										className={`w-full ${coverUrl && 'h-full'} object-cover`}
+									/>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
