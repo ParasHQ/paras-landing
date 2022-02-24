@@ -161,10 +161,12 @@ const CardList = ({
 
 						return (
 							<div
-								key={`${token.contract_id}::${token.token_series_id}`}
+								key={`${token.contract_id}::${token.token_series_id}-${displayType}`}
 								className={`${
-									displayType === `large` ? `w-full md:w-1/3 lg:w-1/4` : `w-1/2 md:w-1/4 lg:w-1/6`
-								} flex-shrink-0 p-4 relative`}
+									displayType === `large`
+										? `w-full md:w-1/3 lg:w-1/4 p-4`
+										: `w-1/2 md:w-1/4 lg:w-1/6 p-2`
+								} flex-shrink-0 relative`}
 							>
 								<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
 									<a onClick={(e) => e.preventDefault()}>
@@ -197,7 +199,11 @@ const CardList = ({
 								<div className="mt-4 px-1">
 									{displayType !== 'large' ? (
 										<div className="flex md:hidden items-center justify-between h-12">
-											<p className="text-gray-400 text-sm md:text-xs">
+											<p
+												className={`text-gray-400 ${
+													displayType === 'large' ? `text-sm` : `text-xs`
+												} ${displayType === 'large' ? `md:text-sm` : `md:text-xs`}`}
+											>
 												{token.token || token.metadata.copies === 1
 													? localeLn('OnSale')
 													: localeLn('StartFrom')}
@@ -280,7 +286,7 @@ const CardList = ({
 									<div className="flex justify-between items-end">
 										<p
 											className={`font-bold text-white cursor-pointer ${
-												displayType === 'large' ? `text-base` : `text-xs`
+												displayType === 'large' ? `text-base` : `text-sm`
 											} ${displayType === 'large' ? `md:text-base` : `md:text-xs`} mb-1 md:mb-0`}
 											onClick={() => actionButtonClick(token)}
 										>

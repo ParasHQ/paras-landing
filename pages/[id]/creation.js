@@ -123,12 +123,6 @@ const Creation = ({ userProfile, accountId }) => {
 	}
 
 	const onClickDisplay = (typeDisplay) => {
-		setHasMore(true)
-		setIdNext(null)
-		setLowestPriceNext(null)
-		setUpdatedAtNext(null)
-		setTokens([])
-		fetchCreatorTokens()
 		setDisplay(typeDisplay)
 	}
 

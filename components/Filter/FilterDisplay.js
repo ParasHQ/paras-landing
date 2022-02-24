@@ -61,13 +61,13 @@ const FilterDisplay = ({ type, onClickDisplay }) => {
 	return (
 		<>
 			<LargeSVGFilter
-				className={type === 'large' ? `bg-dark-primary-6` : `bg-dark-primary-2`}
+				className={type === 'large' ? `bg-dark-primary-2` : `bg-dark-primary-6`}
 				onClick={() => {
 					onClickDisplay('large')
 				}}
 			/>
 			<SmallSVGFilter
-				className={type === 'small' ? `bg-dark-primary-6` : `bg-dark-primary-2`}
+				className={type === 'small' ? `bg-dark-primary-2` : `bg-dark-primary-6`}
 				onClick={() => {
 					onClickDisplay('small')
 				}}

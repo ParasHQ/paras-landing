@@ -99,11 +99,6 @@ const Collection = ({ userProfile, accountId }) => {
 	}
 
 	const onClickDisplay = (typeDisplay) => {
-		setHasMore(true)
-		setIdNext(null)
-		setPriceNext(null)
-		setTokens([])
-		fetchOwnerTokens()
 		setDisplay(typeDisplay)
 	}
 
