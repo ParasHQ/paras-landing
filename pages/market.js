@@ -104,12 +104,6 @@ function MarketPage({ serverQuery }) {
 	}
 
 	const onClickDisplay = (typeDisplay) => {
-		setHasMore(true)
-		setIdNext(null)
-		setLowestPriceNext(null)
-		setUpdatedAtNext(null)
-		setTokens([])
-		_fetchData()
 		setDisplay(typeDisplay)
 	}
 
@@ -166,7 +160,7 @@ function MarketPage({ serverQuery }) {
 						<div className="grid justify-items-end">
 							<FilterMarket />
 						</div>
-						<div className="flex mr-2 md:mx-4">
+						<div className="flex mr-4 md:mx-4">
 							<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 						</div>
 					</div>

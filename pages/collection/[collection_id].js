@@ -307,12 +307,6 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const onClickDisplay = (typeDisplay) => {
-		setHasMore(true)
-		setIdNext(null)
-		setLowestPriceNext(null)
-		setUpdatedAtNext(null)
-		setTokens([])
-		fetchData()
 		setDisplay(typeDisplay)
 	}
 
