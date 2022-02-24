@@ -1,12 +1,13 @@
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
+import { prettyBalance } from 'utils/common'
 import {
 	CartesianGrid,
 	ResponsiveContainer,
 	Tooltip,
 	XAxis,
 	YAxis,
-	LineChart,
-	Line,
+	AreaChart,
+	Area,
 } from 'recharts'
 
 const CustomTooltip = ({ active, payload }) => {
@@ -15,33 +16,31 @@ const CustomTooltip = ({ active, payload }) => {
 			<div className="bg-gray-900 text-white p-2 rounded-md">
 				{payload.map((p, idx) => {
 					return (
-						<div key={idx}>
-							<div className="grid grid-rows-3 grid-flow-row">
-								<div>
-									<p className="font-bold text-sm text-center">
-										{new Date(p.payload.date)
-											.toLocaleString('en-US', { month: 'long' })
-											.substring(0, 3)}{' '}
-										{`${new Date(p.payload.date).getDate()}, ${new Date(
-											p.payload.date
-										).getFullYear()}`}
-									</p>
-								</div>
-								<div>
-									<span className="capitalize text-sm">Volume</span>
-									{' : '}
-									<span className="font-bold">{formatNearAmount(p.payload.volume, 2)} Ⓝ</span>
-								</div>
-								<div>
-									<span className="capitalize text-sm">Sales</span>
-									{' : '}
-									<span className="font-bold">{p.payload.sales}</span>
-								</div>
-								<div>
-									<span className="capitalize text-sm">Avg. Price</span>
-									{' : '}
-									<span className="font-bold">{formatNearAmount(p.payload.avg_sale, 2)} Ⓝ</span>
-								</div>
+						<div key={idx} className="grid grid-rows-4 grid-flow-row">
+							<div>
+								<p className="font-bold text-sm text-center">
+									{new Date(p.payload.date)
+										.toLocaleString('en-US', { month: 'long' })
+										.substring(0, 3)}{' '}
+									{`${new Date(p.payload.date).getDate()}, ${new Date(
+										p.payload.date
+									).getFullYear()}`}
+								</p>
+							</div>
+							<div>
+								<span className="capitalize text-sm">Volume</span>
+								{' : '}
+								<span className="font-bold">{formatNearAmount(p.payload.volume, 2)} Ⓝ</span>
+							</div>
+							<div>
+								<span className="capitalize text-sm">Sales</span>
+								{' : '}
+								<span className="font-bold">{p.payload.sales}</span>
+							</div>
+							<div>
+								<span className="capitalize text-sm">Avg. Price</span>
+								{' : '}
+								<span className="font-bold">{formatNearAmount(p.payload.avg_sale, 2)} Ⓝ</span>
 							</div>
 						</div>
 					)
@@ -59,39 +58,58 @@ const DailyVolume = ({ data }) => {
 			{data.length > 0 && (
 				<div className="h-80">
 					<ResponsiveContainer width="100%" height="100%">
-						<LineChart
-							data={data}
-							width={400}
-							height={300}
-							margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
-						>
-							<CartesianGrid strokeDasharray="3 5" horizontal={true} vertical={false} />
+						<AreaChart data={data} margin={{ top: 5, right: 20, left: 10, bottom: 35 }}>
+							<defs>
+								<linearGradient direction={90} id="paint0_linear" x1="0" y1="0" x2="0" y2="1">
+									<stop offset="0%" stopColor="#9996bc" stopOpacity={0.5} />
+									<stop offset="50%" stopColor="#594fb2" stopOpacity={0.5} />
+									<stop offset="75%" stopColor="#1300BA" stopOpacity={0.15} />
+									<stop offset="100%" stopColor="#1300" stopOpacity={0} />
+								</linearGradient>
+							</defs>
+							<CartesianGrid strokeDasharray="4 8" horizontal={false} />
 							<YAxis
-								height={1}
-								width={10}
-								scale="auto"
+								axisLine={false}
+								tickLine={false}
+								tickMargin={8}
+								stroke="rgba(255, 255, 255, 0.6)"
 								tickFormatter={(x) => {
-									return formatNearAmount(x.volume)
+									return prettyBalance(x / 10 ** 24, 0)
 								}}
 							/>
 							<XAxis
-								axisLine={false}
-								dataKey={`date`}
 								interval={4}
-								minTickGap={3}
-								padding={{ left: 10, right: 10 }}
-								stroke="rgba(255, 255, 255, 0.6)"
+								dataKey="date"
+								axisLine={false}
 								tickLine={false}
 								tickMargin={8}
+								stroke="rgba(255, 255, 255, 0.6)"
 								tickFormatter={(x) => {
 									return `${new Date(x).getMonth() + 1}/${new Date(x).getDate()}`
 								}}
-								width={100}
-								height={100}
 							/>
-							<Tooltip content={<CustomTooltip />} allowEscapeViewBox={{ x: true, y: true }} />
-							<Line type="monotone" dataKey="volume" stroke="#FFF" />
-						</LineChart>
+							<Tooltip content={<CustomTooltip />} />
+							<Area
+								type="monotone"
+								stackId="1"
+								dataKey="volume"
+								dot={false}
+								stroke="#3389ff"
+								strokeWidth={2}
+								fillOpacity={1}
+								fill="url(#paint0_linear)"
+							/>
+							<Area
+								type="monotone"
+								stackId="2"
+								dataKey="revenue"
+								dot={false}
+								stroke="#9030ff"
+								strokeWidth={2}
+								fillOpacity={1}
+								fill="url(#paint0_linear)"
+							/>
+						</AreaChart>
 					</ResponsiveContainer>
 				</div>
 			)}

@@ -24,6 +24,7 @@ import { useToast } from 'hooks/useToast'
 import LineClampText from 'components/Common/LineClampText'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import ArtistBanned from 'components/Common/ArtistBanned'
+import cachios from 'cachios'
 
 const LIMIT = 8
 const LIMIT_ACTIVITY = 20
@@ -231,10 +232,11 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const fetchCollectionDailyVolume = async () => {
-		const res = await axios.get(`${process.env.V2_API_URL}/collection-daily`, {
+		const res = await cachios.get(`${process.env.V2_API_URL}/collection-daily`, {
 			params: {
 				collection_id: collectionId,
 			},
+			ttl: 120,
 		})
 
 		const newDailyVolume = await res.data.data.volume_daily
