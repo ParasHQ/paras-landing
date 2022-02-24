@@ -22,26 +22,26 @@ const CreatePublication = () => {
 				<title>{localeLn('PublicationParas')}</title>
 				<meta
 					name="description"
-					content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
-				<meta name="twitter:title" content="Paras — Digital Art NFT Marketplace" />
+				<meta name="twitter:title" content="Paras - NFT Marketplace for Digital Collectibles" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
 				<meta
 					name="twitter:description"
-					content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 				<meta
 					name="twitter:image"
 					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Paras — Digital Art NFT Marketplace" />
-				<meta property="og:site_name" content="Paras — Digital Art NFT Marketplace" />
+				<meta property="og:title" content="Paras - NFT Marketplace for Digital Collectibles" />
+				<meta property="og:site_name" content="Paras - NFT Marketplace for Digital Collectibles" />
 				<meta
 					property="og:description"
-					content="Create, Trade and Collect. All-in-one social digital art NFT marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta

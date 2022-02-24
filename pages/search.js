@@ -208,7 +208,7 @@ export default function SearchPage({ searchQuery }) {
 		title: localeLn('Search{searchQuery}Paras', {
 			searchQuery: searchQuery,
 		}),
-		description: `Explore and collect ${searchQuery} digital art NFT on Paras. All-in-one social digital art NFT marketplace for creators and collectors.`,
+		description: `Explore and collect ${searchQuery} digital collectibles NFT on Paras. All-in-one social digital collectibles NFT marketplace for creators and collectors.`,
 	}
 
 	return (
