@@ -72,7 +72,7 @@ export default function SearchPage({ collectionName }) {
 		title: `${capitalize(collectionName)} — Paras`,
 		description: `Explore and collect ${capitalize(
 			collectionName
-		)} digital art cards on Paras. All-in-one social digital art card marketplace for creators and collectors.`,
+		)} NFT digital collectibles on Paras. All-in-one social digital collectibles NFT marketplace for creators and collectors.`,
 	}
 
 	return (

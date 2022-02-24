@@ -15,6 +15,7 @@ Sentry.init({
 		'Network Error',
 		'Failed to redirect to sign transaction',
 		'Request failed with status code 400',
+		'Request aborted',
 	],
 	// Adjust this value in production, or use tracesSampler for greater control
 	tracesSampleRate: 1.0,

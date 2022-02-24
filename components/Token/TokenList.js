@@ -1,5 +1,5 @@
 import { animated } from 'react-spring'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Card from 'components/Card/Card'
 import { parseImgUrl, prettyBalance } from 'utils/common'
 import Link from 'next/link'
@@ -11,13 +11,19 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
 import { useIntl } from 'hooks/useIntl'
 import CardListLoader from 'components/Card/CardListLoader'
+import MarketTokenModal from 'components/Modal/MarketTokenModal'
+import CardListLoaderSmall from 'components/Card/CardListLoaderSmall'
 
-const TokenList = ({ name = 'default', tokens, fetchData, hasMore }) => {
+const TokenList = ({ name = 'default', tokens, fetchData, hasMore, displayType }) => {
 	const store = useStore()
 	const router = useRouter()
 	const containerRef = useRef()
 	const animValuesRef = useRef(store.marketScrollPersist[name])
+	const [activeToken, setActiveToken] = useState(null)
+	const [modalType, setModalType] = useState(null)
+	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
+
 	useEffect(() => {
 		animValuesRef.current = store.marketScrollPersist[name]
 	}, [store.marketScrollPersist[name]])
@@ -76,9 +82,41 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 		)
 	}
 
+	const onCloseModal = () => {
+		setActiveToken(null)
+		setModalType(null)
+	}
+
+	const actionButtonText = (token) => {
+		const price = token.price
+
+		if (token.owner_id === currentUser) {
+			return localeLn('UpdateListing')
+		}
+
+		return price ? 'Buy Now' : 'Place Offer'
+	}
+
+	const actionButtonClick = (token) => {
+		const price = token.price
+
+		setActiveToken(token)
+		if (token.owner_id === currentUser) {
+			setModalType('updatelisting')
+		} else {
+			setModalType(price ? 'buy' : 'offer')
+		}
+	}
+
 	return (
 		<div ref={containerRef} className="rounded-md p-4 md:p-0">
 			<TokenDetailModal tokens={tokens} />
+			<MarketTokenModal
+				useNFTModal
+				activeToken={activeToken}
+				onCloseModal={onCloseModal}
+				modalType={modalType}
+			/>
 			{tokens.length === 0 && !hasMore && (
 				<div className="w-full">
 					<div className="m-auto text-2xl text-gray-600 font-semibold py-32 text-center">
@@ -93,7 +131,7 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 				dataLength={tokens.length}
 				next={fetchData}
 				hasMore={hasMore}
-				loader={<CardListLoader length={4} />}
+				loader={displayType === 'large' ? <CardListLoader /> : <CardListLoaderSmall />}
 				className="-mx-4"
 			>
 				<animated.div className="flex flex-wrap select-none">
@@ -103,16 +141,14 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 						return (
 							<div
 								key={token.token_id}
-								className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-4 relative"
+								className={`${
+									displayType === `large` ? `w-full md:w-1/3 lg:w-1/4` : `w-1/2 md:w-1/4 lg:w-1/6`
+								} flex-shrink-0 p-4 relative`}
 							>
 								<Link
 									href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
 								>
-									<a
-										onClick={(e) => {
-											e.preventDefault()
-										}}
-									>
+									<a onClick={(e) => e.preventDefault()}>
 										<div className="w-full m-auto">
 											<Card
 												imgUrl={parseImgUrl(token.metadata.media, null, {
@@ -137,16 +173,16 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 										</div>
 									</a>
 								</Link>
-								<div className="text-center">
-									<div className="mt-4">
-										<div className="p-2 pb-1">
+								<div className="mt-4 px-1">
+									{displayType !== 'large' ? (
+										<div className="flex md:hidden items-center justify-between h-12">
 											<p className="text-gray-400 text-xs">{localeLn('OnSale')}</p>
-											<div className="text-gray-100 text-xl">
+											<div className="text-gray-100 text-2xl">
 												{price ? (
-													<div>
-														<div>{prettyBalance(price, 24, 4)} Ⓝ</div>
+													<div className="flex items-baseline space-x-1">
+														<div className="truncate">{prettyBalance(price, 24, 4)} Ⓝ</div>
 														{store.nearUsdPrice !== 0 && (
-															<div className="text-xs text-gray-400">
+															<div className="text-xs text-gray-400 truncate">
 																~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 4)}
 															</div>
 														)}
@@ -158,21 +194,87 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 												)}
 											</div>
 										</div>
+									) : (
+										<div className="block md:hidden">
+											<p className="text-gray-400 text-xs">{localeLn('OnSale')}</p>
+											<div className="text-gray-100 text-2xl">
+												{price ? (
+													<div className="flex items-baseline space-x-1">
+														<div className="truncate">{prettyBalance(price, 24, 4)} Ⓝ</div>
+														{store.nearUsdPrice !== 0 && (
+															<div className="text-xs text-gray-400 truncate">
+																~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 4)}
+															</div>
+														)}
+													</div>
+												) : (
+													<div className="line-through text-red-600">
+														<span className="text-gray-100">{localeLn('SALE')}</span>
+													</div>
+												)}
+											</div>
+										</div>
+									)}
+									<div className="hidden md:block">
+										<p className="text-gray-400 text-xs">{localeLn('OnSale')}</p>
+										<div className="text-gray-100 text-2xl">
+											{price ? (
+												<div className="flex items-baseline space-x-1">
+													<div className="truncate">{prettyBalance(price, 24, 4)} Ⓝ</div>
+													{store.nearUsdPrice !== 0 && (
+														<div className="text-xs text-gray-400 truncate">
+															~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 4)}
+														</div>
+													)}
+												</div>
+											) : (
+												<div className="line-through text-red-600">
+													<span className="text-gray-100">{localeLn('SALE')}</span>
+												</div>
+											)}
+										</div>
 									</div>
-									<div className="pb-4">
-										<Link
-											href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
+									<div className="flex justify-between items-end">
+										<p
+											className={`${
+												displayType === 'large' ? `text-base md:text-base` : `text-xs md:text-xs`
+											} font-bold text-white cursor-pointer`}
+											onClick={() => actionButtonClick(token)}
 										>
-											<a
-												onClick={(e) => {
-													e.preventDefault()
-													onClickSeeDetails(token)
-												}}
-												className="text-white border-b-2 border-white text-sm font-bold mb-2"
+											{actionButtonText(token)}
+										</p>
+										<div className="hidden md:block">
+											<Link
+												href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
 											>
-												See Details
-											</a>
-										</Link>
+												<a
+													onClick={(e) => {
+														e.preventDefault()
+														onClickSeeDetails(token)
+													}}
+													className="text-gray-300 underline text-xs md:text-sm"
+												>
+													{displayType === 'large' ? 'See Details' : 'More'}
+												</a>
+											</Link>
+										</div>
+										<div className="block md:hidden">
+											<Link
+												href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
+											>
+												<a
+													onClick={(e) => {
+														e.preventDefault()
+														onClickSeeDetails(token)
+													}}
+													className={`text-gray-300 underline ${
+														displayType === 'large' ? `text-sm` : `text-xs`
+													} text-xs md:text-sm`}
+												>
+													{displayType === 'large' ? 'See Details' : 'More'}
+												</a>
+											</Link>
+										</div>
 									</div>
 								</div>
 							</div>
