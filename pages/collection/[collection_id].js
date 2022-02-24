@@ -309,6 +309,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		setHasMore(true)
 		setIdNext(null)
 		setLowestPriceNext(null)
+		setUpdatedAtNext(null)
 		setTokens([])
 		fetchData()
 		setDisplay(typeDisplay)

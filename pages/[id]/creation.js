@@ -126,6 +126,7 @@ const Creation = ({ userProfile, accountId }) => {
 		setHasMore(true)
 		setIdNext(null)
 		setLowestPriceNext(null)
+		setUpdatedAtNext(null)
 		setTokens([])
 		fetchCreatorTokens()
 		setDisplay(typeDisplay)

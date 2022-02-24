@@ -107,6 +107,7 @@ function MarketPage({ serverQuery }) {
 		setHasMore(true)
 		setIdNext(null)
 		setLowestPriceNext(null)
+		setUpdatedAtNext(null)
 		setTokens([])
 		_fetchData()
 		setDisplay(typeDisplay)
