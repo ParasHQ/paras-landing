@@ -95,7 +95,7 @@ export default function Drops() {
 				<title>{localeLn('ParasXMTVRS')}</title>
 				<meta
 					name="description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 				<meta name="twitter:title" content="Paras X MTVRS NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
@@ -103,7 +103,7 @@ export default function Drops() {
 				<meta name="twitter:url" content="https://paras.id" />
 				<meta
 					name="twitter:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 				<meta
 					name="twitter:image"
@@ -114,7 +114,7 @@ export default function Drops() {
 				<meta property="og:site_name" content="Paras X MTVRS NFT Drops" />
 				<meta
 					property="og:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta
