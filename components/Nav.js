@@ -124,20 +124,18 @@ const Nav = () => {
 				)}
 
 				{/* Banner for special event */}
-				{/* <div
+				<div
 					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
 				>
 					<div className="px-10 py-1 md:p-0 ">
-						{`Prepare your best arts for Card4Card on Jan 28th! Read more info `}
 						<a
-							href="https://paras.id/publication/first-card4card-in-2022-61ed5a50cd08b4959dde48b7"
+							href="https://paras.id/drops"
 							target="_blank"
-							className="font-bold cursor-pointer hover:underline"
-						>
-							here
-						</a>
+							className="font-medium cursor-pointer hover:underline"
+							rel="noreferrer"
+						>{`NEARNauts Rank 1 charity auction (23-25 Feb) | Place you bid NOW!`}</a>
 					</div>
-				</div> */}
+				</div>
 
 				{process.env.APP_ENV !== 'production' && (
 					<div
