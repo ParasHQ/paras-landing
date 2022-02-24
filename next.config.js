@@ -36,7 +36,7 @@ const moduleExports = {
 		/**
 		 * Provide the locales you want to support in your application
 		 */
-		locales: ['en', 'zh', 'es', 'ru'], //, "fr", "ko", "ru", "vi"],
+		locales: ['en', 'zh', 'es', 'ru', 'fr'], //, "fr", "ko", "ru", "vi"],
 		/**
 		 * This is the default locale you want to be used when visiting
 		 * a non-locale prefixed path.
