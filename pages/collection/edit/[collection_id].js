@@ -122,7 +122,7 @@ const CollectionPageEdit = ({ collectionId }) => {
 				<title>Create New Collection — Paras</title>
 				<meta
 					name="description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 
 				<meta name="twitter:title" content="Market — Paras" />
@@ -131,7 +131,7 @@ const CollectionPageEdit = ({ collectionId }) => {
 				<meta name="twitter:url" content="https://paras.id" />
 				<meta
 					name="twitter:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 				<meta
 					name="twitter:image"
@@ -142,7 +142,7 @@ const CollectionPageEdit = ({ collectionId }) => {
 				<meta property="og:site_name" content="Market — Paras" />
 				<meta
 					property="og:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta
