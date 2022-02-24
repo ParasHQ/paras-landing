@@ -24,6 +24,7 @@ import { useToast } from 'hooks/useToast'
 import LineClampText from 'components/Common/LineClampText'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import ArtistBanned from 'components/Common/ArtistBanned'
+import FilterDisplay from 'components/Filter/FilterDisplay'
 
 const LIMIT = 8
 const LIMIT_ACTIVITY = 20
@@ -47,6 +48,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [hasMoreActivities, setHasMoreActivities] = useState(true)
 	const [deleteModal, setDeleteModal] = useState(false)
 	const [deleteLoading, setDeleteLoading] = useState(false)
+	const [display, setDisplay] = useState('large')
 	const toast = useToast()
 
 	const fetchData = async () => {
@@ -304,6 +306,16 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		}
 	}
 
+	const onClickDisplay = (typeDisplay) => {
+		setHasMore(true)
+		setIdNext(null)
+		setLowestPriceNext(null)
+		setUpdatedAtNext(null)
+		setTokens([])
+		fetchData()
+		setDisplay(typeDisplay)
+	}
+
 	return (
 		<div className="min-h-screen bg-black">
 			<div
@@ -463,14 +475,6 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						</div>
 					</div>
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
-						<div className="flex sm:hidden">
-							{Object.keys(attributes).length > 0 && (
-								<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
-							)}
-							<FilterMarket isShowVerified={false} defaultMinPrice={true} />
-						</div>
-					)}
-					{(router.query.tab === 'items' || router.query.tab === undefined) && (
 						<div className="hidden sm:flex md:ml-8 z-10 items-center justify-end right-0 absolute w-full">
 							<div className="flex justify-center mt-4">
 								<div className="flex">
@@ -481,10 +485,24 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 										/>
 									)}
 									<FilterMarket isShowVerified={false} defaultMinPrice={true} />
+									<div className="hidden lg:flex mt-0 mr-4">
+										<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
+									</div>
 								</div>
 							</div>
 						</div>
 					)}
+				</div>
+				<div className="flex lg:hidden mt-6 mx-4 justify-center sm:justify-end">
+					{(router.query.tab === 'items' || router.query.tab === undefined) && (
+						<div className="flex sm:hidden">
+							{Object.keys(attributes).length > 0 && (
+								<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
+							)}
+							<FilterMarket isShowVerified={false} defaultMinPrice={true} />
+						</div>
+					)}
+					<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 				</div>
 				<div className="relative flex flex-row flex-wrap left-0 ml-5 mt-5 ">
 					{router.query.attributes &&
@@ -516,7 +534,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				</div>
 				<div className="mt-4 px-4">
 					{isFiltering ? (
-						<CardListLoader />
+						<CardListLoader length={display === 'large' ? 12 : 18} displayType={display} />
 					) : router.query.tab == 'activity' ? (
 						<CollectionActivity
 							activities={activities}
@@ -531,6 +549,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							hasMore={hasMore}
 							profileCollection={collection.media}
 							type="collection"
+							displayType={display}
 						/>
 					)}
 				</div>
