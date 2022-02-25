@@ -1,6 +1,6 @@
 import { IconX } from 'components/Icons'
 import Modal from 'components/Modal'
-import { flagText } from 'constants/flag'
+import { flagColor, flagText } from 'constants/flag'
 import { useIntl } from 'hooks/useIntl'
 import React from 'react'
 
@@ -18,7 +18,11 @@ const BannedConfirmModal = ({ creatorData, action, setIsShow, onClose }) => {
 						<IconX onClick={onClose} />
 					</div>
 				</div>
-				<div className="w-full text-white bg-red-600 p-2 rounded-md text-center mt-2 mb-6">
+				<div
+					className={`w-full text-white p-2 rounded-md text-center mt-2 mb-6 ${
+						flagColor[creatorData?.flag]
+					}`}
+				>
 					{localeLn(flagText[creatorData?.flag] || 'FlaggedByPARASStealing')}
 				</div>
 				<div className="w-full text-white text-center">{localeLn('AreYouSureBuy')}</div>
