@@ -1,5 +1,5 @@
 import { animated } from 'react-spring'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Card from 'components/Card/Card'
 import { parseImgUrl, prettyBalance } from 'utils/common'
 import Link from 'next/link'
@@ -136,6 +136,7 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 													royalty: token.royalty,
 													attributes: token.metadata.attributes,
 													_is_the_reference_merged: token._is_the_reference_merged,
+													mime_type: token.metadata.mime_type,
 												}}
 												profileCollection={profileCollection}
 												type={type}

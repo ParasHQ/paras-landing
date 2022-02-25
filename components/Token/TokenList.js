@@ -132,6 +132,7 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore }) => {
 													description: token.metadata.description,
 													royalty: token.royalty,
 													attributes: token.metadata.attributes,
+													mime_type: token.metadata.mime_type,
 												}}
 											/>
 										</div>
