@@ -12,7 +12,7 @@ const nav = {
 	CurrentlyWeOnly: `Pour l'instant, nous autorisons uniquement les créateurs vérifiés à créer une publication.`,
 	NavJoinDiscord: 'Rejoindre le Discord de Paras',
 	NavViewWallet: 'Voir sur le Wallet NEAR',
-	NavGetParas: 'Obtenir des $PARAS sur Ref', 
+	NavGetParas: 'Obtenir des $PARAS sur Ref',
 	NavSwitchAccount: 'Changer de compte',
 	NavAddAccount: 'Ajouter un compte',
 	NavCreateCard: 'Créer une carte',
@@ -63,8 +63,7 @@ const market = {
 	Filter: 'Filtrer',
 	SortBy: 'Trier par',
 	CategoryParas: 'Catégorie — Paras',
-	OnlyAllowWhitelisted:
-		`Actuellement, nous n'autorisons que les artistes whitelisté à créer leurs cartes d'art digital sur Paras.`,
+	OnlyAllowWhitelisted: `Actuellement, nous n'autorisons que les artistes whitelisté à créer leurs cartes d'art digital sur Paras.`,
 	ApplyUsingLink: 'Postulez maintenant en utilisans le lien ci-dessous:',
 	ApplyAsArtist: `Postuler en tant qu'artiste`,
 	Status: 'Status',
@@ -146,7 +145,8 @@ const CardInfo = {
 	GoToLogin: 'Aller à la connexion',
 	ConfirmBuy: `Confirmer l'achat`,
 	BuyQuantityAvailable: 'Acheter quantité disponible à la vente',
-	YouWillRedirectedTo: 'Vous allez être redirigé vers votre portefeuille NEAR pour confirmer la transaction',
+	YouWillRedirectedTo:
+		'Vous allez être redirigé vers votre portefeuille NEAR pour confirmer la transaction',
 	ConfirmTransfer: 'Confirmer le transfert',
 	ConfirmBurn: 'Confirmer la destruction',
 	SortBy: 'Trier part',
@@ -181,7 +181,7 @@ const CardInfo = {
 	EditImage: `Editer l'image`,
 	YouWillBeBurning: 'Vous allez brûler',
 	NotAllowedToList: `Vous n'êtes pas autorisé à mettre cette carte en vente pour l'instant`,
-	NotAllowedToBuy:`Vous n'êtes pas autorisé à acheter cette carte pour l'instant. Seul les comptes sur la liste d'attente peuvent acheter cette carte.`,
+	NotAllowedToBuy: `Vous n'êtes pas autorisé à acheter cette carte pour l'instant. Seul les comptes sur la liste d'attente peuvent acheter cette carte.`,
 	AboutToAcceptBid: `Vous êtes sur le point d'accepter une enchère pour `,
 	From: 'De',
 	RoyaltyForArtist: `Royalties pour l'artiste`,
@@ -220,8 +220,7 @@ const publication = {
 	Community: 'Communauté',
 	MaximumSize3MB: 'Taille maximum 3MB',
 	AddCardToPublication: 'Ajouter une carte à votre publication',
-	TokenIDIsCardId:
-		`TokenID est le numéro d'identification de votre carte. Vous pouvez trouver votre TokenID sur https: /paras.id/token/[TokenID]`,
+	TokenIDIsCardId: `TokenID est le numéro d'identification de votre carte. Vous pouvez trouver votre TokenID sur https: /paras.id/token/[TokenID]`,
 	AddCard: 'Ajouter Carte',
 	Thumbnail: 'Thumbnail',
 	UpdateThumbnail3MB: 'Mettre à jour le Thumbnail (Max. 3MB)',
@@ -263,7 +262,8 @@ const modal = {
 	GoToLogin: 'Aller à la connexion',
 	BurnAsset: 'Brûler le NFT',
 	AreAboutToBurn: 'Vous êtes sur le point de brûler',
-	RedirectedToconfirm: 'Vous allez être redirigé vers la page du portefeuille NEAR pour confirmer votre transaction.',
+	RedirectedToconfirm:
+		'Vous allez être redirigé vers la page du portefeuille NEAR pour confirmer votre transaction.',
 	AreAboutToPurchase: `Vous êtes sur le point d'acheter`,
 	Total: 'Total',
 	GetForFree: 'Obtenir gratuitement',
@@ -288,8 +288,7 @@ const modal = {
 	Deposit: 'Dépôt',
 	AreAboutToSend: `Vous êtes sur le point d'envoyer`,
 	MintedBy: 'Minter par',
-	DynamicTxFee:
-    `Si vous faites la transaction avant {date}, les frais de transaction s'éléveront à {fee}%.`,
+	DynamicTxFee: `Si vous faites la transaction avant {date}, les frais de transaction s'éléveront à {fee}%.`,
 }
 const tab = {
 	BoughtFrom: 'Acheté à',
@@ -338,7 +337,8 @@ const common = {
 	ReadNow: 'Lire maintenant',
 	FlaggedByPARASStealing: `ATTENTION: Ce profile à été répéré par PARAS pour vol d'art`,
 	FlaggedByPARASFake: "ATTENTION: Ce compte utilise l'identité de quelqu'un d'autre",
-	FlaggedByPARASHacked: 'ATTENTION: Ce compte a été priaté. Veuillez contacter le créateur original',
+	FlaggedByPARASHacked:
+		'ATTENTION: Ce compte a été priaté. Veuillez contacter le créateur original',
 	UseOwnRisk:
 		"Le smart contract de Paras n'a pas encore été audité par des autorités reconnues. À utiliser à vos risques et périls!",
 	...token,
@@ -418,8 +418,7 @@ const faq = {
 	WhatIsBlockchain: `Qu'est-ce que la blockchain?`,
 	BlockchainIsTechnology: `La blockchain est une technologie qui permet à chacun d'être véritablement propriétaire de ses données et de ses actifs numériques. Les données stockées sur la blockchain sont transparentes et non tempérées ce qui rend la propriété de certains actifs prouvable et vérifiable par tous`,
 	WhatIsCryptocurrency: `Qu'est-ce que sont les crypto-monnaies et les actifs digitaux ?`,
-	BothCryptocurrencyDigital:
-    `La crypto-monnaie et les actifs numériques utilisent la technologie blockchain pour gérer la propriété et leurs transactions. La crypto-monnaie permet un règlement transfrontalier entre plusieurs parties accessible à tous. Les actifs numériques tels que les œuvres d'art qui sont stockées dans la blockchain peuvent facilement être transférés à l'échelle mondiale sans aucune barrière.`,
+	BothCryptocurrencyDigital: `La crypto-monnaie et les actifs numériques utilisent la technologie blockchain pour gérer la propriété et leurs transactions. La crypto-monnaie permet un règlement transfrontalier entre plusieurs parties accessible à tous. Les actifs numériques tels que les œuvres d'art qui sont stockées dans la blockchain peuvent facilement être transférés à l'échelle mondiale sans aucune barrière.`,
 	YouNeedNEARAccount: `Vous avez besoin d'un compte NEAR et de NEAR tokens pour commencer à collecter les cartes numériques. Vous pouvez commencer à explorer le marché et trouver les objets de collection de cartes que vous aimez et voir s'ils sont toujours disponibles à la vente. Vous pouvez acheter la carte numérique auprès d'autres collectionneurs ou directement auprès des créateurs. Lorsque vous en avez acheté une, cette carte vous appartiendra vraiment et vous pourrez la conserver, la vendre ou l'échanger à l'avenir.`,
 	HowDoStartCollecting: `Comment puis-je commencer a collectionner les cartes d'art digital ?`,
 	WhereCanGetNEAR: 'Ou puis-je acheter des NEAR?',
@@ -429,8 +428,7 @@ const faq = {
 	CanStartApplying:
 		'Vous pouvez soumettre une candidature <a target="blank" href="https://docs.google.com/forms/d/e/1FAIpQLScqkh-sJJREv9UOtIjML5J6CdjPftJ0ACICPKxzRrAsoAuzJw/viewform">ici</a>. Notre équipe va analysez votre dossier et vous reviendra par e-mail.',
 	HowDoMakeCard: `Comment puis-je faire des cartes d'art digital ?`,
-	ADigitalCardOnParas:
-		`Une carte d'art digital sur Paras suit le format des cartes à collectionner du monde réel qui sont présentée en portrait avec un ratio 64 : 89. La taille maximum est de 30MB. Pour l'instant, Paras ne supporte ques les formats image, tels que : png, jpg, jpeg, gifs, etc. Les vidéos ne sont pas supportées.`,
+	ADigitalCardOnParas: `Une carte d'art digital sur Paras suit le format des cartes à collectionner du monde réel qui sont présentée en portrait avec un ratio 64 : 89. La taille maximum est de 30MB. Pour l'instant, Paras ne supporte ques les formats image, tels que : png, jpg, jpeg, gifs, etc. Les vidéos ne sont pas supportées.`,
 }
 const p404 = {
 	NotFoundParas: 'Non trouvé — Paras',
@@ -472,13 +470,10 @@ const license = {
 	LicenseAreNotAppropriate:
 		'Il y a quelques choses qui ne sont pas des utilisations appropriées pour votre art NFT. Ils comprennent:',
 	LicenseModifyingArt: `Modifier l'art;`,
-	LicenseUsingForCommercialize:
-		`Utilisation de l'art à des fins de commercialisation sans demander l'autorisation du créateur/artiste`,
+	LicenseUsingForCommercialize: `Utilisation de l'art à des fins de commercialisation sans demander l'autorisation du créateur/artiste`,
 	LicenseSellThirdParty: `Utiliser l'art pour commercialiser ou vendre des produits tiers`,
-	LicenseImagesHatred:
-		`Utiliser l'art en relation avec des images de haine, de violence ou d'autres comportements inappropriés ; ou`,
-	LicenseTryingTrademark:
-		`Essayer de déposer votre art ou d'acquérir autrement des droits de propriété intellectuelle sur celui-ci`,
+	LicenseImagesHatred: `Utiliser l'art en relation avec des images de haine, de violence ou d'autres comportements inappropriés ; ou`,
+	LicenseTryingTrademark: `Essayer de déposer votre art ou d'acquérir autrement des droits de propriété intellectuelle sur celui-ci`,
 	Version10: 'Version 1.0',
 	LicenseDefinitions: '1. Définitions.',
 	LicenseArtMeans:
@@ -514,25 +509,17 @@ const license = {
   licence non transférable et libre de redevance pour utiliser, copier et afficher le
   Art pour vos NFT achetés, uniquement aux fins suivantes:`,
 	LicenseForYourPersonal: 'pour votre usage personnel et non commercial;',
-	LicenseAsPartMarketplace:
-		`dans le cadre d'un marché qui permet l'achat et la vente de vos NFT, à condition que le marché vérifie de manière cryptographique les droits de chaque propriétaire de NFT d'afficher l'Art pour leurs NFT achetés afin de s'assurer que seul le propriétaire réel peut afficher l'Art ; ou`,
-	LicenseThirdPartyWebsite:
-		`dans le cadre d'un site Web ou d'une application tiers qui permet l'inclusion, l'implication ou la participation de vos NFT, à condition que le site Web / l'application vérifie de manière cryptographique les droits de chaque propriétaire de NFT d'afficher l'Art pour leurs NFT achetés afin de s'assurer que seul le propriétaire réel peut afficher l'Art, et à condition que l'Art ne soit plus visible une fois que le propriétaire du NFT acheté quitte le site Web/l'application`,
-	LicenseCommercialUse:
-		`Un usage commercial. Sous réserve de votre respect continu des termes de cette licence, l'artiste vous accorde une licence limitée, mondiale, non exclusive et non transférable pour utiliser, copier et afficher l'art pour vos NFT achetés afin de commercialiser votre propre marchandise qui comprend, contient ou consiste en l'art pour vos NFT achetés.`,
+	LicenseAsPartMarketplace: `dans le cadre d'un marché qui permet l'achat et la vente de vos NFT, à condition que le marché vérifie de manière cryptographique les droits de chaque propriétaire de NFT d'afficher l'Art pour leurs NFT achetés afin de s'assurer que seul le propriétaire réel peut afficher l'Art ; ou`,
+	LicenseThirdPartyWebsite: `dans le cadre d'un site Web ou d'une application tiers qui permet l'inclusion, l'implication ou la participation de vos NFT, à condition que le site Web / l'application vérifie de manière cryptographique les droits de chaque propriétaire de NFT d'afficher l'Art pour leurs NFT achetés afin de s'assurer que seul le propriétaire réel peut afficher l'Art, et à condition que l'Art ne soit plus visible une fois que le propriétaire du NFT acheté quitte le site Web/l'application`,
+	LicenseCommercialUse: `Un usage commercial. Sous réserve de votre respect continu des termes de cette licence, l'artiste vous accorde une licence limitée, mondiale, non exclusive et non transférable pour utiliser, copier et afficher l'art pour vos NFT achetés afin de commercialiser votre propre marchandise qui comprend, contient ou consiste en l'art pour vos NFT achetés.`,
 	LicenseRestrictions: '4. Restrictions.',
-	LicenseYouAgree:
-		`Vous acceptez que vous ne pouvez pas, ni permettre à un tiers de faire ou de tenter de faire ce qui précède sans le consentement écrit préalable exprès de l'artiste dans chaque cas : i) utiliser l'art pour vos NFT achetés en relation avec des images, des vidéos ou d'autres les formes de médias qui dépeignent la haine, l'intolérance, la violence, la cruauté ou toute autre chose qui pourrait raisonnablement être considérée comme constituant un discours de haine ou portant autrement atteinte aux droits d'autrui ; Dans la mesure où l'Art associé à vos NFT achetés contient une IP de tiers (par exemple, la propriété intellectuelle sous licence d'une célébrité, d'un athlète ou d'autres personnalités publiques), vous comprenez et acceptez ce qui suit :`,
-	LicenseHaveRightTo:
-		`que vous n'aurez pas le droit d'utiliser cette IP de tiers de quelque manière que ce soit, sauf de la manière incorporée dans l'Art, et sous réserve de la licence et des restrictions contenues dans les présentes ;`,
+	LicenseYouAgree: `Vous acceptez que vous ne pouvez pas, ni permettre à un tiers de faire ou de tenter de faire ce qui précède sans le consentement écrit préalable exprès de l'artiste dans chaque cas : i) utiliser l'art pour vos NFT achetés en relation avec des images, des vidéos ou d'autres les formes de médias qui dépeignent la haine, l'intolérance, la violence, la cruauté ou toute autre chose qui pourrait raisonnablement être considérée comme constituant un discours de haine ou portant autrement atteinte aux droits d'autrui ; Dans la mesure où l'Art associé à vos NFT achetés contient une IP de tiers (par exemple, la propriété intellectuelle sous licence d'une célébrité, d'un athlète ou d'autres personnalités publiques), vous comprenez et acceptez ce qui suit :`,
+	LicenseHaveRightTo: `que vous n'aurez pas le droit d'utiliser cette IP de tiers de quelque manière que ce soit, sauf de la manière incorporée dans l'Art, et sous réserve de la licence et des restrictions contenues dans les présentes ;`,
 	LicenseInSection3: `que la licence d'utilisation commerciale de la section 3(b) ci-dessus ne s'appliquera pas ;`,
-	LicenseDependingOn:
-		`que, selon la nature de la licence accordée par le propriétaire de la PI tierce, l'Artiste peut avoir besoin de passer par des restrictions supplémentaires sur votre capacité à utiliser l'Art complet ; et`,
-	LicenseToTheExtent:
-		`dans la mesure où l'Artiste vous informe de ces restrictions supplémentaires par écrit (le courrier électronique est autorisé), vous serez responsable de vous conformer à toutes ces restrictions à compter de la date à laquelle vous recevez l'avis, et ce non-respect sera considéré comme une violation de cette licence. La restriction de la section 4 survivra à l'expiration ou à la résiliation de cette licence.`,
+	LicenseDependingOn: `que, selon la nature de la licence accordée par le propriétaire de la PI tierce, l'Artiste peut avoir besoin de passer par des restrictions supplémentaires sur votre capacité à utiliser l'Art complet ; et`,
+	LicenseToTheExtent: `dans la mesure où l'Artiste vous informe de ces restrictions supplémentaires par écrit (le courrier électronique est autorisé), vous serez responsable de vous conformer à toutes ces restrictions à compter de la date à laquelle vous recevez l'avis, et ce non-respect sera considéré comme une violation de cette licence. La restriction de la section 4 survivra à l'expiration ou à la résiliation de cette licence.`,
 	LicenseTermsOf: '5. Termes de la license.',
-	LicenseTheLicenseGranted:
-		`La licence accordée dans la section 3 ci-dessus s'applique uniquement dans la mesure où vous continuez à être propriétaire du NFT acheté applicable. Si, à tout moment, vous vendez, échangez, donnez, donnez, transférez ou cédez de quelque manière que ce soit votre NFT acheté pour quelque raison que ce soit, la licence accordée à la section 3 expirera immédiatement concernant ces NFT sans exigence de préavis, et vous n'aurez aucune d'autres droits dans ou sur l'Art pour ces NFT.`,
+	LicenseTheLicenseGranted: `La licence accordée dans la section 3 ci-dessus s'applique uniquement dans la mesure où vous continuez à être propriétaire du NFT acheté applicable. Si, à tout moment, vous vendez, échangez, donnez, donnez, transférez ou cédez de quelque manière que ce soit votre NFT acheté pour quelque raison que ce soit, la licence accordée à la section 3 expirera immédiatement concernant ces NFT sans exigence de préavis, et vous n'aurez aucune d'autres droits dans ou sur l'Art pour ces NFT.`,
 }
 const languages = {
 	LanguagesParas: 'Langues — Paras',
