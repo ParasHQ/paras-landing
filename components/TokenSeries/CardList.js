@@ -285,7 +285,7 @@ const CardList = ({
 									</div>
 									<div className="flex justify-between items-end">
 										<p
-											className={`font-bold text-white cursor-pointer ${
+											className={`font-bold text-white cursor-pointer hover:opacity-80  ${
 												displayType === 'large' ? `text-base` : `text-sm`
 											} ${displayType === 'large' ? `md:text-base` : `md:text-xs`} mb-1 md:mb-0`}
 											onClick={() => actionButtonClick(token)}

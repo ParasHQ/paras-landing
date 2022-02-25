@@ -240,7 +240,7 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, displayType }
 										<p
 											className={`${
 												displayType === 'large' ? `text-base md:text-base` : `text-xs md:text-xs`
-											} font-bold text-white cursor-pointer`}
+											} font-bold text-white cursor-pointer hover:opacity-80 `}
 											onClick={() => actionButtonClick(token)}
 										>
 											{actionButtonText(token)}
