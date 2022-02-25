@@ -783,9 +783,9 @@ const SpecialCardBid = ({
 								(offer) =>
 									parseInt(formatNearAmount(offer.price, 0)) >= price && (
 										<div className="mb-2" key={offer._id}>
-											<div className="flex justify-between items-center mx-8">
-												<div className="text-left">
-													<div className="text-lg">{offer.buyer_id}</div>
+											<div className="flex justify-between items-center mx-8 flex-grow-0 gap-2">
+												<div className="text-left flex-1 truncate">
+													<div className="text-lg truncate">{offer.buyer_id}</div>
 													<div className="text-sm opacity-70">
 														{timeAgo.format(offer.issued_at)}
 													</div>
