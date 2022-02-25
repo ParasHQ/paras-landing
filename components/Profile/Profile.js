@@ -10,7 +10,6 @@ import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu'
 import ProfileEdit from './ProfileEdit'
 import Modal from 'components/Modal'
 
-
 const Profile = ({ userProfile, activeTab }) => {
 	const currentUser = useStore((store) => store.currentUser)
 	const router = useRouter()
