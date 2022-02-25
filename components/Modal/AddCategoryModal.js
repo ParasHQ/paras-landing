@@ -16,9 +16,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 	const [page, setPage] = useState(1)
 	const [isLoading, setIsLoading] = useState(false)
 	const toast = useToast()
-	const { currentUser } = useStore((state) => ({
-		currentUser: state.currentUser,
-	}))
+	const currentUser = useStore((state) => state.currentUser)
 
 	const getCreatorId = () => {
 		if (!tokenData) {
