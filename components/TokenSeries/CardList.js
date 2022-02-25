@@ -189,6 +189,7 @@ const CardList = ({
 													royalty: token.royalty,
 													attributes: token.metadata.attributes,
 													_is_the_reference_merged: token._is_the_reference_merged,
+													mime_type: token.metadata.mime_type,
 												}}
 												profileCollection={profileCollection}
 												type={type}
