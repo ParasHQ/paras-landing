@@ -88,7 +88,14 @@ const Media = ({
 
 	if (mimeType?.includes('gif')) {
 		return (
-			<video playsInline controls={false} loop={true} muted={false} autoPlay>
+			<video
+				playsInline
+				controls={false}
+				loop={true}
+				muted={false}
+				autoPlay
+				className="w-full h-full"
+			>
 				<source type="video/mp4" src={`${url}&fm=mp4`}></source>
 			</video>
 		)

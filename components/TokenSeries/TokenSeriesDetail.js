@@ -31,6 +31,7 @@ import Card from 'components/Card/Card'
 import { useRouter } from 'next/router'
 
 const TokenSeriesDetail = ({ token, className }) => {
+	console.log(token)
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
 	const currentUser = useStore((state) => state.currentUser)
@@ -247,11 +248,16 @@ const TokenSeriesDetail = ({ token, className }) => {
 						{tokenDisplay === 'detail' ? (
 							<Media
 								className="rounded-lg overflow-hidden"
-								url={token.metadata.media}
+								url={
+									token.metadata?.mime_type
+										? parseImgUrl(token.metadata.media)
+										: token.metadata.media
+								}
 								videoControls={true}
 								videoLoop={true}
 								videoMuted={true}
 								videoPadding={true}
+								mimeType={token?.metadata?.mime_type}
 							/>
 						) : (
 							<div className="w-1/2 h-full md:w-full m-auto flex items-center">
@@ -268,6 +274,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 										copies: token.metadata.copies,
 										creatorId: token.metadata.creator_id || token.contract_id,
 										is_creator: token.is_creator,
+										mime_type: token.metadata.mime_type,
 									}}
 								/>
 							</div>
