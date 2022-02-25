@@ -9,7 +9,7 @@ const ActivityLoader = (props) => (
 		className="hidden md:block"
 		backgroundColor="#1D1D1D"
 		foregroundColor="#282828"
-		uniqueKey="top-activity-loader"
+		uniqueKey="activity-list-loader"
 		{...props}
 	>
 		<rect x="70" y="40" rx="10" ry="10" width="300" height="375" />
