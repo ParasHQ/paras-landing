@@ -31,7 +31,6 @@ import Card from 'components/Card/Card'
 import { useRouter } from 'next/router'
 
 const TokenSeriesDetail = ({ token, className }) => {
-	console.log(token)
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
 	const currentUser = useStore((state) => state.currentUser)
