@@ -201,9 +201,9 @@ const TokenDetail = ({ token, className }) => {
 					>
 						<div>
 							<div className="flex justify-between">
-								<div>
+								<div className="overflow-x-hidden">
 									<div className="flex justify-between items-center">
-										<p className="text-gray-300">
+										<p className="text-gray-300 truncate">
 											NFT //{' '}
 											{token.contract_id === process.env.NFT_CONTRACT_ID
 												? `#${token.edition_id} of ${token.metadata.copies}`
