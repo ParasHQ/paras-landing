@@ -31,12 +31,16 @@ const FilterAttribute = ({ attributes, onClearAll }) => {
 	}, [router.query.attributes])
 
 	const onClickApply = () => {
-		router.push({
-			query: {
-				...router.query,
-				attributes: JSON.stringify(attributeFilter),
+		router.push(
+			{
+				query: {
+					...router.query,
+					attributes: JSON.stringify(attributeFilter),
+				},
 			},
-		})
+			{},
+			{ shallow: true, scroll: false }
+		)
 
 		setShowFilterModal(false)
 	}

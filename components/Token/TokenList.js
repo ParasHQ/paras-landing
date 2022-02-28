@@ -131,7 +131,13 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, displayType =
 				dataLength={tokens.length}
 				next={fetchData}
 				hasMore={hasMore}
-				loader={displayType === 'large' ? <CardListLoader /> : <CardListLoaderSmall />}
+				loader={
+					displayType === 'large' ? (
+						<CardListLoader length={4} />
+					) : (
+						<CardListLoaderSmall length={6} />
+					)
+				}
 				className="-mx-4"
 			>
 				<animated.div className="flex flex-wrap select-none">

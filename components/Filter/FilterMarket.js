@@ -115,9 +115,13 @@ const FilterMarket = ({
 
 		if (isNotForSale && minPrice === '') query.pmin = 0
 
-		router.push({
-			query: query,
-		})
+		router.push(
+			{
+				query: query,
+			},
+			{},
+			{ shallow: true, scroll: false }
+		)
 		setShowFilterModal(false)
 	}
 

@@ -258,32 +258,44 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const changeTab = (tab) => {
-		router.push({
-			query: {
-				...router.query,
-				tab: tab,
+		router.push(
+			{
+				query: {
+					...router.query,
+					tab: tab,
+				},
 			},
-		})
+			{},
+			{ shallow: true, scroll: false }
+		)
 	}
 
 	const removeAttributeFilter = (index) => {
 		const url = JSON.parse(router.query.attributes)
 		url.splice(index, 1)
-		router.push({
-			query: {
-				...router.query,
-				attributes: JSON.stringify(url),
+		router.push(
+			{
+				query: {
+					...router.query,
+					attributes: JSON.stringify(url),
+				},
 			},
-		})
+			{},
+			{ shallow: true, scroll: false }
+		)
 	}
 
 	const removeAllAttributesFilter = () => {
-		router.push({
-			query: {
-				...router.query,
-				attributes: `[]`,
+		router.push(
+			{
+				query: {
+					...router.query,
+					attributes: `[]`,
+				},
 			},
-		})
+			{},
+			{ shallow: true, scroll: false }
+		)
 	}
 
 	const onShowDeleteModal = () => {
@@ -594,9 +606,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 								<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
 							)}
 							<FilterMarket isShowVerified={false} defaultMinPrice={true} />
+							<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 						</div>
 					)}
-					<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 				</div>
 				<div className="relative flex flex-row flex-wrap left-0 ml-5 mt-5 ">
 					{router.query.attributes &&
