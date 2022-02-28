@@ -28,6 +28,10 @@ const LineClampText = ({ text = '', lineClamp = 8, style = {}, className = '' })
 		</a>
 	)
 
+	if (text === '') {
+		return null
+	}
+
 	return (
 		<>
 			<ReactLinkify componentDecorator={componentDecorator}>

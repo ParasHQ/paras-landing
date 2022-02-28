@@ -44,7 +44,7 @@ const Profile = ({ userProfile, activeTab }) => {
 			)}
 			<div className="flex flex-col items-center justify-center">
 				<div
-					className={`absolute top-0 left-0 w-full h-60 bg-center bg-cover ${
+					className={`absolute top-0 left-0 w-full h-40 md:h-60 bg-center bg-cover ${
 						profileData?.coverUrl === (null || undefined) ? 'bg-primary' : 'bg-dark-primary-2'
 					}`}
 					style={{ backgroundImage: `url(${parseImgUrl(profileData?.coverUrl)})` }}
@@ -68,14 +68,14 @@ const Profile = ({ userProfile, activeTab }) => {
 										fillRule="evenodd"
 										d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
 										clipRule="evenodd"
-									></path>
+									/>
 								</svg>
 								<p className="pt-0.5">Edit Profile</p>
 							</div>
 						</div>
 					)}
 				</div>
-				<div className="w-32 h-32 rounded-full overflow-hidden bg-primary mt-32 z-20 border-4 border-black">
+				<div className="w-32 h-32 rounded-full overflow-hidden bg-primary mt-12 md:mt-32 z-20 border-4 border-black">
 					<img
 						src={parseImgUrl(profileData?.imgUrl, null, {
 							width: `300`,
