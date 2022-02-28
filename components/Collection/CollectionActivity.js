@@ -4,7 +4,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { useIntl } from 'hooks/useIntl'
 import { useState } from 'react'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
-import { prettyTruncate, timeAgo } from 'utils/common'
+import { parseImgUrl, prettyTruncate, timeAgo } from 'utils/common'
 import Media from 'components/Common/Media'
 import DailyVolume from 'components/LineChart/DailyVolume'
 
@@ -132,7 +132,11 @@ const CollectionActivity = ({ activities, fetchData, hasMore, dailyVolume }) => 
 															<a>
 																<Media
 																	className="rounded-lg overflow-hidden"
-																	url={activity?.data?.[0]?.metadata.media}
+                                  url={parseImgUrl(activity?.data?.[0]?.metadata.media, null, {
+                                    width: `300`,
+                                    useOriginal: process.env.APP_ENV === 'production' ? false : true,
+                                    isMediaCdn: activity?.data?.[0]?.isMediaCdn,
+                                  })}
 																	videoControls={false}
 																	videoLoop={true}
 																	videoMuted={true}

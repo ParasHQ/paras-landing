@@ -658,6 +658,15 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 export default CollectionPage
 
 export async function getServerSideProps({ params }) {
+	if (params.collection_id === 'x.paras.near') {
+		return {
+			redirect: {
+				destination: '/',
+				permanent: false,
+			},
+		}
+	}
+
 	const resp = await axios.get(`${process.env.V2_API_URL}/collections`, {
 		params: {
 			collection_id: params.collection_id,

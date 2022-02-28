@@ -12,6 +12,7 @@ const Media = ({
 	videoPadding = false,
 	playVideoButton = true,
 	mimeType,
+	seeDetails,
 }) => {
 	const [media, setMedia] = useState(null)
 	const [isLoading, setIsLoading] = useState(true)
@@ -27,7 +28,7 @@ const Media = ({
 
 	const getMedia = async () => {
 		try {
-			const resp = await axios.get(`${parseImgUrl(url)}`, {
+			const resp = await axios.get(`${parseImgUrl(url, undefined, { seeDetails: seeDetails })}`, {
 				responseType: 'blob',
 			})
 
@@ -43,7 +44,7 @@ const Media = ({
 		} catch (err) {
 			setMedia({
 				type: 'image/jpg',
-				url: parseImgUrl(url),
+				url: parseImgUrl(url, undefined, { seeDetails: seeDetails }),
 			})
 			setIsLoading(false)
 		}

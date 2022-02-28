@@ -2,6 +2,7 @@ export * from './en'
 export * from './zh'
 export * from './es'
 export * from './ru'
+export * from './fr'
 
 export function getLanguage() {
 	let lang = navigator.language || navigator.userLanguage
@@ -39,6 +40,8 @@ function getLocale(lang) {
 			return 'en'
 		case 'zh':
 			return 'zh'
+		case 'fr':
+			return 'fr'
 		case 'zh-cn':
 			return 'zh'
 		case 'es':
