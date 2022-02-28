@@ -64,13 +64,14 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 		}
 	}
 
-	const onClickSeeDetails = (token) => {
+	const onClickSeeDetails = (token, additionalQuery) => {
 		const lookupToken = token.token
 		router.push(
 			{
 				pathname: router.pathname,
 				query: {
 					...router.query,
+					...additionalQuery,
 					contractId: token.contract_id,
 					tokenSeriesId: token.token_series_id,
 					tokenId: lookupToken?.token_id || '',
@@ -106,6 +107,11 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 
 	const actionButtonClick = (token) => {
 		const price = token.lowest_price || token.price
+
+		if (token.is_non_mintable && token.token === undefined) {
+			onClickSeeDetails(token, { tab: 'owners' })
+			return
+		}
 
 		setActiveToken(token)
 		if (
