@@ -14,7 +14,7 @@ import CardListLoader from 'components/Card/CardListLoader'
 import MarketTokenModal from 'components/Modal/MarketTokenModal'
 import CardListLoaderSmall from 'components/Card/CardListLoaderSmall'
 
-const TokenList = ({ name = 'default', tokens, fetchData, hasMore, displayType }) => {
+const TokenList = ({ name = 'default', tokens, fetchData, hasMore, displayType = 'large' }) => {
 	const store = useStore()
 	const router = useRouter()
 	const containerRef = useRef()
@@ -176,51 +176,14 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, displayType }
 										</div>
 									</a>
 								</Link>
-								<div className="mt-4 px-1">
-									{displayType !== 'large' ? (
-										<div className="flex md:hidden items-center justify-between h-12">
-											<p className="text-gray-400 text-xs">{localeLn('OnSale')}</p>
-											<div className="text-gray-100 text-2xl">
-												{price ? (
-													<div className="flex items-baseline space-x-1">
-														<div className="truncate">{prettyBalance(price, 24, 4)} Ⓝ</div>
-														{store.nearUsdPrice !== 0 && (
-															<div className="text-xs text-gray-400 truncate">
-																~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 4)}
-															</div>
-														)}
-													</div>
-												) : (
-													<div className="line-through text-red-600">
-														<span className="text-gray-100">{localeLn('SALE')}</span>
-													</div>
-												)}
-											</div>
-										</div>
-									) : (
-										<div className="block md:hidden">
-											<p className="text-gray-400 text-xs">{localeLn('OnSale')}</p>
-											<div className="text-gray-100 text-2xl">
-												{price ? (
-													<div className="flex items-baseline space-x-1">
-														<div className="truncate">{prettyBalance(price, 24, 4)} Ⓝ</div>
-														{store.nearUsdPrice !== 0 && (
-															<div className="text-xs text-gray-400 truncate">
-																~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 4)}
-															</div>
-														)}
-													</div>
-												) : (
-													<div className="line-through text-red-600">
-														<span className="text-gray-100">{localeLn('SALE')}</span>
-													</div>
-												)}
-											</div>
-										</div>
-									)}
-									<div className="hidden md:block">
+								<div className={`px-1 ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
+									<div className="block">
 										<p className="text-gray-400 text-xs">{localeLn('OnSale')}</p>
-										<div className="text-gray-100 text-2xl">
+										<div
+											className={`text-gray-100 ${
+												displayType === 'large' ? `text-2xl` : `text-lg`
+											}`}
+										>
 											{price ? (
 												<div className="flex items-baseline space-x-1">
 													<div className="truncate">{prettyBalance(price, 24, 4)} Ⓝ</div>
@@ -237,47 +200,30 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, displayType }
 											)}
 										</div>
 									</div>
-									<div className="flex justify-between items-end">
+									<div className="flex justify-between md:items-baseline">
 										<p
-											className={`${
-												displayType === 'large' ? `text-base md:text-base` : `text-xs md:text-xs`
-											} font-bold text-white cursor-pointer hover:opacity-80 `}
+											className={`font-bold text-white cursor-pointer hover:opacity-80 ${
+												displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+											} mb-1 md:mb-0`}
 											onClick={() => actionButtonClick(token)}
 										>
 											{actionButtonText(token)}
 										</p>
-										<div className="hidden md:block">
-											<Link
-												href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
+										<Link
+											href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
+										>
+											<a
+												onClick={(e) => {
+													e.preventDefault()
+													onClickSeeDetails(token)
+												}}
+												className={`text-gray-300 underline ${
+													displayType === 'large' ? `text-sm md:text-sm` : `text-xs md:text-xs`
+												}`}
 											>
-												<a
-													onClick={(e) => {
-														e.preventDefault()
-														onClickSeeDetails(token)
-													}}
-													className="text-gray-300 underline text-xs md:text-sm"
-												>
-													{displayType === 'large' ? 'See Details' : 'More'}
-												</a>
-											</Link>
-										</div>
-										<div className="block md:hidden">
-											<Link
-												href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
-											>
-												<a
-													onClick={(e) => {
-														e.preventDefault()
-														onClickSeeDetails(token)
-													}}
-													className={`text-gray-300 underline ${
-														displayType === 'large' ? `text-sm` : `text-xs`
-													} text-xs md:text-sm`}
-												>
-													{displayType === 'large' ? 'See Details' : 'More'}
-												</a>
-											</Link>
-										</div>
+												{displayType === 'large' ? 'See Details' : 'More'}
+											</a>
+										</Link>
 									</div>
 								</div>
 							</div>

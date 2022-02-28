@@ -26,7 +26,7 @@ const Creation = ({ userProfile, accountId }) => {
 	const [lowestPriceNext, setLowestPriceNext] = useState(null)
 	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [isFetching, setIsFetching] = useState(false)
-	const [isFiltering, setIsFiltering] = useState(true)
+	const [isFiltering, setIsFiltering] = useState(false)
 	const [display, setDisplay] = useState('large')
 
 	useEffect(async () => {
@@ -167,7 +167,7 @@ const Creation = ({ userProfile, accountId }) => {
 			<Nav />
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'creation'} />
-				<div className="flex justify-end mt-4 md:mb-14 md:-mr-4">
+				<div className="flex justify-end my-4 md:mb-14 md:-mr-4">
 					<FilterMarket isShowVerified={false} />
 					<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 				</div>
