@@ -1,16 +1,38 @@
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
-import { prettyBalance } from 'utils/common'
+import { parseDate, prettyBalance } from 'utils/common'
 import Modal from 'components/Modal'
 import { useIntl } from 'hooks/useIntl'
 import JSBI from 'jsbi'
 import Button from 'components/Common/Button'
+import { useEffect, useState } from 'react'
+import near from 'lib/near'
+import Tooltip from 'components/Common/Tooltip'
+import { IconInfo } from 'components/Icons'
 
 const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitForm }) => {
 	const { localeLn } = useIntl()
+	const [txFee, setTxFee] = useState(null)
+
+	const showTooltipTxFee = (txFee?.next_fee || 0) > (txFee?.current_fee || 0)
+	const tooltipTxFeeText = localeLn('DynamicTxFee', {
+		date: parseDate((txFee?.start_time || 0) * 1000),
+		fee: (txFee?.current_fee || 0) / 100,
+	})
+
+	useEffect(() => {
+		const getTxFee = async () => {
+			const txFeeContract = await near.wallet
+				.account()
+				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_transaction_fee`)
+			setTxFee(txFeeContract)
+		}
+
+		getTxFee()
+	}, [])
 
 	const calculatePriceDistribution = () => {
 		if (JSBI.greaterThan(JSBI.BigInt(data.price), JSBI.BigInt(0))) {
-			let fee = JSBI.BigInt(500)
+			const fee = JSBI.BigInt(txFee?.current_fee || 0)
 
 			const calcRoyalty =
 				Object.keys(token.royalty).length > 0
@@ -61,8 +83,13 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 					<div className="text-white mt-4 text-2xl font-bold text-center">
 						{`${prettyBalance(data.price, 24, 4)} Ⓝ `}
 					</div>
-					<div className="mt-4 text-center text-white opacity-90">
-						<div className="flex justify-between">
+
+					<div className="mt-4 text-center">
+						<div
+							className={`flex items-center justify-between ${
+								showTooltipTxFee ? 'text-gray-300' : 'text-gray-200'
+							}`}
+						>
 							<div className="text-sm">
 								{localeLn('RoyaltyForArtist')} (
 								{Object.keys(token.royalty).length === 0
@@ -76,18 +103,48 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 							</div>
 							<div>{calculatePriceDistribution().royalty} Ⓝ</div>
 						</div>
-						<div className="flex justify-between">
-							<div className="text-sm">{localeLn('ServiceFee')} (5%)</div>
-							<div>{calculatePriceDistribution().fee} Ⓝ</div>
+						<div
+							className={`flex items-center justify-between ${
+								showTooltipTxFee ? 'font-bold text-white' : 'text-gray-200'
+							}`}
+						>
+							<Tooltip
+								id="text-fee"
+								show={showTooltipTxFee}
+								text={tooltipTxFeeText}
+								className="font-normal"
+							>
+								<span>
+									{localeLn('Fee')}
+									{showTooltipTxFee && <IconInfo size={10} color="#ffffff" />}:
+								</span>
+							</Tooltip>
+							<Tooltip
+								id="text-number"
+								show={showTooltipTxFee}
+								text={tooltipTxFeeText}
+								className="font-normal"
+								place="left"
+							>
+								<span> {calculatePriceDistribution().fee} Ⓝ</span>
+							</Tooltip>
 						</div>
-						<div className="flex justify-between">
+						<div
+							className={`flex items-center justify-between ${
+								showTooltipTxFee ? 'text-gray-300' : 'text-gray-200'
+							}`}
+						>
 							<div className="text-sm">{localeLn('YouWillGet')}</div>
 							<div>{calculatePriceDistribution().receive} Ⓝ</div>
 						</div>
 					</div>
 					<div className="mt-4 text-center">
 						<div className="text-white my-1">
-							<div className="flex justify-between">
+							<div
+								className={`flex items-center justify-between ${
+									showTooltipTxFee ? 'text-gray-300' : 'text-gray-200'
+								}`}
+							>
 								<div className="text-sm">{localeLn('StorageFee')}</div>
 								<div className="text">{formatNearAmount(storageFee)} Ⓝ</div>
 							</div>
