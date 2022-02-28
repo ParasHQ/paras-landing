@@ -27,7 +27,7 @@ import ArtistBanned from 'components/Common/ArtistBanned'
 import cachios from 'cachios'
 import FilterDisplay from 'components/Filter/FilterDisplay'
 
-const LIMIT = 8
+const LIMIT = 12
 const LIMIT_ACTIVITY = 20
 
 const CollectionPage = ({ collectionId, collection, serverQuery }) => {
@@ -54,41 +54,48 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	const toast = useToast()
 
-	const fetchData = async () => {
+	const fetchData = async (initialFetch = false) => {
 		if (!hasMore || isFetching) {
 			return
 		}
 		setIsFetching(true)
 		const params = tokensParams({
 			...(router.query || serverQuery),
-			_id_next: idNext,
-			lowest_price_next: lowestPriceNext,
-			updated_at_next: updatedAtNext,
+			...(initialFetch
+				? {}
+				: {
+						_id_next: idNext,
+						lowest_price_next: lowestPriceNext,
+						updated_at_next: updatedAtNext,
+				  }),
 		})
 
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
 		})
 
-		const stat = await axios(`${process.env.V2_API_URL}/collection-stats`, {
-			params: {
-				collection_id: collectionId,
-			},
-		})
-
-		const attributes = await axios(`${process.env.V2_API_URL}/collection-attributes`, {
-			params: {
-				collection_id: collectionId,
-			},
-		})
-
-		const newAttributes = await attributes.data.data.results
-		const newStat = await stat.data.data.results
 		const newData = await res.data.data
 		const newTokens = [...tokens, ...newData.results]
-		setAttributes(newAttributes)
-		setStats(newStat)
 		setTokens(newTokens)
+
+		if (initialFetch) {
+			const stat = await axios(`${process.env.V2_API_URL}/collection-stats`, {
+				params: {
+					collection_id: collectionId,
+				},
+			})
+
+			const attributes = await axios(`${process.env.V2_API_URL}/collection-attributes`, {
+				params: {
+					collection_id: collectionId,
+				},
+			})
+			const newAttributes = await attributes.data.data.results
+			const newStat = await stat.data.data.results
+			setAttributes(newAttributes)
+			setStats(newStat)
+		}
+
 		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
@@ -110,7 +117,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	useEffect(() => {
-		fetchData()
+		fetchData(true)
 	}, [])
 
 	useEffect(() => {
@@ -126,7 +133,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	useEffect(() => {
 		if (router.query.tab === 'activity') {
-			fetchCollectionActivity()
+			fetchCollectionActivity(true)
 			fetchCollectionDailyVolume()
 		}
 	}, [router.query.tab])
@@ -214,20 +221,23 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		setIsFiltering(false)
 	}
 
-	const fetchCollectionActivity = async () => {
-		if (!hasMoreActivities) {
+	const fetchCollectionActivity = async (initialFetch = false) => {
+		const _activityPage = initialFetch ? 0 : activityPage
+		const _hasMoreActivities = initialFetch ? true : hasMoreActivities
+
+		if (!_hasMoreActivities) {
 			return
 		}
 
 		const res = await axios.get(`${process.env.V2_API_URL}/collection-activities`, {
-			params: activitiesParams(activityPage),
+			params: activitiesParams(_activityPage),
 		})
 
 		const resActivities = (await res.data.data) || []
 
 		const newActivities = [...activities, ...resActivities]
 		setActivities(newActivities)
-		setActivityPage(activityPage + 1)
+		setActivityPage(_activityPage + 1)
 		if (resActivities < LIMIT_ACTIVITY) {
 			setHasMoreActivities(false)
 		} else {
