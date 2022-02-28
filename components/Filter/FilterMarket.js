@@ -96,11 +96,6 @@ const FilterMarket = ({
 		if (maxPrice === '') {
 			delete query.pmax
 		}
-		if (defaultMinPrice) {
-			if (!isNotForSale) {
-				delete query.pmin
-			}
-		}
 
 		if (sortCopies === 'undefined') {
 			delete query.min_copies

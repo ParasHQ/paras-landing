@@ -73,13 +73,14 @@ const CardList = ({
 		}
 	}
 
-	const onClickSeeDetails = (token) => {
+	const onClickSeeDetails = (token, additionalQuery) => {
 		const lookupToken = token.token
 		router.push(
 			{
 				pathname: router.pathname,
 				query: {
 					...router.query,
+					...additionalQuery,
 					contractId: token.contract_id,
 					tokenSeriesId: token.token_series_id,
 					tokenId: lookupToken?.token_id || '',
@@ -101,7 +102,9 @@ const CardList = ({
 	const actionButtonText = (token) => {
 		const price = token.lowest_price || token.price
 
-		if (
+		if (token.is_non_mintable && token.total_mint === token.metadata.copies) {
+			return price ? 'Buy Now' : 'Place Offer'
+		} else if (
 			currentUser === token.metadata.creator_id ||
 			(!token.metadata.creator_id && currentUser === token.contract_id)
 		) {
@@ -117,13 +120,24 @@ const CardList = ({
 		const price = token.lowest_price || token.price
 
 		setActiveToken(token)
-		if (
+		// Primary Sales Sold Out
+		if (token.is_non_mintable && token.total_mint === token.metadata.copies) {
+			// Multiple Edition
+			if (token.token === undefined && token.lowest_price) {
+				onClickSeeDetails(token, { tab: 'owners' })
+			}
+			// 1 of 1 Edition
+			else {
+				setModalType(price ? 'buy' : 'offer')
+			}
+		} else if (
 			currentUser === token.metadata.creator_id ||
-			(!token.metadata.creator_id && currentUser === token.contract_id)
+			(!token.metadata.creator_id && currentUser === token.contract_id) ||
+			(token.token && token.token.owner_id === currentUser)
 		) {
 			setModalType('updatelisting')
-		} else if (token.token && token.token.owner_id === currentUser) {
-			setModalType('updatelisting')
+		} else if (token.price === null && token.token === undefined && token.lowest_price) {
+			onClickSeeDetails(token, { tab: 'owners' })
 		} else {
 			setModalType(price ? 'buy' : 'offer')
 		}
