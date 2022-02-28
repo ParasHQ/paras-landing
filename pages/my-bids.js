@@ -62,6 +62,7 @@ const MyBids = () => {
 
 	const switchType = (_type) => {
 		setType(_type)
+		setBidsData([])
 	}
 
 	return (
