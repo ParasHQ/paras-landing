@@ -132,11 +132,12 @@ const CollectionActivity = ({ activities, fetchData, hasMore, dailyVolume }) => 
 															<a>
 																<Media
 																	className="rounded-lg overflow-hidden"
-                                  url={parseImgUrl(activity?.data?.[0]?.metadata.media, null, {
-                                    width: `300`,
-                                    useOriginal: process.env.APP_ENV === 'production' ? false : true,
-                                    isMediaCdn: activity?.data?.[0]?.isMediaCdn,
-                                  })}
+																	url={parseImgUrl(activity?.data?.[0]?.metadata.media, null, {
+																		width: `300`,
+																		useOriginal:
+																			process.env.APP_ENV === 'production' ? false : true,
+																		isMediaCdn: activity?.data?.[0]?.isMediaCdn,
+																	})}
 																	videoControls={false}
 																	videoLoop={true}
 																	videoMuted={true}
