@@ -121,6 +121,8 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 			setModalType('updatelisting')
 		} else if (token.token && token.token.owner_id === currentUser) {
 			setModalType('updatelisting')
+		} else if (token.price === null && token.token === undefined && token.lowest_price) {
+			onClickSeeDetails(token, { tab: 'owners' })
 		} else {
 			setModalType(price ? 'buy' : 'offer')
 		}
