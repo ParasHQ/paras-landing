@@ -93,7 +93,9 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 	const actionButtonText = (token) => {
 		const price = token.lowest_price || token.price
 
-		if (
+		if (token.is_non_mintable && token.total_mint === token.metadata.copies) {
+			return price ? 'Buy Now' : 'Place Offer'
+		} else if (
 			currentUser === token.metadata.creator_id ||
 			(!token.metadata.creator_id && currentUser === token.contract_id)
 		) {
@@ -108,18 +110,22 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 	const actionButtonClick = (token) => {
 		const price = token.lowest_price || token.price
 
-		if (token.is_non_mintable && token.token === undefined) {
-			onClickSeeDetails(token, { tab: 'owners' })
-			return
-		}
-
 		setActiveToken(token)
-		if (
+		// Primary Sales Sold Out
+		if (token.is_non_mintable && token.total_mint === token.metadata.copies) {
+			// Multiple Edition
+			if (token.token === undefined && token.lowest_price) {
+				onClickSeeDetails(token, { tab: 'owners' })
+			}
+			// 1 of 1 Edition
+			else {
+				setModalType(price ? 'buy' : 'offer')
+			}
+		} else if (
 			currentUser === token.metadata.creator_id ||
-			(!token.metadata.creator_id && currentUser === token.contract_id)
+			(!token.metadata.creator_id && currentUser === token.contract_id) ||
+			(token.token && token.token.owner_id === currentUser)
 		) {
-			setModalType('updatelisting')
-		} else if (token.token && token.token.owner_id === currentUser) {
 			setModalType('updatelisting')
 		} else if (token.price === null && token.token === undefined && token.lowest_price) {
 			onClickSeeDetails(token, { tab: 'owners' })
