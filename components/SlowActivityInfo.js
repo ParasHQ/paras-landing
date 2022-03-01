@@ -11,11 +11,11 @@ const SlowActivityInfo = ({ refresh = false }) => {
 				className={`text-white text-center overflow-hidden text-sm md:leading-8 m-auto bg-primary bg-opacity-50 z-50 items-center justify-center transition-height duration-500 px-3 md:px-0 sticky`}
 			>
 				<div className="relative w-full h-full">
-					<div className="px-10 py-1 md:p-2 ">
-						Server still have not catch up yet with latest activity
+					<div className="px-4 md:px-0 py-2 w-11/12 md:w-8/12 mx-auto">
+						Our server is still catching with latest activity, please be aware that recent
+						transactions may be delayed,{` `}
 						{refresh && (
 							<span>
-								, you should{' '}
 								<span
 									onClick={() => {
 										router.reload()

@@ -86,8 +86,8 @@ const Nav = () => {
 					<Setting close={() => setShowSettingModal(false)} />
 				</Modal>
 			)}
-			{store.activitySlowUpdate && (
-				<SlowActivityInfo refresh={router.pathname.includes('activity') ? true : false} />
+			{store.activitySlowUpdate && process.env.APP_ENV !== 'testnet' && (
+				<SlowActivityInfo refresh={router.pathname.includes('activity')} />
 			)}
 			<div className="sticky top-0 left-0 right-0 z-40 bg-black">
 				{process.env.APP_ENV !== 'testnet' && (

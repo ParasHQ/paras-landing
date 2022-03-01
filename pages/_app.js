@@ -25,6 +25,7 @@ import * as Sentry from '@sentry/nextjs'
 import { sentryCaptureException } from 'lib/sentry'
 import { GTM_ID, pageview } from 'lib/gtm'
 const FETCH_TOKENS_LIMIT = 10
+const MAX_ACTIVITY_DELAY = 5
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
@@ -98,9 +99,12 @@ function MyApp({ Component, pageProps }) {
 		const respActivities = await axios.get(`${process.env.V2_API_URL}/activities?${_query}`)
 		const respDataActivities = respActivities.data.data.results
 		if (
-			Math.floor((new Date() - new Date(respDataActivities[0].msg?.datetime)) / (1000 * 60)) >= 5
+			Math.floor((new Date() - new Date(respDataActivities[0].msg?.datetime)) / (1000 * 60)) >=
+			MAX_ACTIVITY_DELAY
 		) {
 			store.setActivitySlowUpdate(true)
+		} else {
+			store.setActivitySlowUpdate(false)
 		}
 	}
 
