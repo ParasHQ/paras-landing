@@ -80,6 +80,7 @@ const CollectionActivity = ({ activities, fetchData, hasMore, dailyVolume }) => 
 
 	return (
 		<div>
+			<p className="text-white text-xl font-bold ml-2 mb-2 text-opacity-70">Volume</p>
 			<DailyVolume data={dailyVolume} />
 			<div className="overflow-x-auto bg-black bg-opacity-25 w-full rounded-lg">
 				<div className="text-white bg-gray-50 bg-opacity-10 rounded p-3">
