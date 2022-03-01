@@ -176,12 +176,12 @@ const CardList = ({
 				className="-mx-4"
 			>
 				<animated.div className="flex flex-wrap select-none">
-					{tokens.map((token) => {
+					{tokens.map((token, idx) => {
 						const price = token.lowest_price || token.price
 
 						return (
 							<div
-								key={`${token.contract_id}::${token.token_series_id}-${displayType}`}
+								key={`${token.contract_id}::${token.token_series_id}-${displayType}-${idx}`}
 								className={`${
 									displayType === `large`
 										? `w-full md:w-1/3 lg:w-1/4 p-4`

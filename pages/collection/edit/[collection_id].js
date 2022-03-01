@@ -88,9 +88,9 @@ const CollectionPageEdit = ({ collectionId }) => {
 		formData.append('collection_id', collectionId)
 		formData.append('description', collectionDesc)
 		formData.append('creator_id', currentUser)
-		formData.append('twitter', collectionSocialMedia.twitter)
-		formData.append('website', collectionSocialMedia.website)
-		formData.append('discord', collectionSocialMedia.discord)
+		formData.append('twitter', collectionSocialMedia.twitter ?? '')
+		formData.append('website', collectionSocialMedia.website ?? '')
+		formData.append('discord', collectionSocialMedia.discord ?? '')
 
 		try {
 			const resp = await axios.put(`${process.env.V2_API_URL}/collections`, formData, {
