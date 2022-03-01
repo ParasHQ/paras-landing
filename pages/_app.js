@@ -24,6 +24,7 @@ import { SWRConfig } from 'swr'
 import * as Sentry from '@sentry/nextjs'
 import { sentryCaptureException } from 'lib/sentry'
 import { GTM_ID, pageview } from 'lib/gtm'
+const FETCH_TOKENS_LIMIT = 10
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
@@ -89,6 +90,26 @@ function MyApp({ Component, pageProps }) {
 	}, [router.events])
 
 	useEffect(() => storePathValues, [router.asPath])
+
+	const fetchActivities = async () => {
+		const isVerified = true
+		const limit = FETCH_TOKENS_LIMIT
+		const _query = `is_verified=${isVerified}&__limit=${limit}`
+		const respActivities = await axios.get(`${process.env.V2_API_URL}/activities?${_query}`)
+		const respDataActivities = respActivities.data.data.results
+		if (
+			Math.floor((new Date() - new Date(respDataActivities[0].msg?.datetime)) / (1000 * 60)) >= 5
+		) {
+			store.setActivitySlowUpdate(true)
+		}
+	}
+
+	useEffect(() => {
+		fetchActivities()
+		setInterval(() => {
+			fetchActivities()
+		}, 1000 * 60 * 5)
+	}, [])
 
 	function storePathValues() {
 		const storage = globalThis?.sessionStorage

@@ -26,7 +26,6 @@ const ActivityLog = ({ query }) => {
 		setActivityListIdBefore,
 		activityListHasMore,
 		setActivityListHasMore,
-		activitySlowUpdate,
 		setActivitySlowUpdate,
 	} = useStore()
 	const router = useRouter()
@@ -190,51 +189,6 @@ const ActivityLog = ({ query }) => {
 						content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 					/>
 				</Head>
-				{activitySlowUpdate && (
-					<div>
-						<div
-							className={`text-white text-center overflow-hidden text-sm md:leading-8 m-auto bg-primary bg-opacity-50 z-50 items-center justify-center transition-height duration-500 px-3 md:px-0 sticky`}
-						>
-							<div className="relative w-full h-full">
-								<div className="px-10 py-1 md:p-2 ">
-									Server still have not catch up yet with latest activity , you should{' '}
-									<span
-										onClick={() => {
-											router.reload()
-										}}
-										className="font-bold cursor-pointer hover:underline"
-									>
-										refresh
-									</span>{' '}
-									page to get the latest
-								</div>
-								<div
-									className="absolute top-0 right-0 mx-2 md:mx-5 h-full flex items-center justify-center cursor-pointer"
-									onClick={() => {
-										setActivitySlowUpdate(false)
-									}}
-								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										className="icon icon-tabler icon-tabler-circle-x"
-										width={25}
-										height={25}
-										viewBox="0 0 24 24"
-										strokeWidth="1.5"
-										stroke="#fff"
-										fill="none"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-									>
-										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-										<circle cx={12} cy={12} r={9} />
-										<path d="M10 10l4 4m0 -4l-4 4" />
-									</svg>
-								</div>
-							</div>
-						</div>
-					</div>
-				)}
 				<Nav />
 				<div className="max-w-5xl m-auto py-12 md:flex md:space-x-8">
 					<div className="md:w-2/3 max-w-2xl relative mx-auto">
