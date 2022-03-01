@@ -13,8 +13,17 @@ import TokenSeriesDetailModal from './TokenSeriesDetailModal'
 import CardListLoader from 'components/Card/CardListLoader'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
 import MarketTokenModal from 'components/Modal/MarketTokenModal'
+import CardListLoaderSmall from 'components/Card/CardListLoaderSmall'
 
-const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollection, type }) => {
+const CardList = ({
+	name = 'default',
+	tokens,
+	fetchData,
+	hasMore,
+	profileCollection,
+	type,
+	displayType = 'large',
+}) => {
 	const store = useStore()
 	const router = useRouter()
 	const containerRef = useRef()
@@ -157,7 +166,13 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 				dataLength={tokens.length}
 				next={fetchData}
 				hasMore={hasMore}
-				loader={<CardListLoader length={4} />}
+				loader={
+					displayType === 'large' ? (
+						<CardListLoader length={4} />
+					) : (
+						<CardListLoaderSmall length={6} />
+					)
+				}
 				className="-mx-4"
 			>
 				<animated.div className="flex flex-wrap select-none">
@@ -166,8 +181,12 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 
 						return (
 							<div
-								key={`${token.contract_id}::${token.token_series_id}`}
-								className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-4 relative"
+								key={`${token.contract_id}::${token.token_series_id}-${displayType}`}
+								className={`${
+									displayType === `large`
+										? `w-full md:w-1/3 lg:w-1/4 p-4`
+										: `w-1/2 md:w-1/4 lg:w-1/6 p-2`
+								} flex-shrink-0 relative`}
 							>
 								<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
 									<a onClick={(e) => e.preventDefault()}>
@@ -190,6 +209,7 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 													royalty: token.royalty,
 													attributes: token.metadata.attributes,
 													_is_the_reference_merged: token._is_the_reference_merged,
+													mime_type: token.metadata.mime_type,
 												}}
 												profileCollection={profileCollection}
 												type={type}
@@ -197,50 +217,58 @@ const CardList = ({ name = 'default', tokens, fetchData, hasMore, profileCollect
 										</div>
 									</a>
 								</Link>
-								<div className="mt-4 px-1">
-									<p className="text-gray-400 text-xs">
-										{token.token || token.metadata.copies === 1
-											? localeLn('OnSale')
-											: localeLn('StartFrom')}
-									</p>
-									<div className="text-gray-100 text-2xl">
-										{price ? (
-											<div className="flex items-baseline space-x-1">
-												<div className="truncate">
-													{price === '0' ? localeLn('Free') : `${prettyBalance(price, 24, 4)} Ⓝ`}
-												</div>
-												{price !== '0' && store.nearUsdPrice !== 0 && (
-													<div className="text-xs text-gray-400 truncate">
-														~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 4)}
+								<div className={`px-1 ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
+									<div className="block">
+										<p className="text-gray-400 text-xs">
+											{token.token || token.metadata.copies === 1
+												? localeLn('OnSale')
+												: localeLn('StartFrom')}
+										</p>
+										<div
+											className={`text-gray-100 ${
+												displayType === 'large' ? `text-2xl` : `text-lg`
+											}`}
+										>
+											{price ? (
+												<div className="flex items-baseline space-x-1">
+													<div className="truncate">
+														{price === '0' ? localeLn('Free') : `${prettyBalance(price, 24, 4)} Ⓝ`}
 													</div>
-												)}
-											</div>
-										) : (
-											<div className="line-through text-red-600">
-												<span className="text-gray-100">{localeLn('SALE')}</span>
-											</div>
-										)}
+													{price !== '0' && store.nearUsdPrice !== 0 && (
+														<div className="text-xs text-gray-400 truncate">
+															~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 4)}
+														</div>
+													)}
+												</div>
+											) : (
+												<div className="line-through text-red-600">
+													<span className="text-gray-100">{localeLn('SALE')}</span>
+												</div>
+											)}
+										</div>
 									</div>
-									<div className="flex justify-between items-end">
+									<div className="flex justify-between md:items-baseline">
 										<p
-											className="font-bold text-white cursor-pointer"
+											className={`font-bold text-white cursor-pointer hover:opacity-80 ${
+												displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+											} mb-1 md:mb-0`}
 											onClick={() => actionButtonClick(token)}
 										>
 											{actionButtonText(token)}
 										</p>
-										<div>
-											<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
-												<a
-													onClick={(e) => {
-														e.preventDefault()
-														onClickSeeDetails(token)
-													}}
-													className="text-gray-300 underline text-sm"
-												>
-													See Details
-												</a>
-											</Link>
-										</div>
+										<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
+											<a
+												onClick={(e) => {
+													e.preventDefault()
+													onClickSeeDetails(token)
+												}}
+												className={`text-gray-300 underline ${
+													displayType === 'large' ? `text-sm md:text-sm` : `text-xs md:text-xs`
+												}`}
+											>
+												{displayType === 'large' ? 'See Details' : 'More'}
+											</a>
+										</Link>
 									</div>
 								</div>
 							</div>

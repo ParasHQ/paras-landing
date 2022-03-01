@@ -1,9 +1,10 @@
 import axios from 'axios'
 import Button from 'components/Common/Button'
-import { InputTextarea } from 'components/Common/form'
+import { InputTextarea, InputText } from 'components/Common/form'
 import Footer from 'components/Footer'
 import ImgCrop from 'components/ImgCrop'
 import Nav from 'components/Nav'
+import { useIntl } from 'hooks/useIntl'
 import { useToast } from 'hooks/useToast'
 import near from 'lib/near'
 import { sentryCaptureException } from 'lib/sentry'
@@ -14,12 +15,21 @@ import { useEffect, useState } from 'react'
 import { parseImgUrl } from 'utils/common'
 
 const CollectionPageEdit = ({ collectionId }) => {
+	const { localeLn } = useIntl()
 	const [showImgCrop, setShowImgCrop] = useState(false)
-	const [imgFile, setImgFile] = useState({})
+	const [showCoverCrop, setShowCoverCrop] = useState(false)
+	const [imgFile, setImgFile] = useState()
+	const [coverFile, setCoverFile] = useState()
 	const [imgUrl, setImgUrl] = useState('')
+	const [coverUrl, setCoverUrl] = useState('')
 
 	const [collectionName, setCollectionName] = useState('')
 	const [collectionDesc, setCollectionDesc] = useState('')
+	const [collectionSocialMedia, setCollectionSocialMedia] = useState({
+		website: '',
+		twitter: '',
+		discord: '',
+	})
 
 	const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -38,6 +48,13 @@ const CollectionPageEdit = ({ collectionId }) => {
 		}
 	}
 
+	const _setCover = async (e) => {
+		if (e.target.files[0]) {
+			setCoverFile(e.target.files[0])
+			setShowCoverCrop(true)
+		}
+	}
+
 	const fetchCollection = async () => {
 		const resp = await axios.get(`${process.env.V2_API_URL}/collections`, {
 			params: {
@@ -47,7 +64,13 @@ const CollectionPageEdit = ({ collectionId }) => {
 		const collectionData = resp.data.data.results[0]
 		setCollectionName(collectionData.collection)
 		setCollectionDesc(collectionData.description)
+		setCollectionSocialMedia({
+			twitter: collectionData.socialMedia?.twitter,
+			website: collectionData.socialMedia?.website,
+			discord: collectionData.socialMedia?.discord,
+		})
 		setImgUrl(collectionData.media)
+		setCoverUrl(collectionData.cover)
 	}
 
 	const _submit = async (e) => {
@@ -57,11 +80,17 @@ const CollectionPageEdit = ({ collectionId }) => {
 
 		const formData = new FormData()
 		if (imgFile) {
-			formData.append('file', imgFile)
+			formData.append('files', imgFile, 'logo')
+		}
+		if (coverFile) {
+			formData.append('files', coverFile, 'cover')
 		}
 		formData.append('collection_id', collectionId)
 		formData.append('description', collectionDesc)
 		formData.append('creator_id', currentUser)
+		formData.append('twitter', collectionSocialMedia.twitter)
+		formData.append('website', collectionSocialMedia.website)
+		formData.append('discord', collectionSocialMedia.discord)
 
 		try {
 			const resp = await axios.put(`${process.env.V2_API_URL}/collections`, formData, {
@@ -150,27 +179,70 @@ const CollectionPageEdit = ({ collectionId }) => {
 					}}
 				/>
 			)}
+			{showCoverCrop && (
+				<ImgCrop
+					input={coverFile}
+					size={{
+						width: 1024,
+						height: 384,
+					}}
+					left={() => setShowCoverCrop(false)}
+					right={(res) => {
+						setCoverUrl(res.payload.imgUrl)
+						setCoverFile(res.payload.imgFile)
+						setShowCoverCrop(false)
+					}}
+				/>
+			)}
 			<div className="relative max-w-3xl m-auto py-12 px-4">
 				<div className="text-white font-bold text-4xl">Edit collection {collectionName}</div>
-				<div className="text-white mt-4">Logo</div>
-				<div className="relative cursor-pointer w-32 h-32 overflow-hidden rounded-md mt-2">
-					<input
-						className="cursor-pointer w-full opacity-0 absolute inset-0"
-						type="file"
-						accept="image/*"
-						onChange={_setImg}
-						onClick={(e) => {
-							e.target.value = null
-						}}
-					/>
-					<div className="flex items-center justify-center">
-						<div className="w-32 h-32 overflow-hidden bg-primary shadow-inner">
-							<img
-								src={parseImgUrl(imgUrl, null, {
-									width: `300`,
-								})}
-								className="w-full object-cover"
+				<div className="md:flex gap-8">
+					<div>
+						<div className="text-white mt-4">{localeLn('Logo')}</div>
+						<div className="relative cursor-pointer w-32 h-32 overflow-hidden rounded-md mt-2">
+							<input
+								className="cursor-pointer w-full opacity-0 absolute inset-0"
+								type="file"
+								accept="image/*"
+								onChange={_setImg}
+								onClick={(e) => {
+									e.target.value = null
+								}}
 							/>
+							<div className="flex items-center justify-center">
+								<div className="w-32 h-32 overflow-hidden bg-primary shadow-inner">
+									<img
+										src={parseImgUrl(imgUrl, null, {
+											width: `300`,
+										})}
+										className="w-full object-cover"
+									/>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div>
+						<div className="text-white mt-4">{localeLn('Cover')}</div>
+						<div className="relative cursor-pointer w-64 h-32 overflow-hidden rounded-md mt-2">
+							<input
+								className="cursor-pointer w-full opacity-0 absolute inset-0"
+								type="file"
+								accept="image/*"
+								onChange={_setCover}
+								onClick={(e) => {
+									e.target.value = null
+								}}
+							/>
+							<div className="flex items-center justify-center">
+								<div className="w-64 h-32 overflow-hidden bg-primary shadow-inner">
+									<img
+										src={parseImgUrl(coverUrl, null, {
+											width: 300,
+										})}
+										className={`w-full ${coverUrl && 'h-full'} object-cover`}
+									/>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -180,6 +252,49 @@ const CollectionPageEdit = ({ collectionId }) => {
 					onChange={(e) => setCollectionDesc(e.target.value)}
 					className="mt-2 resize-none h-24 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
 				/>
+				<div className="text-white mt-4">Website</div>
+				<InputText
+					value={collectionSocialMedia.website}
+					onChange={(e) =>
+						setCollectionSocialMedia((prev) => ({ ...prev, website: e.target.value }))
+					}
+					className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
+					placeholder="Website"
+				/>
+				<div className="block md:flex md:space-x-4">
+					<div className="w-full md:w-1/2">
+						<div className="text-white mt-4">Twitter</div>
+						<div className="relative">
+							<InputText
+								value={collectionSocialMedia.twitter}
+								onChange={(e) =>
+									setCollectionSocialMedia((prev) => ({ ...prev, twitter: e.target.value }))
+								}
+								className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10 pl-44"
+								placeholder="Username"
+							/>
+							<div className="absolute left-0 top-0 flex items-center text-white text-opacity-40 h-full px-2">
+								https://twitter.com/
+							</div>
+						</div>
+					</div>
+					<div className="w-full md:w-1/2">
+						<div className="text-white mt-4">Discord</div>
+						<div className="relative">
+							<InputText
+								value={collectionSocialMedia.discord}
+								onChange={(e) =>
+									setCollectionSocialMedia((prev) => ({ ...prev, discord: e.target.value }))
+								}
+								className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10 pl-40"
+								placeholder="Username"
+							/>
+							<div className="absolute left-0 top-0 flex items-center text-white text-opacity-40 h-full px-2">
+								https://discord.gg/
+							</div>
+						</div>
+					</div>
+				</div>
 				<Button
 					isDisabled={
 						isSubmitting || imgUrl === '' || collectionName === '' || collectionDesc === ''

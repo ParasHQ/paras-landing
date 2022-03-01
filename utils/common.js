@@ -253,3 +253,7 @@ export default function sha1(data, encoding) {
 		.update(data)
 		.digest(encoding || 'hex')
 }
+
+export const decodeBase64 = (b64text) => {
+	return new TextDecoder().decode(Buffer.from(b64text, 'base64'))
+}

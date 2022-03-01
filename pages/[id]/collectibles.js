@@ -9,7 +9,9 @@ import Profile from 'components/Profile/Profile'
 import FilterMarket from 'components/Filter/FilterMarket'
 import { parseSortTokenQuery } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
+import FilterDisplay from 'components/Filter/FilterDisplay'
 
 const LIMIT = 12
 
@@ -23,6 +25,8 @@ const Collection = ({ userProfile, accountId }) => {
 	const [priceNext, setPriceNext] = useState(null)
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
+	const [isFiltering, setIsFiltering] = useState(false)
+	const [display, setDisplay] = useState('large')
 
 	useEffect(async () => {
 		await fetchOwnerTokens(true)
@@ -80,6 +84,7 @@ const Collection = ({ userProfile, accountId }) => {
 	}
 
 	const updateFilter = async (query) => {
+		setIsFiltering(true)
 		const params = tokensParams(query)
 		const res = await axios(`${process.env.V2_API_URL}/token`, {
 			params: params,
@@ -94,6 +99,12 @@ const Collection = ({ userProfile, accountId }) => {
 			setIdNext(lastData._id)
 			params.__sort.includes('price') && setPriceNext(lastData.price)
 		}
+
+		setIsFiltering(false)
+	}
+
+	const onClickDisplay = (typeDisplay) => {
+		setDisplay(typeDisplay)
 	}
 
 	const headMeta = {
@@ -137,16 +148,22 @@ const Collection = ({ userProfile, accountId }) => {
 			<Nav />
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'collection'} />
-				<div className="flex justify-end mt-4 md:mb-14 md:-mr-4">
+				<div className="flex justify-end my-4 md:mb-14 md:-mr-4">
 					<FilterMarket isShowVerified={false} isCollectibles={true} />
+					<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 				</div>
 				<div className="-mt-4 md:-mt-6">
-					<TokenList
-						name={scrollCollection}
-						tokens={tokens}
-						fetchData={fetchOwnerTokens}
-						hasMore={hasMore}
-					/>
+					{isFiltering ? (
+						<CardListLoader />
+					) : (
+						<TokenList
+							name={scrollCollection}
+							tokens={tokens}
+							fetchData={fetchOwnerTokens}
+							hasMore={hasMore}
+							displayType={display}
+						/>
+					)}
 				</div>
 				<ButtonScrollTop />
 			</div>
@@ -163,7 +180,6 @@ export async function getServerSideProps({ params }) {
 			accountId: params.id,
 		},
 	})
-
 	const userProfile = (await profileRes.data.data.results[0]) || null
 
 	return {

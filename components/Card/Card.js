@@ -177,6 +177,7 @@ const Card = ({
 										videoControls={false}
 										videoMuted={true}
 										videoLoop={true}
+										mimeType={token?.mime_type}
 									/>
 								)}
 							</div>
@@ -279,6 +280,7 @@ const Card = ({
 										videoControls={false}
 										videoMuted={true}
 										videoLoop={true}
+										mimeType={token?.mime_type}
 									/>
 								)}
 							</div>

@@ -247,11 +247,16 @@ const TokenSeriesDetail = ({ token, className }) => {
 						{tokenDisplay === 'detail' ? (
 							<Media
 								className="rounded-lg overflow-hidden"
-								url={token.metadata.media}
+								url={
+									token.metadata?.mime_type
+										? parseImgUrl(token.metadata.media)
+										: token.metadata.media
+								}
 								videoControls={true}
 								videoLoop={true}
 								videoMuted={true}
 								videoPadding={true}
+								mimeType={token?.metadata?.mime_type}
 								seeDetails={true}
 							/>
 						) : (
@@ -269,6 +274,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 										copies: token.metadata.copies,
 										creatorId: token.metadata.creator_id || token.contract_id,
 										is_creator: token.is_creator,
+										mime_type: token.metadata.mime_type,
 									}}
 								/>
 							</div>
