@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
+import WalletHelper from 'lib/WalletHelper'
 
 const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuantity }) => {
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
@@ -43,9 +44,11 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 						? { token_id: data.token_id }
 						: { token_series_id: data.token_series_id }),
 				}
-				const bidData = await near.wallet
-					.account()
-					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_offer`, params)
+				const bidData = await WalletHelper.viewFunction({
+					methodName: 'get_offer',
+					contractId: process.env.MARKETPLACE_CONTRACT_ID,
+					args: params,
+				})
 				setHasBid(true)
 				setValue('bidAmount', formatNearAmount(bidData.price))
 			} catch (error) {
@@ -56,17 +59,17 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 
 	const hasStorageBalance = async () => {
 		try {
-			const currentStorage = await near.wallet
-				.account()
-				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `storage_balance_of`, {
-					account_id: currentUser,
-				})
+			const currentStorage = await WalletHelper.viewFunction({
+				methodName: 'storage_balance_of',
+				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				args: { account_id: currentUser },
+			})
 
-			const supplyPerOwner = await near.wallet
-				.account()
-				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_supply_by_owner_id`, {
-					account_id: currentUser,
-				})
+			const supplyPerOwner = await WalletHelper.viewFunction({
+				methodName: 'get_supply_by_owner_id',
+				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				args: { account_id: currentUser },
+			})
 
 			const usedStorage = JSBI.multiply(
 				JSBI.BigInt(parseInt(supplyPerOwner) + 1),
@@ -86,9 +89,7 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 		const hasDepositStorage = await hasStorageBalance()
 
 		try {
-			const depositParams = {
-				receiver_id: near.currentUser.accountId,
-			}
+			const depositParams = { receiver_id: currentUser }
 
 			const params = {
 				nft_contract_id: data.contract_id,

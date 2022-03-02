@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import near from 'lib/near'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
@@ -13,6 +12,8 @@ import { trackRemoveListingTokenSeries, trackUpdateListingTokenSeries } from 'li
 import { useForm } from 'react-hook-form'
 import Tooltip from 'components/Common/Tooltip'
 import { parseDate } from 'utils/common'
+import WalletHelper from 'lib/WalletHelper'
+import useStore from 'lib/store'
 
 const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 	const [txFee, setTxFee] = useState(null)
@@ -25,6 +26,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 		date: parseDate((txFee?.start_time || 0) * 1000),
 		fee: (txFee?.current_fee || 0) / 100,
 	})
+	const { currentUser } = useStore()
 
 	useEffect(() => {
 		const getTxFee = async () => {
@@ -32,9 +34,10 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 				process.env.NFT_CONTRACT_ID === data.contract_id
 					? data.contract_id
 					: process.env.MARKETPLACE_CONTRACT_ID
-			const txFeeContract = await near.wallet
-				.account()
-				.viewFunction(contractForCall, `get_transaction_fee`)
+			const txFeeContract = await WalletHelper.viewFunction({
+				methodName: 'get_transaction_fee',
+				contractId: contractForCall,
+			})
 			setTxFee(txFeeContract)
 		}
 
@@ -44,7 +47,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 	}, [show])
 
 	const onUpdateListing = async () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			return
 		}
 		const params = {
@@ -55,12 +58,12 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 		trackUpdateListingTokenSeries(data.token_series_id)
 
 		try {
-			await near.wallet.account().functionCall({
+			await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_set_series_price`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: `1`,
+				deposit: `1`,
 			})
 		} catch (err) {
 			sentryCaptureException(err)
@@ -69,7 +72,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 
 	const onRemoveListing = async (e) => {
 		e.preventDefault()
-		if (!near.currentUser) {
+		if (!currentUser) {
 			return
 		}
 
@@ -79,12 +82,12 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 			const params = {
 				token_series_id: data.token_series_id,
 			}
-			await near.wallet.account().functionCall({
+			await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_set_series_price`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: `1`,
+				deposit: `1`,
 			})
 		} catch (err) {
 			sentryCaptureException(err)

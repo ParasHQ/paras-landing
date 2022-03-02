@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import near from 'lib/near'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import { GAS_FEE_150 } from 'config/constants'
@@ -12,9 +11,12 @@ import { trackBuyToken, trackBuyTokenImpression } from 'lib/ga'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
+import useStore from 'lib/store'
+import WalletHelper from 'lib/WalletHelper'
 
 const TokenBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
+	const { currentUser } = useStore()
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
 
@@ -27,7 +29,7 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 	}, [show])
 
 	const onBuyToken = async () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowLogin(true)
 			return
 		}
@@ -42,13 +44,15 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 				price: data.price,
 			}
 
-			await near.wallet.account().functionCall({
+			await WalletHelper.callFunction({
 				contractId: process.env.MARKETPLACE_CONTRACT_ID,
 				methodName: `buy`,
 				args: params,
 				gas: GAS_FEE_150,
-				attachedDeposit: data.price,
+				deposit: data.price,
 			})
+
+			// TODO After Function Call Sender Wallet
 		} catch (err) {
 			sentryCaptureException(err)
 		}

@@ -15,10 +15,10 @@ import LinkToProfile from 'components/LinkToProfile'
 import { parseDate, parseImgUrl } from 'utils/common'
 import Modal from 'components/Modal'
 import useStore from 'lib/store'
-import near from 'lib/near'
 import EmbeddedCard from 'components/Publication/EmbeddedCard'
 import { useToast } from 'hooks/useToast'
 import { sentryCaptureException } from 'lib/sentry'
+import WalletHelper from 'lib/WalletHelper'
 
 const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const store = useStore()
@@ -70,7 +70,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 		try {
 			await axios.delete(`${process.env.V2_API_URL}/publications/${pubDetail._id}`, {
 				headers: {
-					authorization: await near.authToken(),
+					authorization: await WalletHelper.authToken(),
 				},
 			})
 			setTimeout(() => {

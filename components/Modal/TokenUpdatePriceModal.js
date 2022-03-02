@@ -14,6 +14,7 @@ import { useForm } from 'react-hook-form'
 import useStore from 'lib/store'
 import Tooltip from 'components/Common/Tooltip'
 import { parseDate } from 'utils/common'
+import WalletHelper from 'lib/WalletHelper'
 
 const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
@@ -31,9 +32,10 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 
 	useEffect(() => {
 		const getTxFee = async () => {
-			const txFeeContract = await near.wallet
-				.account()
-				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_transaction_fee`)
+			const txFeeContract = await WalletHelper.viewFunction({
+				methodName: 'get_transaction_fee',
+				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+			})
 			setTxFee(txFeeContract)
 		}
 
@@ -53,17 +55,17 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const checkStorageBalance = async () => {
 		try {
 			if (!data.approval_id) {
-				const currentStorage = await near.wallet
-					.account()
-					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `storage_balance_of`, {
-						account_id: currentUser,
-					})
+				const currentStorage = await WalletHelper.viewFunction({
+					methodName: 'storage_balance_of',
+					contractId: process.env.MARKETPLACE_CONTRACT_ID,
+					args: { account_id: currentUser },
+				})
 
-				const supplyPerOwner = await near.wallet
-					.account()
-					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_supply_by_owner_id`, {
-						account_id: currentUser,
-					})
+				const supplyPerOwner = await WalletHelper.viewFunction({
+					methodName: 'get_supply_by_owner_id',
+					contractId: process.env.MARKETPLACE_CONTRACT_ID,
+					args: { account_id: currentUser },
+				})
 
 				const usedStorage = JSBI.multiply(
 					JSBI.BigInt(parseInt(supplyPerOwner) + 1),
@@ -82,7 +84,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	}
 
 	const onUpdateListing = async () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			return
 		}
 
@@ -98,7 +100,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 						{
 							methodName: 'storage_deposit',
 							contractId: process.env.MARKETPLACE_CONTRACT_ID,
-							args: { receiver_id: near.currentUser.accountId },
+							args: { receiver_id: currentUser },
 							attachedDeposit: STORAGE_ADD_MARKET_FEE,
 							gas: GAS_FEE,
 						},
@@ -136,7 +138,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 
 	const onRemoveListing = async (e) => {
 		e.preventDefault()
-		if (!near.currentUser) {
+		if (!currentUser) {
 			return
 		}
 
@@ -147,12 +149,12 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 				token_id: data.token_id,
 				nft_contract_id: data.contract_id,
 			}
-			await near.wallet.account().functionCall({
+			await WalletHelper.callFunction({
 				contractId: process.env.MARKETPLACE_CONTRACT_ID,
 				methodName: `delete_market_data`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: `1`,
+				deposit: `1`,
 			})
 		} catch (err) {
 			sentryCaptureException(err)

@@ -5,11 +5,11 @@ import { useState } from 'react'
 import ImgCrop from 'components/ImgCrop'
 import useStore from 'lib/store'
 import Axios from 'axios'
-import near from 'lib/near'
 import { useToast } from 'hooks/useToast'
 import { useRouter } from 'next/router'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
+import WalletHelper from 'lib/WalletHelper'
 
 const CreateCollection = ({ onFinishCreate, oneGrid }) => {
 	const { localeLn } = useIntl()
@@ -71,7 +71,7 @@ const CreateCollection = ({ onFinishCreate, oneGrid }) => {
 			const resp = await Axios.post(`${process.env.V2_API_URL}/collections`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
-					authorization: await near.authToken(),
+					authorization: await WalletHelper.authToken(),
 				},
 			})
 			if (resp) {

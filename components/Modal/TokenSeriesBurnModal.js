@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import near from 'lib/near'
 import LoginModal from './LoginModal'
 import { GAS_FEE } from 'config/constants'
 import { InputText } from 'components/Common/form'
@@ -9,13 +8,17 @@ import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackBurnTokenSeries } from 'lib/ga'
+import WalletHelper from 'lib/WalletHelper'
+import useStore from 'lib/store'
 
 const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [burnCopies, setBurnCopies] = useState('')
 	const { localeLn } = useIntl()
+	const { currentUser } = useStore()
+
 	const onBurnToken = async () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowLogin(true)
 			return
 		}
@@ -26,12 +29,12 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 				token_series_id: data.token_series_id,
 				decrease_copies: burnCopies,
 			}
-			await near.wallet.account().functionCall({
+			await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_decrease_series_copies`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: `1`,
+				deposit: `1`,
 			})
 		} catch (err) {
 			sentryCaptureException(err)

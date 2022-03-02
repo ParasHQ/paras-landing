@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import near from 'lib/near'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import { InputText } from 'components/Common/form'
@@ -13,21 +12,24 @@ import { trackMintToken } from 'lib/ga'
 import axios from 'axios'
 import getConfig from 'config/near'
 import { useToast } from 'hooks/useToast'
+import WalletHelper from 'lib/WalletHelper'
+import useStore from 'lib/store'
 
 const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [isSelfMint, setIsSelfMint] = useState(true)
 	const [receiverId, setReceiverId] = useState('')
+	const { currentUser } = useStore()
 	const { localeLn } = useIntl()
 	const toast = useToast()
 	const onTransfer = async () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowLogin(true)
 			return
 		}
 		const params = {
 			token_series_id: data.token_series_id,
-			receiver_id: isSelfMint ? near.currentUser.accountId : receiverId,
+			receiver_id: isSelfMint ? currentUser : receiverId,
 		}
 
 		if (!isSelfMint) {
@@ -61,12 +63,12 @@ const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 		trackMintToken(data.token_series_id)
 
 		try {
-			await near.wallet.account().functionCall({
+			await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_mint`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: STORAGE_MINT_FEE,
+				deposit: STORAGE_MINT_FEE,
 			})
 		} catch (err) {
 			sentryCaptureException(err)

@@ -1,18 +1,21 @@
 import { useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import near from 'lib/near'
 import LoginModal from './LoginModal'
 import { GAS_FEE } from 'config/constants'
 import { sentryCaptureException } from 'lib/sentry'
 import { useIntl } from 'hooks/useIntl'
 import { trackBurnToken } from 'lib/ga'
+import WalletHelper from 'lib/WalletHelper'
+import useStore from 'lib/store'
 
 const TokenBurnModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const { localeLn } = useIntl()
+	const { currentUser } = useStore()
+
 	const onBurnToken = async () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowLogin(true)
 			return
 		}
@@ -22,12 +25,12 @@ const TokenBurnModal = ({ show, onClose, data }) => {
 			const params = {
 				token_id: data.token_id,
 			}
-			await near.wallet.account().functionCall({
+			await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_burn`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: `1`,
+				deposit: `1`,
 			})
 		} catch (err) {
 			sentryCaptureException(err)

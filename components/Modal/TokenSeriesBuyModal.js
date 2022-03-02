@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import near from 'lib/near'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import JSBI from 'jsbi'
@@ -13,10 +12,13 @@ import { trackBuyTokenSeries, trackBuyTokenSeriesImpression } from 'lib/ga'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
+import useStore from 'lib/store'
+import WalletHelper from 'lib/WalletHelper'
 
 const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
+	const { currentUser } = useStore()
 	const creatorData = useProfileData(data.metadata.creator_id)
 
 	const { localeLn } = useIntl()
@@ -28,13 +30,13 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 	}, [show])
 
 	const onBuyToken = async () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowLogin(true)
 			return
 		}
 		const params = {
 			token_series_id: data.token_series_id,
-			receiver_id: near.currentUser.accountId,
+			receiver_id: currentUser,
 		}
 
 		const attachedDeposit = JSBI.add(JSBI.BigInt(data.price), JSBI.BigInt(STORAGE_MINT_FEE))
@@ -42,13 +44,15 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 		trackBuyTokenSeries(data.token_series_id)
 
 		try {
-			await near.wallet.account().functionCall({
+			await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_buy`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: attachedDeposit.toString(),
+				deposit: attachedDeposit.toString(),
 			})
+
+			// TODO After Function Call Sender Wallet
 		} catch (err) {
 			sentryCaptureException(err)
 		}

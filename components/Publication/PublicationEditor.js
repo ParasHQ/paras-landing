@@ -3,7 +3,6 @@ import axios from 'axios'
 import { convertFromRaw, convertToRaw, EditorState } from 'draft-js'
 import { useRouter } from 'next/router'
 
-import near from 'lib/near'
 import { useToast } from 'hooks/useToast'
 import {
 	compressImg,
@@ -22,6 +21,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import { v4 as uuidv4 } from 'uuid'
 import DraftPublication from 'components/Draft/DraftPublication'
 import { generateFromString } from 'generate-avatar'
+import WalletHelper from 'lib/WalletHelper'
 
 let redirectUrl = null
 
@@ -58,7 +58,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 	const [searchToken, setSearchToken] = useState('')
 	const [searchCollection, setSearchCollection] = useState('')
 	const [currentDraftStorage, setCurrentDraftStorage] = useState()
-	const currentUser = near.currentUser
+	const currentUser = WalletHelper.currentUser
 	const uid = uuidv4()
 
 	useEffect(() => {
@@ -271,7 +271,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 							method: 'post',
 							data: data,
 							headers: {
-								authorization: await near.authToken(),
+								authorization: await WalletHelper.authToken(),
 							},
 					  }
 					: {
@@ -279,7 +279,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 							method: isEdit ? 'put' : 'post',
 							data: data,
 							headers: {
-								authorization: await near.authToken(),
+								authorization: await WalletHelper.authToken(),
 							},
 					  }
 			)
@@ -381,7 +381,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 		const resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
 			headers: {
 				'Content-Type': 'multipart/form-data',
-				authorization: await near.authToken(),
+				authorization: await WalletHelper.authToken(),
 			},
 		})
 
@@ -410,7 +410,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 			const resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
-					authorization: await near.authToken(),
+					authorization: await WalletHelper.authToken(),
 				},
 			})
 			return resp.data.data[0]

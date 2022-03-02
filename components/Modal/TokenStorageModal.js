@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import near from 'lib/near'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
@@ -9,28 +8,29 @@ import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackStorageDeposit } from 'lib/ga'
+import useStore from 'lib/store'
+import WalletHelper from 'lib/WalletHelper'
 
 const TokenStorageModal = ({ show, onClose }) => {
 	const [showLogin, setShowLogin] = useState(false)
+	const { currentUser } = useStore()
 	const { localeLn } = useIntl()
+
 	const onBuyToken = async () => {
-		if (!near.currentUser) {
+		if (currentUser) {
 			setShowLogin(true)
 			return
-		}
-		const params = {
-			receiver_id: near.currentUser.accountId,
 		}
 
 		trackStorageDeposit()
 
 		try {
-			await near.wallet.account().functionCall({
+			await WalletHelper.callFunction({
 				contractId: process.env.MARKETPLACE_CONTRACT_ID,
 				methodName: `storage_deposit`,
-				args: params,
+				args: { receiver_id: currentUser },
 				gas: GAS_FEE,
-				attachedDeposit: STORAGE_ADD_MARKET_FEE,
+				deposit: STORAGE_ADD_MARKET_FEE,
 			})
 		} catch (err) {
 			sentryCaptureException(err)

@@ -18,7 +18,6 @@ import FilterAttribute from 'components/Filter/FilterAttribute'
 import ArtistVerified from 'components/Common/ArtistVerified'
 import { generateFromString } from 'generate-avatar'
 import DeleteCollectionModal from 'components/Modal/DeleteCollectionModal'
-import near from 'lib/near'
 import { sentryCaptureException } from 'lib/sentry'
 import { useToast } from 'hooks/useToast'
 import LineClampText from 'components/Common/LineClampText'
@@ -26,6 +25,7 @@ import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import ArtistBanned from 'components/Common/ArtistBanned'
 import cachios from 'cachios'
 import FilterDisplay from 'components/Filter/FilterDisplay'
+import WalletHelper from 'lib/WalletHelper'
 
 const LIMIT = 12
 const LIMIT_ACTIVITY = 20
@@ -311,7 +311,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			url: `${process.env.V2_API_URL}/collections`,
 			headers: {
 				'Content-Type': 'multipart/form-data',
-				Authorization: await near.authToken(),
+				Authorization: await WalletHelper.authToken(),
 			},
 			data: formData,
 		}

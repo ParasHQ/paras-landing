@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import near from 'lib/near'
 import LoginModal from './LoginModal'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE } from 'config/constants'
@@ -12,14 +11,18 @@ import { useToast } from 'hooks/useToast'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackTransferToken } from 'lib/ga'
+import useStore from 'lib/store'
+import WalletHelper from 'lib/WalletHelper'
 
 const TokenTransferModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [receiverId, setReceiverId] = useState('')
+	const { currentUser } = useStore()
 	const toast = useToast()
 	const { localeLn } = useIntl()
+
 	const onTransfer = async () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowLogin(true)
 			return
 		}
@@ -29,7 +32,7 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 		}
 
 		try {
-			if (receiverId === near.currentUser.accountId) {
+			if (receiverId === currentUser) {
 				throw new Error(`Cannot transfer to self`)
 			}
 			const nearConfig = getConfig(process.env.APP_ENV || 'development')
@@ -60,12 +63,12 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 		trackTransferToken(data.token_id)
 
 		try {
-			await near.wallet.account().functionCall({
+			await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_transfer`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: `1`,
+				deposit: `1`,
 			})
 		} catch (err) {
 			sentryCaptureException(err)

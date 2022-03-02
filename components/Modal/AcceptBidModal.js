@@ -5,9 +5,9 @@ import { useIntl } from 'hooks/useIntl'
 import JSBI from 'jsbi'
 import Button from 'components/Common/Button'
 import { useEffect, useState } from 'react'
-import near from 'lib/near'
 import Tooltip from 'components/Common/Tooltip'
 import { IconInfo } from 'components/Icons'
+import WalletHelper from 'lib/WalletHelper'
 
 const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitForm }) => {
 	const { localeLn } = useIntl()
@@ -21,9 +21,10 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 
 	useEffect(() => {
 		const getTxFee = async () => {
-			const txFeeContract = await near.wallet
-				.account()
-				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_transaction_fee`)
+			const txFeeContract = await WalletHelper.viewFunction({
+				methodName: 'get_transaction_fee',
+				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+			})
 			setTxFee(txFeeContract)
 		}
 

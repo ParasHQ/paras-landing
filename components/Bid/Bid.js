@@ -6,7 +6,6 @@ import AcceptBidModal from 'components/Modal/AcceptBidModal'
 import Card from 'components/Card/Card'
 
 import PlaceBidModal from 'components/Modal/PlaceBidModal'
-import near from 'lib/near'
 import useStore from 'lib/store'
 import { parseImgUrl, prettyBalance, timeAgo } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
@@ -22,6 +21,7 @@ import {
 } from 'config/constants'
 import CancelBid from 'components/Modal/CancelBid'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
+import WalletHelper from 'lib/WalletHelper'
 
 const Bid = ({ data, type }) => {
 	const store = useStore()
@@ -145,22 +145,22 @@ const Bid = ({ data, type }) => {
 
 			// accept offer
 			if (userType === 'owner') {
-				await near.wallet.account().functionCall({
+				await WalletHelper.callFunction({
 					contractId: data.contract_id,
 					methodName: `nft_approve`,
 					args: params,
 					gas: GAS_FEE_150,
-					attachedDeposit: STORAGE_APPROVE_FEE,
+					deposit: STORAGE_APPROVE_FEE,
 				})
 			}
 			// batch tx -> mint & accept
 			else {
-				await near.wallet.account().functionCall({
+				await WalletHelper.callFunction({
 					contractId: data.contract_id,
 					methodName: `nft_mint_and_approve`,
 					args: params,
 					gas: GAS_FEE_200,
-					attachedDeposit: JSBI.add(
+					deposit: JSBI.add(
 						JSBI.BigInt(STORAGE_APPROVE_FEE),
 						JSBI.BigInt(STORAGE_MINT_FEE)
 					).toString(),
@@ -178,12 +178,12 @@ const Bid = ({ data, type }) => {
 		}
 
 		try {
-			await near.wallet.account().functionCall({
+			await WalletHelper.callFunction({
 				contractId: process.env.MARKETPLACE_CONTRACT_ID,
 				methodName: `delete_offer`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: '1',
+				deposit: '1',
 			})
 		} catch (error) {
 			sentryCaptureException(error)

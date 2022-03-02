@@ -7,7 +7,6 @@ import { useIntl } from 'hooks/useIntl'
 import useStore from 'lib/store'
 import Button from 'components/Common/Button'
 import { sentryCaptureException } from 'lib/sentry'
-import near from 'lib/near'
 import {
 	GAS_FEE,
 	GAS_FEE_150,
@@ -19,6 +18,7 @@ import JSBI from 'jsbi'
 import { parseImgUrl, timeAgo } from 'utils/common'
 import Avatar from 'components/Common/Avatar'
 import AcceptBidModal from 'components/Modal/AcceptBidModal'
+import WalletHelper from 'lib/WalletHelper'
 
 const FETCH_TOKENS_LIMIT = 12
 
@@ -54,12 +54,12 @@ const Offer = ({ data, onAcceptOffer, hideButton }) => {
 		}
 
 		try {
-			await near.wallet.account().functionCall({
+			await WalletHelper.callFunction({
 				contractId: process.env.MARKETPLACE_CONTRACT_ID,
 				methodName: `delete_offer`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: '1',
+				deposit: '1',
 			})
 		} catch (error) {
 			sentryCaptureException(error)
@@ -174,22 +174,22 @@ const TabOffers = ({ localToken }) => {
 
 			// accept offer
 			if (userType === 'owner') {
-				await near.wallet.account().functionCall({
+				await WalletHelper.callFunction({
 					contractId: activeOffer.contract_id,
 					methodName: `nft_approve`,
 					args: params,
 					gas: GAS_FEE_150,
-					attachedDeposit: STORAGE_APPROVE_FEE,
+					deposit: STORAGE_APPROVE_FEE,
 				})
 			}
 			// batch tx -> mint & accept
 			else {
-				await near.wallet.account().functionCall({
+				await WalletHelper.callFunction({
 					contractId: activeOffer.contract_id,
 					methodName: `nft_mint_and_approve`,
 					args: params,
 					gas: GAS_FEE_200,
-					attachedDeposit: JSBI.add(
+					deposit: JSBI.add(
 						JSBI.BigInt(STORAGE_APPROVE_FEE),
 						JSBI.BigInt(STORAGE_MINT_FEE)
 					).toString(),
