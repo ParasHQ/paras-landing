@@ -26,6 +26,7 @@ const ActivityLog = ({ query }) => {
 		setActivityListIdBefore,
 		activityListHasMore,
 		setActivityListHasMore,
+		setActivitySlowUpdate,
 	} = useStore()
 	const router = useRouter()
 	const modalRef = useRef()
@@ -119,6 +120,13 @@ const ActivityLog = ({ query }) => {
 			const newData = await res.data.data
 
 			const newActivityList = [..._activityList, ...newData.results]
+			if (
+				Math.floor((new Date() - new Date(newActivityList[0].msg?.datetime)) / (1000 * 60)) >= 5
+			) {
+				setActivitySlowUpdate(true)
+			} else {
+				setActivitySlowUpdate(false)
+			}
 			setActivityList(newActivityList)
 			if (newData.results.length === 0) {
 				setActivityListHasMore(false)
