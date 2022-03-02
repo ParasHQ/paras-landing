@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import near from 'lib/near'
 import useStore from 'lib/store'
 import axios from 'axios'
 import { useRouter } from 'next/router'
@@ -55,7 +54,7 @@ function MyApp({ Component, pageProps }) {
 				expires: 30,
 			})
 		}
-		const authHeader = await near.authToken()
+		const authHeader = await WalletHelper.authToken()
 		await axios.post(
 			`${process.env.V2_API_URL}/analytics`,
 			{
@@ -135,12 +134,13 @@ function MyApp({ Component, pageProps }) {
 
 	useEffect(() => {
 		if (store.activeWallet === 'senderWallet') {
-			_init()
+			const currentUser = WalletHelper.currentUser
+			setupUser(currentUser)
 		}
 	}, [store.activeWallet])
 
 	const _init = async () => {
-		await WalletHelper.initialize()
+		await WalletHelper.initialize({ onChangeUser: setupUser })
 
 		const currentUser = WalletHelper.currentUser
 		Sentry.configureScope((scope) => {
@@ -150,52 +150,56 @@ function MyApp({ Component, pageProps }) {
 		})
 
 		if (currentUser) {
-			const userProfileResp = await axios.get(`${process.env.V2_API_URL}/profiles`, {
-				params: {
-					accountId: currentUser.accountId,
-				},
-			})
-			const userProfileResults = userProfileResp.data.data.results
-
-			if (userProfileResults.length === 0) {
-				const formData = new FormData()
-				formData.append('bio', 'Citizen of Paras')
-				formData.append('accountId', currentUser.accountId)
-
-				try {
-					const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
-						headers: {
-							'Content-Type': 'multipart/form-data',
-							authorization: await near.authToken(),
-						},
-					})
-					store.setUserProfile(resp.data.data)
-				} catch (err) {
-					sentryCaptureException(err)
-					store.setUserProfile({})
-				}
-			} else {
-				const userProfile = userProfileResults[0]
-				store.setUserProfile(userProfile)
-
-				const { isEmailVerified = false } = userProfile
-				if (!isEmailVerified && !cookie.get('hideEmailNotVerified')) {
-					store.setShowEmailWarning(true)
-				}
-			}
-
-			store.setCurrentUser(currentUser.accountId)
-			store.setUserBalance(currentUser.balance)
-
-			const parasBalance = await near.wallet
-				.account()
-				.viewFunction(process.env.PARAS_TOKEN_CONTRACT, `ft_balance_of`, {
-					account_id: currentUser.accountId,
-				})
-			store.setParasBalance(parasBalance)
+			setupUser(currentUser)
 		}
 		getNearUsdPrice()
 		store.setInitialized(true)
+	}
+
+	const setupUser = async (currentUser) => {
+		store.setCurrentUser(currentUser.accountId)
+		store.setUserBalance(currentUser.balance)
+
+		const userProfileResp = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+			params: {
+				accountId: currentUser.accountId,
+			},
+		})
+		const userProfileResults = userProfileResp.data.data.results
+
+		if (userProfileResults.length === 0) {
+			const formData = new FormData()
+			formData.append('bio', 'Citizen of Paras')
+			formData.append('accountId', currentUser.accountId)
+
+			try {
+				const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
+					headers: {
+						'Content-Type': 'multipart/form-data',
+						authorization: await WalletHelper.authToken(),
+					},
+				})
+				store.setUserProfile(resp.data.data)
+			} catch (err) {
+				sentryCaptureException(err)
+				store.setUserProfile({})
+			}
+		} else {
+			const userProfile = userProfileResults[0]
+			store.setUserProfile(userProfile)
+
+			const { isEmailVerified = false } = userProfile
+			if (!isEmailVerified && !cookie.get('hideEmailNotVerified')) {
+				store.setShowEmailWarning(true)
+			}
+		}
+
+		const parasBalance = await WalletHelper.viewFunction({
+			methodName: 'ft_balance_of',
+			contractId: process.env.PARAS_TOKEN_CONTRACT,
+			args: { account_id: currentUser.accountId },
+		})
+		store.setParasBalance(parasBalance)
 	}
 
 	const removeQueryTransactionFromNear = () => {
