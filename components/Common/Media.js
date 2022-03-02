@@ -11,13 +11,15 @@ const Media = ({
 	videoLoop = false,
 	videoPadding = false,
 	playVideoButton = true,
+	mimeType,
+	seeDetails,
 }) => {
 	const [media, setMedia] = useState(null)
 	const [isLoading, setIsLoading] = useState(true)
 	const [playVideo, setPlayVideo] = useState(false)
 
 	useEffect(() => {
-		if (url) {
+		if (url && !mimeType?.includes('gif')) {
 			getMedia()
 		} else {
 			setIsLoading(false)
@@ -26,7 +28,7 @@ const Media = ({
 
 	const getMedia = async () => {
 		try {
-			const resp = await axios.get(`${parseImgUrl(url)}`, {
+			const resp = await axios.get(`${parseImgUrl(url, undefined, { seeDetails: seeDetails })}`, {
 				responseType: 'blob',
 			})
 
@@ -42,7 +44,7 @@ const Media = ({
 		} catch (err) {
 			setMedia({
 				type: 'image/jpg',
-				url: parseImgUrl(url),
+				url: parseImgUrl(url, undefined, { seeDetails: seeDetails }),
 			})
 			setIsLoading(false)
 		}
@@ -82,6 +84,21 @@ const Media = ({
 		const pixelated = isPng ? '' : ''
 		return (
 			<img className={`object-contain w-full h-full ${className} ${pixelated}`} src={media.url} />
+		)
+	}
+
+	if (mimeType?.includes('gif')) {
+		return (
+			<video
+				playsInline
+				controls={false}
+				loop={true}
+				muted={false}
+				autoPlay
+				className="w-full h-full"
+			>
+				<source type="video/mp4" src={`${url}&fm=mp4`}></source>
+			</video>
 		)
 	}
 

@@ -13,6 +13,7 @@ import CategoryList from 'components/CategoryList'
 import { useIntl } from 'hooks/useIntl'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import FilterMarket from 'components/Filter/FilterMarket'
+import FilterDisplay from 'components/Filter/FilterDisplay'
 
 const LIMIT = 12
 
@@ -26,6 +27,7 @@ function MarketPage({ serverQuery }) {
 	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(true)
+	const [display, setDisplay] = useState('large')
 	const [hasMore, setHasMore] = useState(true)
 	const { localeLn } = useIntl()
 	useEffect(() => {
@@ -101,6 +103,10 @@ function MarketPage({ serverQuery }) {
 		setIsFetching(false)
 	}
 
+	const onClickDisplay = (typeDisplay) => {
+		setDisplay(typeDisplay)
+	}
+
 	return (
 		<div className="min-h-screen bg-black">
 			<div
@@ -147,21 +153,32 @@ function MarketPage({ serverQuery }) {
 			<Nav />
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="grid grid-cols-3 mb-4">
-					<h1 className="col-start-2 col-span-1 text-4xl font-bold text-gray-100 text-center">
+					<h1 className="col-start-1 md:col-start-2 col-span-2 md:col-span-1 pl-5 md:pl-0 text-4xl font-bold text-gray-100 text-left md:text-center">
 						{localeLn('Market')}
 					</h1>
-					<div className="grid justify-items-end">
-						<FilterMarket />
+					<div className="flex items-center justify-end">
+						<div className="grid justify-items-end">
+							<FilterMarket />
+						</div>
+						<div className="flex mr-4 md:mx-4">
+							<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
+						</div>
 					</div>
 				</div>
 				<CategoryList listCategory={store.cardCategory} />
 				<div className="mt-4 px-4">
 					{isFiltering ? (
 						<div className="min-h-full">
-							<CardListLoader />
+							<CardListLoader length={display === 'large' ? 12 : 18} displayType={display} />
 						</div>
 					) : (
-						<CardList name="market" tokens={tokens} fetchData={_fetchData} hasMore={hasMore} />
+						<CardList
+							name="market"
+							tokens={tokens}
+							fetchData={_fetchData}
+							hasMore={hasMore}
+							displayType={display}
+						/>
 					)}
 				</div>
 				<ButtonScrollTop />

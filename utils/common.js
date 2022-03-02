@@ -111,10 +111,10 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
 			let transformationList = []
 			if (opts.width) {
 				transformationList.push(`w=${opts.width}`)
-				transformationList.push(`auto=format,compress`)
+				!opts.seeDetails && transformationList.push(`auto=format,compress`)
 			} else {
 				transformationList.push('w=800')
-				transformationList.push(`auto=format,compress`)
+				!opts.seeDetails && transformationList.push(`auto=format,compress`)
 			}
 			return `https://paras-cdn.imgix.net/${cid}?${transformationList.join('&')}`
 		} else if (opts.isMediaCdn) {
@@ -122,10 +122,10 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
 			let transformationList = []
 			if (opts.width) {
 				transformationList.push(`w=${opts.width}`)
-				transformationList.push(`auto=format,compress`)
+				!opts.seeDetails && transformationList.push(`auto=format,compress`)
 			} else {
 				transformationList.push('w=800')
-				transformationList.push(`auto=format,compress`)
+				!opts.seeDetails && transformationList.push(`auto=format,compress`)
 			}
 			return `https://paras-cdn.imgix.net/${sha1Url}?${transformationList.join('&')}`
 		}
@@ -144,10 +144,10 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
 			let transformationList = []
 			if (opts.width) {
 				transformationList.push(`w=${opts.width}`)
-				transformationList.push(`auto=format,compress`)
+				!opts.seeDetails && transformationList.push(`auto=format,compress`)
 			} else {
 				transformationList.push('w=800')
-				transformationList.push(`auto=format,compress`)
+				!opts.seeDetails && transformationList.push(`auto=format,compress`)
 			}
 			return `https://paras-cdn.imgix.net/${cid}?${transformationList.join('&')}`
 		} catch (err) {
@@ -252,4 +252,8 @@ export default function sha1(data, encoding) {
 		.createHash('sha1')
 		.update(data)
 		.digest(encoding || 'hex')
+}
+
+export const decodeBase64 = (b64text) => {
+	return new TextDecoder().decode(Buffer.from(b64text, 'base64'))
 }

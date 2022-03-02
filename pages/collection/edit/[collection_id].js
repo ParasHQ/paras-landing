@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Button from 'components/Common/Button'
-import { InputTextarea } from 'components/Common/form'
+import { InputTextarea, InputText } from 'components/Common/form'
 import Footer from 'components/Footer'
 import ImgCrop from 'components/ImgCrop'
 import Nav from 'components/Nav'
@@ -25,6 +25,11 @@ const CollectionPageEdit = ({ collectionId }) => {
 
 	const [collectionName, setCollectionName] = useState('')
 	const [collectionDesc, setCollectionDesc] = useState('')
+	const [collectionSocialMedia, setCollectionSocialMedia] = useState({
+		website: '',
+		twitter: '',
+		discord: '',
+	})
 
 	const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -59,6 +64,11 @@ const CollectionPageEdit = ({ collectionId }) => {
 		const collectionData = resp.data.data.results[0]
 		setCollectionName(collectionData.collection)
 		setCollectionDesc(collectionData.description)
+		setCollectionSocialMedia({
+			twitter: collectionData.socialMedia?.twitter,
+			website: collectionData.socialMedia?.website,
+			discord: collectionData.socialMedia?.discord,
+		})
 		setImgUrl(collectionData.media)
 		setCoverUrl(collectionData.cover)
 	}
@@ -78,6 +88,9 @@ const CollectionPageEdit = ({ collectionId }) => {
 		formData.append('collection_id', collectionId)
 		formData.append('description', collectionDesc)
 		formData.append('creator_id', currentUser)
+		formData.append('twitter', collectionSocialMedia.twitter ?? '')
+		formData.append('website', collectionSocialMedia.website ?? '')
+		formData.append('discord', collectionSocialMedia.discord ?? '')
 
 		try {
 			const resp = await axios.put(`${process.env.V2_API_URL}/collections`, formData, {
@@ -239,6 +252,49 @@ const CollectionPageEdit = ({ collectionId }) => {
 					onChange={(e) => setCollectionDesc(e.target.value)}
 					className="mt-2 resize-none h-24 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
 				/>
+				<div className="text-white mt-4">Website</div>
+				<InputText
+					value={collectionSocialMedia.website}
+					onChange={(e) =>
+						setCollectionSocialMedia((prev) => ({ ...prev, website: e.target.value }))
+					}
+					className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
+					placeholder="Website"
+				/>
+				<div className="block md:flex md:space-x-4">
+					<div className="w-full md:w-1/2">
+						<div className="text-white mt-4">Twitter</div>
+						<div className="relative">
+							<InputText
+								value={collectionSocialMedia.twitter}
+								onChange={(e) =>
+									setCollectionSocialMedia((prev) => ({ ...prev, twitter: e.target.value }))
+								}
+								className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10 pl-44"
+								placeholder="Username"
+							/>
+							<div className="absolute left-0 top-0 flex items-center text-white text-opacity-40 h-full px-2">
+								https://twitter.com/
+							</div>
+						</div>
+					</div>
+					<div className="w-full md:w-1/2">
+						<div className="text-white mt-4">Discord</div>
+						<div className="relative">
+							<InputText
+								value={collectionSocialMedia.discord}
+								onChange={(e) =>
+									setCollectionSocialMedia((prev) => ({ ...prev, discord: e.target.value }))
+								}
+								className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10 pl-40"
+								placeholder="Username"
+							/>
+							<div className="absolute left-0 top-0 flex items-center text-white text-opacity-40 h-full px-2">
+								https://discord.gg/
+							</div>
+						</div>
+					</div>
+				</div>
 				<Button
 					isDisabled={
 						isSubmitting || imgUrl === '' || collectionName === '' || collectionDesc === ''

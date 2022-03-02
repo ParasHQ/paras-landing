@@ -1,16 +1,21 @@
 import { useRouter } from 'next/router'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useContext, useEffect, useState } from 'react'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
 import CopyLink from '../Common/CopyLink'
 import { useIntl } from 'hooks/useIntl'
 import useStore from 'lib/store'
 import { flagColor, flagText } from 'constants/flag'
 import LineClampText from 'components/Common/LineClampText'
+import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu'
+import ProfileEdit from './ProfileEdit'
+import Modal from 'components/Modal'
 
 const Profile = ({ userProfile, activeTab }) => {
+	const currentUser = useStore((store) => store.currentUser)
 	const router = useRouter()
 	const { localeLn } = useIntl()
 	const [isCopied, setIsCopied] = useState(false)
+	const [showModal, setShowModal] = useState(false)
 
 	const [profileData, setProfileData] = useState(userProfile)
 	const userProfileStore = useStore((state) => state.userProfile)
@@ -24,10 +29,53 @@ const Profile = ({ userProfile, activeTab }) => {
 		}
 	}, [userProfileStore])
 
+	const dismissUserModal = () => {
+		setShowModal(false)
+	}
+
 	return (
 		<Fragment>
+			{showModal && (
+				<Modal close={dismissUserModal} closeOnBgClick={false} closeOnEscape={false}>
+					<div className="w-full max-w-sm p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
+						<ProfileEdit close={dismissUserModal} />
+					</div>
+				</Modal>
+			)}
 			<div className="flex flex-col items-center justify-center">
-				<div className="w-32 h-32 rounded-full overflow-hidden bg-primary">
+				<div
+					className={`absolute top-0 left-0 w-full h-40 md:h-60 bg-center bg-cover ${
+						profileData?.coverUrl === (null || undefined) ? 'bg-primary' : 'bg-dark-primary-2'
+					}`}
+					style={{ backgroundImage: `url(${parseImgUrl(profileData?.coverUrl)})` }}
+				>
+					{currentUser === profileData?.accountId && (
+						<div
+							className={`absolute bottom-4 left-4 md:left-10 text-xs md:text-base text-white bg-primary py-2 px-2 rounded-md cursor-pointer ${
+								profileData?.coverUrl === (null || undefined) && 'border-2'
+							}`}
+							onClick={() => setShowModal(true)}
+						>
+							<div className="flex gap-1">
+								<svg
+									className="w-4 md:w-6 h-4 md:h-6"
+									fill="currentColor"
+									viewBox="0 0 20 20"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path>
+									<path
+										fillRule="evenodd"
+										d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+										clipRule="evenodd"
+									/>
+								</svg>
+								<p className="pt-0.5">Edit Profile</p>
+							</div>
+						</div>
+					)}
+				</div>
+				<div className="w-32 h-32 rounded-full overflow-hidden bg-primary mt-12 md:mt-32 z-20 border-4 border-black">
 					<img
 						src={parseImgUrl(profileData?.imgUrl, null, {
 							width: `300`,
@@ -35,7 +83,7 @@ const Profile = ({ userProfile, activeTab }) => {
 						className="object-cover"
 					/>
 				</div>
-				<div className="mt-4 max-w-sm text-center overflow-hidden">
+				<div className="mt-4 max-w-sm text-center overflow-hidden z-20">
 					{profileData?.isCreator && (
 						<p className="text-white text-xs mb-2 mt-2 p-1 bg-primary bg-opacity-75 rounded-md font-bold w-40 mx-auto">
 							Verified Creator
@@ -90,7 +138,7 @@ const Profile = ({ userProfile, activeTab }) => {
 							</CopyLink>
 						</div>
 					</div>
-					<LineClampText text={profileData?.bio} />
+					<LineClampText text={profileData?.bio || ''} />
 					<div className="flex items-center justify-center space-x-2">
 						{profileData?.website && (
 							<a
@@ -194,76 +242,145 @@ const Profile = ({ userProfile, activeTab }) => {
 					</p>
 				</div>
 			)}
-			<div className="flex flex-row md:justify-center overflow-auto mt-4 py-2 w-full">
-				<div className="flex flex-row">
-					<div
-						className="px-4 relative"
-						onClick={() => router.push(`/${router.query.id}/collectibles`)}
-					>
-						<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Collectibles')}</h4>
-						{activeTab === 'collection' && (
+			<div className="hidden sm:block">
+				<div className="flex flex-row sm:justify-center overflow-auto mt-4 py-2 w-full">
+					<div className="flex flex-row">
+						{TabItems.map((tab) => (
 							<div
-								className="absolute left-0 right-0"
-								style={{
-									bottom: `-.25rem`,
-								}}
+								key={tab.title}
+								className="px-4 relative"
+								onClick={() => router.push(`/${router.query.id}/${tab.linkUrl}`)}
 							>
-								<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+								<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn(tab.title)}</h4>
+								{activeTab === tab.activeTab && (
+									<div
+										className="absolute left-0 right-0"
+										style={{
+											bottom: `-.25rem`,
+										}}
+									>
+										<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+									</div>
+								)}
 							</div>
-						)}
-					</div>
-					<div
-						className="px-4 relative"
-						onClick={() => router.push(`/${router.query.id}/creation`)}
-					>
-						<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Creation')}</h4>
-						{activeTab === 'creation' && (
-							<div
-								className="absolute left-0 right-0"
-								style={{
-									bottom: `-.25rem`,
-								}}
-							>
-								<div className="mx-auto w-8 h-1 bg-gray-100"></div>
-							</div>
-						)}
-					</div>
-					<div
-						className="px-4 relative"
-						onClick={() => router.push(`/${router.query.id}/collections`)}
-					>
-						<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Collections')}</h4>
-						{activeTab === 'collections' && (
-							<div
-								className="absolute left-0 right-0"
-								style={{
-									bottom: `-.25rem`,
-								}}
-							>
-								<div className="mx-auto w-8 h-1 bg-gray-100"></div>
-							</div>
-						)}
-					</div>
-					<div
-						className="px-4 relative"
-						onClick={() => router.push(`/${router.query.id}/publication`)}
-					>
-						<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Publication')}</h4>
-						{activeTab === 'publication' && (
-							<div
-								className="absolute left-0 right-0"
-								style={{
-									bottom: `-.25rem`,
-								}}
-							>
-								<div className="mx-auto w-8 h-1 bg-gray-100"></div>
-							</div>
-						)}
+						))}
 					</div>
 				</div>
+			</div>
+			<div className="sm:hidden">
+				<TabProfileMobile activeTab={activeTab} />
 			</div>
 		</Fragment>
 	)
 }
 
+const TabProfileMobile = ({ activeTab }) => {
+	return (
+		<div className="mt-4 py-2">
+			<ScrollMenu
+				LeftArrow={LeftArrow}
+				RightArrow={RightArrow}
+				wrapperClassName="flex items-center"
+				scrollContainerClassName="top-user-scroll"
+			>
+				{TabItems.map((tab) => (
+					<TabProfile
+						key={tab.title}
+						itemId={tab.activeTab}
+						title={tab.title}
+						linkUrl={tab.linkUrl}
+						activeTab={activeTab}
+					/>
+				))}
+			</ScrollMenu>
+		</div>
+	)
+}
+
+const TabProfile = ({ itemId, title, linkUrl, activeTab }) => {
+	const router = useRouter()
+	const { localeLn } = useIntl()
+
+	return (
+		<div className="px-4 relative" onClick={() => router.push(`/${router.query.id}/${linkUrl}`)}>
+			<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn(title)}</h4>
+			{activeTab === itemId && (
+				<div
+					className="absolute left-0 right-0"
+					style={{
+						bottom: `-.10rem`,
+					}}
+				>
+					<div className="mx-auto w-8 h-1.5 bg-gray-100"></div>
+				</div>
+			)}
+		</div>
+	)
+}
+
+const LeftArrow = () => {
+	const { isFirstItemVisible, scrollPrev } = useContext(VisibilityContext)
+
+	return (
+		<div disabled={isFirstItemVisible} onClick={() => scrollPrev()}>
+			<svg
+				className="w-10 h-10 text-white cursor-pointer"
+				fill="currentColor"
+				viewBox="0 0 20 20"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<path
+					fillRule="evenodd"
+					d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+					clipRule="evenodd"
+				></path>
+			</svg>
+		</div>
+	)
+}
+
+const RightArrow = () => {
+	const { isLastItemVisible, scrollNext } = useContext(VisibilityContext)
+
+	return (
+		<div disabled={isLastItemVisible} onClick={() => scrollNext()}>
+			<svg
+				className="w-10 h-10 text-white cursor-pointer"
+				fill="currentColor"
+				viewBox="0 0 20 20"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<path
+					fillRule="evenodd"
+					d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+					clipRule="evenodd"
+				></path>
+			</svg>
+		</div>
+	)
+}
+
 export default Profile
+
+const TabItems = [
+	{
+		title: 'Collectibles',
+		linkUrl: 'collectibles',
+		activeTab: 'collection',
+	},
+	{
+		title: 'Creation',
+		linkUrl: 'creation',
+		activeTab: 'creation',
+	},
+	{
+		title: 'Collections',
+		linkUrl: 'collections',
+		activeTab: 'collections',
+	},
+	{
+		title: 'Publication',
+		linkUrl: 'publication',
+		activeTab: 'publication',
+	},
+]

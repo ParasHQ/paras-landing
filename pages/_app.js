@@ -26,6 +26,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import { GTM_ID, pageview } from 'lib/gtm'
 const FETCH_TOKENS_LIMIT = 10
 const MAX_ACTIVITY_DELAY = 5
+import SuccessTransactionModal from 'components/Modal/SuccessTransactionModal'
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
@@ -272,6 +273,7 @@ function MyApp({ Component, pageProps }) {
 					<SWRConfig value={{}}>
 						<ToastProvider>
 							<Component {...pageProps} />
+							<SuccessTransactionModal />
 						</ToastProvider>
 					</SWRConfig>
 				</IntlProvider>

@@ -28,12 +28,15 @@ function TokenDetailModal({ tokens = [] }) {
 
 	useEffect(() => {
 		if (router.query.tokenId && activeToken === null) {
-			const token = tokens.find(
-				(token) =>
+			const token = tokens.find((token) => {
+				const lookupToken = token?.token
+				return (
 					(token?.token_id === router.query.tokenId ||
-						token?.token_series_id === router.query.tokenId) &&
+						token?.token_series_id === router.query.tokenId ||
+						lookupToken?.token_id === router.query.tokenId) &&
 					token?.contract_id === router.query.contractId
-			)
+				)
+			})
 			if (token?.token) {
 				setActiveToken({
 					...token.token,

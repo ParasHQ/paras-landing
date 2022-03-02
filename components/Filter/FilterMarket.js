@@ -96,11 +96,6 @@ const FilterMarket = ({
 		if (maxPrice === '') {
 			delete query.pmax
 		}
-		if (defaultMinPrice) {
-			if (!isNotForSale) {
-				delete query.pmin
-			}
-		}
 
 		if (sortCopies === 'undefined') {
 			delete query.min_copies
@@ -115,9 +110,13 @@ const FilterMarket = ({
 
 		if (isNotForSale && minPrice === '') query.pmin = 0
 
-		router.push({
-			query: query,
-		})
+		router.push(
+			{
+				query: query,
+			},
+			{},
+			{ shallow: true, scroll: false }
+		)
 		setShowFilterModal(false)
 	}
 
