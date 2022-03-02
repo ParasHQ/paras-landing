@@ -7,22 +7,32 @@ import useStore from 'lib/store'
 import Footer from 'components/Footer'
 import { useIntl } from 'hooks/useIntl'
 import Button from 'components/Common/Button'
+import senderWallet from 'lib/senderWallet'
 
 const LoginPage = () => {
-	const store = useStore()
+	const { currentUser, setActiveWallet } = useStore()
 	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
 
 	const { localeLn } = useIntl()
 	useEffect(() => {
-		if (store.currentUser) {
+		if (currentUser) {
 			router.replace('/market')
 		}
-	}, [store.currentUser])
+	}, [currentUser])
 
 	const _signIn = () => {
 		setIsLoading(true)
 		near.login()
+	}
+
+	const loginSenderWallet = async () => {
+		if (typeof window.near !== 'undefined' && window.near.isSender) {
+			await senderWallet.signIn()
+			setActiveWallet('senderWallet')
+		} else {
+			alert('Sender Wallet not installed')
+		}
 	}
 
 	return (
@@ -88,6 +98,9 @@ const LoginPage = () => {
 							<Button onClick={() => _signIn()} isFullWidth isDisabled={isLoading}>
 								{isLoading ? localeLn('LoadingLoading') : localeLn('LoginWithNEAR')}
 							</Button>
+						</div>
+						<div className="text-white cursor-pointer" onClick={loginSenderWallet}>
+							Login with sender wallet
 						</div>
 						{/* Faucet balance is empty */}
 						{/* <div className="mt-8 text-center">

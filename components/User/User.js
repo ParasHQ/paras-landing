@@ -3,7 +3,6 @@ import ProfileEdit from 'components/Profile/ProfileEdit'
 import Setting from 'components/Setting'
 import { useIntl } from 'hooks/useIntl'
 import { useToast } from 'hooks/useToast'
-import near from 'lib/near'
 import Link from 'next/link'
 import useStore from 'lib/store'
 import { useRouter } from 'next/router'
@@ -11,6 +10,7 @@ import { useEffect, useRef, useState } from 'react'
 import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
 import ChooseAccountModal from 'components/Modal/ChooseAccountModal'
 import Scrollbars from 'react-custom-scrollbars'
+import WalletHelper from 'lib/WalletHelper'
 
 const User = () => {
 	const store = useStore()
@@ -81,7 +81,7 @@ const User = () => {
 	}
 
 	const _signOut = () => {
-		near.logout()
+		WalletHelper.signOut()
 	}
 
 	const dismissUserModal = () => {

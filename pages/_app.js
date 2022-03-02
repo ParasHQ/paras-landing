@@ -25,6 +25,7 @@ import * as Sentry from '@sentry/nextjs'
 import { sentryCaptureException } from 'lib/sentry'
 import { GTM_ID, pageview } from 'lib/gtm'
 import SuccessTransactionModal from 'components/Modal/SuccessTransactionModal'
+import WalletHelper from 'lib/WalletHelper'
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
@@ -109,6 +110,20 @@ function MyApp({ Component, pageProps }) {
 			return
 		}
 		_init()
+
+		if (process.env.APP_ENV === 'production') {
+			// initial route analytics
+			const url = router.asPath
+
+			if (window && window.gtag) {
+				gtag.pageview(url)
+			}
+			if (window) {
+				counter(url)
+			}
+			pageview(url)
+		}
+
 		const storage = globalThis?.sessionStorage
 		if (!storage) return
 		storage.setItem('currentPath', `${globalThis?.location.pathname}${globalThis?.location.search}`)
@@ -118,11 +133,16 @@ function MyApp({ Component, pageProps }) {
 		removeQueryTransactionFromNear()
 	}, [router.isReady])
 
+	useEffect(() => {
+		if (store.activeWallet === 'senderWallet') {
+			_init()
+		}
+	}, [store.activeWallet])
+
 	const _init = async () => {
-		await near.init()
+		await WalletHelper.initialize()
 
-		const currentUser = near.currentUser
-
+		const currentUser = WalletHelper.currentUser
 		Sentry.configureScope((scope) => {
 			const user = currentUser ? { id: currentUser.accountId } : null
 			scope.setUser(user)
@@ -176,19 +196,6 @@ function MyApp({ Component, pageProps }) {
 		}
 		getNearUsdPrice()
 		store.setInitialized(true)
-
-		if (process.env.APP_ENV === 'production') {
-			// initial route analytics
-			const url = router.asPath
-
-			if (window && window.gtag) {
-				gtag.pageview(url)
-			}
-			if (window) {
-				counter(url)
-			}
-			pageview(url)
-		}
 	}
 
 	const removeQueryTransactionFromNear = () => {
