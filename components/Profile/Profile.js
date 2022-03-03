@@ -48,7 +48,9 @@ const Profile = ({ userProfile, activeTab }) => {
 						profileData?.coverUrl === (null || undefined) ? 'bg-primary' : 'bg-dark-primary-2'
 					}`}
 					style={{
-						backgroundImage: `url(https://paras-cdn.imgix.net/${profileData?.coverUrl.slice(7)})`,
+						backgroundImage: `url(${parseImgUrl(profileData?.coverUrl, null, {
+							width: `1152`,
+						})})`,
 					}}
 				>
 					{currentUser === profileData?.accountId && (
