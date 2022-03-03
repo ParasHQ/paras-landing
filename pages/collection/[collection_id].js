@@ -660,13 +660,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						<CollectionActivity
 							activities={activities}
 							dailyVolume={dailyVolume}
-							fetchData={() => {
-								fetchCollectionActivity(
-									false,
-									router.query.headerActivities,
-									router.query.sortActivities
-								)
-							}}
+							fetchData={fetchCollectionActivity}
 							hasMore={hasMoreActivities}
 							collectionId={collectionId}
 							querySort={router.query}
