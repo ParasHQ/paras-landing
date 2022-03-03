@@ -183,8 +183,8 @@ const CollectionPageEdit = ({ collectionId }) => {
 				<ImgCrop
 					input={coverFile}
 					size={{
-						width: 1024,
-						height: 384,
+						width: 1152,
+						height: 288,
 					}}
 					left={() => setShowCoverCrop(false)}
 					right={(res) => {
