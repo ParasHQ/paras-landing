@@ -17,28 +17,11 @@ import TokenDetailModal from 'components/Token/TokenDetailModal'
 
 const specialBidTokens = [
 	{
-		contractId: 'nearnautnft.near',
-		tokenSeriesId: 'token-naut-16426909392387',
-		tokenId: 'token-naut-16426909392387',
+		contractId: 'x.paras.near',
+		tokenSeriesId: '276003',
 		supply: `1`,
-		price: 5,
+		price: 500,
 		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
-	},
-	{
-		contractId: 'nearnautnft.near',
-		tokenSeriesId: 'token-naut-16427135491760',
-		tokenId: 'token-naut-16427135491760',
-		supply: `1`,
-		price: 5,
-		blurhash: 'UnN]gxW?}|s.xYNMX8ob$vW=V|t1XBw]osW-',
-	},
-	{
-		contractId: 'nearnautnft.near',
-		tokenSeriesId: 'token-naut-16427135491768',
-		tokenId: 'token-naut-16427135491768',
-		supply: `1`,
-		price: 5,
-		blurhash: 'UhFI?,#?LmJ~$,izSwbuF:SKwOt6TESxj=ob',
 	},
 ]
 
@@ -88,12 +71,12 @@ export default function Drops() {
 	const { localeLn } = useIntl()
 	const timeline = [
 		{
-			date: `Feb 23th`,
-			note: [`NFT drop is live by offer`, `Drops will start on Feb 23th at 00.00 UTC`],
+			date: `March 6th`,
+			note: [`NFT drop is live by offer`, `Drops will start on March 6th at 17.00 UTC`],
 		},
 		{
-			date: 'Feb 25th',
-			note: [`NFT drop will end on Feb 25th at 23.59 UTC`],
+			date: 'March 7th',
+			note: [`NFT drop will end on March 7th at 16.59 UTC`],
 		},
 	]
 
@@ -108,12 +91,12 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>Paras X Nearnauts - NFT Drops</title>
+				<title>Paras X Boo - NFT Drops</title>
 				<meta
 					name="description"
 					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
-				<meta name="twitter:title" content="Paras X Nearnauts - NFT Drops" />
+				<meta name="twitter:title" content="Paras X Boo - NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -123,11 +106,11 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://paras-cdn.imgix.net/bafybeiada5x2kaap2s5pttxo2yfie5wyclfah5t4azywqpgnkjyd67ltt4"
+					content="https://ipfs.fleek.co/ipfs/bafybeig4lyaarq6izm27rx5cf57geb6setyqvk3ojb77sta5gyg3navaq4"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Paras X Nearnauts - NFT Drops" />
-				<meta property="og:site_name" content="Paras X Nearnauts - NFT Drops" />
+				<meta property="og:title" content="Paras X Boo - NFT Drops" />
+				<meta property="og:site_name" content="Paras X Boo - NFT Drops" />
 				<meta
 					property="og:description"
 					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
@@ -135,7 +118,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://paras-cdn.imgix.net/bafybeiada5x2kaap2s5pttxo2yfie5wyclfah5t4azywqpgnkjyd67ltt4"
+					content="https://ipfs.fleek.co/ipfs/bafybeig4lyaarq6izm27rx5cf57geb6setyqvk3ojb77sta5gyg3navaq4"
 				/>
 			</Head>
 			<Nav />
@@ -150,7 +133,7 @@ export default function Drops() {
 			/>
 			<TokenSeriesDetailModal tokens={[token]} />
 			<TokenDetailModal tokens={[token]} />
-			<div className="max-w-2xl m-auto py-12 min-h-full relative z-10">
+			<div className="max-w-2xl m-auto py-12 pb-6 min-h-full relative z-10">
 				<div className="flex items-center justify-center m-4 md:m-0">
 					<div className="text-center px-4 whitespace-pre-wrap">
 						<div className="md:flex justify-center items-baseline">
@@ -187,12 +170,12 @@ export default function Drops() {
 								</svg>
 							</div>
 							{/* <p className="text-gray-100 ml-2 font-bold text-2xl">x</p> */}
-							<p className="text-gray-100 ml-2 font-bold text-2xl">{'X Nearnauts'}</p>
+							<p className="text-gray-100 ml-2 font-bold text-2xl">{'X Boo'}</p>
 						</div>
 						<h1 className="text-white font-bold text-6xl mt-4 mb-2">{localeLn('NFTDrops')}</h1>
 						{/* <img
 							className="m-auto"
-							src="https://paras-cdn.imgix.net/bafybeiada5x2kaap2s5pttxo2yfie5wyclfah5t4azywqpgnkjyd67ltt4"
+							src="https://ipfs.fleek.co/ipfs/bafybeig4lyaarq6izm27rx5cf57geb6setyqvk3ojb77sta5gyg3navaq4"
 						/> */}
 						{/* <div className="text-center flex justify-center">
 							<video width="320" height="180" autoPlay loop muted>
@@ -204,11 +187,9 @@ export default function Drops() {
 						</div> */}
 						<div className="max-w-xl m-auto">
 							<p className="text-gray-200 mt-4">
-								How would you like to get your hands on a rank 1 NEARNaut? Well now is your chance!
-								The NEARNauts team are launching a charity auction of a number of rare Nauts,
-								including the fully iridescent rank 1!
+								A limited collection of BOO Monsters roaming the blockchain
 							</p>
-							<p className="text-gray-200 mt-4">
+							{/* <p className="text-gray-200 mt-4">
 								Check full information about the event{' '}
 								<span>
 									<a
@@ -219,8 +200,8 @@ export default function Drops() {
 										here
 									</a>{' '}
 								</span>
-							</p>
-							<div className="mt-8 border-2 border-dashed border-gray-800 rounded-md p-4">
+							</p> */}
+							{/* <div className="mt-8 border-2 border-dashed border-gray-800 rounded-md p-4">
 								<div className="text-white font-bold mb-2">Limited time only</div>
 								<Countdown
 									className="text-white text-2xl font-bold"
@@ -249,7 +230,7 @@ export default function Drops() {
 										</div>
 									)}
 								/>
-							</div>
+							</div> */}
 							{/* <a
 								target="blank"
 								href="https://forms.gle/oiyYYLx5gvqFNgtH8"
@@ -265,7 +246,7 @@ export default function Drops() {
 				{specialBidTokens.map((specialBidToken, idx) => (
 					<SpecialCardBid
 						key={idx}
-						tokenId={specialBidToken.tokenId}
+						tokenId={specialBidToken.tokenSeriesId}
 						contractId={specialBidToken.contractId}
 						onClick={setToken}
 						price={specialBidToken.price}
@@ -712,10 +693,31 @@ const SpecialCardBid = ({
 							</div>
 						</div> */}
 						{/* <div className="text-white font-bold text-2xl">Bid The Special Card</div> */}
-						{/* <div className="my-4">
-							<div className="text-white font-bold">Limited time only</div>
-							<Countdown className="text-white text-2xl font-bold" date={1638363599000} />
-						</div> */}
+						<div className="my-4">
+							<div
+								className="text-white font-bold flex justify-center"
+								data-tip={`Any bids received within the last 5 mins of the auction will extend the timer for an additional 5 minutes.`}
+							>
+								Limited time only
+								<svg
+									width="16"
+									height="16"
+									viewBox="0 0 24 24"
+									fill="#ffffff"
+									className="ml-1"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										className="fill-current"
+										fill="#ffffff"
+										fillRule="evenodd"
+										clipRule="evenodd"
+										d="M1 12C1 18.0751 5.92487 23 12 23C18.0751 23 23 18.0751 23 12C23 5.92487 18.0751 1 12 1C5.92487 1 1 5.92487 1 12ZM21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12ZM13.0036 13.9983H14.003V15.9983H10.003V13.9983H11.003V11.9983H10.003V9.99835H13.0036V13.9983ZM13.0007 7.99835C13.0007 8.55063 12.5528 8.99835 12.0003 8.99835C11.4479 8.99835 11 8.55063 11 7.99835C11 7.44606 11.4479 6.99835 12.0003 6.99835C12.5528 6.99835 13.0007 7.44606 13.0007 7.99835Z"
+									/>
+								</svg>
+							</div>
+							<Countdown className="text-white text-2xl font-bold" date={1646672399000} />
+						</div>
 						<div className="md:flex md:items-center md:justify-center md:space-x-4">
 							<div
 								className="flex flex-col cursor-default mb-4"

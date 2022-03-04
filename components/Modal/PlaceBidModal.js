@@ -18,9 +18,7 @@ import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
 
 const HARD_CODE_TOKEN = {
-	'token-naut-16427135491768': '5',
-	'token-naut-16426909392387': '5',
-	'token-naut-16427135491760': '5',
+	276003: '500',
 }
 
 const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuantity }) => {
@@ -174,7 +172,9 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 								<div className="mt-2 text-sm text-red-500">
 									{errors.bidAmount?.type === 'required' && `Offer amount is required`}
 									{errors.bidAmount?.type === 'min' &&
-										(HARD_CODE_TOKEN[data.token_series_id] ? `Minimum 5 Ⓝ` : `Minimum 0.01 Ⓝ`)}
+										(HARD_CODE_TOKEN[data.token_series_id]
+											? `Minimum ${HARD_CODE_TOKEN[data.token_series_id]} Ⓝ`
+											: `Minimum 0.01 Ⓝ`)}
 									{errors.bidAmount?.type === 'max' && `You don't have enough balance`}
 								</div>
 							</div>

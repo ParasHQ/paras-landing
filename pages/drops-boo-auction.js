@@ -17,34 +17,34 @@ const Drops = () => {
 			}}
 		>
 			<Head>
-				<title>Paras X Nearnauts - NFT Drops</title>
+				<title>Paras X Boo - NFT Drops</title>
 				<meta
 					name="description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
-				<meta name="twitter:title" content="Paras X Nearnauts - NFT Drops" />
+				<meta name="twitter:title" content="Paras X Boo - NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
 				<meta
 					name="twitter:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 				<meta
 					name="twitter:image"
-					content="https://paras-cdn.imgix.net/bafybeiada5x2kaap2s5pttxo2yfie5wyclfah5t4azywqpgnkjyd67ltt4"
+					content="https://ipfs.fleek.co/ipfs/bafybeig4lyaarq6izm27rx5cf57geb6setyqvk3ojb77sta5gyg3navaq4"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Paras X Nearnauts - NFT Drops" />
-				<meta property="og:site_name" content="Paras X Nearnauts - NFT Drops" />
+				<meta property="og:title" content="Paras X Boo - NFT Drops" />
+				<meta property="og:site_name" content="Paras X Boo - NFT Drops" />
 				<meta
 					property="og:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://paras-cdn.imgix.net/bafybeiada5x2kaap2s5pttxo2yfie5wyclfah5t4azywqpgnkjyd67ltt4"
+					content="https://ipfs.fleek.co/ipfs/bafybeig4lyaarq6izm27rx5cf57geb6setyqvk3ojb77sta5gyg3navaq4"
 				/>
 			</Head>
 			<Nav />
