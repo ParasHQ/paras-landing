@@ -386,10 +386,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="flex items-center m-auto justify-center mb-4">
 					{headMeta.cover === null && (
-						<div className="absolute top-0 left-0 w-full h-40 md:h-60 bg-black bg-opacity-10 backdrop-filter backdrop-blur-lg backdrop-saturate-200 z-20" />
+						<div className="absolute top-0 left-0 w-full h-36 md:h-72 bg-black bg-opacity-10 backdrop-filter backdrop-blur-lg backdrop-saturate-200 z-20" />
 					)}
 					<div
-						className="absolute top-0 left-0 w-full h-40 md:h-60 bg-center bg-cover bg-dark-primary-2"
+						className="absolute top-0 left-0 w-full h-36 md:h-72 bg-center bg-cover bg-dark-primary-2"
 						style={{
 							backgroundImage: `url(${parseImgUrl(
 								headMeta.cover ? headMeta.cover : headMeta.image
@@ -399,7 +399,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					<div
 						className={`w-32 h-32 overflow-hidden ${
 							headMeta.image === null ? 'bg-primary' : 'bg-dark-primary-2'
-						} shadow-inner z-20 rounded-full mt-12 md:mt-32`}
+						} shadow-inner z-20 rounded-full mt-8 md:mt-44`}
 					>
 						<img
 							src={parseImgUrl(
