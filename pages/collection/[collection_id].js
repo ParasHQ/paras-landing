@@ -136,7 +136,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			fetchCollectionActivity(true)
 			fetchCollectionDailyVolume()
 		}
-	}, [router.query.tab])
+	}, [router.query.tab, router.query.headerActivities, router.query.sortActivities])
 
 	const editCollection = () => {
 		router.push(`/collection/edit/${collectionId}`)
@@ -189,12 +189,23 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const activitiesParams = (_page = 0) => {
-		const params = {
-			collection_id: collectionId,
-			filter: 'sale',
-			__skip: _page * LIMIT_ACTIVITY,
-			__limit: LIMIT_ACTIVITY,
-		}
+		const headerActivities = router.query.headerActivities
+		const sortActivities = router.query.sortActivities
+		const params =
+			!sortActivities || sortActivities === ''
+				? {
+						collection_id: collectionId,
+						filter: 'sale',
+						__skip: _page * LIMIT_ACTIVITY,
+						__limit: LIMIT_ACTIVITY,
+				  }
+				: {
+						collection_id: collectionId,
+						filter: 'sale',
+						__skip: _page * LIMIT_ACTIVITY,
+						__limit: LIMIT_ACTIVITY,
+						__sort: `${headerActivities}${sortActivities === `asc` ? `::1` : `::-1`}`,
+				  }
 
 		return params
 	}
@@ -224,6 +235,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const fetchCollectionActivity = async (initialFetch = false) => {
 		const _activityPage = initialFetch ? 0 : activityPage
 		const _hasMoreActivities = initialFetch ? true : hasMoreActivities
+		const activitiesData = initialFetch ? [] : activities
 
 		if (!_hasMoreActivities) {
 			return
@@ -235,7 +247,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 		const resActivities = (await res.data.data) || []
 
-		const newActivities = [...activities, ...resActivities]
+		const newActivities = [...activitiesData, ...resActivities]
 		setActivities(newActivities)
 		setActivityPage(_activityPage + 1)
 		if (resActivities < LIMIT_ACTIVITY) {
@@ -258,6 +270,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const changeTab = (tab) => {
+		tab === 'items' && (delete router.query.headerActivities, delete router.query.sortActivities)
 		router.push(
 			{
 				query: {
@@ -647,6 +660,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							dailyVolume={dailyVolume}
 							fetchData={fetchCollectionActivity}
 							hasMore={hasMoreActivities}
+							collectionId={collectionId}
+							querySort={router.query}
 						/>
 					) : (
 						<CardList
