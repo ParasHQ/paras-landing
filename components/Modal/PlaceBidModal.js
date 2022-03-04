@@ -5,11 +5,9 @@ import { useIntl } from 'hooks/useIntl'
 import Modal from 'components/Common/Modal'
 import Button from 'components/Common/Button'
 import { InputText } from 'components/Common/form'
-import near from 'lib/near'
 import { sentryCaptureException } from 'lib/sentry'
 import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
-import { transactions } from 'near-api-js'
 import JSBI from 'jsbi'
 import { IconX } from 'components/Icons'
 import { useEffect, useState } from 'react'
@@ -101,23 +99,33 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 			}
 
 			if (hasDepositStorage) {
-				await near.wallet.account(process.env.MARKETPLACE_CONTRACT_ID).signAndSendTransaction({
+				await WalletHelper.signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
-						transactions.functionCall(`add_offer`, params, GAS_FEE, parseNearAmount(bidAmount)),
+						{
+							methodName: 'add_offer',
+							args: params,
+							deposit: parseNearAmount(bidAmount),
+							gas: GAS_FEE,
+						},
 					],
 				})
 			} else {
-				await near.wallet.account(process.env.MARKETPLACE_CONTRACT_ID).signAndSendTransaction({
+				await WalletHelper.signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
-						transactions.functionCall(
-							`storage_deposit`,
-							depositParams,
-							GAS_FEE,
-							STORAGE_ADD_MARKET_FEE
-						),
-						transactions.functionCall(`add_offer`, params, GAS_FEE, parseNearAmount(bidAmount)),
+						{
+							methodName: 'storage_deposit',
+							args: depositParams,
+							deposit: STORAGE_ADD_MARKET_FEE,
+							gas: GAS_FEE,
+						},
+						{
+							methodName: 'add_offer',
+							args: params,
+							deposit: parseNearAmount(bidAmount),
+							gas: GAS_FEE,
+						},
 					],
 				})
 			}

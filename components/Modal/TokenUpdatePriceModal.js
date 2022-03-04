@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import near from 'lib/near'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
@@ -130,7 +129,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 				],
 			})
 
-			return await near.executeMultipleTransactions(txs)
+			return await WalletHelper.multipleCallFunction(txs)
 		} catch (err) {
 			sentryCaptureException(err)
 		}
