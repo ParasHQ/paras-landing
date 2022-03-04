@@ -12,6 +12,7 @@ import Cookies from 'js-cookie'
 import NotificationList from './Notification/NotificationList'
 import User from './User/User'
 import TokenNav from './Nav/TokenNav'
+import SlowActivityInfo from './SlowActivityInfo'
 
 const Nav = () => {
 	const [showMobileNav, setShowMobileNav] = useState(false)
@@ -84,6 +85,9 @@ const Nav = () => {
 				>
 					<Setting close={() => setShowSettingModal(false)} />
 				</Modal>
+			)}
+			{store.activitySlowUpdate && process.env.APP_ENV !== 'testnet' && (
+				<SlowActivityInfo refresh={router.pathname.includes('activity')} />
 			)}
 			<div className="sticky top-0 left-0 right-0 z-40 bg-black">
 				{process.env.APP_ENV !== 'testnet' && (

@@ -26,11 +26,13 @@ const ActivityLog = ({ query }) => {
 		setActivityListIdBefore,
 		activityListHasMore,
 		setActivityListHasMore,
+		setActivitySlowUpdate,
 	} = useStore()
 	const router = useRouter()
 	const modalRef = useRef()
 
 	const [isFetching, setIsFetching] = useState(false)
+	const [isFetchingTop, setIsFetchingTop] = useState(false)
 	const [topUser, setTopUser] = useState([])
 	const [showModal, setShowModal] = useState(false)
 	const [activityType, setActivityType] = useState('activity')
@@ -50,6 +52,7 @@ const ActivityLog = ({ query }) => {
 	})
 
 	useEffect(async () => {
+		setIsFetchingTop(true)
 		if (query) {
 			_fetchData(query, true)
 		} else {
@@ -57,6 +60,7 @@ const ActivityLog = ({ query }) => {
 		}
 		const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=5`)
 		setTopUser(res.data.data)
+		setIsFetchingTop(false)
 	}, [])
 
 	const onClickFilter = (query) => {
@@ -116,6 +120,14 @@ const ActivityLog = ({ query }) => {
 			const newData = await res.data.data
 
 			const newActivityList = [..._activityList, ...newData.results]
+			if (
+				initial &&
+				Math.floor((new Date() - new Date(newActivityList[0].msg?.datetime)) / (1000 * 60)) >= 5
+			) {
+				setActivitySlowUpdate(true)
+			} else {
+				setActivitySlowUpdate(false)
+			}
 			setActivityList(newActivityList)
 			if (newData.results.length === 0) {
 				setActivityListHasMore(false)
@@ -149,27 +161,30 @@ const ActivityLog = ({ query }) => {
 					<title>{localeLn('ActivityParas')}</title>
 					<meta
 						name="description"
-						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+						content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 					/>
 
-					<meta name="twitter:title" content="Paras — Digital Art Cards Market" />
+					<meta name="twitter:title" content="Paras - NFT Marketplace for Digital Collectibles" />
 					<meta name="twitter:card" content="summary_large_image" />
 					<meta name="twitter:site" content="@ParasHQ" />
 					<meta name="twitter:url" content="https://paras.id" />
 					<meta
 						name="twitter:description"
-						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+						content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 					/>
 					<meta
 						name="twitter:image"
 						content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 					/>
 					<meta property="og:type" content="website" />
-					<meta property="og:title" content="Paras — Digital Art Cards Market" />
-					<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
+					<meta property="og:title" content="Paras - NFT Marketplace for Digital Collectibles" />
+					<meta
+						property="og:site_name"
+						content="Paras - NFT Marketplace for Digital Collectibles"
+					/>
 					<meta
 						property="og:description"
-						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+						content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 					/>
 					<meta property="og:url" content="https://paras.id" />
 					<meta
@@ -283,12 +298,14 @@ const ActivityLog = ({ query }) => {
 							data={topUser.buyers}
 							userType={'buyer'}
 							linkTo="/activity/top-buyers"
+							isFetching={isFetchingTop}
 						/>
 						<ActivityTopUsers
 							data={topUser.sellers}
 							userType={'seller'}
 							className="mt-12"
 							linkTo="/activity/top-sellers"
+							isFetching={isFetchingTop}
 						/>
 						<TopCollectorsAllTime className="mt-12" />
 						<ButtonScrollTop />

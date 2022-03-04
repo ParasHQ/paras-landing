@@ -15,7 +15,7 @@ const ProfileDetail = ({ userProfile, accountId }) => {
 
 	const headMeta = {
 		title: `${accountId} — Paras`,
-		description: `See digital card collectibles and creations from ${accountId}. ${
+		description: `See NFT digital card collectibles and creations from ${accountId}. ${
 			userProfile?.bio || ''
 		}`,
 		image: userProfile?.imgUrl

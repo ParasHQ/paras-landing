@@ -212,6 +212,9 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 								>
 									{hasBid ? 'Update' : localeLn('Submit offer')}
 								</Button>
+								<Button variant="ghost" size="md" isFullWidth className="mt-4" onClick={onClose}>
+									{localeLn('Cancel')}
+								</Button>
 							</div>
 						</form>
 					</div>

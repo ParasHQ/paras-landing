@@ -11,6 +11,7 @@ import { parseSortQuery } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
+import FilterDisplay from 'components/Filter/FilterDisplay'
 
 const LIMIT = 12
 
@@ -25,7 +26,8 @@ const Creation = ({ userProfile, accountId }) => {
 	const [lowestPriceNext, setLowestPriceNext] = useState(null)
 	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [isFetching, setIsFetching] = useState(false)
-	const [isFiltering, setIsFiltering] = useState(true)
+	const [isFiltering, setIsFiltering] = useState(false)
+	const [display, setDisplay] = useState('large')
 
 	useEffect(async () => {
 		await fetchCreatorTokens()
@@ -120,9 +122,13 @@ const Creation = ({ userProfile, accountId }) => {
 		setIsFiltering(false)
 	}
 
+	const onClickDisplay = (typeDisplay) => {
+		setDisplay(typeDisplay)
+	}
+
 	const headMeta = {
 		title: `${accountId} — Paras`,
-		description: `See digital card collectibles and creations from ${accountId}. ${
+		description: `See NFT digital card collectibles and creations from ${accountId}. ${
 			userProfile?.bio || ''
 		}`,
 		image: userProfile?.imgUrl
@@ -161,8 +167,9 @@ const Creation = ({ userProfile, accountId }) => {
 			<Nav />
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'creation'} />
-				<div className="flex justify-end mt-4 md:mb-14 md:-mr-4">
+				<div className="flex justify-end my-4 md:mb-14 md:-mr-4">
 					<FilterMarket isShowVerified={false} />
+					<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 				</div>
 				<div className="-mt-4 md:-mt-6">
 					{isFiltering ? (
@@ -173,6 +180,7 @@ const Creation = ({ userProfile, accountId }) => {
 							tokens={tokens}
 							fetchData={fetchCreatorTokens}
 							hasMore={hasMore}
+							displayType={display}
 						/>
 					)}
 				</div>

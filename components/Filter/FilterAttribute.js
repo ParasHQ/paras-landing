@@ -31,12 +31,16 @@ const FilterAttribute = ({ attributes, onClearAll }) => {
 	}, [router.query.attributes])
 
 	const onClickApply = () => {
-		router.push({
-			query: {
-				...router.query,
-				attributes: JSON.stringify(attributeFilter),
+		router.push(
+			{
+				query: {
+					...router.query,
+					attributes: JSON.stringify(attributeFilter),
+				},
 			},
-		})
+			{},
+			{ shallow: true, scroll: false }
+		)
 
 		setShowFilterModal(false)
 	}
@@ -71,7 +75,7 @@ const FilterAttribute = ({ attributes, onClearAll }) => {
 				</h1>
 			</div>
 			{showFilterModal && (
-				<div className="absolute mr-4 z-20 mt-2 right-0 bg-dark-primary-2 rounded-md w-72">
+				<div className="absolute mr-4 z-20 mt-2 right-0 bg-dark-primary-2 rounded-md w-80">
 					<Scrollbars
 						autoHeight
 						autoHeightMax={`30rem`}
@@ -142,15 +146,20 @@ const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attribu
 				className="flex flex-row justify-between items-center w-full text-white p-2"
 			>
 				<p className="font-medium text-lg">{attribute}</p>
-				<svg
-					width="10"
-					height="10"
-					viewBox="0 0 21 19"
-					fill="none"
-					xmlns="http://www.w3.org/2000/svg"
-				>
-					<path d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z" fill="white" />
-				</svg>
+				<div className="flex flex-col items-center justify-center text-center">
+					<p className="text-opacity-15 text-white text-xs">
+						{Object.keys(attributes[attribute]).length}
+					</p>
+					<svg
+						width="10"
+						height="10"
+						viewBox="0 0 21 19"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z" fill="white" />
+					</svg>
+				</div>
 			</button>
 			{isOpen && (
 				<div className="max-w-sm mx-auto p-2 mb-3 rounded-md bg-blue-400 bg-opacity-5">
@@ -169,7 +178,11 @@ const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attribu
 									/>
 									<p className="font-thin text-white text-sm py-1 md:py-2">{value}</p>
 									<p className="font-thin text-right flex-grow text-gray-500 text-sm py-1 md:py-2">
-										{attributes[attribute][value].count}
+										{attributes[attribute][value].count} (
+										{attributes[attribute][value].rarity?.rarity > 1
+											? Math.round(attributes[attribute][value].rarity)
+											: attributes[attribute][value].rarity.toFixed(2)}
+										%)
 									</p>
 								</label>
 								<br />

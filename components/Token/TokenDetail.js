@@ -149,11 +149,16 @@ const TokenDetail = ({ token, className }) => {
 						{tokenDisplay === 'detail' ? (
 							<Media
 								className="rounded-lg overflow-hidden"
-								url={token.metadata.media}
+								url={
+									token.metadata?.mime_type
+										? parseImgUrl(token.metadata.media)
+										: token.metadata.media
+								}
 								videoControls={true}
 								videoLoop={true}
 								videoMuted={true}
 								videoPadding={false}
+								mimeType={token?.metadata?.mime_type}
 								seeDetails={true}
 							/>
 						) : (
@@ -171,6 +176,7 @@ const TokenDetail = ({ token, className }) => {
 										copies: token.metadata.copies,
 										creatorId: token.metadata.creator_id || token.contract_id,
 										is_creator: token.is_creator,
+										mime_type: token.metadata.mime_type,
 									}}
 								/>
 							</div>
@@ -201,9 +207,9 @@ const TokenDetail = ({ token, className }) => {
 					>
 						<div>
 							<div className="flex justify-between">
-								<div>
+								<div className="overflow-x-hidden">
 									<div className="flex justify-between items-center">
-										<p className="text-gray-300">
+										<p className="text-gray-300 truncate">
 											NFT //{' '}
 											{token.contract_id === process.env.NFT_CONTRACT_ID
 												? `#${token.edition_id} of ${token.metadata.copies}`

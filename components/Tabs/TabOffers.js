@@ -11,7 +11,7 @@ import near from 'lib/near'
 import {
 	GAS_FEE,
 	GAS_FEE_150,
-	GAS_FEE_300,
+	GAS_FEE_200,
 	STORAGE_APPROVE_FEE,
 	STORAGE_MINT_FEE,
 } from 'config/constants'
@@ -24,9 +24,7 @@ const FETCH_TOKENS_LIMIT = 12
 
 const Offer = ({ data, onAcceptOffer, hideButton }) => {
 	const [profile, setProfile] = useState({})
-	const { currentUser } = useStore((state) => ({
-		currentUser: state.currentUser,
-	}))
+	const currentUser = useStore((state) => state.currentUser)
 
 	useEffect(() => {
 		if (data.buyer_id) {
@@ -190,7 +188,7 @@ const TabOffers = ({ localToken }) => {
 					contractId: activeOffer.contract_id,
 					methodName: `nft_mint_and_approve`,
 					args: params,
-					gas: GAS_FEE_300,
+					gas: GAS_FEE_200,
 					attachedDeposit: JSBI.add(
 						JSBI.BigInt(STORAGE_APPROVE_FEE),
 						JSBI.BigInt(STORAGE_MINT_FEE)

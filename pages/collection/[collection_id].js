@@ -24,8 +24,10 @@ import { useToast } from 'hooks/useToast'
 import LineClampText from 'components/Common/LineClampText'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import ArtistBanned from 'components/Common/ArtistBanned'
+import cachios from 'cachios'
+import FilterDisplay from 'components/Filter/FilterDisplay'
 
-const LIMIT = 8
+const LIMIT = 12
 const LIMIT_ACTIVITY = 20
 
 const CollectionPage = ({ collectionId, collection, serverQuery }) => {
@@ -47,43 +49,53 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [hasMoreActivities, setHasMoreActivities] = useState(true)
 	const [deleteModal, setDeleteModal] = useState(false)
 	const [deleteLoading, setDeleteLoading] = useState(false)
+	const [dailyVolume, setDailyVolume] = useState([])
+	const [display, setDisplay] = useState('large')
+
 	const toast = useToast()
 
-	const fetchData = async () => {
+	const fetchData = async (initialFetch = false) => {
 		if (!hasMore || isFetching) {
 			return
 		}
 		setIsFetching(true)
 		const params = tokensParams({
 			...(router.query || serverQuery),
-			_id_next: idNext,
-			lowest_price_next: lowestPriceNext,
-			updated_at_next: updatedAtNext,
+			...(initialFetch
+				? {}
+				: {
+						_id_next: idNext,
+						lowest_price_next: lowestPriceNext,
+						updated_at_next: updatedAtNext,
+				  }),
 		})
 
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
 		})
 
-		const stat = await axios(`${process.env.V2_API_URL}/collection-stats`, {
-			params: {
-				collection_id: collectionId,
-			},
-		})
-
-		const attributes = await axios(`${process.env.V2_API_URL}/collection-attributes`, {
-			params: {
-				collection_id: collectionId,
-			},
-		})
-
-		const newAttributes = await attributes.data.data.results
-		const newStat = await stat.data.data.results
 		const newData = await res.data.data
 		const newTokens = [...tokens, ...newData.results]
-		setAttributes(newAttributes)
-		setStats(newStat)
 		setTokens(newTokens)
+
+		if (initialFetch) {
+			const stat = await axios(`${process.env.V2_API_URL}/collection-stats`, {
+				params: {
+					collection_id: collectionId,
+				},
+			})
+
+			const attributes = await axios(`${process.env.V2_API_URL}/collection-attributes`, {
+				params: {
+					collection_id: collectionId,
+				},
+			})
+			const newAttributes = await attributes.data.data.results
+			const newStat = await stat.data.data.results
+			setAttributes(newAttributes)
+			setStats(newStat)
+		}
+
 		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
@@ -101,10 +113,11 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		title: collection.collection,
 		description: collection.description,
 		image: parseImgUrl(collection.media, null, { useOriginal: true }),
+		cover: parseImgUrl(collection.cover, null, { useOriginal: true }),
 	}
 
 	useEffect(() => {
-		fetchData()
+		fetchData(true)
 	}, [])
 
 	useEffect(() => {
@@ -120,7 +133,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	useEffect(() => {
 		if (router.query.tab === 'activity') {
-			fetchCollectionActivity()
+			fetchCollectionActivity(true)
+			fetchCollectionDailyVolume()
 		}
 	}, [router.query.tab])
 
@@ -207,20 +221,23 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		setIsFiltering(false)
 	}
 
-	const fetchCollectionActivity = async () => {
-		if (!hasMoreActivities) {
+	const fetchCollectionActivity = async (initialFetch = false) => {
+		const _activityPage = initialFetch ? 0 : activityPage
+		const _hasMoreActivities = initialFetch ? true : hasMoreActivities
+
+		if (!_hasMoreActivities) {
 			return
 		}
 
 		const res = await axios.get(`${process.env.V2_API_URL}/collection-activities`, {
-			params: activitiesParams(activityPage),
+			params: activitiesParams(_activityPage),
 		})
 
 		const resActivities = (await res.data.data) || []
 
 		const newActivities = [...activities, ...resActivities]
 		setActivities(newActivities)
-		setActivityPage(activityPage + 1)
+		setActivityPage(_activityPage + 1)
 		if (resActivities < LIMIT_ACTIVITY) {
 			setHasMoreActivities(false)
 		} else {
@@ -228,33 +245,57 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		}
 	}
 
-	const changeTab = (tab) => {
-		router.push({
-			query: {
-				...router.query,
-				tab: tab,
+	const fetchCollectionDailyVolume = async () => {
+		const res = await cachios.get(`${process.env.V2_API_URL}/collection-daily`, {
+			params: {
+				collection_id: collectionId,
 			},
+			ttl: 120,
 		})
+
+		const newDailyVolume = await res.data.data.volume_daily
+		setDailyVolume(newDailyVolume)
+	}
+
+	const changeTab = (tab) => {
+		router.push(
+			{
+				query: {
+					...router.query,
+					tab: tab,
+				},
+			},
+			{},
+			{ shallow: true, scroll: false }
+		)
 	}
 
 	const removeAttributeFilter = (index) => {
 		const url = JSON.parse(router.query.attributes)
 		url.splice(index, 1)
-		router.push({
-			query: {
-				...router.query,
-				attributes: JSON.stringify(url),
+		router.push(
+			{
+				query: {
+					...router.query,
+					attributes: JSON.stringify(url),
+				},
 			},
-		})
+			{},
+			{ shallow: true, scroll: false }
+		)
 	}
 
 	const removeAllAttributesFilter = () => {
-		router.push({
-			query: {
-				...router.query,
-				attributes: `[]`,
+		router.push(
+			{
+				query: {
+					...router.query,
+					attributes: `[]`,
+				},
 			},
-		})
+			{},
+			{ shallow: true, scroll: false }
+		)
 	}
 
 	const onShowDeleteModal = () => {
@@ -303,6 +344,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		}
 	}
 
+	const onClickDisplay = (typeDisplay) => {
+		setDisplay(typeDisplay)
+	}
+
 	return (
 		<div className="min-h-screen bg-black">
 			<div
@@ -340,7 +385,22 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			/>
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="flex items-center m-auto justify-center mb-4">
-					<div className="w-32 h-32 overflow-hidden bg-primary shadow-inner">
+					{headMeta.cover === null && (
+						<div className="absolute top-0 left-0 w-full h-36 md:h-72 bg-black bg-opacity-10 backdrop-filter backdrop-blur-lg backdrop-saturate-200 z-20" />
+					)}
+					<div
+						className="absolute top-0 left-0 w-full h-36 md:h-72 bg-center bg-cover bg-dark-primary-2"
+						style={{
+							backgroundImage: `url(${parseImgUrl(
+								headMeta.cover ? headMeta.cover : headMeta.image
+							)})`,
+						}}
+					/>
+					<div
+						className={`w-32 h-32 overflow-hidden ${
+							headMeta.image === null ? 'bg-primary' : 'bg-dark-primary-2'
+						} shadow-inner z-20 rounded-full mt-8 md:mt-44`}
+					>
 						<img
 							src={parseImgUrl(
 								collection?.media ||
@@ -349,7 +409,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 									width: `300`,
 								}
 							)}
-							className="w-full object-cover"
+							className="w-full object-cover rounded-full border-4 border-black"
 						/>
 					</div>
 				</div>
@@ -369,6 +429,80 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						className="text-gray-200 mt-4 max-w-lg m-auto whitespace-pre-line break-words"
 						text={collection?.description}
 					/>
+					<div className="flex items-center justify-center space-x-2 w-6/12 mx-auto mt-4">
+						{collection.socialMedia?.website && (
+							<a
+								href={
+									!/^https?:\/\//i.test(collection?.socialMedia?.website)
+										? 'http://' + collection?.socialMedia?.website
+										: collection?.socialMedia?.website
+								}
+								className="mt-2 mb-4 flex justify-between border border-gray-700 p-3 md:p-4 rounded-md hover:border-gray-300 transition-all"
+								target="_blank"
+								rel="noreferrer"
+							>
+								<svg width="25" height="25" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+									<path
+										fill="#cbd5e0"
+										fillRule="evenodd"
+										clipRule="evenodd"
+										d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"
+									/>
+								</svg>
+							</a>
+						)}
+						{collection.socialMedia?.twitter && (
+							<a
+								href={'https://twitter.com/' + collection?.socialMedia?.twitter}
+								className="mt-2 mb-4 flex justify-between border border-gray-700 p-3 md:p-4 rounded-md hover:border-gray-300 transition-all"
+								target="_blank"
+								rel="noreferrer"
+							>
+								<svg
+									height="25"
+									width="25"
+									viewBox="0 0 273.5 222.3"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										fill="#cbd5e0"
+										fillRule="evenodd"
+										clipRule="evenodd"
+										d="M273.5 26.3a109.77 109.77 0 0 1-32.2 8.8 56.07 56.07 0 0 0 24.7-31 113.39 113.39 0 0 1-35.7 13.6 56.1 56.1 0 0 0-97 38.4 54 54 0 0 0 1.5 12.8A159.68 159.68 0 0 1 19.1 10.3a56.12 56.12 0 0 0 17.4 74.9 56.06 56.06 0 0 1-25.4-7v.7a56.11 56.11 0 0 0 45 55 55.65 55.65 0 0 1-14.8 2 62.39 62.39 0 0 1-10.6-1 56.24 56.24 0 0 0 52.4 39 112.87 112.87 0 0 1-69.7 24 119 119 0 0 1-13.4-.8 158.83 158.83 0 0 0 86 25.2c103.2 0 159.6-85.5 159.6-159.6 0-2.4-.1-4.9-.2-7.3a114.25 114.25 0 0 0 28.1-29.1"
+									></path>
+								</svg>
+							</a>
+						)}
+						{collection.socialMedia?.discord && (
+							<a
+								href={'https://discord.gg/' + collection?.socialMedia?.discord}
+								className="mt-2 mb-4 flex justify-between border border-gray-700 p-3 md:p-4 rounded-md hover:border-gray-300 transition-all"
+								target="_blank"
+								rel="noreferrer"
+							>
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									className="icon icon-tabler icon-tabler-brand-discord"
+									width={25}
+									height={25}
+									viewBox="0 0 24 24"
+									strokeWidth="1.5"
+									stroke="#cbd5e0"
+									fill="none"
+									strokeLinecap="round"
+									strokeLinejoin="round"
+								>
+									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+									<circle cx={9} cy={12} r={1} />
+									<circle cx={15} cy={12} r={1} />
+									<path d="M7.5 7.5c3.5 -1 5.5 -1 9 0" />
+									<path d="M7 16.5c3.5 1 6.5 1 10 0" />
+									<path d="M15.5 17c0 1 1.5 3 2 3c1.5 0 2.833 -1.667 3.5 -3c.667 -1.667 .5 -5.833 -1.5 -11.5c-1.457 -1.015 -3 -1.34 -4.5 -1.5l-1 2.5" />
+									<path d="M8.5 17c0 1 -1.356 3 -1.832 3c-1.429 0 -2.698 -1.667 -3.333 -3c-.635 -1.667 -.476 -5.833 1.428 -11.5c1.388 -1.015 2.782 -1.34 4.237 -1.5l1 2.5" />
+								</svg>
+							</a>
+						)}
+					</div>
 					<ArtistBanned
 						creatorId={collection.creator_id}
 						className="max-w-2xl mx-auto relative -mb-4"
@@ -412,7 +546,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						</div>
 					)}
 				</div>
-				<div className="mb-10 sm:my-2 flex flex-wrap items-center justify-center px-4">
+				<div className="mb-4 md:mb-10 sm:my-2 flex flex-wrap items-center justify-center px-4">
 					<CollectionStats stats={stats} />
 				</div>
 				<div className="z-20 flex items-center justify-center relative">
@@ -447,14 +581,6 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						</div>
 					</div>
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
-						<div className="flex sm:hidden">
-							{Object.keys(attributes).length > 0 && (
-								<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
-							)}
-							<FilterMarket isShowVerified={false} defaultMinPrice={true} />
-						</div>
-					)}
-					{(router.query.tab === 'items' || router.query.tab === undefined) && (
 						<div className="hidden sm:flex md:ml-8 z-10 items-center justify-end right-0 absolute w-full">
 							<div className="flex justify-center mt-4">
 								<div className="flex">
@@ -465,8 +591,22 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 										/>
 									)}
 									<FilterMarket isShowVerified={false} defaultMinPrice={true} />
+									<div className="hidden lg:flex mt-0 mr-4">
+										<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
+									</div>
 								</div>
 							</div>
+						</div>
+					)}
+				</div>
+				<div className="flex lg:hidden mt-6 mx-4 justify-center sm:justify-end">
+					{(router.query.tab === 'items' || router.query.tab === undefined) && (
+						<div className="flex sm:hidden">
+							{Object.keys(attributes).length > 0 && (
+								<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
+							)}
+							<FilterMarket isShowVerified={false} defaultMinPrice={true} />
+							<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 						</div>
 					)}
 				</div>
@@ -500,10 +640,11 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				</div>
 				<div className="mt-4 px-4">
 					{isFiltering ? (
-						<CardListLoader />
+						<CardListLoader length={display === 'large' ? 12 : 18} displayType={display} />
 					) : router.query.tab == 'activity' ? (
 						<CollectionActivity
 							activities={activities}
+							dailyVolume={dailyVolume}
 							fetchData={fetchCollectionActivity}
 							hasMore={hasMoreActivities}
 						/>
@@ -515,6 +656,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							hasMore={hasMore}
 							profileCollection={collection.media}
 							type="collection"
+							displayType={display}
 						/>
 					)}
 				</div>
