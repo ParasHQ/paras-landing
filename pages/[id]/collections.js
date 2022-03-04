@@ -31,6 +31,7 @@ const Collections = ({ userProfile, accountId }) => {
 				creator_id: router.query.id,
 				__skip: page * LIMIT,
 				__limit: LIMIT,
+				__sort: 'volume::-1',
 			},
 		})
 		const data = await res.data.data.results
