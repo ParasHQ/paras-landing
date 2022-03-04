@@ -24,9 +24,9 @@ import { SWRConfig } from 'swr'
 import * as Sentry from '@sentry/nextjs'
 import { sentryCaptureException } from 'lib/sentry'
 import { GTM_ID, pageview } from 'lib/gtm'
-const FETCH_TOKENS_LIMIT = 10
-const MAX_ACTIVITY_DELAY = 5
 import SuccessTransactionModal from 'components/Modal/SuccessTransactionModal'
+
+const MAX_ACTIVITY_DELAY = 5
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
@@ -94,9 +94,7 @@ function MyApp({ Component, pageProps }) {
 	useEffect(() => storePathValues, [router.asPath])
 
 	const fetchActivities = async () => {
-		const isVerified = true
-		const limit = FETCH_TOKENS_LIMIT
-		const _query = `is_verified=${isVerified}&__limit=${limit}`
+		const _query = `is_verified=${false}&__limit=${1}`
 		const respActivities = await axios.get(`${process.env.V2_API_URL}/activities?${_query}`)
 		const respDataActivities = respActivities.data.data.results
 		if (

@@ -121,6 +121,7 @@ const ActivityLog = ({ query }) => {
 
 			const newActivityList = [..._activityList, ...newData.results]
 			if (
+				initial &&
 				Math.floor((new Date() - new Date(newActivityList[0].msg?.datetime)) / (1000 * 60)) >= 5
 			) {
 				setActivitySlowUpdate(true)
