@@ -180,14 +180,7 @@ const CollectionActivity = ({
 																				tab: `activity`,
 																			},
 																		},
-																		{
-																			pathname: `/collection/${collectionId}`,
-																			query: {
-																				headerActivities: d.id,
-																				sortActivities: 'asc',
-																				tab: `activity`,
-																			},
-																		},
+																		`/collection/${collectionId}?tab=activity`,
 																		{ shallow: true, scroll: false }
 																	)
 																}}
@@ -208,14 +201,7 @@ const CollectionActivity = ({
 																				tab: `activity`,
 																			},
 																		},
-																		{
-																			pathname: `/collection/${collectionId}`,
-																			query: {
-																				headerActivities: d.id,
-																				sortActivities: 'desc',
-																				tab: `activity`,
-																			},
-																		},
+																		`/collection/${collectionId}?tab=activity`,
 																		{ shallow: true, scroll: false }
 																	)
 																}}
@@ -240,14 +226,7 @@ const CollectionActivity = ({
 																				tab: `activity`,
 																			},
 																		},
-																		{
-																			pathname: `/collection/${collectionId}`,
-																			query: {
-																				headerActivities: d.id,
-																				sortActivities: '',
-																				tab: `activity`,
-																			},
-																		},
+																		`/collection/${collectionId}?tab=activity`,
 																		{ shallow: true, scroll: false }
 																	)
 																}}
@@ -273,14 +252,7 @@ const CollectionActivity = ({
 																		tab: `activity`,
 																	},
 																},
-																{
-																	pathname: `/collection/${collectionId}`,
-																	query: {
-																		headerActivities: d.id,
-																		sortActivities: 'asc',
-																		tab: `activity`,
-																	},
-																},
+																`/collection/${collectionId}?tab=activity`,
 																{ shallow: true, scroll: false }
 															)
 														}}

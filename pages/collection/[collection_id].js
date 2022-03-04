@@ -204,9 +204,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						filter: 'sale',
 						__skip: _page * LIMIT_ACTIVITY,
 						__limit: LIMIT_ACTIVITY,
-						__sort: `${headerActivities}${sortActivities === `asc` ? `::1` : ``}${
-							sortActivities === `desc` ? `::-1` : ``
-						}`,
+						__sort: `${headerActivities}${sortActivities === `asc` ? `::1` : `::-1`}`,
 				  }
 
 		return params
