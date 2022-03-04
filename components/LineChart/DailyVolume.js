@@ -60,7 +60,7 @@ const DailyVolume = ({ data }) => {
 					<ResponsiveContainer width="100%" height="100%">
 						<AreaChart data={data} margin={{ top: 5, right: 20, left: 10, bottom: 35 }}>
 							<defs>
-								<linearGradient direction={90} id="paint0_linear" x1="0" y1="0" x2="0" y2="1">
+								<linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
 									<stop offset="0%" stopColor="#9996bc" stopOpacity={0.5} />
 									<stop offset="50%" stopColor="#594fb2" stopOpacity={0.5} />
 									<stop offset="75%" stopColor="#1300BA" stopOpacity={0.15} />
@@ -97,17 +97,7 @@ const DailyVolume = ({ data }) => {
 								stroke="#3389ff"
 								strokeWidth={2}
 								fillOpacity={1}
-								fill="url(#paint0_linear)"
-							/>
-							<Area
-								type="monotone"
-								stackId="2"
-								dataKey="revenue"
-								dot={false}
-								stroke="#9030ff"
-								strokeWidth={2}
-								fillOpacity={1}
-								fill="url(#paint0_linear)"
+								fill="url(#colorVolume)"
 							/>
 						</AreaChart>
 					</ResponsiveContainer>

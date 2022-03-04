@@ -103,7 +103,11 @@ const CardList = ({
 		const price = token.lowest_price || token.price
 
 		if (token.is_non_mintable && token.total_mint === token.metadata.copies) {
-			return price ? 'Buy Now' : 'Place Offer'
+			if (token.token && token.token.owner_id === currentUser) {
+				return localeLn('UpdateListing')
+			} else {
+				return price ? 'Buy Now' : 'Place Offer'
+			}
 		} else if (
 			currentUser === token.metadata.creator_id ||
 			(!token.metadata.creator_id && currentUser === token.contract_id)
@@ -125,6 +129,10 @@ const CardList = ({
 			// Multiple Edition
 			if (token.token === undefined && token.lowest_price) {
 				onClickSeeDetails(token, { tab: 'owners' })
+			}
+			// 1 of 1 Edition, owned by current user
+			else if (token.token && token.token.owner_id === currentUser) {
+				setModalType('updatelisting')
 			}
 			// 1 of 1 Edition
 			else {
