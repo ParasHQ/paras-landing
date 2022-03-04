@@ -91,7 +91,7 @@ export default function SearchPage({ searchQuery }) {
 				collection_search: query.q,
 				__skip: 0,
 				__limit: LIMIT,
-				__sort: 'volume::-1',
+				__sort: 'isCreator::-1',
 				__showEmpty: false,
 			},
 		})
@@ -187,7 +187,7 @@ export default function SearchPage({ searchQuery }) {
 				collection_search: encodeURIComponent(query.q),
 				__skip: collPage * LIMIT,
 				__limit: LIMIT,
-				__sort: 'volume::-1',
+				__sort: 'isCreator::-1',
 				__showEmpty: false,
 			},
 		})
