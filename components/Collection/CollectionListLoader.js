@@ -20,12 +20,12 @@ const CollectionListLoader = (props) => (
 					<rect x="0" y="140" rx="30" ry="30" width="50" height="50" />
 					<rect x="60" y="147" rx="4" ry="4" width="120" height="15" />
 					<rect x="60" y="170" rx="4" ry="4" width="150" height="10" />
-					<rect x="25" y="210" rx="4" ry="4" width="60" height="10" />
-					<rect x="20" y="225" rx="4" ry="4" width="70" height="15" />
-					<rect x="115" y="210" rx="4" ry="4" width="60" height="10" />
-					<rect x="110" y="225" rx="4" ry="4" width="70" height="15" />
-					<rect x="205" y="210" rx="4" ry="4" width="60" height="10" />
-					<rect x="200" y="225" rx="4" ry="4" width="70" height="15" />
+					<rect x="18" y="210" rx="4" ry="4" width="60" height="10" />
+					<rect x="13" y="225" rx="4" ry="4" width="70" height="15" />
+					<rect x="108" y="210" rx="4" ry="4" width="60" height="10" />
+					<rect x="103" y="225" rx="4" ry="4" width="70" height="15" />
+					<rect x="198" y="210" rx="4" ry="4" width="60" height="10" />
+					<rect x="193" y="225" rx="4" ry="4" width="70" height="15" />
 				</ContentLoader>
 			</div>
 		))}
