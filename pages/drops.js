@@ -189,18 +189,18 @@ export default function Drops() {
 							<p className="text-gray-200 mt-4">
 								A limited collection of BOO Monsters roaming the blockchain
 							</p>
-							{/* <p className="text-gray-200 mt-4">
-								Check full information about the event{' '}
+							<p className="text-gray-200 mt-4">
+								Twitter:{' '}
 								<span>
 									<a
 										target="blank"
-										href="https://paras.id/publication/nearnauts-rank-1-charity-auction-620cdd1517dbeec00ad0bc0b"
-										className="text-white mt-4 font-bold underline"
+										href="https://twitter.com/BOOMonstersNEAR"
+										className="text-white mt-4 font-bold hover:underline"
 									>
-										here
+										www.twitter.com/BOOMonstersNEAR
 									</a>{' '}
 								</span>
-							</p> */}
+							</p>
 							{/* <div className="mt-8 border-2 border-dashed border-gray-800 rounded-md p-4">
 								<div className="text-white font-bold mb-2">Limited time only</div>
 								<Countdown
