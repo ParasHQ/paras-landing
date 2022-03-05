@@ -32,7 +32,12 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 
 	const calculatePriceDistribution = () => {
 		if (JSBI.greaterThan(JSBI.BigInt(data.price), JSBI.BigInt(0))) {
-			const fee = JSBI.BigInt(txFee?.current_fee || 0)
+			let fee
+			if (txFee?.start_time && new Date() < new Date(txFee?.start_time)) {
+				fee = JSBI.BigInt(txFee?.next_fee || 0)
+			} else {
+				fee = JSBI.BigInt(txFee?.current_fee || 0)
+			}
 
 			const calcRoyalty =
 				Object.keys(token.royalty).length > 0
