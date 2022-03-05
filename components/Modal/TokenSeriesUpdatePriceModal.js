@@ -100,6 +100,10 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 				fee = JSBI.BigInt(txFee?.current_fee || 0)
 			}
 
+			if (data.contract_id === 'comic.paras.near') {
+				fee = 500
+			}
+
 			const calcRoyalty =
 				Object.values(data.royalty).length > 0
 					? JSBI.divide(
