@@ -93,7 +93,12 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 
 	const calculatePriceDistribution = () => {
 		if (newPrice && JSBI.greaterThan(JSBI.BigInt(parseNearAmount(newPrice)), JSBI.BigInt(0))) {
-			const fee = JSBI.BigInt(txFee?.current_fee || 0)
+			let fee
+			if (txFee?.start_time && new Date() < new Date(txFee?.start_time)) {
+				fee = JSBI.BigInt(txFee?.next_fee || 0)
+			} else {
+				fee = JSBI.BigInt(txFee?.current_fee || 0)
+			}
 
 			const calcRoyalty =
 				Object.values(data.royalty).length > 0
