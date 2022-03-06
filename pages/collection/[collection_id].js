@@ -75,7 +75,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		})
 
 		const newData = await res.data.data
-		const newTokens = [...tokens, ...newData.results]
+		const newTokens = initialFetch ? [...newData.results] : [...tokens, ...newData.results]
 		setTokens(newTokens)
 
 		if (initialFetch) {
@@ -118,7 +118,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	useEffect(() => {
 		fetchData(true)
-	}, [])
+	}, [router.query.collection_id])
 
 	useEffect(() => {
 		updateFilter(router.query)

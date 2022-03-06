@@ -13,34 +13,91 @@ import NotificationList from './Notification/NotificationList'
 import User from './User/User'
 import TokenNav from './Nav/TokenNav'
 import SlowActivityInfo from './SlowActivityInfo'
+import axios from 'axios'
+import AutoCompleteList from './AutoComplete/AutoCompleteList'
+
+const LIMIT = 5
 
 const Nav = () => {
 	const [showMobileNav, setShowMobileNav] = useState(false)
+	const [showAutoComplete, setShowAutoComplete] = useState(false)
+	const [isRefreshing, setIsRefreshing] = useState(false)
+
+	const [collections, setCollections] = useState()
+	const [profiles, setProfiles] = useState()
+	const [items, setItems] = useState()
 
 	const store = useStore()
 	const router = useRouter()
 	const mobileNavRef = useRef()
 	const testnetBannerRef = useRef()
+	const autoCompleteRef = useRef()
 	const toast = useToast()
 
 	const [showSettingModal, setShowSettingModal] = useState(false)
 	const [searchQuery, setSearchQuery] = useState(router.query.q || '')
 	const { localeLn } = useIntl()
+
 	useEffect(() => {
 		const onClickEv = (e) => {
 			if (mobileNavRef && !mobileNavRef?.current?.contains(e.target)) {
 				setShowMobileNav(false)
+			}
+			if (autoCompleteRef.current?.contains && !autoCompleteRef.current.contains(e.target)) {
+				setShowAutoComplete(false)
 			}
 		}
 
 		if (showMobileNav) {
 			document.body.addEventListener('click', onClickEv)
 		}
+		if (showAutoComplete) {
+			document.body.addEventListener('click', onClickEv)
+		}
 
 		return () => {
 			document.body.removeEventListener('click', onClickEv)
 		}
-	}, [showMobileNav])
+	}, [showMobileNav, showAutoComplete])
+
+	const debounce = (func) => {
+		let timer
+
+		return function (...args) {
+			const context = this
+			if (timer) clearTimeout(timer)
+			timer = setTimeout(() => {
+				timer = null
+				func.apply(context, args)
+			}, 500)
+		}
+	}
+
+	const handleAutoComplete = async (event) => {
+		const { value } = event.target
+		setSearchQuery(value)
+
+		setIsRefreshing(true)
+
+		const resSearchAutoComplete = await axios.get(`${process.env.V2_API_URL}/search`, {
+			params: {
+				search: value,
+				__skip: 0,
+				__limit: LIMIT,
+				is_verified: true,
+			},
+		})
+
+		const res = resSearchAutoComplete.data.data
+
+		setCollections(res.collections.results)
+		setProfiles(res.profiles.results)
+		setItems(res.tokenSeries.results)
+
+		setIsRefreshing(false)
+	}
+
+	const debounceOnChange = debounce(handleAutoComplete)
 
 	const _showTestnetInfo = () => {
 		toast.show({
@@ -73,6 +130,10 @@ const Nav = () => {
 	const hideEmailNotVerified = () => {
 		Cookies.set('hideEmailNotVerified', 'true', { expires: 3 })
 		store.setShowEmailWarning(false)
+	}
+
+	const toggleAutoComplete = () => {
+		setShowAutoComplete(true)
 	}
 
 	return (
@@ -222,8 +283,12 @@ const Nav = () => {
 					</div>
 					<div className="flex-1 pr-4">
 						<div className="max-w-sm mr-auto flex items-center">
-							<form action="/search" method="get" onSubmit={_handleSubmit}>
-								<div className="flex border-dark-primary-1 border-2 rounded-lg bg-dark-primary-1">
+							<form action="/search" method="get" onSubmit={_handleSubmit} autoComplete="off">
+								<div
+									ref={autoCompleteRef}
+									className="flex border-dark-primary-1 border-2 rounded-lg bg-dark-primary-1"
+									onClick={toggleAutoComplete}
+								>
 									<svg
 										width="36"
 										height="36"
@@ -241,8 +306,8 @@ const Nav = () => {
 									<input
 										name="q"
 										type="search"
-										value={searchQuery}
-										onChange={(event) => setSearchQuery(event.target.value)}
+										value={router.query.search}
+										onChange={debounceOnChange}
 										placeholder={localeLn('SearchByTitle')}
 										className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-base md:text-sm font-medium"
 										style={{ WebkitAppearance: 'none' }}
@@ -326,6 +391,16 @@ const Nav = () => {
 						</div>
 					</div>
 				</div>
+				{showAutoComplete && (
+					<AutoCompleteList
+						collectionList={collections}
+						profileList={profiles}
+						itemList={items}
+						modal={(e) => setShowAutoComplete(e)}
+						searchQuery={searchQuery}
+						isRefreshing={isRefreshing}
+					/>
+				)}
 				<div className="relative">
 					<div
 						ref={mobileNavRef}
