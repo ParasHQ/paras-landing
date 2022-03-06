@@ -4,6 +4,7 @@ import axios from 'axios'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Blurhash } from 'react-blurhash'
+import useStore from 'lib/store'
 
 import Nav from 'components/Nav'
 import Footer from 'components/Footer'
@@ -566,6 +567,7 @@ const SpecialCardBid = ({
 	const [localToken, setLocalToken] = useState(null)
 	const [offers, setOffers] = useState([])
 	const router = useRouter()
+	const { nearUsdPrice } = useStore()
 
 	useEffect(() => {
 		if (tokenId) {
@@ -589,7 +591,7 @@ const SpecialCardBid = ({
 	const fetchOffers = async () => {
 		const resp = await axios.get(`${process.env.V2_API_URL}/offers`, {
 			params: {
-				token_id: tokenId,
+				token_series_id: tokenId,
 				__skip: 0,
 				__limit: 1,
 				contract_id: contractId,
@@ -780,19 +782,25 @@ const SpecialCardBid = ({
 						</div>
 						<div className="text-white">
 							<div className="font-bold text-xl">Highest Offer</div>
-							<div className="mb-4">Starting price {price} Ⓝ</div>
+							<div className="flex items-baseline justify-center gap-1">
+								<div className="mb-4">Starting price {price} Ⓝ</div>
+								<div className="mb-4 opacity-80 text-sm">~ ${price * nearUsdPrice}</div>
+							</div>
 							{offers.map(
 								(offer) =>
 									parseInt(formatNearAmount(offer.price, 0)) >= price && (
 										<div className="mb-2" key={offer._id}>
-											<div className="flex justify-between items-center mx-8 flex-grow-0 gap-2">
+											<div className="flex justify-between items-baseline mx-8 flex-grow-0 gap-2">
 												<div className="text-left flex-1 truncate">
 													<div className="text-lg truncate">{offer.buyer_id}</div>
 													<div className="text-sm opacity-70">
 														{timeAgo.format(offer.issued_at)}
 													</div>
 												</div>
-												<div>{prettyBalance(offer.price, 24, 4)} Ⓝ</div>
+												<div>
+													<div>{prettyBalance(offer.price, 24, 4)} Ⓝ</div>
+													<div className="opacity-80 text-sm">~ ${price * nearUsdPrice}</div>
+												</div>
 											</div>
 										</div>
 									)
