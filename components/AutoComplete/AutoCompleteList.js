@@ -33,7 +33,7 @@ const AutoCompleteList = ({
 }) => {
 	return (
 		searchQuery && (
-			<div className="absolute px-4 md:px-28 xl:px-64 w-full -mt-2">
+			<div className="md:max-w-2xl w-full absolute mt-1 px-4 md:px-0">
 				<div className="text-white bg-dark-primary-2 w-full md:w-2/3 p-1 rounded-md">
 					<div className="p-2 shadow-inner bg-dark-primary-2 text-gray-100 rounded-md">
 						{isRefreshing ? (
@@ -138,7 +138,14 @@ const AutoCompleteList = ({
 										return (
 											<div
 												key={idx}
-												onClick={() => router.push(`${profile.accountId}/collectibles`)}
+												onClick={() =>
+													router.push({
+														pathname: !router.query.id && `${profile.accountId}`,
+														query: router.query.id && {
+															id: `${profile.accountId}`,
+														},
+													})
+												}
 											>
 												<a>
 													<div

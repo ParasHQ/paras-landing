@@ -313,6 +313,18 @@ const Nav = () => {
 										style={{ WebkitAppearance: 'none' }}
 									/>
 								</div>
+								<div className="hidden md:block">
+									{showAutoComplete && (
+										<AutoCompleteList
+											collectionList={collections}
+											profileList={profiles}
+											itemList={items}
+											modal={(e) => setShowAutoComplete(e)}
+											searchQuery={searchQuery}
+											isRefreshing={isRefreshing}
+										/>
+									)}
+								</div>
 							</form>
 							<div>
 								<Link href={{ pathname: '/languages' }}>
@@ -391,16 +403,18 @@ const Nav = () => {
 						</div>
 					</div>
 				</div>
-				{showAutoComplete && (
-					<AutoCompleteList
-						collectionList={collections}
-						profileList={profiles}
-						itemList={items}
-						modal={(e) => setShowAutoComplete(e)}
-						searchQuery={searchQuery}
-						isRefreshing={isRefreshing}
-					/>
-				)}
+				<div className="md:hidden">
+					{showAutoComplete && (
+						<AutoCompleteList
+							collectionList={collections}
+							profileList={profiles}
+							itemList={items}
+							modal={(e) => setShowAutoComplete(e)}
+							searchQuery={searchQuery}
+							isRefreshing={isRefreshing}
+						/>
+					)}
+				</div>
 				<div className="relative">
 					<div
 						ref={mobileNavRef}
