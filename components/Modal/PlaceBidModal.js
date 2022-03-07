@@ -131,8 +131,10 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 					],
 				})
 			}
-			onClose()
-			setTransactionRes(res.response[0])
+			if (res.response) {
+				onClose()
+				setTransactionRes(res?.response?.[0])
+			}
 		} catch (err) {
 			sentryCaptureException(err)
 		}

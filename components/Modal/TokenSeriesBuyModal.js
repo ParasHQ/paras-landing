@@ -51,8 +51,10 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 				gas: GAS_FEE,
 				deposit: attachedDeposit.toString(),
 			})
-			onClose()
-			setTransactionRes(res.response[0])
+			if (res.response) {
+				onClose()
+				setTransactionRes(res?.response?.[0])
+			}
 		} catch (err) {
 			sentryCaptureException(err)
 		}
