@@ -1,6 +1,6 @@
 import { InputText, InputTextarea } from 'components/Common/form'
 import Button from 'components/Common/Button'
-import { parseImgUrl } from 'utils/common'
+import { checkSocialMediaUrl, checkUrl, parseImgUrl } from 'utils/common'
 import { useState } from 'react'
 import ImgCrop from 'components/ImgCrop'
 import useStore from 'lib/store'
@@ -52,6 +52,46 @@ const CreateCollection = ({ onFinishCreate, oneGrid }) => {
 		e.preventDefault()
 
 		setIsSubmitting(true)
+
+		if (collectionSocialMedia.website && !checkUrl(collectionSocialMedia.website)) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">{localeLn('EnterValidWebsite')}</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsSubmitting(false)
+			return
+		}
+
+		if (collectionSocialMedia.discord && checkSocialMediaUrl(collectionSocialMedia.discord)) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{localeLn('Please enter only your discord username')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsSubmitting(false)
+			return
+		}
+
+		if (collectionSocialMedia.twitter && checkSocialMediaUrl(collectionSocialMedia.twitter)) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{localeLn('Please enter only your twitter username')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsSubmitting(false)
+			return
+		}
 
 		const formData = new FormData()
 		if (imgFile) {
