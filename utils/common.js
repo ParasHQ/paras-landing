@@ -198,6 +198,11 @@ export const checkUrl = (str) => {
 	return !!pattern.test(str)
 }
 
+export const checkSocialMediaUrl = (str) => {
+	var pattern = new RegExp(/(^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+\.[a-z]+\/)|(\/)/)
+	return !!pattern.test(str)
+}
+
 export const parseSortQuery = (sort, defaultMinPrice = false) => {
 	if (!sort) {
 		return defaultMinPrice ? 'lowest_price::1' : 'updated_at::-1'
