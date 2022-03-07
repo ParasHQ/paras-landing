@@ -18,7 +18,7 @@ import WalletHelper from 'lib/WalletHelper'
 const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
-	const { currentUser } = useStore()
+	const { currentUser, setTransactionRes } = useStore()
 	const creatorData = useProfileData(data.metadata.creator_id)
 
 	const { localeLn } = useIntl()
@@ -44,15 +44,15 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 		trackBuyTokenSeries(data.token_series_id)
 
 		try {
-			await WalletHelper.callFunction({
+			const res = await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_buy`,
 				args: params,
 				gas: GAS_FEE,
 				deposit: attachedDeposit.toString(),
 			})
-
-			// TODO After Function Call Sender Wallet
+			onClose()
+			setTransactionRes(res.response[0])
 		} catch (err) {
 			sentryCaptureException(err)
 		}

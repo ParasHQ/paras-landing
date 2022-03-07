@@ -16,7 +16,7 @@ import WalletHelper from 'lib/WalletHelper'
 
 const TokenBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
-	const { currentUser } = useStore()
+	const { currentUser, setTransactionRes } = useStore()
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
 
@@ -44,13 +44,16 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 				price: data.price,
 			}
 
-			await WalletHelper.callFunction({
+			const res = await WalletHelper.callFunction({
 				contractId: process.env.MARKETPLACE_CONTRACT_ID,
 				methodName: `buy`,
 				args: params,
 				gas: GAS_FEE_150,
 				deposit: data.price,
 			})
+
+			onClose()
+			setTransactionRes(res.response[0])
 
 			// TODO After Function Call Sender Wallet
 		} catch (err) {

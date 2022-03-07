@@ -27,9 +27,10 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 		},
 	})
 	const [hasBid, setHasBid] = useState(false)
-	const { currentUser, userBalance } = useStore((state) => ({
+	const { currentUser, userBalance, setTransactionRes } = useStore((state) => ({
 		currentUser: state.currentUser,
 		userBalance: state.userBalance,
+		setTransactionRes: state.setTransactionRes,
 	}))
 
 	useEffect(async () => {
@@ -98,8 +99,9 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 				price: parseNearAmount(bidAmount),
 			}
 
+			let res
 			if (hasDepositStorage) {
-				await WalletHelper.signAndSendTransaction({
+				res = await WalletHelper.signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{
@@ -111,7 +113,7 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 					],
 				})
 			} else {
-				await WalletHelper.signAndSendTransaction({
+				res = await WalletHelper.signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{
@@ -129,6 +131,8 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 					],
 				})
 			}
+			onClose()
+			setTransactionRes(res.response[0])
 		} catch (err) {
 			sentryCaptureException(err)
 		}
