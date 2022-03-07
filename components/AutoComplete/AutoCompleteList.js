@@ -136,17 +136,7 @@ const AutoCompleteList = ({
 								) : (
 									profileList?.map((profile, idx) => {
 										return (
-											<div
-												key={idx}
-												onClick={() =>
-													router.push({
-														pathname: !router.query.id && `${profile.accountId}`,
-														query: router.query.id && {
-															id: `${profile.accountId}`,
-														},
-													})
-												}
-											>
+											<div key={idx} onClick={() => router.push(`/${profile.accountId}`)}>
 												<a>
 													<div
 														className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
