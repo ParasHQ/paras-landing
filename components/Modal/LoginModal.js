@@ -3,9 +3,22 @@ import Modal from 'components/Common/Modal'
 import { IconXCircle } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import near from 'lib/near'
+import senderWallet from 'lib/senderWallet'
+import useStore from 'lib/store'
 
 const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 	const { localeLn } = useIntl()
+	const { setActiveWallet } = useStore()
+
+	const loginSenderWallet = async () => {
+		if (typeof window.near !== 'undefined' && window.near.isSender) {
+			await senderWallet.signIn()
+			setActiveWallet('senderWallet')
+		} else {
+			alert('Sender Wallet not installed')
+		}
+	}
+
 	return (
 		<Modal isShow={show} close={onClose}>
 			<div className="max-w-sm m-4 md:m-auto w-full relative bg-gray-800 p-4 text-center rounded-md">
@@ -32,6 +45,15 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 					<p className="text-gray-400 text-sm mb-2 text-center">{localeLn('WillBeRedirectedTo')}</p>
 					<Button className="mt-2 px-1" size="md" isFullWidth onClick={() => near.login()}>
 						{localeLn('GoToLogin')}
+					</Button>
+					<Button
+						className="mt-2 px-1"
+						size="md"
+						variant="secondary"
+						isFullWidth
+						onClick={loginSenderWallet}
+					>
+						{'Login with Sender Wallet'}
 					</Button>
 				</div>
 				<div className="absolute -top-4 -right-4 cursor-pointer" onClick={onClose}>

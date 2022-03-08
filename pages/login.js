@@ -101,7 +101,7 @@ const LoginPage = () => {
 						</div>
 						<div className="mt-4">
 							<Button variant="secondary" isFullWidth onClick={loginSenderWallet}>
-								Login with sender wallet
+								Login with Sender Wallet
 							</Button>
 						</div>
 						{/* Faucet balance is empty */}
