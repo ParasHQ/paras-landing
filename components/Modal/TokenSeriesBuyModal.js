@@ -18,6 +18,7 @@ import WalletHelper from 'lib/WalletHelper'
 const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
+	const [isBuying, setIsBuying] = useState(false)
 	const { currentUser, setTransactionRes } = useStore()
 	const creatorData = useProfileData(data.metadata.creator_id)
 
@@ -34,6 +35,7 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 			setShowLogin(true)
 			return
 		}
+		setIsBuying(true)
 		const params = {
 			token_series_id: data.token_series_id,
 			receiver_id: currentUser,
@@ -55,8 +57,10 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 				onClose()
 				setTransactionRes(res?.response)
 			}
+			setIsBuying(false)
 		} catch (err) {
 			sentryCaptureException(err)
+			setIsBuying(false)
 		}
 	}
 
@@ -110,6 +114,8 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 								size="md"
 								isFullWidth
 								onClick={() => (creatorData?.flag ? setShowBannedConfirm(true) : onBuyToken())}
+								isDisabled={isBuying}
+								isLoading={isBuying}
 							>
 								{data.price !== '0' ? localeLn('Buy') : localeLn('GetForFree')}
 							</Button>

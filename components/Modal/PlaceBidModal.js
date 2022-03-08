@@ -16,7 +16,7 @@ import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
 import WalletHelper from 'lib/WalletHelper'
 
-const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuantity }) => {
+const PlaceBidModal = ({ data, show, onClose, bidAmount, bidQuantity }) => {
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
 	const { localeLn } = useIntl()
@@ -27,6 +27,7 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 		},
 	})
 	const [hasBid, setHasBid] = useState(false)
+	const [isBidding, setIsBidding] = useState(false)
 	const { currentUser, userBalance, setTransactionRes } = useStore((state) => ({
 		currentUser: state.currentUser,
 		userBalance: state.userBalance,
@@ -85,6 +86,7 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 	}
 
 	const onPlaceBid = async ({ bidAmount }) => {
+		setIsBidding(true)
 		const hasDepositStorage = await hasStorageBalance()
 
 		try {
@@ -135,8 +137,10 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 				onClose()
 				setTransactionRes(res?.response)
 			}
+			setIsBidding(false)
 		} catch (err) {
 			sentryCaptureException(err)
+			setIsBidding(false)
 		}
 	}
 
@@ -209,7 +213,8 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 							</p>
 							<div className="">
 								<Button
-									disabled={isSubmitting}
+									disabled={isBidding}
+									isLoading={isBidding}
 									className="mt-4"
 									isFullWidth
 									size="md"

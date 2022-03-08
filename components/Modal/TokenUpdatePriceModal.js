@@ -19,6 +19,8 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
 	const [needDeposit, setNeedDeposit] = useState(true)
 	const [txFee, setTxFee] = useState(null)
+	const [isUpdatingPrice, setIsUpdatingPrice] = useState(false)
+	const [isRemovingPrice, setIsRemovingPrice] = useState(false)
 	const { register, handleSubmit, errors } = useForm()
 	const currentUser = useStore((state) => state.currentUser)
 	const setTransactionRes = useStore((state) => state.setTransactionRes)
@@ -87,6 +89,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 		if (!currentUser) {
 			return
 		}
+		setIsUpdatingPrice(true)
 
 		trackUpdateListingToken(data.token_id)
 
@@ -136,8 +139,10 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 				onClose()
 				setTransactionRes(res?.response)
 			}
+			setIsUpdatingPrice(false)
 		} catch (err) {
 			sentryCaptureException(err)
+			setIsUpdatingPrice(false)
 		}
 	}
 
@@ -146,6 +151,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 		if (!currentUser) {
 			return
 		}
+		setIsRemovingPrice(true)
 
 		trackRemoveListingToken(data.token_id)
 
@@ -165,6 +171,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 				onClose()
 				setTransactionRes(res?.response)
 			}
+			setIsRemovingPrice(false)
 		} catch (err) {
 			sentryCaptureException(err)
 		}
@@ -376,7 +383,8 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 								type="submit"
 								size="md"
 								isFullWidth
-								isDisabled={newPrice === ''}
+								isDisabled={newPrice === '' || isUpdatingPrice}
+								isLoading={isUpdatingPrice}
 								onClick={handleSubmit(onUpdateListing)}
 							>
 								{localeLn('UpdateListing')}
@@ -388,7 +396,8 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 								size="md"
 								isFullWidth
 								onClick={onRemoveListing}
-								isDisabled={!data.price}
+								isDisabled={!data.price || isRemovingPrice}
+								isLoading={isRemovingPrice}
 							>
 								{localeLn('RemoveListing')}
 							</Button>

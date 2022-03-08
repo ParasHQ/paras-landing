@@ -18,6 +18,7 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const { currentUser, setTransactionRes } = useStore()
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
+	const [isBuying, setIsBuying] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
 
 	const { localeLn } = useIntl()
@@ -33,7 +34,7 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 			setShowLogin(true)
 			return
 		}
-
+		setIsBuying(true)
 		trackBuyToken(data.token_id)
 
 		try {
@@ -57,7 +58,7 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 				setTransactionRes(res?.response)
 			}
 
-			// TODO After Function Call Sender Wallet
+			setIsBuying(false)
 		} catch (err) {
 			sentryCaptureException(err)
 		}
@@ -109,6 +110,8 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 								size="md"
 								isFullWidth
 								onClick={() => (creatorData?.flag ? setShowBannedConfirm(true) : onBuyToken())}
+								isLoading={isBuying}
+								isDisabled={isBuying}
 							>
 								{data.price !== '0' ? localeLn('Buy') : localeLn('GetForFree')}
 							</Button>
