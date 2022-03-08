@@ -99,8 +99,10 @@ const LoginPage = () => {
 								{isLoading ? localeLn('LoadingLoading') : localeLn('LoginWithNEAR')}
 							</Button>
 						</div>
-						<div className="text-white cursor-pointer" onClick={loginSenderWallet}>
-							Login with sender wallet
+						<div className="mt-4">
+							<Button variant="secondary" isFullWidth onClick={loginSenderWallet}>
+								Login with sender wallet
+							</Button>
 						</div>
 						{/* Faucet balance is empty */}
 						{/* <div className="mt-8 text-center">
