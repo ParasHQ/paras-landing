@@ -50,7 +50,6 @@ const SuccessTransactionModal = () => {
 			} else if (transactionRes.error) {
 				processTransactionError(transactionRes.error.kind.ExecutionError)
 			}
-			console.log('transactionRes', transactionRes)
 		}
 	}, [transactionRes])
 

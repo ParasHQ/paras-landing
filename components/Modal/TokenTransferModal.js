@@ -17,6 +17,7 @@ import WalletHelper from 'lib/WalletHelper'
 const TokenTransferModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [receiverId, setReceiverId] = useState('')
+	const [isTransferring, setIsTransferring] = useState(false)
 	const { currentUser } = useStore()
 	const toast = useToast()
 	const { localeLn } = useIntl()
@@ -26,6 +27,7 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 			setShowLogin(true)
 			return
 		}
+		setIsTransferring(true)
 		const params = {
 			token_id: data.token_id,
 			receiver_id: receiverId,
@@ -63,15 +65,41 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 		trackTransferToken(data.token_id)
 
 		try {
-			await WalletHelper.callFunction({
+			const res = await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_transfer`,
 				args: params,
 				gas: GAS_FEE,
 				deposit: `1`,
 			})
+			if (res.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+				return
+			} else {
+				onClose()
+				setReceiverId('')
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{`Successfully minted to ${receiverId}`}
+						</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
+			}
+			setIsTransferring(false)
 		} catch (err) {
 			sentryCaptureException(err)
+			setIsTransferring(false)
 		}
 	}
 
@@ -112,7 +140,13 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
-							<Button size="md" isFullWidth onClick={onTransfer}>
+							<Button
+								size="md"
+								isFullWidth
+								onClick={onTransfer}
+								isDisabled={isTransferring}
+								isLoading={isTransferring}
+							>
 								{localeLn('Transfer')}
 							</Button>
 						</div>

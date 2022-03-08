@@ -15,18 +15,21 @@ import { useToast } from 'hooks/useToast'
 import WalletHelper from 'lib/WalletHelper'
 import useStore from 'lib/store'
 
-const TokenSeriesTransferModal = ({ show, onClose, data }) => {
+const TokenSeriesMintModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [isSelfMint, setIsSelfMint] = useState(true)
 	const [receiverId, setReceiverId] = useState('')
+	const [isMinting, setIsMinting] = useState(false)
 	const { currentUser } = useStore()
 	const { localeLn } = useIntl()
 	const toast = useToast()
+
 	const onTransfer = async () => {
 		if (!currentUser) {
 			setShowLogin(true)
 			return
 		}
+		setIsMinting(true)
 		const params = {
 			token_series_id: data.token_series_id,
 			receiver_id: isSelfMint ? currentUser : receiverId,
@@ -63,15 +66,41 @@ const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 		trackMintToken(data.token_series_id)
 
 		try {
-			await WalletHelper.callFunction({
+			const res = await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_mint`,
 				args: params,
 				gas: GAS_FEE,
 				deposit: STORAGE_MINT_FEE,
 			})
+			if (res.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+				return
+			} else {
+				onClose()
+				setReceiverId('')
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{`Successfully minted to ${isSelfMint ? currentUser : receiverId}`}
+						</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
+			}
+			setIsMinting(false)
 		} catch (err) {
 			sentryCaptureException(err)
+			setIsMinting(false)
 		}
 	}
 
@@ -136,7 +165,13 @@ const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
-							<Button size="md" isFullWidth onClick={onTransfer}>
+							<Button
+								size="md"
+								isFullWidth
+								onClick={onTransfer}
+								isDisabled={isMinting}
+								isLoading={isMinting}
+							>
 								{localeLn('Mint')}
 							</Button>
 						</div>
@@ -148,4 +183,4 @@ const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 	)
 }
 
-export default TokenSeriesTransferModal
+export default TokenSeriesMintModal

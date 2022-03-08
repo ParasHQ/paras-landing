@@ -10,34 +10,69 @@ import { sentryCaptureException } from 'lib/sentry'
 import { trackBurnTokenSeries } from 'lib/ga'
 import WalletHelper from 'lib/WalletHelper'
 import useStore from 'lib/store'
+import { useToast } from 'hooks/useToast'
+import { useRouter } from 'next/router'
 
 const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [burnCopies, setBurnCopies] = useState('')
+	const [isBurning, setIsBurning] = useState(false)
 	const { localeLn } = useIntl()
 	const { currentUser } = useStore()
+	const toast = useToast()
+	const router = useRouter()
 
 	const onBurnToken = async () => {
 		if (!currentUser) {
 			setShowLogin(true)
 			return
 		}
-
+		setIsBurning(true)
 		trackBurnTokenSeries(data.token_series_id)
 		try {
 			const params = {
 				token_series_id: data.token_series_id,
 				decrease_copies: burnCopies,
 			}
-			await WalletHelper.callFunction({
+			const res = await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_decrease_series_copies`,
 				args: params,
 				gas: GAS_FEE,
 				deposit: `1`,
 			})
+			if (res.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+				return
+			} else {
+				onClose()
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{`Successfully decrease copies to ${
+								parseInt(data.metadata.copies || 0) -
+								parseInt(data.total_mint || 0) -
+								parseInt(burnCopies || 0)
+							}`}
+						</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
+				setTimeout(() => router.push(window.location.pathname), 2500)
+			}
+			setIsBurning(false)
 		} catch (err) {
 			sentryCaptureException(err)
+			setIsBurning(false)
 		}
 	}
 
@@ -108,8 +143,11 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 								isFullWidth
 								onClick={onBurnToken}
 								isDisabled={
-									!burnCopies || burnCopies > data.metadata.copies - (data.total_mint || 0)
+									!burnCopies ||
+									burnCopies > data.metadata.copies - (data.total_mint || 0) ||
+									isBurning
 								}
+								isLoading={isBurning}
 							>
 								{localeLn('Reduce')}
 							</Button>
