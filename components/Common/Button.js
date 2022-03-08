@@ -53,7 +53,7 @@ const Button = ({
 
 	let buttonStyle = `${className} ${buttonBaseStyle} ${buttonTransition} ${buttonVariantStyle} ${buttonSizeStyle}`
 
-	if (isDisabled) {
+	if (isDisabled || isLoading) {
 		const buttonDisabledStyle = 'cursor-default opacity-60 saturate-50'
 		buttonStyle = `${buttonStyle} ${buttonDisabledStyle}`
 	}
@@ -64,7 +64,12 @@ const Button = ({
 	}
 
 	return (
-		<button disabled={isDisabled} className={buttonStyle} style={style} onClick={onClick}>
+		<button
+			disabled={isDisabled || isLoading}
+			className={buttonStyle}
+			style={style}
+			onClick={onClick}
+		>
 			{isLoading ? <LoaderIcon /> : children}
 		</button>
 	)

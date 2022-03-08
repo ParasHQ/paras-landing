@@ -63,6 +63,7 @@ const SuccessTransactionModal = () => {
 
 	const processTransaction = async (txStatus) => {
 		if (txStatus.status.SuccessValue !== undefined) {
+			const { receipts_outcome } = txStatus
 			const { actions, receiver_id } = txStatus.transaction
 
 			for (const action of actions) {
@@ -123,6 +124,18 @@ const SuccessTransactionModal = () => {
 					setToken(res.data.data.results[0])
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
+				} else if (FunctionCall.method_name === 'nft_create_series') {
+					const logs = JSON.parse(receipts_outcome[0].outcome?.logs?.[0])
+					const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+						params: {
+							contract_id: receiver_id,
+							token_series_id: logs.params.token_series_id,
+						},
+					})
+					console.log('first')
+					setToken(res.data.data.results[0])
+					setTxDetail({ ...FunctionCall, args, logs })
+					setShowModal(true)
 				}
 			}
 		}
@@ -172,6 +185,8 @@ const SuccessTransactionModal = () => {
 			if (msg.market_type === 'sale') {
 				return 'Update Listing Success'
 			}
+		} else if (txDetail.method_name === 'nft_create_series') {
+			return 'Create Card Success'
 		} else {
 			return 'Transaction Success'
 		}
@@ -204,10 +219,16 @@ const SuccessTransactionModal = () => {
 				return (
 					<>
 						You successfully update <b>{token.metadata.title}</b> price to{' '}
-						{formatNearAmount(msg.price)} Ⓝ
+						{formatNearAmount(msg.price || 0)} Ⓝ
 					</>
 				)
 			}
+		} else if (txDetail.method_name === 'nft_create_series') {
+			return (
+				<>
+					You successfully create <b>{token.metadata.title}</b>
+				</>
+			)
 		}
 	}
 

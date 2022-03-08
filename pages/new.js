@@ -104,6 +104,7 @@ const NewPage = () => {
 	const [imgUrl, setImgUrl] = useState('')
 	const [step, setStep] = useState(0)
 	const [isUploading, setIsUploading] = useState(false)
+	const [isCreating, setIsCreating] = useState(false)
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
 	const [showCreatingModal, setShowCreatingModal] = useState(false)
 	const [showCreateColl, setShowCreateColl] = useState(false)
@@ -177,6 +178,7 @@ const NewPage = () => {
 	}
 
 	const createSeriesNFT = async () => {
+		setIsCreating(true)
 		try {
 			let params = {
 				creator_id: store.currentUser,
@@ -202,13 +204,21 @@ const NewPage = () => {
 				}
 			}
 
-			await WalletHelper.callFunction({
+			const res = await WalletHelper.callFunction({
 				contractId: process.env.NFT_CONTRACT_ID,
 				methodName: `nft_create_series`,
 				args: params,
 				gas: GAS_FEE,
 				deposit: STORAGE_CREATE_SERIES_FEE,
 			})
+
+			setIsCreating(false)
+			if (res.response) {
+				setTimeout(() => {
+					router.push('/market')
+					store.setTransactionRes(res?.response)
+				}, 2000)
+			}
 		} catch (err) {
 			sentryCaptureException(err)
 			const msg = err.response?.data?.message || `Something went wrong, try again later`
@@ -708,6 +718,7 @@ const NewPage = () => {
 							</p>
 							<Button
 								isDisabled={!(isUploading === 'success')}
+								isLoading={isCreating}
 								isFullWidth
 								size="md"
 								onClick={createSeriesNFT}
