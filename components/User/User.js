@@ -11,6 +11,7 @@ import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
 import ChooseAccountModal from 'components/Modal/ChooseAccountModal'
 import Scrollbars from 'react-custom-scrollbars'
 import WalletHelper from 'lib/WalletHelper'
+import near from 'lib/near'
 
 const User = () => {
 	const store = useStore()
@@ -30,7 +31,19 @@ const User = () => {
 			}
 		}
 
+		const fetchUserBalance = async () => {
+			const nearbalance = await (await near.near.account(store.currentUser)).getAccountBalance()
+			const parasBalance = await WalletHelper.viewFunction({
+				methodName: 'ft_balance_of',
+				contractId: process.env.PARAS_TOKEN_CONTRACT,
+				args: { account_id: store.currentUser },
+			})
+			store.setUserBalance(nearbalance)
+			store.setParasBalance(parasBalance)
+		}
+
 		if (showAccountModal) {
+			fetchUserBalance()
 			document.body.addEventListener('click', onClickEv)
 		}
 
