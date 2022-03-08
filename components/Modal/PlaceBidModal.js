@@ -16,7 +16,7 @@ import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
 import WalletHelper from 'lib/WalletHelper'
 
-const PlaceBidModal = ({ data, show, onClose, bidAmount, bidQuantity }) => {
+const PlaceBidModal = ({ data, show, onClose, bidAmount, bidQuantity, onSuccess }) => {
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
 	const { localeLn } = useIntl()
@@ -136,6 +136,7 @@ const PlaceBidModal = ({ data, show, onClose, bidAmount, bidQuantity }) => {
 			if (res.response) {
 				onClose()
 				setTransactionRes(res?.response)
+				onSuccess && onSuccess()
 			}
 			setIsBidding(false)
 		} catch (err) {

@@ -22,8 +22,9 @@ import {
 import CancelBid from 'components/Modal/CancelBid'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
 import WalletHelper from 'lib/WalletHelper'
+import { useToast } from 'hooks/useToast'
 
-const Bid = ({ data, type }) => {
+const Bid = ({ data, type, freshFetch }) => {
 	const store = useStore()
 	const router = useRouter()
 	const [token, setToken] = useState(null)
@@ -31,6 +32,7 @@ const Bid = ({ data, type }) => {
 
 	const [isOwned, setIsOwned] = useState(false)
 	const [storageFee, setStorageFee] = useState(STORAGE_APPROVE_FEE)
+	const toast = useToast()
 
 	const { localeLn } = useIntl()
 
@@ -143,9 +145,10 @@ const Bid = ({ data, type }) => {
 				}
 			}
 
+			let res
 			// accept offer
 			if (userType === 'owner') {
-				await WalletHelper.callFunction({
+				res = await WalletHelper.callFunction({
 					contractId: data.contract_id,
 					methodName: `nft_approve`,
 					args: params,
@@ -155,7 +158,7 @@ const Bid = ({ data, type }) => {
 			}
 			// batch tx -> mint & accept
 			else {
-				await WalletHelper.callFunction({
+				res = await WalletHelper.callFunction({
 					contractId: data.contract_id,
 					methodName: `nft_mint_and_approve`,
 					args: params,
@@ -165,6 +168,28 @@ const Bid = ({ data, type }) => {
 						JSBI.BigInt(STORAGE_MINT_FEE)
 					).toString(),
 				})
+			}
+
+			if (res.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+			} else {
+				setShowModal('')
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">{`Successfully accept offer`}</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
+				setTimeout(freshFetch, 2500)
 			}
 		} catch (err) {
 			sentryCaptureException(err)
@@ -178,13 +203,35 @@ const Bid = ({ data, type }) => {
 		}
 
 		try {
-			await WalletHelper.callFunction({
+			const res = await WalletHelper.callFunction({
 				contractId: process.env.MARKETPLACE_CONTRACT_ID,
 				methodName: `delete_offer`,
 				args: params,
 				gas: GAS_FEE,
 				deposit: '1',
 			})
+
+			if (res.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+			} else {
+				setShowModal('')
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">{`Successfully delete offer`}</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
+				setTimeout(freshFetch, 2500)
+			}
 		} catch (error) {
 			sentryCaptureException(error)
 		}
@@ -209,6 +256,7 @@ const Bid = ({ data, type }) => {
 				<PlaceBidModal
 					show={showModal === 'updateBid'}
 					data={token}
+					onSuccess={() => setTimeout(freshFetch, 2500)}
 					onClose={() => setShowModal('')}
 				/>
 			)}
