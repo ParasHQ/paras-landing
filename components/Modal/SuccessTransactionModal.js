@@ -30,9 +30,10 @@ const SuccessTransactionModal = () => {
 
 	useEffect(() => {
 		const checkTxStatus = async () => {
+			const txHash = router.query.transactionHashes.split(',')
 			const txStatus = await near.getTransactionStatus({
 				accountId: near.currentUser.accountId,
-				txHash: router.query.transactionHashes,
+				txHash: txHash[txHash.length - 1],
 			})
 			await processTransaction(txStatus)
 		}
@@ -132,7 +133,6 @@ const SuccessTransactionModal = () => {
 							token_series_id: logs.params.token_series_id,
 						},
 					})
-					console.log('first')
 					setToken(res.data.data.results[0])
 					setTxDetail({ ...FunctionCall, args, logs })
 					setShowModal(true)
@@ -160,10 +160,8 @@ const SuccessTransactionModal = () => {
 		token.token_series_id
 	}${token.token_id ? `/${token.token_id}` : ''}`
 
-	const explorerUrl =
-		getConfig(process.env.APP_ENV || 'development').explorerUrl +
-		'/transactions/' +
-		router.query.transactionHashes
+	const explorerUrl = (txhash) =>
+		getConfig(process.env.APP_ENV || 'development').explorerUrl + '/transactions/' + txhash
 
 	const onClickSeeToken = () => {
 		const url = `/token/${token.contract_id}::${token.token_series_id}${
@@ -258,11 +256,13 @@ const SuccessTransactionModal = () => {
 					{router.query.transactionHashes && (
 						<div className="p-3 bg-gray-700 rounded-md mt-2 mb-4">
 							<p className="text-gray-300 text-sm">Transaction Hash</p>
-							<a href={explorerUrl} target="_blank" rel="noreferrer">
-								<p className="text-white hover:underline cursor-pointer overflow-hidden overflow-ellipsis">
-									{router.query.transactionHashes}
-								</p>
-							</a>
+							{router.query.transactionHashes.split(',').map((txhash) => (
+								<a href={explorerUrl(txhash)} key={txhash} target="_blank" rel="noreferrer">
+									<p className="text-white hover:underline cursor-pointer overflow-hidden overflow-ellipsis">
+										{txhash}
+									</p>
+								</a>
+							))}
 						</div>
 					)}
 					<div className="flex justify-between px-1 mb-4">
