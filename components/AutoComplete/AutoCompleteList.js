@@ -63,7 +63,9 @@ const AutoCompleteList = ({
 			<div className="md:max-w-2xl w-full absolute -mt-2.5 md:mt-1 px-4 md:px-0">
 				<div className="text-white bg-dark-primary-2 w-full md:w-2/3 p-1 rounded-md">
 					<div className="p-2 shadow-inner bg-dark-primary-2 text-gray-100 rounded-md">
-						{searchQuery?.value === undefined || searchQuery?.value === '' ? (
+						{searchQuery?.value === undefined ||
+						searchQuery?.value === '' ||
+						searchQuery.value?.length < 3 ? (
 							<p className="my-20 text-center h-5">Start Typing..</p>
 						) : !isRefreshing ? (
 							<Scrollbars

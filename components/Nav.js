@@ -76,20 +76,22 @@ const Nav = () => {
 	const handleAutoComplete = async (event) => {
 		const { value } = event
 
-		const resSearchAutoComplete = await axios.get(`${process.env.V2_API_URL}/search`, {
-			params: {
-				search: value,
-				__skip: 0,
-				__limit: LIMIT,
-				is_verified: true,
-			},
-		})
+		if (value.length >= 3) {
+			const resSearchAutoComplete = await axios.get(`${process.env.V2_API_URL}/search`, {
+				params: {
+					search: value,
+					__skip: 0,
+					__limit: LIMIT,
+					is_verified: true,
+				},
+			})
 
-		const res = resSearchAutoComplete.data.data
+			const res = resSearchAutoComplete.data.data
 
-		setCollections(res.collections.results)
-		setProfiles(res.profiles.results)
-		setItems(res.tokenSeries.results)
+			setCollections(res.collections.results)
+			setProfiles(res.profiles.results)
+			setItems(res.tokenSeries.results)
+		}
 
 		setIsRefreshing(false)
 	}
