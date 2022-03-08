@@ -159,11 +159,12 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 						<Button
 							size="md"
 							isFullWidth
-							disabled={isLoading}
-							className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+							isDisabled={isLoading}
+							isLoading={isLoading}
+							className="mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 							onClick={onSubmitForm}
 						>
-							{isLoading ? 'Accepting...' : 'Accept Bid'}
+							{'Accept Bid'}
 						</Button>
 						<Button
 							className="mt-4"

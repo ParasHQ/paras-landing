@@ -19,12 +19,14 @@ import { parseImgUrl, timeAgo } from 'utils/common'
 import Avatar from 'components/Common/Avatar'
 import AcceptBidModal from 'components/Modal/AcceptBidModal'
 import WalletHelper from 'lib/WalletHelper'
+import { useToast } from 'hooks/useToast'
 
 const FETCH_TOKENS_LIMIT = 12
 
-const Offer = ({ data, onAcceptOffer, hideButton }) => {
+const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer }) => {
 	const [profile, setProfile] = useState({})
 	const currentUser = useStore((state) => state.currentUser)
+	const toast = useToast()
 
 	useEffect(() => {
 		if (data.buyer_id) {
@@ -54,13 +56,34 @@ const Offer = ({ data, onAcceptOffer, hideButton }) => {
 		}
 
 		try {
-			await WalletHelper.callFunction({
+			const res = await WalletHelper.callFunction({
 				contractId: process.env.MARKETPLACE_CONTRACT_ID,
 				methodName: `delete_offer`,
 				args: params,
 				gas: GAS_FEE,
 				deposit: '1',
 			})
+
+			if (res.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+			} else {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">{`Successfully delete offer`}</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
+				setTimeout(fetchOffer, 2500)
+			}
 		} catch (error) {
 			sentryCaptureException(error)
 		}
@@ -122,6 +145,8 @@ const TabOffers = ({ localToken }) => {
 	const [showModal, setShowModal] = useState(null)
 	const [activeOffer, setActiveOffer] = useState(null)
 	const [storageFee, setStorageFee] = useState(STORAGE_APPROVE_FEE)
+	const [isAcceptingOffer, setIsAcceptingOffer] = useState(false)
+	const toast = useToast()
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
@@ -150,7 +175,7 @@ const TabOffers = ({ localToken }) => {
 			const params = {
 				account_id: process.env.MARKETPLACE_CONTRACT_ID,
 			}
-
+			setIsAcceptingOffer(true)
 			const [userType, offerType, tokenId] = isOwned.split('::')
 
 			if (offerType === 'token') {
@@ -172,9 +197,10 @@ const TabOffers = ({ localToken }) => {
 				}
 			}
 
+			let res
 			// accept offer
 			if (userType === 'owner') {
-				await WalletHelper.callFunction({
+				res = await WalletHelper.callFunction({
 					contractId: activeOffer.contract_id,
 					methodName: `nft_approve`,
 					args: params,
@@ -184,7 +210,7 @@ const TabOffers = ({ localToken }) => {
 			}
 			// batch tx -> mint & accept
 			else {
-				await WalletHelper.callFunction({
+				res = await WalletHelper.callFunction({
 					contractId: activeOffer.contract_id,
 					methodName: `nft_mint_and_approve`,
 					args: params,
@@ -195,6 +221,30 @@ const TabOffers = ({ localToken }) => {
 					).toString(),
 				})
 			}
+
+			if (res.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+			} else {
+				onDismissModal()
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">{`Successfully accept offer`}</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
+				setTimeout(() => fetchOffers(true), 2500)
+			}
+
+			setIsAcceptingOffer(false)
 		} catch (err) {
 			sentryCaptureException(err)
 		}
@@ -243,15 +293,19 @@ const TabOffers = ({ localToken }) => {
 		}
 	}
 
-	const fetchOffers = async () => {
-		if (!hasMore || isFetching) {
+	const fetchOffers = async (fromStart = false) => {
+		const _hasMore = fromStart ? true : hasMore
+		const _page = fromStart ? 0 : page
+		const _offers = fromStart ? [] : offers
+
+		if (!_hasMore || isFetching) {
 			return
 		}
 
 		setIsFetching(true)
 
 		const params = {
-			__skip: page * FETCH_TOKENS_LIMIT,
+			__skip: _page * FETCH_TOKENS_LIMIT,
 			__limit: FETCH_TOKENS_LIMIT,
 		}
 
@@ -266,16 +320,17 @@ const TabOffers = ({ localToken }) => {
 		const resp = await cachios.get(`${process.env.V2_API_URL}/offers`, {
 			params: params,
 			ttl: 30,
+			force: fromStart,
 		})
 
 		const newData = resp.data.data
 
-		const newOffers = [...(offers || []), ...newData.results]
-		const _hasMore = newData.results.length < FETCH_TOKENS_LIMIT ? false : true
+		const newOffers = [...(_offers || []), ...newData.results]
+		const hasMoretoFetch = newData.results.length < FETCH_TOKENS_LIMIT ? false : true
 
 		setOffers(newOffers)
-		setPage(page + 1)
-		setHasMore(_hasMore)
+		setPage(_page + 1)
+		setHasMore(hasMoretoFetch)
 
 		setIsFetching(false)
 	}
@@ -296,7 +351,12 @@ const TabOffers = ({ localToken }) => {
 				{offers.length !== 0 ? (
 					offers.map((x) => (
 						<div key={x._id}>
-							<Offer data={x} onAcceptOffer={() => onAcceptOffer(x)} hideButton={!isOwned} />
+							<Offer
+								data={x}
+								onAcceptOffer={() => onAcceptOffer(x)}
+								hideButton={!isOwned}
+								fetchOffer={() => fetchOffers(true)}
+							/>
 						</div>
 					))
 				) : (
@@ -313,6 +373,7 @@ const TabOffers = ({ localToken }) => {
 					data={activeOffer}
 					storageFee={storageFee}
 					onSubmitForm={acceptOffer}
+					isLoading={isAcceptingOffer}
 				/>
 			)}
 		</div>
