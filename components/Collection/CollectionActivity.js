@@ -7,11 +7,71 @@ import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { parseImgUrl, prettyTruncate, timeAgo } from 'utils/common'
 import Media from 'components/Common/Media'
 import DailyVolume from 'components/LineChart/DailyVolume'
+import router from 'next/router'
+
+const DefaultSortIcon = () => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		className="icon icon-tabler icon-tabler-arrows-sort"
+		width={20}
+		height={20}
+		viewBox="0 0 24 24"
+		strokeWidth="1.5"
+		stroke="#d3d5db"
+		fill="none"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+	>
+		<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+		<path d="M3 9l4 -4l4 4m-4 -4v14" />
+		<path d="M21 15l-4 4l-4 -4m4 4v-14" />
+	</svg>
+)
+
+const AscendingSortIcon = ({ color }) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		className="icon icon-tabler icon-tabler-arrow-narrow-up"
+		width={20}
+		height={20}
+		viewBox="0 0 24 24"
+		strokeWidth="3.0"
+		stroke={color}
+		fill="none"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+	>
+		<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+		<line x1={12} y1={5} x2={12} y2={19} />
+		<line x1={16} y1={9} x2={12} y2={5} />
+		<line x1={8} y1={9} x2={12} y2={5} />
+	</svg>
+)
+
+const DescendingSortIcon = ({ color }) => (
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		className="icon icon-tabler icon-tabler-arrow-narrow-down"
+		width={20}
+		height={20}
+		viewBox="0 0 24 24"
+		strokeWidth="3.0"
+		stroke={color}
+		fill="none"
+		strokeLinecap="round"
+		strokeLinejoin="round"
+	>
+		<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+		<line x1={12} y1={5} x2={12} y2={19} />
+		<line x1={16} y1={15} x2={12} y2={19} />
+		<line x1={8} y1={15} x2={12} y2={19} />
+	</svg>
+)
 
 const HEADERS = [
 	{
-		id: 'collection_id',
-		title: 'Collection',
+		id: 'title',
+		title: 'Title',
 		className: `flex w-4/6 lg:w-full flex-shrink-0 p-3 h-full`,
 	},
 	{
@@ -41,7 +101,14 @@ const HEADERS = [
 	},
 ]
 
-const CollectionActivity = ({ activities, fetchData, hasMore, dailyVolume }) => {
+const CollectionActivity = ({
+	activities,
+	fetchData,
+	hasMore,
+	dailyVolume,
+	collectionId,
+	querySort,
+}) => {
 	const [showDetailActivity, setShowDetailActivity] = useState(-1)
 
 	const { localeLn } = useIntl()
@@ -80,6 +147,7 @@ const CollectionActivity = ({ activities, fetchData, hasMore, dailyVolume }) => 
 
 	return (
 		<div>
+			<p className="text-white text-xl font-bold ml-2 mb-2 text-opacity-70">Volume</p>
 			<DailyVolume data={dailyVolume} />
 			<div className="overflow-x-auto bg-black bg-opacity-25 w-full rounded-lg">
 				<div className="text-white bg-gray-50 bg-opacity-10 rounded p-3">
@@ -93,7 +161,108 @@ const CollectionActivity = ({ activities, fetchData, hasMore, dailyVolume }) => 
 											index === 0 && 'col-span-2 justify-start'
 										} flex items-center w-2/6 lg:w-full flex-shrink-0 p-3 h-full`}
 									>
-										<span>{localeLn(d.title)}</span>
+										<span className={`${querySort.headerActivities === d.id && `font-bold`}`}>
+											{localeLn(d.title)}
+										</span>
+										{d.id === 'price' || d.id === 'from' || d.id === 'to' ? (
+											<>
+												{querySort.headerActivities === d.id ? (
+													<>
+														{querySort.sortActivities === '' && (
+															<div
+																key={d.id}
+																className="cursor-pointer"
+																onClick={() => {
+																	router.push(
+																		{
+																			query: {
+																				headerActivities: d.id,
+																				sortActivities: 'asc',
+																				tab: `activity`,
+																			},
+																		},
+																		`/collection/${collectionId}?tab=activity`,
+																		{ shallow: true, scroll: false }
+																	)
+																}}
+															>
+																<DefaultSortIcon />
+															</div>
+														)}
+														{querySort.sortActivities === 'asc' && (
+															<div
+																key={d.id}
+																className="cursor-pointer"
+																onClick={() => {
+																	router.push(
+																		{
+																			query: {
+																				headerActivities: d.id,
+																				sortActivities: 'desc',
+																				tab: `activity`,
+																			},
+																		},
+																		`/collection/${collectionId}?tab=activity`,
+																		{ shallow: true, scroll: false }
+																	)
+																}}
+															>
+																<AscendingSortIcon
+																	color={
+																		querySort.headerActivities === d.id ? `#b4bac2` : `#d3d5db`
+																	}
+																/>
+															</div>
+														)}
+														{querySort.sortActivities === 'desc' && (
+															<div
+																key={d.id}
+																className="cursor-pointer"
+																onClick={() => {
+																	router.push(
+																		{
+																			query: {
+																				headerActivities: d.id,
+																				sortActivities: '',
+																				tab: `activity`,
+																			},
+																		},
+																		`/collection/${collectionId}?tab=activity`,
+																		{ shallow: true, scroll: false }
+																	)
+																}}
+															>
+																<DescendingSortIcon
+																	color={
+																		querySort.headerActivities === d.id ? `#b4bac2` : `#d3d5db`
+																	}
+																/>
+															</div>
+														)}
+													</>
+												) : (
+													<div
+														key={d.id}
+														className="cursor-pointer"
+														onClick={() => {
+															router.push(
+																{
+																	query: {
+																		headerActivities: d.id,
+																		sortActivities: 'asc',
+																		tab: `activity`,
+																	},
+																},
+																`/collection/${collectionId}?tab=activity`,
+																{ shallow: true, scroll: false }
+															)
+														}}
+													>
+														<DefaultSortIcon />
+													</div>
+												)}
+											</>
+										) : null}
 									</div>
 								)
 							})}

@@ -12,7 +12,7 @@ import WalletHelper from 'lib/WalletHelper'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { parseImgUrl } from 'utils/common'
+import { checkSocialMediaUrl, checkUrl, parseImgUrl } from 'utils/common'
 
 const CollectionPageEdit = ({ collectionId }) => {
 	const { localeLn } = useIntl()
@@ -77,6 +77,46 @@ const CollectionPageEdit = ({ collectionId }) => {
 		e.preventDefault()
 
 		setIsSubmitting(true)
+
+		if (collectionSocialMedia.website && !checkUrl(collectionSocialMedia.website)) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">{localeLn('EnterValidWebsite')}</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsSubmitting(false)
+			return
+		}
+
+		if (collectionSocialMedia.discord && checkSocialMediaUrl(collectionSocialMedia.discord)) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{localeLn('Please enter only your discord username')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsSubmitting(false)
+			return
+		}
+
+		if (collectionSocialMedia.twitter && checkSocialMediaUrl(collectionSocialMedia.twitter)) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{localeLn('Please enter only your twitter username')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsSubmitting(false)
+			return
+		}
 
 		const formData = new FormData()
 		if (imgFile) {
@@ -183,8 +223,8 @@ const CollectionPageEdit = ({ collectionId }) => {
 				<ImgCrop
 					input={coverFile}
 					size={{
-						width: 1024,
-						height: 384,
+						width: 1152,
+						height: 288,
 					}}
 					left={() => setShowCoverCrop(false)}
 					right={(res) => {

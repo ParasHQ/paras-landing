@@ -75,7 +75,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		})
 
 		const newData = await res.data.data
-		const newTokens = [...tokens, ...newData.results]
+		const newTokens = initialFetch ? [...newData.results] : [...tokens, ...newData.results]
 		setTokens(newTokens)
 
 		if (initialFetch) {
@@ -118,7 +118,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	useEffect(() => {
 		fetchData(true)
-	}, [])
+	}, [router.query.collection_id])
 
 	useEffect(() => {
 		updateFilter(router.query)
@@ -136,7 +136,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			fetchCollectionActivity(true)
 			fetchCollectionDailyVolume()
 		}
-	}, [router.query.tab])
+	}, [router.query.tab, router.query.headerActivities, router.query.sortActivities])
 
 	const editCollection = () => {
 		router.push(`/collection/edit/${collectionId}`)
@@ -189,12 +189,23 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const activitiesParams = (_page = 0) => {
-		const params = {
-			collection_id: collectionId,
-			filter: 'sale',
-			__skip: _page * LIMIT_ACTIVITY,
-			__limit: LIMIT_ACTIVITY,
-		}
+		const headerActivities = router.query.headerActivities
+		const sortActivities = router.query.sortActivities
+		const params =
+			!sortActivities || sortActivities === ''
+				? {
+						collection_id: collectionId,
+						filter: 'sale',
+						__skip: _page * LIMIT_ACTIVITY,
+						__limit: LIMIT_ACTIVITY,
+				  }
+				: {
+						collection_id: collectionId,
+						filter: 'sale',
+						__skip: _page * LIMIT_ACTIVITY,
+						__limit: LIMIT_ACTIVITY,
+						__sort: `${headerActivities}${sortActivities === `asc` ? `::1` : `::-1`}`,
+				  }
 
 		return params
 	}
@@ -224,6 +235,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const fetchCollectionActivity = async (initialFetch = false) => {
 		const _activityPage = initialFetch ? 0 : activityPage
 		const _hasMoreActivities = initialFetch ? true : hasMoreActivities
+		const activitiesData = initialFetch ? [] : activities
 
 		if (!_hasMoreActivities) {
 			return
@@ -235,7 +247,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 		const resActivities = (await res.data.data) || []
 
-		const newActivities = [...activities, ...resActivities]
+		const newActivities = [...activitiesData, ...resActivities]
 		setActivities(newActivities)
 		setActivityPage(_activityPage + 1)
 		if (resActivities < LIMIT_ACTIVITY) {
@@ -258,6 +270,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const changeTab = (tab) => {
+		tab === 'items' && (delete router.query.headerActivities, delete router.query.sortActivities)
 		router.push(
 			{
 				query: {
@@ -386,10 +399,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="flex items-center m-auto justify-center mb-4">
 					{headMeta.cover === null && (
-						<div className="absolute top-0 left-0 w-full h-40 md:h-60 bg-black bg-opacity-10 backdrop-filter backdrop-blur-lg backdrop-saturate-200 z-20" />
+						<div className="absolute top-0 left-0 w-full h-36 md:h-72 bg-black bg-opacity-10 backdrop-filter backdrop-blur-lg backdrop-saturate-200 z-20" />
 					)}
 					<div
-						className="absolute top-0 left-0 w-full h-40 md:h-60 bg-center bg-cover bg-dark-primary-2"
+						className="absolute top-0 left-0 w-full h-36 md:h-72 bg-center bg-cover bg-dark-primary-2"
 						style={{
 							backgroundImage: `url(${parseImgUrl(
 								headMeta.cover ? headMeta.cover : headMeta.image
@@ -399,7 +412,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					<div
 						className={`w-32 h-32 overflow-hidden ${
 							headMeta.image === null ? 'bg-primary' : 'bg-dark-primary-2'
-						} shadow-inner z-20 rounded-full mt-12 md:mt-32`}
+						} shadow-inner z-20 rounded-full mt-8 md:mt-44`}
 					>
 						<img
 							src={parseImgUrl(
@@ -647,6 +660,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							dailyVolume={dailyVolume}
 							fetchData={fetchCollectionActivity}
 							hasMore={hasMoreActivities}
+							collectionId={collectionId}
+							querySort={router.query}
 						/>
 					) : (
 						<CardList

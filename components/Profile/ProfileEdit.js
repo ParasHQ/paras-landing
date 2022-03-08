@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import useStore from 'lib/store'
 import { useToast } from 'hooks/useToast'
-import { checkUrl, parseImgUrl } from 'utils/common'
+import { checkSocialMediaUrl, checkUrl, parseImgUrl } from 'utils/common'
 import ImgCrop from 'components/ImgCrop'
 import Scrollbars from 'react-custom-scrollbars'
 import WalletHelper from 'lib/WalletHelper'
@@ -49,6 +49,34 @@ const ProfileEdit = ({ close }) => {
 				text: (
 					<div className="font-semibold text-center text-sm">
 						{localeLn('Please enter valid weibo url')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsSubmitting(false)
+			return
+		}
+
+		if (instagram && checkSocialMediaUrl(instagram)) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{localeLn('Please enter only your instagram username')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsSubmitting(false)
+			return
+		}
+
+		if (twitter && checkSocialMediaUrl(twitter)) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{localeLn('Please enter only your twitter username')}
 					</div>
 				),
 				type: 'error',
@@ -132,8 +160,8 @@ const ProfileEdit = ({ close }) => {
 					<ImgCrop
 						input={coverFile}
 						size={{
-							width: 1024,
-							height: 384,
+							width: 1152,
+							height: 288,
 						}}
 						left={() => setShowCoverCrop(false)}
 						right={(res) => {

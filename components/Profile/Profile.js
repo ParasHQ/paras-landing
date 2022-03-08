@@ -29,6 +29,10 @@ const Profile = ({ userProfile, activeTab }) => {
 		}
 	}, [userProfileStore])
 
+	useEffect(() => {
+		setProfileData(userProfile)
+	}, [userProfile])
+
 	const dismissUserModal = () => {
 		setShowModal(false)
 	}
@@ -44,10 +48,14 @@ const Profile = ({ userProfile, activeTab }) => {
 			)}
 			<div className="flex flex-col items-center justify-center">
 				<div
-					className={`absolute top-0 left-0 w-full h-40 md:h-60 bg-center bg-cover ${
+					className={`absolute top-0 left-0 w-full h-36 md:h-72 bg-center bg-cover ${
 						profileData?.coverUrl === (null || undefined) ? 'bg-primary' : 'bg-dark-primary-2'
 					}`}
-					style={{ backgroundImage: `url(${parseImgUrl(profileData?.coverUrl)})` }}
+					style={{
+						backgroundImage: `url(${parseImgUrl(profileData?.coverUrl, null, {
+							width: `1152`,
+						})})`,
+					}}
 				>
 					{currentUser === profileData?.accountId && (
 						<div
@@ -75,7 +83,7 @@ const Profile = ({ userProfile, activeTab }) => {
 						</div>
 					)}
 				</div>
-				<div className="w-32 h-32 rounded-full overflow-hidden bg-primary mt-12 md:mt-32 z-20 border-4 border-black">
+				<div className="w-32 h-32 rounded-full overflow-hidden bg-primary mt-8 md:mt-44 z-20 border-4 border-black">
 					<img
 						src={parseImgUrl(profileData?.imgUrl, null, {
 							width: `300`,
