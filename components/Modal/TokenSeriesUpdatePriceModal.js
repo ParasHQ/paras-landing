@@ -26,7 +26,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 		date: parseDate((txFee?.start_time || 0) * 1000),
 		fee: (txFee?.current_fee || 0) / 100,
 	})
-	const { currentUser } = useStore()
+	const { currentUser, setTransactionRes } = useStore()
 
 	useEffect(() => {
 		const getTxFee = async () => {
@@ -58,13 +58,18 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 		trackUpdateListingTokenSeries(data.token_series_id)
 
 		try {
-			await WalletHelper.callFunction({
+			const res = await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_set_series_price`,
 				args: params,
 				gas: GAS_FEE,
 				deposit: `1`,
 			})
+
+			if (res.response) {
+				onClose()
+				setTransactionRes(res?.response)
+			}
 		} catch (err) {
 			sentryCaptureException(err)
 		}
@@ -82,13 +87,18 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 			const params = {
 				token_series_id: data.token_series_id,
 			}
-			await WalletHelper.callFunction({
+			const res = await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_set_series_price`,
 				args: params,
 				gas: GAS_FEE,
 				deposit: `1`,
 			})
+
+			if (res.response) {
+				onClose()
+				setTransactionRes(res?.response)
+			}
 		} catch (err) {
 			sentryCaptureException(err)
 		}

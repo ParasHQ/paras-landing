@@ -21,6 +21,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const [txFee, setTxFee] = useState(null)
 	const { register, handleSubmit, errors } = useForm()
 	const currentUser = useStore((state) => state.currentUser)
+	const setTransactionRes = useStore((state) => state.setTransactionRes)
 	const { localeLn } = useIntl()
 
 	const showTooltipTxFee = (txFee?.next_fee || 0) > (txFee?.current_fee || 0)
@@ -129,7 +130,12 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 				],
 			})
 
-			return await WalletHelper.multipleCallFunction(txs)
+			const res = await WalletHelper.multipleCallFunction(txs)
+
+			if (res.response) {
+				onClose()
+				setTransactionRes(res?.response)
+			}
 		} catch (err) {
 			sentryCaptureException(err)
 		}
@@ -148,13 +154,17 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 				token_id: data.token_id,
 				nft_contract_id: data.contract_id,
 			}
-			await WalletHelper.callFunction({
+			const res = await WalletHelper.callFunction({
 				contractId: process.env.MARKETPLACE_CONTRACT_ID,
 				methodName: `delete_market_data`,
 				args: params,
 				gas: GAS_FEE,
 				deposit: `1`,
 			})
+			if (res.response) {
+				onClose()
+				setTransactionRes(res?.response)
+			}
 		} catch (err) {
 			sentryCaptureException(err)
 		}

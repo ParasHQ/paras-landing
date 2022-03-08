@@ -12,7 +12,7 @@ import useStore from 'lib/store'
 const TokenBurnModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const { localeLn } = useIntl()
-	const { currentUser } = useStore()
+	const { currentUser, setTransactionRes } = useStore()
 
 	const onBurnToken = async () => {
 		if (!currentUser) {
@@ -25,13 +25,18 @@ const TokenBurnModal = ({ show, onClose, data }) => {
 			const params = {
 				token_id: data.token_id,
 			}
-			await WalletHelper.callFunction({
+			const res = await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_burn`,
 				args: params,
 				gas: GAS_FEE,
 				deposit: `1`,
 			})
+
+			if (res.response) {
+				onClose()
+				setTransactionRes(res?.response)
+			}
 		} catch (err) {
 			sentryCaptureException(err)
 		}

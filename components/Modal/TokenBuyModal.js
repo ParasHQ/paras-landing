@@ -54,7 +54,7 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 
 			if (res.response) {
 				onClose()
-				setTransactionRes(res?.response?.[0])
+				setTransactionRes(res?.response)
 			}
 
 			// TODO After Function Call Sender Wallet

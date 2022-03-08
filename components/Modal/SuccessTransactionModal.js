@@ -4,6 +4,7 @@ import Media from 'components/Common/Media'
 import Modal from 'components/Common/Modal'
 import { IconX } from 'components/Icons'
 import getConfig from 'config/near'
+import { useToast } from 'hooks/useToast'
 import near from 'lib/near'
 import useStore from 'lib/store'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
@@ -23,9 +24,9 @@ const SuccessTransactionModal = () => {
 	const [showModal, setShowModal] = useState(false)
 	const [token, setToken] = useState(null)
 	const [txDetail, setTxDetail] = useState(null)
-	const currentUser = useStore((state) => state.currentUser)
-	const transactionRes = useStore((state) => state.transactionRes)
+	const { currentUser, transactionRes, setTransactionRes } = useStore()
 	const router = useRouter()
+	const toast = useToast()
 
 	useEffect(() => {
 		const checkTxStatus = async () => {
@@ -43,9 +44,23 @@ const SuccessTransactionModal = () => {
 
 	useEffect(() => {
 		if (transactionRes) {
-			processTransaction(transactionRes)
+			const txLast = transactionRes[transactionRes.length - 1]
+			if (txLast) {
+				processTransaction(txLast)
+			} else if (transactionRes.error) {
+				processTransactionError(transactionRes.error.kind.ExecutionError)
+			}
+			console.log('transactionRes', transactionRes)
 		}
 	}, [transactionRes])
+
+	const processTransactionError = (err) => {
+		toast.show({
+			text: <div className="font-semibold text-center text-sm">{err}</div>,
+			type: 'error',
+			duration: null,
+		})
+	}
 
 	const processTransaction = async (txStatus) => {
 		if (txStatus.status.SuccessValue !== undefined) {
@@ -89,6 +104,26 @@ const SuccessTransactionModal = () => {
 					setToken(res.data.data.results[0])
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
+				} else if (FunctionCall.method_name === 'nft_set_series_price') {
+					const res = await axios.get(`${process.env.V2_API_URL}/'token-series`, {
+						params: {
+							contract_id: receiver_id,
+							token_series_id: args.token_series_id,
+						},
+					})
+					setToken(res.data.data.results[0])
+					setTxDetail({ ...FunctionCall, args })
+					setShowModal(true)
+				} else if (FunctionCall.method_name === 'nft_approve') {
+					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+						params: {
+							contract_id: receiver_id,
+							token_id: args.token_id,
+						},
+					})
+					setToken(res.data.data.results[0])
+					setTxDetail({ ...FunctionCall, args })
+					setShowModal(true)
 				}
 			}
 		}
@@ -97,6 +132,7 @@ const SuccessTransactionModal = () => {
 	const onCloseModal = () => {
 		setShowModal(false)
 		setToken(null)
+		setTransactionRes(null)
 		removeTxHash()
 	}
 
@@ -111,6 +147,7 @@ const SuccessTransactionModal = () => {
 	const tokenUrl = `${window.location.hostname}/token/${token.contract_id}::${
 		token.token_series_id
 	}${token.token_id ? `/${token.token_id}` : ''}`
+
 	const explorerUrl =
 		getConfig(process.env.APP_ENV || 'development').explorerUrl +
 		'/transactions/' +
@@ -124,6 +161,57 @@ const SuccessTransactionModal = () => {
 		onCloseModal()
 	}
 
+	const titleText = () => {
+		if (txDetail.method_name === 'add_offer') {
+			return 'Offer Success'
+		} else if (txDetail.method_name === 'nft_buy' || txDetail.method_name === 'buy') {
+			return 'Purchase Success'
+		} else if (txDetail.method_name === 'nft_set_series_price') {
+			return 'Update Price Success'
+		} else if (txDetail.method_name === 'nft_approve') {
+			const msg = JSON.parse(txDetail.args.msg)
+			if (msg.market_type === 'sale') {
+				return 'Update Listing Success'
+			}
+		} else {
+			return 'Transaction Success'
+		}
+	}
+
+	const descText = () => {
+		if (txDetail.method_name === 'add_offer') {
+			return (
+				<>
+					You successfully offer <b>{token.metadata.title}</b> for{' '}
+					{formatNearAmount(txDetail.args.price)} Ⓝ
+				</>
+			)
+		} else if (txDetail.method_name === 'nft_buy' || txDetail.method_name === 'buy') {
+			return (
+				<>
+					You successfully purchase <b>{token.metadata.title}</b>
+				</>
+			)
+		} else if (txDetail.method_name === 'nft_set_series_price') {
+			return (
+				<>
+					You successfully update <b>{token.metadata.title}</b> price to{' '}
+					{formatNearAmount(txDetail.args.price)} Ⓝ
+				</>
+			)
+		} else if (txDetail.method_name === 'nft_approve') {
+			const msg = JSON.parse(txDetail.args.msg)
+			if (msg.market_type === 'sale') {
+				return (
+					<>
+						You successfully update <b>{token.metadata.title}</b> price to{' '}
+						{formatNearAmount(msg.price)} Ⓝ
+					</>
+				)
+			}
+		}
+	}
+
 	return (
 		<Modal isShow={showModal} close={onCloseModal} className="p-8">
 			<div className="max-w-sm w-full p-4 bg-gray-800 md:m-auto rounded-md relative">
@@ -133,21 +221,8 @@ const SuccessTransactionModal = () => {
 					</div>
 				</div>
 				<div>
-					<h1 className="text-2xl font-bold text-white tracking-tight">
-						{txDetail.method_name === 'add_offer' ? 'Offer Success' : 'Purchase Success'}
-					</h1>
-					<p className="text-white mt-2">
-						{txDetail.method_name === 'add_offer' ? (
-							<>
-								You successfully offer <b>{token.metadata.title}</b> for{' '}
-								{formatNearAmount(txDetail.args.price)} Ⓝ
-							</>
-						) : (
-							<>
-								You successfully purchase <b>{token.metadata.title}</b>
-							</>
-						)}
-					</p>
+					<h1 className="text-2xl font-bold text-white tracking-tight">{titleText()}</h1>
+					<p className="text-white mt-2">{descText()}</p>
 					<div className="p-4">
 						<div className="w-2/3 m-auto h-56">
 							<Media
