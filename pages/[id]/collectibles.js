@@ -40,8 +40,10 @@ const Collection = ({ userProfile, accountId }) => {
 		setIsFetching(true)
 		const params = tokensParams({
 			...router.query,
-			_id_next: idNext,
-			price_next: priceNext,
+			...{
+				_id_next: idNext,
+				price_next: priceNext,
+			},
 		})
 		const res = await axios.get(`${process.env.V2_API_URL}/token`, {
 			params: params,

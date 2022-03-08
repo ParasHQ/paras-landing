@@ -29,6 +29,10 @@ const Profile = ({ userProfile, activeTab }) => {
 		}
 	}, [userProfileStore])
 
+	useEffect(() => {
+		setProfileData(userProfile)
+	}, [userProfile])
+
 	const dismissUserModal = () => {
 		setShowModal(false)
 	}

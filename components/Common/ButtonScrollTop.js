@@ -19,7 +19,7 @@ const ButtonScrollTop = ({ className }) => {
 			{isScrollTop && (
 				<div className="flex justify-end mr-2 md:mr-3 transition">
 					<div
-						className={`${className} fixed bottom-0 mb-5 bg-primary rounded-md cursor-pointer bg-opacity-50 hover:bg-opacity-20 z-10`}
+						className={`${className} fixed bottom-0 mb-5 bg-primary rounded-md cursor-pointer bg-opacity-50 hover:bg-opacity-20 z-20`}
 						onClick={() =>
 							window.scrollTo({
 								top: 0,
