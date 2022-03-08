@@ -60,7 +60,7 @@ const Nav = () => {
 		}
 	}, [showMobileNav, showAutoComplete])
 
-	const debounce = (func) => {
+	const debounce = (func, timeout) => {
 		let timer
 
 		return function (...args) {
@@ -69,15 +69,12 @@ const Nav = () => {
 			timer = setTimeout(() => {
 				timer = null
 				func.apply(context, args)
-			}, 500)
+			}, timeout)
 		}
 	}
 
 	const handleAutoComplete = async (event) => {
-		const { value } = event.target
-		setSearchQuery(value)
-
-		setIsRefreshing(true)
+		const { value } = event
 
 		const resSearchAutoComplete = await axios.get(`${process.env.V2_API_URL}/search`, {
 			params: {
@@ -97,7 +94,15 @@ const Nav = () => {
 		setIsRefreshing(false)
 	}
 
-	const debounceOnChange = debounce(handleAutoComplete)
+	const debounceAutoComplete = debounce(handleAutoComplete, 800)
+
+	const onChangeAutoComplete = (event) => {
+		setSearchQuery(event)
+		setIsRefreshing(true)
+		debounceAutoComplete(event)
+	}
+
+	const debounceOnChange = debounce(onChangeAutoComplete, 400)
 
 	const _showTestnetInfo = () => {
 		toast.show({
@@ -122,7 +127,7 @@ const Nav = () => {
 		router.push({
 			pathname: '/search',
 			query: {
-				q: searchQuery,
+				q: searchQuery.value,
 			},
 		})
 	}
@@ -307,7 +312,9 @@ const Nav = () => {
 										name="q"
 										type="search"
 										value={router.query.search}
-										onChange={debounceOnChange}
+										onChange={(e) => {
+											debounceOnChange(e.target)
+										}}
 										placeholder={localeLn('SearchByTitle')}
 										className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-base md:text-sm font-medium"
 										style={{ WebkitAppearance: 'none' }}
