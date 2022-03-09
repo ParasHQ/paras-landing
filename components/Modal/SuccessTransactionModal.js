@@ -217,10 +217,17 @@ const SuccessTransactionModal = () => {
 				</>
 			)
 		} else if (txDetail.method_name === 'nft_set_series_price') {
+			if (txDetail.args.price) {
+				return (
+					<>
+						You successfully update <b>{token.metadata.title}</b> price to{' '}
+						{formatNearAmount(txDetail.args.price)} Ⓝ
+					</>
+				)
+			}
 			return (
 				<>
-					You successfully update <b>{token.metadata.title}</b> price to{' '}
-					{formatNearAmount(txDetail.args.price)} Ⓝ
+					You successfully remove the listing <b>{token.metadata.title}</b>
 				</>
 			)
 		} else if (txDetail.method_name === 'nft_approve') {
