@@ -17,7 +17,7 @@ import WalletHelper from 'lib/WalletHelper'
 
 const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
-	const [needDeposit, setNeedDeposit] = useState(true)
+	const [needDeposit, setNeedDeposit] = useState(false)
 	const [txFee, setTxFee] = useState(null)
 	const [isUpdatingPrice, setIsUpdatingPrice] = useState(false)
 	const [isRemovingPrice, setIsRemovingPrice] = useState(false)
@@ -75,6 +75,8 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 
 			if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
 				setNeedDeposit(false)
+			} else {
+				setNeedDeposit(true)
 			}
 		} catch (err) {
 			sentryCaptureException(err)
