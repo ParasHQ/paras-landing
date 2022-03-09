@@ -73,7 +73,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-300">
-								{`Creator minted #${token.edition_id || token.token_id} to ${prettyTruncate(
+								{`Creator minted ${token.metadata?.title} to ${prettyTruncate(
 									notif.to,
 									14,
 									'address'
