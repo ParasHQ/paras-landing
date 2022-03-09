@@ -56,28 +56,24 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 
 	const checkStorageBalance = async () => {
 		try {
-			if (!data.approval_id) {
-				const currentStorage = await WalletHelper.viewFunction({
-					methodName: 'storage_balance_of',
-					contractId: process.env.MARKETPLACE_CONTRACT_ID,
-					args: { account_id: currentUser },
-				})
+			const currentStorage = await WalletHelper.viewFunction({
+				methodName: 'storage_balance_of',
+				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				args: { account_id: currentUser },
+			})
 
-				const supplyPerOwner = await WalletHelper.viewFunction({
-					methodName: 'get_supply_by_owner_id',
-					contractId: process.env.MARKETPLACE_CONTRACT_ID,
-					args: { account_id: currentUser },
-				})
+			const supplyPerOwner = await WalletHelper.viewFunction({
+				methodName: 'get_supply_by_owner_id',
+				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				args: { account_id: currentUser },
+			})
 
-				const usedStorage = JSBI.multiply(
-					JSBI.BigInt(parseInt(supplyPerOwner) + 1),
-					JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
-				)
+			const usedStorage = JSBI.multiply(
+				JSBI.BigInt(parseInt(supplyPerOwner) + 1),
+				JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
+			)
 
-				if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
-					setNeedDeposit(false)
-				}
-			} else {
+			if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
 				setNeedDeposit(false)
 			}
 		} catch (err) {
