@@ -63,27 +63,6 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 	}
 
 	if (notif.type === 'nft_transfer' && notif.from === null) {
-		if (notif.price) {
-			return (
-				<div>
-					<Link href={url}>
-						<a>
-							<div
-								className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
-								onClick={() => notificationModal(false)}
-							>
-								<NotificationImage media={token.metadata?.media} />
-								<div className="pl-2 text-gray-300">
-									bought <span className="font-medium text-gray-100">{token.metadata?.title}</span>{' '}
-									for {formatNearAmount(notif.msg.params.price)} Ⓝ
-								</div>
-							</div>
-						</a>
-					</Link>
-				</div>
-			)
-		}
-
 		return (
 			<div>
 				<Link href={url}>
@@ -144,6 +123,27 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 									<span className="font-semibold">
 										{prettyTruncate(notif.to, 14, 'address')}
 									</span>{' '}
+									for {formatNearAmount(notif.msg.params.price)} Ⓝ
+								</div>
+							</div>
+						</a>
+					</Link>
+				</div>
+			)
+		}
+
+		if (notif.price) {
+			return (
+				<div>
+					<Link href={url}>
+						<a>
+							<div
+								className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+								onClick={() => notificationModal(false)}
+							>
+								<NotificationImage media={token.metadata?.media} />
+								<div className="pl-2 text-gray-300">
+									bought <span className="font-medium text-gray-100">{token.metadata?.title}</span>{' '}
 									for {formatNearAmount(notif.msg.params.price)} Ⓝ
 								</div>
 							</div>
