@@ -15,16 +15,55 @@ import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModa
 import Countdown from 'react-countdown'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
+import ReactLinkify from 'react-linkify'
 
-const specialBidTokens = [
+export const specialBidTokens = [
 	{
 		contractId: 'x.paras.near',
-		tokenSeriesId: '276003',
+		tokenSeriesId: '289013',
 		supply: `1`,
-		price: 500,
+		price: 10,
+		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
+	},
+	{
+		contractId: 'x.paras.near',
+		tokenSeriesId: '289113',
+		supply: `1`,
+		price: 10,
+		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
+	},
+	{
+		contractId: 'x.paras.near',
+		tokenSeriesId: '289087',
+		supply: `1`,
+		price: 10,
+		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
+	},
+	{
+		contractId: 'x.paras.near',
+		tokenSeriesId: '264480',
+		supply: `10`,
+		price: 1.5,
+		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
+	},
+	{
+		contractId: 'x.paras.near',
+		tokenSeriesId: '264476',
+		supply: `10`,
+		price: 1.5,
+		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
+	},
+	{
+		contractId: 'x.paras.near',
+		tokenSeriesId: '289091',
+		supply: `10`,
+		price: 1.5,
 		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
 	},
 ]
+
+const descText =
+	'The Help is Near & Create for Ukraine are created exclusively for charity auctions & donations by the NFT artist communities to support the people who are directly impacted by the war in Ukraine.\n\nAll donations will go to:\nhttps://twitter.com/RedCrossUkraine\nhttps://twitter.com/Ukraine\nhttps://twitter.com/Unchainfund'
 
 export const specialTokenId = [
 	// {
@@ -64,25 +103,32 @@ export const specialTokenId = [
 	// },
 ]
 
+const timeline = [
+	{
+		date: `March 10th`,
+		note: [`NFT drop is live by offer`, `Drops will start on March 10th at 10.00 UTC`],
+	},
+	{
+		date: 'March 16th',
+		note: [`NFT drop will end on March 16th at 9.59 UTC`],
+	},
+]
+
 const ReactTooltip = dynamic(() => import('react-tooltip'), { ssr: false })
 
 export const specialAccountId = 'hdriqi'
 
 export default function Drops() {
 	const { localeLn } = useIntl()
-	const timeline = [
-		{
-			date: `March 6th`,
-			note: [`NFT drop is live by offer`, `Drops will start on March 6th at 17.00 UTC`],
-		},
-		{
-			date: 'March 7th',
-			note: [`NFT drop will end on March 7th at 16.59 UTC`],
-		},
-	]
 
 	const [token, setToken] = useState(null)
 	const detail = useRef(null)
+
+	const componentDecorator = (decoratedHref, decoratedText, key) => (
+		<a target="blank" href={decoratedHref} key={key} className="hover:underline">
+			{decoratedText}
+		</a>
+	)
 
 	return (
 		<div
@@ -92,12 +138,12 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>Paras X Boo - NFT Drops</title>
+				<title>Charity Auction for Ukraine - NFT Drops</title>
 				<meta
 					name="description"
 					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
-				<meta name="twitter:title" content="Paras X Boo - NFT Drops" />
+				<meta name="twitter:title" content="Charity Auction for Ukraine - NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -107,11 +153,11 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://ipfs.fleek.co/ipfs/bafybeig4lyaarq6izm27rx5cf57geb6setyqvk3ojb77sta5gyg3navaq4"
+					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Paras X Boo - NFT Drops" />
-				<meta property="og:site_name" content="Paras X Boo - NFT Drops" />
+				<meta property="og:title" content="Charity Auction for Ukraine - NFT Drops" />
+				<meta property="og:site_name" content="Charity Auction for Ukraine - NFT Drops" />
 				<meta
 					property="og:description"
 					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
@@ -119,7 +165,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://ipfs.fleek.co/ipfs/bafybeig4lyaarq6izm27rx5cf57geb6setyqvk3ojb77sta5gyg3navaq4"
+					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 				/>
 			</Head>
 			<Nav />
@@ -138,7 +184,7 @@ export default function Drops() {
 				<div className="flex items-center justify-center m-4 md:m-0">
 					<div className="text-center px-4 whitespace-pre-wrap">
 						<div className="md:flex justify-center items-baseline">
-							<div className="flex justify-center">
+							{/* <div className="flex justify-center">
 								<svg
 									width="80"
 									height="19"
@@ -169,9 +215,11 @@ export default function Drops() {
 										fill="white"
 									/>
 								</svg>
-							</div>
+							</div> */}
 							{/* <p className="text-gray-100 ml-2 font-bold text-2xl">x</p> */}
-							<p className="text-gray-100 ml-2 font-bold text-2xl">{'X Boo'}</p>
+							<p className="text-gray-100 ml-2 font-bold text-2xl">
+								{'Charity Auction for Ukraine'}
+							</p>
 						</div>
 						<h1 className="text-white font-bold text-6xl mt-4 mb-2">{localeLn('NFTDrops')}</h1>
 						{/* <img
@@ -187,26 +235,16 @@ export default function Drops() {
 							</video>
 						</div> */}
 						<div className="max-w-xl m-auto">
-							<p className="text-gray-200 mt-4">
-								A limited collection of BOO Monsters roaming the blockchain
-							</p>
-							<p className="text-gray-200 mt-4">
-								Twitter:{' '}
-								<span>
-									<a
-										target="blank"
-										href="https://twitter.com/BOOMonstersNEAR"
-										className="text-white mt-4 font-bold hover:underline"
-									>
-										www.twitter.com/BOOMonstersNEAR
-									</a>{' '}
-								</span>
-							</p>
-							{/* <div className="mt-8 border-2 border-dashed border-gray-800 rounded-md p-4">
+							<ReactLinkify componentDecorator={componentDecorator}>
+								<p className={`mt-4 text-gray-200 whitespace-pre-line`}>
+									{descText.replace(/\n\s*\n\s*\n/g, '\n\n')}
+								</p>
+							</ReactLinkify>
+							<div className="mt-8 border-2 border-dashed border-gray-800 rounded-md p-4">
 								<div className="text-white font-bold mb-2">Limited time only</div>
 								<Countdown
 									className="text-white text-2xl font-bold"
-									date={1645833599000}
+									date={1647424799000}
 									renderer={({ formatted }) => (
 										<div className="text-white flex justify-center items-center font-bold">
 											<div className="w-1/4 md:w-20">
@@ -231,7 +269,7 @@ export default function Drops() {
 										</div>
 									)}
 								/>
-							</div> */}
+							</div>
 							{/* <a
 								target="blank"
 								href="https://forms.gle/oiyYYLx5gvqFNgtH8"
@@ -581,7 +619,7 @@ const SpecialCardBid = ({
 			params: {
 				contract_id: contractId,
 				token_series_id: tokenId,
-				lookup_token: true,
+				// lookup_token: true,
 			},
 		})
 		const token = (await res.data.data.results[0]) || null
@@ -695,7 +733,7 @@ const SpecialCardBid = ({
 							</div>
 						</div> */}
 						{/* <div className="text-white font-bold text-2xl">Bid The Special Card</div> */}
-						<div className="my-4">
+						{/* <div className="my-4">
 							<div
 								className="text-white font-bold flex justify-center"
 								data-tip={`Any bids received within the last 5 mins of the auction will extend the timer for an additional 5 minutes.`}
@@ -719,7 +757,7 @@ const SpecialCardBid = ({
 								</svg>
 							</div>
 							<Countdown className="text-white text-2xl font-bold" date={1646672399000} />
-						</div>
+						</div> */}
 						<div className="md:flex md:items-center md:justify-center md:space-x-4">
 							<div
 								className="flex flex-col cursor-default mb-4"
@@ -772,7 +810,8 @@ const SpecialCardBid = ({
 								{localToken ? (
 									<p className="text-gray-100 text-lg font-semibold">
 										{`${
-											(localToken.metadata.copies || cardSupplyText) - (localToken.total_mint || 0)
+											localToken.metadata.copies || cardSupplyText
+											// (localToken.metadata.copies || cardSupplyText) - (localToken.total_mint || 0)
 										} / ${localToken.metadata.copies || cardSupplyText}`}
 									</p>
 								) : (
@@ -784,7 +823,9 @@ const SpecialCardBid = ({
 							<div className="font-bold text-xl">Highest Offer</div>
 							<div className="flex items-baseline justify-center gap-1">
 								<div className="mb-4">Starting price {price} Ⓝ</div>
-								<div className="mb-4 opacity-80 text-sm">~ ${price * nearUsdPrice}</div>
+								<div className="mb-4 opacity-80 text-sm">
+									~ ${(price * nearUsdPrice).toFixed(2)}
+								</div>
 							</div>
 							{offers.map(
 								(offer) =>
@@ -799,7 +840,9 @@ const SpecialCardBid = ({
 												</div>
 												<div>
 													<div>{prettyBalance(offer.price, 24, 4)} Ⓝ</div>
-													<div className="opacity-80 text-sm">~ ${price * nearUsdPrice}</div>
+													<div className="opacity-80 text-sm">
+														~ ${(price * nearUsdPrice).toFixed(2)}
+													</div>
 												</div>
 											</div>
 										</div>
@@ -811,15 +854,15 @@ const SpecialCardBid = ({
 									// disabled
 									className={`w-full outline-none h-12 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-gray-200 text-primary bg-gray-200`}
 								>
-									{localToken?.price ? (
+									{/* {localToken?.price ? (
 										<p>
 											{`Buy for
 										${prettyBalance(localToken?.price, 24, 4)}
 										Ⓝ`}
 										</p>
-									) : (
-										<p>Place an Offer</p>
-									)}
+									) : ( */}
+									<p>Place an Offer</p>
+									{/* )} */}
 								</button>
 							</div>
 						</div>

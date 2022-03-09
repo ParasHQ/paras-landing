@@ -16,10 +16,7 @@ import { useEffect, useState } from 'react'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
-
-const HARD_CODE_TOKEN = {
-	276003: '500',
-}
+import { specialBidTokens } from 'pages/drops'
 
 const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuantity }) => {
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
@@ -129,6 +126,10 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 		}
 	}
 
+	const specialBidToken = specialBidTokens.find(
+		(token) => token.tokenSeriesId === data.token_series_id
+	)
+
 	return (
 		<>
 			<Modal isShow={show} close={onClose} closeOnBgClick={false} closeOnEscape={false}>
@@ -161,9 +162,7 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 									ref={register({
 										required: true,
 										// min: 0.01,
-										min: HARD_CODE_TOKEN[data.token_series_id]
-											? HARD_CODE_TOKEN[data.token_series_id]
-											: 0.01,
+										min: specialBidToken ? specialBidToken.price : 0.01,
 										max: parseFloat(userBalance.available / 10 ** 24),
 									})}
 									className={`${errors.bidAmount && 'error'}`}
@@ -172,9 +171,7 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 								<div className="mt-2 text-sm text-red-500">
 									{errors.bidAmount?.type === 'required' && `Offer amount is required`}
 									{errors.bidAmount?.type === 'min' &&
-										(HARD_CODE_TOKEN[data.token_series_id]
-											? `Minimum ${HARD_CODE_TOKEN[data.token_series_id]} Ⓝ`
-											: `Minimum 0.01 Ⓝ`)}
+										(specialBidToken ? `Minimum ${specialBidToken.price} Ⓝ` : `Minimum 0.01 Ⓝ`)}
 									{errors.bidAmount?.type === 'max' && `You don't have enough balance`}
 								</div>
 							</div>
