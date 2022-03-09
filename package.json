@@ -45,6 +45,7 @@
 		"postcss": "^8.4.12",
 		"query-string": "^7.0.1",
 		"react": "17.0.1",
+		"react-awesome-animated-number": "^1.0.6",
 		"react-blurhash": "^0.1.3",
 		"react-card-flip": "^1.1.5",
 		"react-content-loader": "^6.0.3",

@@ -57,7 +57,7 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.1.2":
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.17.0":
   version "7.17.2"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.2.tgz#66f68591605e59da47523c631416b18508779941"
   integrity sha512-hzeyJyMA1YGdJTuWU0e/j4wKXrU4OMFvY2MSlaI9B7VQb0r5cxTE3EAIS2Q7Tn2RIcDkRvTA/v2JsAEhxe99uw==
@@ -4623,6 +4623,13 @@ react-async-script@^1.1.1:
   dependencies:
     hoist-non-react-statics "^3.3.0"
     prop-types "^15.5.0"
+    
+react-awesome-animated-number@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/react-awesome-animated-number/-/react-awesome-animated-number-1.0.6.tgz#cab3e1b780013c64c0bc46a9b1528206df976267"
+  integrity sha512-wxmUXMTi9fgnkXHy6ipMTVr35tl32L3G98Vh4ppDbyxHbcU8dXhgY8Iq8W++dIUZ1Ws+XAM7FqobT547NRsO3Q==
+  dependencies:
+    "@babel/runtime" "^7.17.0"
 
 react-blurhash@^0.1.3:
   version "0.1.3"
