@@ -55,7 +55,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const toast = useToast()
 
 	const fetchData = async (initialFetch = false) => {
-		if (!hasMore || isFetching) {
+		const _hasMore = initialFetch ? true : hasMore
+
+		if (!_hasMore || isFetching) {
 			return
 		}
 		setIsFetching(true)
