@@ -106,7 +106,7 @@ const SuccessTransactionModal = () => {
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
 				} else if (FunctionCall.method_name === 'nft_set_series_price') {
-					const res = await axios.get(`${process.env.V2_API_URL}/'token-series`, {
+					const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
 						params: {
 							contract_id: receiver_id,
 							token_series_id: args.token_series_id,
@@ -119,6 +119,16 @@ const SuccessTransactionModal = () => {
 					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
 						params: {
 							contract_id: receiver_id,
+							token_id: args.token_id,
+						},
+					})
+					setToken(res.data.data.results[0])
+					setTxDetail({ ...FunctionCall, args })
+					setShowModal(true)
+				} else if (FunctionCall.method_name === 'delete_market_data') {
+					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+						params: {
+							contract_id: args.nft_contract_id,
 							token_id: args.token_id,
 						},
 					})
@@ -183,6 +193,8 @@ const SuccessTransactionModal = () => {
 			if (msg.market_type === 'sale') {
 				return 'Update Listing Success'
 			}
+		} else if (txDetail.method_name === 'delete_market_data') {
+			return 'Remove Listing Success'
 		} else if (txDetail.method_name === 'nft_create_series') {
 			return 'Create Card Success'
 		} else {
@@ -221,6 +233,12 @@ const SuccessTransactionModal = () => {
 					</>
 				)
 			}
+		} else if (txDetail.method_name === 'delete_market_data') {
+			return (
+				<>
+					You successfully remove the listing <b>{token.metadata.title}</b>
+				</>
+			)
 		} else if (txDetail.method_name === 'nft_create_series') {
 			return (
 				<>
