@@ -96,7 +96,7 @@ const Nav = () => {
 		setIsRefreshing(false)
 	}
 
-	const debounceAutoComplete = debounce(handleAutoComplete, 800)
+	const debounceAutoComplete = debounce(handleAutoComplete, 400)
 
 	const onChangeAutoComplete = (event) => {
 		setSearchQuery(event)
@@ -104,7 +104,7 @@ const Nav = () => {
 		debounceAutoComplete(event)
 	}
 
-	const debounceOnChange = debounce(onChangeAutoComplete, 400)
+	const debounceOnChange = debounce(onChangeAutoComplete, 200)
 
 	const _showTestnetInfo = () => {
 		toast.show({
