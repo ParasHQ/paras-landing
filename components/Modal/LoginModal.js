@@ -13,6 +13,7 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 	const loginSenderWallet = async () => {
 		if (typeof window.near !== 'undefined' && window.near.isSender) {
 			await senderWallet.signIn()
+			onClose()
 			setActiveWallet('senderWallet')
 		} else {
 			alert('Sender Wallet not installed')

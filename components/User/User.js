@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from 'react'
 import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
 import ChooseAccountModal from 'components/Modal/ChooseAccountModal'
 import Scrollbars from 'react-custom-scrollbars'
-import WalletHelper from 'lib/WalletHelper'
+import WalletHelper, { walletType } from 'lib/WalletHelper'
 import near from 'lib/near'
 
 const User = () => {
@@ -264,12 +264,14 @@ const User = () => {
 								</button>
 							)}
 							<hr className="my-2" />
-							<div
-								className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
-								onClick={onClickSwitchAccount}
-							>
-								{localeLn('NavSwitchAccount')}
-							</div>
+							{WalletHelper.activeWallet === walletType.web && (
+								<div
+									className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+									onClick={onClickSwitchAccount}
+								>
+									{localeLn('NavSwitchAccount')}
+								</div>
+							)}
 							<p
 								onClick={_signOut}
 								className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
