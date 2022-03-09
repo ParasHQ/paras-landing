@@ -139,7 +139,7 @@ const Nav = () => {
 							className="font-bold cursor-pointer hover:underline"
 							rel="noreferrer"
 						>
-							here
+							here.
 						</a>
 					</div>
 				</div>
