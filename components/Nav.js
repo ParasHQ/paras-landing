@@ -196,20 +196,21 @@ const Nav = () => {
 				)}
 
 				{/* Banner for special event */}
-				{/* <div
+				<div
 					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
 				>
 					<div className="px-10 py-1 md:p-0 ">
-						{`Prepare your best arts for Card4Card on Jan 28th! Read more info `}
+						{`Update: Marketplace Fee Reduction. More info `}
 						<a
-							href="https://paras.id/publication/first-card4card-in-2022-61ed5a50cd08b4959dde48b7"
+							href="https://paras.id/publication/paras-marketplace-comfortable-fee-622367bd12bbfa5e33c37f38"
 							target="_blank"
 							className="font-bold cursor-pointer hover:underline"
+							rel="noreferrer"
 						>
 							here
 						</a>
 					</div>
-				</div> */}
+				</div>
 
 				{process.env.APP_ENV !== 'production' && (
 					<div
