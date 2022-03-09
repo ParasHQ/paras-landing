@@ -144,6 +144,10 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								<NotificationImage media={token.metadata?.media} />
 								<div className="pl-2 text-gray-300">
 									bought <span className="font-medium text-gray-100">{token.metadata?.title}</span>{' '}
+									from{' '}
+									<span className="font-semibold text-gray-100">
+										{prettyTruncate(notif.from, 14, 'address')}
+									</span>{' '}
 									for {formatNearAmount(notif.msg.params.price)} Ⓝ
 								</div>
 							</div>
@@ -167,7 +171,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 									received{' '}
 									<span className="font-medium text-gray-100">{token.metadata?.title} </span>
 									from{' '}
-									<span className="font-medium text-gray-100">
+									<span className="font-semibold text-gray-100">
 										{prettyTruncate(notif.from, 14, 'address')}
 									</span>
 								</div>
@@ -271,7 +275,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-100">
-								Token <span className="font-semibold">{token.metadata?.title}</span> submission has
+								Token <span className="font-medium">{token.metadata?.title}</span> submission has
 								been accepted
 								{' to '} <span className="font-semibold">{notif.msg.category_name}</span> category
 							</div>
