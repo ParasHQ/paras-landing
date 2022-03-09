@@ -8,17 +8,21 @@ import { useIntl } from 'hooks/useIntl'
 import { trackBurnToken } from 'lib/ga'
 import WalletHelper from 'lib/WalletHelper'
 import useStore from 'lib/store'
+import { useToast } from 'hooks/useToast'
 
 const TokenBurnModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
+	const [isBurning, setIsBurning] = useState(false)
 	const { localeLn } = useIntl()
-	const { currentUser, setTransactionRes } = useStore()
+	const { currentUser } = useStore()
+	const toast = useToast()
 
 	const onBurnToken = async () => {
 		if (!currentUser) {
 			setShowLogin(true)
 			return
 		}
+		setIsBurning(true)
 
 		trackBurnToken(data.token_id)
 		try {
@@ -33,10 +37,30 @@ const TokenBurnModal = ({ show, onClose, data }) => {
 				deposit: `1`,
 			})
 
-			if (res.response) {
+			if (res.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+				return
+			} else {
 				onClose()
-				setTransactionRes(res?.response)
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{`Successfully burned ${data.metadata.title}`}
+						</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
 			}
+			setIsBurning(false)
 		} catch (err) {
 			sentryCaptureException(err)
 		}
@@ -60,7 +84,7 @@ const TokenBurnModal = ({ show, onClose, data }) => {
 							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
-							<Button size="md" isFullWidth onClick={onBurnToken}>
+							<Button size="md" isFullWidth onClick={onBurnToken} isLoading={isBurning}>
 								{localeLn('Burn')}
 							</Button>
 							<Button variant="ghost" size="md" isFullWidth className="mt-4" onClick={onClose}>

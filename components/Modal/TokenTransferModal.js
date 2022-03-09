@@ -89,7 +89,7 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							{`Successfully minted to ${receiverId}`}
+							{`Successfully transferred to ${receiverId}`}
 						</div>
 					),
 					type: 'success',
