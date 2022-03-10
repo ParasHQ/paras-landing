@@ -102,6 +102,12 @@ const LoginPage = () => {
 						<div className="mt-4">
 							<Button variant="secondary" isFullWidth onClick={loginSenderWallet}>
 								Login with Sender Wallet
+								<span
+									className="bg-white text-primary font-bold rounded-full px-2 text-sm absolute right-4"
+									style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
+								>
+									beta
+								</span>
 							</Button>
 						</div>
 						{/* Faucet balance is empty */}

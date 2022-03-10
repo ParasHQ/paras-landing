@@ -55,6 +55,12 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 						onClick={loginSenderWallet}
 					>
 						{'Login with Sender Wallet'}
+						<span
+							className="bg-white text-primary font-bold rounded-full px-2 text-sm absolute right-2"
+							style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
+						>
+							beta
+						</span>
 					</Button>
 				</div>
 				<div className="absolute -top-4 -right-4 cursor-pointer" onClick={onClose}>
