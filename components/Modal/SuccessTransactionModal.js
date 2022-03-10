@@ -7,6 +7,7 @@ import getConfig from 'config/near'
 import { useToast } from 'hooks/useToast'
 import near from 'lib/near'
 import useStore from 'lib/store'
+import WalletHelper, { walletType } from 'lib/WalletHelper'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -53,6 +54,16 @@ const SuccessTransactionModal = () => {
 			}
 		}
 	}, [transactionRes])
+
+	// REDIRECT TO TOKEN PAGE
+	useEffect(() => {
+		if (token && WalletHelper.activeWallet === walletType.sender && txDetail) {
+			const url = `/token/${token.contract_id}::${token.token_series_id}${
+				token.token_id ? `/${token.token_id}` : ''
+			}${txDetail.method_name === 'add_offer' ? '?tab=offers' : ''}`
+			router.push(url)
+		}
+	}, [token])
 
 	const processTransactionError = (err) => {
 		toast.show({
