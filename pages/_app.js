@@ -168,11 +168,6 @@ function MyApp({ Component, pageProps }) {
 		await WalletHelper.initialize({ onChangeUser: setupUser })
 
 		const currentUser = WalletHelper.currentUser
-		Sentry.configureScope((scope) => {
-			const user = currentUser ? { id: currentUser.accountId } : null
-			scope.setUser(user)
-			scope.setTag('environment', process.env.APP_ENV)
-		})
 
 		if (currentUser) {
 			setupUser(currentUser)
@@ -184,6 +179,12 @@ function MyApp({ Component, pageProps }) {
 	const setupUser = async (currentUser) => {
 		store.setCurrentUser(currentUser.accountId)
 		store.setUserBalance(currentUser.balance)
+
+		Sentry.configureScope((scope) => {
+			const user = currentUser ? { id: currentUser.accountId } : null
+			scope.setUser(user)
+			scope.setTag('environment', process.env.APP_ENV)
+		})
 
 		const userProfileResp = await axios.get(`${process.env.V2_API_URL}/profiles`, {
 			params: {
