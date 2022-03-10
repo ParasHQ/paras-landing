@@ -17,12 +17,12 @@ const Drops = () => {
 			}}
 		>
 			<Head>
-				<title>Paras X Boo - NFT Drops</title>
+				<title>Charity Auction for Ukraine - NFT Drops</title>
 				<meta
 					name="description"
 					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
-				<meta name="twitter:title" content="Paras X Boo - NFT Drops" />
+				<meta name="twitter:title" content="Charity Auction for Ukraine - NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -32,11 +32,11 @@ const Drops = () => {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://ipfs.fleek.co/ipfs/bafybeig4lyaarq6izm27rx5cf57geb6setyqvk3ojb77sta5gyg3navaq4"
+					content="https://paras-cdn.imgix.net/bafybeianndejhlttfzkcxmpfxfjqkjdqpuvyoxv4ts7achio3x2ovmtyn4?w=800&auto=format,compress"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Paras X Boo - NFT Drops" />
-				<meta property="og:site_name" content="Paras X Boo - NFT Drops" />
+				<meta property="og:title" content="Charity Auction for Ukraine - NFT Drops" />
+				<meta property="og:site_name" content="Charity Auction for Ukraine - NFT Drops" />
 				<meta
 					property="og:description"
 					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
@@ -44,7 +44,7 @@ const Drops = () => {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://ipfs.fleek.co/ipfs/bafybeig4lyaarq6izm27rx5cf57geb6setyqvk3ojb77sta5gyg3navaq4"
+					content="https://paras-cdn.imgix.net/bafybeianndejhlttfzkcxmpfxfjqkjdqpuvyoxv4ts7achio3x2ovmtyn4?w=800&auto=format,compress"
 				/>
 			</Head>
 			<Nav />

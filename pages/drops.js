@@ -153,7 +153,7 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
+					content="https://paras-cdn.imgix.net/bafybeianndejhlttfzkcxmpfxfjqkjdqpuvyoxv4ts7achio3x2ovmtyn4?w=800&auto=format,compress"
 				/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Charity Auction for Ukraine - NFT Drops" />
@@ -165,7 +165,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
+					content="https://paras-cdn.imgix.net/bafybeianndejhlttfzkcxmpfxfjqkjdqpuvyoxv4ts7achio3x2ovmtyn4?w=800&auto=format,compress"
 				/>
 			</Head>
 			<Nav />
