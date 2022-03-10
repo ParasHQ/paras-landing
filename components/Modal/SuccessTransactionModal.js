@@ -63,7 +63,7 @@ const SuccessTransactionModal = () => {
 			}${txDetail.method_name === 'add_offer' ? '?tab=offers' : ''}`
 			router.push(url)
 		}
-	}, [token])
+	}, [token, txDetail])
 
 	const processTransactionError = (err) => {
 		toast.show({
