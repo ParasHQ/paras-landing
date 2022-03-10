@@ -262,3 +262,6 @@ export default function sha1(data, encoding) {
 export const decodeBase64 = (b64text) => {
 	return new TextDecoder().decode(Buffer.from(b64text, 'base64'))
 }
+
+export const isChromeBrowser =
+	typeof navigator !== 'undefined' && navigator.userAgent.indexOf('Chrome') !== -1

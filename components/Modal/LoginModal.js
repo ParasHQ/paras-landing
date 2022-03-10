@@ -5,6 +5,7 @@ import { useIntl } from 'hooks/useIntl'
 import near from 'lib/near'
 import senderWallet from 'lib/senderWallet'
 import useStore from 'lib/store'
+import { isChromeBrowser } from 'utils/common'
 
 const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 	const { localeLn } = useIntl()
@@ -47,21 +48,23 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 					<Button className="mt-2 px-1" size="md" isFullWidth onClick={() => near.login()}>
 						{localeLn('GoToLogin')}
 					</Button>
-					<Button
-						className="mt-2 px-1"
-						size="md"
-						variant="secondary"
-						isFullWidth
-						onClick={loginSenderWallet}
-					>
-						{'Login with Sender Wallet'}
-						<span
-							className="bg-white text-primary font-bold rounded-full px-2 text-sm absolute right-2"
-							style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
+					{isChromeBrowser && (
+						<Button
+							className="mt-2 px-1 hidden md:block"
+							size="md"
+							variant="secondary"
+							isFullWidth
+							onClick={loginSenderWallet}
 						>
-							beta
-						</span>
-					</Button>
+							{'Login with Sender Wallet'}
+							<span
+								className="bg-white text-primary font-bold rounded-full px-2 text-sm absolute right-2"
+								style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
+							>
+								beta
+							</span>
+						</Button>
+					)}
 				</div>
 				<div className="absolute -top-4 -right-4 cursor-pointer" onClick={onClose}>
 					<IconXCircle size={32} />
