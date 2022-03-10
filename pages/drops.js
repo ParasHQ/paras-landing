@@ -39,27 +39,27 @@ export const specialBidTokens = [
 		price: 10,
 		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
 	},
-	// {
-	// 	contractId: 'x.paras.near',
-	// 	tokenSeriesId: '264480',
-	// 	supply: `10`,
-	// 	price: 1.5,
-	// 	blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
-	// },
-	// {
-	// 	contractId: 'x.paras.near',
-	// 	tokenSeriesId: '264476',
-	// 	supply: `10`,
-	// 	price: 1.5,
-	// 	blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
-	// },
-	// {
-	// 	contractId: 'x.paras.near',
-	// 	tokenSeriesId: '289091',
-	// 	supply: `10`,
-	// 	price: 1.5,
-	// 	blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
-	// },
+	{
+		contractId: 'x.paras.near',
+		tokenSeriesId: '293199',
+		supply: `10`,
+		price: 5,
+		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
+	},
+	{
+		contractId: 'x.paras.near',
+		tokenSeriesId: '293209',
+		supply: `10`,
+		price: 5,
+		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
+	},
+	{
+		contractId: 'x.paras.near',
+		tokenSeriesId: '293216',
+		supply: `10`,
+		price: 5,
+		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
+	},
 ]
 
 const descText =
