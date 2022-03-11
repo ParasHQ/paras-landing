@@ -183,6 +183,10 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 					  )
 					: JSBI.BigInt(0)
 
+			if (calcRoyalty.toString() === parseNearAmount(newPrice)) {
+				fee = JSBI.BigInt(0)
+			}
+
 			const calcFee = JSBI.divide(
 				JSBI.multiply(JSBI.BigInt(parseNearAmount(newPrice)), fee),
 				JSBI.BigInt(10000)
