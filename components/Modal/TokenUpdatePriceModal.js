@@ -174,7 +174,6 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 					},
 				],
 			})
-			console.log('txs', txs)
 
 			await near.executeMultipleTransactions(txs)
 		} catch (err) {
