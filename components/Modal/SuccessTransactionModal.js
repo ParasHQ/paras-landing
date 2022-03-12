@@ -33,7 +33,7 @@ const SuccessTransactionModal = () => {
 				txHash: router.query.transactionHashes,
 			})
 
-			if (txStatus.status.SuccessValue !== undefined) {
+			if (txStatus?.status?.SuccessValue !== undefined) {
 				const { actions, receiver_id } = txStatus.transaction
 
 				for (const action of actions) {
