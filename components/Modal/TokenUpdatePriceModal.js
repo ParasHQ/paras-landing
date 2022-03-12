@@ -142,18 +142,40 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 
 		trackRemoveListingToken(data.token_id)
 
+		const txs = []
 		try {
-			const params = {
-				token_id: data.token_id,
-				nft_contract_id: data.contract_id,
-			}
-			await near.wallet.account().functionCall({
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
-				methodName: `delete_market_data`,
-				args: params,
-				gas: GAS_FEE,
-				attachedDeposit: `1`,
+			txs.push({
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
+				functionCalls: [
+					{
+						methodName: 'delete_market_data',
+						contractId: process.env.MARKETPLACE_CONTRACT_ID,
+						args: {
+							token_id: data.token_id,
+							nft_contract_id: data.contract_id,
+						},
+						attachedDeposit: data.approval_id ? `1` : STORAGE_APPROVE_FEE,
+						gas: GAS_FEE,
+					},
+				],
 			})
+			txs.push({
+				receiverId: data.contract_id,
+				functionCalls: [
+					{
+						methodName: 'nft_revoke',
+						contractId: data.contract_id,
+						args: {
+							token_id: data.token_id,
+							account_id: process.env.MARKETPLACE_CONTRACT_ID,
+						},
+						attachedDeposit: data.approval_id ? `1` : STORAGE_APPROVE_FEE,
+						gas: GAS_FEE,
+					},
+				],
+			})
+
+			await near.executeMultipleTransactions(txs)
 		} catch (err) {
 			sentryCaptureException(err)
 		}
