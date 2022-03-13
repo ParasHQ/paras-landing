@@ -635,6 +635,7 @@ const artistVerification = {
 	ResultDesc: 'Result of your verification request.',
 	YouAreVerified: 'You are verified !',
 	VerificationRequestRejected: 'Verification Request Rejected !',
+	Since: 'Since',
 }
 
 import { config } from './config.js'
