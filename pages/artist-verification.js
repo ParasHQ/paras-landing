@@ -192,30 +192,21 @@ const Verify = () => {
 		return (
 			<div className="max-w-4xl relative m-auto py-12 px-4">
 				<h1 className="text-4xl font-bold text-gray-100 text-center">
-					{localeLn('Paras Artist Verification')}
+					{localeLn('ParasArtistVerification')}
 				</h1>
 				<div className="mt-6 text-justify text-l text-gray-300">
-					<p>
-						{localeLn(
-							`As a Paras artist, you need to be verified to access full features of Paras. Verification gives extra visibility on the marketplace. Currently, non-verified artists' NTFs will not appear on the "market" feed. Whole process take 3-4 days.`
-						)}
-					</p>
+					<p>{localeLn('TextFormParagraph1')}</p>
 					<br></br>
-					<p>{localeLn(`To get verified, you only need to do these steps :`)}</p>
+					<p>{localeLn('TextFormParagraph2')}</p>
 					<br></br>
 
 					<ol className="list-decimal ml-6">
-						<li>Use a profile picture</li>
-						<li>Fill in your Bio</li>
-						<li>Link to your social media on your Paras profile (Twitter and Instagram)</li>
-						<li>
-							Link to your website (not required but will increase your chances of getting verified)
-						</li>
-						<li>
-							Have authentic art, you did not steal or have been list your own work on other
-							platform.
-						</li>
-						<li>You need to create at least 3 NTFs on Paras.</li>
+						<li>{localeLn('Step1')}</li>
+						<li>{localeLn('Step2')}</li>
+						<li>{localeLn('Step3')}</li>
+						<li>{localeLn('Step4')}</li>
+						<li>{localeLn('Step5')}</li>
+						<li>{localeLn('Step6')}</li>
 					</ol>
 					<br></br>
 					<p>
@@ -326,20 +317,16 @@ const Verify = () => {
 		return (
 			<div className="max-w-4xl relative m-auto py-12 px-4">
 				<h1 className="text-4xl font-bold text-gray-100 text-center">
-					{localeLn('Verification Status')}
+					{localeLn('VerificationStatus')}
 				</h1>
 				<div className="mt-6 text-justify text-l text-gray-300 mb-20">
-					<p>
-						{localeLn(
-							`Whole verification process may take 3-4 days, announced every Wednesday & Saturday. If you are not successfully verified, you can re-submit verification status in the next batch.`
-						)}
-					</p>
+					<p>{localeLn('TextStatusParagraph1')}</p>
 					<br></br>
-					<p>{localeLn(`For further question, you can ask our team on Discord`)}</p>
+					<p>{localeLn('TextStatusParagraph2')}</p>
 					{resultDate && dataStatus.status === 'reject' && (
 						<div className=" text-center ">
 							<h3 className="text-2xl font-bold text-red-500 mt-20">
-								{localeLn('Verification Request Rejected !')}
+								{localeLn('VerificationRequestRejected')}
 							</h3>
 							<p>{dataStatus.note}</p>
 						</div>
@@ -347,7 +334,7 @@ const Verify = () => {
 					{resultDate && dataStatus.status === 'verified' && (
 						<div className="text-center ">
 							<h3 className="text-2xl font-bold text-green-500 mt-20">
-								{localeLn('You are verified !')}
+								{localeLn('YouAreVerified')}
 							</h3>
 						</div>
 					)}
@@ -366,10 +353,8 @@ const Verify = () => {
 									<div className="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-teal-600  bg-gray-300"></div>
 								)}
 								<div className="absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium text-teal-600">
-									<p className="text-lg text-gray-50">Submitted</p>
-									<p className="mt-2 text-md text-gray-50">
-										You have submitted verification request
-									</p>
+									<p className="text-lg text-gray-50">{localeLn('Submitted')}</p>
+									<p className="mt-2 text-md text-gray-50">{localeLn('SubmittedDesc')}</p>
 								</div>
 							</div>
 							<div className="flex-auto border-t-2 transition duration-500 ease-in-out border-teal-600"></div>
@@ -384,10 +369,8 @@ const Verify = () => {
 									<div className="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-teal-600  bg-gray-300"></div>
 								)}
 								<div className="absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium text-teal-600">
-									<p className="text-lg text-gray-50">In Review</p>
-									<p className="mt-2 text-md text-gray-50">
-										Your profile is under review by our team
-									</p>
+									<p className="text-lg text-gray-50">{localeLn('InReview')}</p>
+									<p className="mt-2 text-md text-gray-50">{localeLn('InReviewDesc')}</p>
 								</div>
 							</div>
 							<div className="flex-auto border-t-2 transition duration-500 ease-in-out border-gray-300"></div>
@@ -402,8 +385,8 @@ const Verify = () => {
 									<div className="rounded-full transition duration-500 ease-in-out h-12 w-12 py-3 border-2 border-teal-600  bg-gray-300"></div>
 								)}
 								<div className="absolute top-0 -ml-10 text-center mt-16 w-32 text-xs font-medium text-gray-500">
-									<p className="text-lg text-gray-50">Result</p>
-									<p className="mt-2 text-md text-gray-50">Result of your verification request.</p>
+									<p className="text-lg text-gray-50">{localeLn('Result')}</p>
+									<p className="mt-2 text-md text-gray-50">{localeLn('ResultDesc')}</p>
 								</div>
 							</div>
 						</div>
@@ -431,14 +414,16 @@ const Verify = () => {
 		return (
 			<div className="max-w-4xl relative m-auto py-12 px-4">
 				<h1 className="text-4xl font-bold text-gray-100 text-center">
-					{localeLn('Verification Status')}
+					{localeLn('VerificationStatus')}
 				</h1>
 				<div className="mt-6 text-justify text-l text-gray-300 mb-20">
 					<div className=" text-center ">
 						<h3 className="text-2xl font-bold text-green-500 mt-20">
-							{localeLn('You are verified !')}
+							{localeLn('YouAreVerified')}
 						</h3>
-						<p className="mt-3">Since {verifiedDate}</p>
+						<p className="mt-3">
+							{localeLn('Since')} {verifiedDate}
+						</p>
 					</div>
 				</div>
 				<center>
@@ -465,7 +450,7 @@ const Verify = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn('Verify')}</title>
+				<title>{localeLn('ArtistVerification')}</title>
 				<meta
 					name="description"
 					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
