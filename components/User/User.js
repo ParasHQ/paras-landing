@@ -225,6 +225,12 @@ const User = () => {
 									{localeLn('NavCreatePublication')}
 								</a>
 							</div>
+							<Link href={`/verify`}>
+								<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
+									Get Verified
+								</a>
+							</Link>
+
 							<hr className="my-2" />
 							<Link href={`/${store.currentUser}`}>
 								<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
