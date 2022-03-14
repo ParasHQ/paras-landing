@@ -121,15 +121,17 @@ const CollectionList = ({ data, fetchData, hasMore, page }) => {
 							<div className="grid grid-cols-3 justify-between px-3 mt-3 mb-2">
 								<div className="flex flex-col my-1 text-center">
 									<p className="font-light text-sm text-white text-opacity-70 mb-1">Volume</p>
-									<p className="font-bold text-md">{formatNearAmount(collection.volume, 2)} Ⓝ</p>
+									<p className="font-bold text-md">
+										{formatNearAmount(collection.volume || '0', 2)} Ⓝ
+									</p>
 								</div>
 								<div className="flex flex-col my-1 text-center font-light">
 									<p className="font-light text-sm text-white text-opacity-70 mb-1">Items</p>
-									<p className="font-bold text-md">{collection.total_cards}</p>
+									<p className="font-bold text-md">{collection.total_cards || 0}</p>
 								</div>
 								<div className="flex flex-col my-1 text-center font-light">
 									<p className="font-light text-sm text-white text-opacity-70 mb-1">Owners</p>
-									<p className="font-bold text-md">{collection.total_owners}</p>
+									<p className="font-bold text-md">{collection.total_owners || 0}</p>
 								</div>
 							</div>
 						</div>

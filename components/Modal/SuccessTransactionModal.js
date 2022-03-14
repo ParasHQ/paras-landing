@@ -74,7 +74,7 @@ const SuccessTransactionModal = () => {
 	}
 
 	const processTransaction = async (txStatus) => {
-		if (txStatus.status.SuccessValue !== undefined) {
+		if (txStatus?.status?.SuccessValue !== undefined) {
 			const { receipts_outcome } = txStatus
 			const { actions, receiver_id } = txStatus.transaction
 

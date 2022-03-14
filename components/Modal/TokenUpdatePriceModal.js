@@ -153,23 +153,40 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 
 		trackRemoveListingToken(data.token_id)
 
+		const txs = []
 		try {
-			const params = {
-				token_id: data.token_id,
-				nft_contract_id: data.contract_id,
-			}
-			const res = await WalletHelper.callFunction({
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
-				methodName: `delete_market_data`,
-				args: params,
-				gas: GAS_FEE,
-				deposit: `1`,
+			txs.push({
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
+				functionCalls: [
+					{
+						methodName: 'delete_market_data',
+						contractId: process.env.MARKETPLACE_CONTRACT_ID,
+						args: {
+							token_id: data.token_id,
+							nft_contract_id: data.contract_id,
+						},
+						attachedDeposit: `1`,
+						gas: GAS_FEE,
+					},
+				],
 			})
-			if (res.response) {
-				onClose()
-				setTransactionRes(res?.response)
-			}
-			setIsRemovingPrice(false)
+			txs.push({
+				receiverId: data.contract_id,
+				functionCalls: [
+					{
+						methodName: 'nft_revoke',
+						contractId: data.contract_id,
+						args: {
+							token_id: data.token_id,
+							account_id: process.env.MARKETPLACE_CONTRACT_ID,
+						},
+						attachedDeposit: `1`,
+						gas: GAS_FEE,
+					},
+				],
+			})
+
+			await WalletHelper.executeMultipleTransactions(txs)
 		} catch (err) {
 			sentryCaptureException(err)
 		}
@@ -177,7 +194,12 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 
 	const calculatePriceDistribution = () => {
 		if (newPrice && JSBI.greaterThan(JSBI.BigInt(parseNearAmount(newPrice)), JSBI.BigInt(0))) {
-			const fee = JSBI.BigInt(txFee?.current_fee || 0)
+			let fee
+			if (txFee?.start_time && new Date() > new Date(txFee?.start_time * 1000)) {
+				fee = JSBI.BigInt(txFee?.next_fee || 0)
+			} else {
+				fee = JSBI.BigInt(txFee?.current_fee || 0)
+			}
 
 			const calcRoyalty =
 				Object.keys(data.royalty).length > 0
@@ -193,6 +215,10 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 							JSBI.BigInt(10000)
 					  )
 					: JSBI.BigInt(0)
+
+			if (calcRoyalty.toString() === parseNearAmount(newPrice)) {
+				fee = JSBI.BigInt(0)
+			}
 
 			const calcFee = JSBI.divide(
 				JSBI.multiply(JSBI.BigInt(parseNearAmount(newPrice)), fee),
