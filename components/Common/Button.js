@@ -32,6 +32,11 @@ const Button = ({
 				!isDisabled && 'hover:bg-white hover:bg-opacity-10'
 			}`
 			break
+		case 'white':
+			buttonVariantStyle = `bg-gray-300 text-black ${
+				!isDisabled && 'hover:bg-white hover:bg-opacity-60'
+			}`
+			break
 		default:
 			break
 	}
