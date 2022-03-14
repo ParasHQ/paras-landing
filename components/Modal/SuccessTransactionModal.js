@@ -74,6 +74,21 @@ const SuccessTransactionModal = () => {
 						setToken(res.data.data.results[0])
 						setTxDetail({ ...FunctionCall, args })
 						setShowModal(true)
+					} else if (FunctionCall.method_name === 'buy_mint_bundle') {
+						const logs = txStatus.receipts_outcome[0].outcome.logs
+						const getLogsTokenId = logs[0].split('token_ids')
+						const tokenId = getLogsTokenId[(0, 1)].split('"')
+
+						const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+							params: {
+								contract_id: args.nft_contract_id,
+								token_id: tokenId[2],
+							},
+						})
+
+						setToken(res.data.data.results[0])
+						setTxDetail({ ...FunctionCall, args })
+						setShowModal(true)
 					}
 				}
 			}
@@ -124,13 +139,21 @@ const SuccessTransactionModal = () => {
 				</div>
 				<div>
 					<h1 className="text-2xl font-bold text-white tracking-tight">
-						{txDetail.method_name === 'add_offer' ? 'Offer Success' : 'Purchase Success'}
+						{txDetail.method_name === 'add_offer'
+							? 'Offer Success'
+							: txDetail.method_name === 'buy_mint_bundle'
+							? 'Gacha!'
+							: 'Purchase Success'}
 					</h1>
 					<p className="text-white mt-2">
 						{txDetail.method_name === 'add_offer' ? (
 							<>
 								You successfully offer <b>{token.metadata.title}</b> for{' '}
 								{formatNearAmount(txDetail.args.price)} Ⓝ
+							</>
+						) : txDetail.method_name === 'buy_mint_bundle' ? (
+							<>
+								You successfully gacha <b>{token.metadata.title}</b>
 							</>
 						) : (
 							<>

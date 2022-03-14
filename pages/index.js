@@ -9,6 +9,7 @@ import { HomePublicationList } from 'components/Home/HomePublicationList'
 import { HomeTopUserList } from 'components/Home/HomeTopUserList'
 import { HomeCardList } from 'components/Home/HomeCardList'
 import { useIntl } from 'hooks/useIntl'
+import GachaModal from 'components/Modal/GachaModal'
 
 export default function Home() {
 	const [showVideoModal, setShowVideoModal] = useState(false)
@@ -156,6 +157,7 @@ export default function Home() {
 			</div>
 
 			<Footer />
+			<GachaModal />
 		</div>
 	)
 }

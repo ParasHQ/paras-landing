@@ -14,6 +14,7 @@ import { useIntl } from 'hooks/useIntl'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import FilterMarket from 'components/Filter/FilterMarket'
 import FilterDisplay from 'components/Filter/FilterDisplay'
+import GachaModal from 'components/Modal/GachaModal'
 
 const LIMIT = 12
 
@@ -182,6 +183,7 @@ function MarketPage({ serverQuery }) {
 					)}
 				</div>
 				<ButtonScrollTop />
+				<GachaModal />
 			</div>
 			<Footer />
 		</div>
