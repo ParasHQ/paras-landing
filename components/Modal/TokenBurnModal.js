@@ -1,34 +1,66 @@
 import { useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import near from 'lib/near'
 import LoginModal from './LoginModal'
 import { GAS_FEE } from 'config/constants'
 import { sentryCaptureException } from 'lib/sentry'
 import { useIntl } from 'hooks/useIntl'
 import { trackBurnToken } from 'lib/ga'
+import WalletHelper from 'lib/WalletHelper'
+import useStore from 'lib/store'
+import { useToast } from 'hooks/useToast'
 
 const TokenBurnModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
+	const [isBurning, setIsBurning] = useState(false)
 	const { localeLn } = useIntl()
+	const { currentUser } = useStore()
+	const toast = useToast()
+
 	const onBurnToken = async () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowLogin(true)
 			return
 		}
+		setIsBurning(true)
 
 		trackBurnToken(data.token_id)
 		try {
 			const params = {
 				token_id: data.token_id,
 			}
-			await near.wallet.account().functionCall({
+			const res = await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_burn`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: `1`,
+				deposit: `1`,
 			})
+
+			if (res.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+				return
+			} else {
+				onClose()
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{`Successfully burned ${data.metadata.title}`}
+						</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
+			}
+			setIsBurning(false)
 		} catch (err) {
 			sentryCaptureException(err)
 		}
@@ -48,11 +80,11 @@ const TokenBurnModal = ({ show, onClose, data }) => {
 						<div className="mt-4">
 							<div className="mt-2 text-sm text-red-500"></div>
 						</div>
-						<p className="text-white mt-4 text-sm text-center opacity-90">
+						<p className="text-white mt-4 text-sm text-center opacity-90 px-4">
 							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
-							<Button size="md" isFullWidth onClick={onBurnToken}>
+							<Button size="md" isFullWidth onClick={onBurnToken} isLoading={isBurning}>
 								{localeLn('Burn')}
 							</Button>
 							<Button variant="ghost" size="md" isFullWidth className="mt-4" onClick={onClose}>

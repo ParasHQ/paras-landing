@@ -272,7 +272,7 @@ const modal = {
 	GoToLogin: 'Ir a Iniciar Sesión',
 	BurnAsset: 'Quemar Activo',
 	AreAboutToBurn: 'Estás a punto de quemar',
-	RedirectedToconfirm: 'Vas a ser redirigido a NEAR Web Wallet para confirmar tu transacción.',
+	RedirectedToconfirm: 'Vas a ser redirigido a tu wallet para confirmar tu transacción.',
 	AreAboutToPurchase: 'Estás a punto de adquirir',
 	Total: 'Total',
 	GetForFree: 'Consíguelo Gratis',

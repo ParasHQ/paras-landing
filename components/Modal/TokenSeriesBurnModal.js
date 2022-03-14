@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import near from 'lib/near'
 import LoginModal from './LoginModal'
 import { GAS_FEE } from 'config/constants'
 import { InputText } from 'components/Common/form'
@@ -9,32 +8,71 @@ import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackBurnTokenSeries } from 'lib/ga'
+import WalletHelper from 'lib/WalletHelper'
+import useStore from 'lib/store'
+import { useToast } from 'hooks/useToast'
+import { useRouter } from 'next/router'
 
 const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [burnCopies, setBurnCopies] = useState('')
+	const [isBurning, setIsBurning] = useState(false)
 	const { localeLn } = useIntl()
+	const { currentUser } = useStore()
+	const toast = useToast()
+	const router = useRouter()
+
 	const onBurnToken = async () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowLogin(true)
 			return
 		}
-
+		setIsBurning(true)
 		trackBurnTokenSeries(data.token_series_id)
 		try {
 			const params = {
 				token_series_id: data.token_series_id,
 				decrease_copies: burnCopies,
 			}
-			await near.wallet.account().functionCall({
+			const res = await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_decrease_series_copies`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: `1`,
+				deposit: `1`,
 			})
+			if (res.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+				return
+			} else {
+				onClose()
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{`Successfully decrease copies to ${
+								parseInt(data.metadata.copies || 0) -
+								parseInt(data.total_mint || 0) -
+								parseInt(burnCopies || 0)
+							}`}
+						</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
+				setTimeout(() => router.push(window.location.pathname), 2500)
+			}
+			setIsBurning(false)
 		} catch (err) {
 			sentryCaptureException(err)
+			setIsBurning(false)
 		}
 	}
 
@@ -96,7 +134,7 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 								</div>
 							</div>
 						</div>
-						<p className="text-white mt-4 text-sm text-center opacity-90">
+						<p className="text-white mt-4 text-sm text-center opacity-90 px-4">
 							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
@@ -105,8 +143,11 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 								isFullWidth
 								onClick={onBurnToken}
 								isDisabled={
-									!burnCopies || burnCopies > data.metadata.copies - (data.total_mint || 0)
+									!burnCopies ||
+									burnCopies > data.metadata.copies - (data.total_mint || 0) ||
+									isBurning
 								}
+								isLoading={isBurning}
 							>
 								{localeLn('Reduce')}
 							</Button>

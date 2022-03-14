@@ -5,9 +5,9 @@ import { useIntl } from 'hooks/useIntl'
 import useStore from 'lib/store'
 import { useToast } from 'hooks/useToast'
 import { checkSocialMediaUrl, checkUrl, parseImgUrl } from 'utils/common'
-import near from 'lib/near'
 import ImgCrop from 'components/ImgCrop'
 import Scrollbars from 'react-custom-scrollbars'
+import WalletHelper from 'lib/WalletHelper'
 
 const ProfileEdit = ({ close }) => {
 	const { localeLn } = useIntl()
@@ -104,7 +104,7 @@ const ProfileEdit = ({ close }) => {
 			const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
-					authorization: await near.authToken(),
+					authorization: await WalletHelper.authToken(),
 				},
 			})
 			store.setUserProfile(resp.data.data)

@@ -5,9 +5,9 @@ import { useIntl } from 'hooks/useIntl'
 import JSBI from 'jsbi'
 import Button from 'components/Common/Button'
 import { useEffect, useState } from 'react'
-import near from 'lib/near'
 import Tooltip from 'components/Common/Tooltip'
 import { IconInfo } from 'components/Icons'
+import WalletHelper from 'lib/WalletHelper'
 
 const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitForm }) => {
 	const { localeLn } = useIntl()
@@ -21,9 +21,10 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 
 	useEffect(() => {
 		const getTxFee = async () => {
-			const txFeeContract = await near.wallet
-				.account()
-				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_transaction_fee`)
+			const txFeeContract = await WalletHelper.viewFunction({
+				methodName: 'get_transaction_fee',
+				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+			})
 			setTxFee(txFeeContract)
 		}
 
@@ -155,7 +156,7 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 							</div>
 						</div>
 					</div>
-					<p className="text-white mt-4 text-sm text-center opacity-90">
+					<p className="text-white mt-4 text-sm text-center opacity-90 px-4">
 						{localeLn('RedirectedToconfirm')}
 					</p>
 
@@ -163,11 +164,12 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 						<Button
 							size="md"
 							isFullWidth
-							disabled={isLoading}
-							className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+							isDisabled={isLoading}
+							isLoading={isLoading}
+							className="mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 							onClick={onSubmitForm}
 						>
-							{isLoading ? 'Accepting...' : 'Accept Bid'}
+							{'Accept Bid'}
 						</Button>
 						<Button
 							className="mt-4"
