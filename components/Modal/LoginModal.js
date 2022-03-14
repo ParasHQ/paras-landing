@@ -23,7 +23,7 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 
 	return (
 		<Modal isShow={show} close={onClose}>
-			<div className="max-w-sm m-4 md:m-auto w-full relative bg-gray-800 p-4 text-center rounded-md">
+			<div className="max-w-sm m-4 md:m-auto w-full relative bg-gray-800 p-4 text-center rounded-md pb-6">
 				<div className="flex mb-4 items-center justify-center">
 					<svg
 						width="80"
@@ -44,7 +44,9 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 				<h3 className="mb-4 text-2xl text-white font-semibold">{title}</h3>
 				<p className="mt-1 text-white opacity-80">{localeLn('CollectNFTTrulyOwn')}</p>
 				<div className="mt-6">
-					<p className="text-gray-400 text-sm mb-2 text-center">{localeLn('WillBeRedirectedTo')}</p>
+					<p className="text-gray-400 text-sm mb-2 text-center">
+						{localeLn('You need NEAR account to login')}
+					</p>
 					<Button className="mt-2 px-1 h-12" size="md" isFullWidth onClick={() => near.login()}>
 						<svg
 							width="50"
@@ -62,11 +64,11 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 								fill="black"
 							></path>
 						</svg>
-						{localeLn('GoToLogin')}
+						{localeLn('Login with NEAR')}
 					</Button>
 					{isChromeBrowser && (
 						<Button
-							className="mt-2 px-1 hidden md:block"
+							className="mt-4 px-1 hidden md:block"
 							size="md"
 							variant="white"
 							isFullWidth
@@ -76,7 +78,7 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 								src="https://paras-cdn.imgix.net/bafkreihjoi6la3yv2aj7whhilevkbwteyrcrjjmxwn2axvhrgghhuleqn4"
 								className="rounded-full absolute h-7 w-7 top-0 bottom-0 left-2 m-auto"
 							/>
-							{'Login with Sender Wallet'}
+							{localeLn('Login with Sender Wallet')}
 							<span
 								className="bg-white text-primary font-bold rounded-full px-2 text-sm absolute right-2"
 								style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
