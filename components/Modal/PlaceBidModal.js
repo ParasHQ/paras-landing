@@ -209,8 +209,8 @@ const PlaceBidModal = ({ data, show, onClose, bidAmount, bidQuantity, onSuccess 
 									</p>
 								</div>
 							)}
-							<p className="text-white opacity-80 mt-4 text-sm text-center">
-								{localeLn('YouWillRedirectedTo')}
+							<p className="text-white opacity-80 mt-4 text-sm text-center px-4">
+								{localeLn('RedirectedToconfirm')}
 							</p>
 							<div className="">
 								<Button

@@ -372,7 +372,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 								</div>
 							)}
 
-							<p className="text-white mt-4 text-sm text-center opacity-90">
+							<p className="text-white mt-4 text-sm text-center opacity-90 px-4">
 								{localeLn('RedirectedToconfirm')}
 							</p>
 						</div>

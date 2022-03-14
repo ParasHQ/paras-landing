@@ -274,7 +274,7 @@ const modal = {
 	GoToLogin: 'Go to Login',
 	BurnAsset: 'Burn Asset',
 	AreAboutToBurn: 'You are about to burn',
-	RedirectedToconfirm: 'You will be redirected to NEAR Web Wallet to confirm your transaction.',
+	RedirectedToconfirm: 'You will be redirected to your wallet to confirm your transaction.',
 	AreAboutToPurchase: 'You are about to purchase',
 	Total: 'Total',
 	GetForFree: 'Get for Free',
