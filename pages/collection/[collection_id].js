@@ -234,6 +234,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			setIdNext(lastData._id)
 			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
 		}
 
 		setIsFiltering(false)
