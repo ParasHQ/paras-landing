@@ -7,6 +7,7 @@ const FilterMarket = ({
 	isShowNotForSale = true,
 	isCollectibles = false,
 	defaultMinPrice = false,
+	isCollection = false,
 }) => {
 	const filterModalRef = useRef()
 	const router = useRouter()
@@ -149,6 +150,7 @@ const FilterMarket = ({
 						<div>
 							{filter
 								.filter((item) => (isCollectibles ? item.key !== 'marketupdate' : item.key))
+								.filter((item) => (!isCollection ? item.key !== 'scoredesc' : item))
 								.map((item) => (
 									<button
 										key={item.key}
@@ -267,6 +269,10 @@ const filter = [
 	{
 		key: 'priceasc',
 		value: 'Lowest Price',
+	},
+	{
+		key: 'scoredesc',
+		value: 'Highest Score',
 	},
 ]
 
