@@ -225,50 +225,63 @@ const CardList = ({
 										</div>
 									</a>
 								</Link>
-								<div className={`px-1 ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
-									<div className="flex flex-row justify-between">
-										<div>
-											<p className="text-gray-400 text-xs">
-												{token.token || token.metadata.copies === 1
-													? localeLn('OnSale')
-													: localeLn('StartFrom')}
-											</p>
-											<div
-												className={`text-gray-100 ${
-													displayType === 'large' ? `text-2xl` : `text-lg`
-												}`}
-											>
-												{price ? (
-													<div className="flex flex-col items-baseline">
-														<div className="truncate">
-															{price === '0'
-																? localeLn('Free')
-																: `${prettyBalance(price, 24, 4)} Ⓝ`}
+								<div className={`px-1 relative ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
+									<div className="block">
+										<p className="text-gray-400 text-xs">
+											{token.token || token.metadata.copies === 1
+												? localeLn('OnSale')
+												: localeLn('StartFrom')}
+										</p>
+										<div
+											className={`text-gray-100 ${
+												displayType === 'large' ? `text-2xl` : `text-lg`
+											}`}
+										>
+											{price ? (
+												<div className="flex items-baseline space-x-1">
+													<div className="truncate">
+														{price === '0' ? localeLn('Free') : `${prettyBalance(price, 24, 4)} Ⓝ`}
+													</div>
+													{price !== '0' && store.nearUsdPrice !== 0 && (
+														<div className="text-xs text-gray-400 truncate">
+															~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 2)}
 														</div>
-														{price !== '0' && store.nearUsdPrice !== 0 && (
-															<div className="text-xs text-gray-400 truncate -mt-1 mb-1 ">
-																~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 4)}
-															</div>
-														)}
-													</div>
-												) : (
-													<div className="line-through text-red-600">
-														<span className="text-gray-100">{localeLn('SALE')}</span>
-													</div>
-												)}
-											</div>
+													)}
+												</div>
+											) : (
+												<div className="line-through text-red-600">
+													<span className="text-gray-100">{localeLn('SALE')}</span>
+												</div>
+											)}
 										</div>
-										{token.metadata.score && (
-											<div className="text-right">
-												<p className="text-white md:text-sm" style={{ fontSize: 11 }}>
-													Rarity Score
-												</p>
-												<p className="text-white md:text-sm" style={{ fontSize: 11 }}>
-													{token.metadata?.score?.toFixed(2)}
-												</p>
-											</div>
-										)}
 									</div>
+									{type === 'collection' && token.metadata.score && (
+										<div
+											className={`${
+												displayType === 'large' ? `block` : `flex gap-1`
+											} text-right absolute top-0 right-0`}
+										>
+											<p
+												className={`${
+													displayType === 'large' ? `block` : `hidden`
+												} text-white opacity-80 md:text-sm`}
+												style={{ fontSize: 11 }}
+											>
+												Rarity Score
+											</p>
+											<p
+												className={`${
+													displayType === 'large' ? `hidden` : `block`
+												} text-white opacity-80 md:text-sm`}
+												style={{ fontSize: 11 }}
+											>
+												Rarity Score
+											</p>
+											<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
+												{token.metadata?.score?.toFixed(2)}
+											</p>
+										</div>
+									)}
 									<div className="flex justify-between md:items-baseline">
 										<p
 											className={`font-bold text-white cursor-pointer hover:opacity-80 ${
