@@ -59,6 +59,7 @@ const TokenSeriesMintModal = ({ show, onClose, data }) => {
 					type: 'error',
 					duration: 2500,
 				})
+				setIsMinting(false)
 				return
 			}
 		}

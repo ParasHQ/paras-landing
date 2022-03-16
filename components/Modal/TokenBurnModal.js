@@ -67,6 +67,7 @@ const TokenBurnModal = ({ show, onClose, data }) => {
 			setIsBurning(false)
 		} catch (err) {
 			sentryCaptureException(err)
+			setIsBurning(false)
 		}
 	}
 
