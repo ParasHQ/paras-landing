@@ -6,12 +6,18 @@ import Error from '../../404'
 import TokenDetail from 'components/Token/TokenDetail'
 import { parseImgUrl } from 'utils/common'
 import { sentryCaptureException } from 'lib/sentry'
+import useToken from 'hooks/useToken'
 
 const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.contract_id
 }
 
-const TokenPage = ({ errorCode, token }) => {
+const TokenPage = ({ errorCode, initial }) => {
+	const { token } = useToken({
+		key: `${initial.contract_id}::${initial.token_series_id}/${initial.token_id}`,
+		initialData: initial,
+	})
+
 	if (errorCode) {
 		return <Error />
 	}
@@ -89,7 +95,7 @@ export async function getServerSideProps({ params }) {
 
 		const token = res.data.data.results[0] || null
 
-		return { props: { token, errorCode: token ? null : 404 } }
+		return { props: { initial: token, errorCode: token ? null : 404 } }
 	} catch (err) {
 		sentryCaptureException(err)
 		const errorCode = 404

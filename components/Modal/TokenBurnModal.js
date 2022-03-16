@@ -9,6 +9,7 @@ import { trackBurnToken } from 'lib/ga'
 import WalletHelper from 'lib/WalletHelper'
 import useStore from 'lib/store'
 import { useToast } from 'hooks/useToast'
+import { mutate } from 'swr'
 
 const TokenBurnModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
@@ -49,7 +50,6 @@ const TokenBurnModal = ({ show, onClose, data }) => {
 				})
 				return
 			} else {
-				onClose()
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
@@ -59,6 +59,10 @@ const TokenBurnModal = ({ show, onClose, data }) => {
 					type: 'success',
 					duration: 2500,
 				})
+				setTimeout(() => {
+					onClose()
+					mutate(`${data.contract_id}::${data.token_series_id}/${data.token_id}`)
+				}, 2500)
 			}
 			setIsBurning(false)
 		} catch (err) {

@@ -19,6 +19,7 @@ import {
 	TwitterIcon,
 	TwitterShareButton,
 } from 'react-share'
+import { mutate } from 'swr'
 import { decodeBase64 } from 'utils/common'
 
 const SuccessTransactionModal = () => {
@@ -54,16 +55,6 @@ const SuccessTransactionModal = () => {
 			}
 		}
 	}, [transactionRes])
-
-	// REDIRECT TO TOKEN PAGE
-	useEffect(() => {
-		if (token && WalletHelper.activeWallet === walletType.sender && txDetail) {
-			const url = `/token/${token.contract_id}::${token.token_series_id}${
-				token.token_id ? `/${token.token_id}` : ''
-			}${txDetail.method_name === 'add_offer' ? '?tab=offers' : ''}`
-			router.push(url)
-		}
-	}, [token, txDetail])
 
 	const processTransactionError = (err) => {
 		toast.show({
@@ -163,10 +154,17 @@ const SuccessTransactionModal = () => {
 	}
 
 	const onCloseModal = () => {
+		const key = `${token.contract_id}::${token.token_series_id}${
+			token.token_id ? `/${token.token_id}` : ''
+		}`
+		mutate(key)
 		setShowModal(false)
 		setToken(null)
-		setTransactionRes(null)
-		removeTxHash()
+		if (WalletHelper.activeWallet === walletType.sender) {
+			setTransactionRes(null)
+		} else {
+			removeTxHash()
+		}
 	}
 
 	const removeTxHash = () => {
