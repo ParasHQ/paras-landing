@@ -225,7 +225,7 @@ const CardList = ({
 										</div>
 									</a>
 								</Link>
-								<div className={`px-1 ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
+								<div className={`px-1 relative ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
 									<div className="block">
 										<p className="text-gray-400 text-xs">
 											{token.token || token.metadata.copies === 1
@@ -244,7 +244,7 @@ const CardList = ({
 													</div>
 													{price !== '0' && store.nearUsdPrice !== 0 && (
 														<div className="text-xs text-gray-400 truncate">
-															~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 4)}
+															~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 2)}
 														</div>
 													)}
 												</div>
@@ -255,6 +255,33 @@ const CardList = ({
 											)}
 										</div>
 									</div>
+									{type === 'collection' && token.metadata.score && (
+										<div
+											className={`${
+												displayType === 'large' ? `block` : `flex gap-1`
+											} text-right absolute top-0 right-0`}
+										>
+											<p
+												className={`${
+													displayType === 'large' ? `block` : `hidden`
+												} text-white opacity-80 md:text-sm`}
+												style={{ fontSize: 11 }}
+											>
+												Rarity Score
+											</p>
+											<p
+												className={`${
+													displayType === 'large' ? `hidden` : `block`
+												} text-white opacity-80 md:text-sm`}
+												style={{ fontSize: 11 }}
+											>
+												Rarity Score
+											</p>
+											<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
+												{token.metadata?.score?.toFixed(2)}
+											</p>
+										</div>
+									)}
 									<div className="flex justify-between md:items-baseline">
 										<p
 											className={`font-bold text-white cursor-pointer hover:opacity-80 ${

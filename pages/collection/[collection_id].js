@@ -51,6 +51,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [deleteLoading, setDeleteLoading] = useState(false)
 	const [dailyVolume, setDailyVolume] = useState([])
 	const [display, setDisplay] = useState('large')
+	const [scoreNext, setScoreNext] = useState('')
 
 	const toast = useToast()
 
@@ -69,6 +70,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						_id_next: idNext,
 						lowest_price_next: lowestPriceNext,
 						updated_at_next: updatedAtNext,
+						score_next: scoreNext,
 				  }),
 		})
 
@@ -107,6 +109,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			setIdNext(lastData._id)
 			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
 		}
 		setIsFetching(false)
 	}
@@ -180,6 +183,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 			...(query.updated_at_next &&
 				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+			...(query.score_next &&
+				parsedSortQuery.includes('metadata.score') && { score_next: query.score_next }),
 			...(query.min_copies && { min_copies: query.min_copies }),
 			...(query.max_copies && { max_copies: query.max_copies }),
 		}
@@ -229,6 +234,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			setIdNext(lastData._id)
 			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
 		}
 
 		setIsFiltering(false)
@@ -605,7 +611,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 											attributes={attributes}
 										/>
 									)}
-									<FilterMarket isShowVerified={false} defaultMinPrice={true} />
+									<FilterMarket isShowVerified={false} defaultMinPrice={true} isCollection={true} />
 									<div className="hidden lg:flex mt-0 mr-4">
 										<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 									</div>
@@ -620,7 +626,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							{Object.keys(attributes).length > 0 && (
 								<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
 							)}
-							<FilterMarket isShowVerified={false} defaultMinPrice={true} />
+							<FilterMarket isShowVerified={false} defaultMinPrice={true} isCollection={true} />
 							<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 						</div>
 					)}
