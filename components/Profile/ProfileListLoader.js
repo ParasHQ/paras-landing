@@ -4,7 +4,7 @@ import ContentLoader from 'react-content-loader'
 const ProfileListLoader = (props) => (
 	<div className="md:flex md:flex-wrap">
 		{[...Array(3).keys()].map((k) => (
-			<div key={k} className="w-full md:w-1/3 flex-shrink-0 md:p-4 relative ">
+			<div key={k} className="w-full md:w-1/3 flex-shrink-0 md:p-4 relative pb-12">
 				<ContentLoader
 					key={k}
 					speed={2}

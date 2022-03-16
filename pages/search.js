@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import Head from 'next/head'
@@ -17,7 +17,7 @@ import CollectionList from 'components/Collection/CollectionList'
 import CollectionListLoader from 'components/Collection/CollectionListLoader'
 import ProfileListLoader from 'components/Profile/ProfileListLoader'
 import ProfileList from 'components/Profile/ProfileList'
-import near from 'lib/near'
+import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu'
 
 const LIMIT = 12
 
@@ -118,7 +118,6 @@ export default function SearchPage({ searchQuery }) {
 				__skip: 0,
 				__limit: LIMIT,
 			},
-			headers: { Authorization: await near.authToken() },
 		})
 
 		if (resPro.data.data.results.length === LIMIT) {
@@ -241,7 +240,6 @@ export default function SearchPage({ searchQuery }) {
 				__skip: proPage * LIMIT,
 				__limit: LIMIT,
 			},
-			headers: { Authorization: await near.authToken() },
 		})
 		const newData = res.data.data
 
@@ -306,44 +304,52 @@ export default function SearchPage({ searchQuery }) {
 						<span className="border-b-2 border-gray-100">{searchQuery}</span>
 					</h4>
 				</div>
-				<div className="flex justify-between items-end h-12">
-					<div className="flex">
-						<div className="mx-4 relative" onClick={() => setActiveTab('collections')}>
-							<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Collections</h4>
-							{activeTab === 'collections' && (
-								<div className="absolute left-0 -bottom-1">
-									<div className="mx-auto w-8 h-1 bg-gray-100"></div>
-								</div>
-							)}
+				<div className="hidden sm:block">
+					<div className="flex justify-between items-end h-12">
+						<div className="flex">
+							<div className="mx-4 relative" onClick={() => setActiveTab('collections')}>
+								<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Collections</h4>
+								{activeTab === 'collections' && (
+									<div className="absolute left-0 -bottom-1">
+										<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+									</div>
+								)}
+							</div>
+							<div className="mx-4 relative" onClick={() => setActiveTab('profiles')}>
+								<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Profiles</h4>
+								{activeTab === 'profiles' && (
+									<div className="absolute left-0 -bottom-1">
+										<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+									</div>
+								)}
+							</div>
+							<div className="mx-4 relative" onClick={() => setActiveTab('card')}>
+								<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Cards</h4>
+								{activeTab === 'card' && (
+									<div className="absolute left-0 -bottom-1">
+										<div className="mx-auto w-8 h-1 bg-gray-100 hover:w-full"></div>
+									</div>
+								)}
+							</div>
+							<div className="mx-4 relative" onClick={() => setActiveTab('publication')}>
+								<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Publication</h4>
+								{activeTab === 'publication' && (
+									<div className="absolute left-0 -bottom-1">
+										<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+									</div>
+								)}
+							</div>
 						</div>
-						<div className="mx-4 relative" onClick={() => setActiveTab('profiles')}>
-							<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Profiles</h4>
-							{activeTab === 'profiles' && (
-								<div className="absolute left-0 -bottom-1">
-									<div className="mx-auto w-8 h-1 bg-gray-100"></div>
-								</div>
-							)}
-						</div>
-						<div className="mx-4 relative" onClick={() => setActiveTab('card')}>
-							<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Cards</h4>
-							{activeTab === 'card' && (
-								<div className="absolute left-0 -bottom-1">
-									<div className="mx-auto w-8 h-1 bg-gray-100 hover:w-full"></div>
-								</div>
-							)}
-						</div>
-						<div className="mx-4 relative" onClick={() => setActiveTab('publication')}>
-							<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Publication</h4>
-							{activeTab === 'publication' && (
-								<div className="absolute left-0 -bottom-1">
-									<div className="mx-auto w-8 h-1 bg-gray-100"></div>
-								</div>
-							)}
+						<div className="justify-end mt-4 md:mt-0 hidden md:flex">
+							{activeTab === 'card' && <FilterMarket />}
 						</div>
 					</div>
 				</div>
 				<div className="flex md:hidden justify-end mt-4 md:mt-0">
 					{activeTab === 'card' && <FilterMarket />}
+				</div>
+				<div className="sm:hidden">
+					<TabSearchMobile activeTab={activeTab} setActiveTab={(e) => setActiveTab(e)} />
 				</div>
 				<div className="mt-4">
 					{activeTab === 'card' &&
@@ -405,6 +411,89 @@ export default function SearchPage({ searchQuery }) {
 	)
 }
 
+const TabSearchMobile = ({ activeTab, setActiveTab }) => {
+	return (
+		<div className="mt-4 py-2">
+			<ScrollMenu
+				LeftArrow={LeftArrow}
+				RightArrow={RightArrow}
+				wrapperClassName="flex items-center"
+				scrollContainerClassName="top-user-scroll"
+			>
+				{TabSearchList.map((tab) => (
+					<TabSearch
+						key={tab.title}
+						itemId={tab.activeTab}
+						title={tab.title}
+						active={activeTab}
+						setActiveTab={() => setActiveTab(tab.activeTab)}
+					/>
+				))}
+			</ScrollMenu>
+		</div>
+	)
+}
+
+const TabSearch = ({ itemId, title, active, setActiveTab }) => {
+	return (
+		<div className="px-4 relative" onClick={() => setActiveTab(itemId)}>
+			<h4 className="text-gray-100 font-bold cursor-pointer">{title}</h4>
+			{active === itemId && (
+				<div
+					className="absolute left-0 right-0"
+					style={{
+						bottom: `-.10rem`,
+					}}
+				>
+					<div className="mx-auto w-8 h-1.5 bg-gray-100"></div>
+				</div>
+			)}
+		</div>
+	)
+}
+
+const LeftArrow = () => {
+	const { isFirstItemVisible, scrollPrev } = useContext(VisibilityContext)
+
+	return (
+		<div disabled={isFirstItemVisible} onClick={() => scrollPrev()}>
+			<svg
+				className="w-10 h-10 text-white cursor-pointer"
+				fill="currentColor"
+				viewBox="0 0 20 20"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<path
+					fillRule="evenodd"
+					d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+					clipRule="evenodd"
+				></path>
+			</svg>
+		</div>
+	)
+}
+
+const RightArrow = () => {
+	const { isLastItemVisible, scrollNext } = useContext(VisibilityContext)
+
+	return (
+		<div disabled={isLastItemVisible} onClick={() => scrollNext()}>
+			<svg
+				className="w-10 h-10 text-white cursor-pointer"
+				fill="currentColor"
+				viewBox="0 0 20 20"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<path
+					fillRule="evenodd"
+					d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+					clipRule="evenodd"
+				></path>
+			</svg>
+		</div>
+	)
+}
+
 const tokensParams = (query) => {
 	const parsedSortQuery = parseSortQuery(query?.sort)
 	const params = {
@@ -432,3 +521,22 @@ export async function getServerSideProps({ query }) {
 
 	return { props: { searchQuery } }
 }
+
+const TabSearchList = [
+	{
+		title: 'Collections',
+		activeTab: 'collections',
+	},
+	{
+		title: 'Profiles',
+		activeTab: 'profiles',
+	},
+	{
+		title: 'Cards',
+		activeTab: 'card',
+	},
+	{
+		title: 'Publication',
+		activeTab: 'publication',
+	},
+]

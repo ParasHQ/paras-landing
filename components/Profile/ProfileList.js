@@ -43,7 +43,7 @@ const ProfileList = ({ data, fetchData, hasMore, page }) => {
 										}}
 									/>
 									<div
-										className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-36 right-0 w-24 h-24 overflow-hidden border-4 border-black ${
+										className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 translate-y-3 md:-translate-y-36 right-0 w-24 h-24 overflow-hidden border-4 border-black ${
 											!profile.imgUrl ? 'bg-primary' : 'bg-dark-primary-2'
 										} shadow-inner z-20 rounded-full mt-8 md:mt-44`}
 									>
