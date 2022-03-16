@@ -15,6 +15,9 @@ import { useIntl } from 'hooks/useIntl'
 import PublicationListScroll from 'components/Publication/PublicationListScroll'
 import CollectionList from 'components/Collection/CollectionList'
 import CollectionListLoader from 'components/Collection/CollectionListLoader'
+import ProfileListLoader from 'components/Profile/ProfileListLoader'
+import ProfileList from 'components/Profile/ProfileList'
+import near from 'lib/near'
 
 const LIMIT = 12
 
@@ -39,6 +42,11 @@ export default function SearchPage({ searchQuery }) {
 	const [collPage, setCollPage] = useState(0)
 	const [collIsFetch, setCollIsFetch] = useState(false)
 	const [collHasMore, setCollHasMore] = useState(false)
+
+	const [profiles, setProfiles] = useState([])
+	const [proPage, setProPage] = useState(0)
+	const [proIsFetch, setProIsFetch] = useState(false)
+	const [proHasMore, setProHasMore] = useState(false)
 
 	const [isRefreshing, setIsRefreshing] = useState(false)
 	const [activeTab, setActiveTab] = useState('collections')
@@ -102,6 +110,24 @@ export default function SearchPage({ searchQuery }) {
 			setCollHasMore(false)
 		}
 		setCollections(resColl.data.data.results)
+
+		// Profile
+		const resPro = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+			params: {
+				search: query.q,
+				__skip: 0,
+				__limit: LIMIT,
+			},
+			headers: { Authorization: await near.authToken() },
+		})
+
+		if (resPro.data.data.results.length === LIMIT) {
+			setProPage(1)
+			setProHasMore(true)
+		} else {
+			setProHasMore(false)
+		}
+		setProfiles(resPro.data.data.results)
 
 		setIsRefreshing(false)
 	}, [
@@ -204,6 +230,32 @@ export default function SearchPage({ searchQuery }) {
 		setCollIsFetch(false)
 	}
 
+	const _fetchProfilenData = async () => {
+		if (!proHasMore || proIsFetch) return
+
+		setProIsFetch(true)
+
+		const res = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+			params: {
+				search: query.q,
+				__skip: proPage * LIMIT,
+				__limit: LIMIT,
+			},
+			headers: { Authorization: await near.authToken() },
+		})
+		const newData = res.data.data
+
+		const newPro = [...profiles, ...newData.results]
+		setProfiles(newPro)
+		setProPage(proPage + 1)
+		if (newData.results.length < LIMIT) {
+			setProHasMore(false)
+		} else {
+			setProHasMore(true)
+		}
+		setProIsFetch(false)
+	}
+
 	const headMeta = {
 		title: localeLn('Search{searchQuery}Paras', {
 			searchQuery: searchQuery,
@@ -264,6 +316,14 @@ export default function SearchPage({ searchQuery }) {
 								</div>
 							)}
 						</div>
+						<div className="mx-4 relative" onClick={() => setActiveTab('profiles')}>
+							<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Profiles</h4>
+							{activeTab === 'profiles' && (
+								<div className="absolute left-0 -bottom-1">
+									<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+								</div>
+							)}
+						</div>
 						<div className="mx-4 relative" onClick={() => setActiveTab('card')}>
 							<h4 className="text-gray-100 font-bold cursor-pointer text-lg">Cards</h4>
 							{activeTab === 'card' && (
@@ -280,9 +340,6 @@ export default function SearchPage({ searchQuery }) {
 								</div>
 							)}
 						</div>
-					</div>
-					<div className="justify-end mt-4 md:mt-0 hidden md:flex">
-						{activeTab === 'card' && <FilterMarket />}
 					</div>
 				</div>
 				<div className="flex md:hidden justify-end mt-4 md:mt-0">
@@ -315,6 +372,21 @@ export default function SearchPage({ searchQuery }) {
 									data={collections}
 									fetchData={_fetchCollectionData}
 									hasMore={collHasMore}
+									page="search"
+								/>
+							</div>
+						))}
+					{activeTab === 'profiles' &&
+						(isRefreshing ? (
+							<div className="min-h-full px-4 md:px-0">
+								<ProfileListLoader />
+							</div>
+						) : (
+							<div className="px-4 md:px-0">
+								<ProfileList
+									data={profiles}
+									fetchData={_fetchProfilenData}
+									hasMore={proHasMore}
 									page="search"
 								/>
 							</div>
