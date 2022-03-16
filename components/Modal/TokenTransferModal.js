@@ -59,6 +59,7 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 				type: 'error',
 				duration: 2500,
 			})
+			setIsTransferring(false)
 			return
 		}
 
