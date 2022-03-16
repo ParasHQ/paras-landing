@@ -11,7 +11,7 @@ import { trackBurnTokenSeries } from 'lib/ga'
 import WalletHelper from 'lib/WalletHelper'
 import useStore from 'lib/store'
 import { useToast } from 'hooks/useToast'
-import { useRouter } from 'next/router'
+import { mutate } from 'swr'
 
 const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
@@ -20,7 +20,6 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 	const { localeLn } = useIntl()
 	const { currentUser } = useStore()
 	const toast = useToast()
-	const router = useRouter()
 
 	const onBurnToken = async () => {
 		if (!currentUser) {
@@ -53,7 +52,6 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 				})
 				return
 			} else {
-				onClose()
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
@@ -67,7 +65,10 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 					type: 'success',
 					duration: 2500,
 				})
-				setTimeout(() => router.push(window.location.pathname), 2500)
+				setTimeout(() => {
+					mutate(`${data.contract_id}::${data.token_series_id}`)
+					onClose()
+				}, 2500)
 			}
 			setIsBurning(false)
 		} catch (err) {

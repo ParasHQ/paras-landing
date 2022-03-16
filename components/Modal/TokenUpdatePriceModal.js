@@ -14,6 +14,8 @@ import useStore from 'lib/store'
 import Tooltip from 'components/Common/Tooltip'
 import { parseDate } from 'utils/common'
 import WalletHelper from 'lib/WalletHelper'
+import { useToast } from 'hooks/useToast'
+import { mutate } from 'swr'
 
 const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
@@ -25,6 +27,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const currentUser = useStore((state) => state.currentUser)
 	const setTransactionRes = useStore((state) => state.setTransactionRes)
 	const { localeLn } = useIntl()
+	const toast = useToast()
 
 	const showTooltipTxFee = (txFee?.next_fee || 0) > (txFee?.current_fee || 0)
 	const tooltipTxFeeText = localeLn('DynamicTxFee', {
@@ -186,7 +189,36 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 				],
 			})
 
-			await WalletHelper.executeMultipleTransactions(txs)
+			const res = await WalletHelper.multipleCallFunction(txs)
+
+			if (res.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+				return
+			} else {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{`Successfully remove listing ${data.metadata.title}`}
+						</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
+				setTimeout(() => {
+					mutate(`${data.contract_id}::${data.token_series_id}/${data.token_id}`)
+					onClose()
+				}, 2500)
+			}
+
+			setIsRemovingPrice(false)
 		} catch (err) {
 			sentryCaptureException(err)
 		}
