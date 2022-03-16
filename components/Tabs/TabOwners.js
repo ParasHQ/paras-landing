@@ -62,8 +62,8 @@ const TabOwners = ({ localToken }) => {
 	}
 
 	const onDismissModal = () => {
-		setActiveToken(null)
 		setShowModal(null)
+		setActiveToken(null)
 	}
 
 	const changeSortBy = (sortby) => {
