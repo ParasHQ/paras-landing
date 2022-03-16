@@ -65,13 +65,15 @@ const ProfileList = ({ data, fetchData, hasMore, page }) => {
 											Verified Creator
 										</p>
 									)}
-									<Link href={`/${profile.accountId}`} shallow={true}>
-										<a className="cursor-pointer">
-											<p className="flex justify-center text-xl hover:underline font-bold">
-												{profile.accountId}
-											</p>
-										</a>
-									</Link>
+									<div className={`${profile.accountId.length > 20 && 'w-80'}`}>
+										<Link href={`/${profile.accountId}`} shallow={true}>
+											<a className="cursor-pointer">
+												<p className="text-xl text-center hover:underline font-bold overflow-scroll truncate">
+													{profile.accountId}
+												</p>
+											</a>
+										</Link>
+									</div>
 								</div>
 							</div>
 							<div className="flex items-center justify-center space-x-2">
