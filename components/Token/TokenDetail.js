@@ -226,11 +226,13 @@ const TokenDetail = ({ token, className }) => {
 									</div>
 								</div>
 								<div>
-									<IconDots
-										color="#ffffff"
-										className="cursor-pointer"
-										onClick={() => setShowModal('more')}
-									/>
+									{!token.is_staked && (
+										<IconDots
+											color="#ffffff"
+											className="cursor-pointer"
+											onClick={() => setShowModal('more')}
+										/>
+									)}
 								</div>
 							</div>
 							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
@@ -249,20 +251,40 @@ const TokenDetail = ({ token, className }) => {
 						</div>
 					</Scrollbars>
 					<div className="p-3">
-						{token.owner_id === currentUser && (
-							<div className="flex flex-wrap space-x-4">
-								<div className="w-full flex-1">
-									<Button size="md" onClick={() => setShowModal('updatePrice')} isFullWidth>
-										{localeLn('UpdateListing')}
-									</Button>
+						{token.owner_id === currentUser &&
+							(token.is_staked ? (
+								<div className="flex flex-wrap flex-col">
+									<div className="w-full flex-1 mb-2">
+										<p className="text-white font-bold text-sm">
+											This NFT is being staked, please unstake to put it on sale
+										</p>
+									</div>
+									<div className="w-full flex-1">
+										<Button
+											size="md"
+											isFullWidth
+											onClick={() => {
+												window.location.href = 'https://stake.paras.id'
+											}}
+										>
+											{localeLn('Unstake')}
+										</Button>
+									</div>
 								</div>
-								<div className="w-full flex-1">
-									<Button size="md" onClick={onClickTransfer} isFullWidth>
-										{localeLn('Transfer')}
-									</Button>
+							) : (
+								<div className="flex flex-wrap space-x-4">
+									<div className="w-full flex-1">
+										<Button size="md" onClick={() => setShowModal('updatePrice')} isFullWidth>
+											{localeLn('UpdateListing')}
+										</Button>
+									</div>
+									<div className="w-full flex-1">
+										<Button size="md" onClick={onClickTransfer} isFullWidth>
+											{localeLn('Transfer')}
+										</Button>
+									</div>
 								</div>
-							</div>
-						)}
+							))}
 						{token.owner_id !== currentUser && token.price && (
 							<div className="flex space-x-2">
 								<Button size="md" onClick={onClickBuy} isFullWidth>

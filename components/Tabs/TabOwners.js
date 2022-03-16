@@ -216,21 +216,21 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 					)}
 					{currentUser && (
 						<>
-							{token.owner_id === currentUser ? (
-								<div className="w-24">
-									<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>
-										{localeLn('Update')}
-									</Button>
-								</div>
-							) : (
-								token.price && (
-									<div className="w-24">
-										<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
-											{localeLn('Buy')}
-										</Button>
-									</div>
-								)
-							)}
+							{token.owner_id === currentUser
+								? !token.is_staked && (
+										<div className="w-24">
+											<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>
+												{localeLn('Update')}
+											</Button>
+										</div>
+								  )
+								: token.price && (
+										<div className="w-24">
+											<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
+												{localeLn('Buy')}
+											</Button>
+										</div>
+								  )}
 						</>
 					)}
 				</div>
