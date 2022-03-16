@@ -84,7 +84,7 @@ const GachaModal = () => {
 		<>
 			{showFloating && (
 				<div
-					className="h-32 w-60 p-4 md:m-auto bg-center bg-cover rounded-md z-10 fixed right-6 bottom-2 left-1/2 transform -translate-x-1/2 md:left-auto md:transform-none cursor-pointer"
+					className="h-32 w-60 p-4 md:m-auto bg-center bg-cover rounded-md z-50 fixed right-6 bottom-2 left-1/2 transform -translate-x-1/2 md:left-auto md:transform-none cursor-pointer"
 					style={{
 						backgroundImage: `url(https://paras-cdn.imgix.net/bafkreib5xzciumyexeggz3xh5b7ky3a2ebyvcnrfintfgu3xx65zt5xmui?w=800&auto=format,compress)`,
 					}}
@@ -117,7 +117,7 @@ export default GachaModal
 const GachaModalDetail = ({ claimGacha, onClose }) => {
 	return (
 		<Modal isShow={true} closeOnBgClick={true} closeOnEscape={true} close={onClose}>
-			<div className="max-w-xl w-full h-4/4 md:h-4/5 bg-gray-800 m-auto rounded-md relative">
+			<div className="max-w-xl w-full bg-gray-800 m-auto rounded-md relative">
 				<div
 					className="bg-cover bg-center h-40 md:h-60 rounded-t-md"
 					style={{
@@ -130,8 +130,8 @@ const GachaModalDetail = ({ claimGacha, onClose }) => {
 						</div>
 					</div>
 				</div>
-				<Scrollbars autoHeight autoHeightMax="40vh">
-					<div className="px-4 pt-5 text-gray-100 text-justify">
+				<Scrollbars autoHeight>
+					<div className="pt-5 pr-8 pl-4 md:pr-4 text-gray-100 text-justify">
 						<p className="text-2xl font-semibold pb-5">Gacha Comic Event</p>
 						<p className="mb-4">
 							Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -156,7 +156,7 @@ const GachaModalDetail = ({ claimGacha, onClose }) => {
 							mollit anim id est laborum.
 						</p>
 					</div>
-					<div className="flex justify-center mx-10 md:mx-40 rounded-md mt-5 mb-2">
+					<div className="flex justify-center mx-10 md:mx-40 rounded-md mt-5 pr-8 pl-4 md:pr-4 mb-6 md:mb-4">
 						<Button size="sm" isFullWidth onClick={claimGacha}>
 							CLAIM
 						</Button>

@@ -153,7 +153,7 @@ const SuccessTransactionModal = () => {
 							</>
 						) : txDetail.method_name === 'buy_mint_bundle' ? (
 							<>
-								You successfully gacha <b>{token.metadata.title}</b>
+								You successfully minted <b>{token.metadata.title}</b>
 							</>
 						) : (
 							<>
@@ -199,9 +199,34 @@ const SuccessTransactionModal = () => {
 							</TwitterShareButton>
 						</div>
 					</div>
-					<Button size="md" isFullWidth onClick={onClickSeeToken}>
-						See Token
-					</Button>
+					<div className="flex justify-between gap-4">
+						<Button size="md" isFullWidth onClick={onClickSeeToken}>
+							See Token
+						</Button>
+						{txDetail.method_name === 'buy_mint_bundle' && (
+							<a
+								href={`https://comic.paras.id/comics/${token.metadata.collection_id}/chapter`}
+								rel="noreferrer"
+								target="_blank"
+							>
+								<svg
+									className="inline-block mt-2"
+									width="28"
+									height="28"
+									viewBox="0 0 24 24"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										fillRule="evenodd"
+										clipRule="evenodd"
+										d="M5 5V19H19V12H21V19C21 20.1 20.1 21 19 21H5C3.89 21 3 20.1 3 19V5C3 3.9 3.89 3 5 3H12V5H5ZM14 5V3H21V10H19V6.41L9.17 16.24L7.76 14.83L17.59 5H14Z"
+										fill="white"
+									/>
+								</svg>
+							</a>
+						)}
+					</div>
 				</div>
 			</div>
 		</Modal>
