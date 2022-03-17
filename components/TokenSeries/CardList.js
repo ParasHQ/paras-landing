@@ -1,4 +1,3 @@
-import { animated } from 'react-spring'
 import { useEffect, useRef, useState } from 'react'
 import Card from 'components/Card/Card'
 import { parseImgUrl, prettyBalance } from 'utils/common'
@@ -95,7 +94,7 @@ const CardList = ({
 				}
 				className="-mx-4"
 			>
-				<animated.div className="flex flex-wrap select-none">
+				<div className="flex flex-wrap select-none">
 					{tokens.map((_token, idx) => (
 						<TokenSeriesSingle
 							key={`${_token.contract_id}::${_token.token_series_id}-${displayType}-${idx}`}
@@ -105,7 +104,7 @@ const CardList = ({
 							type={type}
 						/>
 					))}
-				</animated.div>
+				</div>
 			</InfiniteScroll>
 		</div>
 	)

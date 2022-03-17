@@ -133,7 +133,7 @@ const Card = ({
 					}}
 				>
 					<div
-						className="card bg-transparent w-full h-full bg-black"
+						className="card bg-black w-full h-full"
 						style={{
 							fontSize: `${dimension.width / 14}px`,
 							transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)`,
