@@ -230,7 +230,7 @@ const TokenDetail = ({ token, className }) => {
 								<div className="flex flex-col items-end">
 									<IconDots
 										color="#ffffff"
-										className="cursor-pointer"
+										className="cursor-pointer mb-1"
 										onClick={() => setShowModal('more')}
 									/>
 									{token.is_staked && (
@@ -241,7 +241,7 @@ const TokenDetail = ({ token, className }) => {
 											className="font-bold bg-gray-800 text-white"
 										>
 											<span
-												className="bg-white mt-2 text-primary font-bold rounded-full px-2 text-xs"
+												className="bg-white text-primary font-bold rounded-full px-3 py-1 text-sm"
 												style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
 											>
 												staked
