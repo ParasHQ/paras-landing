@@ -207,7 +207,6 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 		}
 	}
 
-	console.log(token.token_series_id, token.metadata.score)
 	return (
 		<>
 			<TokenSeriesDetailModal tokens={[token]} />
