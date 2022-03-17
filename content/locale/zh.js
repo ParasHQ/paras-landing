@@ -265,7 +265,7 @@ const modal = {
 	GoToLogin: '去登录',
 	BurnAsset: '销毁资产',
 	AreAboutToBurn: '您将销毁',
-	RedirectedToconfirm: '您将被重定向到NEAR Web钱包以确认您的交易。',
+	RedirectedToconfirm: '您将被重定向到钱包以确认您的交易。',
 	AreAboutToPurchase: '您将购买',
 	Total: '总计',
 	GetForFree: '免费获得',

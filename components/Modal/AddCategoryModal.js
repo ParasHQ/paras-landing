@@ -2,12 +2,12 @@ import axios from 'axios'
 import { sentryCaptureException } from 'lib/sentry'
 import { useState } from 'react'
 import { useToast } from 'hooks/useToast'
-import near from 'lib/near'
 import useStore from 'lib/store'
 import { parseImgUrl } from 'utils/common'
 import Card from 'components/Card/Card'
 import Modal from 'components/Modal'
 import { useIntl } from 'hooks/useIntl'
+import WalletHelper from 'lib/WalletHelper'
 
 const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 	const { localeLn } = useIntl()
@@ -101,7 +101,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 		try {
 			await axios.post(`${process.env.V2_API_URL}/categories/tokens`, params, {
 				headers: {
-					authorization: await near.authToken(),
+					authorization: await WalletHelper.authToken(),
 				},
 			})
 			onClose()

@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import near from 'lib/near'
 import useStore from 'lib/store'
 import axios from 'axios'
 import { useRouter } from 'next/router'
@@ -25,6 +24,7 @@ import * as Sentry from '@sentry/nextjs'
 import { sentryCaptureException } from 'lib/sentry'
 import { GTM_ID, pageview } from 'lib/gtm'
 import SuccessTransactionModal from 'components/Modal/SuccessTransactionModal'
+import WalletHelper from 'lib/WalletHelper'
 
 const MAX_ACTIVITY_DELAY = 5
 
@@ -56,7 +56,7 @@ function MyApp({ Component, pageProps }) {
 				expires: 30,
 			})
 		}
-		const authHeader = await near.authToken()
+		const authHeader = await WalletHelper.authToken()
 		await axios.post(
 			`${process.env.V2_API_URL}/analytics`,
 			{
@@ -132,73 +132,6 @@ function MyApp({ Component, pageProps }) {
 			return
 		}
 		_init()
-		const storage = globalThis?.sessionStorage
-		if (!storage) return
-		storage.setItem('currentPath', `${globalThis?.location.pathname}${globalThis?.location.search}`)
-	}, [])
-
-	useEffect(() => {
-		removeQueryTransactionFromNear()
-	}, [router.isReady])
-
-	const _init = async () => {
-		await near.init()
-
-		const currentUser = near.currentUser
-
-		Sentry.configureScope((scope) => {
-			const user = currentUser ? { id: currentUser.accountId } : null
-			scope.setUser(user)
-			scope.setTag('environment', process.env.APP_ENV)
-		})
-
-		if (currentUser) {
-			const userProfileResp = await axios.get(`${process.env.V2_API_URL}/profiles`, {
-				params: {
-					accountId: currentUser.accountId,
-				},
-			})
-			const userProfileResults = userProfileResp.data.data.results
-
-			if (userProfileResults.length === 0) {
-				const formData = new FormData()
-				formData.append('bio', 'Citizen of Paras')
-				formData.append('accountId', currentUser.accountId)
-
-				try {
-					const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
-						headers: {
-							'Content-Type': 'multipart/form-data',
-							authorization: await near.authToken(),
-						},
-					})
-					store.setUserProfile(resp.data.data)
-				} catch (err) {
-					sentryCaptureException(err)
-					store.setUserProfile({})
-				}
-			} else {
-				const userProfile = userProfileResults[0]
-				store.setUserProfile(userProfile)
-
-				const { isEmailVerified = false } = userProfile
-				if (!isEmailVerified && !cookie.get('hideEmailNotVerified')) {
-					store.setShowEmailWarning(true)
-				}
-			}
-
-			store.setCurrentUser(currentUser.accountId)
-			store.setUserBalance(currentUser.balance)
-
-			const parasBalance = await near.wallet
-				.account()
-				.viewFunction(process.env.PARAS_TOKEN_CONTRACT, `ft_balance_of`, {
-					account_id: currentUser.accountId,
-				})
-			store.setParasBalance(parasBalance)
-		}
-		getNearUsdPrice()
-		store.setInitialized(true)
 
 		if (process.env.APP_ENV === 'production') {
 			// initial route analytics
@@ -212,6 +145,85 @@ function MyApp({ Component, pageProps }) {
 			}
 			pageview(url)
 		}
+
+		const storage = globalThis?.sessionStorage
+		if (!storage) return
+		storage.setItem('currentPath', `${globalThis?.location.pathname}${globalThis?.location.search}`)
+	}, [])
+
+	useEffect(() => {
+		removeQueryTransactionFromNear()
+	}, [router.isReady])
+
+	useEffect(() => {
+		if (store.activeWallet === 'senderWallet') {
+			const currentUser = WalletHelper.currentUser
+			setupUser(currentUser)
+		}
+	}, [store.activeWallet])
+
+	const _init = async () => {
+		await WalletHelper.initialize({ onChangeUser: setupUser })
+
+		const currentUser = WalletHelper.currentUser
+
+		if (currentUser) {
+			setupUser(currentUser)
+		}
+		getNearUsdPrice()
+		store.setInitialized(true)
+	}
+
+	const setupUser = async (currentUser) => {
+		store.setCurrentUser(currentUser.accountId)
+		store.setUserBalance(currentUser.balance)
+
+		Sentry.configureScope((scope) => {
+			const user = currentUser ? { id: currentUser.accountId } : null
+			scope.setUser(user)
+			scope.setTag('environment', process.env.APP_ENV)
+		})
+
+		const userProfileResp = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+			params: {
+				accountId: currentUser.accountId,
+			},
+		})
+		const userProfileResults = userProfileResp.data.data.results
+
+		if (userProfileResults.length === 0) {
+			const formData = new FormData()
+			formData.append('bio', 'Citizen of Paras')
+			formData.append('accountId', currentUser.accountId)
+
+			try {
+				const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
+					headers: {
+						'Content-Type': 'multipart/form-data',
+						authorization: await WalletHelper.authToken(),
+					},
+				})
+				store.setUserProfile(resp.data.data)
+			} catch (err) {
+				sentryCaptureException(err)
+				store.setUserProfile({})
+			}
+		} else {
+			const userProfile = userProfileResults[0]
+			store.setUserProfile(userProfile)
+
+			const { isEmailVerified = false } = userProfile
+			if (!isEmailVerified && !cookie.get('hideEmailNotVerified')) {
+				store.setShowEmailWarning(true)
+			}
+		}
+
+		const parasBalance = await WalletHelper.viewFunction({
+			methodName: 'ft_balance_of',
+			contractId: process.env.PARAS_TOKEN_CONTRACT,
+			args: { account_id: currentUser.accountId },
+		})
+		store.setParasBalance(parasBalance)
 	}
 
 	const removeQueryTransactionFromNear = () => {

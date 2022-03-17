@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import TokenSeriesDetail from './TokenSeriesDetail'
-import { useIntl } from 'hooks/useIntl'
 import Modal from 'components/Modal'
+import { useIntl } from 'hooks/useIntl'
 
 function TokenSeriesDetailModal({ tokens = [] }) {
 	const router = useRouter()
@@ -27,7 +27,7 @@ function TokenSeriesDetailModal({ tokens = [] }) {
 	}, [])
 
 	useEffect(() => {
-		if (router.query.tokenSeriesId && activeToken === null) {
+		if (router.query.tokenSeriesId) {
 			const token = tokens.find(
 				(token) =>
 					token?.token_series_id === router.query.tokenSeriesId &&
@@ -39,7 +39,7 @@ function TokenSeriesDetailModal({ tokens = [] }) {
 		} else {
 			setActiveToken(null)
 		}
-	}, [router.query])
+	}, [router.query, JSON.stringify(tokens)])
 
 	return (
 		<div>

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import near from 'lib/near'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import { GAS_FEE_150 } from 'config/constants'
@@ -12,10 +11,14 @@ import { trackBuyToken, trackBuyTokenImpression } from 'lib/ga'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
+import useStore from 'lib/store'
+import WalletHelper from 'lib/WalletHelper'
 
 const TokenBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
+	const { currentUser, setTransactionRes } = useStore()
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
+	const [isBuying, setIsBuying] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
 
 	const { localeLn } = useIntl()
@@ -27,11 +30,11 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 	}, [show])
 
 	const onBuyToken = async () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowLogin(true)
 			return
 		}
-
+		setIsBuying(true)
 		trackBuyToken(data.token_id)
 
 		try {
@@ -42,13 +45,20 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 				price: data.price,
 			}
 
-			await near.wallet.account().functionCall({
+			const res = await WalletHelper.callFunction({
 				contractId: process.env.MARKETPLACE_CONTRACT_ID,
 				methodName: `buy`,
 				args: params,
 				gas: GAS_FEE_150,
-				attachedDeposit: data.price,
+				deposit: data.price,
 			})
+
+			if (res.response) {
+				onClose()
+				setTransactionRes(res?.response)
+			}
+
+			setIsBuying(false)
 		} catch (err) {
 			sentryCaptureException(err)
 		}
@@ -92,7 +102,7 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 								</p>
 							</div>
 						)}
-						<p className="text-white mt-4 text-sm text-center opacity-90">
+						<p className="text-white mt-4 text-sm text-center opacity-90 px-4">
 							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
@@ -100,6 +110,8 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 								size="md"
 								isFullWidth
 								onClick={() => (creatorData?.flag ? setShowBannedConfirm(true) : onBuyToken())}
+								isLoading={isBuying}
+								isDisabled={isBuying}
 							>
 								{data.price !== '0' ? localeLn('Buy') : localeLn('GetForFree')}
 							</Button>

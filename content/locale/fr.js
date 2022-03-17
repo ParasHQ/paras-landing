@@ -263,7 +263,7 @@ const modal = {
 	BurnAsset: 'Brûler le NFT',
 	AreAboutToBurn: 'Vous êtes sur le point de brûler',
 	RedirectedToconfirm:
-		'Vous allez être redirigé vers la page du portefeuille NEAR pour confirmer votre transaction.',
+		'Vous allez être redirigé vers la du ton portefeuille confirmer votre transaction.',
 	AreAboutToPurchase: `Vous êtes sur le point d'acheter`,
 	Total: 'Total',
 	GetForFree: 'Obtenir gratuitement',

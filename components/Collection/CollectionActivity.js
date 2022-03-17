@@ -101,6 +101,21 @@ const HEADERS = [
 	},
 ]
 
+const HeadersSmall = [
+	{
+		id: 'price',
+		title: 'Price',
+	},
+	{
+		id: 'from',
+		title: 'From',
+	},
+	{
+		id: 'to',
+		title: 'To',
+	},
+]
+
 const CollectionActivity = ({
 	activities,
 	fetchData,
@@ -263,6 +278,110 @@ const CollectionActivity = ({
 												)}
 											</>
 										) : null}
+									</div>
+								)
+							})}
+						</div>
+					</div>
+					<div className="block md:hidden">
+						<div className="grid grid-cols-3">
+							{HeadersSmall.map((head, idx) => {
+								return (
+									<div key={`${head.id}-${idx}`} className=" flex items-center justify-center mb-5">
+										<p className="font-thin border-b-2 border-transparent hover:border-gray-100 cursor-pointer mr-2">
+											{head.title}
+										</p>
+										{querySort.headerActivities === head.id ? (
+											<>
+												{querySort.sortActivities === '' && (
+													<div
+														key={head.id}
+														className="cursor-pointer"
+														onClick={() => {
+															router.push(
+																{
+																	query: {
+																		headerActivities: head.id,
+																		sortActivities: 'asc',
+																		tab: `activity`,
+																	},
+																},
+																`/collection/${collectionId}?tab=activity`,
+																{ shallow: true, scroll: false }
+															)
+														}}
+													>
+														<DefaultSortIcon />
+													</div>
+												)}
+												{querySort.sortActivities === 'asc' && (
+													<div
+														key={head.id}
+														className="cursor-pointer"
+														onClick={() => {
+															router.push(
+																{
+																	query: {
+																		headerActivities: head.id,
+																		sortActivities: 'desc',
+																		tab: `activity`,
+																	},
+																},
+																`/collection/${collectionId}?tab=activity`,
+																{ shallow: true, scroll: false }
+															)
+														}}
+													>
+														<AscendingSortIcon
+															color={querySort.headerActivities === head.id ? `#b4bac2` : `#d3d5db`}
+														/>
+													</div>
+												)}
+												{querySort.sortActivities === 'desc' && (
+													<div
+														key={head.id}
+														className="cursor-pointer"
+														onClick={() => {
+															router.push(
+																{
+																	query: {
+																		headerActivities: head.id,
+																		sortActivities: '',
+																		tab: `activity`,
+																	},
+																},
+																`/collection/${collectionId}?tab=activity`,
+																{ shallow: true, scroll: false }
+															)
+														}}
+													>
+														<DescendingSortIcon
+															color={querySort.headerActivities === head.id ? `#b4bac2` : `#d3d5db`}
+														/>
+													</div>
+												)}
+											</>
+										) : (
+											<div
+												key={head.id}
+												className="cursor-pointer"
+												onClick={() => {
+													router.push(
+														{
+															query: {
+																headerActivities: head.id,
+																sortActivities: 'asc',
+																tab: `activity`,
+															},
+														},
+														`/collection/${collectionId}?tab=activity`,
+														{ shallow: true, scroll: false }
+													)
+												}}
+											>
+												<DefaultSortIcon />
+											</div>
+										)}
 									</div>
 								)
 							})}

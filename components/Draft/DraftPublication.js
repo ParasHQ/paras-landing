@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import near from 'lib/near'
+import WalletHelper from 'lib/WalletHelper'
 
 const DraftPublication = ({ onCreatePublication }) => {
 	const draftModalRef = useRef()
@@ -25,13 +25,13 @@ const DraftPublication = ({ onCreatePublication }) => {
 		let draftStorage = JSON.parse(localStorage.getItem('draft-publication'))
 
 		const allDraftStorage = draftStorage?.filter(
-			(item) => near?.currentUser?.accountId !== item.author_id
+			(item) => WalletHelper?.currentUser?.accountId !== item.author_id
 		)
 		setAllDraftStorage(allDraftStorage)
 
 		if (draftStorage !== null) {
 			const currentUserDraft = draftStorage?.filter(
-				(item) => near?.currentUser?.accountId === item.author_id
+				(item) => WalletHelper?.currentUser?.accountId === item.author_id
 			)
 			setCurrentUserDraft(currentUserDraft)
 		} else {

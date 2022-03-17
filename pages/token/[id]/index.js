@@ -5,12 +5,18 @@ import Nav from 'components/Nav'
 import TokenSeriesDetail from 'components/TokenSeries/TokenSeriesDetail'
 import Footer from 'components/Footer'
 import { parseImgUrl } from 'utils/common'
+import useTokenSeries from 'hooks/useTokenSeries'
 
 const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.creator_id || token.contract_id
 }
 
-const TokenSeriesPage = ({ errorCode, token }) => {
+const TokenSeriesPage = ({ errorCode, initial }) => {
+	const { token } = useTokenSeries({
+		key: `${initial.contract_id}::${initial.token_series_id}`,
+		initialData: initial,
+	})
+
 	if (errorCode) {
 		return <Error />
 	}
@@ -99,7 +105,7 @@ export async function getServerSideProps({ params }) {
 
 	const errorCode = token ? false : 404
 
-	return { props: { errorCode, token } }
+	return { props: { errorCode, initial: token } }
 }
 
 export default TokenSeriesPage
