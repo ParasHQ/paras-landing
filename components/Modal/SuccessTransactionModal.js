@@ -201,6 +201,8 @@ const SuccessTransactionModal = () => {
 			const msg = JSON.parse(txDetail.args.msg)
 			if (msg.market_type === 'sale') {
 				return 'Update Listing Success'
+			} else if (msg.market_type === 'accept_offer') {
+				return 'Accept Offer Success'
 			}
 		} else if (txDetail.method_name === 'delete_market_data') {
 			return 'Remove Listing Success'
@@ -246,6 +248,12 @@ const SuccessTransactionModal = () => {
 					<>
 						You successfully update <b>{token.metadata.title}</b> price to{' '}
 						{formatNearAmount(msg.price || 0)} Ⓝ
+					</>
+				)
+			} else if (msg.market_type === 'accept_offer') {
+				return (
+					<>
+						You successfully accept offer <b>{token.metadata.title}</b>
 					</>
 				)
 			}
