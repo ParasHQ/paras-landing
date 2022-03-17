@@ -219,6 +219,8 @@ const Owner = ({ initial = {}, onBuy, onUpdateListing }) => {
 						<p className="text-white">
 							{localeLn('OnSale')} {formatNearAmount(token.price)} Ⓝ
 						</p>
+					) : token.is_staked ? (
+						<p className="text-white">{localeLn('Staked')}</p>
 					) : (
 						<p className="text-white">{localeLn('NotForSale')}</p>
 					)}

@@ -207,6 +207,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 		}
 	}
 
+	console.log(token.token_series_id, token.metadata.score)
 	return (
 		<>
 			<TokenSeriesDetailModal tokens={[token]} />
@@ -276,7 +277,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 							)}
 						</div>
 					</div>
-					{type === 'collection' && token.metadata.score && (
+					{type === 'collection' && !!token.metadata.score && (
 						<div
 							className={`${
 								displayType === 'large' ? `block` : `flex gap-1`
