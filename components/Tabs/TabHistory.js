@@ -101,13 +101,12 @@ const Activity = ({ activity }) => {
 			)
 		}
 
-		console.log('MSG: ', msg)
 		if (type === 'nft_transfer' && msg?.is_staked) {
 			return (
 				<p>
 					<LinkToProfile accountId={activity.from} />
 					<span> {localeLn('StakedTo')} </span>
-					<LinkToProfile accountId={activity.to} />{' '}
+					<LinkToProfile accountId={activity.msg.seed_title} />{' '}
 				</p>
 			)
 		}
