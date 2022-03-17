@@ -316,6 +316,7 @@ const tab = {
 	Copies: 'Copies',
 	NoOwnersBecome: 'No owners, become the first one!',
 	Burned: 'Burned',
+	StakedTo: 'staked to',
 }
 const token = {
 	SERIES: 'SERIES',

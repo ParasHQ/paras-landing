@@ -79,7 +79,7 @@ const TabHistory = ({ localToken }) => {
 
 const Activity = ({ activity }) => {
 	const { localeLn } = useIntl()
-	const TextActivity = ({ type }) => {
+	const TextActivity = ({ type, msg }) => {
 		if (type === 'add_market_data' || type === 'update_market_data') {
 			return (
 				<p>
@@ -97,6 +97,17 @@ const Activity = ({ activity }) => {
 				<p>
 					<LinkToProfile accountId={activity.msg.params.owner_id} />
 					<span> {localeLn('RemoveFromSale')}</span>
+				</p>
+			)
+		}
+
+		console.log('MSG: ', msg)
+		if (type === 'nft_transfer' && msg?.is_staked) {
+			return (
+				<p>
+					<LinkToProfile accountId={activity.from} />
+					<span> {localeLn('StakedTo')} </span>
+					<LinkToProfile accountId={activity.to} />{' '}
 				</p>
 			)
 		}
@@ -288,7 +299,7 @@ const Activity = ({ activity }) => {
 
 	return (
 		<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
-			<TextActivity type={activity.type} />
+			<TextActivity type={activity.type} msg={activity.msg} />
 			<p className="mt-1 text-sm">{timeAgo.format(new Date(activity.msg.datetime))}</p>
 		</div>
 	)
