@@ -10,6 +10,8 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
+import useToken from 'hooks/useToken'
+
 const FETCH_TOKENS_LIMIT = 100
 
 const TabOwners = ({ localToken }) => {
@@ -62,8 +64,8 @@ const TabOwners = ({ localToken }) => {
 	}
 
 	const onDismissModal = () => {
-		setActiveToken(null)
 		setShowModal(null)
+		setActiveToken(null)
 	}
 
 	const changeSortBy = (sortby) => {
@@ -118,7 +120,7 @@ const TabOwners = ({ localToken }) => {
 					</div>
 					{tokens.map((token) => (
 						<Owner
-							token={token}
+							initial={token}
 							key={token.token_id}
 							onBuy={(token) => {
 								setShowModal('buy')
@@ -145,10 +147,16 @@ const TabOwners = ({ localToken }) => {
 	)
 }
 
-const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
+const Owner = ({ initial = {}, onBuy, onUpdateListing }) => {
+	const { token } = useToken({
+		key: `${initial.contract_id}::${initial.token_series_id}/${initial.token_id}`,
+		initialData: initial,
+	})
+
 	const [profile, setProfile] = useState({})
 	const { currentUser } = useStore()
 	const { localeLn } = useIntl()
+
 	useEffect(() => {
 		if (token.owner_id) {
 			fetchOwnerProfile()
@@ -216,21 +224,21 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 					)}
 					{currentUser && (
 						<>
-							{token.owner_id === currentUser ? (
-								<div className="w-24">
-									<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>
-										{localeLn('Update')}
-									</Button>
-								</div>
-							) : (
-								token.price && (
-									<div className="w-24">
-										<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
-											{localeLn('Buy')}
-										</Button>
-									</div>
-								)
-							)}
+							{token.owner_id === currentUser
+								? !token.is_staked && (
+										<div className="w-24">
+											<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>
+												{localeLn('Update')}
+											</Button>
+										</div>
+								  )
+								: token.price && (
+										<div className="w-24">
+											<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
+												{localeLn('Buy')}
+											</Button>
+										</div>
+								  )}
 						</>
 					)}
 				</div>

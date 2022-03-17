@@ -2,9 +2,10 @@ import Axios from 'axios'
 import { sentryCaptureException } from 'lib/sentry'
 import { useEffect, useState } from 'react'
 import { useToast } from 'hooks/useToast'
-import near from 'lib/near'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
+import WalletHelper from 'lib/WalletHelper'
+
 const Setting = ({ close }) => {
 	const { localeLn } = useIntl()
 	const toast = useToast()
@@ -22,7 +23,7 @@ const Setting = ({ close }) => {
 	const fetchEmail = async () => {
 		const resp = await Axios.get(`${process.env.V2_API_URL}/credentials/mail`, {
 			headers: {
-				authorization: await near.authToken(),
+				authorization: await WalletHelper.authToken(),
 			},
 		})
 		const data = await resp.data.data.results[0]
@@ -41,7 +42,7 @@ const Setting = ({ close }) => {
 			const resp = await Axios.put(
 				`${process.env.V2_API_URL}/credentials/mail`,
 				{ email, preferences, minPriceOffer: parseNearAmount(minPriceOffer) },
-				{ headers: { authorization: await near.authToken() } }
+				{ headers: { authorization: await WalletHelper.authToken() } }
 			)
 			const message = resp.data.data
 			const toastMessage =

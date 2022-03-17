@@ -155,6 +155,25 @@ const Activity = ({ activity }) => {
 		)
 	}
 
+	if (type === 'nft_transfer' && activity.msg.is_staked) {
+		const [, edition_id] = activity.msg.params.token_id.split(':')
+
+		return (
+			<p>
+				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.from} />
+				<span>
+					{' '}
+					staked{' '}
+					<span className="font-semibold">#{edition_id || activity.msg.params.token_id}</span>
+				</span>
+				<span>
+					{' '}
+					to <span className="font-semibold">{activity.msg.seed_title}</span>
+				</span>
+			</p>
+		)
+	}
+
 	if (type === 'nft_transfer' && activity.to === null) {
 		const [, edition_id] = activity.msg.params.token_id.split(':')
 

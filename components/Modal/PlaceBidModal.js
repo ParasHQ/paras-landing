@@ -5,19 +5,18 @@ import { useIntl } from 'hooks/useIntl'
 import Modal from 'components/Common/Modal'
 import Button from 'components/Common/Button'
 import { InputText } from 'components/Common/form'
-import near from 'lib/near'
 import { sentryCaptureException } from 'lib/sentry'
 import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
-import { transactions } from 'near-api-js'
 import JSBI from 'jsbi'
 import { IconX } from 'components/Icons'
 import { useEffect, useState } from 'react'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
+import WalletHelper from 'lib/WalletHelper'
 
-const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuantity }) => {
+const PlaceBidModal = ({ data, show, onClose, bidAmount, bidQuantity, onSuccess }) => {
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
 	const { localeLn } = useIntl()
@@ -28,9 +27,11 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 		},
 	})
 	const [hasBid, setHasBid] = useState(false)
-	const { currentUser, userBalance } = useStore((state) => ({
+	const [isBidding, setIsBidding] = useState(false)
+	const { currentUser, userBalance, setTransactionRes } = useStore((state) => ({
 		currentUser: state.currentUser,
 		userBalance: state.userBalance,
+		setTransactionRes: state.setTransactionRes,
 	}))
 
 	useEffect(async () => {
@@ -43,9 +44,11 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 						? { token_id: data.token_id }
 						: { token_series_id: data.token_series_id }),
 				}
-				const bidData = await near.wallet
-					.account()
-					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_offer`, params)
+				const bidData = await WalletHelper.viewFunction({
+					methodName: 'get_offer',
+					contractId: process.env.MARKETPLACE_CONTRACT_ID,
+					args: params,
+				})
 				setHasBid(true)
 				setValue('bidAmount', formatNearAmount(bidData.price))
 			} catch (error) {
@@ -56,17 +59,17 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 
 	const hasStorageBalance = async () => {
 		try {
-			const currentStorage = await near.wallet
-				.account()
-				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `storage_balance_of`, {
-					account_id: currentUser,
-				})
+			const currentStorage = await WalletHelper.viewFunction({
+				methodName: 'storage_balance_of',
+				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				args: { account_id: currentUser },
+			})
 
-			const supplyPerOwner = await near.wallet
-				.account()
-				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_supply_by_owner_id`, {
-					account_id: currentUser,
-				})
+			const supplyPerOwner = await WalletHelper.viewFunction({
+				methodName: 'get_supply_by_owner_id',
+				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				args: { account_id: currentUser },
+			})
 
 			const usedStorage = JSBI.multiply(
 				JSBI.BigInt(parseInt(supplyPerOwner) + 1),
@@ -83,12 +86,11 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 	}
 
 	const onPlaceBid = async ({ bidAmount }) => {
+		setIsBidding(true)
 		const hasDepositStorage = await hasStorageBalance()
 
 		try {
-			const depositParams = {
-				receiver_id: near.currentUser.accountId,
-			}
+			const depositParams = { receiver_id: currentUser }
 
 			const params = {
 				nft_contract_id: data.contract_id,
@@ -99,29 +101,47 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 				price: parseNearAmount(bidAmount),
 			}
 
+			let res
 			if (hasDepositStorage) {
-				await near.wallet.account(process.env.MARKETPLACE_CONTRACT_ID).signAndSendTransaction({
+				res = await WalletHelper.signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
-						transactions.functionCall(`add_offer`, params, GAS_FEE, parseNearAmount(bidAmount)),
+						{
+							methodName: 'add_offer',
+							args: params,
+							deposit: parseNearAmount(bidAmount),
+							gas: GAS_FEE,
+						},
 					],
 				})
 			} else {
-				await near.wallet.account(process.env.MARKETPLACE_CONTRACT_ID).signAndSendTransaction({
+				res = await WalletHelper.signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
-						transactions.functionCall(
-							`storage_deposit`,
-							depositParams,
-							GAS_FEE,
-							STORAGE_ADD_MARKET_FEE
-						),
-						transactions.functionCall(`add_offer`, params, GAS_FEE, parseNearAmount(bidAmount)),
+						{
+							methodName: 'storage_deposit',
+							args: depositParams,
+							deposit: STORAGE_ADD_MARKET_FEE,
+							gas: GAS_FEE,
+						},
+						{
+							methodName: 'add_offer',
+							args: params,
+							deposit: parseNearAmount(bidAmount),
+							gas: GAS_FEE,
+						},
 					],
 				})
 			}
+			if (res.response) {
+				onClose()
+				setTransactionRes(res?.response)
+				onSuccess && onSuccess()
+			}
+			setIsBidding(false)
 		} catch (err) {
 			sentryCaptureException(err)
+			setIsBidding(false)
 		}
 	}
 
@@ -189,12 +209,13 @@ const PlaceBidModal = ({ data, show, onClose, isSubmitting, bidAmount, bidQuanti
 									</p>
 								</div>
 							)}
-							<p className="text-white opacity-80 mt-4 text-sm text-center">
-								{localeLn('YouWillRedirectedTo')}
+							<p className="text-white opacity-80 mt-4 text-sm text-center px-4">
+								{localeLn('RedirectedToconfirm')}
 							</p>
 							<div className="">
 								<Button
-									disabled={isSubmitting}
+									disabled={isBidding}
+									isLoading={isBidding}
 									className="mt-4"
 									isFullWidth
 									size="md"

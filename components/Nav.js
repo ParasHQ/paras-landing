@@ -125,11 +125,12 @@ const Nav = () => {
 	}
 
 	const _handleSubmit = (event) => {
+		const data = new FormData(event.target)
 		event.preventDefault()
 		router.push({
 			pathname: '/search',
 			query: {
-				q: searchQuery.value,
+				q: data.get('q'),
 			},
 		})
 	}
@@ -312,12 +313,11 @@ const Nav = () => {
 										></path>
 									</svg>
 									<input
+										id="search"
 										name="q"
 										type="search"
 										value={router.query.search}
-										onChange={(e) => {
-											debounceOnChange(e.target)
-										}}
+										onChange={(e) => debounceOnChange(e.target)}
 										placeholder={localeLn('SearchByTitle')}
 										className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-base md:text-sm font-medium"
 										style={{ WebkitAppearance: 'none' }}

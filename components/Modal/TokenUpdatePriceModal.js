@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import near from 'lib/near'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
@@ -14,14 +13,21 @@ import { useForm } from 'react-hook-form'
 import useStore from 'lib/store'
 import Tooltip from 'components/Common/Tooltip'
 import { parseDate } from 'utils/common'
+import WalletHelper from 'lib/WalletHelper'
+import { useToast } from 'hooks/useToast'
+import { mutate } from 'swr'
 
 const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
-	const [needDeposit, setNeedDeposit] = useState(true)
+	const [needDeposit, setNeedDeposit] = useState(false)
 	const [txFee, setTxFee] = useState(null)
+	const [isUpdatingPrice, setIsUpdatingPrice] = useState(false)
+	const [isRemovingPrice, setIsRemovingPrice] = useState(false)
 	const { register, handleSubmit, errors } = useForm()
 	const currentUser = useStore((state) => state.currentUser)
+	const setTransactionRes = useStore((state) => state.setTransactionRes)
 	const { localeLn } = useIntl()
+	const toast = useToast()
 
 	const showTooltipTxFee = (txFee?.next_fee || 0) > (txFee?.current_fee || 0)
 	const tooltipTxFeeText = localeLn('DynamicTxFee', {
@@ -31,9 +37,10 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 
 	useEffect(() => {
 		const getTxFee = async () => {
-			const txFeeContract = await near.wallet
-				.account()
-				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_transaction_fee`)
+			const txFeeContract = await WalletHelper.viewFunction({
+				methodName: 'get_transaction_fee',
+				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+			})
 			setTxFee(txFeeContract)
 		}
 
@@ -52,29 +59,27 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 
 	const checkStorageBalance = async () => {
 		try {
-			if (!data.approval_id) {
-				const currentStorage = await near.wallet
-					.account()
-					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `storage_balance_of`, {
-						account_id: currentUser,
-					})
+			const currentStorage = await WalletHelper.viewFunction({
+				methodName: 'storage_balance_of',
+				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				args: { account_id: currentUser },
+			})
 
-				const supplyPerOwner = await near.wallet
-					.account()
-					.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_supply_by_owner_id`, {
-						account_id: currentUser,
-					})
+			const supplyPerOwner = await WalletHelper.viewFunction({
+				methodName: 'get_supply_by_owner_id',
+				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				args: { account_id: currentUser },
+			})
 
-				const usedStorage = JSBI.multiply(
-					JSBI.BigInt(parseInt(supplyPerOwner) + 1),
-					JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
-				)
+			const usedStorage = JSBI.multiply(
+				JSBI.BigInt(parseInt(supplyPerOwner) + 1),
+				JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
+			)
 
-				if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
-					setNeedDeposit(false)
-				}
-			} else {
+			if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
 				setNeedDeposit(false)
+			} else {
+				setNeedDeposit(true)
 			}
 		} catch (err) {
 			sentryCaptureException(err)
@@ -82,9 +87,10 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	}
 
 	const onUpdateListing = async () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			return
 		}
+		setIsUpdatingPrice(true)
 
 		trackUpdateListingToken(data.token_id)
 
@@ -98,7 +104,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 						{
 							methodName: 'storage_deposit',
 							contractId: process.env.MARKETPLACE_CONTRACT_ID,
-							args: { receiver_id: near.currentUser.accountId },
+							args: { receiver_id: currentUser },
 							attachedDeposit: STORAGE_ADD_MARKET_FEE,
 							gas: GAS_FEE,
 						},
@@ -128,17 +134,25 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 				],
 			})
 
-			return await near.executeMultipleTransactions(txs)
+			const res = await WalletHelper.multipleCallFunction(txs)
+
+			if (res.response) {
+				onClose()
+				setTransactionRes(res?.response)
+			}
+			setIsUpdatingPrice(false)
 		} catch (err) {
 			sentryCaptureException(err)
+			setIsUpdatingPrice(false)
 		}
 	}
 
 	const onRemoveListing = async (e) => {
 		e.preventDefault()
-		if (!near.currentUser) {
+		if (!currentUser) {
 			return
 		}
+		setIsRemovingPrice(true)
 
 		trackRemoveListingToken(data.token_id)
 
@@ -175,7 +189,36 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 				],
 			})
 
-			await near.executeMultipleTransactions(txs)
+			const res = await WalletHelper.multipleCallFunction(txs)
+
+			if (res.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+				return
+			} else {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{`Successfully remove listing ${data.metadata.title}`}
+						</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
+				setTimeout(() => {
+					mutate(`${data.contract_id}::${data.token_series_id}/${data.token_id}`)
+					onClose()
+				}, 2500)
+			}
+
+			setIsRemovingPrice(false)
 		} catch (err) {
 			sentryCaptureException(err)
 		}
@@ -387,7 +430,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 								</div>
 							)}
 
-							<p className="text-white mt-4 text-sm text-center opacity-90">
+							<p className="text-white mt-4 text-sm text-center opacity-90 px-4">
 								{localeLn('RedirectedToconfirm')}
 							</p>
 						</div>
@@ -396,7 +439,8 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 								type="submit"
 								size="md"
 								isFullWidth
-								isDisabled={newPrice === ''}
+								isDisabled={newPrice === '' || isUpdatingPrice}
+								isLoading={isUpdatingPrice}
 								onClick={handleSubmit(onUpdateListing)}
 							>
 								{localeLn('UpdateListing')}
@@ -408,7 +452,8 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 								size="md"
 								isFullWidth
 								onClick={onRemoveListing}
-								isDisabled={!data.price}
+								isDisabled={!data.price || isRemovingPrice}
+								isLoading={isRemovingPrice}
 							>
 								{localeLn('RemoveListing')}
 							</Button>
