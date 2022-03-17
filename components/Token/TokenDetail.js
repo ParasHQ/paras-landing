@@ -27,6 +27,7 @@ import TabPublication from 'components/Tabs/TabPublication'
 import Media from 'components/Common/Media'
 import ReportModal from 'components/Modal/ReportModal'
 import Card from 'components/Card/Card'
+import Tooltip from 'components/Common/Tooltip'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -225,13 +226,27 @@ const TokenDetail = ({ token, className }) => {
 										<ArtistVerified token={token} />
 									</div>
 								</div>
-								<div>
-									{!token.is_staked && (
-										<IconDots
-											color="#ffffff"
-											className="cursor-pointer"
-											onClick={() => setShowModal('more')}
-										/>
+
+								<div className="flex flex-col items-end">
+									<IconDots
+										color="#ffffff"
+										className="cursor-pointer"
+										onClick={() => setShowModal('more')}
+									/>
+									{token.is_staked && (
+										<Tooltip
+											id="text-staked"
+											show={true}
+											text={'The NFT is being staked by the owner'}
+											className="font-bold bg-gray-800 text-white"
+										>
+											<span
+												className="bg-white mt-2 text-primary font-bold rounded-full px-2 text-xs"
+												style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
+											>
+												staked
+											</span>
+										</Tooltip>
 									)}
 								</div>
 							</div>
@@ -254,11 +269,6 @@ const TokenDetail = ({ token, className }) => {
 						{token.owner_id === currentUser &&
 							(token.is_staked ? (
 								<div className="flex flex-wrap flex-col">
-									<div className="w-full flex-1 mb-2">
-										<p className="text-white font-bold text-sm">
-											This NFT is being staked, please unstake to put it on sale
-										</p>
-									</div>
 									<div className="w-full flex-1">
 										<Button
 											size="md"
@@ -318,9 +328,9 @@ const TokenDetail = ({ token, className }) => {
 				onClose={onDismissModal}
 				listModalItem={[
 					{ name: 'Share to...', onClick: onClickShare },
-					isOwner() && { name: 'Update Listing', onClick: onClickUpdate },
-					isOwner() && { name: 'Transfer', onClick: onClickTransfer },
-					isOwner() && { name: 'Burn Card', onClick: onClickBurn },
+					isOwner() && !token.is_staked && { name: 'Update Listing', onClick: onClickUpdate },
+					isOwner() && !token.is_staked && { name: 'Transfer', onClick: onClickTransfer },
+					isOwner() && !token.is_staked && { name: 'Burn Card', onClick: onClickBurn },
 					{ name: 'Report', onClick: () => setShowModal('report') },
 				].filter((x) => x)}
 			/>

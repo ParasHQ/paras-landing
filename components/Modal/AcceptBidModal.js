@@ -159,11 +159,17 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 						{localeLn('RedirectedToconfirm')}
 					</p>
 
+					{token.is_staked && (
+						<p className="text-sm text-center font-bold mt-2 -mb-2">
+							Please Unstake your token to accept offer
+						</p>
+					)}
+
 					<div className="">
 						<Button
 							size="md"
 							isFullWidth
-							disabled={isLoading}
+							isDisabled={token.is_staked || isLoading}
 							className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 							onClick={onSubmitForm}
 						>
