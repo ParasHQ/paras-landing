@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react'
 import { timeAgo } from 'utils/common'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useIntl } from 'hooks/useIntl'
+import Link from 'next/link'
 const FETCH_TOKENS_LIMIT = 12
 
 const TabHistory = ({ localToken }) => {
@@ -106,7 +107,8 @@ const Activity = ({ activity }) => {
 				<p>
 					<LinkToProfile accountId={activity.from} />
 					<span> {localeLn('StakedTo')} </span>
-					<LinkToProfile accountId={activity.msg.seed_title} />{' '}
+
+					<Link href="https://stake.paras.id">{activity.msg.seed_title}</Link>
 				</p>
 			)
 		}
