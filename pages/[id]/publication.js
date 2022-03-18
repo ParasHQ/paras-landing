@@ -7,7 +7,6 @@ import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import Profile from 'components/Profile/Profile'
 import PublicationCardListLoader from 'components/Publication/PublicationCardListLoader'
-import near from 'lib/near'
 import useStore from 'lib/store'
 import PublicationListScroll from 'components/Publication/PublicationListScroll'
 import DraftPublication from 'components/Draft/DraftPublication'
@@ -17,6 +16,7 @@ const LIMIT = 6
 const Publication = ({ userProfile, accountId }) => {
 	const router = useRouter()
 	const {
+		currentUser,
 		usersPublicationList,
 		setUsersPublicationList,
 		usersPublicationMeta,
@@ -24,7 +24,6 @@ const Publication = ({ userProfile, accountId }) => {
 	} = useStore()
 
 	const [isFetching, setIsFetching] = useState(false)
-	const currentUser = near.currentUser
 
 	useEffect(() => {
 		if (router.isReady && !usersPublicationList[router.query.id]) {
@@ -111,7 +110,7 @@ const Publication = ({ userProfile, accountId }) => {
 			<Nav />
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'publication'} />
-				{accountId === currentUser?.accountId && (
+				{accountId === currentUser && (
 					<div className="flex justify-end mt-4 -mb-4 md:mb-10 md:-mr-4">
 						<DraftPublication isShowVerified={false} />
 					</div>

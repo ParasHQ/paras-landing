@@ -27,6 +27,7 @@ import TabPublication from 'components/Tabs/TabPublication'
 import Media from 'components/Common/Media'
 import ReportModal from 'components/Modal/ReportModal'
 import Card from 'components/Card/Card'
+import Tooltip from 'components/Common/Tooltip'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -225,12 +226,28 @@ const TokenDetail = ({ token, className }) => {
 										<ArtistVerified token={token} />
 									</div>
 								</div>
-								<div>
+
+								<div className="flex flex-col items-end">
 									<IconDots
 										color="#ffffff"
-										className="cursor-pointer"
+										className="cursor-pointer mb-1"
 										onClick={() => setShowModal('more')}
 									/>
+									{token.is_staked && (
+										<Tooltip
+											id="text-staked"
+											show={true}
+											text={'The NFT is being staked by the owner'}
+											className="font-bold bg-gray-800 text-white"
+										>
+											<span
+												className="bg-white text-primary font-bold rounded-full px-3 py-1 text-sm"
+												style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
+											>
+												staked
+											</span>
+										</Tooltip>
+									)}
 								</div>
 							</div>
 							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
@@ -249,20 +266,35 @@ const TokenDetail = ({ token, className }) => {
 						</div>
 					</Scrollbars>
 					<div className="p-3">
-						{token.owner_id === currentUser && (
-							<div className="flex flex-wrap space-x-4">
-								<div className="w-full flex-1">
-									<Button size="md" onClick={() => setShowModal('updatePrice')} isFullWidth>
-										{localeLn('UpdateListing')}
-									</Button>
+						{token.owner_id === currentUser &&
+							(token.is_staked ? (
+								<div className="flex flex-wrap flex-col">
+									<div className="w-full flex-1">
+										<Button
+											size="md"
+											isFullWidth
+											onClick={() => {
+												window.location.href = 'https://stake.paras.id'
+											}}
+										>
+											{localeLn('Unstake')}
+										</Button>
+									</div>
 								</div>
-								<div className="w-full flex-1">
-									<Button size="md" onClick={onClickTransfer} isFullWidth>
-										{localeLn('Transfer')}
-									</Button>
+							) : (
+								<div className="flex flex-wrap space-x-4">
+									<div className="w-full flex-1">
+										<Button size="md" onClick={() => setShowModal('updatePrice')} isFullWidth>
+											{localeLn('UpdateListing')}
+										</Button>
+									</div>
+									<div className="w-full flex-1">
+										<Button size="md" onClick={onClickTransfer} isFullWidth>
+											{localeLn('Transfer')}
+										</Button>
+									</div>
 								</div>
-							</div>
-						)}
+							))}
 						{token.owner_id !== currentUser && token.price && (
 							<div className="flex space-x-2">
 								<Button size="md" onClick={onClickBuy} isFullWidth>
@@ -296,9 +328,9 @@ const TokenDetail = ({ token, className }) => {
 				onClose={onDismissModal}
 				listModalItem={[
 					{ name: 'Share to...', onClick: onClickShare },
-					isOwner() && { name: 'Update Listing', onClick: onClickUpdate },
-					isOwner() && { name: 'Transfer', onClick: onClickTransfer },
-					isOwner() && { name: 'Burn Card', onClick: onClickBurn },
+					isOwner() && !token.is_staked && { name: 'Update Listing', onClick: onClickUpdate },
+					isOwner() && !token.is_staked && { name: 'Transfer', onClick: onClickTransfer },
+					isOwner() && !token.is_staked && { name: 'Burn Card', onClick: onClickBurn },
 					{ name: 'Report', onClick: () => setShowModal('report') },
 				].filter((x) => x)}
 			/>

@@ -8,7 +8,6 @@ import useStore from 'lib/store'
 import { useForm, useFieldArray, useWatch } from 'react-hook-form'
 import Modal from 'components/Modal'
 import { useRouter } from 'next/router'
-import near from 'lib/near'
 import Head from 'next/head'
 import { useToast } from 'hooks/useToast'
 import Footer from 'components/Footer'
@@ -25,6 +24,7 @@ import Scrollbars from 'react-custom-scrollbars'
 import getConfig from 'config/near'
 import Tooltip from 'components/Common/Tooltip'
 import { IconInfo } from 'components/Icons'
+import WalletHelper from 'lib/WalletHelper'
 
 const LIMIT = 16
 
@@ -104,6 +104,7 @@ const NewPage = () => {
 	const [imgUrl, setImgUrl] = useState('')
 	const [step, setStep] = useState(0)
 	const [isUploading, setIsUploading] = useState(false)
+	const [isCreating, setIsCreating] = useState(false)
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
 	const [showCreatingModal, setShowCreatingModal] = useState(false)
 	const [showCreateColl, setShowCreateColl] = useState(false)
@@ -156,7 +157,7 @@ const NewPage = () => {
 			resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
-					authorization: await near.authToken(),
+					authorization: await WalletHelper.authToken(),
 				},
 			})
 			setMediaHash(resp.data.data[0].split('://')[1])
@@ -177,6 +178,7 @@ const NewPage = () => {
 	}
 
 	const createSeriesNFT = async () => {
+		setIsCreating(true)
 		try {
 			let params = {
 				creator_id: store.currentUser,
@@ -202,13 +204,21 @@ const NewPage = () => {
 				}
 			}
 
-			await near.wallet.account().functionCall({
+			const res = await WalletHelper.callFunction({
 				contractId: process.env.NFT_CONTRACT_ID,
 				methodName: `nft_create_series`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: STORAGE_CREATE_SERIES_FEE,
+				deposit: STORAGE_CREATE_SERIES_FEE,
 			})
+
+			setIsCreating(false)
+			if (res.response) {
+				setTimeout(() => {
+					router.push('/market')
+					store.setTransactionRes(res?.response)
+				}, 2000)
+			}
 		} catch (err) {
 			sentryCaptureException(err)
 			const msg = err.response?.data?.message || `Something went wrong, try again later`
@@ -378,15 +388,16 @@ const NewPage = () => {
 
 	useEffect(() => {
 		const getTxFee = async () => {
-			const txFeeContract = await near.wallet
-				.account()
-				.viewFunction(process.env.NFT_CONTRACT_ID, `get_transaction_fee`)
+			const txFeeContract = await WalletHelper.viewFunction({
+				methodName: 'get_transaction_fee',
+				contractId: process.env.NFT_CONTRACT_ID,
+			})
 			setTxFee(txFeeContract)
 		}
-		if (store.currentUser) {
+		if (store.initialized) {
 			getTxFee()
 		}
-	}, [store.currentUser])
+	}, [store.initialized])
 
 	const fetchCollectionUser = async () => {
 		if (!hasMore || isFetching) {
@@ -707,6 +718,7 @@ const NewPage = () => {
 							</p>
 							<Button
 								isDisabled={!(isUploading === 'success')}
+								isLoading={isCreating}
 								isFullWidth
 								size="md"
 								onClick={createSeriesNFT}
