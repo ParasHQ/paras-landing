@@ -323,14 +323,6 @@ const Verify = () => {
 					<p>{localeLn('TextStatusParagraph1')}</p>
 					<br></br>
 					<p>{localeLn('TextStatusParagraph2')}</p>
-					{resultDate && dataStatus.status === 'reject' && (
-						<div className=" text-center ">
-							<h3 className="text-2xl font-bold text-red-500 mt-20">
-								{localeLn('VerificationRequestRejected')}
-							</h3>
-							<p>{dataStatus.note}</p>
-						</div>
-					)}
 					{resultDate && dataStatus.status === 'verified' && (
 						<div className="text-center ">
 							<h3 className="text-2xl font-bold text-green-500 mt-20">
