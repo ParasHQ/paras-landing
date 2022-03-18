@@ -300,7 +300,7 @@ const SuccessTransactionModal = () => {
 							<p className="text-gray-300 text-sm">Transaction Hash</p>
 							{router.query.transactionHashes.split(',').map((txhash) => (
 								<a href={explorerUrl(txhash)} key={txhash} target="_blank" rel="noreferrer">
-									<p className="text-white hover:underline cursor-pointer overflow-hidden overflow-ellipsis">
+									<p className="text-white hover:underline cursor-pointer overflow-hidden text-ellipsis">
 										{txhash}
 									</p>
 								</a>

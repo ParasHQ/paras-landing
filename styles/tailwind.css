@@ -261,14 +261,6 @@ input.clear {
 	transition: bottom 0.075s ease, transform 0.075s 0.12s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
-@layer utilities {
-	@responsive {
-		.h-1\/2 {
-			height: 50%;
-		}
-	}
-}
-
 .titlePublication {
 	background: transparent;
 	color: white;

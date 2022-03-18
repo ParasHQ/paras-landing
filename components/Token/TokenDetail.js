@@ -28,6 +28,7 @@ import Media from 'components/Common/Media'
 import ReportModal from 'components/Modal/ReportModal'
 import Card from 'components/Card/Card'
 import Tooltip from 'components/Common/Tooltip'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -297,8 +298,8 @@ const TokenDetail = ({ token, className }) => {
 							))}
 						{token.owner_id !== currentUser && token.price && (
 							<div className="flex space-x-2">
-								<Button size="md" onClick={onClickBuy} isFullWidth>
-									{localeLn('Buy')}
+								<Button size="md" className="truncate" onClick={onClickBuy} isFullWidth>
+									{`Buy for ${formatNearAmount(token.price)} Ⓝ`}
 								</Button>
 								<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
 									{`Place an offer`}

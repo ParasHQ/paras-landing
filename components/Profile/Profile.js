@@ -48,7 +48,7 @@ const Profile = ({ userProfile, activeTab }) => {
 			)}
 			<div className="flex flex-col items-center justify-center">
 				<div
-					className={`absolute top-0 left-0 w-full h-36 md:h-72 bg-center bg-cover ${
+					className={`absolute top-0 left-0 w-full h-36 md:h-72 bg-center bg-cover -z-0 ${
 						profileData?.coverUrl === (null || undefined) ? 'bg-primary' : 'bg-dark-primary-2'
 					}`}
 					style={{
@@ -83,7 +83,7 @@ const Profile = ({ userProfile, activeTab }) => {
 						</div>
 					)}
 				</div>
-				<div className="w-32 h-32 rounded-full overflow-hidden bg-primary mt-8 md:mt-44 z-20 border-4 border-black">
+				<div className="w-32 h-32 rounded-full overflow-hidden bg-primary mt-8 md:mt-44 z-0 border-4 border-black">
 					<img
 						src={parseImgUrl(profileData?.imgUrl, null, {
 							width: `300`,
@@ -91,7 +91,7 @@ const Profile = ({ userProfile, activeTab }) => {
 						className="object-cover"
 					/>
 				</div>
-				<div className="mt-4 max-w-sm text-center overflow-hidden z-20">
+				<div className="mt-4 max-w-sm text-center overflow-hidden z-0">
 					{profileData?.isCreator && (
 						<p className="text-white text-xs mb-2 mt-2 p-1 bg-primary bg-opacity-75 rounded-md font-bold w-40 mx-auto">
 							Verified Creator
