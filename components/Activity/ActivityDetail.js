@@ -168,7 +168,10 @@ const Activity = ({ activity }) => {
 				</span>
 				<span>
 					{' '}
-					to <span className="font-semibold">{activity.msg.seed_title}</span>
+					to
+					<Link href="https://stake.paras.id">
+						<span className="font-semibold">{activity.msg.seed_title}</span>
+					</Link>
 				</span>
 			</p>
 		)
