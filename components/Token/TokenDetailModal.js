@@ -27,7 +27,7 @@ function TokenDetailModal({ tokens = [] }) {
 	}, [])
 
 	useEffect(() => {
-		if (router.query.tokenId && activeToken === null) {
+		if (router.query.tokenId) {
 			const token = tokens.find((token) => {
 				const lookupToken = token?.token
 				return (
@@ -48,7 +48,7 @@ function TokenDetailModal({ tokens = [] }) {
 		} else {
 			setActiveToken(null)
 		}
-	}, [router.query])
+	}, [router.query, JSON.stringify(tokens)])
 
 	return (
 		<div>

@@ -140,7 +140,7 @@ const MyBids = () => {
 				>
 					{bidsData.map((bid) => (
 						<div key={bid._id}>
-							<Bid data={bid} type={type} />
+							<Bid data={bid} type={type} freshFetch={() => _fetchData(true)} />
 						</div>
 					))}
 					{bidsData.length === 0 && !hasMore && (

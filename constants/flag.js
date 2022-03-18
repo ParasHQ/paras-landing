@@ -3,6 +3,7 @@ export const flagText = {
 	fake: 'FlaggedByPARASFake',
 	hacked: 'FlaggedByPARASHacked',
 	remint: 'FlaggeyByPARASRemint',
+	rugpull: 'FlaggeyByPARASRugpull',
 }
 
 export const flagColor = {
@@ -10,4 +11,5 @@ export const flagColor = {
 	fake: 'bg-yellow-600',
 	hacked: 'bg-yellow-600',
 	remint: 'bg-yellow-600',
+	rugpull: 'bg-red-500',
 }

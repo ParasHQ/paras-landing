@@ -272,7 +272,7 @@ const modal = {
 	GoToLogin: 'Логин',
 	BurnAsset: 'Сжечь Актив',
 	AreAboutToBurn: 'Вы собираетесь сжечь',
-	RedirectedToconfirm: 'Вы будете перенаправлены на кошелёк NEAR для подтверждения транзакции.',
+	RedirectedToconfirm: 'Вы будете перенаправлены на кошелёк для подтверждения транзакции.',
 	AreAboutToPurchase: 'Вы собираетесь приобрести',
 	Total: 'Всего',
 	GetForFree: 'Получить Бесплатно',

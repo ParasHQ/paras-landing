@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import near from 'lib/near'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import { InputText } from 'components/Common/form'
@@ -13,21 +12,27 @@ import { trackMintToken } from 'lib/ga'
 import axios from 'axios'
 import getConfig from 'config/near'
 import { useToast } from 'hooks/useToast'
+import WalletHelper from 'lib/WalletHelper'
+import useStore from 'lib/store'
 
-const TokenSeriesTransferModal = ({ show, onClose, data }) => {
+const TokenSeriesMintModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [isSelfMint, setIsSelfMint] = useState(true)
 	const [receiverId, setReceiverId] = useState('')
+	const [isMinting, setIsMinting] = useState(false)
+	const { currentUser } = useStore()
 	const { localeLn } = useIntl()
 	const toast = useToast()
+
 	const onTransfer = async () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowLogin(true)
 			return
 		}
+		setIsMinting(true)
 		const params = {
 			token_series_id: data.token_series_id,
-			receiver_id: isSelfMint ? near.currentUser.accountId : receiverId,
+			receiver_id: isSelfMint ? currentUser : receiverId,
 		}
 
 		if (!isSelfMint) {
@@ -54,6 +59,7 @@ const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 					type: 'error',
 					duration: 2500,
 				})
+				setIsMinting(false)
 				return
 			}
 		}
@@ -61,15 +67,41 @@ const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 		trackMintToken(data.token_series_id)
 
 		try {
-			await near.wallet.account().functionCall({
+			const res = await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_mint`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: STORAGE_MINT_FEE,
+				deposit: STORAGE_MINT_FEE,
 			})
+			if (res.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+				return
+			} else {
+				onClose()
+				setReceiverId('')
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{`Successfully minted to ${isSelfMint ? currentUser : receiverId}`}
+						</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
+			}
+			setIsMinting(false)
 		} catch (err) {
 			sentryCaptureException(err)
+			setIsMinting(false)
 		}
 	}
 
@@ -130,11 +162,17 @@ const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 								</div>
 							</div>
 						</div>
-						<p className="text-white mt-4 text-sm text-center opacity-90">
+						<p className="text-white mt-4 text-sm text-center opacity-90 px-4">
 							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
-							<Button size="md" isFullWidth onClick={onTransfer}>
+							<Button
+								size="md"
+								isFullWidth
+								onClick={onTransfer}
+								isDisabled={isMinting}
+								isLoading={isMinting}
+							>
 								{localeLn('Mint')}
 							</Button>
 						</div>
@@ -146,4 +184,4 @@ const TokenSeriesTransferModal = ({ show, onClose, data }) => {
 	)
 }
 
-export default TokenSeriesTransferModal
+export default TokenSeriesMintModal
