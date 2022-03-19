@@ -170,7 +170,9 @@ const Activity = ({ activity }) => {
 					{' '}
 					to{' '}
 					<Link href="https://stake.paras.id">
-						<span className="font-semibold">{activity.msg.seed_title}</span>
+						<a className="hover:underline">
+							<span className="font-semibold">{activity.msg.seed_title}</span>
+						</a>
 					</Link>
 				</span>
 			</p>
