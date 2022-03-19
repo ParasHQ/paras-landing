@@ -289,6 +289,11 @@ const Verify = () => {
 						next cycle
 					</p>
 				)}
+				{isQuotaAvail && (
+					<p className="mt-6 block text-lg text-gray-50">
+						<strong>Quota:</strong> {totalCurrent} / {totalQuota}
+					</p>
+				)}
 				<div className="mt-6">
 					<button
 						disabled={isDisable}
