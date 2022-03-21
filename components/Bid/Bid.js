@@ -26,9 +26,7 @@ import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
 import TradingCard from 'components/Trading/TradingCard'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
-import { transactions } from 'near-api-js'
 import ReactCardFlip from 'react-card-flip'
-import near from 'lib/near'
 
 const Bid = ({ data, type, freshFetch }) => {
 	const store = useStore()
@@ -286,10 +284,33 @@ const Bid = ({ data, type, freshFetch }) => {
 			buyer_token_id: data.buyer_token_id,
 		})
 
-		await near.wallet.account(process.env.MARKETPLACE_CONTRACT_ID).signAndSendTransaction({
+		const res = await WalletHelper.signAndSendTransaction({
 			receiverId: data.contract_id,
-			actions: [transactions.functionCall(`nft_approve`, params, GAS_FEE, STORAGE_ADD_MARKET_FEE)],
+			actions: [
+				{
+					methodName: `nft_approve`,
+					args: params,
+					gas: GAS_FEE,
+					deposit: STORAGE_ADD_MARKET_FEE,
+				},
+			],
 		})
+		if (res.error) {
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{res.error}</div>,
+				type: 'error',
+				duration: 2500,
+			})
+		} else {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">{`Successfully accept trade`}</div>
+				),
+				type: 'success',
+				duration: 2500,
+			})
+			setTimeout(freshFetch, 2500)
+		}
 	}
 
 	const deleteOffer = async () => {
@@ -312,13 +333,29 @@ const Bid = ({ data, type, freshFetch }) => {
 
 		try {
 			if (data.type && data.type === 'trade') {
-				await near.wallet.account().functionCall({
+				const res = await WalletHelper.callFunction({
 					contractId: process.env.MARKETPLACE_CONTRACT_ID,
 					methodName: `delete_trade`,
 					args: params,
 					gas: GAS_FEE,
-					attachedDeposit: '1',
+					deposit: '1',
 				})
+				if (res.error) {
+					toast.show({
+						text: <div className="font-semibold text-center text-sm">{res.error}</div>,
+						type: 'error',
+						duration: 2500,
+					})
+				} else {
+					toast.show({
+						text: (
+							<div className="font-semibold text-center text-sm">{`Successfully delete trade`}</div>
+						),
+						type: 'success',
+						duration: 2500,
+					})
+					setTimeout(freshFetch, 2500)
+				}
 			} else {
 				const res = await WalletHelper.callFunction({
 					contractId: process.env.MARKETPLACE_CONTRACT_ID,
@@ -328,13 +365,9 @@ const Bid = ({ data, type, freshFetch }) => {
 					deposit: '1',
 				})
 
-				if (res.response.error) {
+				if (res.error) {
 					toast.show({
-						text: (
-							<div className="font-semibold text-center text-sm">
-								{res.response.error.kind.ExecutionError}
-							</div>
-						),
+						text: <div className="font-semibold text-center text-sm">{res.error}</div>,
 						type: 'error',
 						duration: 2500,
 					})

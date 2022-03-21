@@ -24,12 +24,10 @@ import { useToast } from 'hooks/useToast'
 import Media from 'components/Common/Media'
 import { useRouter } from 'next/router'
 import axios from 'axios'
-import { transactions } from 'near-api-js'
-import near from 'lib/near'
 
 const FETCH_TOKENS_LIMIT = 12
 
-const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer }) => {
+const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned }) => {
 	const router = useRouter()
 	const [profile, setProfile] = useState({})
 	const currentUser = useStore((state) => state.currentUser)
@@ -96,13 +94,33 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer }) => {
 
 		try {
 			if (data.type && data.type === 'trade') {
-				await near.wallet.account().functionCall({
+				const res = await WalletHelper.callFunction({
 					contractId: process.env.MARKETPLACE_CONTRACT_ID,
 					methodName: `delete_trade`,
 					args: params,
 					gas: GAS_FEE,
-					attachedDeposit: '1',
+					deposit: '1',
 				})
+				if (res.response.error) {
+					toast.show({
+						text: (
+							<div className="font-semibold text-center text-sm">
+								{res.response.error.kind.ExecutionError}
+							</div>
+						),
+						type: 'error',
+						duration: 2500,
+					})
+				} else {
+					toast.show({
+						text: (
+							<div className="font-semibold text-center text-sm">{`Successfully delete trade`}</div>
+						),
+						type: 'success',
+						duration: 2500,
+					})
+					setTimeout(fetchOffer, 2500)
+				}
 			} else {
 				const res = await WalletHelper.callFunction({
 					contractId: process.env.MARKETPLACE_CONTRACT_ID,
@@ -139,21 +157,45 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer }) => {
 	}
 
 	const acceptTrade = async () => {
+		const [userType, tradeType, tokenId] = isOwned.split('::')
 		const params = {
 			account_id: process.env.MARKETPLACE_CONTRACT_ID,
 		}
-		params.token_id = data.token_id
+		params.token_id = tokenId
 		params.msg = JSON.stringify({
-			market_type: 'accept_trade',
+			market_type: tradeType === 'token' ? 'accept_trade' : 'accept_trade_paras_series',
 			buyer_id: data.buyer_id,
 			buyer_nft_contract_id: data.buyer_nft_contract_id,
 			buyer_token_id: data.buyer_token_id,
 		})
 
-		await near.wallet.account(process.env.MARKETPLACE_CONTRACT_ID).signAndSendTransaction({
+		const res = await WalletHelper.signAndSendTransaction({
 			receiverId: data.contract_id,
-			actions: [transactions.functionCall(`nft_approve`, params, GAS_FEE, STORAGE_ADD_MARKET_FEE)],
+			actions: [
+				{
+					methodName: `nft_approve`,
+					args: params,
+					gas: GAS_FEE,
+					deposit: STORAGE_ADD_MARKET_FEE,
+				},
+			],
 		})
+		if (res.error) {
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{res.error}</div>,
+				type: 'error',
+				duration: 2500,
+			})
+		} else {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">{`Successfully accept trade`}</div>
+				),
+				type: 'success',
+				duration: 2500,
+			})
+			setTimeout(fetchOffer, 2500)
+		}
 	}
 
 	const onClickNftTrade = () => {
@@ -462,6 +504,7 @@ const TabOffers = ({ localToken }) => {
 								data={x}
 								onAcceptOffer={() => onAcceptOffer(x)}
 								hideButton={!isOwned}
+								isOwned={isOwned}
 								fetchOffer={() => fetchOffers(true)}
 							/>
 						</div>

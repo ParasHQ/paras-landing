@@ -8,17 +8,18 @@ import { useState } from 'react'
 import AddTradeNFTUrlModal from './AddTradeNFTUrlModal'
 import TradingCard from 'components/Trading/TradingCard'
 import useStore from 'lib/store'
-import { transactions } from 'near-api-js'
 import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import JSBI from 'jsbi'
 import { useEffect } from 'react'
+import WalletHelper from 'lib/WalletHelper'
 
 const TradeNFTModal = ({ data, show, onClose, isSubmitting, tokenType, fromUpdate = false }) => {
 	const [showAddURLModal, setShowAddURLModal] = useState(false)
 	const [tradedToken, setTradedToken] = useState([])
-	const { currentUser } = useStore((state) => ({
+	const { currentUser, setTransactionRes } = useStore((state) => ({
 		currentUser: state.currentUser,
 		userBalance: state.userBalance,
+		setTransactionRes: state.setTransactionRes,
 	}))
 
 	const { localeLn } = useIntl()
@@ -65,7 +66,7 @@ const TradeNFTModal = ({ data, show, onClose, isSubmitting, tokenType, fromUpdat
 
 		try {
 			const depositParams = {
-				receiver_id: near.currentUser.accountId,
+				receiver_id: currentUser,
 			}
 
 			const params = {
@@ -87,14 +88,23 @@ const TradeNFTModal = ({ data, show, onClose, isSubmitting, tokenType, fromUpdat
 					seller_token_series_id: data.token_series_id,
 				})
 			}
-
+			let res
 			if (hasDepositStorage) {
-				await near.wallet.account(process.env.MARKETPLACE_CONTRACT_ID).signAndSendTransaction({
-					receiverId: process.env.NFT_CONTRACT_ID,
+				res = await WalletHelper.signAndSendTransaction({
+					receiverId: tradedToken[0].split('::')[0],
 					actions: [
-						transactions.functionCall(`nft_approve`, params, GAS_FEE, STORAGE_ADD_MARKET_FEE),
+						{
+							methodName: `nft_approve`,
+							args: params,
+							gas: GAS_FEE,
+							deposit: STORAGE_ADD_MARKET_FEE,
+						},
 					],
 				})
+				if (res.response) {
+					onClose()
+					setTransactionRes(res?.response)
+				}
 			} else {
 				const txs = []
 				txs.push({
@@ -121,7 +131,7 @@ const TradeNFTModal = ({ data, show, onClose, isSubmitting, tokenType, fromUpdat
 						},
 					],
 				})
-				await near.executeMultipleTransactions(txs)
+				await WalletHelper.multipleCallFunction(txs)
 			}
 		} catch (err) {
 			sentryCaptureException(err)
