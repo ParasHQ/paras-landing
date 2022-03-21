@@ -35,7 +35,7 @@ const footer = {
 	Discord: 'Discord',
 	ApplyAsArtist: 'Apply as an Artist',
 	FooterBeta: 'This project is in public beta.',
-	Paras2021: '2021 Paras',
+	Paras2022: '2022 Paras',
 	PoweredBy: 'Powered by',
 	UseOwnRisk: `Paras' smart contract is not yet audited by well-known security
   organization or firm. Use at your own risk!`,
