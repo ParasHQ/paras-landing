@@ -29,6 +29,7 @@ import TabPublication from 'components/Tabs/TabPublication'
 import ReportModal from 'components/Modal/ReportModal'
 import Card from 'components/Card/Card'
 import { useRouter } from 'next/router'
+import TradeNFTModal from 'components/Modal/TradeNFTModal'
 
 const TokenSeriesDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -138,6 +139,14 @@ const TokenSeriesDetail = ({ token, className }) => {
 			return
 		}
 		setShowModal('placeoffer')
+	}
+
+	const onClickOfferNFT = () => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+		setShowModal('placeofferNFT')
 	}
 
 	const isCreator = () => {
@@ -378,6 +387,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 				onClose={onDismissModal}
 				listModalItem={[
 					{ name: 'Share to...', onClick: onClickShare },
+					{ name: 'Offer Via NFT', onClick: onClickOfferNFT },
 					{ name: 'Transfer', onClick: onClickBuyerTransfer },
 					isCreator() && { name: 'Reduce Copies', onClick: onClickDecreaseCopies },
 					{ name: 'Report', onClick: () => setShowModal('report') },
@@ -385,6 +395,12 @@ const TokenSeriesDetail = ({ token, className }) => {
 			/>
 			<TokenShareModal show={showModal === 'share'} onClose={onDismissModal} tokenData={token} />
 			<PlaceBidModal show={showModal === 'placeoffer'} data={token} onClose={onDismissModal} />
+			<TradeNFTModal
+				show={showModal === 'placeofferNFT'}
+				data={token}
+				onClose={onDismissModal}
+				tokenType={`tokenSeries`}
+			/>
 			<ReportModal show={showModal === 'report'} data={token} onClose={onDismissModal} />
 			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>

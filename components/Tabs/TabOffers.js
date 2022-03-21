@@ -11,6 +11,7 @@ import {
 	GAS_FEE,
 	GAS_FEE_150,
 	GAS_FEE_200,
+	STORAGE_ADD_MARKET_FEE,
 	STORAGE_APPROVE_FEE,
 	STORAGE_MINT_FEE,
 } from 'config/constants'
@@ -20,12 +21,19 @@ import Avatar from 'components/Common/Avatar'
 import AcceptBidModal from 'components/Modal/AcceptBidModal'
 import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
+import Media from 'components/Common/Media'
+import { useRouter } from 'next/router'
+import axios from 'axios'
+import { transactions } from 'near-api-js'
+import near from 'lib/near'
 
 const FETCH_TOKENS_LIMIT = 12
 
 const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer }) => {
+	const router = useRouter()
 	const [profile, setProfile] = useState({})
 	const currentUser = useStore((state) => state.currentUser)
+	const [tradedTokenData, setTradedTokenData] = useState([])
 	const toast = useToast()
 
 	useEffect(() => {
@@ -33,6 +41,12 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer }) => {
 			fetchBuyerProfile()
 		}
 	}, [data.buyer_id])
+
+	useEffect(() => {
+		if (data.type === 'trade') {
+			fetchTradeToken()
+		}
+	}, [])
 
 	const fetchBuyerProfile = async () => {
 		try {
@@ -49,44 +63,105 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer }) => {
 		}
 	}
 
-	const deleteOffer = async () => {
+	const fetchTradeToken = async () => {
 		const params = {
-			nft_contract_id: data.contract_id,
-			...(data.token_id ? { token_id: data.token_id } : { token_series_id: data.token_series_id }),
+			token_id: data.buyer_token_id,
+			contract_id: data.buyer_nft_contract_id,
+			__limit: 1,
 		}
+		const resp = await axios.get(`${process.env.V2_API_URL}/token`, {
+			params: params,
+			ttl: 30,
+		})
+		setTradedTokenData(resp.data.data.results[0])
+	}
+
+	const deleteOffer = async () => {
+		const params =
+			data.type && data.type === 'trade'
+				? {
+						nft_contract_id: data.contract_id,
+						...(data.token_id
+							? { token_id: data.token_id }
+							: { token_series_id: data.token_series_id }),
+						buyer_nft_contract_id: data.buyer_nft_contract_id,
+						buyer_token_id: data.buyer_token_id,
+				  }
+				: {
+						nft_contract_id: data.contract_id,
+						...(data.token_id
+							? { token_id: data.token_id }
+							: { token_series_id: data.token_series_id }),
+				  }
 
 		try {
-			const res = await WalletHelper.callFunction({
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
-				methodName: `delete_offer`,
-				args: params,
-				gas: GAS_FEE,
-				deposit: '1',
-			})
-
-			if (res.response.error) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							{res.response.error.kind.ExecutionError}
-						</div>
-					),
-					type: 'error',
-					duration: 2500,
+			if (data.type && data.type === 'trade') {
+				await near.wallet.account().functionCall({
+					contractId: process.env.MARKETPLACE_CONTRACT_ID,
+					methodName: `delete_trade`,
+					args: params,
+					gas: GAS_FEE,
+					attachedDeposit: '1',
 				})
 			} else {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">{`Successfully delete offer`}</div>
-					),
-					type: 'success',
-					duration: 2500,
+				const res = await WalletHelper.callFunction({
+					contractId: process.env.MARKETPLACE_CONTRACT_ID,
+					methodName: `delete_offer`,
+					args: params,
+					gas: GAS_FEE,
+					deposit: '1',
 				})
-				setTimeout(fetchOffer, 2500)
+
+				if (res.response.error) {
+					toast.show({
+						text: (
+							<div className="font-semibold text-center text-sm">
+								{res.response.error.kind.ExecutionError}
+							</div>
+						),
+						type: 'error',
+						duration: 2500,
+					})
+				} else {
+					toast.show({
+						text: (
+							<div className="font-semibold text-center text-sm">{`Successfully delete offer`}</div>
+						),
+						type: 'success',
+						duration: 2500,
+					})
+					setTimeout(fetchOffer, 2500)
+				}
 			}
 		} catch (error) {
 			sentryCaptureException(error)
 		}
+	}
+
+	const acceptTrade = async () => {
+		const params = {
+			account_id: process.env.MARKETPLACE_CONTRACT_ID,
+		}
+		params.token_id = data.token_id
+		params.msg = JSON.stringify({
+			market_type: 'accept_trade',
+			buyer_id: data.buyer_id,
+			buyer_nft_contract_id: data.buyer_nft_contract_id,
+			buyer_token_id: data.buyer_token_id,
+		})
+
+		await near.wallet.account(process.env.MARKETPLACE_CONTRACT_ID).signAndSendTransaction({
+			receiverId: data.contract_id,
+			actions: [transactions.functionCall(`nft_approve`, params, GAS_FEE, STORAGE_ADD_MARKET_FEE)],
+		})
+	}
+
+	const onClickNftTrade = () => {
+		router.push(
+			`/token/${tradedTokenData.contract_id}::${tradedTokenData.token_series_id}${
+				data.token_id && `/${tradedTokenData.token_id}`
+			}`
+		)
 	}
 
 	return (
@@ -107,16 +182,48 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer }) => {
 					<p className="text-sm text-gray-300">{timeAgo.format(new Date(data.issued_at))}</p>
 				</div>
 			</div>
-			<div className="flex items-center justify-between mt-2">
-				<div>
-					<p>Offer {formatNearAmount(data.price)} Ⓝ</p>
-				</div>
+			<div
+				className={`flex ${
+					data.type && data.type === 'trade' ? `items-end` : `items-center`
+				} justify-between mt-2`}
+			>
+				{data.type === 'trade' ? (
+					<div>
+						<p className="mb-2">Offer NFT for trade:</p>
+						<div className="flex items-center">
+							<div className="z-20 max-h-40 w-24 cursor-pointer">
+								<a
+									onClick={(e) => {
+										e.preventDefault()
+										onClickNftTrade()
+									}}
+								>
+									<Media
+										className="rounded-lg overflow-hidden"
+										url={parseImgUrl(tradedTokenData?.metadata?.media, null, {
+											width: `600`,
+											useOriginal: process.env.APP_ENV === 'production' ? false : true,
+											isMediaCdn: true,
+										})}
+										seeDetails={true}
+									/>
+								</a>
+							</div>
+						</div>
+					</div>
+				) : (
+					<div>
+						<p>Offer {formatNearAmount(data.price)} Ⓝ</p>
+					</div>
+				)}
 				{!hideButton && data.buyer_id !== currentUser && (
 					<div>
 						<Button
 							size="sm"
 							className="w-full"
-							onClick={() => onAcceptOffer(data)}
+							onClick={() => {
+								data.type && data.type === 'trade' ? acceptTrade() : onAcceptOffer(data)
+							}}
 							hideButton={hideButton}
 						>
 							Accept

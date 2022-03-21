@@ -16,6 +16,7 @@ import { parseDate } from 'utils/common'
 import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
 import { mutate } from 'swr'
+import axios from 'axios'
 
 const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
@@ -26,6 +27,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const { register, handleSubmit, errors } = useForm()
 	const currentUser = useStore((state) => state.currentUser)
 	const setTransactionRes = useStore((state) => state.setTransactionRes)
+	const [isAnyTradeOffer, setIsAnyTradeOffer] = useState(false)
 	const { localeLn } = useIntl()
 	const toast = useToast()
 
@@ -46,6 +48,19 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 
 		if (show) {
 			getTxFee()
+		}
+	}, [show])
+
+	useEffect(async () => {
+		const resp = await axios.get(`${process.env.V2_API_URL}/offers`, {
+			params: {
+				token_id: data.token_id,
+			},
+		})
+		if (resp.data.data.results.some((offer) => offer.type === 'trade')) {
+			setIsAnyTradeOffer(true)
+		} else {
+			setIsAnyTradeOffer(false)
 		}
 	}, [show])
 
@@ -173,21 +188,22 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 					},
 				],
 			})
-			txs.push({
-				receiverId: data.contract_id,
-				functionCalls: [
-					{
-						methodName: 'nft_revoke',
-						contractId: data.contract_id,
-						args: {
-							token_id: data.token_id,
-							account_id: process.env.MARKETPLACE_CONTRACT_ID,
+			!isAnyTradeOffer &&
+				txs.push({
+					receiverId: data.contract_id,
+					functionCalls: [
+						{
+							methodName: 'nft_revoke',
+							contractId: data.contract_id,
+							args: {
+								token_id: data.token_id,
+								account_id: process.env.MARKETPLACE_CONTRACT_ID,
+							},
+							attachedDeposit: `1`,
+							gas: GAS_FEE,
 						},
-						attachedDeposit: `1`,
-						gas: GAS_FEE,
-					},
-				],
-			})
+					],
+				})
 
 			const res = await WalletHelper.multipleCallFunction(txs)
 

@@ -202,6 +202,7 @@ const CardInfo = {
 	Year: 'Год',
 	EditionOf: 'В количестве',
 	AboutToBid: 'Вы собираетесь сделать ставку',
+	AddNFTToTrade: 'Добавьте NFT для торговли',
 	Quantity: 'Количество',
 	AmountIn: 'Сумма в',
 	TotalBidAmount: 'Итоговая сумма ставок',

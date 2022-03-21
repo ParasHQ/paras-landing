@@ -204,6 +204,7 @@ const CardInfo = {
 	Year: 'Year',
 	EditionOf: 'Edition of',
 	AboutToBid: 'You are about to bid',
+	AddNFTTrade: 'Add NFT for trade',
 	Quantity: 'Quantity',
 	AmountIn: 'Amount in',
 	TotalBidAmount: 'Total bid Amount',
