@@ -118,7 +118,7 @@ const Footer = () => {
 					</div>
 				</div>
 				<div className="mt-2 flex items-center">
-					<p>{localeLn('Paras2021')}</p>
+					<p>{localeLn('Paras2022')}</p>
 					<p className="mx-2">|</p>
 					<div className="flex items-center text-sm">
 						<p>{localeLn('PoweredBy')}</p>
