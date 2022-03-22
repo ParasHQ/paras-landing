@@ -105,7 +105,7 @@ const Activity = ({ activity }) => {
 			contract_id: activity.msg?.params?.buyer_nft_contract_id,
 			__limit: 1,
 		}
-		const resp = await axios.get(`${process.env.V2_API_URL}/token`, {
+		const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
 			params: params,
 			ttl: 30,
 		})

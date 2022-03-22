@@ -16,6 +16,7 @@ import WalletHelper from 'lib/WalletHelper'
 const TradeNFTModal = ({ data, show, onClose, isSubmitting, tokenType, fromUpdate = false }) => {
 	const [showAddURLModal, setShowAddURLModal] = useState(false)
 	const [tradedToken, setTradedToken] = useState([])
+	const [isTrading, setIsTrading] = useState(false)
 	const { currentUser, setTransactionRes } = useStore((state) => ({
 		currentUser: state.currentUser,
 		userBalance: state.userBalance,
@@ -35,17 +36,21 @@ const TradeNFTModal = ({ data, show, onClose, isSubmitting, tokenType, fromUpdat
 
 	const hasStorageBalance = async () => {
 		try {
-			const currentStorage = await near.wallet
-				.account()
-				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `storage_balance_of`, {
+			const currentStorage = await WalletHelper.viewFunction({
+				methodName: `storage_balance_of`,
+				args: {
 					account_id: currentUser,
-				})
+				},
+				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+			})
 
-			const supplyPerOwner = await near.wallet
-				.account()
-				.viewFunction(process.env.MARKETPLACE_CONTRACT_ID, `get_supply_by_owner_id`, {
+			const supplyPerOwner = await WalletHelper.viewFunction({
+				methodName: `get_supply_by_owner_id`,
+				args: {
 					account_id: currentUser,
-				})
+				},
+				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+			})
 
 			const usedStorage = JSBI.multiply(
 				JSBI.BigInt(parseInt(supplyPerOwner) + 1),
@@ -62,6 +67,7 @@ const TradeNFTModal = ({ data, show, onClose, isSubmitting, tokenType, fromUpdat
 	}
 
 	const onTradeNFT = async () => {
+		setIsTrading(true)
 		const hasDepositStorage = await hasStorageBalance()
 
 		try {
@@ -102,6 +108,7 @@ const TradeNFTModal = ({ data, show, onClose, isSubmitting, tokenType, fromUpdat
 					],
 				})
 				if (res.response) {
+					setIsTrading(false)
 					onClose()
 					setTransactionRes(res?.response)
 				}
@@ -133,11 +140,13 @@ const TradeNFTModal = ({ data, show, onClose, isSubmitting, tokenType, fromUpdat
 				})
 				const res = await WalletHelper.multipleCallFunction(txs)
 				if (res.response) {
+					setIsTrading(false)
 					onClose()
 					setTransactionRes(res?.response)
 				}
 			}
 		} catch (err) {
+			setIsTrading(false)
 			sentryCaptureException(err)
 		}
 	}
@@ -191,6 +200,7 @@ const TradeNFTModal = ({ data, show, onClose, isSubmitting, tokenType, fromUpdat
 							className="mt-10"
 							isFullWidth
 							size="md"
+							isLoading={isTrading}
 						>
 							{hasTraded ? 'Update Trade' : `Trade`}
 						</Button>

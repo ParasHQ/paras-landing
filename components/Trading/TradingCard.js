@@ -20,11 +20,12 @@ const TradingCard = ({
 	const fetchTradedToken = async () => {
 		const params = {
 			contract_id: contractId.split('::')[0],
-			[contract_token_id.includes('/') ? `token_id` : `token_series_id`]:
-				contract_token_id.includes('/') ? tokenId : contract_token_id.split('::')[1],
+			[tokenId ? `token_id` : `token_series_id`]: tokenId
+				? tokenId
+				: contract_token_id.split('::')[1],
 		}
 		const resp = await Cachios.get(
-			`${process.env.V2_API_URL}/${contract_token_id.includes('/') ? `token` : `token-series`}`,
+			`${process.env.V2_API_URL}/${tokenId ? `token` : `token-series`}`,
 			{
 				params: params,
 				ttl: 60,
