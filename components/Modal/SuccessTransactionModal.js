@@ -118,10 +118,15 @@ const SuccessTransactionModal = () => {
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
 				} else if (FunctionCall.method_name === 'nft_approve') {
+					const msgParse = JSON.parse(args?.msg)
 					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
 						params: {
-							contract_id: receiver_id,
-							token_id: args.token_id,
+							contract_id:
+								msgParse.market_type === 'accept_trade'
+									? msgParse?.buyer_nft_contract_id
+									: receiver_id,
+							token_id:
+								msgParse?.market_type === 'accept_trade' ? msgParse?.buyer_token_id : args.token_id,
 						},
 					})
 					setToken(res.data.data.results[0])

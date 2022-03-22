@@ -23,7 +23,6 @@ import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
 import Media from 'components/Common/Media'
 import { useRouter } from 'next/router'
-import axios from 'axios'
 
 const FETCH_TOKENS_LIMIT = 12
 
@@ -231,9 +230,9 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned }) => {
 			>
 				{data.type === 'trade' ? (
 					<div>
-						<p className="mb-2">Offer NFT for trade:</p>
+						<p className="mb-2">Offer NFT for trade</p>
 						<div className="flex items-center">
-							<div className="z-20 max-h-40 w-24 cursor-pointer">
+							<div className="z-20 max-h-40 w-24 cursor-pointer border-4 border-gray-700 rounded-lg">
 								<a
 									onClick={(e) => {
 										e.preventDefault()

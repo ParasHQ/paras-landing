@@ -7,7 +7,6 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { useIntl } from 'hooks/useIntl'
 import Media from 'components/Common/Media'
 import { useRouter } from 'next/router'
-import axios from 'axios'
 const FETCH_TOKENS_LIMIT = 12
 
 const TabHistory = ({ localToken }) => {
@@ -132,11 +131,12 @@ const Activity = ({ activity }) => {
 						<LinkToProfile accountId={activity.msg.params.buyer_id} />
 						<span>
 							{` `}
-							{type.includes(`add`) ? `added` : `deleted`} offer NFT trade
+							{type.includes(`add`) ? `added` : `deleted`} offer NFT trade{' '}
+							<span className="font-semibold">{tradedTokenData?.metadata?.title}</span>
 						</span>
 					</p>
 					<div className="flex items-center mb-2">
-						<div className="z-20 max-h-40 w-24 cursor-pointer">
+						<div className="z-20 max-h-40 w-24 cursor-pointer border-4 border-gray-700 rounded-lg">
 							<a
 								onClick={(e) => {
 									e.preventDefault()
