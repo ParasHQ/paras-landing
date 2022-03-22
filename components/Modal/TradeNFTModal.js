@@ -1,7 +1,6 @@
 import { useIntl } from 'hooks/useIntl'
 import Modal from 'components/Common/Modal'
 import Button from 'components/Common/Button'
-import near from 'lib/near'
 import { sentryCaptureException } from 'lib/sentry'
 import { IconX } from 'components/Icons'
 import { useState } from 'react'
