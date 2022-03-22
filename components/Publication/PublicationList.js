@@ -20,7 +20,7 @@ const PublicationList = ({ data }) => {
 				</Link>
 				{data.isComic && (
 					<div
-						className="absolute bottom-4 right-0 py-1 px-3 rounded-l-lg text-white -mr-4 w-1/6 md:w-1/5 lg:w-1/6 shadow-2xl"
+						className="absolute bottom-4 right-0 py-1 px-3 rounded-l-lg text-white -mr-4 w-24 shadow-2xl"
 						style={{ backgroundColor: '#00BBDB' }}
 					>
 						Comic
