@@ -33,12 +33,13 @@ const Bid = ({ data, type, freshFetch }) => {
 	const router = useRouter()
 	const [token, setToken] = useState(null)
 	const [showModal, setShowModal] = useState('')
+	const isNFTTraded = data?.type && data?.type === 'trade'
 
 	const [isOwned, setIsOwned] = useState(false)
 	const [storageFee, setStorageFee] = useState(STORAGE_APPROVE_FEE)
 	const toast = useToast()
 	const [tradedToken, setTradedToken] = useState([
-		data.type && data.type === 'trade'
+		isNFTTraded
 			? `${type === 'myBids' ? data.contract_id : data.buyer_nft_contract_id}::${
 					type === 'myBids'
 						? data.token_id
@@ -70,7 +71,7 @@ const Bid = ({ data, type, freshFetch }) => {
 
 	const fetchTokenData = async () => {
 		if (data.token_id) {
-			if (data.type && data.type === 'trade') {
+			if (isNFTTraded) {
 				const tokenData = await cachios.get(`${process.env.V2_API_URL}/token`, {
 					params: {
 						token_id: type === 'myBids' ? data.buyer_token_id : data.token_id,
@@ -105,7 +106,7 @@ const Bid = ({ data, type, freshFetch }) => {
 				}
 			}
 		} else {
-			if (data.type && data.type === 'trade') {
+			if (isNFTTraded) {
 				const tokenData = await cachios.get(
 					`${process.env.V2_API_URL}/${type === 'myBids' ? `token` : `token-series`}`,
 					{
@@ -314,25 +315,24 @@ const Bid = ({ data, type, freshFetch }) => {
 	}
 
 	const deleteOffer = async () => {
-		const params =
-			data.type && data.type === 'trade'
-				? {
-						nft_contract_id: data.contract_id,
-						...(data.token_id
-							? { token_id: data.token_id }
-							: { token_series_id: data.token_series_id }),
-						buyer_nft_contract_id: data.buyer_nft_contract_id,
-						buyer_token_id: data.buyer_token_id,
-				  }
-				: {
-						nft_contract_id: data.contract_id,
-						...(data.token_id
-							? { token_id: data.token_id }
-							: { token_series_id: data.token_series_id }),
-				  }
+		const params = isNFTTraded
+			? {
+					nft_contract_id: data.contract_id,
+					...(data.token_id
+						? { token_id: data.token_id }
+						: { token_series_id: data.token_series_id }),
+					buyer_nft_contract_id: data.buyer_nft_contract_id,
+					buyer_token_id: data.buyer_token_id,
+			  }
+			: {
+					nft_contract_id: data.contract_id,
+					...(data.token_id
+						? { token_id: data.token_id }
+						: { token_series_id: data.token_series_id }),
+			  }
 
 		try {
-			if (data.type && data.type === 'trade') {
+			if (isNFTTraded) {
 				const res = await WalletHelper.callFunction({
 					contractId: process.env.MARKETPLACE_CONTRACT_ID,
 					methodName: `delete_trade`,
@@ -432,11 +432,7 @@ const Bid = ({ data, type, freshFetch }) => {
 				/>
 			)}
 			<div className="border-2 border-dashed my-4 p-4 md:py-6 md:px-8 md:h-72 rounded-md border-gray-800">
-				<div
-					className={`flex flex-col md:flex-row ${
-						data.type && data.type === 'trade' && `relative`
-					}`}
-				>
+				<div className={`flex flex-col md:flex-row ${isNFTTraded && `relative`}`}>
 					<div
 						className={`hidden md:block w-40 h-full ${
 							data.type &&
@@ -455,7 +451,7 @@ const Bid = ({ data, type, freshFetch }) => {
 								isMediaCdn: token.isMediaCdn,
 							})}
 							onClick={() => {
-								data.type && data.type === 'trade'
+								isNFTTraded
 									? setIsFlipped(!isFlipped)
 									: router.push(
 											{
@@ -486,7 +482,7 @@ const Bid = ({ data, type, freshFetch }) => {
 							}}
 						/>
 					</div>
-					{data.type && data.type === 'trade' && (
+					{isNFTTraded && (
 						<div
 							className={`hidden md:block absolute w-40 h-full ${
 								!isFlipped
@@ -511,7 +507,7 @@ const Bid = ({ data, type, freshFetch }) => {
 						</div>
 					)}
 					<div className="block md:hidden w-40 h-full mx-auto">
-						{data.type && data.type === 'trade' ? (
+						{isNFTTraded ? (
 							<ReactCardFlip isFlipped={isFlipped} flipDirection={`vertical`}>
 								<div className="cursor-pointer">
 									<Card
@@ -585,11 +581,11 @@ const Bid = ({ data, type, freshFetch }) => {
 					</div>
 					<div
 						className={`flex-1 items-start md:items-center mt-8 md:mt-0 md:flex ml-4 ${
-							data.type && data.type === 'trade' ? `md:ml-10` : `md:ml-6`
+							isNFTTraded ? `md:ml-10` : `md:ml-6`
 						} justify-between items-center`}
 					>
 						<div className="text-gray-100 truncate cursor-pointer">
-							{data.type && data.type === 'trade' ? (
+							{isNFTTraded ? (
 								<>
 									<div className="text-base mb-3">
 										Offer NFT via Trade {data.token_series_id && `- Series`}
@@ -703,7 +699,7 @@ const Bid = ({ data, type, freshFetch }) => {
 							{store.currentUser !== data.buyer_id ? (
 								<button
 									onClick={() => {
-										data.type && data.type === 'trade' ? acceptTrade() : setShowModal('acceptBid')
+										isNFTTraded ? acceptTrade() : setShowModal('acceptBid')
 									}}
 									className="font-semibold w-32 rounded-md border-2 border-primary bg-primary text-white mb-2"
 								>
@@ -713,11 +709,7 @@ const Bid = ({ data, type, freshFetch }) => {
 								<>
 									{data?.type !== 'trade' && (
 										<button
-											onClick={() =>
-												setShowModal(
-													data.type && data.type === 'trade' ? `updateTrade` : `updateBid`
-												)
-											}
+											onClick={() => setShowModal(isNFTTraded ? `updateTrade` : `updateBid`)}
 											className="font-semibold w-32 rounded-md border-2 border-primary bg-primary text-white mb-2"
 										>
 											{localeLn('Update')}

@@ -32,6 +32,7 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned }) => {
 	const currentUser = useStore((state) => state.currentUser)
 	const [tradedTokenData, setTradedTokenData] = useState([])
 	const toast = useToast()
+	const isNFTTraded = data?.type && data?.type === 'trade'
 
 	useEffect(() => {
 		if (data.buyer_id) {
@@ -74,25 +75,24 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned }) => {
 	}
 
 	const deleteOffer = async () => {
-		const params =
-			data.type && data.type === 'trade'
-				? {
-						nft_contract_id: data.contract_id,
-						...(data.token_id
-							? { token_id: data.token_id }
-							: { token_series_id: data.token_series_id }),
-						buyer_nft_contract_id: data.buyer_nft_contract_id,
-						buyer_token_id: data.buyer_token_id,
-				  }
-				: {
-						nft_contract_id: data.contract_id,
-						...(data.token_id
-							? { token_id: data.token_id }
-							: { token_series_id: data.token_series_id }),
-				  }
+		const params = isNFTTraded
+			? {
+					nft_contract_id: data.contract_id,
+					...(data.token_id
+						? { token_id: data.token_id }
+						: { token_series_id: data.token_series_id }),
+					buyer_nft_contract_id: data.buyer_nft_contract_id,
+					buyer_token_id: data.buyer_token_id,
+			  }
+			: {
+					nft_contract_id: data.contract_id,
+					...(data.token_id
+						? { token_id: data.token_id }
+						: { token_series_id: data.token_series_id }),
+			  }
 
 		try {
-			if (data.type && data.type === 'trade') {
+			if (isNFTTraded) {
 				const res = await WalletHelper.callFunction({
 					contractId: process.env.MARKETPLACE_CONTRACT_ID,
 					methodName: `delete_trade`,
@@ -223,11 +223,7 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned }) => {
 					<p className="text-sm text-gray-300">{timeAgo.format(new Date(data.issued_at))}</p>
 				</div>
 			</div>
-			<div
-				className={`flex ${
-					data.type && data.type === 'trade' ? `items-end` : `items-center`
-				} justify-between mt-2`}
-			>
+			<div className={`flex ${isNFTTraded ? `items-end` : `items-center`} justify-between mt-2`}>
 				{data.type === 'trade' ? (
 					<div>
 						<p className="mb-2">Offer NFT for trade</p>
@@ -263,7 +259,7 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned }) => {
 							size="sm"
 							className="w-full"
 							onClick={() => {
-								data.type && data.type === 'trade' ? acceptTrade() : onAcceptOffer(data)
+								isNFTTraded ? acceptTrade() : onAcceptOffer(data)
 							}}
 							hideButton={hideButton}
 						>
