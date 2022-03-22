@@ -14,7 +14,7 @@ const EmbeddedCollection = ({ collectionId, pubDetail }) => {
 	}, [])
 
 	const fetchCollection = async () => {
-		if (pubDetail.isComic) {
+		if (pubDetail?.isComic) {
 			pubDetail?.collection_ids?.map(async () => {
 				const url = process.env.COMIC_API_URL
 				const res = await axios({
@@ -46,8 +46,15 @@ const EmbeddedCollection = ({ collectionId, pubDetail }) => {
 
 	return (
 		<div>
-			<Link href={`/collection/${collection.collection_id}`} shallow={true}>
-				<a className="cursor-pointer">
+			<Link
+				href={
+					pubDetail.isComic
+						? `https://comic.paras.id/comics/${collection.comic_id}/chapter`
+						: `/collection/${collection.collection_id}`
+				}
+				shallow={true}
+			>
+				<a target={pubDetail.isComic && '_blank'} className="cursor-pointer">
 					<div className="flex flex-row flex-wrap md:h-60 h-72">
 						<div className="w-full h-full mb-4 rounded">
 							{pubDetail.isComic ? (
@@ -77,22 +84,38 @@ const EmbeddedCollection = ({ collectionId, pubDetail }) => {
 					</div>
 				</a>
 			</Link>
-			<div className={`${pubDetail.isComic ? 'mt-24 ml-1' : 'mt-4'}`}>
+			<div className={`${pubDetail?.isComic ? 'mt-24 ml-2' : 'mt-4'}`}>
 				<Link
-					href={`/collection/${pubDetail.isComic ? collection.comic_id : collection.collection_id}`}
+					href={
+						pubDetail?.isComic
+							? `https://comic.paras.id/comics/${collection?.comic_id}/chapter`
+							: `/collection/${collection?.collection_id}`
+					}
 					shallow={true}
 				>
-					<a className="text-2xl hover:underline font-bold text-white">
-						{pubDetail.isComic ? collection.comic_id : collection?.collection}
+					<a
+						target={pubDetail?.isComic && '_blank'}
+						className="text-2xl hover:underline font-bold text-white cursor-pointer"
+					>
+						{pubDetail?.isComic ? collection?.comic_id : collection?.collection}
 					</a>
 				</Link>
 			</div>
 			<div className="flex flex-row flex-wrap text-sm text-gray-400 items-center w-full">
-				<span className="mr-1">collection by</span>
-				<Link href={`/${collection.creator_id}`} shallow={true}>
-					<a>
+				<span className={`mr-1 ${pubDetail?.isComic && 'ml-2'}`}>
+					{pubDetail?.isComic ? 'comic by' : 'collection by'}
+				</span>
+				<Link
+					href={`${
+						pubDetail?.isComic
+							? `https://comic.paras.id/${collection?.author_ids}`
+							: `/${collection?.creator_id}`
+					}`}
+					shallow={true}
+				>
+					<a target={pubDetail?.isComic && '_blank'}>
 						<span className="cursor-pointer truncate hover:text-gray-300 hover:underline">
-							{collection?.creator_id}
+							{pubDetail?.isComic ? collection?.author_ids : collection?.creator_id}
 						</span>
 					</a>
 				</Link>

@@ -107,7 +107,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 	}
 
 	const fetchCollection = async () => {
-		if (pubDetail.isComic) {
+		if (pubDetail?.isComic) {
 			let comic = []
 			pubDetail?.collection_ids?.map(async (comicId) => {
 				const url = process.env.COMIC_API_URL
@@ -703,7 +703,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 				<div className="max-w-4xl mx-auto px-4 pt-16">
 					<div className="rounded-md p-4 md:p-8">
 						<h4 className="text-white font-semibold text-3xl mb-4 text-center">
-							{pubDetail.isComic ? 'Comics' : localeLn('Collections')}
+							{pubDetail?.isComic ? 'Comics' : localeLn('Collections')}
 						</h4>
 						<div
 							className={`md:flex md:flex-wrap ${
@@ -844,7 +844,7 @@ const CollectionPublication = ({ localCollection, onDelete, pubDetail }) => {
 	return (
 		<div className="flex flex-col">
 			<div className="w-full h-full rounded">
-				{pubDetail.isComic ? (
+				{pubDetail?.isComic ? (
 					<div
 						className="mx-auto w-52 h-72 lg:w-56 lg:h-80 flex-none bg-no-repeat bg-center bg-cover shadow-xl"
 						style={{
@@ -874,16 +874,16 @@ const CollectionPublication = ({ localCollection, onDelete, pubDetail }) => {
 				target={`_blank`}
 			>
 				<p
-					title={pubDetail.isComic ? localCollection?.title : localCollection?.collection}
+					title={pubDetail?.isComic ? localCollection?.title : localCollection?.collection}
 					className="text-2xl font-bold truncate hover:underline text-white mt-4"
 				>
-					{pubDetail.isComic ? localCollection?.title : localCollection?.collection}
+					{pubDetail?.isComic ? localCollection?.title : localCollection?.collection}
 				</p>
 			</a>
 			<div className="flex flex-row flex-wrap text-sm text-gray-400 items-center w-full">
 				<span className="mr-1">collection by</span>
 				<span className="truncate font-semibold">
-					{pubDetail.isComic ? localCollection?.author_ids[0] : localCollection?.creator_id}
+					{pubDetail?.isComic ? localCollection?.author_ids[0] : localCollection?.creator_id}
 				</span>
 			</div>
 			<div className="text-red-600 text-sm cursor-pointer mt-2" onClick={onDelete}>

@@ -18,6 +18,14 @@ const PublicationList = ({ data }) => {
 						</div>
 					</a>
 				</Link>
+				{data.isComic && (
+					<div
+						className="absolute bottom-4 right-0 py-1 px-3 rounded-l-lg text-white -mr-4 w-1/6 md:w-1/5 lg:w-1/6 shadow-2xl"
+						style={{ backgroundColor: '#00BBDB' }}
+					>
+						Comic
+					</div>
+				)}
 			</div>
 			<div className="flex flex-col p-4 -mt-1 h-48">
 				<Link href={`/publication/${data.slug}-${data._id}`}>
@@ -44,7 +52,7 @@ const PublicationList = ({ data }) => {
 						</div>
 					</a>
 				</Link>
-				<div className="flex mt-auto">
+				<div className="flex justify-between items-center mt-auto">
 					<p className="text-white">
 						<span className="capitalize">
 							<Link href={`/publication?type=${data.type}`} shallow={true}>
@@ -57,6 +65,7 @@ const PublicationList = ({ data }) => {
 						<LinkToProfile
 							accountId={data.author_id}
 							className="text-white font-semibold hover:border-white"
+							isComic={data?.isComic}
 						/>
 					</p>
 				</div>
