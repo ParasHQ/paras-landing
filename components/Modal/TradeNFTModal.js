@@ -131,7 +131,11 @@ const TradeNFTModal = ({ data, show, onClose, isSubmitting, tokenType, fromUpdat
 						},
 					],
 				})
-				await WalletHelper.multipleCallFunction(txs)
+				const res = await WalletHelper.multipleCallFunction(txs)
+				if (res.response) {
+					onClose()
+					setTransactionRes(res?.response)
+				}
 			}
 		} catch (err) {
 			sentryCaptureException(err)

@@ -203,6 +203,10 @@ const SuccessTransactionModal = () => {
 				return 'Update Listing Success'
 			} else if (msg.market_type === 'accept_offer') {
 				return 'Accept Offer Success'
+			} else if (msg.market_type === 'add_trade') {
+				return 'Add Trade Success'
+			} else if (msg.market_type === 'accept_trade') {
+				return 'Accept Trade Success'
 			}
 		} else if (txDetail.method_name === 'delete_market_data') {
 			return 'Remove Listing Success'
@@ -254,6 +258,18 @@ const SuccessTransactionModal = () => {
 				return (
 					<>
 						You successfully accept offer <b>{token.metadata.title}</b>
+					</>
+				)
+			} else if (msg.market_type === 'add_trade') {
+				return (
+					<>
+						You successfully trade your NFT <b>{token.metadata.title}</b>
+					</>
+				)
+			} else if (msg.market_type === 'accept_trade') {
+				return (
+					<>
+						You successfully accept NFT <b>{token.metadata.title}</b>
 					</>
 				)
 			}
