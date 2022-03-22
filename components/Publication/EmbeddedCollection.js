@@ -6,7 +6,7 @@ import { parseImgUrl } from 'utils/common'
 
 import { generateFromString } from 'generate-avatar'
 
-const EmbeddedCollection = ({ collectionId }) => {
+const EmbeddedCollection = ({ collectionId, pubDetail }) => {
 	const [collection, setCollection] = useState(null)
 
 	useEffect(() => {
@@ -14,6 +14,21 @@ const EmbeddedCollection = ({ collectionId }) => {
 	}, [])
 
 	const fetchCollection = async () => {
+		if (pubDetail.isComic) {
+			pubDetail?.collection_ids?.map(async () => {
+				const url = process.env.COMIC_API_URL
+				const res = await axios({
+					url: url + `/comics`,
+					method: 'GET',
+					params: {
+						comic_id: collectionId,
+					},
+				})
+				const _comic = (await res.data.data.results[0]) || null
+				setCollection(_comic)
+			})
+		}
+
 		const url = process.env.V2_API_URL
 		const res = await axios({
 			url: url + `/collections`,
@@ -35,25 +50,41 @@ const EmbeddedCollection = ({ collectionId }) => {
 				<a className="cursor-pointer">
 					<div className="flex flex-row flex-wrap md:h-60 h-72">
 						<div className="w-full h-full mb-4 rounded">
-							<img
-								className="object-cover w-full md:h-60 h-full transform ease-in-out duration-200 hover:opacity-80 rounded-xl"
-								src={parseImgUrl(
-									collection?.media ||
-										`data:image/svg+xml;utf8,${generateFromString(collection?.collection_id)}`,
-									null,
-									{
-										width: `600`,
-										useOriginal: process.env.APP_ENV === 'production' ? false : true,
-									}
-								)}
-							/>
+							{pubDetail.isComic ? (
+								<div
+									className="mx-auto w-52 h-72 lg:w-56 lg:h-80 flex-none bg-no-repeat bg-center bg-cover shadow-xl pb-20"
+									style={{
+										backgroundImage: `url(${parseImgUrl(
+											collection?.media
+										)}?w=800&auto=format,compress)`,
+									}}
+								/>
+							) : (
+								<img
+									className="object-cover w-full md:h-60 h-full transform ease-in-out duration-200 hover:opacity-80 rounded-xl"
+									src={parseImgUrl(
+										collection?.media ||
+											`data:image/svg+xml;utf8,${generateFromString(collection?.collection_id)}`,
+										null,
+										{
+											width: `600`,
+											useOriginal: process.env.APP_ENV === 'production' ? false : true,
+										}
+									)}
+								/>
+							)}
 						</div>
 					</div>
 				</a>
 			</Link>
-			<div className="mt-4">
-				<Link href={`/collection/${collection.collection_id}`} shallow={true}>
-					<a className="text-2xl hover:underline font-bold text-white">{collection?.collection}</a>
+			<div className={`${pubDetail.isComic ? 'mt-24 ml-1' : 'mt-4'}`}>
+				<Link
+					href={`/collection/${pubDetail.isComic ? collection.comic_id : collection.collection_id}`}
+					shallow={true}
+				>
+					<a className="text-2xl hover:underline font-bold text-white">
+						{pubDetail.isComic ? collection.comic_id : collection?.collection}
+					</a>
 				</Link>
 			</div>
 			<div className="flex flex-row flex-wrap text-sm text-gray-400 items-center w-full">

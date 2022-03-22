@@ -143,20 +143,23 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							>
 								Share to...
 							</div>
-							{store.currentUser === pubDetail.author_id && (
-								<Link href={`/publication/edit/${pubDetail._id}`}>
+							{!pubDetail.isComic && store.currentUser === pubDetail.author_id && (
+								<>
+									<Link href={`/publication/edit/${pubDetail._id}`}>
+										<div
+											className="py-2 cursor-pointer"
+											onClick={() => setShowModal('confirmTransfer')}
+										>
+											Update publication
+										</div>
+									</Link>
 									<div
 										className="py-2 cursor-pointer"
-										onClick={() => setShowModal('confirmTransfer')}
+										onClick={() => setShowModal('confirmDelete')}
 									>
-										Update publication
+										Delete
 									</div>
-								</Link>
-							)}
-							{store.currentUser === pubDetail.author_id && (
-								<div className="py-2 cursor-pointer" onClick={() => setShowModal('confirmDelete')}>
-									Delete
-								</div>
+								</>
 							)}
 						</div>
 					</Modal>
@@ -300,7 +303,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 						<div className="max-w-4xl mx-auto px-4 pt-16">
 							<div className="rounded-md p-2 md:p-4">
 								<h4 className="text-white font-semibold text-3xl md:mb-4 text-center">
-									Collections
+									{pubDetail.isComic ? 'Comics' : 'Collections'}
 								</h4>
 								<div
 									className={`flex flex-wrap ${
@@ -309,7 +312,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 								>
 									{pubDetail.collection_ids?.map((collectionId, index) => (
 										<div key={index} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-4">
-											<EmbeddedCollection collectionId={collectionId} />
+											<EmbeddedCollection collectionId={collectionId} pubDetail={pubDetail} />
 										</div>
 									))}
 								</div>
