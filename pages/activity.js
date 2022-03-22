@@ -123,7 +123,8 @@ const ActivityLog = ({ query }) => {
 			if (
 				initial &&
 				Math.floor((new Date() - new Date(newActivityList[0].msg?.datetime)) / (1000 * 60)) >= 5 &&
-				_filterQuery(fetchQuery?.filter) === ''
+				_filterQuery(fetchQuery?.filter) === '' &&
+				_filterMinMax(fetchQuery?.filter, fetchQuery?.pmin, fetchQuery?.pmax) === ''
 			) {
 				setActivitySlowUpdate(true)
 			} else {
