@@ -35,12 +35,12 @@ const Verify = () => {
 	} = useForm()
 
 	useEffect(() => {
-		if (router.isReady && store.currentUser) {
+		if (router.isReady && store.currentUser && store.userProfile.isCreator !== undefined) {
 			setProfile(`${window.location.origin}/${store.currentUser}`)
 			checkStatusVerification()
 			checkQuota()
 		}
-	}, [router.isReady, store.currentUser])
+	}, [store])
 
 	const checkQuota = async () => {
 		try {
@@ -159,9 +159,9 @@ const Verify = () => {
 		}
 	}
 
-	const _goToHome = async (e) => {
+	const _goToProfile = async (e) => {
 		e.preventDefault()
-		window.location.replace('/')
+		window.location.replace(profile)
 	}
 
 	const _renderLoading = () => {
@@ -406,9 +406,9 @@ const Verify = () => {
 					<center>
 						<button
 							className="w-6/12  outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
-							onClick={_goToHome}
+							onClick={_goToProfile}
 						>
-							Home
+							Profile
 						</button>
 					</center>
 				</div>
@@ -431,17 +431,15 @@ const Verify = () => {
 						<h3 className="text-2xl font-bold text-green-500 mt-20">
 							{localeLn('YouAreVerified')}
 						</h3>
-						<p className="mt-3">
-							{localeLn('Since')} {verifiedDate}
-						</p>
+						<p className="mt-3">{verifiedDate && `${localeLn('Since')} ${verifiedDate}`}</p>
 					</div>
 				</div>
 				<center>
 					<button
 						className="w-6/12  outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
-						onClick={_goToHome}
+						onClick={_goToProfile}
 					>
-						Home
+						Profile
 					</button>
 				</center>
 			</div>
