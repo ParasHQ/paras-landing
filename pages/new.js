@@ -213,7 +213,7 @@ const NewPage = () => {
 			})
 
 			setIsCreating(false)
-			if (res.response) {
+			if (res?.response) {
 				setTimeout(() => {
 					router.push('/market')
 					store.setTransactionRes(res?.response)
