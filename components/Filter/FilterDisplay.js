@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 const LargeSVGFilter = ({ className, onClick }) => (
 	<div
@@ -58,16 +58,22 @@ const SmallSVGFilter = ({ className, onClick }) => (
 )
 
 const FilterDisplay = ({ type, onClickDisplay }) => {
+	const [typeDisplay, setTypeDisplay] = useState()
+
+	useEffect(() => {
+		setTypeDisplay(type)
+	}, [type])
+
 	return (
 		<>
 			<LargeSVGFilter
-				className={type === 'large' ? `bg-dark-primary-2` : `bg-dark-primary-6`}
+				className={typeDisplay === 'large' ? `bg-dark-primary-2` : `bg-dark-primary-6`}
 				onClick={() => {
 					onClickDisplay('large')
 				}}
 			/>
 			<SmallSVGFilter
-				className={type === 'small' ? `bg-dark-primary-2` : `bg-dark-primary-6`}
+				className={typeDisplay === 'small' ? `bg-dark-primary-2` : `bg-dark-primary-6`}
 				onClick={() => {
 					onClickDisplay('small')
 				}}

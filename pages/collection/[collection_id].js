@@ -9,7 +9,7 @@ import useStore from 'lib/store'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { parseImgUrl, parseSortQuery } from 'utils/common'
+import { parseImgUrl, parseSortQuery, setDataLocalStorage } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useIntl } from 'hooks/useIntl'
 import CollectionStats from 'components/Collection/CollectionStats'
@@ -50,7 +50,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [deleteModal, setDeleteModal] = useState(false)
 	const [deleteLoading, setDeleteLoading] = useState(false)
 	const [dailyVolume, setDailyVolume] = useState([])
-	const [display, setDisplay] = useState('large')
+	const [display, setDisplay] = useState(
+		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
+	)
 	const [scoreNext, setScoreNext] = useState('')
 
 	const toast = useToast()
@@ -366,7 +368,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const onClickDisplay = (typeDisplay) => {
-		setDisplay(typeDisplay)
+		setDataLocalStorage('display', typeDisplay, setDisplay)
 	}
 
 	return (

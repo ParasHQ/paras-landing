@@ -7,7 +7,7 @@ import Head from 'next/head'
 import Footer from 'components/Footer'
 import useStore from 'lib/store'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
-import { parseSortQuery } from 'utils/common'
+import { parseSortQuery, setDataLocalStorage } from 'utils/common'
 import CardListLoader from 'components/Card/CardListLoader'
 import CategoryList from 'components/CategoryList'
 import { useIntl } from 'hooks/useIntl'
@@ -27,7 +27,9 @@ function MarketPage({ serverQuery }) {
 	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(true)
-	const [display, setDisplay] = useState('large')
+	const [display, setDisplay] = useState(
+		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
+	)
 	const [hasMore, setHasMore] = useState(true)
 	const { localeLn } = useIntl()
 	useEffect(() => {
@@ -104,7 +106,7 @@ function MarketPage({ serverQuery }) {
 	}
 
 	const onClickDisplay = (typeDisplay) => {
-		setDisplay(typeDisplay)
+		setDataLocalStorage('display', typeDisplay, setDisplay)
 	}
 
 	return (
