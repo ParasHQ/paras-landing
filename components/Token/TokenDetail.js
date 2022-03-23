@@ -354,7 +354,12 @@ const TokenDetail = ({ token, className }) => {
 			<TokenBurnModal show={showModal === 'burn'} onClose={onDismissModal} data={token} />
 			<TokenBuyModal show={showModal === 'buy'} onClose={onDismissModal} data={token} />
 			<TokenTransferModal show={showModal === 'transfer'} onClose={onDismissModal} data={token} />
-			<PlaceBidModal show={showModal === 'placeoffer'} data={token} onClose={onDismissModal} />
+			<PlaceBidModal
+				show={showModal === 'placeoffer'}
+				data={token}
+				onClose={onDismissModal}
+				setShowModal={setShowModal}
+			/>
 			<TradeNFTModal
 				show={showModal === 'placeofferNFT'}
 				data={token}

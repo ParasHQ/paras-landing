@@ -303,13 +303,9 @@ const Bid = ({ data, type, freshFetch }) => {
 				duration: 2500,
 			})
 		} else {
-			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">{`Successfully accept trade`}</div>
-				),
-				type: 'success',
-				duration: 2500,
-			})
+			if (res.response) {
+				store.setTransactionRes(res?.response)
+			}
 			setTimeout(freshFetch, 2500)
 		}
 	}

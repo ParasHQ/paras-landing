@@ -12,7 +12,7 @@ import JSBI from 'jsbi'
 import { useEffect } from 'react'
 import WalletHelper from 'lib/WalletHelper'
 
-const TradeNFTModal = ({ data, show, onClose, isSubmitting, tokenType, fromUpdate = false }) => {
+const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) => {
 	const [showAddURLModal, setShowAddURLModal] = useState(false)
 	const [tradedToken, setTradedToken] = useState([])
 	const [isTrading, setIsTrading] = useState(false)
@@ -195,7 +195,6 @@ const TradeNFTModal = ({ data, show, onClose, isSubmitting, tokenType, fromUpdat
 						</div>
 						<Button
 							onClick={onTradeNFT}
-							disabled={isSubmitting}
 							className="mt-10"
 							isFullWidth
 							size="md"

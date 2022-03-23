@@ -30,7 +30,7 @@ const AddTradeNFTUrlModal = ({ setIsShow, onClose, setTradedToken }) => {
 			return
 		}
 		const [contract_id, token_id] = _urlToken.split('/')
-		const _owner_id = await getOwnerTradedToken(contract_id.split('::')[0], token_id)
+		const _owner_id = await getOwnerTradedToken(contract_id, token_id)
 		if (!_owner_id) {
 			toast.show({
 				text: (
@@ -48,8 +48,8 @@ const AddTradeNFTUrlModal = ({ setIsShow, onClose, setTradedToken }) => {
 
 	const getOwnerTradedToken = async (contractId, tokenId) => {
 		const params = {
-			contract_id: contractId,
-			token_id: tokenId,
+			contract_id: contractId.split('::')[0],
+			token_id: tokenId ?? contractId.split('::')[1],
 			owner_id: currentUser,
 		}
 
