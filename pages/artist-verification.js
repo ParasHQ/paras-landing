@@ -35,7 +35,7 @@ const Verify = () => {
 	} = useForm()
 
 	useEffect(() => {
-		if (router.isReady && store.currentUser && store.userProfile.isCreator !== undefined) {
+		if (router.isReady && store.currentUser) {
 			setProfile(`${window.location.origin}/${store.currentUser}`)
 			checkStatusVerification()
 			checkQuota()
