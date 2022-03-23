@@ -634,7 +634,7 @@ const artistVerification = {
 	InReview: 'In Review',
 	InReviewDesc: 'Your profile is under review by our team',
 	Result: 'Result',
-	ResultDesc: 'Result of your verification request.',
+	ResultDesc: 'The result of your verification request. Check your email for details.',
 	YouAreVerified: 'You are verified !',
 	VerificationRequestRejected: 'Verification Request Rejected !',
 	Since: 'Since',

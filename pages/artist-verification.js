@@ -6,10 +6,11 @@ import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import useStore from 'lib/store'
 import { useToast } from 'hooks/useToast'
-import near from 'lib/near'
 import { checkSocialMediaUrl } from 'utils/common'
 import { useRouter } from 'next/router'
 import { sentryCaptureException } from 'lib/sentry'
+import WalletHelper from 'lib/WalletHelper'
+import { useForm } from 'react-hook-form'
 
 import { useIntl } from 'hooks/useIntl'
 const Verify = () => {
@@ -19,11 +20,6 @@ const Verify = () => {
 	const toast = useToast()
 
 	const [profile, setProfile] = useState('')
-	const [email, setEmail] = useState('')
-	const [name, setName] = useState('')
-	const [telegramDiscord, setTelegramDiscord] = useState('')
-	const [instagram, setInstagram] = useState('')
-	const [twitter, setTwitter] = useState('')
 	const [isSubmitting, setIsSubmitting] = useState(false)
 	const [isDisable, setIsDisable] = useState(false)
 	const [totalQuota, setTotalQuota] = useState(0)
@@ -31,6 +27,12 @@ const Verify = () => {
 	const [isQuotaAvail, setIsQuotaAvail] = useState(true)
 	const [formState, setFormState] = useState('loading')
 	const [verifyStatus, setVerifyStatus] = useState({})
+	const {
+		formState: { errors },
+		register,
+		handleSubmit,
+		setError,
+	} = useForm()
 
 	useEffect(() => {
 		if (router.isReady && store.currentUser) {
@@ -44,7 +46,7 @@ const Verify = () => {
 		try {
 			const resp = await axios.get(`${process.env.V2_API_URL}/verifications/check-quota`, {
 				headers: {
-					authorization: await near.authToken(),
+					authorization: await WalletHelper.authToken(),
 				},
 			})
 			const data = resp.data.data
@@ -75,7 +77,7 @@ const Verify = () => {
 				`${process.env.V2_API_URL}/verifications?accountId=${store.currentUser}`,
 				{
 					headers: {
-						authorization: await near.authToken(),
+						authorization: await WalletHelper.authToken(),
 					},
 				}
 			)
@@ -99,57 +101,51 @@ const Verify = () => {
 		}
 	}
 
-	const _submit = async (e) => {
-		e.preventDefault()
-
+	const _submit = async (data) => {
 		setIsSubmitting(true)
 		setIsDisable(true)
 
-		if (instagram && checkSocialMediaUrl(instagram)) {
-			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						{localeLn('Please enter only your instagram username')}
-					</div>
-				),
-				type: 'error',
-				duration: 2500,
-			})
+		if (data.instagram && checkSocialMediaUrl(data.instagram)) {
+			setError('instagram', { type: 'invalid-url' }, { shouldFocus: true })
 			setIsSubmitting(false)
 			setIsDisable(false)
 			return
 		}
 
-		if (twitter && checkSocialMediaUrl(twitter)) {
-			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">
-						{localeLn('Please enter only your twitter username')}
-					</div>
-				),
-				type: 'error',
-				duration: 2500,
-			})
+		if (data.twitter && checkSocialMediaUrl(data.twitter)) {
+			setError('twitter', { type: 'invalid-url' }, { shouldFocus: true })
 			setIsSubmitting(false)
 			setIsDisable(false)
 			return
 		}
 
 		const dataPost = {
-			name: name,
-			email: email,
-			telegram_discord: telegramDiscord,
+			name: data.name,
+			email: data.email,
+			telegram_discord: data.telegramDiscord,
 			paras_profile: profile,
-			instagram: instagram,
-			twitter: twitter,
+			instagram: data.instagram,
+			twitter: data.twitter,
 		}
 
 		try {
 			await axios.post(`${process.env.V2_API_URL}/verifications`, dataPost, {
 				headers: {
-					authorization: await near.authToken(),
+					authorization: await WalletHelper.authToken(),
 				},
 			})
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{localeLn('success submit submission')}
+					</div>
+				),
+				type: 'success',
+				duration: 2500,
+			})
+			checkStatusVerification()
+			setIsSubmitting(false)
+			setIsDisable(false)
 		} catch (err) {
 			sentryCaptureException(err)
 			const errMsg = err.response.data.message || 'SomethingWentWrong'
@@ -158,19 +154,9 @@ const Verify = () => {
 				type: 'error',
 				duration: 2500,
 			})
+			setIsSubmitting(false)
+			setIsDisable(false)
 		}
-		toast.show({
-			text: (
-				<div className="font-semibold text-center text-sm">
-					{localeLn('success submit submission')}
-				</div>
-			),
-			type: 'success',
-			duration: 2500,
-		})
-		checkStatusVerification()
-		setIsSubmitting(false)
-		setIsDisable(false)
 	}
 
 	const _goToHome = async (e) => {
@@ -215,94 +201,121 @@ const Verify = () => {
 						)}
 					</p>
 				</div>
-				<div className="mt-6">
-					<label className="mb-1 block text-lg text-gray-50">{localeLn('Email')}</label>
-					<input
-						type="email"
-						name="email"
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
-						className="focus:border-gray-100"
-						placeholder="Email"
-					/>
-				</div>
-				<div className="mt-6">
-					<label className="mb-1 block text-lg text-gray-50">{localeLn('Name')}</label>
-					<input
-						type="text"
-						name="name"
-						value={name}
-						onChange={(e) => setName(e.target.value)}
-						className="focus:border-gray-100"
-						placeholder="Name"
-					/>
-				</div>
-				<div className="mt-6">
-					<label className="mb-1 block text-lg text-gray-50">
-						{localeLn('Telegram/Discord Account')}
-					</label>
-					<input
-						type="text"
-						name="telegram-discord"
-						value={telegramDiscord}
-						onChange={(e) => setTelegramDiscord(e.target.value)}
-						className="focus:border-gray-100"
-						placeholder="Telegram/Discord Account"
-					/>
-				</div>
-				<div className="mt-6">
-					<label className="mb-1 block text-lg text-gray-50">{localeLn('Paras Profile')}</label>
-					<input
-						type="text"
-						name="paras-profile"
-						value={profile}
-						disabled
-						className="bg-gray-400"
-						placeholder="Paras Profile"
-					/>
-				</div>
-				<div className="mt-6">
-					<label className="mb-1 block text-lg text-gray-50">{localeLn('Instagram')}</label>
-					<input
-						type="text"
-						name="instagram"
-						value={instagram}
-						onChange={(e) => setInstagram(e.target.value)}
-						className="focus:border-gray-100"
-						placeholder="Instagram"
-					/>
-				</div>
-				<div className="mt-6">
-					<label className="mb-1 block text-lg text-gray-50">{localeLn('Twitter')}</label>
-					<input
-						type="text"
-						name="twitter"
-						value={twitter}
-						onChange={(e) => setTwitter(e.target.value)}
-						className="focus:border-gray-100"
-						placeholder="Twitter"
-					/>
-				</div>
-				{!isQuotaAvail && (
-					<p className="mt-6 block text-lg text-red-600">
-						<strong>Quota:</strong> {totalCurrent} / {totalQuota} Quota full. Please wait for the
-						next cycle
-					</p>
-				)}
-				{isQuotaAvail && (
-					<p className="mt-6 block text-lg text-gray-50">
-						<strong>Quota:</strong> {totalCurrent} / {totalQuota}
-					</p>
-				)}
-				<div className="mt-6">
-					<button
-						disabled={isDisable}
-						className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
-						onClick={_submit}
-					>
-						{!isSubmitting ? 'Submit' : 'Submiting...'}
-					</button>
-				</div>
+				<form onSubmit={handleSubmit(_submit)}>
+					<div className="mt-6">
+						<label className="mb-1 block text-lg text-gray-50">{localeLn('Email')}</label>
+						<input
+							type="email"
+							name="email"
+							className="focus:border-gray-100"
+							placeholder="Email"
+							ref={register({
+								required: true,
+							})}
+						/>
+						<div className="mt-2 text-sm text-red-500">
+							{errors.email?.type === 'required' && 'Email is required'}
+						</div>
+					</div>
+					<div className="mt-6">
+						<label className="mb-1 block text-lg text-gray-50">{localeLn('Name')}</label>
+						<input
+							type="text"
+							name="name"
+							className="focus:border-gray-100"
+							placeholder="Name"
+							ref={register({
+								required: true,
+							})}
+						/>
+						<div className="mt-2 text-sm text-red-500">
+							{errors.name?.type === 'required' && 'Name is required'}
+						</div>
+					</div>
+					<div className="mt-6">
+						<label className="mb-1 block text-lg text-gray-50">
+							{localeLn('Telegram/Discord Account')}
+						</label>
+						<input
+							type="text"
+							name="telegramDiscord"
+							className="focus:border-gray-100"
+							placeholder="Telegram/Discord Account"
+							ref={register({
+								required: true,
+							})}
+						/>
+						<div className="mt-2 text-sm text-red-500">
+							{errors.telegramDiscord?.type === 'required' &&
+								'Telegram/Discord Account is required'}
+						</div>
+					</div>
+					<div className="mt-6">
+						<label className="mb-1 block text-lg text-gray-50">{localeLn('Paras Profile')}</label>
+						<input
+							type="text"
+							name="paras-profile"
+							value={profile}
+							disabled
+							className="bg-gray-400"
+							placeholder="Paras Profile"
+						/>
+					</div>
+					<div className="mt-6">
+						<label className="mb-1 block text-lg text-gray-50">{localeLn('Instagram')}</label>
+						<input
+							type="text"
+							name="instagram"
+							className="focus:border-gray-100"
+							placeholder="Instagram"
+							ref={register({
+								required: true,
+							})}
+						/>
+						<div className="mt-2 text-sm text-red-500">
+							{errors.instagram?.type === 'required' && 'Instagram is required'}
+							{errors.instagram?.type === 'invalid-url' &&
+								localeLn('Please enter only your instagram username')}
+						</div>
+					</div>
+					<div className="mt-6">
+						<label className="mb-1 block text-lg text-gray-50">{localeLn('Twitter')}</label>
+						<input
+							type="text"
+							name="twitter"
+							className="focus:border-gray-100"
+							placeholder="Twitter"
+							ref={register({
+								required: true,
+							})}
+						/>
+						<div className="mt-2 text-sm text-red-500">
+							{errors.twitter?.type === 'required' && 'Twitter is required'}
+							{errors.twitter?.type === 'invalid-url' &&
+								localeLn('Please enter only your twitter username')}
+						</div>
+					</div>
+					{!isQuotaAvail && (
+						<p className="mt-6 block text-lg text-red-600">
+							<strong>Quota:</strong> {totalCurrent} / {totalQuota} Quota full. Please wait for the
+							next cycle
+						</p>
+					)}
+					{isQuotaAvail && (
+						<p className="mt-6 block text-lg text-gray-50">
+							<strong>Quota:</strong> {totalCurrent} / {totalQuota}
+						</p>
+					)}
+					<div className="mt-6">
+						<button
+							disabled={isDisable}
+							className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
+							type="submit"
+						>
+							{!isSubmitting ? 'Submit' : 'Submiting...'}
+						</button>
+					</div>
+				</form>
 			</div>
 		)
 	}
