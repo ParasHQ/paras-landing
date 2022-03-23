@@ -29,7 +29,10 @@ const FETCH_TOKENS_LIMIT = 12
 const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned }) => {
 	const router = useRouter()
 	const [profile, setProfile] = useState({})
-	const currentUser = useStore((state) => state.currentUser)
+	const { currentUser, setTransactionRes } = useStore((state) => ({
+		currentUser: state.currentUser,
+		setTransactionRes: state.setTransactionRes,
+	}))
 	const [tradedTokenData, setTradedTokenData] = useState([])
 	const toast = useToast()
 	const isNFTTraded = data?.type && data?.type === 'trade'
@@ -186,13 +189,9 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned }) => {
 				duration: 2500,
 			})
 		} else {
-			toast.show({
-				text: (
-					<div className="font-semibold text-center text-sm">{`Successfully accept trade`}</div>
-				),
-				type: 'success',
-				duration: 2500,
-			})
+			if (res.response) {
+				setTransactionRes(res?.response)
+			}
 			setTimeout(fetchOffer, 2500)
 		}
 	}
