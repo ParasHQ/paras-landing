@@ -15,7 +15,7 @@ import {
 	STORAGE_MINT_FEE,
 } from 'config/constants'
 import JSBI from 'jsbi'
-import { parseImgUrl, timeAgo } from 'utils/common'
+import { parseImgUrl, prettyBalance, timeAgo } from 'utils/common'
 import Avatar from 'components/Common/Avatar'
 import AcceptBidModal from 'components/Modal/AcceptBidModal'
 import WalletHelper from 'lib/WalletHelper'
@@ -27,6 +27,7 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer }) => {
 	const [profile, setProfile] = useState({})
 	const currentUser = useStore((state) => state.currentUser)
 	const toast = useToast()
+	const { nearUsdPrice } = useStore()
 
 	useEffect(() => {
 		if (data.buyer_id) {
@@ -108,8 +109,13 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer }) => {
 				</div>
 			</div>
 			<div className="flex items-center justify-between mt-2">
-				<div>
+				<div className="flex items-baseline">
 					<p>Offer {formatNearAmount(data.price)} Ⓝ</p>
+					{nearUsdPrice !== 0 && (
+						<p className="text-xs text-gray-300 truncate ml-1">
+							~ ${prettyBalance(JSBI.BigInt(data.price) * nearUsdPrice, 24, 2)}
+						</p>
+					)}
 				</div>
 				{!hideButton && data.buyer_id !== currentUser && (
 					<div>
