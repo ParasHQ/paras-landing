@@ -50,7 +50,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [deleteModal, setDeleteModal] = useState(false)
 	const [deleteLoading, setDeleteLoading] = useState(false)
 	const [dailyVolume, setDailyVolume] = useState([])
-	const [display, setDisplay] = useState('large')
+	const [display, setDisplay] = useState(
+		typeof window !== 'undefined' && window.localStorage.getItem('display')
+	)
 	const [scoreNext, setScoreNext] = useState('')
 
 	const toast = useToast()
@@ -366,7 +368,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const onClickDisplay = (typeDisplay) => {
-		setDisplay(typeDisplay)
+		if (typeof window !== 'undefined') {
+			window.localStorage.setItem('display', typeDisplay)
+			setDisplay(window.localStorage.getItem('display'))
+		}
 	}
 
 	return (
