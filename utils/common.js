@@ -267,3 +267,10 @@ export const decodeBase64 = (b64text) => {
 
 export const isChromeBrowser =
 	typeof navigator !== 'undefined' && navigator.userAgent.indexOf('Chrome') !== -1
+
+export const setDataLocalStorage = (key, value, setState = () => {}) => {
+	if (typeof window !== 'undefined') {
+		window.localStorage.setItem(key, value)
+		setState(window.localStorage.getItem(key))
+	}
+}
