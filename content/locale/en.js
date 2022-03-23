@@ -615,14 +615,14 @@ const categories = {
 const artistVerification = {
 	ArtistVerification: 'Paras — Artist Verification',
 	ParasArtistVerification: 'Paras Artist Verification',
-	TextFormParagraph1: `As a Paras artist, you need to be verified to access full features of Paras. Verification gives extra visibility on the marketplace. Currently, non-verified artists' NTFs will not appear on the "market" feed. Whole process take 3-4 days.`,
+	TextFormParagraph1: `As a Paras artist, you need to be verified to access full features of Paras. Verification gives extra visibility on the marketplace. Currently, non-verified artists' NFTs will not appear on the "market" feed. Whole process take 3-4 days.`,
 	TextFormParagraph2: 'To get verified, you only need to do these steps :',
 	Step1: 'Use a profile picture',
 	Step2: 'Fill in your Bio',
 	Step3: 'Link to your social media on your Paras profile (Twitter and Instagram)',
 	Step4: 'Link to your website (not required but will increase your chances of getting verified)',
 	Step5: 'Have authentic art, you did not steal or have been list your own work on other platform.',
-	Step6: 'You need to create at least 3 NTFs on Paras.',
+	Step6: 'You need to create at least 3 NFTs on Paras.',
 	TextFormParagraph3:
 		'It’s also extremely important to remember that becoming verified artist does not grant you instant success. It’s a method to introduce yourself to a bigger community of Paras.',
 	VerificationStatus: 'Verification Status',
