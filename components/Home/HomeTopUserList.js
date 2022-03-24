@@ -35,7 +35,7 @@ const TopCollection = ({ collection, idx }) => {
 			<div className="ml-3 min-w-0">
 				{collection.collection_id && (
 					<Link href={`/collection/${collection.collection_id}`}>
-						<a className="text-gray-100 border-b-2 border-transparent hover:border-gray-100 font-semibold overflow-hidden overflow-ellipsis truncate">
+						<a className="text-gray-100 border-b-2 border-transparent hover:border-gray-100 font-semibold overflow-hidden text-ellipsis truncate">
 							{colDetail?.collection}
 						</a>
 					</Link>

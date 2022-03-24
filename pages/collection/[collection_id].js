@@ -9,7 +9,7 @@ import useStore from 'lib/store'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { parseImgUrl, parseSortQuery } from 'utils/common'
+import { parseImgUrl, parseSortQuery, setDataLocalStorage } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useIntl } from 'hooks/useIntl'
 import CollectionStats from 'components/Collection/CollectionStats'
@@ -18,7 +18,6 @@ import FilterAttribute from 'components/Filter/FilterAttribute'
 import ArtistVerified from 'components/Common/ArtistVerified'
 import { generateFromString } from 'generate-avatar'
 import DeleteCollectionModal from 'components/Modal/DeleteCollectionModal'
-import near from 'lib/near'
 import { sentryCaptureException } from 'lib/sentry'
 import { useToast } from 'hooks/useToast'
 import LineClampText from 'components/Common/LineClampText'
@@ -26,6 +25,7 @@ import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import ArtistBanned from 'components/Common/ArtistBanned'
 import cachios from 'cachios'
 import FilterDisplay from 'components/Filter/FilterDisplay'
+import WalletHelper from 'lib/WalletHelper'
 
 const LIMIT = 12
 const LIMIT_ACTIVITY = 20
@@ -50,12 +50,17 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [deleteModal, setDeleteModal] = useState(false)
 	const [deleteLoading, setDeleteLoading] = useState(false)
 	const [dailyVolume, setDailyVolume] = useState([])
-	const [display, setDisplay] = useState('large')
+	const [display, setDisplay] = useState(
+		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
+	)
+	const [scoreNext, setScoreNext] = useState('')
 
 	const toast = useToast()
 
 	const fetchData = async (initialFetch = false) => {
-		if (!hasMore || isFetching) {
+		const _hasMore = initialFetch ? true : hasMore
+
+		if (!_hasMore || isFetching) {
 			return
 		}
 		setIsFetching(true)
@@ -67,6 +72,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						_id_next: idNext,
 						lowest_price_next: lowestPriceNext,
 						updated_at_next: updatedAtNext,
+						score_next: scoreNext,
 				  }),
 		})
 
@@ -105,6 +111,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			setIdNext(lastData._id)
 			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
 		}
 		setIsFetching(false)
 	}
@@ -178,6 +185,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 			...(query.updated_at_next &&
 				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+			...(query.score_next &&
+				parsedSortQuery.includes('metadata.score') && { score_next: query.score_next }),
 			...(query.min_copies && { min_copies: query.min_copies }),
 			...(query.max_copies && { max_copies: query.max_copies }),
 		}
@@ -227,6 +236,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			setIdNext(lastData._id)
 			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
 		}
 
 		setIsFiltering(false)
@@ -324,7 +334,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			url: `${process.env.V2_API_URL}/collections`,
 			headers: {
 				'Content-Type': 'multipart/form-data',
-				Authorization: await near.authToken(),
+				Authorization: await WalletHelper.authToken(),
 			},
 			data: formData,
 		}
@@ -358,7 +368,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const onClickDisplay = (typeDisplay) => {
-		setDisplay(typeDisplay)
+		setDataLocalStorage('display', typeDisplay, setDisplay)
 	}
 
 	return (
@@ -399,7 +409,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="flex items-center m-auto justify-center mb-4">
 					{headMeta.cover === null && (
-						<div className="absolute top-0 left-0 w-full h-36 md:h-72 bg-black bg-opacity-10 backdrop-filter backdrop-blur-lg backdrop-saturate-200 z-20" />
+						<div className="absolute top-0 left-0 w-full h-36 md:h-72 bg-black bg-opacity-10 backdrop-filter backdrop-blur-lg backdrop-saturate-200 -z-10" />
 					)}
 					<div
 						className="absolute top-0 left-0 w-full h-36 md:h-72 bg-center bg-cover bg-dark-primary-2"
@@ -412,7 +422,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					<div
 						className={`w-32 h-32 overflow-hidden ${
 							headMeta.image === null ? 'bg-primary' : 'bg-dark-primary-2'
-						} shadow-inner z-20 rounded-full mt-8 md:mt-44`}
+						} z-0 shadow-inner rounded-full mt-8 md:mt-44`}
 					>
 						<img
 							src={parseImgUrl(
@@ -562,8 +572,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				<div className="mb-4 md:mb-10 sm:my-2 flex flex-wrap items-center justify-center px-4">
 					<CollectionStats stats={stats} />
 				</div>
-				<div className="z-20 flex items-center justify-center relative">
-					<div className="flex justify-center mt-4 relative z-20">
+				<div className="flex items-center justify-center relative">
+					<div className="flex justify-center mt-4 relative">
 						<div className="flex mx-4">
 							<div className="px-4 relative" onClick={() => changeTab('items')}>
 								<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Items')}</h4>
@@ -603,7 +613,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 											attributes={attributes}
 										/>
 									)}
-									<FilterMarket isShowVerified={false} defaultMinPrice={true} />
+									<FilterMarket isShowVerified={false} defaultMinPrice={true} isCollection={true} />
 									<div className="hidden lg:flex mt-0 mr-4">
 										<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 									</div>
@@ -618,7 +628,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							{Object.keys(attributes).length > 0 && (
 								<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
 							)}
-							<FilterMarket isShowVerified={false} defaultMinPrice={true} />
+							<FilterMarket isShowVerified={false} defaultMinPrice={true} isCollection={true} />
 							<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 						</div>
 					)}

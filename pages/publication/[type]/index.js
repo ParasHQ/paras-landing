@@ -15,11 +15,11 @@ import LinkToProfile from 'components/LinkToProfile'
 import { parseDate, parseImgUrl } from 'utils/common'
 import Modal from 'components/Modal'
 import useStore from 'lib/store'
-import near from 'lib/near'
 import EmbeddedCard from 'components/Publication/EmbeddedCard'
 import { useToast } from 'hooks/useToast'
 import { sentryCaptureException } from 'lib/sentry'
 import EmbeddedCollection from 'components/Publication/EmbeddedCollection'
+import WalletHelper from 'lib/WalletHelper'
 
 const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const store = useStore()
@@ -71,7 +71,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 		try {
 			await axios.delete(`${process.env.V2_API_URL}/publications/${pubDetail._id}`, {
 				headers: {
-					authorization: await near.authToken(),
+					authorization: await WalletHelper.authToken(),
 				},
 			})
 			setTimeout(() => {
@@ -143,20 +143,23 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 							>
 								Share to...
 							</div>
-							{store.currentUser === pubDetail.author_id && (
-								<Link href={`/publication/edit/${pubDetail._id}`}>
+							{!pubDetail.isComic && store.currentUser === pubDetail.author_id && (
+								<>
+									<Link href={`/publication/edit/${pubDetail._id}`}>
+										<div
+											className="py-2 cursor-pointer"
+											onClick={() => setShowModal('confirmTransfer')}
+										>
+											Update publication
+										</div>
+									</Link>
 									<div
 										className="py-2 cursor-pointer"
-										onClick={() => setShowModal('confirmTransfer')}
+										onClick={() => setShowModal('confirmDelete')}
 									>
-										Update publication
+										Delete
 									</div>
-								</Link>
-							)}
-							{store.currentUser === pubDetail.author_id && (
-								<div className="py-2 cursor-pointer" onClick={() => setShowModal('confirmDelete')}>
-									Delete
-								</div>
+								</>
 							)}
 						</div>
 					</Modal>
@@ -300,7 +303,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 						<div className="max-w-4xl mx-auto px-4 pt-16">
 							<div className="rounded-md p-2 md:p-4">
 								<h4 className="text-white font-semibold text-3xl md:mb-4 text-center">
-									Collections
+									{pubDetail.isComic ? 'Comics' : 'Collections'}
 								</h4>
 								<div
 									className={`flex flex-wrap ${
@@ -309,7 +312,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 								>
 									{pubDetail.collection_ids?.map((collectionId, index) => (
 										<div key={index} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-4">
-											<EmbeddedCollection collectionId={collectionId} />
+											<EmbeddedCollection collectionId={collectionId} pubDetail={pubDetail} />
 										</div>
 									))}
 								</div>

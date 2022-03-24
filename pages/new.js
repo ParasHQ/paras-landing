@@ -8,7 +8,6 @@ import useStore from 'lib/store'
 import { useForm, useFieldArray, useWatch } from 'react-hook-form'
 import Modal from 'components/Modal'
 import { useRouter } from 'next/router'
-import near from 'lib/near'
 import Head from 'next/head'
 import { useToast } from 'hooks/useToast'
 import Footer from 'components/Footer'
@@ -25,6 +24,7 @@ import Scrollbars from 'react-custom-scrollbars'
 import getConfig from 'config/near'
 import Tooltip from 'components/Common/Tooltip'
 import { IconInfo } from 'components/Icons'
+import WalletHelper from 'lib/WalletHelper'
 
 const LIMIT = 16
 
@@ -104,6 +104,7 @@ const NewPage = () => {
 	const [imgUrl, setImgUrl] = useState('')
 	const [step, setStep] = useState(0)
 	const [isUploading, setIsUploading] = useState(false)
+	const [isCreating, setIsCreating] = useState(false)
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
 	const [showCreatingModal, setShowCreatingModal] = useState(false)
 	const [showCreateColl, setShowCreateColl] = useState(false)
@@ -156,7 +157,7 @@ const NewPage = () => {
 			resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
-					authorization: await near.authToken(),
+					authorization: await WalletHelper.authToken(),
 				},
 			})
 			setMediaHash(resp.data.data[0].split('://')[1])
@@ -177,6 +178,7 @@ const NewPage = () => {
 	}
 
 	const createSeriesNFT = async () => {
+		setIsCreating(true)
 		try {
 			let params = {
 				creator_id: store.currentUser,
@@ -202,13 +204,21 @@ const NewPage = () => {
 				}
 			}
 
-			await near.wallet.account().functionCall({
+			const res = await WalletHelper.callFunction({
 				contractId: process.env.NFT_CONTRACT_ID,
 				methodName: `nft_create_series`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: STORAGE_CREATE_SERIES_FEE,
+				deposit: STORAGE_CREATE_SERIES_FEE,
 			})
+
+			setIsCreating(false)
+			if (res.response) {
+				setTimeout(() => {
+					router.push('/market')
+					store.setTransactionRes(res?.response)
+				}, 2000)
+			}
 		} catch (err) {
 			sentryCaptureException(err)
 			const msg = err.response?.data?.message || `Something went wrong, try again later`
@@ -378,15 +388,16 @@ const NewPage = () => {
 
 	useEffect(() => {
 		const getTxFee = async () => {
-			const txFeeContract = await near.wallet
-				.account()
-				.viewFunction(process.env.NFT_CONTRACT_ID, `get_transaction_fee`)
+			const txFeeContract = await WalletHelper.viewFunction({
+				methodName: 'get_transaction_fee',
+				contractId: process.env.NFT_CONTRACT_ID,
+			})
 			setTxFee(txFeeContract)
 		}
-		if (store.currentUser) {
+		if (store.initialized) {
 			getTxFee()
 		}
-	}, [store.currentUser])
+	}, [store.initialized])
 
 	const fetchCollectionUser = async () => {
 		if (!hasMore || isFetching) {
@@ -707,6 +718,7 @@ const NewPage = () => {
 							</p>
 							<Button
 								isDisabled={!(isUploading === 'success')}
+								isLoading={isCreating}
 								isFullWidth
 								size="md"
 								onClick={createSeriesNFT}
@@ -785,7 +797,7 @@ const NewPage = () => {
 							/>
 						</div>
 					</div>
-					<div className="w-full lg:w-1/3 bg-gray-700 p-4">
+					<div className="w-full lg:w-1/3 bg-gray-700 p-4 relative">
 						{router.query.categoryId && (
 							<div
 								className="w-full bg-primary px-4 py-1 text-center -m-4 mb-4 shadow-md"
@@ -804,18 +816,6 @@ const NewPage = () => {
 						</div>
 						{step === 0 && (
 							<div>
-								<div className="flex justify-between py-2">
-									<button disabled={step === 0} onClick={_handleBack}>
-										{localeLn('Back')}
-									</button>
-									<div>{step + 1}/4</div>
-									<button
-										disabled={!choosenCollection.collection_id}
-										onClick={() => setStep(step + 1)}
-									>
-										{localeLn('Next')}
-									</button>
-								</div>
 								<div className="text-sm mt-2">Choose Collection</div>
 								<div id="collection::user" className="h-60vh overflow-auto">
 									<InfiniteScroll
@@ -858,19 +858,22 @@ const NewPage = () => {
 										))}
 									</InfiniteScroll>
 								</div>
+								<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
+									<button disabled={step === 0} onClick={_handleBack}>
+										{localeLn('Back')}
+									</button>
+									<div>{step + 1}/4</div>
+									<button
+										disabled={!choosenCollection.collection_id}
+										onClick={() => setStep(step + 1)}
+									>
+										{localeLn('Next')}
+									</button>
+								</div>
 							</div>
 						)}
 						{step === 1 && (
 							<div>
-								<div>
-									<div className="flex justify-between py-2">
-										<button onClick={_handleBack}>{localeLn('Back')}</button>
-										<div>{step + 1}/4</div>
-										<button disabled={!imgFile} onClick={() => setStep(step + 1)}>
-											{localeLn('Next')}
-										</button>
-									</div>
-								</div>
 								<div className="mt-4 relative border-2 h-56 border-dashed rounded-md cursor-pointer overflow-hidden border-gray-400">
 									<input
 										className="cursor-pointer w-full opacity-0 absolute inset-0"
@@ -928,18 +931,20 @@ const NewPage = () => {
 										)}
 									</div>
 								</div>
+								<div>
+									<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
+										<button onClick={_handleBack}>{localeLn('Back')}</button>
+										<div>{step + 1}/4</div>
+										<button disabled={!imgFile} onClick={() => setStep(step + 1)}>
+											{localeLn('Next')}
+										</button>
+									</div>
+								</div>
 							</div>
 						)}
 						{step === 2 && (
 							<form onSubmit={handleSubmit(_handleSubmitStep1)}>
 								<div>
-									<div className="flex justify-between py-2">
-										<button onClick={_handleBack}>Back</button>
-										<div>{step + 1}/4</div>
-										<button type="submit" onClick={handleSubmit(_handleSubmitStep1)}>
-											{localeLn('Next')}
-										</button>
-									</div>
 									<div className="mt-2">
 										<label className="block text-sm">{localeLn('Name')}</label>
 										<InputText
@@ -1058,22 +1063,18 @@ const NewPage = () => {
 											))}
 										</Scrollbars>
 									</div>
+									<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
+										<button onClick={_handleBack}>Back</button>
+										<div>{step + 1}/4</div>
+										<button type="submit" onClick={handleSubmit(_handleSubmitStep1)}>
+											{localeLn('Next')}
+										</button>
+									</div>
 								</div>
 							</form>
 						)}
 						{step === 3 && (
-							<form onSubmit={handleSubmit(_handleSubmitStep2)}>
-								<div className="flex justify-between py-2">
-									<button onClick={_handleBack}>Back</button>
-									<div>{step + 1}/4</div>
-									<button
-										disabled={isLoading === 3}
-										type="submit"
-										onClick={handleSubmit(_handleSubmitStep2)}
-									>
-										{localeLn('Next')}
-									</button>
-								</div>
+							<form onSubmit={handleSubmit(_handleSubmitStep2)} className="h-">
 								<div className="mt-2">
 									<div>
 										<RoyaltyWatch control={control} fields={royaltyFields} append={royaltyAppend} />
@@ -1166,6 +1167,17 @@ const NewPage = () => {
 											</div>
 										</>
 									)}
+								</div>
+								<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
+									<button onClick={_handleBack}>Back</button>
+									<div>{step + 1}/4</div>
+									<button
+										disabled={isLoading === 3}
+										type="submit"
+										onClick={handleSubmit(_handleSubmitStep2)}
+									>
+										{localeLn('Next')}
+									</button>
 								</div>
 							</form>
 						)}

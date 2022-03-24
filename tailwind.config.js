@@ -1,12 +1,14 @@
+const colors = require('tailwindcss/colors')
+
 module.exports = {
 	future: {
 		removeDeprecatedGapUtilities: true,
 		purgeLayersByDefault: true,
 	},
-	purge: ['./pages/**/*.js', './components/**/*.js', './hooks/**/*.js', './constants/*.js'],
+	content: ['./pages/**/*.js', './components/**/*.js', './hooks/**/*.js', './constants/*.js'],
 	theme: {
 		fontFamily: {
-			body: ['Anybody', 'sans-serif'],
+			body: ['Epilogue', 'sans-serif'],
 		},
 		extend: {
 			opacity: {
@@ -27,15 +29,6 @@ module.exports = {
 				primary: '#1300BA',
 				'light-primary-1': '#efe6fa',
 				'light-primary-2': '#9a6fe5',
-				// 'dark-primary-1': '#12111F',
-				// 'dark-primary-2': '#121026',
-				// 'dark-primary-3': '#120F2D',
-				// 'dark-primary-4': '#120E34',
-				// 'dark-primary-5': '#120D41',
-				// 'dark-primary-6': '#120D41',
-				// 'dark-primary-7': '#120C48',
-				// 'dark-primary-8': '#120C4E',
-				// 'dark-primary-9': '#120B55',
 				'dark-primary-1': '#1F1D23',
 				'dark-primary-2': '#26222C',
 				'dark-primary-3': '#2C2835',
@@ -45,6 +38,9 @@ module.exports = {
 				'dark-primary-7': '#473E58',
 				'dark-primary-8': '#4D4360',
 				'dark-primary-9': '#544869',
+				green: colors.emerald,
+				yellow: colors.amber,
+				purple: colors.violet,
 			},
 			boxShadow: {
 				bold: '4px 4px 0px #000000;',
@@ -60,11 +56,6 @@ module.exports = {
 				14: '14',
 				15: '15',
 			},
-		},
-	},
-	variants: {
-		extend: {
-			transitionProperty: ['responsive', 'hover', 'focus'],
 		},
 	},
 	plugins: [require('@tailwindcss/line-clamp')],

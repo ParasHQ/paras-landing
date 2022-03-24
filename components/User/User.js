@@ -3,7 +3,6 @@ import ProfileEdit from 'components/Profile/ProfileEdit'
 import Setting from 'components/Setting'
 import { useIntl } from 'hooks/useIntl'
 import { useToast } from 'hooks/useToast'
-import near from 'lib/near'
 import Link from 'next/link'
 import useStore from 'lib/store'
 import { useRouter } from 'next/router'
@@ -11,6 +10,8 @@ import { useEffect, useRef, useState } from 'react'
 import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
 import ChooseAccountModal from 'components/Modal/ChooseAccountModal'
 import Scrollbars from 'react-custom-scrollbars'
+import WalletHelper, { walletType } from 'lib/WalletHelper'
+import near from 'lib/near'
 
 const User = () => {
 	const store = useStore()
@@ -30,7 +31,19 @@ const User = () => {
 			}
 		}
 
+		const fetchUserBalance = async () => {
+			const nearbalance = await (await near.near.account(store.currentUser)).getAccountBalance()
+			const parasBalance = await WalletHelper.viewFunction({
+				methodName: 'ft_balance_of',
+				contractId: process.env.PARAS_TOKEN_CONTRACT,
+				args: { account_id: store.currentUser },
+			})
+			store.setUserBalance(nearbalance)
+			store.setParasBalance(parasBalance)
+		}
+
 		if (showAccountModal) {
+			fetchUserBalance()
 			document.body.addEventListener('click', onClickEv)
 		}
 
@@ -81,7 +94,7 @@ const User = () => {
 	}
 
 	const _signOut = () => {
-		near.logout()
+		WalletHelper.signOut()
 	}
 
 	const dismissUserModal = () => {
@@ -251,12 +264,14 @@ const User = () => {
 								</button>
 							)}
 							<hr className="my-2" />
-							<div
-								className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
-								onClick={onClickSwitchAccount}
-							>
-								{localeLn('NavSwitchAccount')}
-							</div>
+							{WalletHelper.activeWallet === walletType.web && (
+								<div
+									className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+									onClick={onClickSwitchAccount}
+								>
+									{localeLn('NavSwitchAccount')}
+								</div>
+							)}
 							<p
 								onClick={_signOut}
 								className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"

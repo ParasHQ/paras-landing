@@ -77,7 +77,7 @@ const AutoCompleteList = ({
 								{collectionList?.length === 0 ? (
 									<>
 										<div className="p-2 opacity-75">
-											<div className="border-2 border-dashed rounded-md text-center">
+											<div className="border-2 border-dashed rounded-md border-gray-700 text-center">
 												<p className="text-gray-300 py-4">No Results</p>
 											</div>
 										</div>
@@ -136,7 +136,7 @@ const AutoCompleteList = ({
 								{profileList?.length === 0 ? (
 									<>
 										<div className="p-2 opacity-75">
-											<div className="border-2 border-dashed rounded-md text-center">
+											<div className="border-2 border-dashed rounded-md border-gray-700 text-center">
 												<p className="text-gray-300 py-4">No Results</p>
 											</div>
 										</div>
@@ -190,7 +190,7 @@ const AutoCompleteList = ({
 								{itemList?.length === 0 ? (
 									<>
 										<div className="p-2 opacity-75">
-											<div className="border-2 border-dashed rounded-md text-center">
+											<div className="border-2 border-dashed rounded-md border-gray-700 text-center">
 												<p className="text-gray-300 py-4">No Results</p>
 											</div>
 										</div>

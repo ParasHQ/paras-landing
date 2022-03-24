@@ -218,6 +218,8 @@ export const parseSortQuery = (sort, defaultMinPrice = false) => {
 		return 'lowest_price::-1'
 	} else if (sort === 'priceasc') {
 		return 'lowest_price::1'
+	} else if (sort === 'scoredesc') {
+		return 'metadata.score::-1'
 	}
 }
 
@@ -261,4 +263,14 @@ export default function sha1(data, encoding) {
 
 export const decodeBase64 = (b64text) => {
 	return new TextDecoder().decode(Buffer.from(b64text, 'base64'))
+}
+
+export const isChromeBrowser =
+	typeof navigator !== 'undefined' && navigator.userAgent.indexOf('Chrome') !== -1
+
+export const setDataLocalStorage = (key, value, setState = () => {}) => {
+	if (typeof window !== 'undefined') {
+		window.localStorage.setItem(key, value)
+		setState(window.localStorage.getItem(key))
+	}
 }

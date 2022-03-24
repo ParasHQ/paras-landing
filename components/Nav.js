@@ -96,7 +96,7 @@ const Nav = () => {
 		setIsRefreshing(false)
 	}
 
-	const debounceAutoComplete = debounce(handleAutoComplete, 800)
+	const debounceAutoComplete = debounce(handleAutoComplete, 400)
 
 	const onChangeAutoComplete = (event) => {
 		setSearchQuery(event)
@@ -104,7 +104,7 @@ const Nav = () => {
 		debounceAutoComplete(event)
 	}
 
-	const debounceOnChange = debounce(onChangeAutoComplete, 400)
+	const debounceOnChange = debounce(onChangeAutoComplete, 200)
 
 	const _showTestnetInfo = () => {
 		toast.show({
@@ -125,11 +125,12 @@ const Nav = () => {
 	}
 
 	const _handleSubmit = (event) => {
+		const data = new FormData(event.target)
 		event.preventDefault()
 		router.push({
 			pathname: '/search',
 			query: {
-				q: searchQuery.value,
+				q: data.get('q'),
 			},
 		})
 	}
@@ -207,7 +208,7 @@ const Nav = () => {
 							className="font-bold cursor-pointer hover:underline"
 							rel="noreferrer"
 						>
-							here
+							here.
 						</a>
 					</div>
 				</div>
@@ -312,12 +313,11 @@ const Nav = () => {
 										></path>
 									</svg>
 									<input
+										id="search"
 										name="q"
 										type="search"
 										value={router.query.search}
-										onChange={(e) => {
-											debounceOnChange(e.target)
-										}}
+										onChange={(e) => debounceOnChange(e.target)}
 										placeholder={localeLn('SearchByTitle')}
 										className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-base md:text-sm font-medium"
 										style={{ WebkitAppearance: 'none' }}
