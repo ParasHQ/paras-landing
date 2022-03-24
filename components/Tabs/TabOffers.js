@@ -159,7 +159,7 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned }) => {
 	}
 
 	const acceptTrade = async () => {
-		const [userType, tradeType, tokenId] = isOwned.split('::')
+		const [, tradeType, tokenId] = isOwned.split('::')
 		const params = {
 			account_id: process.env.MARKETPLACE_CONTRACT_ID,
 		}

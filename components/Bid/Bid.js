@@ -7,7 +7,7 @@ import Card from 'components/Card/Card'
 
 import PlaceBidModal from 'components/Modal/PlaceBidModal'
 import useStore from 'lib/store'
-import { parseImgUrl, prettyBalance, timeAgo } from 'utils/common'
+import { parseImgUrl, prettyBalance, prettyTruncate, timeAgo } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import TokenSeriesDetailModal from '../TokenSeries/TokenSeriesDetailModal'
@@ -273,7 +273,7 @@ const Bid = ({ data, type, freshFetch }) => {
 	}
 
 	const acceptTrade = async () => {
-		const [userType, tradeType, tokenId] = isOwned.split('::')
+		const [, tradeType, tokenId] = isOwned.split('::')
 		const params = {
 			account_id: process.env.MARKETPLACE_CONTRACT_ID,
 		}
@@ -605,7 +605,7 @@ const Bid = ({ data, type, freshFetch }) => {
 										shallow
 									>
 										<div className="font-bold text-2xl flex items-center">
-											<span className="mr-2">{token?.metadata?.title}</span>
+											<span className="mr-2">{prettyTruncate(token?.metadata?.title, 25)}</span>
 											<div className="px-3 py-1 bg-primary opacity-75 text-white text-sm font-light rounded-full">
 												yours
 											</div>
@@ -649,7 +649,9 @@ const Bid = ({ data, type, freshFetch }) => {
 										scroll={false}
 										shallow
 									>
-										<div className="font-bold text-2xl">{tradedTokenData?.metadata?.title}</div>
+										<div className="font-bold text-2xl">
+											{prettyTruncate(tradedTokenData?.metadata?.title, 25)}
+										</div>
 									</Link>
 									<p className="mt-2 text-sm opacity-50 mb-6 md:mb-0">
 										{token && timeAgo.format(data.issued_at)}
@@ -675,9 +677,11 @@ const Bid = ({ data, type, freshFetch }) => {
 										scroll={false}
 										shallow
 									>
-										<div className="font-bold text-2xl">{token?.metadata?.title}</div>
+										<div className="font-bold text-2xl">
+											{prettyTruncate(token?.metadata?.title, 25)}
+										</div>
 									</Link>
-									<p className="opacity-75">{token?.metadata?.collection}</p>
+									<p className="opacity-75">{prettyTruncate(token?.metadata?.collection, 30)}</p>
 									<div className="mt-4 mb-6">
 										{store.currentUser !== data.buyer_id
 											? `You received ${prettyBalance(data.price, 24, 4)} Ⓝ offer from ${
@@ -691,7 +695,7 @@ const Bid = ({ data, type, freshFetch }) => {
 								</>
 							)}
 						</div>
-						<div className="flex flex-col">
+						<div className="flex flex-col items-center">
 							{store.currentUser !== data.buyer_id ? (
 								<button
 									onClick={() => {
