@@ -85,9 +85,17 @@ input.clear {
 	@apply opacity-100;
 }
 
-.slide.selected {
-	padding-left: 25%;
-	padding-right: 25%;
+.dot {
+	transition: opacity 0.25s ease-in;
+	opacity: 0.3;
+	filter: alpha(opacity=30);
+	box-shadow: none !important;
+	border-radius: 50%;
+	width: 8px;
+	height: 8px;
+	cursor: pointer;
+	display: inline-block;
+	margin: 0 8px;
 }
 
 .youtube-container {

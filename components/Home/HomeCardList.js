@@ -17,7 +17,7 @@ export const HomeCardList = () => {
 			params: {
 				is_verified: true,
 				__sort: `_id::-1`,
-				__limit: 4,
+				__limit: 8,
 			},
 		})
 		if (resp.data.data) {
