@@ -102,42 +102,23 @@ const SuccessTransactionModal = () => {
 								token_id: args.token_id,
 								token_series_id: args.token_series_id,
 							},
-						})
-						setToken(res.data.data.results[0])
-						setTxDetail({ ...FunctionCall, args })
-						setShowModal(true)
-					} else if (FunctionCall.method_name === 'add_offer') {
-						const res = await axios.get(
-							`${process.env.V2_API_URL}/${args.token_id ? 'token' : 'token-series'}`,
-							{
-								params: {
-									contract_id: args.nft_contract_id,
-									token_id: args.token_id,
-									token_series_id: args.token_series_id,
-								},
-							}
-						)
-						setToken(res.data.data.results[0])
-						setTxDetail({ ...FunctionCall, args })
-						setShowModal(true)
-					} else if (FunctionCall.method_name === 'buy_mint_bundle') {
-						const logs = txStatus.receipts_outcome[0].outcome.logs
-						const getLogsTokenId = logs[0].split('token_ids')
-						const tokenId = getLogsTokenId[(0, 1)].split('"')
-
-						const res = await axios.get(`${process.env.V2_API_URL}/token`, {
-							params: {
-								contract_id: args.nft_contract_id,
-								token_id: tokenId[2],
-							},
-						})
-
-						setToken(res.data.data.results[0])
-						setTxDetail({ ...FunctionCall, args })
-						setShowModal(true)
-					}
 						}
 					)
+					setToken(res.data.data.results[0])
+					setTxDetail({ ...FunctionCall, args })
+					setShowModal(true)
+				} else if (FunctionCall.method_name === 'buy_mint_bundle') {
+					const logs = txStatus.receipts_outcome[0].outcome.logs
+					const getLogsTokenId = logs[0].split('token_ids')
+					const tokenId = getLogsTokenId[(0, 1)].split('"')
+
+					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+						params: {
+							contract_id: args.nft_contract_id,
+							token_id: tokenId[2],
+						},
+					})
+
 					setToken(res.data.data.results[0])
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
@@ -319,7 +300,7 @@ const SuccessTransactionModal = () => {
 						{txDetail.method_name === 'add_offer'
 							? 'Offer Success'
 							: txDetail.method_name === 'buy_mint_bundle'
-							? 'Gacha!'
+							? 'Bob Boom Giveaway!'
 							: 'Purchase Success'}
 					</h1>
 					<p className="text-white mt-2">
@@ -338,8 +319,8 @@ const SuccessTransactionModal = () => {
 							</>
 						)}
 					</p>
-          <h1 className="text-2xl font-bold text-white tracking-tight">{titleText()}</h1>
-          <p className="text-white mt-2">{descText()}</p>
+					<h1 className="text-2xl font-bold text-white tracking-tight">{titleText()}</h1>
+					<p className="text-white mt-2">{descText()}</p>
 					<div className="p-4">
 						<div className="w-2/3 m-auto h-56">
 							<Media
