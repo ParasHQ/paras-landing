@@ -74,7 +74,8 @@ const AddTradeNFTUrlModal = ({ setIsShow, onClose, setTradedToken }) => {
 						type="text"
 						name="tokenUrl"
 						onChange={(e) => {
-							setUrlToken(e.target.value)
+							if (e.target.value.includes('%')) setUrlToken(decodeURIComponent(e.target.value))
+							else setUrlToken(e.target.value)
 						}}
 						value={urlToken}
 						className={`resize-none h-auto focus:border-gray-100 text-black`}

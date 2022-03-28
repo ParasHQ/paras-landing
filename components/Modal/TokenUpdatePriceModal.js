@@ -54,10 +54,14 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	useEffect(async () => {
 		const resp = await axios.get(`${process.env.V2_API_URL}/offers`, {
 			params: {
-				token_id: data.token_id,
+				buyer_id: currentUser,
 			},
 		})
-		if (resp.data.data.results.some((offer) => offer.type === 'trade')) {
+		if (
+			resp.data.data.results.some(
+				(offer) => offer.type === 'trade' && offer.buyer_token_id === data?.token_id
+			)
+		) {
 			setIsAnyTradeOffer(true)
 		} else {
 			setIsAnyTradeOffer(false)
