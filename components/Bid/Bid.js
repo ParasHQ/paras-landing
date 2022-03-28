@@ -14,6 +14,7 @@ import TokenSeriesDetailModal from '../TokenSeries/TokenSeriesDetailModal'
 import cachios from 'cachios'
 import {
 	GAS_FEE,
+	ACCEPT_GAS_FEE,
 	GAS_FEE_150,
 	GAS_FEE_200,
 	STORAGE_ADD_MARKET_FEE,
@@ -291,7 +292,7 @@ const Bid = ({ data, type, freshFetch }) => {
 				{
 					methodName: `nft_approve`,
 					args: params,
-					gas: GAS_FEE,
+					gas: ACCEPT_GAS_FEE,
 					deposit: STORAGE_ADD_MARKET_FEE,
 				},
 			],

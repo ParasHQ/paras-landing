@@ -9,6 +9,7 @@ import Button from 'components/Common/Button'
 import { sentryCaptureException } from 'lib/sentry'
 import {
 	GAS_FEE,
+	ACCEPT_GAS_FEE,
 	GAS_FEE_150,
 	GAS_FEE_200,
 	STORAGE_ADD_MARKET_FEE,
@@ -177,7 +178,7 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned }) => {
 				{
 					methodName: `nft_approve`,
 					args: params,
-					gas: GAS_FEE,
+					gas: ACCEPT_GAS_FEE,
 					deposit: STORAGE_ADD_MARKET_FEE,
 				},
 			],
