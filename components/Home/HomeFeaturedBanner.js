@@ -67,7 +67,7 @@ const HomeFeaturedBanner = () => {
 			<div
 				ref={ref}
 				onScroll={onScroll}
-				className="mb-8 mt-6 flex flex-nowrap overflow-scroll md:-mx-4 snap-x md:scroll-px-1 no-scrollbar"
+				className="mb-8 mt-6 flex flex-nowrap overflow-scroll md:-mx-4 snap-x md:scroll-px-1 top-user-scroll"
 			>
 				<FeaturedOfficialParas data={FeaturedData[0]} className="hidden md:block" />
 				{FeaturedData.slice(1).map((data, idx) => {

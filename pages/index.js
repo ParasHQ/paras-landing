@@ -104,12 +104,12 @@ export default function Home() {
 			<div className="max-w-6xl m-auto">
 				<div className="relative px-4 pb-24">
 					<HomeFeaturedBanner />
-					<HomeCollectionList />
+					{/* <HomeCollectionList /> */}
 					<HomeTopUserList showToggle={false} />
 					<HomeCollectionList showDetails={false} />
 					<HomeBanner />
 					<HomeCardList />
-					<HomeTopUserList activeType="top-buyers" showToggle={false} />
+					<HomeTopUserList activeType="top-buyers" showToggle={false} className="mt-12" />
 					<HomeTopUserList activeType="top-sellers" showToggle={false} className="mt-12" />
 				</div>
 			</div>

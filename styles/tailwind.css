@@ -431,20 +431,17 @@ input.clear {
 }
 
 .top-user-scroll::-webkit-scrollbar {
-	height: 5px;
-}
-
-.top-user-scroll::-webkit-scrollbar-track {
-	box-shadow: inset 0 0 5px rgb(32, 32, 32);
-	border-radius: 200px;
+	height: 6px;
+	background: transparent;
+	border: white;
 }
 
 .top-user-scroll::-webkit-scrollbar-thumb {
-	background: #2f3033;
-	border-radius: 200px;
+	box-shadow: inset 0 0 6px rgb(32, 32, 32);
+	border-radius: 20px;
 }
 
 .top-user-scroll::-webkit-scrollbar-thumb:hover {
-	background: #242427;
-	cursor: pointer;
+	box-shadow: inset 0 0 6px rgb(56, 56, 56);
+	border-radius: 20px;
 }
