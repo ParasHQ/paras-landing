@@ -11,15 +11,9 @@ const HomeCollectionList = ({ showDetails }) => {
 	const [showRightClick, setShowRightClick] = useState(true)
 
 	const fetchData = () =>
-		axios(`${process.env.V2_API_URL}/collections`, {
-			params: {
-				__skip: 0,
-				__limit: 12,
-				__sort: 'volume::-1',
-			},
-		}).then((res) => res.data.data.results)
+		axios(`${process.env.V2_API_URL}/featured-collections`, {}).then((res) => res.data.data.results)
 
-	const { data, isValidating } = useSWR('home-collections', fetchData)
+	const { data, isValidating } = useSWR('home-featured-collections', fetchData)
 	const ref = useRef(null)
 
 	const scrollToRight = () => {
@@ -68,7 +62,7 @@ const HomeCollectionList = ({ showDetails }) => {
 	}
 
 	return (
-		<div className="my-12 relative">
+		<div className="my-8 relative">
 			<h1 className="text-white font-semibold text-3xl capitalize mb-4">Featured Collections</h1>
 			<div
 				ref={ref}

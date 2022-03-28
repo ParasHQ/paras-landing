@@ -104,9 +104,8 @@ export default function Home() {
 			<div className="max-w-6xl m-auto">
 				<div className="relative px-4 pb-24">
 					<HomeFeaturedBanner />
-					{/* <HomeCollectionList /> */}
-					<HomeTopUserList showToggle={false} />
 					<HomeCollectionList showDetails={false} />
+					<HomeTopUserList showToggle={false} className="my-12" />
 					<HomeBanner />
 					<HomeCardList />
 					<HomeTopUserList activeType="top-buyers" showToggle={false} className="mt-12" />
