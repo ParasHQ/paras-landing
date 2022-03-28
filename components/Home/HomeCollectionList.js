@@ -4,6 +4,7 @@ import useSWR from 'swr'
 import { CollectionItem } from 'components/Collection/CollectionList'
 import { useRef, useState } from 'react'
 import CollectionListLoader from 'components/Collection/CollectionListLoader'
+import { IconLeft, IconRight } from 'components/Icons'
 
 const HomeCollectionList = ({ showDetails }) => {
 	const [showLeftClick, setShowLeftClick] = useState(false)
@@ -83,14 +84,14 @@ const HomeCollectionList = ({ showDetails }) => {
 					/>
 				))}
 			</div>
-			<div className="flex absolute right-0 top-0 gap-4">
+			<div className="flex absolute right-0 top-0 gap-1">
 				<div
 					className={`${
 						showLeftClick ? 'text-gray-200 cursor-pointer' : 'text-gray-500 cursor-not-allowed'
 					}`}
 					onClick={scrollToLeft}
 				>
-					Left
+					<IconLeft />
 				</div>
 				<div
 					className={`${
@@ -98,7 +99,7 @@ const HomeCollectionList = ({ showDetails }) => {
 					}`}
 					onClick={scrollToRight}
 				>
-					Right
+					<IconRight />
 				</div>
 			</div>
 		</div>
