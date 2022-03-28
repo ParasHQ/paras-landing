@@ -15,7 +15,7 @@ import CopyLink from 'components/Common/CopyLink'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
-export const descriptionMaker = (activity) => {
+export const descriptionMaker = (activity, localToken, localTradedToken) => {
 	const type = activity.type
 
 	if (type === 'add_market_data' || type === 'update_market_data') {
@@ -89,6 +89,16 @@ export const descriptionMaker = (activity) => {
 
 	if (type === 'delete_offer') {
 		return `${activity.from} 'removed offer' ${formatNearAmount(activity.msg.params.price)} Ⓝ`
+	}
+
+	if (type === 'add_trade' || type === 'delete_trade') {
+		return `${activity.from} ${type.includes('add') ? `add` : `delete`} trade ${
+			localToken?.metadata?.title
+		} with ${localTradedToken?.metadata?.title}`
+	}
+
+	if (type === 'accept_trade') {
+		return `${localToken?.metadata?.owner_id} accepted trade ${localToken?.metadata?.title} with ${localToken?.metadata?.title}`
 	}
 
 	return ``
@@ -329,6 +339,27 @@ const Activity = ({ activity, localTradedToken, localToken }) => {
 		)
 	}
 
+	if (type === 'accept_trade') {
+		return (
+			<p>
+				<span>
+					<span>
+						<LinkToProfile
+							className="text-gray-100 hover:border-gray-100"
+							accountId={localTradedToken?.owner_id}
+						/>
+					</span>
+					<span>
+						{` `}
+						accept trade <span className="font-bold">
+							{localTradedToken?.metadata?.title}
+						</span> with <span className="font-bold">{localToken?.metadata.title}</span>
+					</span>
+				</span>
+			</p>
+		)
+	}
+
 	return null
 }
 
@@ -428,7 +459,8 @@ const ActivityDetail = ({ activity }) => {
 							<TwitterShareButton
 								title={`${descriptionMaker(
 									activity,
-									localToken
+									localToken,
+									localTradedToken
 								)} via @ParasHQ\n\n#paras #cryptoart #digitalart #tradingcards`}
 								url={shareLink}
 								className="flex items-center w-full"

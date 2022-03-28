@@ -159,6 +159,41 @@ const Activity = ({ activity }) => {
 			)
 		}
 
+		if (type === 'accept_trade') {
+			return (
+				<div>
+					<p className=" mb-2">
+						<span className="font-bold">{activity.contract_id}</span>
+						<span>
+							{` `}
+							accepted NFT trade{' '}
+							<span className="font-semibold">{tradedTokenData?.metadata?.title}</span>
+						</span>
+					</p>
+					<div className="flex items-center mb-2">
+						<div className="z-20 max-h-40 w-24 cursor-pointer border-4 border-gray-700 rounded-lg">
+							<a
+								onClick={(e) => {
+									e.preventDefault()
+									onClickNftTrade()
+								}}
+							>
+								<Media
+									className="rounded-lg overflow-hidden"
+									url={parseImgUrl(tradedTokenData?.metadata?.media, null, {
+										width: `600`,
+										useOriginal: process.env.APP_ENV === 'production' ? false : true,
+										isMediaCdn: true,
+									})}
+									seeDetails={true}
+								/>
+							</a>
+						</div>
+					</div>
+				</div>
+			)
+		}
+
 		if (type === 'delete_market_data') {
 			return (
 				<p>
