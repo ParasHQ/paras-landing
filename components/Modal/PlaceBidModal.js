@@ -45,6 +45,16 @@ const PlaceBidModal = ({
 		userBalance: state.userBalance,
 		setTransactionRes: state.setTransactionRes,
 	}))
+	const [isEnableTrade, setIsEnableTrade] = useState(true)
+
+	useEffect(() => {
+		if (
+			!data.token_id &&
+			!process.env.WHITELIST_CONTRACT_ID.split(';').includes(data?.contract_id)
+		) {
+			setIsEnableTrade(false)
+		}
+	}, [show])
 
 	useEffect(async () => {
 		if (show) {
@@ -177,22 +187,26 @@ const PlaceBidModal = ({
 						<div className="flex items-center space-x-2">
 							<h1 className="text-2xl font-bold text-white tracking-tight">
 								{hasBid ? 'Update Offer' : 'Place an Offer'}
-								{` `} <span className="text-sm">or</span>
 							</h1>
-							<span
-								className="bg-white text-primary font-bold rounded-md px-2 py-1 cursor-pointer hover:bg-slate-300 transition duration-300 text-xs"
-								style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
-								onClick={() => {
-									if (!fromDetail) {
-										setShowModal(`offerNFT`)
-									} else {
-										setShowTradeNFTModal(true)
-										onClose()
-									}
-								}}
-							>
-								Trade NFT
-							</span>
+							{isEnableTrade && (
+								<>
+									{` `} <span className="text-sm text-white">or</span>
+									<span
+										className="bg-white text-primary font-bold rounded-md px-2 py-1 cursor-pointer hover:bg-slate-300 transition duration-300 text-xs"
+										style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
+										onClick={() => {
+											if (!fromDetail) {
+												setShowModal(`offerNFT`)
+											} else {
+												setShowTradeNFTModal(true)
+												onClose()
+											}
+										}}
+									>
+										Trade NFT
+									</span>
+								</>
+							)}
 						</div>
 						<p className="text-white mt-2">
 							{localeLn('AboutToBid')} <b>{data.metadata.title}</b>.

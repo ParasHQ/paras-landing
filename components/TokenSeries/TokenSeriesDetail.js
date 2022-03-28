@@ -40,6 +40,13 @@ const TokenSeriesDetail = ({ token, className }) => {
 		setActiveTab(tab)
 	}
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
+	const [isEnableTrade, setIsEnableTrade] = useState(true)
+
+	useEffect(() => {
+		if (!process.env.WHITELIST_CONTRACT_ID.split(';').includes(token?.contract_id)) {
+			setIsEnableTrade(false)
+		}
+	}, [])
 
 	const router = useRouter()
 
@@ -387,7 +394,10 @@ const TokenSeriesDetail = ({ token, className }) => {
 				onClose={onDismissModal}
 				listModalItem={[
 					{ name: 'Share to...', onClick: onClickShare },
-					{ name: 'Offer Via NFT', onClick: onClickOfferNFT },
+					isEnableTrade && {
+						name: 'Offer Via NFT',
+						onClick: onClickOfferNFT,
+					},
 					{ name: 'Transfer', onClick: onClickBuyerTransfer },
 					isCreator() && { name: 'Reduce Copies', onClick: onClickDecreaseCopies },
 					{ name: 'Report', onClick: () => setShowModal('report') },
