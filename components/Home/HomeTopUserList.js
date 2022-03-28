@@ -86,7 +86,11 @@ const TopUser = ({ user, idx }) => {
 	)
 }
 
-export const HomeTopUserList = ({ activeType = 'top-collections', showToggle = true }) => {
+export const HomeTopUserList = ({
+	activeType = 'top-collections',
+	showToggle = true,
+	className,
+}) => {
 	const { localeLn } = useIntl()
 	const [topBuyerList, setTopBuyerList] = useState([])
 	const [topSellerList, setTopSellerList] = useState([])
@@ -148,7 +152,7 @@ export const HomeTopUserList = ({ activeType = 'top-collections', showToggle = t
 	}
 
 	return (
-		<div>
+		<div className={className}>
 			<div className="w-full mt-6">
 				<div className="flex items-center justify-between">
 					<div ref={modalRef}>
@@ -227,7 +231,7 @@ export const HomeTopUserList = ({ activeType = 'top-collections', showToggle = t
 					</Link>
 				</div>
 				<p className="text-white md:hidden">in 7 days</p>
-				<div className="w-full mt-4">
+				<div className="w-full md:mt-2">
 					{!isLoading ? (
 						<div className="w-full grid grid-rows-3 grid-flow-col py-2 pb-4 overflow-x-scroll top-user-scroll">
 							{topUserType === 'top-collections' &&

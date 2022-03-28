@@ -4,7 +4,6 @@ import Nav from 'components/Nav'
 import Footer from 'components/Footer'
 import Modal from 'components/Modal'
 import YouTube from 'react-youtube'
-import { HomePublicationList } from 'components/Home/HomePublicationList'
 import { HomeTopUserList } from 'components/Home/HomeTopUserList'
 import { HomeCardList } from 'components/Home/HomeCardList'
 import { useIntl } from 'hooks/useIntl'
@@ -111,6 +110,7 @@ export default function Home() {
 					<HomeBanner />
 					<HomeCardList />
 					<HomeTopUserList activeType="top-buyers" showToggle={false} />
+					<HomeTopUserList activeType="top-sellers" showToggle={false} className="mt-12" />
 				</div>
 			</div>
 
