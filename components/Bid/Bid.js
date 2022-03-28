@@ -293,7 +293,7 @@ const Bid = ({ data, type, freshFetch }) => {
 					methodName: `nft_approve`,
 					args: params,
 					gas: ACCEPT_GAS_FEE,
-					deposit: STORAGE_ADD_MARKET_FEE,
+					deposit: STORAGE_APPROVE_FEE,
 				},
 			],
 		})

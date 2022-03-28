@@ -7,7 +7,7 @@ import { useState } from 'react'
 import AddTradeNFTUrlModal from './AddTradeNFTUrlModal'
 import TradingCard from 'components/Trading/TradingCard'
 import useStore from 'lib/store'
-import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
+import { GAS_FEE, STORAGE_ADD_MARKET_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
 import JSBI from 'jsbi'
 import { useEffect } from 'react'
 import WalletHelper from 'lib/WalletHelper'
@@ -102,7 +102,7 @@ const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) =
 							methodName: `nft_approve`,
 							args: params,
 							gas: GAS_FEE,
-							deposit: STORAGE_ADD_MARKET_FEE,
+							deposit: STORAGE_APPROVE_FEE,
 						},
 					],
 				})
@@ -132,7 +132,7 @@ const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) =
 							methodName: 'nft_approve',
 							contractId: tradedToken[0].split('::')[0],
 							args: params,
-							attachedDeposit: STORAGE_ADD_MARKET_FEE,
+							attachedDeposit: STORAGE_APPROVE_FEE,
 							gas: GAS_FEE,
 						},
 					],
