@@ -93,6 +93,11 @@ const Footer = () => {
 							{localeLn('Discord')}
 						</a>
 					</div>
+					<div className="flex items-center pt-2 px-2">
+						<Link href="/privacy">
+							<a className="flex cursor-pointer ">{localeLn('Privacy')}</a>
+						</Link>
+					</div>
 				</div>
 			</div>
 			<div className="py-2">
