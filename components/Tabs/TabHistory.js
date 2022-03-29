@@ -163,7 +163,7 @@ const Activity = ({ activity }) => {
 			return (
 				<div>
 					<p className=" mb-2">
-						<span className="font-bold">{activity.contract_id}</span>
+						<span className="font-bold">{activity.msg.params.sender_id}</span>
 						<span>
 							{` `}
 							accepted NFT trade{' '}

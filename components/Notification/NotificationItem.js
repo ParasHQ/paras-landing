@@ -33,8 +33,14 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 			? {
 					url: `${process.env.V2_API_URL}/token`,
 					params: {
-						token_id: notif.token_id,
-						contract_id: notif.contract_id,
+						token_id:
+							notif.type === 'notification_add_trade' || notif.type === 'accept_trade'
+								? notif.msg.params.buyer_token_id
+								: notif.token_id,
+						contract_id:
+							notif.type === 'notification_add_trade' || notif.type === 'accept_trade'
+								? notif.msg.params.buyer_nft_contract_id
+								: notif.contract_id,
 					},
 			  }
 			: {
@@ -300,6 +306,52 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								Token <span className="font-semibold">{token.metadata?.title}</span> submission has
 								been rejected from <span className="font-semibold">{notif.msg.category_name}</span>{' '}
 								category.
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_add_trade') {
+		return (
+			<div>
+				<Link href={`${url}?tab=offers`}>
+					<a>
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={token.metadata?.media} />
+							<div className="pl-2 text-gray-100">
+								<span className="font-semibold">{prettyTruncate(notif.from, 14, 'address')}</span>{' '}
+								offered trade{' '}
+								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
+	if (notif.type === 'accept_trade') {
+		return (
+			<div>
+				<Link href={`${url}?tab=offers`}>
+					<a>
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={token.metadata?.media} />
+							<div className="pl-2 text-gray-100">
+								<span className="font-semibold">
+									{prettyTruncate(notif.msg.params.sender_id, 14, 'address')}
+								</span>{' '}
+								accepted trade{' '}
+								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
 							</div>
 						</div>
 					</a>
