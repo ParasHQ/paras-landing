@@ -3,7 +3,7 @@ import ContentLoader from 'react-content-loader'
 
 const CollectionListLoader = (props) => (
 	<div className="md:flex md:flex-wrap">
-		{[...Array(3).keys()].map((k) => (
+		{[...Array(props.contentLength || 3).keys()].map((k) => (
 			<div key={k} className="w-full md:w-1/3 flex-shrink-0 md:p-4 relative ">
 				<ContentLoader
 					key={k}

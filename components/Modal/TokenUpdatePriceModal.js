@@ -155,7 +155,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 
 			const res = await WalletHelper.multipleCallFunction(txs)
 
-			if (res.response) {
+			if (res?.response) {
 				onClose()
 				setTransactionRes(res?.response)
 			}
@@ -211,18 +211,18 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 
 			const res = await WalletHelper.multipleCallFunction(txs)
 
-			if (res.response.error) {
+			if (res?.response.error) {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							{res.response.error.kind.ExecutionError}
+							{res?.response.error.kind.ExecutionError}
 						</div>
 					),
 					type: 'error',
 					duration: 2500,
 				})
 				return
-			} else {
+			} else if (res) {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">

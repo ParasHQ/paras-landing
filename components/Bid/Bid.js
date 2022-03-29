@@ -247,7 +247,7 @@ const Bid = ({ data, type, freshFetch }) => {
 				})
 			}
 
-			if (res.response.error) {
+			if (res?.response.error) {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
@@ -257,7 +257,7 @@ const Bid = ({ data, type, freshFetch }) => {
 					type: 'error',
 					duration: 2500,
 				})
-			} else {
+			} else if (res) {
 				setShowModal('')
 				toast.show({
 					text: (
@@ -361,14 +361,17 @@ const Bid = ({ data, type, freshFetch }) => {
 					gas: GAS_FEE,
 					deposit: '1',
 				})
-
-				if (res.error) {
+				if (res?.response.error) {
 					toast.show({
-						text: <div className="font-semibold text-center text-sm">{res.error}</div>,
+						text: (
+							<div className="font-semibold text-center text-sm">
+								{res?.response.error.kind.ExecutionError}
+							</div>
+						),
 						type: 'error',
 						duration: 2500,
 					})
-				} else {
+				} else if (res) {
 					setShowModal('')
 					toast.show({
 						text: (
@@ -377,7 +380,6 @@ const Bid = ({ data, type, freshFetch }) => {
 						type: 'success',
 						duration: 2500,
 					})
-					setTimeout(freshFetch, 2500)
 				}
 			}
 		} catch (error) {

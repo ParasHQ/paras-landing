@@ -18,6 +18,14 @@ const PublicationList = ({ data }) => {
 						</div>
 					</a>
 				</Link>
+				{data.isComic && (
+					<div
+						className="absolute bottom-4 right-0 py-1 px-3 rounded-l-lg text-white -mr-4 w-24 shadow-2xl"
+						style={{ backgroundColor: '#00BBDB' }}
+					>
+						Comic
+					</div>
+				)}
 			</div>
 			<div className="flex flex-col p-4 -mt-1 h-48">
 				<Link href={`/publication/${data.slug}-${data._id}`}>
@@ -44,7 +52,7 @@ const PublicationList = ({ data }) => {
 						</div>
 					</a>
 				</Link>
-				<div className="flex mt-auto">
+				<div className="flex justify-between items-center mt-auto">
 					<p className="text-white">
 						<span className="capitalize">
 							<Link href={`/publication?type=${data.type}`} shallow={true}>
@@ -57,8 +65,36 @@ const PublicationList = ({ data }) => {
 						<LinkToProfile
 							accountId={data.author_id}
 							className="text-white font-semibold hover:border-white"
+							isComic={data?.isComic}
 						/>
 					</p>
+					<div className="mt-1">
+						<div className="text-gray-100 font-semibold">
+							<div className="flex gap-1 items-start">
+								<svg
+									className="w-5 h-5"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+									></path>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+									></path>
+								</svg>
+								{!data.view ? '0' : data.view}
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -53,7 +53,7 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 				gas: GAS_FEE,
 				deposit: attachedDeposit.toString(),
 			})
-			if (res.response) {
+			if (res?.response) {
 				onClose()
 				setTransactionRes(res?.response)
 			}

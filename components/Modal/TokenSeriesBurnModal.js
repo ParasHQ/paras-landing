@@ -40,18 +40,18 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 				gas: GAS_FEE,
 				deposit: `1`,
 			})
-			if (res.response.error) {
+			if (res?.response.error) {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							{res.response.error.kind.ExecutionError}
+							{res?.response.error.kind.ExecutionError}
 						</div>
 					),
 					type: 'error',
 					duration: 2500,
 				})
 				return
-			} else {
+			} else if (res) {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">

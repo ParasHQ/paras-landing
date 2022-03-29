@@ -60,9 +60,9 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		}
 	}
 
-	const url = `/token/${notif.contract_id}::${notif.token_series_id}${
-		notif.token_id ? `/${notif.token_id}` : ''
-	}`
+	const url = `/token/${notif.contract_id}::${
+		notif.type === 'notification_add_trade' ? notif.token_id.split(':')[0] : notif.token_series_id
+	}${notif.token_id ? `/${notif.token_id}` : ''}`
 
 	if (!token) {
 		return null
