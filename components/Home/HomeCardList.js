@@ -23,7 +23,7 @@ export const HomeCardList = () => {
 		<div className="mt-8 w-full">
 			<div className="flex items-center justify-between">
 				<div className="md:flex items-baseline gap-2">
-					<h1 className="text-white font-semibold text-3xl capitalize">Highest Sale</h1>
+					<h1 className="text-white font-semibold text-3xl capitalize">Highest Sales</h1>
 					<p className="text-white">in 24 hours</p>
 				</div>
 			</div>
