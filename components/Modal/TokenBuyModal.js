@@ -53,7 +53,7 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 				deposit: data.price,
 			})
 
-			if (res.response) {
+			if (res?.response) {
 				onClose()
 				setTransactionRes(res?.response)
 			}

@@ -133,7 +133,7 @@ const PlaceBidModal = ({ data, show, onClose, bidAmount, bidQuantity, onSuccess 
 					],
 				})
 			}
-			if (res.response) {
+			if (res?.response) {
 				onClose()
 				setTransactionRes(res?.response)
 				onSuccess && onSuccess()
