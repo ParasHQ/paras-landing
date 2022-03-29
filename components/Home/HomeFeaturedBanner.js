@@ -62,8 +62,6 @@ const HomeFeaturedBanner = () => {
 		)
 	}
 
-	console.log('Featuired', FeaturedData)
-
 	return (
 		<div className="relative overflow-x-hidden group">
 			<FeaturedOfficialParas list={FeaturedData.featured_big.results} className="md:hidden" />
