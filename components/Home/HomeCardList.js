@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import CardList from 'components/TokenSeries/CardList'
 import CardListLoader from 'components/Card/CardListLoader'
+import TokenList from 'components/Token/TokenList'
 
 export const HomeCardList = () => {
 	const [tokenList, setTokenList] = useState([])
@@ -14,7 +14,7 @@ export const HomeCardList = () => {
 	const fetchTokenList = async () => {
 		const resp = await axios.get(`${process.env.V2_API_URL}/top-token`)
 		if (resp.data.data) {
-			setTokenList(resp.data.data.map((data) => data.token))
+			setTokenList(resp.data.data.map((data) => ({ ...data.token, volume: data.volume })))
 			setIsLoading(false)
 		}
 	}
@@ -28,7 +28,7 @@ export const HomeCardList = () => {
 				</div>
 			</div>
 			<div className="mt-4">
-				{!isLoading ? <CardList tokens={tokenList} /> : <CardListLoader length={4} />}
+				{!isLoading ? <TokenList tokens={tokenList} /> : <CardListLoader length={4} />}
 			</div>
 		</div>
 	)
