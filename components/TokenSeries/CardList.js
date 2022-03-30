@@ -214,6 +214,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 				activeToken={activeToken}
 				onCloseModal={onCloseModal}
 				modalType={modalType}
+				setModalType={setModalType}
 			/>
 			<div
 				className={`${

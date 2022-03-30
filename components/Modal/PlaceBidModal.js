@@ -15,9 +15,21 @@ import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
 import WalletHelper from 'lib/WalletHelper'
+import TradeNFTModal from './TradeNFTModal'
 
-const PlaceBidModal = ({ data, show, onClose, bidAmount, bidQuantity, onSuccess }) => {
+const PlaceBidModal = ({
+	data,
+	show,
+	onClose,
+	bidAmount,
+	bidQuantity,
+	onSuccess,
+	fromDetail = true,
+	setShowModal,
+	tokenType = `token`,
+}) => {
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
+	const [showTradeNFTModal, setShowTradeNFTModal] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
 	const { localeLn } = useIntl()
 	const { errors, register, handleSubmit, watch, setValue } = useForm({
@@ -33,6 +45,16 @@ const PlaceBidModal = ({ data, show, onClose, bidAmount, bidQuantity, onSuccess 
 		userBalance: state.userBalance,
 		setTransactionRes: state.setTransactionRes,
 	}))
+	const [isEnableTrade, setIsEnableTrade] = useState(true)
+
+	useEffect(() => {
+		if (
+			!data.token_id &&
+			!process.env.WHITELIST_CONTRACT_ID.split(';').includes(data?.contract_id)
+		) {
+			setIsEnableTrade(false)
+		}
+	}, [show])
 
 	useEffect(async () => {
 		if (show) {
@@ -147,6 +169,13 @@ const PlaceBidModal = ({ data, show, onClose, bidAmount, bidQuantity, onSuccess 
 
 	return (
 		<>
+			{showTradeNFTModal && (
+				<TradeNFTModal
+					tokenType={tokenType}
+					data={data}
+					onClose={() => setShowTradeNFTModal(false)}
+				/>
+			)}
 			<Modal isShow={show} close={onClose} closeOnBgClick={false} closeOnEscape={false}>
 				<div className="max-w-sm w-full p-4 bg-gray-800  m-auto rounded-md relative">
 					<div className="absolute right-0 top-0 pr-4 pt-4">
@@ -155,9 +184,30 @@ const PlaceBidModal = ({ data, show, onClose, bidAmount, bidQuantity, onSuccess 
 						</div>
 					</div>
 					<div>
-						<h1 className="text-2xl font-bold text-white tracking-tight">
-							{hasBid ? 'Update Offer' : 'Place an Offer'}
-						</h1>
+						<div className="flex items-center space-x-2">
+							<h1 className="text-2xl font-bold text-white tracking-tight">
+								{hasBid ? 'Update Offer' : 'Place an Offer'}
+							</h1>
+							{isEnableTrade && (
+								<>
+									{` `} <span className="text-sm text-white">or</span>
+									<span
+										className="bg-white text-primary font-bold rounded-md px-2 py-1 cursor-pointer hover:bg-slate-300 transition duration-300 text-xs"
+										style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
+										onClick={() => {
+											if (!fromDetail) {
+												setShowModal(`offerNFT`)
+											} else {
+												setShowTradeNFTModal(true)
+												onClose()
+											}
+										}}
+									>
+										Trade NFT
+									</span>
+								</>
+							)}
+						</div>
 						<p className="text-white mt-2">
 							{localeLn('AboutToBid')} <b>{data.metadata.title}</b>.
 						</p>

@@ -23,10 +23,27 @@ const NotificationImage = ({ media }) => {
 
 const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 	const [token, setToken] = useState({})
+	const [tradedToken, setTradedToken] = useState({})
 
 	useEffect(() => {
 		fetchToken()
+		if (notif.type?.includes('trade')) {
+			fetchTradedToken()
+		}
 	}, [])
+
+	const fetchTradedToken = async () => {
+		const params = {
+			token_id: notif.msg.params.buyer_token_id,
+			contract_id: notif.msg.params.buyer_nft_contract_id,
+		}
+		const resp = await axios.get(`${process.env.V2_API_URL}/token`, {
+			params: params,
+		})
+		if (resp.data.data.results.length > 0) {
+			setTradedToken(resp.data.data.results[0])
+		}
+	}
 
 	const fetchToken = async () => {
 		const query = notif.token_id
@@ -54,9 +71,9 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		}
 	}
 
-	const url = `/token/${notif.contract_id}::${notif.token_series_id}${
-		notif.token_id ? `/${notif.token_id}` : ''
-	}`
+	const url = `/token/${notif.contract_id}::${
+		notif.type === 'notification_add_trade' ? notif.token_id.split(':')[0] : notif.token_series_id
+	}${notif.token_id ? `/${notif.token_id}` : ''}`
 
 	if (!token) {
 		return null
@@ -300,6 +317,55 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								Token <span className="font-semibold">{token.metadata?.title}</span> submission has
 								been rejected from <span className="font-semibold">{notif.msg.category_name}</span>{' '}
 								category.
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_add_trade') {
+		return (
+			<div>
+				<Link href={`${url}?tab=offers`}>
+					<a>
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={tradedToken.metadata?.media} />
+							<div className="pl-2 text-gray-100">
+								<span className="font-semibold">{prettyTruncate(notif.from, 14, 'address')}</span>{' '}
+								offered trade{' '}
+								<span className="font-semibold text-gray-100">{tradedToken.metadata?.title}</span>{' '}
+								with your
+								{` `}
+								<span className="font-semibold text-gray-100">{token.metadata?.title}</span>
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
+	if (notif.type === 'accept_trade') {
+		return (
+			<div>
+				<Link href={`${url}?tab=offers`}>
+					<a>
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={tradedToken.metadata?.media} />
+							<div className="pl-2 text-gray-100">
+								<span className="font-semibold">
+									{prettyTruncate(notif.msg.params.sender_id, 14, 'address')}
+								</span>{' '}
+								accepted trade{' '}
+								<span className="font-semibold text-gray-100">{tradedToken.metadata?.title}</span>
 							</div>
 						</div>
 					</a>
