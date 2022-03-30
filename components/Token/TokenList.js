@@ -13,6 +13,7 @@ import CardListLoader from 'components/Card/CardListLoader'
 import MarketTokenModal from 'components/Modal/MarketTokenModal'
 import CardListLoaderSmall from 'components/Card/CardListLoaderSmall'
 import useToken from 'hooks/useToken'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
 const TokenList = ({ name = 'default', tokens, fetchData, hasMore, displayType = 'large' }) => {
 	const store = useStore()
@@ -161,6 +162,8 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 		}
 	}
 
+	console.log('ttt', token.volume)
+
 	return (
 		<>
 			<TokenDetailModal tokens={[token]} />
@@ -202,7 +205,7 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 						</div>
 					</a>
 				</Link>
-				<div className={`px-1 ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
+				<div className={`px-1 relative ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
 					<div className="block">
 						<p className="text-gray-400 text-xs">{localeLn('OnSale')}</p>
 						<div className={`text-gray-100 ${displayType === 'large' ? `text-2xl` : `text-lg`}`}>
@@ -222,6 +225,33 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 							)}
 						</div>
 					</div>
+					{token.volume && (
+						<div
+							className={`${
+								displayType === 'large' ? `block` : `flex gap-1`
+							} text-right absolute top-0 right-0`}
+						>
+							<p
+								className={`${
+									displayType === 'large' ? `block` : `hidden`
+								} text-white opacity-80 md:text-sm`}
+								style={{ fontSize: 11 }}
+							>
+								Volume Total
+							</p>
+							<p
+								className={`${
+									displayType === 'large' ? `hidden` : `block`
+								} text-white opacity-80 md:text-sm`}
+								style={{ fontSize: 11 }}
+							>
+								Volume Total
+							</p>
+							<p className="text-white opacity-80 md:text-base">
+								{formatNearAmount(token.volume)} Ⓝ
+							</p>
+						</div>
+					)}
 					<div className="flex justify-between md:items-baseline">
 						<p
 							className={`font-bold text-white cursor-pointer hover:opacity-80 ${
