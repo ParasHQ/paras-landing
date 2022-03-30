@@ -23,24 +23,35 @@ const NotificationImage = ({ media }) => {
 
 const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 	const [token, setToken] = useState({})
+	const [tradedToken, setTradedToken] = useState({})
 
 	useEffect(() => {
 		fetchToken()
+		if (notif.type?.includes('trade')) {
+			fetchTradedToken()
+		}
 	}, [])
+
+	const fetchTradedToken = async () => {
+		const params = {
+			token_id: notif.msg.params.buyer_token_id,
+			contract_id: notif.msg.params.buyer_nft_contract_id,
+		}
+		const resp = await axios.get(`${process.env.V2_API_URL}/token`, {
+			params: params,
+		})
+		if (resp.data.data.results.length > 0) {
+			setTradedToken(resp.data.data.results[0])
+		}
+	}
 
 	const fetchToken = async () => {
 		const query = notif.token_id
 			? {
 					url: `${process.env.V2_API_URL}/token`,
 					params: {
-						token_id:
-							notif.type === 'notification_add_trade' || notif.type === 'accept_trade'
-								? notif.msg.params.buyer_token_id
-								: notif.token_id,
-						contract_id:
-							notif.type === 'notification_add_trade' || notif.type === 'accept_trade'
-								? notif.msg.params.buyer_nft_contract_id
-								: notif.contract_id,
+						token_id: notif.token_id,
+						contract_id: notif.contract_id,
 					},
 			  }
 			: {
@@ -323,11 +334,14 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={tradedToken.metadata?.media} />
 							<div className="pl-2 text-gray-100">
 								<span className="font-semibold">{prettyTruncate(notif.from, 14, 'address')}</span>{' '}
 								offered trade{' '}
-								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
+								<span className="font-semibold text-gray-100">{tradedToken.metadata?.title}</span>{' '}
+								with your
+								{` `}
+								<span className="font-semibold text-gray-100">{token.metadata?.title}</span>
 							</div>
 						</div>
 					</a>
@@ -345,13 +359,13 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={tradedToken.metadata?.media} />
 							<div className="pl-2 text-gray-100">
 								<span className="font-semibold">
 									{prettyTruncate(notif.msg.params.sender_id, 14, 'address')}
 								</span>{' '}
 								accepted trade{' '}
-								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
+								<span className="font-semibold text-gray-100">{tradedToken.metadata?.title}</span>
 							</div>
 						</div>
 					</a>
