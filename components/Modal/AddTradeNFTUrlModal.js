@@ -20,6 +20,16 @@ const AddTradeNFTUrlModal = ({ setIsShow, onClose, setTradedToken }) => {
 			/^((https?|ftp|smtp):\/\/)?(www\.)?(paras\.id|localhost:\d+|marketplace-v2-testnet\.paras\.id|testnet\.paras\.id)\/token\//,
 			''
 		)
+		if (urlToken === '') {
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">Please fill your Token URL</div>,
+				type: 'error',
+				duration: 2500,
+			})
+			setIsAdding(false)
+			return
+		}
+
 		if (urlToken && !checkTokenUrl(urlToken)) {
 			toast.show({
 				text: <div className="font-semibold text-center text-sm">Please enter valid Token URL</div>,
