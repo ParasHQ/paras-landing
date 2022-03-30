@@ -223,6 +223,8 @@ const SuccessTransactionModal = () => {
 			return 'Remove Listing Success'
 		} else if (txDetail.method_name === 'nft_create_series') {
 			return 'Create Card Success'
+		} else if (txDetail.method_name === 'buy_mint_bundle') {
+			return 'Bob Boom Giveaway!'
 		} else {
 			return 'Transaction Success'
 		}
@@ -284,6 +286,12 @@ const SuccessTransactionModal = () => {
 					You successfully create <b>{token.metadata.title}</b>
 				</>
 			)
+		} else if (txDetail.method_name === 'buy_mint_bundle') {
+			return (
+				<>
+					You successfully minted <b>{token.metadata.title}</b>
+				</>
+			)
 		}
 	}
 
@@ -296,29 +304,6 @@ const SuccessTransactionModal = () => {
 					</div>
 				</div>
 				<div>
-					<h1 className="text-2xl font-bold text-white tracking-tight">
-						{txDetail.method_name === 'add_offer'
-							? 'Offer Success'
-							: txDetail.method_name === 'buy_mint_bundle'
-							? 'Bob Boom Giveaway!'
-							: 'Purchase Success'}
-					</h1>
-					<p className="text-white mt-2">
-						{txDetail.method_name === 'add_offer' ? (
-							<>
-								You successfully offer <b>{token.metadata.title}</b> for{' '}
-								{formatNearAmount(txDetail.args.price)} Ⓝ
-							</>
-						) : txDetail.method_name === 'buy_mint_bundle' ? (
-							<>
-								You successfully minted <b>{token.metadata.title}</b>
-							</>
-						) : (
-							<>
-								You successfully purchase <b>{token.metadata.title}</b>
-							</>
-						)}
-					</p>
 					<h1 className="text-2xl font-bold text-white tracking-tight">{titleText()}</h1>
 					<p className="text-white mt-2">{descText()}</p>
 					<div className="p-4">

@@ -8,6 +8,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import Modal from 'components/Modal'
 import Scrollbars from 'react-custom-scrollbars'
+import { parseImgUrl } from 'utils/common'
 
 const GachaModal = () => {
 	const [showFloating, setShowFloating] = useState(false)
@@ -86,8 +87,9 @@ const GachaModal = () => {
 				<div
 					className="h-32 w-60 p-4 md:m-auto bg-center bg-cover rounded-md z-20 fixed right-6 bottom-2 left-1/2 transform -translate-x-1/2 md:left-auto md:transform-none cursor-pointer border-2"
 					style={{
-						backgroundImage: `url(./gacha-floating.jpg)`,
-						// backgroundPositionY: '1px',
+						backgroundImage: `url(${parseImgUrl(
+							`bafkreifvrd4f6bfeqo2bucxxa6ptw7jtq3w35z77t5r3gui45j4yu2gtwm`
+						)})`,
 						backgroundPositionY: '-47px',
 					}}
 					onClick={onShowModalDetail}
@@ -123,7 +125,9 @@ const GachaModalDetail = ({ claimGacha, onClose }) => {
 				<div
 					className="bg-cover bg-center h-40 md:h-60 rounded-t-md"
 					style={{
-						backgroundImage: `url(./gacha-banner.jpg)`,
+						backgroundImage: `url(${parseImgUrl(
+							`bafkreifa7oppjksaa2euocnedsww6u7grjmfja6zkdm5u3mjjdvwkm54me`
+						)})`,
 					}}
 				>
 					<div className="absolute right-0 top-0 pr-4 pt-4">
