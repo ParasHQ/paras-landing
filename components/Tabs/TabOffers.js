@@ -64,17 +64,17 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer }) => {
 				deposit: '1',
 			})
 
-			if (res.response.error) {
+			if (res?.response.error) {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							{res.response.error.kind.ExecutionError}
+							{res?.response.error.kind.ExecutionError}
 						</div>
 					),
 					type: 'error',
 					duration: 2500,
 				})
-			} else {
+			} else if (res) {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">{`Successfully delete offer`}</div>
@@ -222,17 +222,17 @@ const TabOffers = ({ localToken }) => {
 				})
 			}
 
-			if (res.response.error) {
+			if (res?.response.error) {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							{res.response.error.kind.ExecutionError}
+							{res?.response.error.kind.ExecutionError}
 						</div>
 					),
 					type: 'error',
 					duration: 2500,
 				})
-			} else {
+			} else if (res) {
 				onDismissModal()
 				toast.show({
 					text: (

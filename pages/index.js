@@ -4,12 +4,13 @@ import Nav from 'components/Nav'
 import Footer from 'components/Footer'
 import Modal from 'components/Modal'
 import YouTube from 'react-youtube'
-import { HomeMarqueeList } from 'components/Home/HomeMarqueeList'
-import { HomePublicationList } from 'components/Home/HomePublicationList'
 import { HomeTopUserList } from 'components/Home/HomeTopUserList'
 import { HomeCardList } from 'components/Home/HomeCardList'
 import { useIntl } from 'hooks/useIntl'
 import GachaModal from 'components/Modal/GachaModal'
+import HomeCollectionList from 'components/Home/HomeCollectionList'
+import HomeFeaturedBanner from 'components/Home/HomeFeaturedBanner'
+import HomeBanner from 'components/Home/HomeBanner'
 
 export default function Home() {
 	const [showVideoModal, setShowVideoModal] = useState(false)
@@ -103,56 +104,13 @@ export default function Home() {
 			<Nav />
 			<div className="max-w-6xl m-auto">
 				<div className="relative px-4 pb-24">
-					<HomeMarqueeList />
-					<HomePublicationList />
-					<HomeTopUserList />
+					<HomeFeaturedBanner />
+					<HomeCollectionList showDetails={false} />
+					<HomeTopUserList showToggle={false} className="my-12" />
+					<HomeBanner />
 					<HomeCardList />
-					<div className="mt-8 w-full flex flex-wrap"></div>
-					<div className="mt-8">
-						<p className="text-white font-semibold text-3xl">{localeLn('HowWorks')}</p>
-						<div className="flex flex-wrap -mx-4">
-							<div className="w-full lg:w-2/3 relative mt-4 px-4">
-								<div className="absolute inset-0 flex items-center justify-center">
-									<div
-										className="p-2 rounded-full overflow-hidden cursor-pointer relative"
-										onClick={() => setShowVideoModal(true)}
-									>
-										<div className="absolute z-0 inset-0 bg-gray-100 opacity-75"></div>
-										<svg
-											className="relative z-10"
-											width="32"
-											height="32"
-											viewBox="0 0 24 24"
-											fill="none"
-											xmlns="http://www.w3.org/2000/svg"
-										>
-											<path
-												fillRule="evenodd"
-												clipRule="evenodd"
-												d="M5 20.9999V2.99993C5 2.20876 5.87525 1.73092 6.54076 2.15875L20.5408 11.1587C21.1531 11.5524 21.1531 12.4475 20.5408 12.8411L6.54076 21.8411C5.87525 22.2689 5 21.7911 5 20.9999Z"
-												fill="rgba(0,0,0,0.8)"
-											/>
-										</svg>
-									</div>
-								</div>
-								<img className="rounded-md overflow-hidden" src="/thumbnail.jpg" />
-							</div>
-							<div className="w-full lg:w-1/3 px-4">
-								<div className="w-full mt-8 lg:mt-4">
-									<h2 className="text-white font-bold text-2xl text-gradient">
-										{localeLn('ForCollectors')}
-									</h2>
-									<p className="mt-4 text-gray-400">{localeLn('DiscoverBeautifulCards')}</p>
-								</div>
-								<div className="mt-8">
-									<h2 className="text-white font-bold text-2xl text-gradient">
-										{localeLn('ForArtists')}
-									</h2>
-									<p className="mt-4 text-gray-400">{localeLn('CreateDigitalCards')}</p>
-								</div>
-							</div>
-						</div>
-					</div>
+					<HomeTopUserList activeType="top-buyers" showToggle={false} className="mt-12" />
+					<HomeTopUserList activeType="top-sellers" showToggle={false} className="mt-12" />
 				</div>
 			</div>
 

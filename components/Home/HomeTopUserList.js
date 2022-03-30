@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import axios from 'axios'
+import cachios from 'cachios'
 import Link from 'next/link'
 import { parseImgUrl } from 'utils/common'
 import LinkToProfile from 'components/LinkToProfile'
@@ -11,7 +11,7 @@ const TopCollection = ({ collection, idx }) => {
 	const [colDetail, setColDetail] = useState({})
 
 	useEffect(async () => {
-		const res = await axios(`${process.env.V2_API_URL}/collections`, {
+		const res = await cachios.get(`${process.env.V2_API_URL}/collections`, {
 			params: {
 				collection_id: collection.collection_id,
 			},
@@ -50,10 +50,11 @@ const TopUser = ({ user, idx }) => {
 	const [profile, setProfile] = useState({})
 
 	useEffect(async () => {
-		const res = await axios(`${process.env.V2_API_URL}/profiles`, {
+		const res = await cachios.get(`${process.env.V2_API_URL}/profiles`, {
 			params: {
 				accountId: user.account_id,
 			},
+			ttl: 600,
 		})
 		setProfile(res.data.data.results[0])
 	}, [])
@@ -85,14 +86,18 @@ const TopUser = ({ user, idx }) => {
 	)
 }
 
-export const HomeTopUserList = () => {
+export const HomeTopUserList = ({
+	activeType = 'top-collections',
+	showToggle = true,
+	className,
+}) => {
 	const { localeLn } = useIntl()
 	const [topBuyerList, setTopBuyerList] = useState([])
 	const [topSellerList, setTopSellerList] = useState([])
 	const [topCollectionList, setTopCollectionList] = useState([])
 	const [isLoading, setIsLoading] = useState(true)
 	const [showTopModal, setShowTopModal] = useState(false)
-	const [topUserType, setTopUserType] = useState('top-collections')
+	const [topUserType, setTopUserType] = useState(activeType)
 
 	const modalRef = useRef()
 
@@ -120,10 +125,11 @@ export const HomeTopUserList = () => {
 	}
 
 	const fetchTopUsers = async () => {
-		const resp = await axios.get(`${process.env.V2_API_URL}/activities/top-users`, {
+		const resp = await cachios.get(`${process.env.V2_API_URL}/activities/top-users`, {
 			params: {
 				__limit: 12,
 			},
+			ttl: 60,
 		})
 		if (resp.data.data) {
 			setTopBuyerList(resp.data.data.buyers)
@@ -146,31 +152,34 @@ export const HomeTopUserList = () => {
 	}
 
 	return (
-		<div>
-			<div className="w-full mt-16">
+		<div className={className}>
+			<div className="w-full mt-6">
 				<div className="flex items-center justify-between">
 					<div ref={modalRef}>
 						<div
-							className="flex items-center gap-2 cursor-pointer"
-							onClick={() => setShowTopModal(!showTopModal)}
+							className={`flex items-baseline gap-2 ${showToggle ? 'cursor-pointer' : ''}`}
+							onClick={() => showToggle && setShowTopModal(!showTopModal)}
 						>
 							<h1 className="text-white font-semibold text-3xl capitalize">
 								{topUserTitle(topUserType)}
 							</h1>
-							<svg
-								viewBox="0 0 11 7"
-								fill="whites"
-								width="18"
-								height="18"
-								xlmns="http://www.w3.org/2000/svg"
-							>
-								<path
-									fillRule="evenodd"
-									clipRule="evenodd"
-									d="M5.00146 6.41431L9.70857 1.7072C10.0991 1.31668 10.0991 0.683511 9.70857 0.292986C9.31805 -0.097538 8.68488 -0.097538 8.29436 0.292986L5.00146 3.58588L1.70857 0.292986C1.31805 -0.097538 0.684882 -0.097538 0.294358 0.292986C-0.0961662 0.68351 -0.0961662 1.31668 0.294358 1.7072L5.00146 6.41431Z"
-									fill="white"
-								></path>
-							</svg>
+							{showToggle && (
+								<svg
+									viewBox="0 0 11 7"
+									fill="whites"
+									width="18"
+									height="18"
+									xlmns="http://www.w3.org/2000/svg"
+								>
+									<path
+										fillRule="evenodd"
+										clipRule="evenodd"
+										d="M5.00146 6.41431L9.70857 1.7072C10.0991 1.31668 10.0991 0.683511 9.70857 0.292986C9.31805 -0.097538 8.68488 -0.097538 8.29436 0.292986L5.00146 3.58588L1.70857 0.292986C1.31805 -0.097538 0.684882 -0.097538 0.294358 0.292986C-0.0961662 0.68351 -0.0961662 1.31668 0.294358 1.7072L5.00146 6.41431Z"
+										fill="white"
+									></path>
+								</svg>
+							)}
+							<p className="text-white hidden md:block">in 7 days</p>
 						</div>
 						{showTopModal && (
 							<div className="absolute max-w-full z-20 bg-dark-primary-1 px-5 py-2 rounded-md text-lg text-gray-100 w-64">
@@ -221,7 +230,8 @@ export const HomeTopUserList = () => {
 						</a>
 					</Link>
 				</div>
-				<div className="w-full mt-4">
+				<p className="text-white md:hidden">in 7 days</p>
+				<div className="w-full md:mt-2">
 					{!isLoading ? (
 						<div className="w-full grid grid-rows-3 grid-flow-col py-2 pb-4 overflow-x-scroll top-user-scroll">
 							{topUserType === 'top-collections' &&
