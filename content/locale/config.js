@@ -22,6 +22,7 @@ export const config = ({
 	deleteCollection,
 	collection,
 	categories,
+	artistVerification,
 }) => {
 	return {
 		defaultAll: {
@@ -174,6 +175,10 @@ export const config = ({
 		'/categories': {
 			...common,
 			...categories,
+		},
+		'/artist-verification': {
+			...common,
+			...artistVerification,
 		},
 	}
 }

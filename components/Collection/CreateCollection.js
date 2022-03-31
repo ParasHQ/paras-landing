@@ -263,8 +263,9 @@ const CreateCollection = ({ onFinishCreate, oneGrid }) => {
 								onChange={(e) =>
 									setCollectionSocialMedia((prev) => ({ ...prev, twitter: e.target.value }))
 								}
-								className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10 pl-44"
-								placeholder="Username"
+								className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
+								style={{ paddingLeft: '10.375rem' }}
+								placeholder="username"
 							/>
 							<div className="absolute left-0 top-0 flex items-center text-white text-opacity-40 h-full px-2">
 								https://twitter.com/
@@ -280,7 +281,7 @@ const CreateCollection = ({ onFinishCreate, oneGrid }) => {
 									setCollectionSocialMedia((prev) => ({ ...prev, discord: e.target.value }))
 								}
 								className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10 pl-40"
-								placeholder="username"
+								placeholder="invite-link-id"
 							/>
 							<div className="absolute left-0 top-0 flex items-center text-white text-opacity-40 h-full px-2">
 								https://discord.gg/

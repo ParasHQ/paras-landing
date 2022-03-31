@@ -93,6 +93,11 @@ const Footer = () => {
 							{localeLn('Discord')}
 						</a>
 					</div>
+					<div className="flex items-center pt-2 px-2">
+						<Link href="/privacy">
+							<a className="flex cursor-pointer ">{localeLn('Privacy')}</a>
+						</Link>
+					</div>
 				</div>
 			</div>
 			<div className="py-2">
@@ -118,7 +123,7 @@ const Footer = () => {
 					</div>
 				</div>
 				<div className="mt-2 flex items-center">
-					<p>{localeLn('Paras2021')}</p>
+					<p>{localeLn('Paras2022')}</p>
 					<p className="mx-2">|</p>
 					<div className="flex items-center text-sm">
 						<p>{localeLn('PoweredBy')}</p>
