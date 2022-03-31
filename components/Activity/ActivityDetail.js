@@ -7,13 +7,14 @@ import Card from 'components/Card/Card'
 import LinkToProfile from 'components/LinkToProfile'
 import Modal from 'components/Modal'
 
-import { parseImgUrl, timeAgo } from 'utils/common'
+import { parseImgUrl, prettyTruncate, timeAgo } from 'utils/common'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
 import { useRouter } from 'next/router'
 import CopyLink from 'components/Common/CopyLink'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
+import { useRef } from 'react'
 
 export const descriptionMaker = (activity, localToken, localTradedToken) => {
 	const type = activity.type
@@ -369,6 +370,10 @@ const ActivityDetail = ({ activity }) => {
 	const [showModal, setShowModal] = useState(null)
 	const [isCopied, setIsCopied] = useState(false)
 	const [localToken, setLocalToken] = useState(null)
+	const receiptRef = useRef(null)
+	const receiptSmallRef = useRef(null)
+	const [receiptWidth, setReceiptWidth] = useState(0)
+	const [receiptSmallWidth, setReceiptSmallWidth] = useState(0)
 
 	const shareLink = `${process.env.BASE_URL}/activity/${activity._id}`
 	const [isFlipped, setIsFlipped] = useState(true)
@@ -401,6 +406,11 @@ const ActivityDetail = ({ activity }) => {
 			fetchData()
 		}
 	}, [activity])
+
+	useEffect(() => {
+		setReceiptWidth(receiptRef.current.clientWidth + 48)
+		setReceiptSmallWidth(receiptSmallRef.current.clientWidth + 24)
+	}, [])
 
 	const fetchData = async () => {
 		const url = activity.token_id
@@ -548,8 +558,8 @@ const ActivityDetail = ({ activity }) => {
 						/>
 					</div>
 				</div>
-				<div className="w-full md:w-2/3 text-gray-100 pt-4 pl-0 md:pt-0 md:pl-4">
-					<div className="overflow-hidden">
+				<div className="w-full max-h-full md:w-2/3 text-gray-100 pt-4 pl-0 md:pt-0 md:pl-4 flex flex-col justify-between">
+					<div className="overflow-hidden h-4/5">
 						<div className="flex items-center justify-between">
 							<div className="w-10/12 overflow-hidden truncate">
 								<Link
@@ -599,6 +609,34 @@ const ActivityDetail = ({ activity }) => {
 										/>
 									</svg>
 								</div>
+								{activity.transaction_hash && (
+									<a
+										href={`https:///explorer.${
+											process.env.APP_ENV === 'production' ? `mainnet` : `testnet`
+										}.near.org/transactions/${activity.transaction_hash}${
+											activity.msg?.receipt_id && `#${activity.msg?.receipt_id}`
+										}`}
+										target={`_blank`}
+									>
+										<div className="w-8 h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-4 flex items-center justify-center">
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												className="icon icon-tabler icon-tabler-receipt"
+												width={18}
+												height={18}
+												viewBox="0 0 24 24"
+												strokeWidth="2"
+												stroke="#fff"
+												fill="none"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+											>
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2m4 -14h6m-6 4h6m-2 4h2" />
+											</svg>
+										</div>
+									</a>
+								)}
 							</div>
 						</div>
 						<p className="opacity-75 truncate">
@@ -610,7 +648,7 @@ const ActivityDetail = ({ activity }) => {
 								? localTradedToken?.metadata?.contract_id
 								: localToken?.contract_id}
 						</p>
-						<div className="mt-4">
+						<div className="my-4">
 							<Activity
 								activity={activity}
 								localToken={localToken}
@@ -621,6 +659,66 @@ const ActivityDetail = ({ activity }) => {
 							</p>
 						</div>
 					</div>
+					{activity.msg?.receipt_id && (
+						<>
+							<div className="hidden lg:flex items-center h-1/5 relative">
+								<div className="mr-2">
+									<svg
+										width={`${receiptWidth}px`}
+										height="30px"
+										viewBox="0 0 480 30"
+										version="1.1"
+										xmlns="http://www.w3.org/2000/svg"
+										xmlnsXlink="http://www.w3.org/1999/xlink"
+									>
+										<title>Rectangle</title>
+										<g id="Page-1" stroke="none" strokeWidth={1} fill="none" fillRule="evenodd">
+											<path
+												d="M476,1 C476.828427,1 477.578427,1.33578644 478.12132,1.87867966 C478.664214,2.42157288 479,3.17157288 479,4 L479,4 L479,9.19042644 C478.999718,9.93835491 478.723972,10.6290427 478.263093,11.158588 C477.802285,11.6880528 477.156399,12.0564164 476.415278,12.1598766 C474.780567,12.3888963 473.557489,12.6769797 472.740617,13.0064887 C472.217387,13.2175485 471.834429,13.4570552 471.573889,13.6993417 C471.136634,14.1059632 470.968269,14.5519236 470.968269,15 C470.968269,15.4354859 471.13118,15.8910783 471.572266,16.3275112 C471.838345,16.5907838 472.230505,16.8609019 472.764211,17.1175943 C473.631354,17.5346572 474.92966,17.9470288 476.664467,18.3403402 C477.347301,18.4953024 477.931053,18.8762182 478.344159,19.3934395 C478.757303,19.9107075 478.999772,20.564302 479,21.2642336 L479,21.2642336 L479,26 C479,26.8284271 478.664214,27.5784271 478.12132,28.1213203 C477.578427,28.6642136 476.828427,29 476,29 L476,29 L4,29 C3.17157288,29 2.42157288,28.6642136 1.87867966,28.1213203 C1.33578644,27.5784271 1,26.8284271 1,26 L1,26 L0.999999997,21.3845311 C0.999946319,20.6623475 1.2572016,19.991405 1.6919389,19.467827 C2.12668662,18.9442364 2.7389244,18.5680162 3.44867931,18.4353214 C5.4587111,18.059836 6.96369897,17.6508053 7.96837234,17.2221614 C8.57539168,16.9631765 9.02255754,16.6855171 9.32522624,16.4111967 C9.82948175,15.9541703 10.012912,15.4674435 10.012912,15 C10.012912,14.5190808 9.82348111,14.0407783 9.31933397,13.6134529 C9.02197872,13.3614086 8.58345824,13.115901 7.98649243,12.9041753 C7.02878718,12.5645064 5.5939988,12.2827531 3.67759919,12.0754097 C2.91616916,11.9931263 2.24688185,11.6306338 1.7678963,11.0972469 C1.28890469,10.5638532 1.00021938,9.85956149 1,9.09397558 L1,9.09397558 L1,4 C1,3.17157288 1.33578644,2.42157288 1.87867966,1.87867966 C2.42157288,1.33578644 3.17157288,1 4,1 L4,1 Z"
+												id="Rectangle"
+												stroke="#4e4e50"
+												strokeWidth={1}
+											/>
+										</g>
+									</svg>
+								</div>
+								<div
+									className={`text-xs ml-6 mt-1 absolute left-0 text-white text-opacity-30`}
+									ref={receiptRef}
+								>
+									{activity.msg?.receipt_id}
+								</div>
+							</div>
+							<div className="flex lg:hidden items-center h-1/5 relative">
+								<div className="mr-2">
+									<svg
+										width={`${receiptSmallWidth}px`}
+										height="38px"
+										viewBox="0 0 480 25"
+										version="1.1"
+										xmlns="http://www.w3.org/2000/svg"
+										xmlnsXlink="http://www.w3.org/1999/xlink"
+									>
+										<title>Rectangle</title>
+										<g id="Page-1" stroke="none" strokeWidth={1} fill="none" fillRule="evenodd">
+											<path
+												d="M476,1 C476.828427,1 477.578427,1.33578644 478.12132,1.87867966 C478.664214,2.42157288 479,3.17157288 479,4 L479,4 L479,9.19042644 C478.999718,9.93835491 478.723972,10.6290427 478.263093,11.158588 C477.802285,11.6880528 477.156399,12.0564164 476.415278,12.1598766 C474.780567,12.3888963 473.557489,12.6769797 472.740617,13.0064887 C472.217387,13.2175485 471.834429,13.4570552 471.573889,13.6993417 C471.136634,14.1059632 470.968269,14.5519236 470.968269,15 C470.968269,15.4354859 471.13118,15.8910783 471.572266,16.3275112 C471.838345,16.5907838 472.230505,16.8609019 472.764211,17.1175943 C473.631354,17.5346572 474.92966,17.9470288 476.664467,18.3403402 C477.347301,18.4953024 477.931053,18.8762182 478.344159,19.3934395 C478.757303,19.9107075 478.999772,20.564302 479,21.2642336 L479,21.2642336 L479,26 C479,26.8284271 478.664214,27.5784271 478.12132,28.1213203 C477.578427,28.6642136 476.828427,29 476,29 L476,29 L4,29 C3.17157288,29 2.42157288,28.6642136 1.87867966,28.1213203 C1.33578644,27.5784271 1,26.8284271 1,26 L1,26 L0.999999997,21.3845311 C0.999946319,20.6623475 1.2572016,19.991405 1.6919389,19.467827 C2.12668662,18.9442364 2.7389244,18.5680162 3.44867931,18.4353214 C5.4587111,18.059836 6.96369897,17.6508053 7.96837234,17.2221614 C8.57539168,16.9631765 9.02255754,16.6855171 9.32522624,16.4111967 C9.82948175,15.9541703 10.012912,15.4674435 10.012912,15 C10.012912,14.5190808 9.82348111,14.0407783 9.31933397,13.6134529 C9.02197872,13.3614086 8.58345824,13.115901 7.98649243,12.9041753 C7.02878718,12.5645064 5.5939988,12.2827531 3.67759919,12.0754097 C2.91616916,11.9931263 2.24688185,11.6306338 1.7678963,11.0972469 C1.28890469,10.5638532 1.00021938,9.85956149 1,9.09397558 L1,9.09397558 L1,4 C1,3.17157288 1.33578644,2.42157288 1.87867966,1.87867966 C2.42157288,1.33578644 3.17157288,1 4,1 L4,1 Z"
+												id="Rectangle"
+												stroke="#4e4e50"
+												strokeWidth={1}
+											/>
+										</g>
+									</svg>
+								</div>
+								<div
+									className={`text-xs ml-3 mt-1 absolute left-0 text-white text-opacity-30`}
+									ref={receiptSmallRef}
+								>
+									{prettyTruncate(activity.msg?.receipt_id, 35, 'address')}
+								</div>
+							</div>
+						</>
+					)}
 				</div>
 			</div>
 		</Fragment>
