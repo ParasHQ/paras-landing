@@ -322,6 +322,8 @@ const ActivityDetail = ({ activity }) => {
 	const receiptSmallRef = useRef(null)
 	const [receiptWidth, setReceiptWidth] = useState(0)
 	const [receiptSmallWidth, setReceiptSmallWidth] = useState(0)
+	const MARGIN_RECEIPTID_DIV = 48
+	const MARGIN_RECEIPTID_SMALL_DIV = 24
 
 	const shareLink = `${process.env.BASE_URL}/activity/${activity._id}`
 
@@ -332,8 +334,8 @@ const ActivityDetail = ({ activity }) => {
 	}, [activity])
 
 	useEffect(() => {
-		setReceiptWidth(receiptRef.current.clientWidth + 48)
-		setReceiptSmallWidth(receiptSmallRef.current.clientWidth + 24)
+		setReceiptWidth(receiptRef.current.clientWidth + MARGIN_RECEIPTID_DIV)
+		setReceiptSmallWidth(receiptSmallRef.current.clientWidth + MARGIN_RECEIPTID_SMALL_DIV)
 	}, [])
 
 	const fetchData = async () => {
