@@ -1,7 +1,6 @@
 import axios from 'axios'
 import Head from 'next/head'
-import { useState } from 'react'
-import { useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import useStore from 'lib/store'
@@ -11,6 +10,7 @@ import { useRouter } from 'next/router'
 import { sentryCaptureException } from 'lib/sentry'
 import WalletHelper from 'lib/WalletHelper'
 import { useForm } from 'react-hook-form'
+import ReCAPTCHA from 'react-google-recaptcha'
 
 import { useIntl } from 'hooks/useIntl'
 const Verify = () => {
@@ -18,6 +18,7 @@ const Verify = () => {
 	const router = useRouter()
 	const store = useStore()
 	const toast = useToast()
+	const recaptchaRef = useRef()
 
 	const [profile, setProfile] = useState('')
 	const [isSubmitting, setIsSubmitting] = useState(false)
@@ -32,6 +33,7 @@ const Verify = () => {
 		register,
 		handleSubmit,
 		setError,
+		setValue,
 	} = useForm()
 
 	useEffect(() => {
@@ -39,8 +41,14 @@ const Verify = () => {
 			setProfile(`${window.location.origin}/${store.currentUser}`)
 			checkStatusVerification()
 			checkQuota()
+		} else if (store.initialized && store.currentUser === null) {
+			router.push('/login')
 		}
 	}, [store])
+
+	useEffect(() => {
+		register({ name: 'captchaToken' }, { required: true })
+	})
 
 	const checkQuota = async () => {
 		try {
@@ -126,6 +134,7 @@ const Verify = () => {
 			paras_profile: profile,
 			instagram: data.instagram,
 			twitter: data.twitter,
+			captcha_token: data.captchaToken,
 		}
 
 		try {
@@ -161,7 +170,7 @@ const Verify = () => {
 
 	const _goToProfile = async (e) => {
 		e.preventDefault()
-		window.location.replace(profile)
+		router.push(`/${store.currentUser}`)
 	}
 
 	const _renderLoading = () => {
@@ -293,6 +302,17 @@ const Verify = () => {
 							{errors.twitter?.type === 'required' && 'Twitter is required'}
 							{errors.twitter?.type === 'invalid-url' &&
 								localeLn('Please enter only your twitter username')}
+						</div>
+					</div>
+					<div className="mt-6">
+						<ReCAPTCHA
+							size="normal"
+							ref={recaptchaRef}
+							sitekey={process.env.RECAPTCHA_SITE_KEY}
+							onChange={(token) => setValue('captchaToken', token)}
+						/>
+						<div className="mt-2 text-sm text-red-500">
+							{errors.captchaToken?.type === 'required' && 'Captcha is required'}
 						</div>
 					</div>
 					{!isQuotaAvail && (
