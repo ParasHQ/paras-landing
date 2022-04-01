@@ -202,6 +202,7 @@ const CardInfo = {
 	Year: 'Año',
 	EditionOf: 'Edición de',
 	AboutToBid: 'Estás a punto de ofertar',
+	AddNFTTrade: 'Agregar NFT para el comercio',
 	Quantity: 'Cantidad',
 	AmountIn: 'Cantidad en',
 	TotalBidAmount: 'Importe total de la oferta',

@@ -9,8 +9,10 @@ import Button from 'components/Common/Button'
 import { sentryCaptureException } from 'lib/sentry'
 import {
 	GAS_FEE,
+	ACCEPT_GAS_FEE,
 	GAS_FEE_150,
 	GAS_FEE_200,
+	STORAGE_ADD_MARKET_FEE,
 	STORAGE_APPROVE_FEE,
 	STORAGE_MINT_FEE,
 } from 'config/constants'
@@ -20,19 +22,48 @@ import Avatar from 'components/Common/Avatar'
 import AcceptBidModal from 'components/Modal/AcceptBidModal'
 import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
+import Media from 'components/Common/Media'
+import { useRouter } from 'next/router'
 
 const FETCH_TOKENS_LIMIT = 12
 
-const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer }) => {
+const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned, localToken }) => {
+	const router = useRouter()
 	const [profile, setProfile] = useState({})
-	const currentUser = useStore((state) => state.currentUser)
+	const { currentUser, setTransactionRes } = useStore((state) => ({
+		currentUser: state.currentUser,
+		setTransactionRes: state.setTransactionRes,
+	}))
+	const [tradedTokenData, setTradedTokenData] = useState([])
+	const [isEnableForAccept, setIsEnableForAccept] = useState(true)
 	const toast = useToast()
+	const isNFTTraded = data?.type && data?.type === 'trade'
 
 	useEffect(() => {
 		if (data.buyer_id) {
 			fetchBuyerProfile()
 		}
 	}, [data.buyer_id])
+
+	useEffect(() => {
+		if (data.type === 'trade') {
+			fetchTradeToken()
+		}
+	}, [])
+
+	useEffect(async () => {
+		if (!localToken.token_id && data.type === 'trade') {
+			const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
+				params: {
+					token_series_id: localToken.token_series_id,
+					contract_id: localToken.contract_id,
+					owner_id: currentUser,
+				},
+				ttl: 60,
+			})
+			resp.data.data.results.length === 0 ? setIsEnableForAccept(false) : setIsEnableForAccept(true)
+		}
+	}, [])
 
 	const fetchBuyerProfile = async () => {
 		try {
@@ -49,44 +80,154 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer }) => {
 		}
 	}
 
-	const deleteOffer = async () => {
+	const fetchTradeToken = async () => {
 		const params = {
-			nft_contract_id: data.contract_id,
-			...(data.token_id ? { token_id: data.token_id } : { token_series_id: data.token_series_id }),
+			token_id: data.buyer_token_id,
+			contract_id: data.buyer_nft_contract_id,
+			__limit: 1,
 		}
+		const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
+			params: params,
+			ttl: 30,
+		})
+		setTradedTokenData(resp.data.data.results[0])
+	}
+
+	const deleteOffer = async () => {
+		const params = isNFTTraded
+			? {
+					nft_contract_id: data.contract_id,
+					...(data.token_id
+						? { token_id: data.token_id }
+						: { token_series_id: data.token_series_id }),
+					buyer_nft_contract_id: data.buyer_nft_contract_id,
+					buyer_token_id: data.buyer_token_id,
+			  }
+			: {
+					nft_contract_id: data.contract_id,
+					...(data.token_id
+						? { token_id: data.token_id }
+						: { token_series_id: data.token_series_id }),
+			  }
 
 		try {
-			const res = await WalletHelper.callFunction({
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
-				methodName: `delete_offer`,
-				args: params,
-				gas: GAS_FEE,
-				deposit: '1',
-			})
+			if (isNFTTraded) {
+				const res = await WalletHelper.callFunction({
+					contractId: process.env.MARKETPLACE_CONTRACT_ID,
+					methodName: `delete_trade`,
+					args: params,
+					gas: GAS_FEE,
+					deposit: '1',
+				})
+				if (res.error && res.error.includes('reject')) {
+					return
+				} else {
+					if (res.response.error) {
+						toast.show({
+							text: (
+								<div className="font-semibold text-center text-sm">
+									{res.response.error.kind.ExecutionError}
+								</div>
+							),
+							type: 'error',
+							duration: 2500,
+						})
+					} else {
+						toast.show({
+							text: (
+								<div className="font-semibold text-center text-sm">{`Successfully delete trade`}</div>
+							),
+							type: 'success',
+							duration: 2500,
+						})
+						setTimeout(fetchOffer, 2500)
+					}
+				}
+			} else {
+				const res = await WalletHelper.callFunction({
+					contractId: process.env.MARKETPLACE_CONTRACT_ID,
+					methodName: `delete_offer`,
+					args: params,
+					gas: GAS_FEE,
+					deposit: '1',
+				})
+				if (res?.response.error) {
+					toast.show({
+						text: (
+							<div className="font-semibold text-center text-sm">
+								{res?.response.error.kind.ExecutionError}
+							</div>
+						),
+						type: 'error',
+						duration: 2500,
+					})
+				} else if (res) {
+					toast.show({
+						text: (
+							<div className="font-semibold text-center text-sm">{`Successfully delete offer`}</div>
+						),
+						type: 'success',
+						duration: 2500,
+					})
+				}
+			}
+		} catch (error) {
+			sentryCaptureException(error)
+		}
+	}
 
-			if (res?.response.error) {
+	const acceptTrade = async () => {
+		const [, tradeType, tokenId] = isOwned.split('::')
+		const params = {
+			account_id: process.env.MARKETPLACE_CONTRACT_ID,
+		}
+		params.token_id = tokenId
+		params.msg = JSON.stringify({
+			market_type: tradeType === 'token' ? 'accept_trade' : 'accept_trade_paras_series',
+			buyer_id: data.buyer_id,
+			buyer_nft_contract_id: data.buyer_nft_contract_id,
+			buyer_token_id: data.buyer_token_id,
+		})
+
+		const res = await WalletHelper.signAndSendTransaction({
+			receiverId: data.contract_id,
+			actions: [
+				{
+					methodName: `nft_approve`,
+					args: params,
+					gas: ACCEPT_GAS_FEE,
+					deposit: STORAGE_APPROVE_FEE,
+				},
+			],
+		})
+		if (res.error && res.error.includes('reject')) {
+			return
+		} else {
+			if (res.response.error) {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
-							{res?.response.error.kind.ExecutionError}
+							{res.response.error.kind.ExecutionError}
 						</div>
 					),
 					type: 'error',
 					duration: 2500,
 				})
-			} else if (res) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">{`Successfully delete offer`}</div>
-					),
-					type: 'success',
-					duration: 2500,
-				})
+			} else {
+				if (res.response) {
+					setTransactionRes(res?.response)
+				}
 				setTimeout(fetchOffer, 2500)
 			}
-		} catch (error) {
-			sentryCaptureException(error)
 		}
+	}
+
+	const onClickNftTrade = () => {
+		router.push(
+			`/token/${tradedTokenData.contract_id}::${tradedTokenData.token_series_id}${
+				tradedTokenData.token_id && `/${tradedTokenData.token_id}`
+			}`
+		)
 	}
 
 	return (
@@ -107,16 +248,44 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer }) => {
 					<p className="text-sm text-gray-300">{timeAgo.format(new Date(data.issued_at))}</p>
 				</div>
 			</div>
-			<div className="flex items-center justify-between mt-2">
-				<div>
-					<p>Offer {formatNearAmount(data.price)} Ⓝ</p>
-				</div>
-				{!hideButton && data.buyer_id !== currentUser && (
+			<div className={`flex ${isNFTTraded ? `items-end` : `items-center`} justify-between mt-2`}>
+				{data.type === 'trade' ? (
+					<div>
+						<p className="mb-2">Offer NFT for trade</p>
+						<div className="flex items-center">
+							<div className="z-20 max-h-40 w-24 cursor-pointer border-4 border-gray-700 rounded-lg">
+								<a
+									onClick={(e) => {
+										e.preventDefault()
+										onClickNftTrade()
+									}}
+								>
+									<Media
+										className="rounded-lg overflow-hidden"
+										url={parseImgUrl(tradedTokenData?.metadata?.media, null, {
+											width: `600`,
+											useOriginal: process.env.APP_ENV === 'production' ? false : true,
+											isMediaCdn: true,
+										})}
+										seeDetails={true}
+									/>
+								</a>
+							</div>
+						</div>
+					</div>
+				) : (
+					<div>
+						<p>Offer {formatNearAmount(data.price)} Ⓝ</p>
+					</div>
+				)}
+				{!hideButton && data.buyer_id !== currentUser && isEnableForAccept && (
 					<div>
 						<Button
 							size="sm"
 							className="w-full"
-							onClick={() => onAcceptOffer(data)}
+							onClick={() => {
+								isNFTTraded ? acceptTrade() : onAcceptOffer(data)
+							}}
 							hideButton={hideButton}
 						>
 							Accept
@@ -355,7 +524,9 @@ const TabOffers = ({ localToken }) => {
 								data={x}
 								onAcceptOffer={() => onAcceptOffer(x)}
 								hideButton={!isOwned}
+								isOwned={isOwned}
 								fetchOffer={() => fetchOffers(true)}
+								localToken={localToken}
 							/>
 						</div>
 					))

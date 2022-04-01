@@ -172,6 +172,7 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 				activeToken={activeToken}
 				onCloseModal={onCloseModal}
 				modalType={modalType}
+				setModalType={setModalType}
 			/>
 			<div
 				className={`${
