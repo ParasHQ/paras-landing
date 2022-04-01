@@ -1,4 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
+import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import Head from 'next/head'
 
@@ -466,6 +467,7 @@ const Privacy = () => {
 					</li>
 				</ul>
 			</div>
+			<Footer />
 		</div>
 	)
 }

@@ -8,10 +8,12 @@ import { useEffect, useState } from 'react'
 import Tooltip from 'components/Common/Tooltip'
 import { IconInfo } from 'components/Icons'
 import WalletHelper from 'lib/WalletHelper'
+import useStore from 'lib/store'
 
 const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitForm }) => {
 	const { localeLn } = useIntl()
 	const [txFee, setTxFee] = useState(null)
+	const { nearUsdPrice } = useStore()
 
 	const showTooltipTxFee = (txFee?.next_fee || 0) > (txFee?.current_fee || 0)
 	const tooltipTxFeeText = localeLn('DynamicTxFee', {
@@ -86,8 +88,15 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 						{localeLn('AboutToAcceptBid')} <b>{token.metadata.name}</b> {localeLn('From')}{' '}
 						<b>{data.buyer_id}</b>
 					</p>
-					<div className="text-white mt-4 text-2xl font-bold text-center">
-						{`${prettyBalance(data.price, 24, 4)} Ⓝ `}
+					<div className="text-center">
+						<div className="text-white mt-4 text-2xl font-bold text-center">
+							{`${prettyBalance(data.price, 24, 4)} Ⓝ `}
+						</div>
+						{nearUsdPrice !== 0 && (
+							<div className="text-xs text-gray-300 truncate">
+								${prettyBalance(JSBI.BigInt(data.price) * nearUsdPrice, 24, 2)}
+							</div>
+						)}
 					</div>
 
 					<div className="mt-4 text-center">

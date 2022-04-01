@@ -174,6 +174,8 @@ function MyApp({ Component, pageProps }) {
 	}
 
 	const setupUser = async (currentUser) => {
+		if (!currentUser) return
+
 		store.setCurrentUser(currentUser.accountId)
 		store.setUserBalance(currentUser.balance)
 

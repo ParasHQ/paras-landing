@@ -23,6 +23,7 @@ const moduleExports = {
 		REPORT_URL: process.env.REPORT_URL,
 		PARAS_TOKEN_CONTRACT: process.env.PARAS_TOKEN_CONTRACT,
 		GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID,
+		RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
 	},
 	async redirects() {
 		return [

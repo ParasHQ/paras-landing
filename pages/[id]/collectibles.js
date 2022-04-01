@@ -68,7 +68,13 @@ const Collection = ({ userProfile, accountId }) => {
 
 	useEffect(() => {
 		updateFilter(router.query)
-	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.is_notforsale])
+	}, [
+		router.query.sort,
+		router.query.pmin,
+		router.query.pmax,
+		router.query.is_notforsale,
+		router.query.is_staked,
+	])
 
 	const tokensParams = (query) => {
 		const parsedSortQuery = parseSortTokenQuery(query.sort)
@@ -82,6 +88,7 @@ const Collection = ({ userProfile, accountId }) => {
 			...(query._id_next && { _id_next: query._id_next }),
 			...(query.price_next &&
 				parsedSortQuery.includes('price') && { price_next: query.price_next }),
+			...(query.is_staked && { is_staked: query.is_staked }),
 		}
 
 		return params
@@ -153,7 +160,7 @@ const Collection = ({ userProfile, accountId }) => {
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'collection'} />
 				<div className="flex justify-end my-4 md:mb-14 md:-mr-4">
-					<FilterMarket isShowVerified={false} isCollectibles={true} />
+					<FilterMarket isShowVerified={false} isCollectibles={true} isShowStaked={true} />
 					<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 				</div>
 				<div className="-mt-4 md:-mt-6">

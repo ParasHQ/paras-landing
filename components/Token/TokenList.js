@@ -145,6 +145,9 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 		const price = token.price
 
 		if (token.owner_id === currentUser) {
+			if (token.is_staked) {
+				return localeLn('Unstake')
+			}
 			return localeLn('UpdateListing')
 		}
 
@@ -156,6 +159,10 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 
 		setActiveToken(token)
 		if (token.owner_id === currentUser) {
+			if (token.is_staked) {
+				router.push('https://stake.paras.id')
+				return
+			}
 			setModalType('updatelisting')
 		} else {
 			setModalType(price ? 'buy' : 'offer')

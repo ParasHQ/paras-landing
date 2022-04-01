@@ -178,7 +178,12 @@ const Activity = ({ activity, localTradedToken, localToken }) => {
 				</span>
 				<span>
 					{' '}
-					to <span className="font-semibold">{activity.msg.seed_title}</span>
+					to{' '}
+					<Link href="https://stake.paras.id">
+						<a className="border-b-2 border-transparent text-gray-100 hover:border-gray-100">
+							<span className="font-semibold">{activity.msg.seed_title}</span>
+						</a>
+					</Link>
 				</span>
 			</p>
 		)

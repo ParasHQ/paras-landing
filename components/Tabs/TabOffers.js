@@ -12,12 +12,11 @@ import {
 	ACCEPT_GAS_FEE,
 	GAS_FEE_150,
 	GAS_FEE_200,
-	STORAGE_ADD_MARKET_FEE,
 	STORAGE_APPROVE_FEE,
 	STORAGE_MINT_FEE,
 } from 'config/constants'
 import JSBI from 'jsbi'
-import { parseImgUrl, timeAgo } from 'utils/common'
+import { parseImgUrl, prettyBalance, timeAgo } from 'utils/common'
 import Avatar from 'components/Common/Avatar'
 import AcceptBidModal from 'components/Modal/AcceptBidModal'
 import WalletHelper from 'lib/WalletHelper'
@@ -38,6 +37,7 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned, localToke
 	const [isEnableForAccept, setIsEnableForAccept] = useState(true)
 	const toast = useToast()
 	const isNFTTraded = data?.type && data?.type === 'trade'
+	const { nearUsdPrice } = useStore()
 
 	useEffect(() => {
 		if (data.buyer_id) {
@@ -274,8 +274,13 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned, localToke
 						</div>
 					</div>
 				) : (
-					<div>
+					<div className="flex items-baseline">
 						<p>Offer {formatNearAmount(data.price)} Ⓝ</p>
+						{nearUsdPrice !== 0 && (
+							<p className="text-xs text-gray-300 truncate ml-1">
+								~ ${prettyBalance(JSBI.BigInt(data.price) * nearUsdPrice, 24, 2)}
+							</p>
+						)}
 					</div>
 				)}
 				{!hideButton && data.buyer_id !== currentUser && isEnableForAccept && (
