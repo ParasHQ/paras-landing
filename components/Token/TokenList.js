@@ -169,8 +169,6 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 		}
 	}
 
-	console.log('ttt', token.volume)
-
 	return (
 		<>
 			<TokenDetailModal tokens={[token]} />
