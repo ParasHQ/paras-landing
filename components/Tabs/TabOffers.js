@@ -27,7 +27,7 @@ import { useRouter } from 'next/router'
 
 const FETCH_TOKENS_LIMIT = 12
 
-const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned }) => {
+const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned, localToken }) => {
 	const router = useRouter()
 	const [profile, setProfile] = useState({})
 	const { currentUser, setTransactionRes } = useStore((state) => ({
@@ -35,6 +35,7 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned }) => {
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const [tradedTokenData, setTradedTokenData] = useState([])
+	const [isEnableForAccept, setIsEnableForAccept] = useState(true)
 	const toast = useToast()
 	const isNFTTraded = data?.type && data?.type === 'trade'
 
@@ -47,6 +48,20 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned }) => {
 	useEffect(() => {
 		if (data.type === 'trade') {
 			fetchTradeToken()
+		}
+	}, [])
+
+	useEffect(async () => {
+		if (!localToken.token_id && data.type === 'trade') {
+			const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
+				params: {
+					token_series_id: localToken.token_series_id,
+					contract_id: localToken.contract_id,
+					owner_id: currentUser,
+				},
+				ttl: 60,
+			})
+			resp.data.data.results.length === 0 ? setIsEnableForAccept(false) : setIsEnableForAccept(true)
 		}
 	}, [])
 
@@ -104,25 +119,29 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned }) => {
 					gas: GAS_FEE,
 					deposit: '1',
 				})
-				if (res.response.error) {
-					toast.show({
-						text: (
-							<div className="font-semibold text-center text-sm">
-								{res.response.error.kind.ExecutionError}
-							</div>
-						),
-						type: 'error',
-						duration: 2500,
-					})
+				if (res.error && res.error.includes('reject')) {
+					return
 				} else {
-					toast.show({
-						text: (
-							<div className="font-semibold text-center text-sm">{`Successfully delete trade`}</div>
-						),
-						type: 'success',
-						duration: 2500,
-					})
-					setTimeout(fetchOffer, 2500)
+					if (res.response.error) {
+						toast.show({
+							text: (
+								<div className="font-semibold text-center text-sm">
+									{res.response.error.kind.ExecutionError}
+								</div>
+							),
+							type: 'error',
+							duration: 2500,
+						})
+					} else {
+						toast.show({
+							text: (
+								<div className="font-semibold text-center text-sm">{`Successfully delete trade`}</div>
+							),
+							type: 'success',
+							duration: 2500,
+						})
+						setTimeout(fetchOffer, 2500)
+					}
 				}
 			} else {
 				const res = await WalletHelper.callFunction({
@@ -181,24 +200,32 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned }) => {
 				},
 			],
 		})
-		if (res.error) {
-			toast.show({
-				text: <div className="font-semibold text-center text-sm">{res.error}</div>,
-				type: 'error',
-				duration: 2500,
-			})
+		if (res.error && res.error.includes('reject')) {
+			return
 		} else {
-			if (res.response) {
-				setTransactionRes(res?.response)
+			if (res.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+			} else {
+				if (res.response) {
+					setTransactionRes(res?.response)
+				}
+				setTimeout(fetchOffer, 2500)
 			}
-			setTimeout(fetchOffer, 2500)
 		}
 	}
 
 	const onClickNftTrade = () => {
 		router.push(
 			`/token/${tradedTokenData.contract_id}::${tradedTokenData.token_series_id}${
-				data.token_id && `/${tradedTokenData.token_id}`
+				tradedTokenData.token_id && `/${tradedTokenData.token_id}`
 			}`
 		)
 	}
@@ -251,7 +278,7 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned }) => {
 						<p>Offer {formatNearAmount(data.price)} Ⓝ</p>
 					</div>
 				)}
-				{!hideButton && data.buyer_id !== currentUser && (
+				{!hideButton && data.buyer_id !== currentUser && isEnableForAccept && (
 					<div>
 						<Button
 							size="sm"
@@ -499,6 +526,7 @@ const TabOffers = ({ localToken }) => {
 								hideButton={!isOwned}
 								isOwned={isOwned}
 								fetchOffer={() => fetchOffers(true)}
+								localToken={localToken}
 							/>
 						</div>
 					))

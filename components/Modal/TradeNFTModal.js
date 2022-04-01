@@ -106,7 +106,9 @@ const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) =
 						},
 					],
 				})
-				if (res.response) {
+				if (res.error && res.error.includes('reject')) {
+					setIsTrading(false)
+				} else if (res.response) {
 					setIsTrading(false)
 					onClose()
 					setTransactionRes(res?.response)
@@ -138,7 +140,9 @@ const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) =
 					],
 				})
 				const res = await WalletHelper.multipleCallFunction(txs)
-				if (res.response) {
+				if (res.error && res.error.includes('reject')) {
+					setIsTrading(false)
+				} else if (res.response) {
 					setIsTrading(false)
 					onClose()
 					setTransactionRes(res?.response)

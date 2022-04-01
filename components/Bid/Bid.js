@@ -17,7 +17,6 @@ import {
 	ACCEPT_GAS_FEE,
 	GAS_FEE_150,
 	GAS_FEE_200,
-	STORAGE_ADD_MARKET_FEE,
 	STORAGE_APPROVE_FEE,
 	STORAGE_MINT_FEE,
 } from 'config/constants'
@@ -34,6 +33,7 @@ const Bid = ({ data, type, freshFetch }) => {
 	const router = useRouter()
 	const [token, setToken] = useState(null)
 	const [showModal, setShowModal] = useState('')
+	const [isEnableForAccept, setIsEnableForAccept] = useState(true)
 	const isNFTTraded = data?.type && data?.type === 'trade'
 
 	const [isOwned, setIsOwned] = useState(false)
@@ -132,6 +132,19 @@ const Bid = ({ data, type, freshFetch }) => {
 						ttl: 30,
 					}
 				)
+				if (!tokenData.data.data.results[0].token_id && isNFTTraded) {
+					const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
+						params: {
+							token_series_id: tokenData.data.data.results[0].token_series_id,
+							contract_id: tokenData.data.data.results[0].contract_id,
+							owner_id: store.currentUser,
+						},
+						ttl: 60,
+					})
+					resp.data.data.results.length === 0
+						? setIsEnableForAccept(false)
+						: setIsEnableForAccept(true)
+				}
 				if (tokenDataTrade.data.data.results[0] && tokenDataTrade.data.data.results[0]) {
 					setToken(tokenData.data.data.results[0])
 					setTradedTokenData(tokenDataTrade.data.data.results[0])
@@ -297,17 +310,25 @@ const Bid = ({ data, type, freshFetch }) => {
 				},
 			],
 		})
-		if (res.error) {
-			toast.show({
-				text: <div className="font-semibold text-center text-sm">{res.error}</div>,
-				type: 'error',
-				duration: 2500,
-			})
+		if (res.error && res.error.includes('reject')) {
+			return
 		} else {
-			if (res.response) {
-				store.setTransactionRes(res?.response)
+			if (res.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+			} else {
+				if (res.response) {
+					store.setTransactionRes(res?.response)
+				}
+				setTimeout(freshFetch, 2500)
 			}
-			setTimeout(freshFetch, 2500)
 		}
 	}
 
@@ -337,21 +358,25 @@ const Bid = ({ data, type, freshFetch }) => {
 					gas: GAS_FEE,
 					deposit: '1',
 				})
-				if (res.error) {
-					toast.show({
-						text: <div className="font-semibold text-center text-sm">{res.error}</div>,
-						type: 'error',
-						duration: 2500,
-					})
+				if (res.error && res.error.includes('reject')) {
+					return
 				} else {
-					toast.show({
-						text: (
-							<div className="font-semibold text-center text-sm">{`Successfully delete trade`}</div>
-						),
-						type: 'success',
-						duration: 2500,
-					})
-					setTimeout(freshFetch, 2500)
+					if (res.error) {
+						toast.show({
+							text: <div className="font-semibold text-center text-sm">{res.error}</div>,
+							type: 'error',
+							duration: 2500,
+						})
+					} else {
+						toast.show({
+							text: (
+								<div className="font-semibold text-center text-sm">{`Successfully delete trade`}</div>
+							),
+							type: 'success',
+							duration: 2500,
+						})
+						setTimeout(freshFetch, 2500)
+					}
 				}
 			} else {
 				const res = await WalletHelper.callFunction({
@@ -430,7 +455,11 @@ const Bid = ({ data, type, freshFetch }) => {
 					onDelete={deleteOffer}
 				/>
 			)}
-			<div className="border-2 border-dashed my-4 p-4 md:py-6 md:px-8 md:h-72 rounded-md border-gray-800">
+			<div
+				className={`${
+					!isEnableForAccept && `hidden`
+				} border-2 border-dashed my-4 p-4 md:py-6 md:px-8 md:h-72 rounded-md border-gray-800`}
+			>
 				<div className={`flex flex-col md:flex-row ${isNFTTraded && `relative`}`}>
 					<div
 						className={`hidden md:block w-40 h-full ${
