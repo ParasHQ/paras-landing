@@ -69,7 +69,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 				deposit: `1`,
 			})
 
-			if (res.response) {
+			if (res?.response) {
 				onClose()
 				setTransactionRes(res?.response)
 			}
@@ -99,7 +99,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 				deposit: `1`,
 			})
 
-			if (res.response) {
+			if (res?.response) {
 				onClose()
 				setTransactionRes(res?.response)
 			}

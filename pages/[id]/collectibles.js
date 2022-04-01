@@ -7,7 +7,7 @@ import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import Profile from 'components/Profile/Profile'
 import FilterMarket from 'components/Filter/FilterMarket'
-import { parseSortTokenQuery } from 'utils/common'
+import { parseSortTokenQuery, setDataLocalStorage } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
@@ -26,7 +26,9 @@ const Collection = ({ userProfile, accountId }) => {
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(false)
-	const [display, setDisplay] = useState('large')
+	const [display, setDisplay] = useState(
+		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
+	)
 
 	useEffect(async () => {
 		await fetchOwnerTokens(true)
@@ -113,7 +115,7 @@ const Collection = ({ userProfile, accountId }) => {
 	}
 
 	const onClickDisplay = (typeDisplay) => {
-		setDisplay(typeDisplay)
+		setDataLocalStorage('display', typeDisplay, setDisplay)
 	}
 
 	const headMeta = {

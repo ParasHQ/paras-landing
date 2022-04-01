@@ -29,6 +29,7 @@ import TabPublication from 'components/Tabs/TabPublication'
 import ReportModal from 'components/Modal/ReportModal'
 import Card from 'components/Card/Card'
 import { useRouter } from 'next/router'
+import TradeNFTModal from 'components/Modal/TradeNFTModal'
 
 const TokenSeriesDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -39,6 +40,13 @@ const TokenSeriesDetail = ({ token, className }) => {
 		setActiveTab(tab)
 	}
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
+	const [isEnableTrade, setIsEnableTrade] = useState(true)
+
+	useEffect(() => {
+		if (!process.env.WHITELIST_CONTRACT_ID.split(';').includes(token?.contract_id)) {
+			setIsEnableTrade(false)
+		}
+	}, [])
 
 	const router = useRouter()
 
@@ -138,6 +146,14 @@ const TokenSeriesDetail = ({ token, className }) => {
 			return
 		}
 		setShowModal('placeoffer')
+	}
+
+	const onClickOfferNFT = () => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+		setShowModal('placeofferNFT')
 	}
 
 	const isCreator = () => {
@@ -378,13 +394,29 @@ const TokenSeriesDetail = ({ token, className }) => {
 				onClose={onDismissModal}
 				listModalItem={[
 					{ name: 'Share to...', onClick: onClickShare },
+					isEnableTrade && {
+						name: 'Offer Via NFT',
+						onClick: onClickOfferNFT,
+					},
 					{ name: 'Transfer', onClick: onClickBuyerTransfer },
 					isCreator() && { name: 'Reduce Copies', onClick: onClickDecreaseCopies },
 					{ name: 'Report', onClick: () => setShowModal('report') },
 				].filter((x) => x)}
 			/>
 			<TokenShareModal show={showModal === 'share'} onClose={onDismissModal} tokenData={token} />
-			<PlaceBidModal show={showModal === 'placeoffer'} data={token} onClose={onDismissModal} />
+			<PlaceBidModal
+				show={showModal === 'placeoffer'}
+				data={token}
+				onClose={onDismissModal}
+				tokenType={`tokenSeries`}
+			/>
+			<TradeNFTModal
+				show={showModal === 'placeofferNFT'}
+				data={token}
+				onClose={onDismissModal}
+				tokenType={`tokenSeries`}
+				setShowModal={setShowModal}
+			/>
 			<ReportModal show={showModal === 'report'} data={token} onClose={onDismissModal} />
 			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>

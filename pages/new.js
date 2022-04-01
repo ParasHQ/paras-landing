@@ -213,7 +213,7 @@ const NewPage = () => {
 			})
 
 			setIsCreating(false)
-			if (res.response) {
+			if (res?.response) {
 				setTimeout(() => {
 					router.push('/market')
 					store.setTransactionRes(res?.response)
@@ -797,7 +797,7 @@ const NewPage = () => {
 							/>
 						</div>
 					</div>
-					<div className="w-full lg:w-1/3 bg-gray-700 p-4">
+					<div className="w-full lg:w-1/3 bg-gray-700 p-4 relative">
 						{router.query.categoryId && (
 							<div
 								className="w-full bg-primary px-4 py-1 text-center -m-4 mb-4 shadow-md"
@@ -816,18 +816,6 @@ const NewPage = () => {
 						</div>
 						{step === 0 && (
 							<div>
-								<div className="flex justify-between py-2">
-									<button disabled={step === 0} onClick={_handleBack}>
-										{localeLn('Back')}
-									</button>
-									<div>{step + 1}/4</div>
-									<button
-										disabled={!choosenCollection.collection_id}
-										onClick={() => setStep(step + 1)}
-									>
-										{localeLn('Next')}
-									</button>
-								</div>
 								<div className="text-sm mt-2">Choose Collection</div>
 								<div id="collection::user" className="h-60vh overflow-auto">
 									<InfiniteScroll
@@ -870,19 +858,22 @@ const NewPage = () => {
 										))}
 									</InfiniteScroll>
 								</div>
+								<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
+									<button disabled={step === 0} onClick={_handleBack}>
+										{localeLn('Back')}
+									</button>
+									<div>{step + 1}/4</div>
+									<button
+										disabled={!choosenCollection.collection_id}
+										onClick={() => setStep(step + 1)}
+									>
+										{localeLn('Next')}
+									</button>
+								</div>
 							</div>
 						)}
 						{step === 1 && (
 							<div>
-								<div>
-									<div className="flex justify-between py-2">
-										<button onClick={_handleBack}>{localeLn('Back')}</button>
-										<div>{step + 1}/4</div>
-										<button disabled={!imgFile} onClick={() => setStep(step + 1)}>
-											{localeLn('Next')}
-										</button>
-									</div>
-								</div>
 								<div className="mt-4 relative border-2 h-56 border-dashed rounded-md cursor-pointer overflow-hidden border-gray-400">
 									<input
 										className="cursor-pointer w-full opacity-0 absolute inset-0"
@@ -940,18 +931,20 @@ const NewPage = () => {
 										)}
 									</div>
 								</div>
+								<div>
+									<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
+										<button onClick={_handleBack}>{localeLn('Back')}</button>
+										<div>{step + 1}/4</div>
+										<button disabled={!imgFile} onClick={() => setStep(step + 1)}>
+											{localeLn('Next')}
+										</button>
+									</div>
+								</div>
 							</div>
 						)}
 						{step === 2 && (
 							<form onSubmit={handleSubmit(_handleSubmitStep1)}>
 								<div>
-									<div className="flex justify-between py-2">
-										<button onClick={_handleBack}>Back</button>
-										<div>{step + 1}/4</div>
-										<button type="submit" onClick={handleSubmit(_handleSubmitStep1)}>
-											{localeLn('Next')}
-										</button>
-									</div>
 									<div className="mt-2">
 										<label className="block text-sm">{localeLn('Name')}</label>
 										<InputText
@@ -1070,22 +1063,18 @@ const NewPage = () => {
 											))}
 										</Scrollbars>
 									</div>
+									<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
+										<button onClick={_handleBack}>Back</button>
+										<div>{step + 1}/4</div>
+										<button type="submit" onClick={handleSubmit(_handleSubmitStep1)}>
+											{localeLn('Next')}
+										</button>
+									</div>
 								</div>
 							</form>
 						)}
 						{step === 3 && (
-							<form onSubmit={handleSubmit(_handleSubmitStep2)}>
-								<div className="flex justify-between py-2">
-									<button onClick={_handleBack}>Back</button>
-									<div>{step + 1}/4</div>
-									<button
-										disabled={isLoading === 3}
-										type="submit"
-										onClick={handleSubmit(_handleSubmitStep2)}
-									>
-										{localeLn('Next')}
-									</button>
-								</div>
+							<form onSubmit={handleSubmit(_handleSubmitStep2)} className="h-">
 								<div className="mt-2">
 									<div>
 										<RoyaltyWatch control={control} fields={royaltyFields} append={royaltyAppend} />
@@ -1178,6 +1167,17 @@ const NewPage = () => {
 											</div>
 										</>
 									)}
+								</div>
+								<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
+									<button onClick={_handleBack}>Back</button>
+									<div>{step + 1}/4</div>
+									<button
+										disabled={isLoading === 3}
+										type="submit"
+										onClick={handleSubmit(_handleSubmitStep2)}
+									>
+										{localeLn('Next')}
+									</button>
 								</div>
 							</form>
 						)}

@@ -203,6 +203,13 @@ export const checkSocialMediaUrl = (str) => {
 	return !!pattern.test(str)
 }
 
+export const checkTokenUrl = (str) => {
+	var pattern = new RegExp(
+		/^((https?|ftp|smtp):\/\/)?(www\.)?(paras\.id|localhost:\d+|marketplace-v2-testnet\.paras\.id|testnet\.paras\.id)\/token\/([a-z0-9\-#_]+\.?)+::\d+(\/\d+)?/
+	)
+	return !!pattern.test(str)
+}
+
 export const parseSortQuery = (sort, defaultMinPrice = false) => {
 	if (!sort) {
 		return defaultMinPrice ? 'lowest_price::1' : 'updated_at::-1'
@@ -267,3 +274,10 @@ export const decodeBase64 = (b64text) => {
 
 export const isChromeBrowser =
 	typeof navigator !== 'undefined' && navigator.userAgent.indexOf('Chrome') !== -1
+
+export const setDataLocalStorage = (key, value, setState = () => {}) => {
+	if (typeof window !== 'undefined') {
+		window.localStorage.setItem(key, value)
+		setState(window.localStorage.getItem(key))
+	}
+}

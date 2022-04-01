@@ -85,9 +85,17 @@ input.clear {
 	@apply opacity-100;
 }
 
-.slide.selected {
-	padding-left: 25%;
-	padding-right: 25%;
+.dot {
+	transition: opacity 0.25s ease-in;
+	opacity: 0.3;
+	filter: alpha(opacity=30);
+	box-shadow: none !important;
+	border-radius: 50%;
+	width: 8px;
+	height: 8px;
+	cursor: pointer;
+	display: inline-block;
+	margin: 0 8px;
 }
 
 .youtube-container {
@@ -261,14 +269,6 @@ input.clear {
 	transition: bottom 0.075s ease, transform 0.075s 0.12s cubic-bezier(0.215, 0.61, 0.355, 1);
 }
 
-@layer utilities {
-	@responsive {
-		.h-1\/2 {
-			height: 50%;
-		}
-	}
-}
-
 .titlePublication {
 	background: transparent;
 	color: white;
@@ -431,20 +431,17 @@ input.clear {
 }
 
 .top-user-scroll::-webkit-scrollbar {
-	height: 5px;
-}
-
-.top-user-scroll::-webkit-scrollbar-track {
-	box-shadow: inset 0 0 5px rgb(32, 32, 32);
-	border-radius: 200px;
+	height: 6px;
+	background: transparent;
+	border: white;
 }
 
 .top-user-scroll::-webkit-scrollbar-thumb {
-	background: #2f3033;
-	border-radius: 200px;
+	box-shadow: inset 0 0 6px rgb(32, 32, 32);
+	border-radius: 20px;
 }
 
 .top-user-scroll::-webkit-scrollbar-thumb:hover {
-	background: #242427;
-	cursor: pointer;
+	box-shadow: inset 0 0 6px rgb(56, 56, 56);
+	border-radius: 20px;
 }

@@ -2,9 +2,11 @@ import cachios from 'cachios'
 import LinkToProfile from 'components/Common/LinkToProfile'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
-import { timeAgo } from 'utils/common'
+import { parseImgUrl, timeAgo } from 'utils/common'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useIntl } from 'hooks/useIntl'
+import Media from 'components/Common/Media'
+import { useRouter } from 'next/router'
 import Link from 'next/link'
 const FETCH_TOKENS_LIMIT = 12
 
@@ -79,7 +81,37 @@ const TabHistory = ({ localToken }) => {
 }
 
 const Activity = ({ activity }) => {
+	const router = useRouter()
 	const { localeLn } = useIntl()
+	const [tradedTokenData, setTradedTokenData] = useState([])
+
+	useEffect(() => {
+		if (activity.type.includes('trade')) {
+			fetchTradeToken()
+		}
+	}, [])
+
+	const onClickNftTrade = () => {
+		router.push(
+			`/token/${tradedTokenData.contract_id}::${tradedTokenData.token_series_id}${
+				activity.msg?.params?.buyer_token_id && `/${tradedTokenData.token_id}`
+			}`
+		)
+	}
+
+	const fetchTradeToken = async () => {
+		const params = {
+			token_id: activity.msg?.params?.buyer_token_id,
+			contract_id: activity.msg?.params?.buyer_nft_contract_id,
+			__limit: 1,
+		}
+		const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
+			params: params,
+			ttl: 30,
+		})
+		setTradedTokenData(resp.data.data.results[0])
+	}
+
 	const TextActivity = ({ type, msg }) => {
 		if (type === 'add_market_data' || type === 'update_market_data') {
 			return (
@@ -90,6 +122,76 @@ const Activity = ({ activity }) => {
 						{localeLn('PutOnSaleFor')} {formatNearAmount(activity.msg.params.price)} Ⓝ
 					</span>
 				</p>
+			)
+		}
+
+		if (type === 'add_trade' || type === 'delete_trade') {
+			return (
+				<div>
+					<p className=" mb-2">
+						<LinkToProfile accountId={activity.msg.params.buyer_id} />
+						<span>
+							{` `}
+							{type.includes(`add`) ? `added` : `deleted`} offer NFT trade{' '}
+							<span className="font-semibold">{tradedTokenData?.metadata?.title}</span>
+						</span>
+					</p>
+					<div className="flex items-center mb-2">
+						<div className="z-20 max-h-40 w-24 cursor-pointer border-4 border-gray-700 rounded-lg">
+							<a
+								onClick={(e) => {
+									e.preventDefault()
+									onClickNftTrade()
+								}}
+							>
+								<Media
+									className="rounded-lg overflow-hidden"
+									url={parseImgUrl(tradedTokenData?.metadata?.media, null, {
+										width: `600`,
+										useOriginal: process.env.APP_ENV === 'production' ? false : true,
+										isMediaCdn: true,
+									})}
+									seeDetails={true}
+								/>
+							</a>
+						</div>
+					</div>
+				</div>
+			)
+		}
+
+		if (type === 'accept_trade') {
+			return (
+				<div>
+					<p className=" mb-2">
+						<span className="font-bold">{activity.msg.params.sender_id}</span>
+						<span>
+							{` `}
+							accepted NFT trade{' '}
+							<span className="font-semibold">{tradedTokenData?.metadata?.title}</span>
+						</span>
+					</p>
+					<div className="flex items-center mb-2">
+						<div className="z-20 max-h-40 w-24 cursor-pointer border-4 border-gray-700 rounded-lg">
+							<a
+								onClick={(e) => {
+									e.preventDefault()
+									onClickNftTrade()
+								}}
+							>
+								<Media
+									className="rounded-lg overflow-hidden"
+									url={parseImgUrl(tradedTokenData?.metadata?.media, null, {
+										width: `600`,
+										useOriginal: process.env.APP_ENV === 'production' ? false : true,
+										isMediaCdn: true,
+									})}
+									seeDetails={true}
+								/>
+							</a>
+						</div>
+					</div>
+				</div>
 			)
 		}
 

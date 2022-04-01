@@ -5,8 +5,15 @@ import TokenBuyModal from './TokenBuyModal'
 import TokenSeriesBuyModal from './TokenSeriesBuyModal'
 import TokenSeriesUpdatePriceModal from './TokenSeriesUpdatePriceModal'
 import TokenUpdatePriceModal from './TokenUpdatePriceModal'
+import TradeNFTModal from './TradeNFTModal'
 
-const MarketTokenModal = ({ useNFTModal = false, activeToken, modalType, onCloseModal }) => {
+const MarketTokenModal = ({
+	useNFTModal = false,
+	activeToken,
+	modalType,
+	onCloseModal,
+	setModalType,
+}) => {
 	const { currentUser } = useStore()
 
 	if (!activeToken) return null
@@ -26,7 +33,26 @@ const MarketTokenModal = ({ useNFTModal = false, activeToken, modalType, onClose
 	}
 
 	if (modalType === 'offer') {
-		return <PlaceBidModal data={localToken} onClose={onCloseModal} show />
+		return (
+			<PlaceBidModal
+				data={localToken}
+				onClose={onCloseModal}
+				show
+				setShowModal={setModalType}
+				fromDetail={false}
+			/>
+		)
+	}
+
+	if (modalType === 'offerNFT') {
+		return (
+			<TradeNFTModal
+				data={localToken}
+				show={modalType === 'offerNFT'}
+				onClose={onCloseModal}
+				tokenType={activeToken?.token_id ? `token` : `tokenSeries`}
+			/>
+		)
 	}
 
 	if (modalType === 'updatelisting') {

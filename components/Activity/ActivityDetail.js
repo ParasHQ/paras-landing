@@ -15,7 +15,7 @@ import CopyLink from 'components/Common/CopyLink'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
-export const descriptionMaker = (activity) => {
+export const descriptionMaker = (activity, localToken, localTradedToken) => {
 	const type = activity.type
 
 	if (type === 'add_market_data' || type === 'update_market_data') {
@@ -91,10 +91,20 @@ export const descriptionMaker = (activity) => {
 		return `${activity.from} 'removed offer' ${formatNearAmount(activity.msg.params.price)} Ⓝ`
 	}
 
+	if (type === 'add_trade' || type === 'delete_trade') {
+		return `${activity.from} ${type.includes('add') ? `add` : `delete`} trade ${
+			localToken?.metadata?.title
+		} with ${localTradedToken?.metadata?.title}`
+	}
+
+	if (type === 'accept_trade') {
+		return `${localToken?.metadata?.owner_id} accepted trade ${localToken?.metadata?.title} with ${localToken?.metadata?.title}`
+	}
+
 	return ``
 }
 
-const Activity = ({ activity }) => {
+const Activity = ({ activity, localTradedToken, localToken }) => {
 	const { localeLn } = useIntl()
 	const type = activity.type
 
@@ -313,6 +323,48 @@ const Activity = ({ activity }) => {
 		)
 	}
 
+	if (type === 'add_trade' || type === 'delete_trade') {
+		return (
+			<p>
+				<span>
+					<span>
+						<LinkToProfile
+							className="text-gray-100 hover:border-gray-100"
+							accountId={activity.msg.params.buyer_id}
+						/>
+					</span>
+					<span>
+						{` `}
+						{type.includes(`add`) ? `add` : `delete`} trade{' '}
+						<span className="font-bold">{localTradedToken?.metadata?.title}</span> with{' '}
+						<span className="font-bold">{localToken?.metadata.title}</span>
+					</span>
+				</span>
+			</p>
+		)
+	}
+
+	if (type === 'accept_trade') {
+		return (
+			<p>
+				<span>
+					<span>
+						<LinkToProfile
+							className="text-gray-100 hover:border-gray-100"
+							accountId={localTradedToken?.owner_id}
+						/>
+					</span>
+					<span>
+						{` `}
+						accept trade <span className="font-bold">
+							{localTradedToken?.metadata?.title}
+						</span> with <span className="font-bold">{localToken?.metadata.title}</span>
+					</span>
+				</span>
+			</p>
+		)
+	}
+
 	return null
 }
 
@@ -324,6 +376,30 @@ const ActivityDetail = ({ activity }) => {
 	const [localToken, setLocalToken] = useState(null)
 
 	const shareLink = `${process.env.BASE_URL}/activity/${activity._id}`
+	const [isFlipped, setIsFlipped] = useState(true)
+	const [localTradedToken, setLocalTradedToken] = useState(null)
+	const topCardPositionStyle = `top-0 left-1/4 md:left-0 lg:left-5 z-30`
+	const bottomCardPositionStyle = `top-3 left-24 md:left-1 lg:left-8 z-20`
+	const isTradeActivity = activity?.type?.includes('trade')
+
+	const fetchTradeToken = async () => {
+		const params = {
+			token_id: activity.msg.params.buyer_token_id,
+			contract_id: activity.msg.params.buyer_nft_contract_id,
+			__limit: 1,
+		}
+		const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
+			params: params,
+			ttl: 30,
+		})
+		setLocalTradedToken(resp.data.data.results[0])
+	}
+
+	useEffect(() => {
+		if (activity?.type?.includes('trade')) {
+			fetchTradeToken()
+		}
+	}, [])
 
 	useEffect(() => {
 		if (activity) {
@@ -388,7 +464,8 @@ const ActivityDetail = ({ activity }) => {
 							<TwitterShareButton
 								title={`${descriptionMaker(
 									activity,
-									localToken
+									localToken,
+									localTradedToken
 								)} via @ParasHQ\n\n#paras #cryptoart #digitalart #tradingcards`}
 								url={shareLink}
 								className="flex items-center w-full"
@@ -419,8 +496,46 @@ const ActivityDetail = ({ activity }) => {
 				</Modal>
 			)}
 			<div className="flex flex-wrap border-2 border-dashed border-gray-800 p-4 rounded-md max-w-2xl mx-auto">
-				<div className="w-full md:w-1/3">
-					<div className="w-40 mx-auto">
+				<div className={`w-full md:w-1/3 ${isTradeActivity && `relative h-60`}`}>
+					{isTradeActivity && (
+						<div
+							className={`${`absolute w-6/12 md:w-40 cursor-pointer ${
+								isFlipped
+									? `transition-all ${topCardPositionStyle}`
+									: `transition-all ${bottomCardPositionStyle}`
+							}`}`}
+							onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
+						>
+							<Card
+								imgUrl={parseImgUrl(localTradedToken?.metadata.media, null, {
+									width: `600`,
+									useOriginal: process.env.APP_ENV === 'production' ? false : true,
+								})}
+								imgBlur={localTradedToken?.metadata.blurhash}
+								token={{
+									title: localTradedToken?.metadata.title,
+									edition_id: localTradedToken?.edition_id,
+									collection:
+										localTradedToken?.metadata.collection || localTradedToken?.contract_id,
+									copies: localTradedToken?.metadata.copies,
+									creatorId: localTradedToken?.metadata.creator_id || localTradedToken?.contract_id,
+									is_creator: localTradedToken?.is_creator,
+								}}
+							/>
+						</div>
+					)}
+					<div
+						className={`${
+							isTradeActivity
+								? `absolute w-6/12 md:w-40 cursor-pointer ${
+										!isFlipped
+											? `transition-all ${topCardPositionStyle}`
+											: `transition-all ${bottomCardPositionStyle}`
+								  }`
+								: `w-40 mx-auto`
+						}`}
+						onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
+					>
 						<Card
 							imgUrl={parseImgUrl(localToken?.metadata.media, null, {
 								width: `600`,
@@ -463,7 +578,9 @@ const ActivityDetail = ({ activity }) => {
 										title={localToken?.metadata?.title}
 										className="text-2xl font-bold border-b-2 border-transparent hover:border-gray-100"
 									>
-										{localToken?.metadata?.title}
+										{isTradeActivity
+											? localTradedToken?.metadata?.title
+											: localToken?.metadata?.title}
 									</a>
 								</Link>
 							</div>
@@ -491,11 +608,19 @@ const ActivityDetail = ({ activity }) => {
 						</div>
 						<p className="opacity-75 truncate">
 							{localToken?.metadata?.collection_id
-								? localToken?.metadata.collection
+								? isTradeActivity
+									? localTradedToken?.metadata?.collection
+									: localToken?.metadata.collection
+								: isTradeActivity
+								? localTradedToken?.metadata?.contract_id
 								: localToken?.contract_id}
 						</p>
 						<div className="mt-4">
-							<Activity activity={activity} />
+							<Activity
+								activity={activity}
+								localToken={localToken}
+								localTradedToken={localTradedToken}
+							/>
 							<p className="mt-2 text-sm opacity-50">
 								{timeAgo.format(new Date(activity.msg.datetime))}
 							</p>

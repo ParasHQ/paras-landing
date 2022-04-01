@@ -204,6 +204,7 @@ const CardInfo = {
 	Year: '年',
 	EditionOf: '版本',
 	AboutToBid: '你就要出价了',
+	AddNFTToTrade: '添加 NFT 进行交易',
 	Quantity: '数量',
 	AmountIn: '金额',
 	TotalBidAmount: '投标总价',
