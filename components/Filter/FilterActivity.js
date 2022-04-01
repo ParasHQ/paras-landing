@@ -58,7 +58,7 @@ const FilterActivity = ({ onClickFilter }) => {
 			</div>
 			{showFilterModal && (
 				<div
-					className="absolute max-w-full z-20 mt-2 px-4 right-0"
+					className="absolute max-w-full z-40 mt-2 px-4 right-0"
 					style={{
 						width: `24rem`,
 					}}
