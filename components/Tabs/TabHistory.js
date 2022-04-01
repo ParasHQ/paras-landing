@@ -297,10 +297,48 @@ const Activity = ({ activity }) => {
 	}
 
 	return (
-		<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
-			<TextActivity type={activity.type} msg={activity.msg} />
-			<p className="mt-1 text-sm">{timeAgo.format(new Date(activity.msg.datetime))}</p>
+		<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md flex items-center justify-between">
+			<div>
+				<TextActivity type={activity.type} msg={activity.msg} />
+				<p className="mt-1 text-sm">{timeAgo.format(new Date(activity.msg.datetime))}</p>
+			</div>
+			<TxHashLink activity={activity} />
 		</div>
+	)
+}
+
+const TxHashLink = ({ activity }) => {
+	return (
+		<>
+			{activity.transaction_hash && (
+				<a
+					href={`https:///explorer.${
+						process.env.APP_ENV === 'production' ? `mainnet` : `testnet`
+					}.near.org/transactions/${activity.transaction_hash}${
+						activity.msg?.receipt_id && `#${activity.msg?.receipt_id}`
+					}`}
+					target={`_blank`}
+				>
+					<div className="w-8 h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-3 flex items-center justify-center">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="icon icon-tabler icon-tabler-receipt"
+							width={18}
+							height={18}
+							viewBox="0 0 24 24"
+							strokeWidth="2"
+							stroke="#fff"
+							fill="none"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+							<path d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16l-3 -2l-2 2l-2 -2l-2 2l-2 -2l-3 2m4 -14h6m-6 4h6m-2 4h2" />
+						</svg>
+					</div>
+				</a>
+			)}
+		</>
 	)
 }
 
