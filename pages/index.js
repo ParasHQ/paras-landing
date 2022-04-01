@@ -105,7 +105,7 @@ export default function Home() {
 				<div className="relative px-4 pb-24">
 					<HomeFeaturedBanner />
 					<HomeCollectionList showDetails={false} />
-					<HomeTopUserList showToggle={false} className="my-12" />
+					<HomeTopUserList showToggle={false} className="my-8" />
 					<HomeBanner />
 					<HomeCardList />
 					<HomeTopUserList activeType="top-buyers" showToggle={false} className="mt-12" />

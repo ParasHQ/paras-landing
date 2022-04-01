@@ -28,7 +28,7 @@ const HomeBanner = () => {
 		}
 	}, [refDesktop])
 
-	if ((!data || data?.length === 0) && isValidating) {
+	if ((!data && isValidating) || data.length === 0) {
 		return null
 	}
 
