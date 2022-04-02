@@ -139,7 +139,9 @@ const TabInfo = ({ localToken, isNFT }) => {
 				<div>
 					<p className="text-sm text-white font-bold">{localeLn('Collection')}</p>
 					<Link href={`/collection/${collection.id}`}>
-						<a className="text-gray-100 font-semibold hover:opacity-80">{collection.name}</a>
+						<a className="text-gray-100 font-semibold hover:opacity-80">
+							{prettyTruncate(collection.name, 30, 'address')}
+						</a>
 					</Link>
 				</div>
 			</div>
