@@ -147,6 +147,7 @@ const CardInfo = {
 	ConfirmBuy: 'Confirmar Compra',
 	Warning: 'Advertencia',
 	AreYouSureBuy: 'Estás segura de comprar esta tarjeta?',
+	AreYouSureAcceptTrade: 'Estás seguro de aceptar este comercio?',
 	IUnderstand: 'Entiendo',
 	BuyQuantityAvailable: 'Comprar cantidad (Available for buy',
 	YouWillRedirectedTo: 'Serás redirigido a NEAR Web Wallet para confirmar tu transacción',

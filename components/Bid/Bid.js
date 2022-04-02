@@ -27,6 +27,8 @@ import { useToast } from 'hooks/useToast'
 import TradingCard from 'components/Trading/TradingCard'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
 import ReactCardFlip from 'react-card-flip'
+import { flagColor, flagText } from 'constants/flag'
+import BannedConfirmModal from 'components/Modal/BannedConfirmModal'
 
 const Bid = ({ data, type, freshFetch }) => {
 	const store = useStore()
@@ -39,6 +41,11 @@ const Bid = ({ data, type, freshFetch }) => {
 	const [isOwned, setIsOwned] = useState(false)
 	const [storageFee, setStorageFee] = useState(STORAGE_APPROVE_FEE)
 	const toast = useToast()
+	const [bannedConfirmData, setBannedConfirmData] = useState({
+		isShowBannedConfirm: false,
+		creatorId: null,
+	})
+	const [creatorTradeToken, setCreatorTradeToken] = useState(null)
 	const [tradedToken, setTradedToken] = useState([
 		isNFTTraded
 			? `${type === 'myBids' ? data.contract_id : data.buyer_nft_contract_id}::${
@@ -89,6 +96,13 @@ const Bid = ({ data, type, freshFetch }) => {
 					},
 					ttl: 30,
 				})
+				const profileRes = await cachios.get(`${process.env.V2_API_URL}/profiles`, {
+					params: {
+						accountId: tokenDataTrade.data.data.results[0].metadata.creator_id,
+					},
+					ttl: 600,
+				})
+				setCreatorTradeToken(profileRes.data.data.results[0])
 				if (tokenData.data.data.results[0] && tokenDataTrade.data.data.results[0]) {
 					setToken(tokenData.data.data.results[0])
 					setTradedTokenData(tokenDataTrade.data.data.results[0])
@@ -132,6 +146,13 @@ const Bid = ({ data, type, freshFetch }) => {
 						ttl: 30,
 					}
 				)
+				const profileRes = await cachios.get(`${process.env.V2_API_URL}/profiles`, {
+					params: {
+						accountId: tokenDataTrade.data.data.results[0].metadata.creator_id,
+					},
+					ttl: 600,
+				})
+				setCreatorTradeToken(profileRes.data.data.results[0])
 				if (!tokenData.data.data.results[0].token_id && isNFTTraded) {
 					const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
 						params: {
@@ -458,7 +479,7 @@ const Bid = ({ data, type, freshFetch }) => {
 			<div
 				className={`${
 					!isEnableForAccept && `hidden`
-				} border-2 border-dashed my-4 p-4 md:py-6 md:px-8 md:h-72 rounded-md border-gray-800`}
+				} border-2 border-dashed my-4 p-4 md:py-6 md:px-8 md:h-80 rounded-md border-gray-800`}
 			>
 				<div className={`flex flex-col md:flex-row ${isNFTTraded && `relative`}`}>
 					<div
@@ -636,14 +657,14 @@ const Bid = ({ data, type, freshFetch }) => {
 										scroll={false}
 										shallow
 									>
-										<div className="font-bold text-2xl flex items-center">
+										<div className="font-bold text-2xl flex flex-wrap items-center">
 											<span className="mr-2">{prettyTruncate(token?.metadata?.title, 25)}</span>
 											<div className="px-3 py-1 bg-primary opacity-75 text-white text-sm font-light rounded-full">
 												yours
 											</div>
 										</div>
 									</Link>
-									<div className="flex">
+									<div className="flex my-3">
 										<svg
 											xmlns="http://www.w3.org/2000/svg"
 											className="icon icon-tabler icon-tabler-switch-vertical"
@@ -731,7 +752,14 @@ const Bid = ({ data, type, freshFetch }) => {
 							{store.currentUser !== data.buyer_id ? (
 								<button
 									onClick={() => {
-										isNFTTraded ? acceptTrade() : setShowModal('acceptBid')
+										isNFTTraded
+											? creatorTradeToken.flag && creatorTradeToken.flag === 'banned'
+												? setBannedConfirmData({
+														isShowBannedConfirm: true,
+														creatorId: creatorTradeToken,
+												  })
+												: acceptTrade()
+											: setShowModal('acceptBid')
 									}}
 									className="font-semibold w-32 rounded-md border-2 border-primary bg-primary text-white mb-2"
 								>
@@ -758,7 +786,32 @@ const Bid = ({ data, type, freshFetch }) => {
 						</div>
 					</div>
 				</div>
+				{isNFTTraded &&
+					store.currentUser !== data.buyer_id &&
+					creatorTradeToken?.flag &&
+					creatorTradeToken?.flag === 'banned' && (
+						<div className="mt-8">
+							<div className={`flex items-center justify-center w-full`}>
+								<p
+									className={`text-white text-xs p-1 font-bold w-full mx-auto px-4 text-center rounded-md ${
+										flagColor[creatorTradeToken?.flag]
+									}`}
+								>
+									{localeLn(flagText[creatorTradeToken?.flag])}
+								</p>
+							</div>
+						</div>
+					)}
 			</div>
+			{bannedConfirmData.isShowBannedConfirm && (
+				<BannedConfirmModal
+					creatorData={bannedConfirmData.creatorId}
+					action={() => acceptTrade()}
+					setIsShow={(e) => setBannedConfirmData(e)}
+					onClose={() => setBannedConfirmData({ ...bannedConfirmData, isShowBannedConfirm: false })}
+					isTradeType={true}
+				/>
+			)}
 		</>
 	)
 }
