@@ -23,21 +23,33 @@ import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
 import Media from 'components/Common/Media'
 import { useRouter } from 'next/router'
+import { flagColor, flagText } from 'constants/flag'
+import BannedConfirmModal from 'components/Modal/BannedConfirmModal'
 
 const FETCH_TOKENS_LIMIT = 12
 
-const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned, localToken }) => {
+const Offer = ({
+	data,
+	onAcceptOffer,
+	hideButton,
+	fetchOffer,
+	localToken,
+	setBannedConfirmData,
+	setBuyerTokenData,
+	acceptTrade,
+}) => {
 	const router = useRouter()
 	const [profile, setProfile] = useState({})
-	const { currentUser, setTransactionRes } = useStore((state) => ({
+	const { currentUser } = useStore((state) => ({
 		currentUser: state.currentUser,
-		setTransactionRes: state.setTransactionRes,
 	}))
 	const [tradedTokenData, setTradedTokenData] = useState([])
 	const [isEnableForAccept, setIsEnableForAccept] = useState(true)
+	const [creatorTradeToken, setCreatorTradeToken] = useState(null)
 	const toast = useToast()
 	const isNFTTraded = data?.type && data?.type === 'trade'
 	const { nearUsdPrice } = useStore()
+	const { localeLn } = useIntl()
 
 	useEffect(() => {
 		if (data.buyer_id) {
@@ -90,6 +102,13 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned, localToke
 			params: params,
 			ttl: 30,
 		})
+		const profileRes = await cachios.get(`${process.env.V2_API_URL}/profiles`, {
+			params: {
+				accountId: resp.data.data.results[0].metadata.creator_id,
+			},
+			ttl: 600,
+		})
+		setCreatorTradeToken(profileRes.data.data.results[0])
 		setTradedTokenData(resp.data.data.results[0])
 	}
 
@@ -176,52 +195,6 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned, localToke
 		}
 	}
 
-	const acceptTrade = async () => {
-		const [, tradeType, tokenId] = isOwned.split('::')
-		const params = {
-			account_id: process.env.MARKETPLACE_CONTRACT_ID,
-		}
-		params.token_id = tokenId
-		params.msg = JSON.stringify({
-			market_type: tradeType === 'token' ? 'accept_trade' : 'accept_trade_paras_series',
-			buyer_id: data.buyer_id,
-			buyer_nft_contract_id: data.buyer_nft_contract_id,
-			buyer_token_id: data.buyer_token_id,
-		})
-
-		const res = await WalletHelper.signAndSendTransaction({
-			receiverId: data.contract_id,
-			actions: [
-				{
-					methodName: `nft_approve`,
-					args: params,
-					gas: ACCEPT_GAS_FEE,
-					deposit: STORAGE_APPROVE_FEE,
-				},
-			],
-		})
-		if (res.error && res.error.includes('reject')) {
-			return
-		} else {
-			if (res.response.error) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							{res.response.error.kind.ExecutionError}
-						</div>
-					),
-					type: 'error',
-					duration: 2500,
-				})
-			} else {
-				if (res.response) {
-					setTransactionRes(res?.response)
-				}
-				setTimeout(fetchOffer, 2500)
-			}
-		}
-	}
-
 	const onClickNftTrade = () => {
 		router.push(
 			`/token/${tradedTokenData.contract_id}::${tradedTokenData.token_series_id}${
@@ -289,7 +262,18 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned, localToke
 							size="sm"
 							className="w-full"
 							onClick={() => {
-								isNFTTraded ? acceptTrade() : onAcceptOffer(data)
+								isNFTTraded
+									? creatorTradeToken.flag &&
+									  (creatorTradeToken.flag === 'banned' ||
+											creatorTradeToken.flag === 'rugpull' ||
+											creatorTradeToken.flag === 'hacked')
+										? (setBannedConfirmData({
+												isShowBannedConfirm: true,
+												creatorId: creatorTradeToken,
+										  }),
+										  setBuyerTokenData(data))
+										: (acceptTrade(), setBuyerTokenData(data))
+									: onAcceptOffer(data)
 							}}
 							hideButton={hideButton}
 						>
@@ -305,6 +289,25 @@ const Offer = ({ data, onAcceptOffer, hideButton, fetchOffer, isOwned, localToke
 					</div>
 				)}
 			</div>
+			{data.type === 'trade' &&
+				data.buyer_id !== currentUser &&
+				isEnableForAccept &&
+				creatorTradeToken?.flag &&
+				(creatorTradeToken?.flag === 'banned' ||
+					creatorTradeToken.flag === 'rugpull' ||
+					creatorTradeToken.flag === 'hacked') && (
+					<div className="mt-4">
+						<div className={`flex items-center justify-center w-full`}>
+							<p
+								className={`text-white text-xs p-1 font-bold w-full mx-auto px-4 text-center rounded-md ${
+									flagColor[creatorTradeToken?.flag]
+								}`}
+							>
+								{localeLn(flagText[creatorTradeToken?.flag])}
+							</p>
+						</div>
+					</div>
+				)}
 		</div>
 	)
 }
@@ -320,6 +323,11 @@ const TabOffers = ({ localToken }) => {
 	const [activeOffer, setActiveOffer] = useState(null)
 	const [storageFee, setStorageFee] = useState(STORAGE_APPROVE_FEE)
 	const [isAcceptingOffer, setIsAcceptingOffer] = useState(false)
+	const [bannedConfirmData, setBannedConfirmData] = useState({
+		isShowBannedConfirm: false,
+		creatorId: null,
+	})
+	const [buyerTokenData, setBuyerTokenData] = useState(null)
 	const toast = useToast()
 	const { localeLn } = useIntl()
 
@@ -421,6 +429,52 @@ const TabOffers = ({ localToken }) => {
 			setIsAcceptingOffer(false)
 		} catch (err) {
 			sentryCaptureException(err)
+		}
+	}
+
+	const acceptTrade = async () => {
+		const [, tradeType, tokenId] = isOwned.split('::')
+		const params = {
+			account_id: process.env.MARKETPLACE_CONTRACT_ID,
+		}
+		params.token_id = tokenId
+		params.msg = JSON.stringify({
+			market_type: tradeType === 'token' ? 'accept_trade' : 'accept_trade_paras_series',
+			buyer_id: buyerTokenData.buyer_id,
+			buyer_nft_contract_id: buyerTokenData.buyer_nft_contract_id,
+			buyer_token_id: buyerTokenData.buyer_token_id,
+		})
+
+		const res = await WalletHelper.signAndSendTransaction({
+			receiverId: buyerTokenData.contract_id,
+			actions: [
+				{
+					methodName: `nft_approve`,
+					args: params,
+					gas: ACCEPT_GAS_FEE,
+					deposit: STORAGE_APPROVE_FEE,
+				},
+			],
+		})
+		if (res.error && res.error.includes('reject')) {
+			return
+		} else {
+			if (res.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+			} else {
+				if (res.response) {
+					store.setTransactionRes(res?.response)
+				}
+				setTimeout(fetchOffers, 2500)
+			}
 		}
 	}
 
@@ -529,9 +583,11 @@ const TabOffers = ({ localToken }) => {
 								data={x}
 								onAcceptOffer={() => onAcceptOffer(x)}
 								hideButton={!isOwned}
-								isOwned={isOwned}
 								fetchOffer={() => fetchOffers(true)}
 								localToken={localToken}
+								setBannedConfirmData={setBannedConfirmData}
+								setBuyerTokenData={setBuyerTokenData}
+								acceptTrade={acceptTrade}
 							/>
 						</div>
 					))
@@ -550,6 +606,15 @@ const TabOffers = ({ localToken }) => {
 					storageFee={storageFee}
 					onSubmitForm={acceptOffer}
 					isLoading={isAcceptingOffer}
+				/>
+			)}
+			{bannedConfirmData.isShowBannedConfirm && (
+				<BannedConfirmModal
+					creatorData={bannedConfirmData.creatorId}
+					action={() => acceptTrade()}
+					setIsShow={(e) => setBannedConfirmData(e)}
+					onClose={onDismissModal}
+					isTradeType={true}
 				/>
 			)}
 		</div>
