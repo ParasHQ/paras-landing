@@ -263,7 +263,10 @@ const Offer = ({
 							className="w-full"
 							onClick={() => {
 								isNFTTraded
-									? creatorTradeToken.flag && creatorTradeToken.flag === 'banned'
+									? creatorTradeToken.flag &&
+									  (creatorTradeToken.flag === 'banned' ||
+											creatorTradeToken.flag === 'rugpull' ||
+											creatorTradeToken.flag === 'hacked')
 										? (setBannedConfirmData({
 												isShowBannedConfirm: true,
 												creatorId: creatorTradeToken,
@@ -290,7 +293,9 @@ const Offer = ({
 				data.buyer_id !== currentUser &&
 				isEnableForAccept &&
 				creatorTradeToken?.flag &&
-				creatorTradeToken?.flag === 'banned' && (
+				(creatorTradeToken?.flag === 'banned' ||
+					creatorTradeToken.flag === 'rugpull' ||
+					creatorTradeToken.flag === 'hacked') && (
 					<div className="mt-4">
 						<div className={`flex items-center justify-center w-full`}>
 							<p

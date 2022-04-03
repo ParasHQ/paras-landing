@@ -753,7 +753,10 @@ const Bid = ({ data, type, freshFetch }) => {
 								<button
 									onClick={() => {
 										isNFTTraded
-											? creatorTradeToken.flag && creatorTradeToken.flag === 'banned'
+											? creatorTradeToken.flag &&
+											  (creatorTradeToken.flag === 'banned' ||
+													creatorTradeToken.flag === 'rugpull' ||
+													creatorTradeToken.flag === 'hacked')
 												? setBannedConfirmData({
 														isShowBannedConfirm: true,
 														creatorId: creatorTradeToken,
@@ -789,7 +792,9 @@ const Bid = ({ data, type, freshFetch }) => {
 				{isNFTTraded &&
 					store.currentUser !== data.buyer_id &&
 					creatorTradeToken?.flag &&
-					creatorTradeToken?.flag === 'banned' && (
+					(creatorTradeToken?.flag === 'banned' ||
+						creatorTradeToken.flag === 'rugpull' ||
+						creatorTradeToken.flag === 'hacked') && (
 						<div className="mt-8">
 							<div className={`flex items-center justify-center w-full`}>
 								<p
