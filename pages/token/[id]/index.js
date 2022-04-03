@@ -13,7 +13,7 @@ const getCreatorId = (token) => {
 
 const TokenSeriesPage = ({ errorCode, initial }) => {
 	const { token } = useTokenSeries({
-		key: `${initial.contract_id}::${initial.token_series_id}`,
+		key: `${initial?.contract_id}::${initial?.token_series_id}`,
 		initialData: initial,
 	})
 

@@ -1,9 +1,6 @@
-import { useState } from 'react'
 import Head from 'next/head'
 import Nav from 'components/Nav'
 import Footer from 'components/Footer'
-import Modal from 'components/Modal'
-import YouTube from 'react-youtube'
 import { HomeTopUserList } from 'components/Home/HomeTopUserList'
 import { HomeCardList } from 'components/Home/HomeCardList'
 import { useIntl } from 'hooks/useIntl'
@@ -12,8 +9,6 @@ import HomeFeaturedBanner from 'components/Home/HomeFeaturedBanner'
 import HomeBanner from 'components/Home/HomeBanner'
 
 export default function Home() {
-	const [showVideoModal, setShowVideoModal] = useState(false)
-
 	const { localeLn } = useIntl()
 
 	return (
@@ -54,43 +49,7 @@ export default function Home() {
 					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 				/>
 			</Head>
-			{showVideoModal && (
-				<Modal close={() => setShowVideoModal(false)}>
-					<div className="max-w-3xl w-full mx-auto p-4 relative">
-						<div className="absolute z-10 top-0 right-0">
-							<div
-								className="bg-gray-300 p-2 rounded-full cursor-pointer"
-								onClick={() => setShowVideoModal(false)}
-							>
-								<svg
-									width="16"
-									height="16"
-									viewBox="0 0 16 16"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path
-										fillRule="evenodd"
-										clipRule="evenodd"
-										d="M8.00008 9.41423L3.70718 13.7071L2.29297 12.2929L6.58586 8.00001L2.29297 3.70712L3.70718 2.29291L8.00008 6.5858L12.293 2.29291L13.7072 3.70712L9.41429 8.00001L13.7072 12.2929L12.293 13.7071L8.00008 9.41423Z"
-										fill="black"
-									/>
-								</svg>
-							</div>
-						</div>
-						<YouTube
-							containerClassName="youtube-container"
-							className="rounded-lg"
-							videoId="keW4k5pF4MA"
-							opts={{
-								playerVars: {
-									autoplay: 1,
-								},
-							}}
-						/>
-					</div>
-				</Modal>
-			)}
+
 			<div
 				className="fixed inset-0 opacity-75"
 				style={{
