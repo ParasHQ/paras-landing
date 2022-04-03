@@ -150,6 +150,7 @@ const CardInfo = {
 	ConfirmBuy: '确认购买',
 	Warning: '警告',
 	AreYouSureBuy: '你确定你会买这张卡吗？',
+	AreYouSureAcceptTrade: '您确定接受这笔交易吗？',
 	IUnderstand: '我明白',
 	BuyQuantityAvailable: 'Buy quantity (Available for buy',
 	YouWillRedirectedTo: 'You will be redirected to NEAR Web Wallet to confirm your transaction',
