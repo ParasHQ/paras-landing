@@ -8,6 +8,7 @@ const FilterMarket = ({
 	isCollectibles = false,
 	defaultMinPrice = false,
 	isCollection = false,
+	isShowStaked = false,
 }) => {
 	const filterModalRef = useRef()
 	const router = useRouter()
@@ -24,6 +25,9 @@ const FilterMarket = ({
 	)
 	const [isNotForSale, setIsNotForSale] = useState(
 		router.query.is_notforsale ? router.query.is_notforsale === 'true' : false
+	)
+	const [isStaked, setIsStaked] = useState(
+		router.query.is_staked ? router.query.is_staked === 'true' : false
 	)
 	const { localeLn } = useIntl()
 
@@ -78,6 +82,11 @@ const FilterMarket = ({
 			} else {
 				setIsNotForSale(false)
 			}
+			if (router.query.is_staked) {
+				setIsStaked(router.query.is_staked === 'true')
+			} else {
+				setIsStaked(false)
+			}
 		}
 	}, [router.query])
 
@@ -89,6 +98,7 @@ const FilterMarket = ({
 			...(maxPrice && { pmax: maxPrice }),
 			...(isShowVerified && { is_verified: isVerified }),
 			...(isShowNotForSale && { is_notforsale: isNotForSale }),
+			...(isShowStaked && { is_staked: isStaked }),
 		}
 
 		if (minPrice === '') {
@@ -232,6 +242,21 @@ const FilterMarket = ({
 								</div>
 							</label>
 						)}
+						{isCollectibles && (
+							<label htmlFor="put-isstaked-only">
+								<div className="mt-2 flex items-center justify-between">
+									<h1 className="text-white font-semibold text-xl mt-2">Staked Only</h1>
+									<input
+										id="put-isstaked-only"
+										className="w-auto"
+										type="checkbox"
+										defaultChecked={isStaked}
+										onChange={() => setIsStaked(!isStaked)}
+									/>
+								</div>
+							</label>
+						)}
+
 						<button
 							onClick={onClickApply}
 							className="w-full outline-none mt-4 rounded-md bg-transparent text-sm font-semibold py-2 bg-primary text-gray-100"

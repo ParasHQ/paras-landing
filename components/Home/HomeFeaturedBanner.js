@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { IconLeft, IconRight } from 'components/Icons'
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Carousel } from 'react-responsive-carousel'
 import useSWR from 'swr'
 import { parseImgUrl } from 'utils/common'
@@ -123,6 +123,15 @@ const clampStyle = {
 }
 
 const FeaturedOfficialParas = ({ list, className }) => {
+	const [height, setHeight] = useState(0)
+	const ref = useRef()
+
+	useEffect(() => {
+		if (ref.current.clientWidth !== 0) {
+			setHeight((ref.current.clientWidth * 2) / 3)
+		}
+	}, [ref])
+
 	return (
 		<div className={`md:w-1/2 p-2 md:p-4 md:pr-2 snap-start ${className}`}>
 			<Carousel showStatus={false} showThumbs={false} autoPlay infiniteLoop showArrows={false}>
@@ -132,8 +141,8 @@ const FeaturedOfficialParas = ({ list, className }) => {
 						className="w-full rounded-lg overflow-hidden flex-shrink-0 cursor-pointer"
 						onClick={() => window.open(data.url)}
 					>
-						<div className="rounded-lg overflow-hidden shadow-xl drop-shadow-xl">
-							<div className="w-full bg-primary aspect-[3/2]">
+						<div ref={ref} className="rounded-lg overflow-hidden shadow-xl drop-shadow-xl">
+							<div className="w-full bg-primary aspect-[3/2]" style={{ height }}>
 								<img
 									src={parseImgUrl(data.image, null, {
 										width: `800`,
@@ -159,12 +168,21 @@ const FeaturedOfficialParas = ({ list, className }) => {
 }
 
 const FeaturedCommunity = ({ list, idx }) => {
+	const [height, setHeight] = useState(0)
+	const ref = useRef()
+
+	useEffect(() => {
+		if (ref.current.clientWidth !== 0) {
+			setHeight(ref.current.clientWidth / 2)
+		}
+	}, [ref])
+
 	return (
 		<div className="w-full md:w-[30%] rounded-lg overflow-hidden flex-shrink-0 flex snap-start">
 			<div className="w-full">
 				<div className="pt-4 px-2 cursor-pointer" onClick={() => window.open(list[idx].url)}>
 					<div className="rounded-md overflow-hidden shadow-xl drop-shadow-xl">
-						<div className="w-full aspect-[2/1]">
+						<div ref={ref} className="w-full aspect-[2/1]" style={{ height }}>
 							<img
 								src={parseImgUrl(list[idx].image, null, {
 									width: `400`,
@@ -183,7 +201,7 @@ const FeaturedCommunity = ({ list, idx }) => {
 				</div>
 				<div className="pt-4 px-2 cursor-pointer" onClick={() => window.open(list[idx + 1].url)}>
 					<div className="rounded-md overflow-hidden shadow-xl drop-shadow-xl">
-						<div className="w-full aspect-[2/1]">
+						<div className="w-full aspect-[2/1]" style={{ height }}>
 							<img
 								src={parseImgUrl(list[idx + 1].image, null, {
 									width: `400`,
