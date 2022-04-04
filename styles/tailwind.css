@@ -28,6 +28,11 @@ button:disabled {
 	@apply tracking-tight;
 }
 
+input[type='time']::-webkit-calendar-picker-indicator {
+	filter: invert(100%) sepia(0%);
+	font-size: 25px;
+}
+
 input:focus,
 textarea:focus {
 	@apply outline-none;

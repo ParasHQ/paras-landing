@@ -13,6 +13,7 @@ const Media = ({
 	playVideoButton = true,
 	mimeType,
 	seeDetails,
+	isAuction,
 }) => {
 	const [media, setMedia] = useState(null)
 	const [isLoading, setIsLoading] = useState(true)
@@ -83,7 +84,36 @@ const Media = ({
 		const isPng = media?.type === 'image/png'
 		const pixelated = isPng ? '' : ''
 		return (
-			<img className={`object-contain w-full h-full ${className} ${pixelated}`} src={media.url} />
+			<>
+				<img className={`object-contain w-full h-full ${className} ${pixelated}`} src={media.url} />
+				{isAuction === '561' && (
+					<div className="absolute right-0 bottom-3 text-gray-100 py-1 px-2 rounded-l-md bg-primary bg-opacity-70 z-10">
+						<p className="text-[8px] font-thin">Auction ends in</p>
+						<div className="flex justify-between items-center gap-1">
+							<svg
+								className="w-6 h-6"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								xmlns="http://www.w3.org/2000/svg"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth={2}
+									d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+								/>
+							</svg>
+							<div>
+								<p className="text-[10px] font-bold">
+									04 &nbsp;:&nbsp; 19 &nbsp;:&nbsp; 27 &nbsp;:&nbsp; 12
+								</p>
+								<p className="text-[8px]">Days&nbsp; Hours&nbsp; Mins&nbsp; Secs</p>
+							</div>
+						</div>
+					</div>
+				)}
+			</>
 		)
 	}
 

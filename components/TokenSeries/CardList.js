@@ -149,6 +149,10 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 		)
 	}
 
+	useEffect(() => {
+		console.log('token', token.token?.is_auction)
+	}, [])
+
 	const onCloseModal = () => {
 		setActiveToken(null)
 		setModalType(null)
@@ -161,7 +165,11 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 			if (token.token && token.token.owner_id === currentUser) {
 				return localeLn('UpdateListing')
 			} else {
-				return price ? 'Buy Now' : 'Place Offer'
+				return price && !token.token?.is_auction
+					? 'Buy Now'
+					: token.token?.is_auction
+					? 'Place a Bid'
+					: 'Place Offer'
 			}
 		} else if (
 			currentUser === token.metadata.creator_id ||
@@ -172,7 +180,11 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 			return localeLn('UpdateListing')
 		}
 
-		return price ? 'Buy Now' : 'Place Offer'
+		return price && !token.token?.is_auction
+			? 'Buy Now'
+			: token.token?.is_auction
+			? 'Place a Bid'
+			: 'Place Offer'
 	}
 
 	const actionButtonClick = (token) => {
@@ -191,7 +203,9 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 			}
 			// 1 of 1 Edition
 			else {
-				setModalType(price ? 'buy' : 'offer')
+				setModalType(
+					price && !token.token?.is_auction ? 'buy' : token.token?.is_auction ? 'placebid' : 'offer'
+				)
 			}
 		} else if (
 			currentUser === token.metadata.creator_id ||
@@ -202,7 +216,27 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 		} else if (token.price === null && token.token === undefined && token.lowest_price) {
 			onClickSeeDetails(token, { tab: 'owners' })
 		} else {
-			setModalType(price ? 'buy' : 'offer')
+			setModalType(
+				price && !token.token?.is_auction ? 'buy' : token.token?.is_auction ? 'placebid' : 'offer'
+			)
+		}
+	}
+
+	const typeSale = () => {
+		if (token.token?.is_auction) {
+			return localeLn('OnAuction')
+		} else if (token.token || token.metadata.copies === 1) {
+			return localeLn('OnSale')
+		} else {
+			localeLn('StartFrom')
+		}
+	}
+
+	const checkBidder = () => {
+		if (token.token?.bids && token.token?.bids !== 0) {
+			return 'Highest Bid'
+		} else {
+			return 'Starting Bid'
 		}
 	}
 
@@ -243,6 +277,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 									attributes: token.metadata.attributes,
 									_is_the_reference_merged: token._is_the_reference_merged,
 									mime_type: token.metadata.mime_type,
+									token_series_id: token.token_series_id,
 								}}
 								profileCollection={profileCollection}
 								type={type}
@@ -252,19 +287,30 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 				</Link>
 				<div className={`px-1 relative ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
 					<div className="block">
-						<p className="text-gray-400 text-xs">
-							{token.token || token.metadata.copies === 1
-								? localeLn('OnSale')
-								: localeLn('StartFrom')}
-						</p>
-						<div className={`text-gray-100 ${displayType === 'large' ? `text-2xl` : `text-lg`}`}>
+						<p className="text-gray-400 text-xs">{typeSale()}</p>
+						{token.token?.is_auction && (
+							<p className="text-gray-100 text-[9px] font-bold">{checkBidder()}</p>
+						)}
+						<div
+							className={`text-gray-100 ${
+								displayType === 'large' && !token.token?.is_auction
+									? `text-2xl`
+									: displayType !== 'small' && token.token?.is_auction
+									? 'text-base -mt-.5 -mb-2'
+									: `text-lg`
+							}`}
+						>
 							{price ? (
 								<div className="flex items-baseline space-x-1">
 									<div className="truncate">
 										{price === '0' ? localeLn('Free') : `${prettyBalance(price, 24, 4)} Ⓝ`}
 									</div>
 									{price !== '0' && store.nearUsdPrice !== 0 && (
-										<div className="text-xs text-gray-400 truncate">
+										<div
+											className={`${
+												token.token?.is_auction ? 'text-[9px]' : 'text-xs'
+											} text-gray-400 truncate`}
+										>
 											~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 2)}
 										</div>
 									)}

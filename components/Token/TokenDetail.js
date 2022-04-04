@@ -30,6 +30,8 @@ import Card from 'components/Card/Card'
 import Tooltip from 'components/Common/Tooltip'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
+// import TabAuction from 'components/Tabs/TabAuction'
+// import TokenAuctionBidModal from 'components/Modal/TokenAuctionBidModal'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -45,6 +47,9 @@ const TokenDetail = ({ token, className }) => {
 
 	const TabNotification = (tab) => {
 		switch (tab) {
+			case 'auction':
+				setActiveTab('auction')
+				break
 			case 'owners':
 				setActiveTab('owners')
 				break
@@ -115,6 +120,14 @@ const TokenDetail = ({ token, className }) => {
 			return
 		}
 		setShowModal('burn')
+	}
+
+	const onClickAuction = () => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+		setShowModal('placeauction')
 	}
 
 	const onClickOffer = () => {
@@ -262,6 +275,7 @@ const TokenDetail = ({ token, className }) => {
 							</div>
 							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
 								{tabDetail('info')}
+								{tabDetail('auction')}
 								{tabDetail('owners')}
 								{tabDetail('offers')}
 								{tabDetail('history')}
@@ -269,6 +283,7 @@ const TokenDetail = ({ token, className }) => {
 							</div>
 
 							{activeTab === 'info' && <TabInfo localToken={token} isNFT={true} />}
+							{/* {activeTab === 'auction' && <TabAuction localToken={token} />} */}
 							{activeTab === 'owners' && <TabOwners localToken={token} />}
 							{activeTab === 'offers' && <TabOffers localToken={token} />}
 							{activeTab === 'history' && <TabHistory localToken={token} />}
@@ -305,7 +320,7 @@ const TokenDetail = ({ token, className }) => {
 									</div>
 								</div>
 							))}
-						{token.owner_id !== currentUser && token.price && (
+						{token.owner_id !== currentUser && token.price && token.token_series_id !== '518' && (
 							<div className="flex space-x-2">
 								<Button size="md" className="truncate" onClick={onClickBuy} isFullWidth>
 									{`Buy for ${formatNearAmount(token.price)} Ⓝ`}
@@ -318,6 +333,11 @@ const TokenDetail = ({ token, className }) => {
 						{token.owner_id !== currentUser && !token.price && (
 							<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
 								{`Place an offer`}
+							</Button>
+						)}
+						{token.owner_id !== currentUser && token.token_series_id === '518' && (
+							<Button size="md" onClick={onClickAuction} isFullWidth variant="primary">
+								{`Place a Bid`}
 							</Button>
 						)}
 						{token.token_series_id !== token.token_id && (
@@ -354,6 +374,12 @@ const TokenDetail = ({ token, className }) => {
 			<TokenBurnModal show={showModal === 'burn'} onClose={onDismissModal} data={token} />
 			<TokenBuyModal show={showModal === 'buy'} onClose={onDismissModal} data={token} />
 			<TokenTransferModal show={showModal === 'transfer'} onClose={onDismissModal} data={token} />
+			{/* <TokenAuctionBidModal
+				show={showModal === 'placeauction'}
+				data={token}
+				onClose={onDismissModal}
+				setShowModal={setShowModal}
+			/> */}
 			<PlaceBidModal
 				show={showModal === 'placeoffer'}
 				data={token}
