@@ -4,11 +4,17 @@ import { flagColor, flagText } from 'constants/flag'
 import { useIntl } from 'hooks/useIntl'
 import React from 'react'
 
-const BannedConfirmModal = ({ creatorData, action, setIsShow, onClose }) => {
+const BannedConfirmModal = ({ creatorData, action, setIsShow, onClose, isTradeType = false }) => {
 	const { localeLn } = useIntl()
 
 	return (
-		<Modal close={() => setIsShow(false)}>
+		<Modal
+			close={() => {
+				isTradeType
+					? setIsShow((prev) => ({ ...prev, isShowBannedConfirm: false }))
+					: setIsShow(false)
+			}}
+		>
 			<div className="w-full max-w-sm p-4 m-auto bg-gray-800 rounded-md overflow-y-auto max-h-screen relative">
 				<h1 className="text-2xl font-bold text-white text-center tracking-tight">
 					{localeLn('Warning')}
@@ -25,7 +31,9 @@ const BannedConfirmModal = ({ creatorData, action, setIsShow, onClose }) => {
 				>
 					{localeLn(flagText[creatorData?.flag] || 'FlaggedByPARASStealing')}
 				</div>
-				<div className="w-full text-white text-center">{localeLn('AreYouSureBuy')}</div>
+				<div className="w-full text-white text-center">
+					{isTradeType ? localeLn('AreYouSureAcceptTrade') : localeLn('AreYouSureBuy')}
+				</div>
 				<button
 					className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 					onClick={action}

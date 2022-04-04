@@ -35,7 +35,7 @@ const footer = {
 	Discord: 'Discord',
 	ApplyAsArtist: `Postuler en tant qu'artiste`,
 	FooterBeta: 'Ce projet est en beta publique.',
-	Paras2021: '2021 Paras',
+	Paras2022: '2022 Paras',
 	PoweredBy: 'Powered by',
 	UseOwnRisk: `Le smart contract de Paras n'a pas encore été audité par des autorités reconnues. À utiliser à vos risques et périls!`,
 }
@@ -197,6 +197,7 @@ const CardInfo = {
 	Year: 'Année',
 	EditionOf: 'Édition de',
 	AboutToBid: `Vous êtes sur le point de mettre une offre`,
+	AddNFTToTrade: 'Ajouter NFT pour le commerce',
 	Quantity: 'Quantité',
 	AmountIn: 'Montant en',
 	TotalBidAmount: `Montant total de l'enchère`,
