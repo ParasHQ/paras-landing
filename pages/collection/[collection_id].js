@@ -26,6 +26,7 @@ import ArtistBanned from 'components/Common/ArtistBanned'
 import cachios from 'cachios'
 import FilterDisplay from 'components/Filter/FilterDisplay'
 import WalletHelper from 'lib/WalletHelper'
+import ReactTooltip from 'react-tooltip'
 
 const LIMIT = 12
 const LIMIT_ACTIVITY = 20
@@ -54,6 +55,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
 	const [scoreNext, setScoreNext] = useState('')
+	const [mediaQueryMd, setMediaQueryMd] = useState(
+		typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)')
+	)
 
 	const toast = useToast()
 
@@ -419,6 +423,39 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							)})`,
 						}}
 					/>
+					<div className="absolute top-32 md:top-72 right-0 md:right-5 h-10 w-10">
+						{tokens[0]?.contract_id && (
+							<>
+								<ReactTooltip place="left" type="dark" />
+								<a
+									data-tip="View Contract"
+									href={`https:///explorer.${
+										process.env.APP_ENV === 'production' ? `mainnet` : `testnet`
+									}.near.org/accounts/${tokens[0]?.contract_id}`}
+									target={`_blank`}
+									className="ml-1 mb-4"
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										className="icon icon-tabler icon-tabler-external-link"
+										width={mediaQueryMd.matches ? 30 : 25}
+										height={mediaQueryMd.matches ? 30 : 25}
+										viewBox="0 0 24 24"
+										strokeWidth="2"
+										stroke="#fff"
+										fill="none"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									>
+										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+										<path d="M11 7h-5a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-5" />
+										<line x1={10} y1={14} x2={20} y2={4} />
+										<polyline points="15 4 20 4 20 9" />
+									</svg>
+								</a>
+							</>
+						)}
+					</div>
 					<div
 						className={`w-32 h-32 overflow-hidden ${
 							headMeta.image === null ? 'bg-primary' : 'bg-dark-primary-2'
@@ -436,38 +473,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						/>
 					</div>
 				</div>
-				<div className="flex items-center justify-center">
-					<h1 className="text-4xl font-bold text-gray-100 text-center break-words">
-						{collection?.collection}
-					</h1>
-					{tokens[0]?.contract_id && (
-						<a
-							href={`https:///explorer.${
-								process.env.APP_ENV === 'production' ? `mainnet` : `testnet`
-							}.near.org/accounts/${tokens[0]?.contract_id}`}
-							target={`_blank`}
-							className="ml-1 mb-4"
-						>
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								className="icon icon-tabler icon-tabler-external-link"
-								width={20}
-								height={20}
-								viewBox="0 0 24 24"
-								strokeWidth="2"
-								stroke="#fff"
-								fill="none"
-								strokeLinecap="round"
-								strokeLinejoin="round"
-							>
-								<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-								<path d="M11 7h-5a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-5" />
-								<line x1={10} y1={14} x2={20} y2={4} />
-								<polyline points="15 4 20 4 20 9" />
-							</svg>
-						</a>
-					)}
-				</div>
+				<h1 className="text-4xl font-bold text-gray-100 text-center break-words">
+					{collection?.collection}
+				</h1>
 				<div className="m-4 mt-0 text-center relative">
 					<h4 className="text-xl md:flex justify-center text-gray-300 self-center break-words">
 						<span>collection by</span>
