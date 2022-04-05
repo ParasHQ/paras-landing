@@ -48,7 +48,7 @@ const Media = ({
 		} catch (err) {
 			setMedia({
 				type: 'image/jpg',
-				url: parseImgUrl(url, undefined, { seeDetails: seeDetails }),
+				url: parseImgUrl(url, undefined, { seeDetails, isMediaCdn }),
 			})
 			setIsLoading(false)
 		}
