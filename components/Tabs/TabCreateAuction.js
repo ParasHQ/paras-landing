@@ -4,8 +4,8 @@ import { useIntl } from 'hooks/useIntl'
 import Button from 'components/Common/Button'
 import { InputText } from 'components/Common/form'
 import { sentryCaptureException } from 'lib/sentry'
-import { GAS_FEE, STORAGE_ADD_MARKET_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
-import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
+import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
+import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import { useEffect, useState } from 'react'
 import useProfileData from 'hooks/useProfileData'
@@ -16,19 +16,13 @@ import { trackUpdateListingToken } from 'lib/ga'
 
 const TabCreateAuction = ({
 	data,
-	show,
 	onClose,
 	startingBid,
 	reserveBid,
 	expirationDate,
-	customeExpirationDate,
 	timeExpirationDate,
-	bidAmount,
-	bidQuantity,
-	onSuccess,
 }) => {
 	const [needDeposit, setNeedDeposit] = useState(false)
-	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
 	const { localeLn } = useIntl()
 	const { errors, register, handleSubmit, watch, setValue } = useForm({
@@ -36,10 +30,7 @@ const TabCreateAuction = ({
 			startingBid,
 			reserveBid,
 			expirationDate,
-			customeExpirationDate,
 			timeExpirationDate,
-			bidAmount,
-			bidQuantity,
 		},
 	})
 	const [isCreatingAuction, setIsCreatingPrice] = useState(false)
@@ -101,27 +92,25 @@ const TabCreateAuction = ({
 			minutes = endedTime.split(':')[1]
 		}
 
-		let currentTime = new Date()
+		function addExpirationDate(days, hours, minutes) {
+			const currentTime = new Date()
+			let currentUTC = new Date(currentTime.toUTCString().slice(0, -4))
 
-		function addExpirationDate(date, days, hours, minutes) {
-			let currentDate = date.getDate()
+			const pickedExpirationDate = days
+			const pickedDate = new Date(pickedExpirationDate)
+			const getDateFromPickedDate = pickedDate.getDate()
 
-			date.setDate(currentDate + days)
-			date.setHours(hours)
-			date.setMinutes(minutes)
+			currentUTC.setUTCDate(getDateFromPickedDate)
+			currentUTC.setUTCHours(hours)
+			currentUTC.setUTCMinutes(minutes)
 
-			const nanoSecTime = `${date.getTime()}000000`
+			let nowUTC = new Date().toISOString()
+
+			const nanoSecTime = `${currentUTC.getTime()}000000`
 			setExpirationDateAuction(nanoSecTime)
 		}
 
-		addExpirationDate(
-			currentTime,
-			watch('customeExpirationDate') !== undefined && watch('expirationDate') === 'custome'
-				? parseInt(watch('customeExpirationDate'))
-				: parseInt(watch('expirationDate')),
-			parseInt(hours),
-			parseInt(minutes)
-		)
+		addExpirationDate(watch('expirationDate'), parseInt(hours), parseInt(minutes))
 	}
 
 	const onCreatingAuction = async () => {
@@ -188,19 +177,24 @@ const TabCreateAuction = ({
 		}
 	}
 
-	const getStorageFee = () => {
-		if (needDeposit) {
-			return (
-				parseFloat(formatNearAmount(STORAGE_APPROVE_FEE)) +
-				parseFloat(formatNearAmount(STORAGE_ADD_MARKET_FEE))
-			)
+	const distanceExpirationDate = (type) => {
+		const currentDate = new Date()
+		if (type === 'min') {
+			return `${currentDate.toISOString().split('T')[0]}`
+		} else if (type === 'max') {
+			let days = currentDate.getDate()
+			currentDate.setDate(days + 4)
+			return `${currentDate.toISOString().split('T')[0]}`
 		}
-		return formatNearAmount(STORAGE_APPROVE_FEE)
 	}
 
 	return (
 		<>
-			<form onSubmit={handleSubmit((bidQuantity) => onCreatingAuction(bidQuantity))}>
+			<form
+				onSubmit={handleSubmit((startingBid, reserveBid, expirationDate, timeExpirationDate) =>
+					onCreatingAuction(startingBid, reserveBid, expirationDate, timeExpirationDate)
+				)}
+			>
 				<div className="mt-4">
 					<div className="flex justify-between items-center">
 						<div className="text-white">
@@ -214,7 +208,6 @@ const TabCreateAuction = ({
 							ref={register({
 								required: true,
 								min: 0,
-								max: parseFloat(userBalance.available / 10 ** 24),
 							})}
 							placeHolder={'Ⓝ'}
 							className={`${errors.startingBid && 'error'}`}
@@ -223,7 +216,6 @@ const TabCreateAuction = ({
 					<div className="mt-2 text-sm text-red-500 text-right">
 						{errors.startingBid?.type === 'required' && `Starting bid is required`}
 						{errors.startingBid?.type === 'min' && `Minimum 0 Ⓝ`}
-						{errors.startingBid?.type === 'max' && `You don't have enough balance`}
 					</div>
 				</div>
 				<div className="mt-4">
@@ -250,72 +242,56 @@ const TabCreateAuction = ({
 					</div>
 				</div>
 				<div className="mt-4">
-					<div className="flex justify-between items-center">
-						<div className="text-white w-4/6">
-							<label className="block font-bold opacity-90">{localeLn('ExpirationDate')}</label>
-							<p className="text-sm font-thin text-justify">{localeLn('DescExpirationDate')}</p>
-						</div>
-						<div className="rounded-lg">
-							<select
+					<div className="flex justify-between gap-4">
+						<label className="text-white block font-bold opacity-90">
+							{localeLn('ExpirationDate')}
+							<p
+								className="text-white text-sm font-thin text-justify"
+								style={{ wordBreak: 'break-all' }}
+							>
+								{localeLn('DescExpirationDate')}
+							</p>
+						</label>
+						<div>
+							<InputText
 								name="expirationDate"
-								defaultValue="1"
-								onChange={(e) => setValue(e.target.value)}
-								value={expirationDate}
+								type="date"
+								min={distanceExpirationDate('min')}
+								max={distanceExpirationDate('max')}
 								ref={register({
 									required: true,
+									min: distanceExpirationDate('min'),
+									max: distanceExpirationDate('max'),
 								})}
-								className={`${
-									errors.reserveBid && 'error'
-								} py-3 rounded-md bg-white bg-opacity-10 text-white focus:outline-none outline-none text-right`}
-							>
-								<option value="1">in 1 days</option>
-								<option value="3">in 3 days</option>
-								<option value="5">in 5 days</option>
-								<option value="custome">Custome</option>
-							</select>
-						</div>
-					</div>
-					{watch('expirationDate') === 'custome' && (
-						<>
-							<div className="flex justify-end -mt-7">
-								<p className="text-white my-auto mr-1">in</p>
+								value={watch('expirationDate')}
+								className={`${errors.expirationDate && 'error'}`}
+							/>
+							<div className="mt-2 text-sm text-red-500 text-right">
+								{errors.expirationDate?.type === 'required' && `Expiration date is required`}
+								{errors.expirationDate?.type === 'min' &&
+									`Minimum date is ${distanceExpirationDate('min').slice(8, 10)}`}
+								{errors.expirationDate?.type === 'max' &&
+									`Maximum date is ${distanceExpirationDate('max').slice(8, 10)}`}
+							</div>
+
+							<div className="mb-2 flex justify-end items-center gap-2">
+								<p className="text-white text-sm">at</p>
 								<InputText
-									name="customeExpirationDate"
-									type="number"
+									name="timeExpirationDate"
+									type="time"
 									step="any"
 									ref={register({
 										required: true,
-										min: 1,
-										max: 10,
 									})}
-									placeholder="--"
-									placeHolder={'days'}
-									className={`${errors.customeExpirationDate && 'error'}`}
+									className={`${errors.timeExpirationDate && 'error'}`}
 								/>
+								<p className="text-white text-sm mt-1">UTC</p>
 							</div>
 							<div className="mt-2 text-sm text-red-500 text-right">
-								{errors.customeExpirationDate?.type === 'required' &&
-									`Custome expiration date is required`}
-								{errors.customeExpirationDate?.type === 'min' && `Minimum expiration date is 1`}
-								{errors.customeExpirationDate?.type === 'max' && `Maximum expiration date is 10`}
+								{errors.timeExpirationDate?.type === 'required' &&
+									`Time expiration date is required`}
 							</div>
-						</>
-					)}
-					<div className="mt-4 mb-6 flex justify-end items-center gap-2">
-						<p className="text-white">at</p>
-						<InputText
-							name="timeExpirationDate"
-							type="time"
-							step="any"
-							ref={register({
-								required: true,
-							})}
-							className={`${errors.timeExpirationDate && 'error'} w-2/6`}
-						/>
-						<p className="text-white text-xl mt-1">UTC</p>
-					</div>
-					<div className="mt-2 text-sm text-red-500 text-right">
-						{errors.timeExpirationDate?.type === 'required' && `Time expiration date is required`}
+						</div>
 					</div>
 				</div>
 				{creatorData?.flag && (
@@ -348,15 +324,6 @@ const TabCreateAuction = ({
 					</Button>
 				</div>
 			</form>
-			{showBannedConfirm && (
-				<BannedConfirmModal
-					creatorData={creatorData}
-					action={() => onCreatingAuction(watch(bidAmount))}
-					setIsShow={(e) => setShowBannedConfirm(e)}
-					onClose={onClose}
-					type="offer"
-				/>
-			)}
 		</>
 	)
 }

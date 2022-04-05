@@ -30,7 +30,20 @@ button:disabled {
 
 input[type='time']::-webkit-calendar-picker-indicator {
 	filter: invert(100%) sepia(0%);
-	font-size: 25px;
+	font-size: 15px;
+}
+
+input[type='time'] {
+	font-size: 12px;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator {
+	filter: invert(100%) sepia(0%);
+}
+
+input[type='date'] {
+	font-size: 12px;
+	text-align: right;
 }
 
 input:focus,

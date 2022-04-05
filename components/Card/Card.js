@@ -178,7 +178,9 @@ const Card = ({
 										videoMuted={true}
 										videoLoop={true}
 										mimeType={token?.mime_type}
-										isAuction={token.token_series_id}
+										isAuction={token.is_auction}
+										startedAt={token.started_at}
+										endedAt={token.ended_at}
 									/>
 								)}
 							</div>

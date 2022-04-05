@@ -149,10 +149,6 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 		)
 	}
 
-	useEffect(() => {
-		console.log('token', token.token?.is_auction)
-	}, [])
-
 	const onCloseModal = () => {
 		setActiveToken(null)
 		setModalType(null)
@@ -182,7 +178,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 
 		return price && !token.token?.is_auction
 			? 'Buy Now'
-			: token.token?.is_auction
+			: token.token?.is_auction && !token.token?.owner_id
 			? 'Place a Bid'
 			: 'Place Offer'
 	}
@@ -277,7 +273,9 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 									attributes: token.metadata.attributes,
 									_is_the_reference_merged: token._is_the_reference_merged,
 									mime_type: token.metadata.mime_type,
-									token_series_id: token.token_series_id,
+									is_auction: token.token?.is_auction,
+									started_at: token.token?.started_at,
+									ended_at: token.token?.ended_at,
 								}}
 								profileCollection={profileCollection}
 								type={type}
@@ -296,8 +294,10 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 								displayType === 'large' && !token.token?.is_auction
 									? `text-2xl`
 									: displayType !== 'small' && token.token?.is_auction
-									? 'text-base -mt-.5 -mb-2'
-									: `text-lg`
+									? 'text-lg -mt-.5 -mb-2'
+									: displayType === 'small' && token.token?.is_auction
+									? `text-base`
+									: 'text-lg'
 							}`}
 						>
 							{price ? (
@@ -350,14 +350,18 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 						</div>
 					)}
 					<div className="flex justify-between md:items-baseline">
-						<p
-							className={`font-bold text-white cursor-pointer hover:opacity-80 ${
-								displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
-							} mb-1 md:mb-0`}
-							onClick={() => actionButtonClick(token)}
-						>
-							{actionButtonText(token)}
-						</p>
+						{!token.token?.is_auction || currentUser !== token.token?.owner_id ? (
+							<p
+								className={`font-bold text-white cursor-pointer hover:opacity-80 ${
+									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+								} mb-1 md:mb-0`}
+								onClick={() => actionButtonClick(token)}
+							>
+								{actionButtonText(token)}
+							</p>
+						) : (
+							<div />
+						)}
 						<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
 							<a
 								onClick={(e) => {

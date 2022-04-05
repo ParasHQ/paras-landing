@@ -14,10 +14,16 @@ const Media = ({
 	mimeType,
 	seeDetails,
 	isAuction,
+	startedAt,
+	endedAt,
 }) => {
 	const [media, setMedia] = useState(null)
 	const [isLoading, setIsLoading] = useState(true)
 	const [playVideo, setPlayVideo] = useState(false)
+	const [days, setDays] = useState()
+	const [hours, setHours] = useState()
+	const [mins, setMins] = useState()
+	const [secs, setSecs] = useState()
 
 	useEffect(() => {
 		if (url && !mimeType?.includes('gif')) {
@@ -49,6 +55,52 @@ const Media = ({
 			})
 			setIsLoading(false)
 		}
+	}
+
+	useEffect(() => {
+		countDownTimeAuction()
+	}, [days, hours, mins, secs])
+
+	const convertTimeOfAuction = (date) => {
+		// const currentTime = new Date()
+		const sliceNanoSec = String(date).slice(0, 13)
+
+		if (sliceNanoSec !== 'undefined') {
+			// const convertUTC = new Date(
+			//   parseInt(sliceNanoSec[0] + currentTime.getTimezoneOffset() * 60000)
+			//   )
+			//   const nowUTC = new Date(convertUTC.toUTCString().slice(0, -4))
+			// return nowUTC
+
+			// const milliSecUTC = new Date(sliceNanoSec)
+			// const nowUTC = milliSecUTC.getTime()
+			return sliceNanoSec
+		}
+	}
+
+	const countDownTimeAuction = () => {
+		const endedDate = convertTimeOfAuction(endedAt)
+
+		const x = setInterval(() => {
+			const startedDate = new Date().getTime()
+
+			let distance = parseInt(endedDate) - parseInt(startedDate)
+
+			let days = Math.floor(distance / (1000 * 60 * 60 * 24))
+			let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+			let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+			let seconds = Math.floor((distance % (1000 * 60)) / 1000)
+
+			setDays(days)
+			setHours(hours)
+			setMins(minutes)
+			setSecs(seconds)
+
+			if (distance < 0) {
+				clearInterval(x)
+				console.log('EXPIRED')
+			}
+		}, 1000)
 	}
 
 	if (isLoading) {
@@ -86,7 +138,7 @@ const Media = ({
 		return (
 			<>
 				<img className={`object-contain w-full h-full ${className} ${pixelated}`} src={media.url} />
-				{isAuction === '561' && (
+				{isAuction && (
 					<div className="absolute right-0 bottom-3 text-gray-100 py-1 px-2 rounded-l-md bg-primary bg-opacity-70 z-10">
 						<p className="text-[8px] font-thin">Auction ends in</p>
 						<div className="flex justify-between items-center gap-1">
@@ -106,7 +158,8 @@ const Media = ({
 							</svg>
 							<div>
 								<p className="text-[10px] font-bold">
-									04 &nbsp;:&nbsp; 19 &nbsp;:&nbsp; 27 &nbsp;:&nbsp; 12
+									{/* 02 &nbsp;:&nbsp; 18 &nbsp;:&nbsp; 30 &nbsp;:&nbsp; 27 */}
+									{days} &nbsp;:&nbsp; {hours} &nbsp;:&nbsp; {mins} &nbsp;:&nbsp; {secs}
 								</p>
 								<p className="text-[8px]">Days&nbsp; Hours&nbsp; Mins&nbsp; Secs</p>
 							</div>
