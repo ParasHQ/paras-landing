@@ -489,9 +489,9 @@ const CollectionActivity = ({
 												)}
 												<div className="hidden md:flex ml-3 mb-1">
 													<a
-														href={`https:///explorer.${
-															process.env.APP_ENV === 'production' ? `mainnet` : `testnet`
-														}.near.org/transactions/${activity.transaction_hash}${
+														href={`https://${
+															process.env.APP_ENV === 'production' ? `` : `testnet.`
+														}nearblocks.io/txns/${activity.transaction_hash}${
 															activity.msg?.receipt_id && `#${activity.msg?.receipt_id}`
 														}`}
 														target={`_blank`}
@@ -535,9 +535,9 @@ const CollectionActivity = ({
 												onClick={(e) => e.stopPropagation()}
 											>
 												<a
-													href={`https:///explorer.${
-														process.env.APP_ENV === 'production' ? `mainnet` : `testnet`
-													}.near.org/transactions/${activity.transaction_hash}${
+													href={`https://${
+														process.env.APP_ENV === 'production' ? `` : `testnet.`
+													}nearblocks.io/txns/${activity.transaction_hash}${
 														activity.msg?.receipt_id && `#${activity.msg?.receipt_id}`
 													}`}
 													target={`_blank`}

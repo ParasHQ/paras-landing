@@ -429,9 +429,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 								<ReactTooltip place="left" type="dark" />
 								<a
 									data-tip="View Contract"
-									href={`https:///explorer.${
-										process.env.APP_ENV === 'production' ? `mainnet` : `testnet`
-									}.near.org/accounts/${tokens[0]?.contract_id}`}
+									href={`https://${
+										process.env.APP_ENV === 'production' ? `` : `testnet.`
+									}nearblocks.io/address/${tokens[0]?.contract_id}`}
 									target={`_blank`}
 									className="ml-1 mb-4"
 								>

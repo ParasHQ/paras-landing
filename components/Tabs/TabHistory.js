@@ -416,9 +416,9 @@ const TxHashLink = ({ activity }) => {
 		<>
 			{activity.transaction_hash && (
 				<a
-					href={`https:///explorer.${
-						process.env.APP_ENV === 'production' ? `mainnet` : `testnet`
-					}.near.org/transactions/${activity.transaction_hash}${
+					href={`https://${
+						process.env.APP_ENV === 'production' ? `` : `testnet.`
+					}nearblocks.io/txns/${activity.transaction_hash}${
 						activity.msg?.receipt_id && `#${activity.msg?.receipt_id}`
 					}`}
 					target={`_blank`}
