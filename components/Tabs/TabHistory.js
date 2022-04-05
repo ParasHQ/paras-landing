@@ -19,19 +19,23 @@ const TabHistory = ({ localToken }) => {
 
 	useEffect(() => {
 		if (localToken.token_series_id) {
-			fetchHistory()
+			fetchHistory(true)
 		}
 	}, [localToken])
 
-	const fetchHistory = async () => {
-		if (!hasMore || isFetching) {
+	const fetchHistory = async (fromStart = false) => {
+		const _hasMore = fromStart ? true : hasMore
+		const _id_before = fromStart ? null : idBefore
+		const _history = fromStart ? [] : history
+
+		if (!_hasMore || isFetching) {
 			return
 		}
 
 		setIsFetching(true)
 
 		const params = {
-			_id_before: idBefore,
+			_id_before: _id_before,
 			__limit: FETCH_TOKENS_LIMIT,
 		}
 
@@ -49,12 +53,12 @@ const TabHistory = ({ localToken }) => {
 		})
 		const newData = resp.data.data
 
-		const newHistory = [...(history || []), ...newData.results]
-		const _hasMore = newData.results.length < FETCH_TOKENS_LIMIT ? false : true
+		const newHistory = [...(_history || []), ...newData.results]
+		const _hasMoreFetch = newData.results.length < FETCH_TOKENS_LIMIT ? false : true
 
 		setHistory(newHistory)
-		if (_hasMore) setIdBefore(newData.results[newData.results.length - 1]._id)
-		setHasMore(_hasMore)
+		if (_hasMoreFetch) setIdBefore(newData.results[newData.results.length - 1]._id)
+		setHasMore(_hasMoreFetch)
 
 		setIsFetching(false)
 	}

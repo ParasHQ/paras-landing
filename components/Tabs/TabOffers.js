@@ -337,7 +337,7 @@ const TabOffers = ({ localToken }) => {
 
 	useEffect(() => {
 		if (localToken.token_series_id) {
-			fetchOffers()
+			fetchOffers(true)
 		}
 	}, [localToken])
 

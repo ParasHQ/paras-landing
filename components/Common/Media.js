@@ -13,12 +13,16 @@ const Media = ({
 	playVideoButton = true,
 	mimeType,
 	seeDetails,
+	isMediaCdn,
 }) => {
 	const [media, setMedia] = useState(null)
 	const [isLoading, setIsLoading] = useState(true)
 	const [playVideo, setPlayVideo] = useState(false)
 
 	useEffect(() => {
+		if (url && seeDetails && media !== null) {
+			setMedia(null)
+		}
 		if (url && !mimeType?.includes('gif')) {
 			getMedia()
 		} else {
@@ -28,7 +32,7 @@ const Media = ({
 
 	const getMedia = async () => {
 		try {
-			const resp = await axios.get(`${parseImgUrl(url, undefined, { seeDetails: seeDetails })}`, {
+			const resp = await axios.get(`${parseImgUrl(url, undefined, { seeDetails, isMediaCdn })}`, {
 				responseType: 'blob',
 			})
 
