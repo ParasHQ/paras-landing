@@ -234,7 +234,7 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 					{token.volume && (
 						<div
 							className={`${
-								displayType === 'large' ? `block` : `flex gap-1`
+								displayType === 'large' ? `block` : `flex flex-col`
 							} text-right absolute top-0 right-0`}
 						>
 							<p
