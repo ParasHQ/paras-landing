@@ -55,7 +55,7 @@ const Footer = () => {
 						</svg>
 						<p className="my-3 md:w-2/3 text-xs">
 							Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for
-							creators and collectors.
+							creators and collectors. Discover the best and latest NFT collectibles on NEAR.
 						</p>
 						<div className="flex mt-2 gap-2 text-gray-400">
 							<div>
