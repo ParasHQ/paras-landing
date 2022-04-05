@@ -199,6 +199,7 @@ export default function Home() {
 		}
 
 		if (store.initialized) {
+			console.log(near.wallet.account())
 			getFarms()
 			getPrice()
 		}
@@ -338,7 +339,9 @@ export default function Home() {
 						</div> */}
 					</div>
 					<div className="w-full lg:w-1/2 flex justify-center order-1 lg:order-2">
-						<div className="w-full h-96 border"></div>
+						<div className="w-full h-96">
+							<img src="/token/hero.png" />
+						</div>
 					</div>
 				</div>
 				<div className="mt-32 flex flex-wrap justify-between text-white">
@@ -395,8 +398,10 @@ export default function Home() {
 				</div>
 				<div className="flex flex-wrap -mx-4">
 					<div className="w-full lg:w-1/3 text-white px-4">
-						<div className="mt-16 h-60 border"></div>
-						<p className="mt-4 font-bold text-2xl">Staking</p>
+						<div className="mt-16 w-full p-4">
+							<img className="w-full max-w-sm mx-auto" src="/token/staking.png" />
+						</div>
+						<p className="mt-2 font-bold text-2xl">Staking</p>
 						<p className="mt-2 text-gray-300">
 							PARAS holders can earn more cryptocurrency just by staking their tokens. By staking
 							the PARAS token, you will be able to claim more rewards through our Marketplace
@@ -404,8 +409,10 @@ export default function Home() {
 						</p>
 					</div>
 					<div className="w-full lg:w-1/3 text-white px-4">
-						<div className="mt-16 h-60 border"></div>
-						<p className="mt-4 font-bold text-2xl">Loyalty Program</p>
+						<div className="mt-16 w-full p-4">
+							<img className="w-full max-w-sm mx-auto" src="/token/loyalty.png" />
+						</div>
+						<p className="mt-2 font-bold text-2xl">Loyalty Program</p>
 						<p className="mt-2 text-gray-300">
 							PARAS holders immediately become part of our Loyalty Program. Certain features can
 							only be accessed by the PARAS holders and more benefits that comes throught our
@@ -414,8 +421,10 @@ export default function Home() {
 						</p>
 					</div>
 					<div className="w-full lg:w-1/3 text-white px-4">
-						<div className="mt-16 h-60 border"></div>
-						<div className="mt-4 flex items-center">
+						<div className="mt-16 w-full p-4">
+							<img className="w-full max-w-sm mx-auto" src="/token/gov.png" />
+						</div>
+						<div className="mt-2 flex items-center">
 							<p className="font-bold text-2xl">Governance</p>
 							<div className="ml-2 text-xs font-bold rounded-md bg-dark-primary-6 text-gray-300 inline-block px-2 py-1">
 								SOON
@@ -428,49 +437,51 @@ export default function Home() {
 						</p>
 					</div>
 				</div>
-				<div className="mt-32 max-w-3xl mx-auto text-white rounded-xl bg-primary bg-opacity-15 p-8 lg:p-16">
-					<p className="mt-4 rounded-md bg-blue-500 inline-block px-2 py-1">
-						Earn up to <span className="font-bold text-xl">{prettyBalance(apr, 0, 0)}% APR</span>
-					</p>
-					<p className="mt-4 text-3xl font-bold text-white">Marketplace Rewards Program</p>
-					<p className="mt-4">
-						In February 2021, Paras launched its marketplace rewards program, meaning we’ll be
-						distributing 70% of Paras Marketplace fee as reward to the PARAS stakers every month.
-					</p>
-					<p className="mt-2">
-						PARAS holders will be able to earn <span className="font-bold">PARAS</span> and{' '}
-						<span className="font-bold">NEAR</span> just by staking their PARAS Tokens. We plan this
-						system as a small step to grow the community at large.
-					</p>
-					<p className="mt-8 font-bold text-3xl">40,000+ Ⓝ</p>
-					<p className="font-semibold text-xl mt-1">Already distributed to PARAS stakers</p>
-					<div className="mt-8">
-						<p className="inline-block text-2xl font-bold">
-							<a
-								className="flex text-white border-b-2 hover:opacity-75 font-bold"
-								target="_blank"
-								href="https://stake.paras.id"
-								rel="noreferrer"
-							>
-								Stake PARAS
-								<span className="pl-1">
-									<svg
-										width="12"
-										height="12"
-										viewBox="0 0 16 16"
-										fill="none"
-										xmlns="http://www.w3.org/2000/svg"
-									>
-										<path
-											fillRule="evenodd"
-											clipRule="evenodd"
-											d="M7.70421 9.70711L13.9971 3.41421V7H15.9971V0H8.9971V2H12.5829L6.28999 8.29289L7.70421 9.70711ZM15 14V10H13V14H2V3H6V1H2C0.89543 1 0 1.89543 0 3V14C0 15.1046 0.89543 16 2 16H13C14.1046 16 15 15.1046 15 14Z"
-											fill="white"
-										/>
-									</svg>
-								</span>
-							</a>
+				<div className="mt-32 max-w-3xl mx-auto text-white rounded-xl bg-primary bg-opacity-15 flex items-center flex-wrap">
+					<div className="w-full lg:w-2/3 p-4 lg:p-8">
+						<p className="mt-4 rounded-md bg-blue-500 inline-block px-2 py-1">
+							Earn up to <span className="font-bold text-xl">{prettyBalance(apr, 0, 0)}% APR</span>
 						</p>
+						<p className="mt-4 text-3xl font-bold text-white">Marketplace Rewards Program</p>
+						<p className="mt-4">
+							We’ll be distributing 70% of Paras Marketplace fee as reward to the PARAS stakers
+							every month.
+						</p>
+						<p className="mt-2">
+							PARAS holders will be able to earn <span className="font-bold">PARAS</span> and{' '}
+							<span className="font-bold">NEAR</span> just by staking their PARAS Tokens.
+						</p>
+						<div className="mt-8">
+							<p className="inline-block text-2xl font-bold">
+								<a
+									className="flex text-white border-b-2 hover:opacity-75 font-bold"
+									target="_blank"
+									href="https://stake.paras.id"
+									rel="noreferrer"
+								>
+									Stake PARAS
+									<span className="pl-1">
+										<svg
+											width="12"
+											height="12"
+											viewBox="0 0 16 16"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<path
+												fillRule="evenodd"
+												clipRule="evenodd"
+												d="M7.70421 9.70711L13.9971 3.41421V7H15.9971V0H8.9971V2H12.5829L6.28999 8.29289L7.70421 9.70711ZM15 14V10H13V14H2V3H6V1H2C0.89543 1 0 1.89543 0 3V14C0 15.1046 0.89543 16 2 16H13C14.1046 16 15 15.1046 15 14Z"
+												fill="white"
+											/>
+										</svg>
+									</span>
+								</a>
+							</p>
+						</div>
+					</div>
+					<div className="w-full lg:w-1/3">
+						<img className="w-full max-w-sm mx-auto" src="/token/marketplace-rewards.png" />
 					</div>
 				</div>
 				<div id="buy" className="mt-32 max-w-xl mx-auto text-white">
