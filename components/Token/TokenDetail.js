@@ -171,6 +171,7 @@ const TokenDetail = ({ token, className }) => {
 								videoPadding={false}
 								mimeType={token?.metadata?.mime_type}
 								seeDetails={true}
+								isMediaCdn={token.isMediaCdn}
 							/>
 						) : (
 							<div className="w-1/2 h-full md:w-full m-auto flex items-center">
