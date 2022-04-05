@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import Media from 'components/Common/Media'
 import { parseImgUrl } from 'utils/common'
+import TimeAuction from 'components/Common/timeAuction'
 
 const Card = ({
 	imgUrl,
@@ -171,17 +172,17 @@ const Card = ({
 										</div>
 									</>
 								) : (
-									<Media
-										className="mx-auto h-full object-contain relative z-10"
-										url={imgUrl}
-										videoControls={false}
-										videoMuted={true}
-										videoLoop={true}
-										mimeType={token?.mime_type}
-										isAuction={token.is_auction}
-										startedAt={token.started_at}
-										endedAt={token.ended_at}
-									/>
+									<>
+										<Media
+											className="mx-auto h-full object-contain relative z-10"
+											url={imgUrl}
+											videoControls={false}
+											videoMuted={true}
+											videoLoop={true}
+											mimeType={token?.mime_type}
+										/>
+										{token.is_auction && <TimeAuction endedAt={token.ended_at} />}
+									</>
 								)}
 							</div>
 							<div className="px-2 mt-auto">
