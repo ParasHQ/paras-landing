@@ -43,7 +43,8 @@ const Bid = ({ data, type, freshFetch }) => {
 	const toast = useToast()
 	const [bannedConfirmData, setBannedConfirmData] = useState({
 		isShowBannedConfirm: false,
-		creatorId: null,
+		creator: null,
+		isFlagged: false,
 	})
 	const [creatorTradeToken, setCreatorTradeToken] = useState(null)
 	const [tradedToken, setTradedToken] = useState([
@@ -753,15 +754,17 @@ const Bid = ({ data, type, freshFetch }) => {
 								<button
 									onClick={() => {
 										isNFTTraded
-											? creatorTradeToken.flag &&
-											  (creatorTradeToken.flag === 'banned' ||
-													creatorTradeToken.flag === 'rugpull' ||
-													creatorTradeToken.flag === 'hacked')
-												? setBannedConfirmData({
-														isShowBannedConfirm: true,
-														creatorId: creatorTradeToken,
-												  })
-												: acceptTrade()
+											? setBannedConfirmData({
+													isShowBannedConfirm: true,
+													creator: creatorTradeToken,
+													isFlagged:
+														creatorTradeToken.flag &&
+														(creatorTradeToken.flag === 'banned' ||
+															creatorTradeToken.flag === 'rugpull' ||
+															creatorTradeToken.flag === 'hacked')
+															? true
+															: false,
+											  })
 											: setShowModal('acceptBid')
 									}}
 									className="font-semibold w-32 rounded-md border-2 border-primary bg-primary text-white mb-2"
@@ -810,11 +813,13 @@ const Bid = ({ data, type, freshFetch }) => {
 			</div>
 			{bannedConfirmData.isShowBannedConfirm && (
 				<BannedConfirmModal
-					creatorData={bannedConfirmData.creatorId}
+					creatorData={bannedConfirmData.creator}
 					action={() => acceptTrade()}
 					setIsShow={(e) => setBannedConfirmData(e)}
 					onClose={() => setBannedConfirmData({ ...bannedConfirmData, isShowBannedConfirm: false })}
 					isTradeType={true}
+					isFlagged={bannedConfirmData.isFlagged}
+					tradedTokenData={tradedTokenData}
 				/>
 			)}
 		</>

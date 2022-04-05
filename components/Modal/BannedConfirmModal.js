@@ -1,10 +1,20 @@
+import Card from 'components/Card/Card'
 import { IconX } from 'components/Icons'
 import Modal from 'components/Modal'
 import { flagColor, flagText } from 'constants/flag'
 import { useIntl } from 'hooks/useIntl'
 import React from 'react'
+import { parseImgUrl } from 'utils/common'
 
-const BannedConfirmModal = ({ creatorData, action, setIsShow, onClose, isTradeType = false }) => {
+const BannedConfirmModal = ({
+	creatorData,
+	action,
+	setIsShow,
+	onClose,
+	isTradeType = false,
+	tradedTokenData,
+	isFlagged = false,
+}) => {
 	const { localeLn } = useIntl()
 
 	return (
@@ -24,15 +34,40 @@ const BannedConfirmModal = ({ creatorData, action, setIsShow, onClose, isTradeTy
 						<IconX onClick={onClose} />
 					</div>
 				</div>
-				<div
-					className={`w-full text-white p-2 rounded-md text-center mt-2 mb-6 ${
-						flagColor[creatorData?.flag]
-					}`}
-				>
-					{localeLn(flagText[creatorData?.flag] || 'FlaggedByPARASStealing')}
-				</div>
+				{isTradeType && (
+					<div className="w-48 my-3 m-auto">
+						<Card
+							imgUrl={parseImgUrl(tradedTokenData?.metadata.media, null, {
+								width: `600`,
+								useOriginal: process.env.APP_ENV === 'production' ? false : true,
+								isMediaCdn: tradedTokenData?.isMediaCdn,
+							})}
+							token={{
+								title: tradedTokenData?.metadata.title,
+								collection: tradedTokenData?.metadata.collection || tradedTokenData?.contract_id,
+								copies: tradedTokenData?.metadata.copies,
+								creatorId: tradedTokenData?.metadata.creator_id || tradedTokenData?.contract_id,
+								is_creator: tradedTokenData?.is_creator,
+								mime_type: tradedTokenData?.metadata.mime_type,
+							}}
+						/>
+					</div>
+				)}
+				{(!isTradeType || isFlagged) && (
+					<div
+						className={`w-full text-white ${
+							isTradeType && `text-xs`
+						} p-2 rounded-md text-center mt-2 mb-6 ${flagColor[creatorData?.flag]}`}
+					>
+						{localeLn(flagText[creatorData?.flag] || 'FlaggedByPARASStealing')}
+					</div>
+				)}
 				<div className="w-full text-white text-center">
-					{isTradeType ? localeLn('AreYouSureAcceptTrade') : localeLn('AreYouSureBuy')}
+					{isTradeType
+						? `Are you sure you want to accept your NFT with`
+						: localeLn('AreYouSureBuy')}
+					{` `}
+					{isTradeType && <span className="font-bold">{tradedTokenData?.metadata.title}</span>}?
 				</div>
 				<button
 					className="w-full outline-none h-12 mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"

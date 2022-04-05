@@ -35,15 +35,15 @@ const Offer = ({
 	fetchOffer,
 	localToken,
 	setBannedConfirmData,
-	setBuyerTokenData,
-	acceptTrade,
+	setOfferBuyerData,
+	tradedTokenData,
+	setTradedTokenData,
 }) => {
 	const router = useRouter()
 	const [profile, setProfile] = useState({})
 	const { currentUser } = useStore((state) => ({
 		currentUser: state.currentUser,
 	}))
-	const [tradedTokenData, setTradedTokenData] = useState([])
 	const [isEnableForAccept, setIsEnableForAccept] = useState(true)
 	const [creatorTradeToken, setCreatorTradeToken] = useState(null)
 	const toast = useToast()
@@ -263,16 +263,18 @@ const Offer = ({
 							className="w-full"
 							onClick={() => {
 								isNFTTraded
-									? creatorTradeToken.flag &&
-									  (creatorTradeToken.flag === 'banned' ||
-											creatorTradeToken.flag === 'rugpull' ||
-											creatorTradeToken.flag === 'hacked')
-										? (setBannedConfirmData({
-												isShowBannedConfirm: true,
-												creatorId: creatorTradeToken,
-										  }),
-										  setBuyerTokenData(data))
-										: (acceptTrade(), setBuyerTokenData(data))
+									? (setBannedConfirmData({
+											isShowBannedConfirm: true,
+											creator: creatorTradeToken,
+											isFlagged:
+												creatorTradeToken.flag &&
+												(creatorTradeToken.flag === 'banned' ||
+													creatorTradeToken.flag === 'rugpull' ||
+													creatorTradeToken.flag === 'hacked')
+													? true
+													: false,
+									  }),
+									  setOfferBuyerData(data))
 									: onAcceptOffer(data)
 							}}
 							hideButton={hideButton}
@@ -325,9 +327,11 @@ const TabOffers = ({ localToken }) => {
 	const [isAcceptingOffer, setIsAcceptingOffer] = useState(false)
 	const [bannedConfirmData, setBannedConfirmData] = useState({
 		isShowBannedConfirm: false,
-		creatorId: null,
+		creator: null,
+		isFlagged: false,
 	})
-	const [buyerTokenData, setBuyerTokenData] = useState(null)
+	const [offerBuyerData, setOfferBuyerData] = useState(null)
+	const [tradedTokenData, setTradedTokenData] = useState([])
 	const toast = useToast()
 	const { localeLn } = useIntl()
 
@@ -440,13 +444,13 @@ const TabOffers = ({ localToken }) => {
 		params.token_id = tokenId
 		params.msg = JSON.stringify({
 			market_type: tradeType === 'token' ? 'accept_trade' : 'accept_trade_paras_series',
-			buyer_id: buyerTokenData.buyer_id,
-			buyer_nft_contract_id: buyerTokenData.buyer_nft_contract_id,
-			buyer_token_id: buyerTokenData.buyer_token_id,
+			buyer_id: offerBuyerData.buyer_id,
+			buyer_nft_contract_id: offerBuyerData.buyer_nft_contract_id,
+			buyer_token_id: offerBuyerData.buyer_token_id,
 		})
 
 		const res = await WalletHelper.signAndSendTransaction({
-			receiverId: buyerTokenData.contract_id,
+			receiverId: offerBuyerData.contract_id,
 			actions: [
 				{
 					methodName: `nft_approve`,
@@ -586,8 +590,9 @@ const TabOffers = ({ localToken }) => {
 								fetchOffer={() => fetchOffers(true)}
 								localToken={localToken}
 								setBannedConfirmData={setBannedConfirmData}
-								setBuyerTokenData={setBuyerTokenData}
-								acceptTrade={acceptTrade}
+								setOfferBuyerData={setOfferBuyerData}
+								tradedTokenData={tradedTokenData}
+								setTradedTokenData={setTradedTokenData}
 							/>
 						</div>
 					))
@@ -610,11 +615,13 @@ const TabOffers = ({ localToken }) => {
 			)}
 			{bannedConfirmData.isShowBannedConfirm && (
 				<BannedConfirmModal
-					creatorData={bannedConfirmData.creatorId}
+					creatorData={bannedConfirmData.creator}
 					action={() => acceptTrade()}
 					setIsShow={(e) => setBannedConfirmData(e)}
 					onClose={onDismissModal}
 					isTradeType={true}
+					tradedTokenData={tradedTokenData}
+					isFlagged={bannedConfirmData.isFlagged}
 				/>
 			)}
 		</div>
