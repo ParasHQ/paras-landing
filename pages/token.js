@@ -330,16 +330,9 @@ export default function Home() {
 								</a>
 							</div>
 						</div>
-						{/* <div className="mt-8 flex flex-wrap text-gray-400 justify-between">
-							<p>NEAR</p>
-							<p>Ref Finance</p>
-							<p>SpinFi</p>
-							<p>Bullish Bulls</p>
-							<p>and more</p>
-						</div> */}
 					</div>
 					<div className="w-full lg:w-1/2 flex justify-center order-1 lg:order-2">
-						<div className="w-full h-96">
+						<div className="w-full">
 							<img src="/token/hero.png" />
 						</div>
 					</div>
