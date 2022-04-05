@@ -16,6 +16,10 @@ a {
 	@apply font-medium;
 }
 
+p {
+	@apply tracking-wide;
+}
+
 button:focus {
 	@apply outline-none;
 }
