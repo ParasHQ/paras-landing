@@ -28,7 +28,18 @@ export const HomeCardList = () => {
 				</div>
 			</div>
 			<div className="mt-4">
-				{!isLoading ? <TokenList tokens={tokenList} /> : <CardListLoader length={4} />}
+				{!isLoading ? (
+					<>
+						<div className="block md:hidden">
+							<TokenList tokens={tokenList} displayType="small" />
+						</div>
+						<div className="hidden md:block">
+							<TokenList tokens={tokenList} />
+						</div>
+					</>
+				) : (
+					<CardListLoader length={4} />
+				)}
 			</div>
 		</div>
 	)
