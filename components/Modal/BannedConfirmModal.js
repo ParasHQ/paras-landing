@@ -63,9 +63,7 @@ const BannedConfirmModal = ({
 					</div>
 				)}
 				<div className="w-full text-white text-center">
-					{isTradeType
-						? `Are you sure you want to accept your NFT with`
-						: localeLn('AreYouSureBuy')}
+					{isTradeType ? `Are you sure to accept NFT trade with` : localeLn('AreYouSureBuy')}
 					{` `}
 					{isTradeType && <span className="font-bold">{tradedTokenData?.metadata.title}</span>}?
 				</div>
