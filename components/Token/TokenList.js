@@ -15,7 +15,14 @@ import CardListLoaderSmall from 'components/Card/CardListLoaderSmall'
 import useToken from 'hooks/useToken'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
-const TokenList = ({ name = 'default', tokens, fetchData, hasMore, displayType = 'large' }) => {
+const TokenList = ({
+	name = 'default',
+	tokens,
+	fetchData,
+	hasMore,
+	displayType = 'large',
+	volume,
+}) => {
 	const store = useStore()
 	const containerRef = useRef()
 	const animValuesRef = useRef(store.marketScrollPersist[name])
@@ -92,6 +99,7 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, displayType =
 							key={`${token.contract_id}::${token.token_series_id}/${token.token_id}-${displayType}-${idx}`}
 							initialData={token}
 							displayType={displayType}
+							volume={token.volume || volume?.[idx]}
 						/>
 					))}
 				</div>
@@ -102,7 +110,7 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, displayType =
 
 export default TokenList
 
-const TokenSingle = ({ initialData, displayType = 'large' }) => {
+const TokenSingle = ({ initialData, displayType = 'large', volume }) => {
 	const { token, mutate } = useToken({
 		key: `${initialData.contract_id}::${initialData.token_series_id}/${initialData.token_id}`,
 		initialData: initialData,
@@ -231,7 +239,7 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 							)}
 						</div>
 					</div>
-					{token.volume && (
+					{volume && (
 						<div
 							className={`${
 								displayType === 'large' ? `block` : `flex flex-col`
@@ -253,9 +261,7 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 							>
 								Volume Total
 							</p>
-							<p className="text-white opacity-80 md:text-base">
-								{formatNearAmount(token.volume)} Ⓝ
-							</p>
+							<p className="text-white opacity-80 md:text-base">{formatNearAmount(volume)} Ⓝ</p>
 						</div>
 					)}
 					<div className="flex justify-between md:items-baseline">

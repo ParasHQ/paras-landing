@@ -6,6 +6,7 @@ import TokenList from 'components/Token/TokenList'
 export const HomeCardList = () => {
 	const [tokenList, setTokenList] = useState([])
 	const [isLoading, setIsLoading] = useState(true)
+	const [volume, setVolume] = useState([])
 
 	useEffect(() => {
 		fetchTokenList()
@@ -15,6 +16,7 @@ export const HomeCardList = () => {
 		const resp = await axios.get(`${process.env.V2_API_URL}/top-token`)
 		if (resp.data.data) {
 			setTokenList(resp.data.data.map((data) => ({ ...data.token, volume: data.volume })))
+			setVolume(resp.data.data.map((data) => ({ volume: data.volume })))
 			setIsLoading(false)
 		}
 	}
@@ -31,10 +33,10 @@ export const HomeCardList = () => {
 				{!isLoading ? (
 					<>
 						<div className="block md:hidden">
-							<TokenList tokens={tokenList} displayType="small" />
+							<TokenList tokens={tokenList} volume={volume} displayType="small" />
 						</div>
 						<div className="hidden md:block">
-							<TokenList tokens={tokenList} />
+							<TokenList tokens={tokenList} volume={volume} />
 						</div>
 					</>
 				) : (
