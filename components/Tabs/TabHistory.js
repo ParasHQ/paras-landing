@@ -401,12 +401,14 @@ const Activity = ({ activity }) => {
 	}
 
 	return (
-		<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md flex items-center justify-between">
-			<div>
+		<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md flex items-center justify-between relative">
+			<div className="w-11/12">
 				<TextActivity type={activity.type} msg={activity.msg} />
 				<p className="mt-1 text-sm">{timeAgo.format(new Date(activity.msg.datetime))}</p>
 			</div>
-			<TxHashLink activity={activity} />
+			<div className="absolute top-2 right-2">
+				<TxHashLink activity={activity} />
+			</div>
 		</div>
 	)
 }
