@@ -30,8 +30,8 @@ import Card from 'components/Card/Card'
 import Tooltip from 'components/Common/Tooltip'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
-// import TabAuction from 'components/Tabs/TabAuction'
-// import TokenAuctionBidModal from 'components/Modal/TokenAuctionBidModal'
+import TabAuction from 'components/Tabs/TabAuction'
+import TokenAuctionBidModal from 'components/Modal/TokenAuctionBidModal'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -275,15 +275,19 @@ const TokenDetail = ({ token, className }) => {
 							</div>
 							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
 								{tabDetail('info')}
-								{tabDetail('auction')}
-								{tabDetail('owners')}
-								{tabDetail('offers')}
+								{token.is_auction && tabDetail('auction')}
+								{!token.is_auction && (
+									<>
+										{tabDetail('owners')}
+										{tabDetail('offers')}
+									</>
+								)}
 								{tabDetail('history')}
 								{tabDetail('publication')}
 							</div>
 
 							{activeTab === 'info' && <TabInfo localToken={token} isNFT={true} />}
-							{/* {activeTab === 'auction' && <TabAuction localToken={token} />} */}
+							{activeTab === 'auction' && <TabAuction localToken={token} />}
 							{activeTab === 'owners' && <TabOwners localToken={token} />}
 							{activeTab === 'offers' && <TabOffers localToken={token} />}
 							{activeTab === 'history' && <TabHistory localToken={token} />}
@@ -374,12 +378,12 @@ const TokenDetail = ({ token, className }) => {
 			<TokenBurnModal show={showModal === 'burn'} onClose={onDismissModal} data={token} />
 			<TokenBuyModal show={showModal === 'buy'} onClose={onDismissModal} data={token} />
 			<TokenTransferModal show={showModal === 'transfer'} onClose={onDismissModal} data={token} />
-			{/* <TokenAuctionBidModal
+			<TokenAuctionBidModal
 				show={showModal === 'placeauction'}
 				data={token}
 				onClose={onDismissModal}
 				setShowModal={setShowModal}
-			/> */}
+			/>
 			<PlaceBidModal
 				show={showModal === 'placeoffer'}
 				data={token}

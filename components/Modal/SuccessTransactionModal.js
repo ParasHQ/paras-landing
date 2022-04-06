@@ -107,6 +107,16 @@ const SuccessTransactionModal = () => {
 					setToken(res.data.data.results[0])
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
+				} else if (FunctionCall.method_name === 'add_bid') {
+					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+						params: {
+							contract_id: args.nft_contract_id,
+							token_id: args.token_id,
+						},
+					})
+					setToken(res.data.data.results[0])
+					setTxDetail({ ...FunctionCall, args })
+					setShowModal(true)
 				} else if (FunctionCall.method_name === 'nft_set_series_price') {
 					const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
 						params: {
@@ -202,18 +212,22 @@ const SuccessTransactionModal = () => {
 	const titleText = () => {
 		if (txDetail.method_name === 'add_offer') {
 			return 'Offer Success'
+		} else if (txDetail.method_name === 'add_bid') {
+			return 'Place Bid Success'
 		} else if (txDetail.method_name === 'nft_buy' || txDetail.method_name === 'buy') {
 			return 'Purchase Success'
 		} else if (txDetail.method_name === 'nft_set_series_price') {
 			return 'Update Price Success'
 		} else if (txDetail.method_name === 'nft_approve') {
 			const msg = JSON.parse(txDetail.args.msg)
-			if (msg.market_type === 'sale') {
+			if (msg.market_type === 'sale' && !token?.is_auction) {
 				return 'Update Listing Success'
 			} else if (msg.market_type === 'accept_offer') {
 				return 'Accept Offer Success'
 			} else if (msg.market_type === 'add_trade') {
 				return 'Add Trade Success'
+			} else if (token?.is_auction) {
+				return 'Create Auction Success'
 			} else if (
 				msg.market_type === 'accept_trade' ||
 				msg.market_type === 'accept_trade_paras_series'
@@ -234,6 +248,13 @@ const SuccessTransactionModal = () => {
 			return (
 				<>
 					You successfully offer <b>{token.metadata.title}</b> for{' '}
+					{formatNearAmount(txDetail.args.price)} Ⓝ
+				</>
+			)
+		} else if (txDetail.method_name === 'add_bid') {
+			return (
+				<>
+					You successfully bid of auction <b>{token.metadata.title}</b> for{' '}
 					{formatNearAmount(txDetail.args.price)} Ⓝ
 				</>
 			)
@@ -262,8 +283,8 @@ const SuccessTransactionModal = () => {
 			if (msg.market_type === 'sale') {
 				return (
 					<>
-						You successfully update <b>{token.metadata.title}</b> price to{' '}
-						{formatNearAmount(msg.price || 0)} Ⓝ
+						You successfully {token?.is_auction ? 'create auction' : 'update'}{' '}
+						<b>{token.metadata.title}</b> price to {formatNearAmount(msg.price || 0)} Ⓝ
 					</>
 				)
 			} else if (msg.market_type === 'accept_offer') {

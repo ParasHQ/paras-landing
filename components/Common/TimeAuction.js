@@ -62,8 +62,8 @@ const TimeAuction = ({ endedAt }) => {
 				</svg>
 				<div>
 					<p className="text-[10px] font-bold">
-						{/* 02 &nbsp;:&nbsp; 18 &nbsp;:&nbsp; 30 &nbsp;:&nbsp; 27 */}
-						{days} &nbsp;:&nbsp; {hours} &nbsp;:&nbsp; {mins} &nbsp;:&nbsp; {secs}
+						{days} &nbsp;&nbsp;:&nbsp;&nbsp; {hours} &nbsp;&nbsp;:&nbsp;&nbsp; {mins}{' '}
+						&nbsp;&nbsp;:&nbsp;&nbsp; {secs}
 					</p>
 					<p className="text-[8px]">Days&nbsp; Hours&nbsp; Mins&nbsp; Secs</p>
 				</div>

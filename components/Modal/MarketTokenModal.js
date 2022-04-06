@@ -1,7 +1,7 @@
 import useStore from 'lib/store'
 import LoginModal from './LoginModal'
 import PlaceBidModal from './PlaceBidModal'
-// import TokenAuctionBidModal from './TokenAuctionBidModal'
+import TokenAuctionBidModal from './TokenAuctionBidModal'
 import TokenBuyModal from './TokenBuyModal'
 import TokenSeriesBuyModal from './TokenSeriesBuyModal'
 import TokenSeriesUpdatePriceModal from './TokenSeriesUpdatePriceModal'
@@ -65,7 +65,7 @@ const MarketTokenModal = ({
 	}
 
 	if (modalType === 'placebid') {
-		// return <TokenAuctionBidModal data={localToken} onClose={onCloseModal} show />
+		return <TokenAuctionBidModal data={localToken} onClose={onCloseModal} show />
 	}
 
 	return null
