@@ -11,10 +11,10 @@ import useToken from 'hooks/useToken'
 
 const TabAuction = ({ localToken }) => {
 	const [historyBid, setHistoryBid] = useState([])
-	const [days, setDays] = useState()
-	const [hours, setHours] = useState()
-	const [mins, setMins] = useState()
-	const [secs, setSecs] = useState()
+	const [days, setDays] = useState('-')
+	const [hours, setHours] = useState('-')
+	const [mins, setMins] = useState('-')
+	const [secs, setSecs] = useState('-')
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
@@ -173,14 +173,14 @@ const CurrentBid = ({ initial = {} }) => {
 				<div className="flex items-center">
 					<Link href={`/${token?.bidder_list ? isCurrentBid('bidder') : token.owner_id}`}>
 						<a className="hover:opacity-80">
-							<Avatar size="xl" src={parseImgUrl(profile.imgUrl)} className="align-bottom" />
+							<Avatar size="lg" src={parseImgUrl(profile.imgUrl)} className="align-bottom" />
 						</a>
 					</Link>
 					<div>
 						<div className="ml-2">
 							<Link href={`/${token?.bidder_list ? isCurrentBid('bidder') : token.owner_id}`}>
 								<a className="hover:opacity-80">
-									<p className="text-white font-semibold truncate">
+									<p className="text-white font-semibold truncate text-sm">
 										{prettyTruncate(
 											token?.bidder_list ? isCurrentBid('bidder') : token.owner_id,
 											16,
@@ -196,14 +196,14 @@ const CurrentBid = ({ initial = {} }) => {
 								{formatNearAmount(token.price.$numberDecimal || token.price)} Ⓝ
 							</p>
 						) : (
-							<p className="ml-2 text-white">
+							<p className="ml-2 text-white text-sm">
 								{localeLn('On Bid')} {formatNearAmount(token.amount)} Ⓝ
 							</p>
 						)}
 					</div>
 				</div>
-				<div className="mt-3 mr-9 pl-4 overflow-hidden">
-					<div className="text-primary bg-gray-300 rounded-md py-1 px-2 text-xs font-bold">
+				<div className="mt-3 overflow-hidden">
+					<div className="text-primary bg-gray-300 rounded-md py-1 px-2 text-xs font-bold whitespace-nowrap">
 						Current Bid
 					</div>
 				</div>
