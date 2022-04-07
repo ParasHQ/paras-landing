@@ -99,11 +99,6 @@ const HEADERS = [
 		title: 'Type',
 		className: `flex items-center w-2/6 lg:w-full flex-shrink-0 p-3 h-full`,
 	},
-	// {
-	// 	id: 'link',
-	// 	title: 'Link',
-	// 	className: `flex items-center w-2/6 lg:w-full flex-shrink-0 p-3 h-full`,
-	// },
 ]
 
 const HeadersSmall = [
