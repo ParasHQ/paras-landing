@@ -7,7 +7,7 @@ import { IconDots } from 'components/Icons'
 import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
-import { capitalize, parseImgUrl } from 'utils/common'
+import { capitalize, parseImgUrl, prettyBalance } from 'utils/common'
 import TokenSeriesTransferBuyer from '../Modal/TokenSeriesTransferBuyer'
 import TokenSeriesUpdatePriceModal from '../Modal/TokenSeriesUpdatePriceModal'
 import TokenSeriesBuyModal from '../Modal/TokenSeriesBuyModal'
@@ -30,6 +30,9 @@ import ReportModal from 'components/Modal/ReportModal'
 import Card from 'components/Card/Card'
 import { useRouter } from 'next/router'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
+import TabAuction from 'components/Tabs/TabAuction'
+import JSBI from 'jsbi'
+import TokenAuctionBidModal from 'components/Modal/TokenAuctionBidModal'
 
 const TokenSeriesDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -42,12 +45,15 @@ const TokenSeriesDetail = ({ token, className }) => {
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
 	const [isEnableTrade, setIsEnableTrade] = useState(true)
 
+	const price = token.token?.amount ? token.token?.amount : token.lowest_price || token.price
+
 	useEffect(() => {
 		if (!process.env.WHITELIST_CONTRACT_ID.split(';').includes(token?.contract_id)) {
 			setIsEnableTrade(false)
 		}
 	}, [])
 
+	const store = useStore()
 	const router = useRouter()
 
 	const isShowButton =
@@ -108,6 +114,14 @@ const TokenSeriesDetail = ({ token, className }) => {
 		setShowModal('updatePrice')
 	}
 
+	const onClickAuction = () => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+		setShowModal('placeauction')
+	}
+
 	const onClickBuy = () => {
 		if (!currentUser) {
 			setShowModal('notLogin')
@@ -166,6 +180,24 @@ const TokenSeriesDetail = ({ token, className }) => {
 		)
 	}
 
+	const checkNextPriceBid = () => {
+		const currentBid = Number(token.token?.amount ? token.token?.amount : price)
+		const multipleBid = (currentBid / 100) * 5
+		const nextBid = currentBid + multipleBid
+		const totalNextBid = prettyBalance(nextBid, 24, 4)
+		return totalNextBid
+	}
+
+	const isCurrentBid = () => {
+		let bidder = []
+		token?.token?.bidder_list?.map((item) => {
+			bidder.push(item.bidder)
+		})
+		const currentBid = bidder.reverse()
+
+		return currentBid[0]
+	}
+
 	const tokenSeriesButton = () => {
 		// For external contract
 		if (!isShowButton) {
@@ -177,7 +209,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 		}
 
 		if (token.is_non_mintable || token.total_mint === token.metadata.copies) {
-			return (
+			return !token.token?.is_auction ? (
 				<div className="flex space-x-2">
 					<Button size="md" onClick={() => changeActiveTab('owners')} isFullWidth>
 						{localeLn('CheckOwners')}
@@ -185,6 +217,41 @@ const TokenSeriesDetail = ({ token, className }) => {
 					{!disableOfferContract && (
 						<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
 							{`Place an offer`}
+						</Button>
+					)}
+				</div>
+			) : (
+				<div className="flex justify-between items-center gap-2">
+					<div className="flex items-baseline space-x-1 md:pl-2">
+						<div>
+							<p className="font-thin text-white text-xs">Next Bid</p>
+							<div className="flex items-center gap-1">
+								<div className="truncate text-white text-base font-bold">{`${checkNextPriceBid()} Ⓝ`}</div>
+								{price !== '0' && store.nearUsdPrice !== 0 && (
+									<div className="text-[9px] text-gray-400 truncate mt-1">
+										~ $
+										{prettyBalance(
+											JSBI.BigInt(token?.token?.amount ? token?.token?.amount : price) *
+												store.nearUsdPrice,
+											24,
+											2
+										)}
+									</div>
+								)}
+							</div>
+						</div>
+					</div>
+					{token?.token.owner_id === currentUser ? (
+						<Button size="md" className="px-14" isDisabled>
+							{`Auction on going`}
+						</Button>
+					) : isCurrentBid() === currentUser ? (
+						<Button size="md" isFullWidth variant="primary" isDisabled>
+							{`You are currently bid`}
+						</Button>
+					) : (
+						<Button size="md" onClick={onClickAuction} className="px-14">
+							{`Place a Bid`}
 						</Button>
 					)}
 				</div>
@@ -349,12 +416,14 @@ const TokenSeriesDetail = ({ token, className }) => {
 							</div>
 							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative flex-nowrap disable-scrollbars md:-mb-4">
 								{tabDetail('info')}
+								{token?.token?.is_auction && tabDetail('auction')}
 								{tabDetail('owners')}
-								{tabDetail('offers')}
+								{!token?.token?.is_auction && tabDetail('offers')}
 								{tabDetail('history')}
 								{tabDetail('publication')}
 							</div>
 							{activeTab === 'info' && <TabInfo localToken={token} />}
+							{activeTab === 'auction' && <TabAuction localToken={token?.token} />}
 							{activeTab === 'owners' && <TabOwners localToken={token} />}
 							{activeTab === 'offers' && <TabOffers localToken={token} />}
 							{activeTab === 'history' && <TabHistory localToken={token} />}
@@ -378,6 +447,12 @@ const TokenSeriesDetail = ({ token, className }) => {
 				show={showModal === 'updatePrice'}
 				onClose={onDismissModal}
 				data={token}
+			/>
+			<TokenAuctionBidModal
+				show={showModal === 'placeauction'}
+				data={token?.token}
+				onClose={onDismissModal}
+				setShowModal={setShowModal}
 			/>
 			<TokenSeriesTransferBuyer
 				show={showModal === 'buyerTransfer'}

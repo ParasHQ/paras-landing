@@ -27,7 +27,7 @@ const TokenAuctionBidModal = ({
 }) => {
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const [showTradeNFTModal, setShowTradeNFTModal] = useState(false)
-	const creatorData = useProfileData(data.metadata.creator_id)
+	const creatorData = useProfileData(data?.metadata.creator_id)
 	const { localeLn } = useIntl()
 	const { errors, register, handleSubmit, watch } = useForm({
 		defaultValues: {
@@ -134,7 +134,7 @@ const TokenAuctionBidModal = ({
 	}
 
 	const checkNextPriceBid = () => {
-		const currentBid = Number(data.price)
+		const currentBid = Number(!data?.amount ? data?.price : data?.amount)
 		const multipleBid = (currentBid / 100) * 5
 		const nextBid = currentBid + multipleBid
 		const totalNextBid = prettyBalance(nextBid, 24, 4)
@@ -164,7 +164,7 @@ const TokenAuctionBidModal = ({
 							</h1>
 						</div>
 						<p className="text-white mt-2">
-							{localeLn('AboutToBid')} <b>{data.metadata.title}</b>.
+							{localeLn('AboutToBid')} <b>{data?.metadata.title}</b>.
 						</p>
 						<form
 							onSubmit={handleSubmit((bidAuctionAmount) =>
@@ -204,7 +204,7 @@ const TokenAuctionBidModal = ({
 								</div>
 								<div className="flex justify-between">
 									<div className="text-sm">{localeLn('Highest Bid')}</div>
-									<div>{prettyBalance(data.price, 24, 4)} Ⓝ</div>
+									<div>{prettyBalance(data?.amount, 24, 4)} Ⓝ</div>
 								</div>
 								<div className="flex justify-between">
 									<div className="text-sm">{localeLn('Total')}</div>

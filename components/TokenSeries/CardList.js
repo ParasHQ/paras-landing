@@ -125,7 +125,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
 
-	const price = token.lowest_price || token.price
+	const price = token.token?.amount ? token.token?.amount : token.lowest_price || token.price
 
 	const onClickSeeDetails = async (choosenToken, additionalQuery) => {
 		const token = (await mutate()) || choosenToken
@@ -229,7 +229,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 	}
 
 	const checkBidder = () => {
-		if (token.token?.bids && token.token?.bids !== 0) {
+		if (token.token?.bidder_list) {
 			return 'Highest Bid'
 		} else {
 			return 'Starting Bid'
@@ -303,7 +303,13 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 							{price ? (
 								<div className="flex items-baseline space-x-1">
 									<div className="truncate">
-										{price === '0' ? localeLn('Free') : `${prettyBalance(price, 24, 4)} Ⓝ`}
+										{price === '0'
+											? localeLn('Free')
+											: `${prettyBalance(
+													token.token?.is_auction ? token.token?.amount || price : price,
+													24,
+													4
+											  )} Ⓝ`}
 									</div>
 									{price !== '0' && store.nearUsdPrice !== 0 && (
 										<div
@@ -311,7 +317,14 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 												token.token?.is_auction ? 'text-[9px]' : 'text-xs'
 											} text-gray-400 truncate`}
 										>
-											~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 2)}
+											~ $
+											{prettyBalance(
+												JSBI.BigInt(
+													token.token?.is_auction ? token.token?.amount || price : price
+												) * store.nearUsdPrice,
+												24,
+												2
+											)}
 										</div>
 									)}
 								</div>
@@ -360,7 +373,13 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 								{actionButtonText(token)}
 							</p>
 						) : (
-							<div />
+							<p
+								className={`font-bold text-white text-opacity-40 ${
+									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+								} mb-1 md:mb-0`}
+							>
+								Auction on going
+							</p>
 						)}
 						<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
 							<a

@@ -255,7 +255,7 @@ const SuccessTransactionModal = () => {
 			return (
 				<>
 					You successfully bid of auction <b>{token.metadata.title}</b> for{' '}
-					{formatNearAmount(txDetail.args.price)} Ⓝ
+					{formatNearAmount(txDetail.args.amount)} Ⓝ
 				</>
 			)
 		} else if (txDetail.method_name === 'nft_buy' || txDetail.method_name === 'buy') {

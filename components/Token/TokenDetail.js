@@ -9,7 +9,7 @@ import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
-import { capitalize, parseImgUrl } from 'utils/common'
+import { capitalize, parseImgUrl, prettyBalance } from 'utils/common'
 import TokenMoreModal from '../Modal/TokenMoreModal'
 import TokenShareModal from '../Modal/TokenShareModal'
 import TokenUpdatePriceModal from '../Modal/TokenUpdatePriceModal'
@@ -32,6 +32,7 @@ import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
 import TabAuction from 'components/Tabs/TabAuction'
 import TokenAuctionBidModal from 'components/Modal/TokenAuctionBidModal'
+import JSBI from 'jsbi'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -39,6 +40,7 @@ const TokenDetail = ({ token, className }) => {
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
+	const store = useStore()
 	const router = useRouter()
 
 	useEffect(() => {
@@ -151,6 +153,24 @@ const TokenDetail = ({ token, className }) => {
 			return false
 		}
 		return currentUser === token.owner_id
+	}
+
+	const isCurrentBid = () => {
+		let bidder = []
+		token?.bidder_list?.map((item) => {
+			bidder.push(item.bidder)
+		})
+		const currentBid = bidder.reverse()
+
+		return currentBid[0]
+	}
+
+	const checkNextPriceBid = () => {
+		const currentBid = Number(token?.amount ? token?.amount : token.price)
+		const multipleBid = (currentBid / 100) * 5
+		const nextBid = currentBid + multipleBid
+		const totalNextBid = prettyBalance(nextBid, 24, 4)
+		return totalNextBid
 	}
 
 	return (
@@ -276,12 +296,8 @@ const TokenDetail = ({ token, className }) => {
 							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
 								{tabDetail('info')}
 								{token.is_auction && tabDetail('auction')}
-								{!token.is_auction && (
-									<>
-										{tabDetail('owners')}
-										{tabDetail('offers')}
-									</>
-								)}
+								{tabDetail('owners')}
+								{!token.is_auction && tabDetail('offers')}
 								{tabDetail('history')}
 								{tabDetail('publication')}
 							</div>
@@ -296,7 +312,32 @@ const TokenDetail = ({ token, className }) => {
 					</Scrollbars>
 					<div className="p-3">
 						{token.owner_id === currentUser &&
-							(token.is_staked ? (
+							(token?.is_auction ? (
+								<div className="flex justify-between items-center gap-2">
+									<div className="flex items-baseline space-x-1 md:pl-2">
+										<div>
+											<p className="font-thin text-white text-xs">Next Bid</p>
+											<div className="flex items-center gap-1">
+												<div className="truncate text-white text-base font-bold">{`${checkNextPriceBid()} Ⓝ`}</div>
+												{token.price !== '0' && store.nearUsdPrice !== 0 && (
+													<div className="text-[9px] text-gray-400 truncate mt-1">
+														~ $
+														{prettyBalance(
+															JSBI.BigInt(token?.amount ? token?.amount : token.price) *
+																store.nearUsdPrice,
+															24,
+															2
+														)}
+													</div>
+												)}
+											</div>
+										</div>
+									</div>
+									<Button size="md" className="px-14" isDisabled>
+										Auction on Going
+									</Button>
+								</div>
+							) : token.is_staked ? (
 								<div className="flex flex-wrap flex-col">
 									<div className="w-full flex-1">
 										<Button
@@ -324,7 +365,7 @@ const TokenDetail = ({ token, className }) => {
 									</div>
 								</div>
 							))}
-						{token.owner_id !== currentUser && token.price && token.token_series_id !== '518' && (
+						{token.owner_id !== currentUser && token.price && !token.is_auction && (
 							<div className="flex space-x-2">
 								<Button size="md" className="truncate" onClick={onClickBuy} isFullWidth>
 									{`Buy for ${formatNearAmount(token.price)} Ⓝ`}
@@ -339,10 +380,40 @@ const TokenDetail = ({ token, className }) => {
 								{`Place an offer`}
 							</Button>
 						)}
-						{token.owner_id !== currentUser && token.token_series_id === '518' && (
-							<Button size="md" onClick={onClickAuction} isFullWidth variant="primary">
-								{`Place a Bid`}
-							</Button>
+						{token.owner_id !== currentUser &&
+						token.is_auction &&
+						isCurrentBid() !== currentUser ? (
+							<div className="flex justify-between items-center gap-2">
+								<div className="flex items-baseline space-x-1 md:pl-2">
+									<div>
+										<p className="font-thin text-white text-xs">Next Bid</p>
+										<div className="flex items-center gap-1">
+											<div className="truncate text-white text-base font-bold">{`${checkNextPriceBid()} Ⓝ`}</div>
+											{token.price !== '0' && store.nearUsdPrice !== 0 && (
+												<div className="text-[9px] text-gray-400 truncate mt-1">
+													~ $
+													{prettyBalance(
+														JSBI.BigInt(token?.amount ? token?.amount : token.price) *
+															store.nearUsdPrice,
+														24,
+														2
+													)}
+												</div>
+											)}
+										</div>
+									</div>
+								</div>
+								<Button size="md" onClick={onClickAuction} className="px-14">
+									{`Place a Bid`}
+								</Button>
+							</div>
+						) : (
+							token.owner_id !== currentUser &&
+							isCurrentBid() === currentUser && (
+								<Button size="md" isFullWidth variant="primary" isDisabled>
+									{`You are currently bid`}
+								</Button>
+							)
 						)}
 						{token.token_series_id !== token.token_id && (
 							<div

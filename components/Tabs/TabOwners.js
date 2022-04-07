@@ -178,6 +178,51 @@ const Owner = ({ initial = {}, onBuy, onUpdateListing }) => {
 		}
 	}
 
+	const checkStatuTransaction = () => {
+		if (token?.is_auction) {
+			return (
+				<p className="text-white">
+					{localeLn('OnAuction')}{' '}
+					{formatNearAmount(token?.is_auction ? token?.amount || token.price : token.price)} Ⓝ
+				</p>
+			)
+		} else if (token.price) {
+			return (
+				<p className="text-white">
+					{localeLn('OnSale')} {formatNearAmount(token.price)} Ⓝ
+				</p>
+			)
+		} else if (token.is_staked) {
+			return <p className="text-white">{localeLn('Staked')}</p>
+		} else {
+			return <p className="text-white">{localeLn('NotForSale')}</p>
+		}
+	}
+
+	const checkTypeTransaction = () => {
+		if (token.owner_id === currentUser) {
+			if (!token.is_staked && !token?.is_auction) {
+				return (
+					<div className="w-24">
+						<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>
+							{localeLn('Update')}
+						</Button>
+					</div>
+				)
+			}
+		} else if (token.owner_id !== currentUser) {
+			if (token.price && !token.is_auction) {
+				return (
+					<div className="w-24">
+						<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
+							{localeLn('Buy')}
+						</Button>
+					</div>
+				)
+			}
+		}
+	}
+
 	return (
 		<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 			<div className="flex items-center justify-between">
@@ -215,34 +260,8 @@ const Owner = ({ initial = {}, onBuy, onUpdateListing }) => {
 			</div>
 			<div className="mt-1">
 				<div className="flex items-center justify-between">
-					{token.price ? (
-						<p className="text-white">
-							{localeLn('OnSale')} {formatNearAmount(token.price)} Ⓝ
-						</p>
-					) : token.is_staked ? (
-						<p className="text-white">{localeLn('Staked')}</p>
-					) : (
-						<p className="text-white">{localeLn('NotForSale')}</p>
-					)}
-					{currentUser && (
-						<>
-							{token.owner_id === currentUser
-								? !token.is_staked && (
-										<div className="w-24">
-											<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>
-												{localeLn('Update')}
-											</Button>
-										</div>
-								  )
-								: token.price && (
-										<div className="w-24">
-											<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
-												{localeLn('Buy')}
-											</Button>
-										</div>
-								  )}
-						</>
-					)}
+					{checkStatuTransaction()}
+					{currentUser && checkTypeTransaction()}
 				</div>
 			</div>
 		</div>
