@@ -20,6 +20,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
 	const [isUpdatingPrice, setIsUpdatingPrice] = useState(false)
 	const [isRemovingPrice, setIsRemovingPrice] = useState(false)
+	const [lockedTxFee, setLockedTxFee] = useState('')
 	const { register, handleSubmit, errors } = useForm()
 	const { localeLn } = useIntl()
 
@@ -47,6 +48,17 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 			getTxFee()
 		}
 	}, [show])
+
+	useEffect(async () => {
+		if (!data?.transaction_fee || !newPrice) return
+		else {
+			const calcLockedTxFee = JSBI.divide(
+				JSBI.multiply(JSBI.BigInt(data?.price), JSBI.BigInt(data?.transaction_fee || 0)),
+				JSBI.BigInt(10000)
+			)
+			setLockedTxFee(formatNearAmount(calcLockedTxFee.toString()))
+		}
+	}, [show, newPrice])
 
 	const onUpdateListing = async () => {
 		if (!currentUser) {
@@ -288,6 +300,14 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
                   4
                 )} */}
 							</div>
+							{data.transaction_fee && (
+								<div className="flex items-center">
+									<div className="bg-white rounded-md px-2 py-1 text-xs">
+										<span className=" text-primary font-semibold">{localeLn('LockedFee')}: </span>
+										<span className=" text-primary font-semibold">{lockedTxFee} Ⓝ</span>
+									</div>
+								</div>
+							)}
 							<div className="mt-2 text-sm text-red-500">
 								{/* {errors.amount?.type === 'required' && `Sale price is required`}
                 {errors.amount?.type === 'min' && `Minimum 0`} */}

@@ -28,6 +28,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const currentUser = useStore((state) => state.currentUser)
 	const setTransactionRes = useStore((state) => state.setTransactionRes)
 	const [isAnyTradeOffer, setIsAnyTradeOffer] = useState(false)
+	const [lockedTxFee, setLockedTxFee] = useState('')
 	const { localeLn } = useIntl()
 	const toast = useToast()
 
@@ -50,6 +51,15 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 			getTxFee()
 		}
 	}, [show])
+
+	useEffect(async () => {
+		if (!data?.transaction_fee || !newPrice) return
+		const calcLockedTxFee = JSBI.divide(
+			JSBI.multiply(JSBI.BigInt(data?.price), JSBI.BigInt(data?.transaction_fee || 0)),
+			JSBI.BigInt(10000)
+		)
+		setLockedTxFee(formatNearAmount(calcLockedTxFee.toString()))
+	}, [show, newPrice])
 
 	useEffect(async () => {
 		const resp = await axios.get(`${process.env.V2_API_URL}/offers`, {
@@ -433,6 +443,14 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
                   4
                 )} */}
 							</div>
+							{data.transaction_fee && (
+								<div className="flex items-center">
+									<div className="bg-white rounded-md py-1 px-2 text-xs">
+										<span className=" text-primary font-semibold">{localeLn('LockedFee')}: </span>
+										<span className=" text-primary font-semibold">{lockedTxFee} Ⓝ</span>
+									</div>
+								</div>
+							)}
 							<div className="mt-2 text-sm text-red-500">
 								{/* {errors.amount?.type === 'required' && `Sale price is required`}
                 {errors.amount?.type === 'min' && `Minimum 0`} */}

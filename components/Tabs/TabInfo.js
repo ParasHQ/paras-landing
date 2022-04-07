@@ -8,12 +8,15 @@ import { useRouter } from 'next/router'
 import TokenRoyaltyModal from 'components/Modal/TokenRoyaltyModal'
 import cachios from 'cachios'
 import StillReferenceModal from 'components/Modal/StillReferenceModal'
+import JSBI from 'jsbi'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
 const TabInfo = ({ localToken, isNFT }) => {
 	const { localeLn } = useIntl()
 	const router = useRouter()
 	const [showModal, setShowModal] = useState('')
 	const [attributeRarity, setAttributeRarity] = useState([])
+	const [lockedTxFee, setLockedTxFee] = useState('')
 
 	const collection = localToken.metadata.collection_id
 		? {
@@ -41,6 +44,15 @@ const TabInfo = ({ localToken, isNFT }) => {
 		const newAttribute = await res.data.data
 		setAttributeRarity(newAttribute)
 	}
+
+	useEffect(async () => {
+		if (!localToken.transaction_fee) return
+		const calcLockedTxFee = JSBI.divide(
+			JSBI.multiply(JSBI.BigInt(localToken?.price), JSBI.BigInt(localToken?.transaction_fee || 0)),
+			JSBI.BigInt(10000)
+		)
+		setLockedTxFee(formatNearAmount(calcLockedTxFee.toString()))
+	}, [])
 
 	return (
 		<div>
@@ -293,6 +305,14 @@ const TabInfo = ({ localToken, isNFT }) => {
 						})}
 					/>
 				</div>
+				{localToken.transaction_fee && (
+					<div className="flex items-center justify-end mt-2">
+						<div className="bg-white rounded-md px-2 py-1 text-xs">
+							<span className=" text-primary font-semibold">{localeLn('LockedFee')}: </span>
+							<span className=" text-primary font-semibold">{lockedTxFee} Ⓝ</span>
+						</div>
+					</div>
+				)}
 			</div>
 		</div>
 	)
