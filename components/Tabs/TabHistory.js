@@ -113,6 +113,30 @@ const Activity = ({ activity }) => {
 	}
 
 	const TextActivity = ({ type, msg }) => {
+		if (type === 'add_market_data' && msg.params.is_auction) {
+			return (
+				<p>
+					<LinkToProfile accountId={activity.msg.params.owner_id} />
+					<span>
+						{' '}
+						{localeLn('put on auction for')} {formatNearAmount(activity.msg.params.price)} Ⓝ
+					</span>
+				</p>
+			)
+		}
+
+		if (type === 'add_bid') {
+			return (
+				<p>
+					<LinkToProfile accountId={activity.msg.params.bidder_id} />
+					<span>
+						{' '}
+						{localeLn('on bid')} {formatNearAmount(activity.msg.params.amount)} Ⓝ
+					</span>
+				</p>
+			)
+		}
+
 		if (type === 'add_market_data' || type === 'update_market_data') {
 			return (
 				<p>
