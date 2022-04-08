@@ -28,7 +28,7 @@ export default function Home() {
 			try {
 				const poolList = await near.wallet
 					.account()
-					.viewFunction('token.paras.near', `list_seeds_info`, {
+					.viewFunction(process.env.FARM_CONTRACT_ID, `list_seeds_info`, {
 						from_index: 0,
 						limit: 1,
 					})
