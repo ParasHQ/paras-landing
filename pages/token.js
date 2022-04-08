@@ -575,7 +575,7 @@ export default function Home() {
 							and creators.
 						</p>
 						<p className="mt-2">
-							We launched PARAS Tokens in Sept 2020 as a way to gradually decentralizing the
+							We launched PARAS Tokens in Sept 2021 as a way to gradually decentralizing the
 							ecosystem. We want Paras to be community-owned marketplace, where the community has
 							voice and can help shape the future of the Paras together.
 						</p>
