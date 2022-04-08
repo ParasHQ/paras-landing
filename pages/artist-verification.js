@@ -464,7 +464,7 @@ const Verify = () => {
 						<p className="mt-16 mb-3">{localeLn('ShareNow')}</p>
 						<div className="flex flex-row items-center justify-center gap-3">
 							<TwitterShareButton
-								title={`Check out my creation only on @ParasHQ\n\n#paras #cryptoart #digitalart #tradingcards`}
+								title={`Hey I'm verified creator on Paras. Check out my creation only on @ParasHQ\n\n#paras #cryptoart #digitalart #tradingcards`}
 								url={urlShare}
 								className="flex text-white"
 							>
