@@ -12,6 +12,7 @@ import near from 'lib/near'
 import JSBI from 'jsbi'
 import AnimatedNumber from 'react-awesome-animated-number'
 import 'react-awesome-animated-number/dist/index.css'
+import { sentryCaptureException } from 'lib/sentry'
 
 export default function Home() {
 	const store = useStore()
@@ -27,7 +28,7 @@ export default function Home() {
 			try {
 				const poolList = await near.wallet
 					.account()
-					.viewFunction(process.env.FARM_CONTRACT_ID, `list_seeds_info`, {
+					.viewFunction('token.paras.near', `list_seeds_info`, {
 						from_index: 0,
 						limit: 1,
 					})
@@ -155,7 +156,6 @@ export default function Home() {
 						}
 					}
 				}
-				console.log(allTotalRewards)
 
 				// if has no start date, means the pool is coming soon
 				// use all data instead of active data
@@ -180,7 +180,7 @@ export default function Home() {
 				// }
 				// console.log(poolData)
 			} catch (err) {
-				console.log(err)
+				sentryCaptureException(err)
 			}
 		}
 
@@ -194,12 +194,11 @@ export default function Home() {
 				setCurMarket(curPrice * curSupply)
 				setTotalSupply(100000000)
 			} catch (err) {
-				console.log(err)
+				sentryCaptureException(err)
 			}
 		}
 
 		if (store.initialized) {
-			console.log(near.wallet.account())
 			getFarms()
 			getPrice()
 		}
