@@ -147,6 +147,7 @@ const CardInfo = {
 	ConfirmBuy: 'Подтверждено',
 	Warning: 'Предупреждение',
 	AreYouSureBuy: 'Вы уверены, что купите эту карту?',
+	AreYouSureAcceptTrade: 'Вы уверены, что принимаете эту сделку?',
 	IUnderstand: 'я понимаю',
 	BuyQuantityAvailable: 'Количество покупок (Доступно для покупки',
 	YouWillRedirectedTo: 'YВы будете перенаправлены на веб кошелёк NEAR для подтверждения транзакции',
