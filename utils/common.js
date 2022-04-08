@@ -281,3 +281,9 @@ export const setDataLocalStorage = (key, value, setState = () => {}) => {
 		setState(window.localStorage.getItem(key))
 	}
 }
+
+export const getRandomInt = (min, max) => {
+	min = Math.ceil(min)
+	max = Math.floor(max)
+	return Math.floor(Math.random() * (max - min) + min)
+}
