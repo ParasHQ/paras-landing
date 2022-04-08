@@ -33,6 +33,7 @@ import TradeNFTModal from 'components/Modal/TradeNFTModal'
 import TabAuction from 'components/Tabs/TabAuction'
 import TokenAuctionBidModal from 'components/Modal/TokenAuctionBidModal'
 import JSBI from 'jsbi'
+import AcceptBidAuctionModal from 'components/Modal/AcceptBidAuctionModal'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -114,6 +115,10 @@ const TokenDetail = ({ token, className }) => {
 			return
 		}
 		setShowModal('transfer')
+	}
+
+	const onClickAcceptBidAuction = () => {
+		setShowModal('acceptbidauction')
 	}
 
 	const onClickBurn = () => {
@@ -311,47 +316,75 @@ const TokenDetail = ({ token, className }) => {
 						</div>
 					</Scrollbars>
 					<div className="p-3">
-						{token.owner_id === currentUser &&
-							(token?.is_auction ? (
-								<div className="flex justify-between items-center gap-2">
-									<div className="flex items-baseline space-x-1 md:pl-2">
-										<div>
-											<p className="font-thin text-white text-xs">Next Bid</p>
-											<div className="flex items-center gap-1">
-												<div className="truncate text-white text-base font-bold">{`${checkNextPriceBid()} Ⓝ`}</div>
-												{token.price !== '0' && store.nearUsdPrice !== 0 && (
-													<div className="text-[9px] text-gray-400 truncate mt-1">
-														~ $
-														{prettyBalance(
-															JSBI.BigInt(token?.amount ? token?.amount : token.price) *
-																store.nearUsdPrice,
-															24,
-															2
-														)}
-													</div>
-												)}
+						{token?.is_auction ? (
+							<div className="flex justify-between items-center gap-2">
+								{token.owner_id === currentUser ? (
+									<>
+										<div className="flex items-baseline space-x-1 md:pl-2">
+											<div>
+												<p className="font-thin text-white text-xs">Next Bid</p>
+												<div className="flex items-center gap-1">
+													<div className="truncate text-white text-base font-bold">{`${checkNextPriceBid()} Ⓝ`}</div>
+													{token.price !== '0' && store.nearUsdPrice !== 0 && (
+														<div className="text-[9px] text-gray-400 truncate mt-1">
+															~ $
+															{prettyBalance(
+																JSBI.BigInt(token?.amount ? token?.amount : token.price) *
+																	store.nearUsdPrice,
+																24,
+																2
+															)}
+														</div>
+													)}
+													{token.price === '0' && token?.is_auction && (
+														<div className="text-[9px] text-gray-400 truncate mt-1">
+															~ $
+															{prettyBalance(
+																JSBI.BigInt(token?.amount ? token?.amount : token.price) *
+																	store.nearUsdPrice,
+																24,
+																2
+															)}
+														</div>
+													)}
+												</div>
 											</div>
 										</div>
-									</div>
-									<Button size="md" className="px-14" isDisabled>
-										Auction on Going
+										{token?.bidder_list && token?.is_auction ? (
+											<Button size="md" className="px-14" onClick={onClickAcceptBidAuction}>
+												Accept Bid
+											</Button>
+										) : (
+											<Button size="md" className="px-14" isDisabled>
+												No bid yet
+											</Button>
+										)}
+									</>
+								) : (
+									token.owner_id !== currentUser &&
+									isCurrentBid() === currentUser && (
+										<Button size="md" isFullWidth variant="primary" isDisabled>
+											{`You are currently bid`}
+										</Button>
+									)
+								)}
+							</div>
+						) : token.is_staked ? (
+							<div className="flex flex-wrap flex-col">
+								<div className="w-full flex-1">
+									<Button
+										size="md"
+										isFullWidth
+										onClick={() => {
+											window.location.href = 'https://stake.paras.id'
+										}}
+									>
+										{localeLn('Unstake')}
 									</Button>
 								</div>
-							) : token.is_staked ? (
-								<div className="flex flex-wrap flex-col">
-									<div className="w-full flex-1">
-										<Button
-											size="md"
-											isFullWidth
-											onClick={() => {
-												window.location.href = 'https://stake.paras.id'
-											}}
-										>
-											{localeLn('Unstake')}
-										</Button>
-									</div>
-								</div>
-							) : (
+							</div>
+						) : (
+							token.owner_id === currentUser && (
 								<div className="flex flex-wrap space-x-4">
 									<div className="w-full flex-1">
 										<Button size="md" onClick={() => setShowModal('updatePrice')} isFullWidth>
@@ -364,7 +397,8 @@ const TokenDetail = ({ token, className }) => {
 										</Button>
 									</div>
 								</div>
-							))}
+							)
+						)}
 						{token.owner_id !== currentUser && token.price && !token.is_auction && (
 							<div className="flex space-x-2">
 								<Button size="md" className="truncate" onClick={onClickBuy} isFullWidth>
@@ -380,9 +414,7 @@ const TokenDetail = ({ token, className }) => {
 								{`Place an offer`}
 							</Button>
 						)}
-						{token.owner_id !== currentUser &&
-						token.is_auction &&
-						isCurrentBid() !== currentUser ? (
+						{token.owner_id !== currentUser && token.is_auction && isCurrentBid() !== currentUser && (
 							<div className="flex justify-between items-center gap-2">
 								<div className="flex items-baseline space-x-1 md:pl-2">
 									<div>
@@ -407,13 +439,6 @@ const TokenDetail = ({ token, className }) => {
 									{`Place a Bid`}
 								</Button>
 							</div>
-						) : (
-							token.owner_id !== currentUser &&
-							isCurrentBid() === currentUser && (
-								<Button size="md" isFullWidth variant="primary" isDisabled>
-									{`You are currently bid`}
-								</Button>
-							)
 						)}
 						{token.token_series_id !== token.token_id && (
 							<div
@@ -451,6 +476,12 @@ const TokenDetail = ({ token, className }) => {
 			<TokenTransferModal show={showModal === 'transfer'} onClose={onDismissModal} data={token} />
 			<TokenAuctionBidModal
 				show={showModal === 'placeauction'}
+				data={token}
+				onClose={onDismissModal}
+				setShowModal={setShowModal}
+			/>
+			<AcceptBidAuctionModal
+				show={showModal === 'acceptbidauction'}
 				data={token}
 				onClose={onDismissModal}
 				setShowModal={setShowModal}

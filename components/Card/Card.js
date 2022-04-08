@@ -181,7 +181,7 @@ const Card = ({
 											videoLoop={true}
 											mimeType={token?.mime_type}
 										/>
-										{token.is_auction && <TimeAuction endedAt={token.ended_at} />}
+										{token.is_auction && <TimeAuction endedAt={token.ended_at} data={token} />}
 									</>
 								)}
 							</div>

@@ -101,6 +101,10 @@ export const descriptionMaker = (activity, localToken, localTradedToken) => {
 		return `${localToken?.metadata?.owner_id} accepted trade ${localToken?.metadata?.title} with ${localToken?.metadata?.title}`
 	}
 
+	if (type === 'add_bid') {
+		return `${activity.from} add bid for ${formatNearAmount(activity.msg.params.price)}`
+	}
+
 	return ``
 }
 
@@ -108,7 +112,10 @@ const Activity = ({ activity, localTradedToken, localToken }) => {
 	const { localeLn } = useIntl()
 	const type = activity.type
 
-	if (type === 'add_market_data' || type === 'update_market_data') {
+	if (
+		(type === 'add_market_data' || type === 'update_market_data') &&
+		!activity.msg.params.is_auction
+	) {
 		return (
 			<p>
 				<LinkToProfile
@@ -131,6 +138,21 @@ const Activity = ({ activity, localTradedToken, localToken }) => {
 					accountId={activity.msg.params.owner_id}
 				/>
 				<span> {localeLn('RemoveFromSale')}</span>
+			</p>
+		)
+	}
+
+	if (type === 'add_market_data' || activity.msg.params.is_auction) {
+		return (
+			<p>
+				<LinkToProfile
+					className="text-gray-100 hover:border-gray-100"
+					accountId={activity.msg.params.owner_id}
+				/>
+				<span>
+					{' '}
+					{localeLn('put on auction')} {formatNearAmount(activity.msg.params.price)} Ⓝ
+				</span>
 			</p>
 		)
 	}
@@ -361,6 +383,21 @@ const Activity = ({ activity, localTradedToken, localToken }) => {
 						</span> with <span className="font-bold">{localToken?.metadata.title}</span>
 					</span>
 				</span>
+			</p>
+		)
+	}
+
+	if (type === 'add_bid') {
+		return (
+			<p>
+				<span>
+					<LinkToProfile
+						className="text-gray-100 hover:border-gray-100"
+						accountId={activity.from}
+					/>
+				</span>
+				<span> {localeLn('add bid for')}</span>
+				<span> {formatNearAmount(activity.msg.params.amount)} Ⓝ</span>
 			</p>
 		)
 	}

@@ -15,7 +15,7 @@ import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
 import WalletHelper from 'lib/WalletHelper'
-import TradeNFTModal from './TradeNFTModal'
+import { trackUpdateListingToken } from 'lib/ga'
 
 const TokenAuctionBidModal = ({
 	data,
@@ -26,7 +26,6 @@ const TokenAuctionBidModal = ({
 	tokenType = `token`,
 }) => {
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
-	const [showTradeNFTModal, setShowTradeNFTModal] = useState(false)
 	const creatorData = useProfileData(data?.metadata.creator_id)
 	const { localeLn } = useIntl()
 	const { errors, register, handleSubmit, watch } = useForm({
@@ -75,6 +74,9 @@ const TokenAuctionBidModal = ({
 
 	const onPlaceBidAuction = async ({ bidAuctionAmount }) => {
 		setIsBidding(true)
+
+		trackUpdateListingToken(data.token_id)
+
 		const hasDepositStorage = await hasStorageBalance()
 
 		try {
@@ -134,7 +136,7 @@ const TokenAuctionBidModal = ({
 	}
 
 	const checkNextPriceBid = () => {
-		const currentBid = Number(!data?.amount ? data?.price : data?.amount)
+		const currentBid = Number(!data?.amount ? data?.price.$numberDecimal : data?.amount)
 		const multipleBid = (currentBid / 100) * 5
 		const nextBid = currentBid + multipleBid
 		const totalNextBid = prettyBalance(nextBid, 24, 4)
@@ -143,13 +145,6 @@ const TokenAuctionBidModal = ({
 
 	return (
 		<>
-			{showTradeNFTModal && (
-				<TradeNFTModal
-					tokenType={tokenType}
-					data={data}
-					onClose={() => setShowTradeNFTModal(false)}
-				/>
-			)}
 			<Modal isShow={show} close={onClose} closeOnBgClick={false} closeOnEscape={false}>
 				<div className="max-w-sm w-full p-4 bg-gray-800  m-auto rounded-md relative">
 					<div className="absolute right-0 top-0 pr-4 pt-4">
@@ -204,7 +199,10 @@ const TokenAuctionBidModal = ({
 								</div>
 								<div className="flex justify-between">
 									<div className="text-sm">{localeLn('Highest Bid')}</div>
-									<div>{prettyBalance(data?.amount, 24, 4)} Ⓝ</div>
+									<div>
+										{prettyBalance(data?.amount ? data?.amount : data.price.$numberDecimal, 24, 4)}{' '}
+										Ⓝ
+									</div>
 								</div>
 								<div className="flex justify-between">
 									<div className="text-sm">{localeLn('Total')}</div>

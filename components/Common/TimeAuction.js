@@ -21,7 +21,7 @@ const TimeAuction = ({ endedAt }) => {
 	const countDownTimeAuction = () => {
 		const endedDate = convertTimeOfAuction(endedAt)
 
-		const x = setInterval(() => {
+		const timer = setInterval(() => {
 			const startedDate = new Date().getTime()
 
 			let distance = parseInt(endedDate) - parseInt(startedDate)
@@ -37,8 +37,7 @@ const TimeAuction = ({ endedAt }) => {
 			setSecs(seconds)
 
 			if (distance < 0) {
-				clearInterval(x)
-				console.log('EXPIRED')
+				clearInterval(timer)
 			}
 		}, 1000)
 	}

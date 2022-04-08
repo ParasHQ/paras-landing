@@ -242,8 +242,8 @@ const TokenSeriesDetail = ({ token, className }) => {
 						</div>
 					</div>
 					{token?.token.owner_id === currentUser ? (
-						<Button size="md" className="px-14" isDisabled>
-							{`Auction on going`}
+						<Button size="md" className="px-14" onClick={'acceptbidauction'}>
+							{`Accept Bid`}
 						</Button>
 					) : isCurrentBid() === currentUser ? (
 						<Button size="md" isFullWidth variant="primary" isDisabled>

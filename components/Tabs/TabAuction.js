@@ -37,7 +37,7 @@ const TabAuction = ({ localToken }) => {
 	const countDownTimeAuction = (endedAt) => {
 		const endedDate = convertTimeOfAuction(endedAt)
 
-		const x = setInterval(() => {
+		const timer = setInterval(() => {
 			const startedDate = new Date().getTime()
 
 			let distance = parseInt(endedDate) - parseInt(startedDate)
@@ -53,8 +53,7 @@ const TabAuction = ({ localToken }) => {
 			setSecs(seconds)
 
 			if (distance < 0) {
-				clearInterval(x)
-				console.log('EXPIRED')
+				clearInterval(timer)
 			}
 		}, 1000)
 	}
@@ -86,9 +85,9 @@ const TabAuction = ({ localToken }) => {
 			</div>
 			<CurrentBid initial={localToken} key={localToken.token_id} />
 			<p className="text-center mt-2">History Bids</p>
-			{historyBid.length !== 0 ? (
+			{historyBid?.length !== 0 &&
 				historyBid
-					.slice(0)
+					?.slice(0)
 					.reverse()
 					.map((x) => (
 						<div key={x._id}>
@@ -103,8 +102,8 @@ const TabAuction = ({ localToken }) => {
 								<p className="mt-1 text-xs">{startedAtDate(x.issued_at)} UTC</p>
 							</div>
 						</div>
-					))
-			) : (
+					))}
+			{!localToken?.bidder_list && (
 				<div className="bg-gray-800 p-3 rounded-md shadow-md">
 					<div className="text-white text-center">{'No bidder at the moment'}</div>
 				</div>

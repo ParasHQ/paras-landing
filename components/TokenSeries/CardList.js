@@ -236,6 +236,16 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 		}
 	}
 
+	const isCurrentBid = () => {
+		let bidder = []
+		token.token?.bidder_list?.map((item) => {
+			bidder.push(item.bidder)
+		})
+		const currentBid = bidder.reverse()
+
+		return currentBid[0]
+	}
+
 	return (
 		<>
 			<TokenSeriesDetailModal tokens={[token]} />
@@ -300,10 +310,10 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 									: 'text-lg'
 							}`}
 						>
-							{price ? (
+							{price && token.token?.is_auction ? (
 								<div className="flex items-baseline space-x-1">
 									<div className="truncate">
-										{price === '0'
+										{price === '0' && !token.token?.is_auction
 											? localeLn('Free')
 											: `${prettyBalance(
 													token.token?.is_auction ? token.token?.amount || price : price,
@@ -311,6 +321,22 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 													4
 											  )} Ⓝ`}
 									</div>
+									{token.token?.is_auction && price === '0' && (
+										<div
+											className={`${
+												token.token?.is_auction ? 'text-[9px]' : 'text-xs'
+											} text-gray-400 truncate`}
+										>
+											~ $
+											{prettyBalance(
+												JSBI.BigInt(
+													token.token?.is_auction ? token.token?.amount || price : price
+												) * store.nearUsdPrice,
+												24,
+												2
+											)}
+										</div>
+									)}
 									{price !== '0' && store.nearUsdPrice !== 0 && (
 										<div
 											className={`${
@@ -363,7 +389,8 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 						</div>
 					)}
 					<div className="flex justify-between md:items-baseline">
-						{!token.token?.is_auction || currentUser !== token.token?.owner_id ? (
+						{!token.token?.is_auction ||
+						(currentUser !== token.token?.owner_id && isCurrentBid() !== currentUser) ? (
 							<p
 								className={`font-bold text-white cursor-pointer hover:opacity-80 ${
 									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
