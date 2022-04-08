@@ -64,7 +64,7 @@ const HomeCollectionList = ({ showDetails }) => {
 	}
 
 	return (
-		<div className="my-8 relative">
+		<div className="mb-8 relative">
 			<h1 className="text-white font-semibold text-3xl capitalize mb-4">Featured Collections</h1>
 			<div
 				ref={ref}

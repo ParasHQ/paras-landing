@@ -873,7 +873,7 @@ const NewPage = () => {
 							</div>
 						)}
 						{step === 1 && (
-							<div>
+							<div className="pb-12">
 								<div className="mt-4 relative border-2 h-56 border-dashed rounded-md cursor-pointer overflow-hidden border-gray-400">
 									<input
 										className="cursor-pointer w-full opacity-0 absolute inset-0"
@@ -944,7 +944,7 @@ const NewPage = () => {
 						)}
 						{step === 2 && (
 							<form onSubmit={handleSubmit(_handleSubmitStep1)}>
-								<div>
+								<div className="min-h-[60vh] pb-8">
 									<div className="mt-2">
 										<label className="block text-sm">{localeLn('Name')}</label>
 										<InputText
@@ -1074,7 +1074,7 @@ const NewPage = () => {
 							</form>
 						)}
 						{step === 3 && (
-							<form onSubmit={handleSubmit(_handleSubmitStep2)} className="h-">
+							<form onSubmit={handleSubmit(_handleSubmitStep2)} className="pb-12">
 								<div className="mt-2">
 									<div>
 										<RoyaltyWatch control={control} fields={royaltyFields} append={royaltyAppend} />

@@ -598,6 +598,7 @@ const collection = {
 	Time: 'Time',
 	Type: 'Type',
 	NoActivity: 'No Activity',
+	TotalListed: 'Total Listed',
 }
 const deleteCollection = {
 	DeleteTitle: 'Delete Confirmation',
