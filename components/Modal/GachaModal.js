@@ -1,6 +1,5 @@
 import Button from 'components/Common/Button'
 import { IconX } from 'components/Icons'
-import near from 'lib/near'
 import { GAS_FEE_150 } from 'config/constants'
 import useStore from 'lib/store'
 import { useEffect, useState } from 'react'
@@ -9,6 +8,8 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import Modal from 'components/Modal'
 import Scrollbars from 'react-custom-scrollbars'
 import { parseImgUrl } from 'utils/common'
+import WalletHelper from 'lib/WalletHelper'
+import LoginModal from './LoginModal'
 
 const GachaModal = () => {
 	const [showFloating, setShowFloating] = useState(false)
@@ -16,8 +17,13 @@ const GachaModal = () => {
 	const currentUser = useStore((state) => state.currentUser)
 	const countBundle = useStore((state) => state.gachaCountBundle)
 	const setCountBundle = useStore((state) => state.setGachaCountBundle)
+	const setTransactionRes = useStore((state) => state.setTransactionRes)
 
 	useEffect(() => {
+		if (currentUser === null) {
+			setShowFloating(true)
+		}
+
 		if (currentUser) getBoughtCountBundle()
 
 		if (currentUser && countBundle === 0) {
@@ -27,19 +33,23 @@ const GachaModal = () => {
 				if (gachaModal) setShowFloating(false)
 				else setShowFloating(true)
 			}
+		} else if (countBundle !== null) {
+			setShowFloating(false)
 		}
 	}, [currentUser, countBundle])
 
 	const getBoughtCountBundle = async () => {
 		try {
 			const params = {
-				mint_bundle_id: 'gacha-test',
+				mint_bundle_id: 'bob-boom-mystery-box',
 				account_id: currentUser,
 			}
 
-			const response = await near.wallet
-				.account()
-				.viewFunction(process.env.COMIC_CONTRACT_ID, `get_buy_count_mint_bundle`, params)
+			const response = await WalletHelper.viewFunction({
+				methodName: `get_buy_count_mint_bundle`,
+				contractId: process.env.COMIC_CONTRACT_ID,
+				args: params,
+			})
 
 			setCountBundle(response)
 		} catch (err) {
@@ -50,18 +60,23 @@ const GachaModal = () => {
 	const buyMintBundle = async () => {
 		try {
 			const params = {
-				mint_bundle_id: 'gacha-test',
+				mint_bundle_id: 'bob-boom-mystery-box',
 				nft_contract_id: process.env.COMIC_CONTRACT_ID,
 				receiver_id: currentUser,
 			}
 
-			await near.wallet.account().functionCall({
+			const res = await WalletHelper.callFunction({
 				contractId: process.env.COMIC_CONTRACT_ID,
 				methodName: `buy_mint_bundle`,
 				args: params,
 				gas: GAS_FEE_150,
-				attachedDeposit: parseNearAmount(`0.01128`),
+				deposit: parseNearAmount(`0.01128`),
 			})
+
+			if (res?.response) {
+				onCloseFloating()
+				setTransactionRes(res?.response)
+			}
 		} catch (err) {
 			sentryCaptureException(err)
 		}
@@ -119,46 +134,58 @@ const GachaModal = () => {
 export default GachaModal
 
 const GachaModalDetail = ({ claimGacha, onClose }) => {
+	const currentUser = useStore((state) => state.currentUser)
+	const [showLogin, setShowLogin] = useState(false)
+
 	return (
-		<Modal isShow={true} closeOnBgClick={true} closeOnEscape={true} close={onClose}>
-			<div className="max-w-xl w-full bg-gray-800 m-auto rounded-md relative">
-				<div
-					className="bg-cover bg-center h-40 md:h-60 rounded-t-md"
-					style={{
-						backgroundImage: `url(${parseImgUrl(
-							`bafkreifa7oppjksaa2euocnedsww6u7grjmfja6zkdm5u3mjjdvwkm54me`
-						)})`,
-					}}
-				>
-					<div className="absolute right-0 top-0 pr-4 pt-4">
-						<div className="cursor-pointer" onClick={onClose}>
-							<IconX />
+		<>
+			<Modal isShow={true} closeOnBgClick={true} closeOnEscape={true} close={onClose}>
+				<div className="max-w-xl w-full bg-gray-800 m-auto rounded-md relative">
+					<div
+						className="bg-cover bg-center h-40 md:h-60 rounded-t-md"
+						style={{
+							backgroundImage: `url(${parseImgUrl(
+								`bafkreifa7oppjksaa2euocnedsww6u7grjmfja6zkdm5u3mjjdvwkm54me`
+							)})`,
+						}}
+					>
+						<div className="absolute right-0 top-0 pr-4 pt-4">
+							<div className="cursor-pointer" onClick={onClose}>
+								<IconX />
+							</div>
 						</div>
 					</div>
+					<Scrollbars autoHeight>
+						<div className="pt-5 pr-8 pl-4 md:pr-4 text-gray-100 text-justify">
+							<p className="text-2xl font-semibold pb-2">Bob Boom Giveaway Limited Edition NFTs</p>
+							<p className="mb-4">
+								Exclusive limited edition Bob Boom! collectible NFTs, one of three designs with six
+								variations each. Bob Boom! comics and collectibles are available now at{' '}
+								<a
+									href="https://comic.paras.id/comics/bob-boom/chapter"
+									className="underline"
+									target="_blank"
+									rel="noreferrer"
+								>
+									comic.paras.id/comics/bob-boom/chapter
+								</a>
+							</p>
+						</div>
+						<div className="flex justify-center mx-10 md:mx-40 rounded-md mt-5 pr-8 pl-4 md:pr-4 mb-6 md:mb-4">
+							{currentUser ? (
+								<Button size="sm" isFullWidth onClick={claimGacha}>
+									CLAIM
+								</Button>
+							) : (
+								<Button size="sm" isFullWidth onClick={() => setShowLogin(true)}>
+									Please Login First
+								</Button>
+							)}
+						</div>
+					</Scrollbars>
 				</div>
-				<Scrollbars autoHeight>
-					<div className="pt-5 pr-8 pl-4 md:pr-4 text-gray-100 text-justify">
-						<p className="text-2xl font-semibold pb-2">Bob Boom Giveaway Limited Edition NFTs</p>
-						<p className="mb-4">
-							Exclusive limited edition Bob Boom! collectible NFTs, one of three designs with six
-							variations each. Bob Boom! comics and collectibles are available now at{' '}
-							<a
-								href="https://comic.paras.id/comics/bob-boom/chapter"
-								className="underline"
-								target="_blank"
-								rel="noreferrer"
-							>
-								comic.paras.id/comics/bob-boom/chapter
-							</a>
-						</p>
-					</div>
-					<div className="flex justify-center mx-10 md:mx-40 rounded-md mt-5 pr-8 pl-4 md:pr-4 mb-6 md:mb-4">
-						<Button size="sm" isFullWidth onClick={claimGacha}>
-							CLAIM
-						</Button>
-					</div>
-				</Scrollbars>
-			</div>
-		</Modal>
+			</Modal>
+			<LoginModal onClose={() => setShowLogin(false)} show={showLogin} />
+		</>
 	)
 }
