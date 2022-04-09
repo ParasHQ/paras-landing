@@ -197,7 +197,7 @@ const Nav = () => {
 				)}
 
 				{/* Banner for special event */}
-				<div
+				{/* <div
 					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
 				>
 					<div className="px-10 py-1 md:p-0 ">
@@ -211,7 +211,7 @@ const Nav = () => {
 							here.
 						</a>
 					</div>
-				</div>
+				</div> */}
 
 				{process.env.APP_ENV !== 'production' && (
 					<div
@@ -373,13 +373,18 @@ const Nav = () => {
 							)}
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block text-sm">
-							<Link href="/publication">
-								<a>{localeLn('Publication')}</a>
+							<Link href="/token">
+								<a>{localeLn('Token')}</a>
 							</Link>
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block text-sm">
 							<Link href="/activity">
 								<a>{localeLn('Activity')}</a>
+							</Link>
+						</div>
+						<div className="px-3 text-gray-100 hidden md:block text-sm">
+							<Link href="/publication">
+								<a>{localeLn('Publication')}</a>
 							</Link>
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block text-sm">
@@ -391,9 +396,6 @@ const Nav = () => {
 							>
 								{localeLn('Comics')}
 							</a>
-						</div>
-						<div className="px-3 text-gray-100 hidden md:block text-sm">
-							<TokenNav />
 						</div>
 						<div className="px-3">
 							{store.currentUser ? (
@@ -459,13 +461,18 @@ const Nav = () => {
 								)}
 							</div>
 							<div className="text-gray-100 ">
-								<Link href="/publication">
-									<a className="p-4 block w-full">{localeLn('Publication')}</a>
+								<Link href="/token">
+									<a className="p-4 block w-full">{localeLn('Token')}</a>
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
 								<Link href="/activity">
 									<a className="p-4 block w-full">{localeLn('Activity')}</a>
+								</Link>
+							</div>
+							<div className="text-gray-100 ">
+								<Link href="/publication">
+									<a className="p-4 block w-full">{localeLn('Publication')}</a>
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
@@ -476,36 +483,6 @@ const Nav = () => {
 									rel="noreferrer"
 								>
 									{localeLn('Comics')}
-								</a>
-							</div>
-							<div className="text-gray-100 ">
-								<a
-									href="https://ipfs.fleek.co/ipfs/bafybeihu6atdada45rmx4sszny6sahrzas4tuzrpuufdcpe6b63r6ugdce"
-									target="_blank"
-									className="p-4 block w-full"
-									rel="noreferrer"
-								>
-									{localeLn('Whitepaper')}
-								</a>
-							</div>
-							<div className="text-gray-100 ">
-								<a
-									href="https://app.ref.finance/#wrap.near|token.paras.near"
-									target="_blank"
-									className="p-4 block w-full"
-									rel="noreferrer"
-								>
-									{localeLn('NavGetParas')}
-								</a>
-							</div>
-							<div className="text-gray-100 fireText">
-								<a
-									className="p-4 block w-full"
-									href="https://stake.paras.id"
-									target="_blank"
-									rel="noreferrer"
-								>
-									Stake Paras
 								</a>
 							</div>
 						</div>

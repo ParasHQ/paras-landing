@@ -17,18 +17,20 @@ const HomeCollectionList = ({ showDetails }) => {
 	const ref = useRef(null)
 
 	const scrollToRight = () => {
+		const scrollSkip = ref.current.clientWidth
 		if (showRightClick) {
 			ref.current.scrollTo({
-				left: ref.current.scrollLeft + 400,
+				left: ref.current.scrollLeft + scrollSkip,
 				behavior: 'smooth',
 			})
 		}
 	}
 
 	const scrollToLeft = () => {
+		const scrollSkip = ref.current.clientWidth
 		if (showLeftClick) {
 			ref.current.scrollTo({
-				left: ref.current.scrollLeft - 400,
+				left: ref.current.scrollLeft - scrollSkip,
 				behavior: 'smooth',
 			})
 		}
@@ -62,7 +64,7 @@ const HomeCollectionList = ({ showDetails }) => {
 	}
 
 	return (
-		<div className="my-8 relative">
+		<div className="mb-8 relative">
 			<h1 className="text-white font-semibold text-3xl capitalize mb-4">Featured Collections</h1>
 			<div
 				ref={ref}
@@ -78,7 +80,7 @@ const HomeCollectionList = ({ showDetails }) => {
 					/>
 				))}
 			</div>
-			<div className="flex absolute right-0 top-0 gap-1">
+			<div className="flex absolute right-0 top-0 gap-1 mt-2">
 				<div
 					className={`${
 						showLeftClick ? 'text-gray-200 cursor-pointer' : 'text-gray-500 cursor-not-allowed'

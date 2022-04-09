@@ -4,6 +4,9 @@
 // https://docs.sentry.io/platforms/javascript/guides/nextjs/
 
 const { withSentryConfig } = require('@sentry/nextjs')
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+	enabled: process.env.ANALYZE === 'true',
+})
 
 const moduleExports = {
 	experimental: {
@@ -24,6 +27,8 @@ const moduleExports = {
 		REPORT_URL: process.env.REPORT_URL,
 		PARAS_TOKEN_CONTRACT: process.env.PARAS_TOKEN_CONTRACT,
 		GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID,
+		RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
+		FARM_CONTRACT_ID: process.env.FARM_CONTRACT_ID,
 	},
 	async redirects() {
 		return [
@@ -61,4 +66,4 @@ const SentryWebpackPluginOptions = {
 
 // Make sure adding Sentry options is the last code to run before exporting, to
 // ensure that your source maps include changes from all other Webpack plugins
-module.exports = withSentryConfig(moduleExports, SentryWebpackPluginOptions)
+module.exports = withSentryConfig(withBundleAnalyzer(moduleExports), SentryWebpackPluginOptions)

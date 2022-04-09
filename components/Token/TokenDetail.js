@@ -29,6 +29,7 @@ import ReportModal from 'components/Modal/ReportModal'
 import Card from 'components/Card/Card'
 import Tooltip from 'components/Common/Tooltip'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
+import TradeNFTModal from 'components/Modal/TradeNFTModal'
 
 const TokenDetail = ({ token, className }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -124,6 +125,14 @@ const TokenDetail = ({ token, className }) => {
 		setShowModal('placeoffer')
 	}
 
+	const onClickOfferNFT = () => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+		setShowModal('placeofferNFT')
+	}
+
 	const isOwner = () => {
 		if (!currentUser) {
 			return false
@@ -162,6 +171,7 @@ const TokenDetail = ({ token, className }) => {
 								videoPadding={false}
 								mimeType={token?.metadata?.mime_type}
 								seeDetails={true}
+								isMediaCdn={token.isMediaCdn}
 							/>
 						) : (
 							<div className="w-1/2 h-full md:w-full m-auto flex items-center">
@@ -329,6 +339,7 @@ const TokenDetail = ({ token, className }) => {
 				onClose={onDismissModal}
 				listModalItem={[
 					{ name: 'Share to...', onClick: onClickShare },
+					!isOwner() && !token.is_staked && { name: 'Offer Via NFT', onClick: onClickOfferNFT },
 					isOwner() && !token.is_staked && { name: 'Update Listing', onClick: onClickUpdate },
 					isOwner() && !token.is_staked && { name: 'Transfer', onClick: onClickTransfer },
 					isOwner() && !token.is_staked && { name: 'Burn Card', onClick: onClickBurn },
@@ -344,7 +355,18 @@ const TokenDetail = ({ token, className }) => {
 			<TokenBurnModal show={showModal === 'burn'} onClose={onDismissModal} data={token} />
 			<TokenBuyModal show={showModal === 'buy'} onClose={onDismissModal} data={token} />
 			<TokenTransferModal show={showModal === 'transfer'} onClose={onDismissModal} data={token} />
-			<PlaceBidModal show={showModal === 'placeoffer'} data={token} onClose={onDismissModal} />
+			<PlaceBidModal
+				show={showModal === 'placeoffer'}
+				data={token}
+				onClose={onDismissModal}
+				setShowModal={setShowModal}
+			/>
+			<TradeNFTModal
+				show={showModal === 'placeofferNFT'}
+				data={token}
+				onClose={onDismissModal}
+				tokenType={`token`}
+			/>
 			<ReportModal show={showModal === 'report'} data={token} onClose={onDismissModal} />
 			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>

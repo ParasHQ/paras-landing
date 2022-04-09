@@ -13,8 +13,16 @@ import CardListLoader from 'components/Card/CardListLoader'
 import MarketTokenModal from 'components/Modal/MarketTokenModal'
 import CardListLoaderSmall from 'components/Card/CardListLoaderSmall'
 import useToken from 'hooks/useToken'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
-const TokenList = ({ name = 'default', tokens, fetchData, hasMore, displayType = 'large' }) => {
+const TokenList = ({
+	name = 'default',
+	tokens,
+	fetchData,
+	hasMore,
+	displayType = 'large',
+	volume,
+}) => {
 	const store = useStore()
 	const containerRef = useRef()
 	const animValuesRef = useRef(store.marketScrollPersist[name])
@@ -91,6 +99,7 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, displayType =
 							key={`${token.contract_id}::${token.token_series_id}/${token.token_id}-${displayType}-${idx}`}
 							initialData={token}
 							displayType={displayType}
+							volume={token.volume || volume?.[idx]}
 						/>
 					))}
 				</div>
@@ -101,7 +110,7 @@ const TokenList = ({ name = 'default', tokens, fetchData, hasMore, displayType =
 
 export default TokenList
 
-const TokenSingle = ({ initialData, displayType = 'large' }) => {
+const TokenSingle = ({ initialData, displayType = 'large', volume }) => {
 	const { token, mutate } = useToken({
 		key: `${initialData.contract_id}::${initialData.token_series_id}/${initialData.token_id}`,
 		initialData: initialData,
@@ -144,6 +153,9 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 		const price = token.price
 
 		if (token.owner_id === currentUser) {
+			if (token.is_staked) {
+				return localeLn('Unstake')
+			}
 			return localeLn('UpdateListing')
 		}
 
@@ -155,6 +167,10 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 
 		setActiveToken(token)
 		if (token.owner_id === currentUser) {
+			if (token.is_staked) {
+				router.push('https://stake.paras.id')
+				return
+			}
 			setModalType('updatelisting')
 		} else {
 			setModalType(price ? 'buy' : 'offer')
@@ -169,6 +185,7 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 				activeToken={activeToken}
 				onCloseModal={onCloseModal}
 				modalType={modalType}
+				setModalType={setModalType}
 			/>
 			<div
 				className={`${
@@ -202,7 +219,7 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 						</div>
 					</a>
 				</Link>
-				<div className={`px-1 ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
+				<div className={`px-1 relative ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
 					<div className="block">
 						<p className="text-gray-400 text-xs">{localeLn('OnSale')}</p>
 						<div className={`text-gray-100 ${displayType === 'large' ? `text-2xl` : `text-lg`}`}>
@@ -222,6 +239,31 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 							)}
 						</div>
 					</div>
+					{volume && (
+						<div
+							className={`${
+								displayType === 'large' ? `block` : `flex flex-col`
+							} text-right absolute top-0 right-0`}
+						>
+							<p
+								className={`${
+									displayType === 'large' ? `block` : `hidden`
+								} text-white opacity-80 md:text-sm`}
+								style={{ fontSize: 11 }}
+							>
+								Volume Total
+							</p>
+							<p
+								className={`${
+									displayType === 'large' ? `hidden` : `block`
+								} text-white opacity-80 md:text-sm`}
+								style={{ fontSize: 11 }}
+							>
+								Volume Total
+							</p>
+							<p className="text-white opacity-80 md:text-base">{formatNearAmount(volume)} Ⓝ</p>
+						</div>
+					)}
 					<div className="flex justify-between md:items-baseline">
 						<p
 							className={`font-bold text-white cursor-pointer hover:opacity-80 ${

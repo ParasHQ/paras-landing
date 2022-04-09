@@ -35,7 +35,7 @@ const footer = {
 	Discord: 'Discord',
 	ApplyAsArtist: 'Apply as an Artist',
 	FooterBeta: 'This project is in public beta.',
-	Paras2021: '2021 Paras',
+	Paras2022: '2022 Paras',
 	PoweredBy: 'Powered by',
 	UseOwnRisk: `Paras' smart contract is not yet audited by well-known security
   organization or firm. Use at your own risk!`,
@@ -150,6 +150,7 @@ const CardInfo = {
 	ConfirmBuy: 'Confirm Buy',
 	Warning: 'Warning',
 	AreYouSureBuy: 'Are you sure to buy this card?',
+	AreYouSureAcceptTrade: 'Are you sure to accept this trade?',
 	IUnderstand: 'I understand',
 	BuyQuantityAvailable: 'Buy quantity (Available for buy',
 	YouWillRedirectedTo: 'You will be redirected to NEAR Web Wallet to confirm your transaction',
@@ -204,6 +205,7 @@ const CardInfo = {
 	Year: 'Year',
 	EditionOf: 'Edition of',
 	AboutToBid: 'You are about to bid',
+	AddNFTTrade: 'Add NFT for trade',
 	Quantity: 'Quantity',
 	AmountIn: 'Amount in',
 	TotalBidAmount: 'Total bid Amount',
@@ -596,6 +598,7 @@ const collection = {
 	Time: 'Time',
 	Type: 'Type',
 	NoActivity: 'No Activity',
+	TotalListed: 'Total Listed',
 }
 const deleteCollection = {
 	DeleteTitle: 'Delete Confirmation',
@@ -610,6 +613,34 @@ const categories = {
 	Categories: 'Categories',
 	ExploreAllCategoriesOnParas: 'Explore All Categories on Paras',
 	CuratedBy: 'Curated by : ',
+}
+
+const artistVerification = {
+	ArtistVerification: 'Paras — Artist Verification',
+	ParasArtistVerification: 'Paras Artist Verification',
+	TextFormParagraph1: `As a Paras artist, you need to be verified to access full features of Paras. Verification gives extra visibility on the marketplace. Currently, non-verified artists' NFTs will not appear on the "market" feed. Whole process take 3-4 days.`,
+	TextFormParagraph2: 'To get verified, you only need to do these steps :',
+	Step1: 'Use a profile picture',
+	Step2: 'Fill in your Bio',
+	Step3: 'Link to your social media on your Paras profile (Twitter and Instagram)',
+	Step4: 'Link to your website (not required but will increase your chances of getting verified)',
+	Step5: 'Have authentic art, you did not steal or have been list your own work on other platform.',
+	Step6: 'You need to create at least 3 NFTs on Paras.',
+	TextFormParagraph3:
+		'It’s also extremely important to remember that becoming verified artist does not grant you instant success. It’s a method to introduce yourself to a bigger community of Paras.',
+	VerificationStatus: 'Verification Status',
+	TextStatusParagraph1:
+		'Whole verification process may take 3-4 days, announced every Wednesday & Saturday. If you are not successfully verified, you can re-submit verification status in the next batch.',
+	TextStatusParagraph2: 'For further question, you can ask our team on Discord',
+	Submitted: 'Submitted',
+	SubmittedDesc: 'You have submitted verification request',
+	InReview: 'In Review',
+	InReviewDesc: 'Your profile is under review by our team',
+	Result: 'Result',
+	ResultDesc: 'The result of your verification request. Check your email for details.',
+	YouAreVerified: 'You are verified !',
+	VerificationRequestRejected: 'Verification Request Rejected !',
+	Since: 'Since',
 }
 
 import { config } from './config.js'
@@ -637,6 +668,7 @@ const data = {
 	deleteCollection,
 	collection,
 	categories,
+	artistVerification,
 }
 
 export const en = config(data)

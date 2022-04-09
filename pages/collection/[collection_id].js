@@ -573,7 +573,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					<CollectionStats stats={stats} />
 				</div>
 				<div className="flex items-center justify-center relative">
-					<div className="flex justify-center mt-4 relative">
+					<div className="flex justify-center mt-4 relative z-10">
 						<div className="flex mx-4">
 							<div className="px-4 relative" onClick={() => changeTab('items')}>
 								<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Items')}</h4>
@@ -604,7 +604,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						</div>
 					</div>
 					{(router.query.tab === 'items' || router.query.tab === undefined) && (
-						<div className="hidden sm:flex md:ml-8 z-10 items-center justify-end right-0 absolute w-full">
+						<div className="hidden sm:flex md:ml-8 items-center justify-end right-0 absolute w-full">
 							<div className="flex justify-center mt-4">
 								<div className="flex">
 									{Object.keys(attributes).length > 0 && (

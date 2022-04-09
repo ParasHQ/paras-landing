@@ -133,10 +133,19 @@ const SuccessTransactionModal = () => {
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
 				} else if (FunctionCall.method_name === 'nft_approve') {
+					const msgParse = JSON.parse(args?.msg)
 					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
 						params: {
-							contract_id: receiver_id,
-							token_id: args.token_id,
+							contract_id:
+								msgParse.market_type === 'accept_trade' ||
+								msgParse.market_type === 'accept_trade_paras_series'
+									? msgParse?.buyer_nft_contract_id
+									: receiver_id,
+							token_id:
+								msgParse?.market_type === 'accept_trade' ||
+								msgParse?.market_type === 'accept_trade_paras_series'
+									? msgParse?.buyer_token_id
+									: args.token_id,
 						},
 					})
 					setToken(res.data.data.results[0])
@@ -218,6 +227,13 @@ const SuccessTransactionModal = () => {
 				return 'Update Listing Success'
 			} else if (msg.market_type === 'accept_offer') {
 				return 'Accept Offer Success'
+			} else if (msg.market_type === 'add_trade') {
+				return 'Add Trade Success'
+			} else if (
+				msg.market_type === 'accept_trade' ||
+				msg.market_type === 'accept_trade_paras_series'
+			) {
+				return 'Accept Trade Success'
 			}
 		} else if (txDetail.method_name === 'delete_market_data') {
 			return 'Remove Listing Success'
@@ -271,6 +287,21 @@ const SuccessTransactionModal = () => {
 				return (
 					<>
 						You successfully accept offer <b>{token.metadata.title}</b>
+					</>
+				)
+			} else if (msg.market_type === 'add_trade') {
+				return (
+					<>
+						You successfully trade your NFT <b>{token.metadata.title}</b>
+					</>
+				)
+			} else if (
+				msg.market_type === 'accept_trade' ||
+				msg.market_type === 'accept_trade_paras_series'
+			) {
+				return (
+					<>
+						You successfully accept NFT <b>{token.metadata.title}</b>
 					</>
 				)
 			}

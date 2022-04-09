@@ -317,6 +317,10 @@ const Footer = () => {
 						<div className="flex items-center text-xs">
 							<p>{localeLn('Paras2022')}</p>
 							<p className="mx-2">|</p>
+							<Link href="/privacy">
+								<a>{localeLn('Privacy')}</a>
+							</Link>
+							<p className="mx-2">|</p>
 							<div className="flex items-center text-xs">
 								<p>{localeLn('PoweredBy')}</p>
 								<a href="https://near.org" target="_blank" rel="noreferrer">
