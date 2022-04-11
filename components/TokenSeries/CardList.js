@@ -237,13 +237,11 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 	}
 
 	const isCurrentBid = () => {
-		let bidder = []
-		token.token?.bidder_list?.map((item) => {
-			bidder.push(item.bidder)
-		})
-		const currentBid = bidder.reverse()
-
-		return currentBid[0]
+		if (token.token?.bidder_list) {
+			const data = token.token?.bidder_list[token.token?.bidder_list.length - 1]
+			return data?.bidder
+		}
+		return
 	}
 
 	return (
@@ -310,16 +308,21 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 									: 'text-lg'
 							}`}
 						>
-							{price && token.token?.is_auction ? (
+							{price || token.token?.is_auction ? (
 								<div className="flex items-baseline space-x-1">
 									<div className="truncate">
-										{price === '0' && !token.token?.is_auction
-											? localeLn('Free')
-											: `${prettyBalance(
-													token.token?.is_auction ? token.token?.amount || price : price,
-													24,
-													4
-											  )} Ⓝ`}
+										{price === '0' && !token.token?.is_auction ? (
+											localeLn('Free')
+										) : (price && token.token?.has_price) || token.lowest_price ? (
+											`${prettyBalance(
+												token.token?.is_auction ? token.token?.amount || price : price,
+												24
+											)} Ⓝ`
+										) : (
+											<div className="line-through text-red-600">
+												<span className="text-gray-100">{localeLn('SALE')}</span>
+											</div>
+										)}
 									</div>
 									{token.token?.is_auction && price === '0' && (
 										<div
@@ -337,7 +340,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 											)}
 										</div>
 									)}
-									{price !== '0' && store.nearUsdPrice !== 0 && (
+									{price !== '0' && store?.nearUsdPrice !== 0 && (
 										<div
 											className={`${
 												token.token?.is_auction ? 'text-[9px]' : 'text-xs'
@@ -398,6 +401,14 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 								onClick={() => actionButtonClick(token)}
 							>
 								{actionButtonText(token)}
+							</p>
+						) : isCurrentBid() === currentUser ? (
+							<p
+								className={`font-bold text-white text-opacity-40 ${
+									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+								} mb-1 md:mb-0`}
+							>
+								{`You're currently bid`}
 							</p>
 						) : (
 							<p

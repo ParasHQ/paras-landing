@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react'
 
 const TimeAuction = ({ endedAt }) => {
-	const [days, setDays] = useState('-')
-	const [hours, setHours] = useState('-')
-	const [mins, setMins] = useState('-')
-	const [secs, setSecs] = useState('-')
+	const [days, setDays] = useState(days)
+	const [hours, setHours] = useState(hours)
+	const [mins, setMins] = useState(mins)
+	const [secs, setSecs] = useState(secs)
+	const [isEndedTime, setIsEndedTime] = useState(false)
 
 	useEffect(() => {
 		countDownTimeAuction()
-	}, [days, hours, mins, secs])
+	}, [])
+
+	useEffect(() => {
+		countDownTimeAuction()
+	}, [days, hours, mins, secs, isEndedTime])
 
 	const convertTimeOfAuction = (date) => {
 		const sliceNanoSec = String(date).slice(0, 13)
@@ -38,6 +43,8 @@ const TimeAuction = ({ endedAt }) => {
 
 			if (distance < 0) {
 				clearInterval(timer)
+				setIsEndedTime(true)
+				console.log('distance: ', distance)
 			}
 		}, 1000)
 	}

@@ -136,7 +136,9 @@ const TokenAuctionBidModal = ({
 	}
 
 	const checkNextPriceBid = () => {
-		const currentBid = Number(!data?.amount ? data?.price.$numberDecimal : data?.amount)
+		const currentBid = Number(
+			!data?.amount ? data?.price?.$numberDecimal || data?.price : data?.amount
+		)
 		const multipleBid = (currentBid / 100) * 5
 		const nextBid = currentBid + multipleBid
 		const totalNextBid = prettyBalance(nextBid, 24, 4)
@@ -200,7 +202,11 @@ const TokenAuctionBidModal = ({
 								<div className="flex justify-between">
 									<div className="text-sm">{localeLn('Highest Bid')}</div>
 									<div>
-										{prettyBalance(data?.amount ? data?.amount : data.price.$numberDecimal, 24, 4)}{' '}
+										{prettyBalance(
+											data?.amount ? data?.amount : data?.price?.$numberDecimal || data?.price,
+											24,
+											4
+										)}{' '}
 										Ⓝ
 									</div>
 								</div>

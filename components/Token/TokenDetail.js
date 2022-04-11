@@ -329,8 +329,8 @@ const TokenDetail = ({ token, className }) => {
 														<div className="text-[9px] text-gray-400 truncate mt-1">
 															~ $
 															{prettyBalance(
-																JSBI.BigInt(token?.amount ? token?.amount : token.price) *
-																	store.nearUsdPrice,
+																JSBI.BigInt(token?.amount ? token?.amount : token?.price) *
+																	store?.nearUsdPrice,
 																24,
 																2
 															)}

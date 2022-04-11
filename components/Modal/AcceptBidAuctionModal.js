@@ -130,7 +130,7 @@ const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess, tokenType = `to
 						<div className="mt-4 text-center text-white opacity-90">
 							<div className="flex justify-between">
 								<div className="text-sm">{localeLn('Current Bid')}</div>
-								<div>{prettyBalance(data.amount, 24, 4)} Ⓝ</div>
+								<div>{prettyBalance(data.amount, 24)} Ⓝ</div>
 							</div>
 						</div>
 						<p className="text-white opacity-80 mt-4 text-sm text-center px-4">

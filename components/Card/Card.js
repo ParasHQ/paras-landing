@@ -181,7 +181,7 @@ const Card = ({
 											videoLoop={true}
 											mimeType={token?.mime_type}
 										/>
-										{token.is_auction && <TimeAuction endedAt={token.ended_at} data={token} />}
+										{token?.is_auction && <TimeAuction endedAt={token.ended_at} data={token} />}
 									</>
 								)}
 							</div>
@@ -278,14 +278,17 @@ const Card = ({
 										</div>
 									</>
 								) : (
-									<Media
-										className="mx-auto h-full object-cover relative z-10 img-hor-vert"
-										url={imgUrl}
-										videoControls={false}
-										videoMuted={true}
-										videoLoop={true}
-										mimeType={token?.mime_type}
-									/>
+									<>
+										<Media
+											className="mx-auto h-full object-cover relative z-10 img-hor-vert"
+											url={imgUrl}
+											videoControls={false}
+											videoMuted={true}
+											videoLoop={true}
+											mimeType={token?.mime_type}
+										/>
+										{token?.is_auction && <TimeAuction endedAt={token.ended_at} data={token} />}
+									</>
 								)}
 							</div>
 							<div className="card-bg relative z-10">

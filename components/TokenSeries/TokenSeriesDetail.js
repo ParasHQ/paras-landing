@@ -241,13 +241,21 @@ const TokenSeriesDetail = ({ token, className }) => {
 							</div>
 						</div>
 					</div>
-					{token?.token.owner_id === currentUser ? (
+					{token?.token.owner_id === currentUser &&
+					token.token?.bidder_list &&
+					token.token?.is_auction ? (
 						<Button size="md" className="px-14" onClick={'acceptbidauction'}>
 							{`Accept Bid`}
 						</Button>
 					) : isCurrentBid() === currentUser ? (
 						<Button size="md" isFullWidth variant="primary" isDisabled>
 							{`You are currently bid`}
+						</Button>
+					) : token?.token.owner_id === currentUser &&
+					  !token.token?.bidder_list &&
+					  token.token?.is_auction ? (
+						<Button size="md" className="px-14" isDisabled>
+							{`No bid yet`}
 						</Button>
 					) : (
 						<Button size="md" onClick={onClickAuction} className="px-14">

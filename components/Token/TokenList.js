@@ -142,7 +142,7 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 	}
 
 	const actionButtonText = (token) => {
-		const price = token.price
+		// const price = token.price || token.lowest_price || token.amount
 
 		if (token.owner_id === currentUser) {
 			if (token.is_staked) {
@@ -151,7 +151,11 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 			return localeLn('UpdateListing')
 		}
 
-		return price ? 'Buy Now' : 'Place Offer'
+		return token.price && !token?.is_auction
+			? 'Buy Now'
+			: token?.is_auction
+			? 'Place a Bid'
+			: 'Place Offer'
 	}
 
 	const actionButtonClick = (token) => {
@@ -165,8 +169,35 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 			}
 			setModalType('updatelisting')
 		} else {
-			setModalType(price ? 'buy' : 'offer')
+			setModalType(price && !token?.is_auction ? 'buy' : token?.is_auction ? 'placebid' : 'offer')
 		}
+	}
+
+	const typeSale = () => {
+		if (token?.is_auction) {
+			return localeLn('OnAuction')
+		} else if (token.token || token.metadata.copies === 1) {
+			return localeLn('OnSale')
+		} else {
+			localeLn('StartFrom')
+		}
+	}
+
+	const checkBidder = () => {
+		if (token?.bidder_list) {
+			return 'Highest Bid'
+		} else {
+			return 'Starting Bid'
+		}
+	}
+
+	const isCurrentBid = () => {
+		if (token?.bidder_list) {
+			const data = token?.bidder_list[token?.bidder_list.length - 1]
+
+			return data?.bidder
+		}
+		return
 	}
 
 	return (
@@ -206,6 +237,9 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 									royalty: token.royalty,
 									attributes: token.metadata.attributes,
 									mime_type: token.metadata.mime_type,
+									is_auction: token?.is_auction,
+									started_at: token?.started_at,
+									ended_at: token?.ended_at,
 								}}
 							/>
 						</div>
@@ -213,14 +247,50 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 				</Link>
 				<div className={`px-1 relative ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
 					<div className="block">
-						<p className="text-gray-400 text-xs">{localeLn('OnSale')}</p>
+						<p className="text-gray-400 text-xs">{typeSale()}</p>
+						{token?.is_auction && (
+							<p className="text-gray-100 text-[9px] font-bold">{checkBidder()}</p>
+						)}
 						<div className={`text-gray-100 ${displayType === 'large' ? `text-2xl` : `text-lg`}`}>
-							{price ? (
+							{price && token?.is_auction ? (
 								<div className="flex items-baseline space-x-1">
-									<div className="truncate">{prettyBalance(price, 24, 2)} Ⓝ</div>
-									{store.nearUsdPrice !== 0 && (
-										<div className="text-xs text-gray-400 truncate">
-											~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 4)}
+									<div className="truncate">
+										{price === '0' && !token?.is_auction
+											? localeLn('Free')
+											: `${prettyBalance(
+													token?.is_auction ? token?.amount || price : price,
+													24,
+													4
+											  )} Ⓝ`}
+									</div>
+									{token?.is_auction && price === '0' && (
+										<div
+											className={`${
+												token?.is_auction ? 'text-[9px]' : 'text-xs'
+											} text-gray-400 truncate`}
+										>
+											~ $
+											{prettyBalance(
+												JSBI.BigInt(token?.is_auction ? token?.amount || price : price) *
+													store.nearUsdPrice,
+												24,
+												2
+											)}
+										</div>
+									)}
+									{price !== '0' && store.nearUsdPrice !== 0 && (
+										<div
+											className={`${
+												token?.is_auction ? 'text-[9px]' : 'text-xs'
+											} text-gray-400 truncate`}
+										>
+											~ $
+											{prettyBalance(
+												JSBI.BigInt(token?.is_auction ? token?.amount || price : price) *
+													store.nearUsdPrice,
+												24,
+												2
+											)}
 										</div>
 									)}
 								</div>
@@ -259,14 +329,33 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 						</div>
 					)}
 					<div className="flex justify-between md:items-baseline">
-						<p
-							className={`font-bold text-white cursor-pointer hover:opacity-80 ${
-								displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
-							} mb-1 md:mb-0`}
-							onClick={() => actionButtonClick(token)}
-						>
-							{actionButtonText(token)}
-						</p>
+						{!token?.is_auction ||
+						(currentUser !== token?.owner_id && isCurrentBid() !== currentUser) ? (
+							<p
+								className={`font-bold text-white cursor-pointer hover:opacity-80 ${
+									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+								} mb-1 md:mb-0`}
+								onClick={() => actionButtonClick(token)}
+							>
+								{actionButtonText(token)}
+							</p>
+						) : isCurrentBid() === currentUser ? (
+							<p
+								className={`font-bold text-white text-opacity-40 ${
+									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+								} mb-1 md:mb-0`}
+							>
+								{`You're currently bid`}
+							</p>
+						) : (
+							<p
+								className={`font-bold text-white text-opacity-40 ${
+									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+								} mb-1 md:mb-0`}
+							>
+								Auction on going
+							</p>
+						)}
 						<Link href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}>
 							<a
 								onClick={(e) => {
