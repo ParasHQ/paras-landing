@@ -29,6 +29,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 		date: parseDate((txFee?.start_time || 0) * 1000),
 		fee: (txFee?.current_fee || 0) / 100,
 	})
+	const tooltipLockedFeeText = `If you already had changed your card price, Smart contract will be used this locked fee to calculate your next transaction fee.`
 	const { currentUser, setTransactionRes } = useStore()
 
 	useEffect(() => {
@@ -300,12 +301,20 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
                   4
                 )} */}
 							</div>
-							{data.transaction_fee && (
+							{data.transaction_fee && `${txFee.current_fee}` !== data.transaction_fee && (
 								<div className="flex items-center">
-									<div className="bg-white rounded-md px-2 py-1 text-xs">
-										<span className=" text-primary font-semibold">{localeLn('LockedFee')}: </span>
-										<span className=" text-primary font-semibold">{lockedTxFee} Ⓝ</span>
-									</div>
+									<Tooltip
+										id="locked-fee"
+										show={true}
+										text={tooltipLockedFeeText}
+										className="font-normal"
+										type="light"
+									>
+										<div className="bg-white border-primary border-2 rounded-md py-1 px-2 text-xs mr-1 flex">
+											<span className=" text-primary font-semibold">{localeLn('LockedFee')}: </span>
+											<span className=" text-primary font-semibold">{lockedTxFee} Ⓝ</span>
+										</div>
+									</Tooltip>
 								</div>
 							)}
 							<div className="mt-2 text-sm text-red-500">
