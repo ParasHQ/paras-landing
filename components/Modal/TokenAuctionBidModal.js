@@ -141,7 +141,7 @@ const TokenAuctionBidModal = ({
 		)
 		const multipleBid = (currentBid / 100) * 5
 		const nextBid = currentBid + multipleBid
-		const totalNextBid = prettyBalance(nextBid, 24, 4)
+		const totalNextBid = prettyBalance(nextBid, 24, 2)
 		return parseFloat(totalNextBid.replace(',', ''))
 	}
 

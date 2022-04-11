@@ -174,7 +174,7 @@ const TokenDetail = ({ token, className }) => {
 		const currentBid = Number(token?.amount ? token?.amount : token.price)
 		const multipleBid = (currentBid / 100) * 5
 		const nextBid = currentBid + multipleBid
-		const totalNextBid = prettyBalance(nextBid, 24, 4)
+		const totalNextBid = prettyBalance(nextBid, 24, 2)
 		return totalNextBid
 	}
 

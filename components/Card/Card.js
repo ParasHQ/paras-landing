@@ -181,7 +181,7 @@ const Card = ({
 											videoLoop={true}
 											mimeType={token?.mime_type}
 										/>
-										{token?.is_auction && <TimeAuction endedAt={token.ended_at} data={token} />}
+										{token?.is_auction ? <TimeAuction endedAt={token.ended_at} /> : <div />}
 									</>
 								)}
 							</div>
@@ -287,7 +287,7 @@ const Card = ({
 											videoLoop={true}
 											mimeType={token?.mime_type}
 										/>
-										{token?.is_auction && <TimeAuction endedAt={token.ended_at} data={token} />}
+										{token?.is_auction ? <TimeAuction endedAt={token.ended_at} /> : <div />}
 									</>
 								)}
 							</div>
