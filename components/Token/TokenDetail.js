@@ -35,6 +35,7 @@ import TokenAuctionBidModal from 'components/Modal/TokenAuctionBidModal'
 import JSBI from 'jsbi'
 import AcceptBidAuctionModal from 'components/Modal/AcceptBidAuctionModal'
 import { useToast } from 'hooks/useToast'
+import CancelAuctionModal from 'components/Modal/CancelAuctionModal'
 
 const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -46,11 +47,17 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const router = useRouter()
 	const toast = useToast()
 
+	useEffect(() => {
+		setActiveTab('info')
+	}, [isAuctionEnds])
+
 	const _showInfoUpdatingAuction = () => {
 		toast.show({
 			text: (
-				<div className="text-sm text-white">
-					<p>This auction data is being updated, please refresh the page periodically</p>
+				<div className="text-sm text-white text-justify">
+					<p>
+						This auction data is being updated, please refresh the page periodically each minute.
+					</p>
 				</div>
 			),
 			type: 'updatingAuction',
@@ -133,6 +140,10 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 
 	const onClickAcceptBidAuction = () => {
 		setShowModal('acceptbidauction')
+	}
+
+	const onClickCancelAuction = () => {
+		setShowModal('removeauction')
 	}
 
 	const onClickBurn = () => {
@@ -323,7 +334,9 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 
 							{activeTab === 'info' && <TabInfo localToken={token} isNFT={true} />}
 							{activeTab === 'auction' && <TabAuction localToken={token} />}
-							{activeTab === 'owners' && <TabOwners localToken={token} />}
+							{activeTab === 'owners' && (
+								<TabOwners localToken={token} isAuctionEnds={isAuctionEnds} />
+							)}
 							{activeTab === 'offers' && <TabOffers localToken={token} />}
 							{activeTab === 'history' && <TabHistory localToken={token} />}
 							{activeTab === 'publication' && <TabPublication localToken={token} />}
@@ -332,7 +345,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 					<div className="p-3">
 						{token?.is_auction ? (
 							<div className="flex justify-between items-center gap-2">
-								{token.owner_id === currentUser ? (
+								{token.owner_id === currentUser && !isAuctionEnds ? (
 									<>
 										<div className="flex items-baseline space-x-1 md:pl-2">
 											<div>
@@ -365,12 +378,27 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 											</div>
 										</div>
 										{token?.bidder_list && token?.is_auction && !isAuctionEnds ? (
-											<Button size="md" className="px-14" onClick={onClickAcceptBidAuction}>
-												Accept Bid
-											</Button>
+											<div>
+												<Button size="md" className="px-4 mr-2" onClick={onClickAcceptBidAuction}>
+													Accept Bid
+												</Button>
+												<Button
+													size="md"
+													className="px-2"
+													variant="error"
+													onClick={onClickCancelAuction}
+												>
+													Remove Auction
+												</Button>
+											</div>
 										) : (
-											<Button size="md" className="px-14" isDisabled>
-												No bid yet
+											<Button
+												size="md"
+												className="px-4"
+												variant="error"
+												onClick={onClickCancelAuction}
+											>
+												Remove Auction
 											</Button>
 										)}
 									</>
@@ -398,7 +426,8 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 								</div>
 							</div>
 						) : (
-							token.owner_id === currentUser && (
+							token.owner_id === currentUser &&
+							!isAuctionEnds && (
 								<div className="flex flex-wrap space-x-4">
 									<div className="w-full flex-1">
 										<Button size="md" onClick={() => setShowModal('updatePrice')} isFullWidth>
@@ -427,6 +456,30 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 							<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
 								{`Place an offer`}
 							</Button>
+						)}
+						{isAuctionEnds && (
+							<div className="flex justify-center items-center gap-2 text-white text-center mt-2 rounded-md p-2">
+								<div className="flex items-center">
+									<h4>Auction Ends..</h4>
+									<div className="pl-1" onClick={_showInfoUpdatingAuction}>
+										<svg
+											className="cursor-pointer hover:opacity-80 -mt-1"
+											width="16"
+											height="16"
+											viewBox="0 0 16 16"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<path
+												fillRule="evenodd"
+												clipRule="evenodd"
+												d="M0 8C0 12.4183 3.58172 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8ZM14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8ZM7 10V9.5C7 8.28237 7.42356 7.68233 8.4 6.95C8.92356 6.55733 9 6.44904 9 6C9 5.44772 8.55229 5 8 5C7.44772 5 7 5.44772 7 6H5C5 4.34315 6.34315 3 8 3C9.65685 3 11 4.34315 11 6C11 7.21763 10.5764 7.81767 9.6 8.55C9.07644 8.94267 9 9.05096 9 9.5V10H7ZM9.00066 11.9983C9.00066 12.5506 8.55279 12.9983 8.00033 12.9983C7.44786 12.9983 7 12.5506 7 11.9983C7 11.4461 7.44786 10.9983 8.00033 10.9983C8.55279 10.9983 9.00066 11.4461 9.00066 11.9983Z"
+												fill="rgb(243, 244, 246)"
+											/>
+										</svg>
+									</div>
+								</div>
+							</div>
 						)}
 						{token.owner_id !== currentUser &&
 							token.is_auction &&
@@ -457,50 +510,6 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 									</Button>
 								</div>
 							)}
-						{isAuctionEnds && (
-							<div className="flex justify-center items-center gap-2 text-white text-center mt-2 rounded-md p-2">
-								<svg
-									className="animate-spin -mt-1 h-4 w-4 text-white"
-									xmlns="http://www.w3.org/2000/svg"
-									fill="none"
-									viewBox="0 0 24 24"
-								>
-									<circle
-										className="opacity-25"
-										cx="12"
-										cy="12"
-										r="10"
-										stroke="currentColor"
-										strokeWidth="4"
-									></circle>
-									<path
-										className="opacity-75"
-										fill="currentColor"
-										d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-									></path>
-								</svg>
-								<div className="flex items-center">
-									<h4>Auction Ends..</h4>
-									<div className="pl-1" onClick={_showInfoUpdatingAuction}>
-										<svg
-											className="cursor-pointer hover:opacity-80 -mt-1"
-											width="16"
-											height="16"
-											viewBox="0 0 16 16"
-											fill="none"
-											xmlns="http://www.w3.org/2000/svg"
-										>
-											<path
-												fillRule="evenodd"
-												clipRule="evenodd"
-												d="M0 8C0 12.4183 3.58172 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8ZM14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8ZM7 10V9.5C7 8.28237 7.42356 7.68233 8.4 6.95C8.92356 6.55733 9 6.44904 9 6C9 5.44772 8.55229 5 8 5C7.44772 5 7 5.44772 7 6H5C5 4.34315 6.34315 3 8 3C9.65685 3 11 4.34315 11 6C11 7.21763 10.5764 7.81767 9.6 8.55C9.07644 8.94267 9 9.05096 9 9.5V10H7ZM9.00066 11.9983C9.00066 12.5506 8.55279 12.9983 8.00033 12.9983C7.44786 12.9983 7 12.5506 7 11.9983C7 11.4461 7.44786 10.9983 8.00033 10.9983C8.55279 10.9983 9.00066 11.4461 9.00066 11.9983Z"
-												fill="rgb(243, 244, 246)"
-											/>
-										</svg>
-									</div>
-								</div>
-							</div>
-						)}
 						{token.token_series_id !== token.token_id && (
 							<div
 								className="mt-2 text-center text-white cursor-pointer hover:opacity-80 text-sm"
@@ -543,6 +552,12 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			/>
 			<AcceptBidAuctionModal
 				show={showModal === 'acceptbidauction'}
+				data={token}
+				onClose={onDismissModal}
+				setShowModal={setShowModal}
+			/>
+			<CancelAuctionModal
+				show={showModal === 'removeauction'}
 				data={token}
 				onClose={onDismissModal}
 				setShowModal={setShowModal}

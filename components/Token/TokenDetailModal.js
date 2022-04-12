@@ -48,7 +48,7 @@ function TokenDetailModal({ tokens = [], isAuctionEnds }) {
 		} else {
 			setActiveToken(null)
 		}
-	}, [router.query, JSON.stringify(tokens)])
+	}, [router.query, JSON.stringify(tokens), isAuctionEnds])
 
 	return (
 		<div>

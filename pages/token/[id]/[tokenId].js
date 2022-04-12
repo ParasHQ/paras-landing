@@ -7,6 +7,7 @@ import TokenDetail from 'components/Token/TokenDetail'
 import { parseImgUrl } from 'utils/common'
 import { sentryCaptureException } from 'lib/sentry'
 import useToken from 'hooks/useToken'
+import { useEffect, useState } from 'react'
 
 const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.contract_id
@@ -17,6 +18,56 @@ const TokenPage = ({ errorCode, initial }) => {
 		key: `${initial.contract_id}::${initial.token_series_id}/${initial.token_id}`,
 		initialData: initial,
 	})
+	const [days, setDays] = useState('-')
+	const [hours, setHours] = useState('-')
+	const [mins, setMins] = useState('-')
+	const [secs, setSecs] = useState('-')
+	const [isEndedTime, setIsEndedTime] = useState(false)
+
+	useEffect(() => {
+		countDownTimeAuction()
+	}, [])
+
+	useEffect(() => {
+		countDownTimeAuction()
+	}, [days, hours, mins, secs, isEndedTime])
+
+	const convertTimeOfAuction = (date) => {
+		const sliceNanoSec = String(date).slice(0, 13)
+
+		if (sliceNanoSec !== 'undefined') {
+			return sliceNanoSec
+		}
+	}
+
+	const countDownTimeAuction = () => {
+		const endedDate = convertTimeOfAuction(token?.ended_at)
+
+		const timer = setInterval(() => {
+			const startedDate = new Date().getTime()
+
+			if (!isEndedTime) {
+				let distance = parseInt(endedDate) - parseInt(startedDate)
+
+				let days = Math.floor(distance / (1000 * 60 * 60 * 24))
+				let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+				let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+				let seconds = Math.floor((distance % (1000 * 60)) / 1000)
+
+				setDays(days)
+				setHours(hours)
+				setMins(minutes)
+				setSecs(seconds)
+
+				if (distance <= 0) {
+					clearInterval(timer)
+					setIsEndedTime(true)
+				}
+			}
+
+			return
+		})
+	}
 
 	if (errorCode) {
 		return <Error />
@@ -75,7 +126,7 @@ const TokenPage = ({ errorCode, initial }) => {
 			</Head>
 			<Nav />
 			<div className="relative max-w-6xl m-auto pt-16 px-4">
-				<TokenDetail token={token} />
+				<TokenDetail token={token} isAuctionEnds={isEndedTime} />
 			</div>
 			<Footer />
 		</div>

@@ -197,7 +197,7 @@ const CurrentBid = ({ initial = {} }) => {
 						{!token.amount ? (
 							<p className="ml-2 text-white">
 								{localeLn('Starting Bid')}{' '}
-								{formatNearAmount(token.price.$numberDecimal || token.price)} Ⓝ
+								{formatNearAmount(token.price?.$numberDecimal || token.price)} Ⓝ
 							</p>
 						) : (
 							<p className="ml-2 text-white text-sm">

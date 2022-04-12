@@ -127,8 +127,10 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 	const _showInfoUpdatingAuction = () => {
 		toast.show({
 			text: (
-				<div className="text-sm text-white">
-					<p>This auction data is being updated, please refresh the page periodically</p>
+				<div className="text-sm text-white text-justify">
+					<p>
+						This auction data is being updated, please refresh the page periodically each minute.
+					</p>
 				</div>
 			),
 			type: 'updatingAuction',
@@ -171,11 +173,13 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 				setMins(minutes)
 				setSecs(seconds)
 
-				if (distance < 0) {
+				if (distance <= 0) {
 					clearInterval(timer)
 					setIsEndedTime(true)
 				}
 			}
+
+			return
 		})
 	}
 

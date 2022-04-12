@@ -14,7 +14,7 @@ import useToken from 'hooks/useToken'
 
 const FETCH_TOKENS_LIMIT = 100
 
-const TabOwners = ({ localToken }) => {
+const TabOwners = ({ localToken, isAuctionEnds }) => {
 	const [tokens, setTokens] = useState([])
 	const [isFetching, setIsFetching] = useState(false)
 	const [activeToken, setActiveToken] = useState(null)
@@ -129,6 +129,7 @@ const TabOwners = ({ localToken }) => {
 							onUpdateListing={(token) => {
 								onUpdateListing(token)
 							}}
+							isAuctionEnds={isAuctionEnds}
 						/>
 					))}
 				</>
@@ -147,7 +148,7 @@ const TabOwners = ({ localToken }) => {
 	)
 }
 
-const Owner = ({ initial = {}, onBuy, onUpdateListing }) => {
+const Owner = ({ initial = {}, onBuy, onUpdateListing, isAuctionEnds }) => {
 	const { token } = useToken({
 		key: `${initial.contract_id}::${initial.token_series_id}/${initial.token_id}`,
 		initialData: initial,
@@ -201,7 +202,7 @@ const Owner = ({ initial = {}, onBuy, onUpdateListing }) => {
 
 	const checkTypeTransaction = () => {
 		if (token.owner_id === currentUser) {
-			if (!token.is_staked && !token?.is_auction) {
+			if (!token.is_staked && !token?.is_auction && isAuctionEnds) {
 				return (
 					<div className="w-24">
 						<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>

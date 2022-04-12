@@ -157,7 +157,7 @@ const TokenAuctionBidModal = ({
 					<div>
 						<div className="flex items-center space-x-2">
 							<h1 className="text-2xl font-bold text-white tracking-tight">
-								{'Confirm Auction Bid'}
+								{'Place a Bid Auction'}
 							</h1>
 						</div>
 						<p className="text-white mt-2">

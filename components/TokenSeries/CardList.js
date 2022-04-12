@@ -138,8 +138,10 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 	const _showInfoUpdatingAuction = () => {
 		toast.show({
 			text: (
-				<div className="text-sm text-white">
-					<p>This auction data is being updated, please refresh the page periodically</p>
+				<div className="text-sm text-white text-justify">
+					<p>
+						This auction data is being updated, please refresh the page periodically each minute.
+					</p>
 				</div>
 			),
 			type: 'updatingAuction',
@@ -182,11 +184,13 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 				setMins(minutes)
 				setSecs(seconds)
 
-				if (distance < 0) {
+				if (distance <= 0) {
 					clearInterval(timer)
 					setIsEndedTime(true)
 				}
 			}
+
+			return
 		})
 	}
 
@@ -224,7 +228,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 			if (token.token && token.token.owner_id === currentUser) {
 				return localeLn('UpdateListing')
 			} else {
-				return price && (!token.token?.is_auction || !isEndedTime)
+				return price && (!token.token?.is_auction || isEndedTime)
 					? 'Buy Now'
 					: token.token?.is_auction && !isEndedTime
 					? 'Place a Bid'

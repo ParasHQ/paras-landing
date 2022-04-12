@@ -42,11 +42,13 @@ const TimeAuction = ({ endedAt }) => {
 				setMins(minutes)
 				setSecs(seconds)
 
-				if (distance < 0) {
+				if (distance <= 0) {
 					clearInterval(timer)
 					setIsEndedTime(true)
 				}
 			}
+
+			return
 		})
 	}
 

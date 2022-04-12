@@ -131,7 +131,7 @@ const Activity = ({ activity }) => {
 					<LinkToProfile accountId={activity.msg.params.bidder_id} />
 					<span>
 						{' '}
-						{localeLn('on bid')} {formatNearAmount(activity.msg.params.amount)} Ⓝ
+						{localeLn('add bid for')} {formatNearAmount(activity.msg.params.amount)} Ⓝ
 					</span>
 				</p>
 			)
