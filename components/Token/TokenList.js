@@ -272,7 +272,7 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 
 	return (
 		<>
-			<TokenDetailModal tokens={[token]} />
+			<TokenDetailModal tokens={[token]} isAuctionEnds={isEndedTime} />
 			<MarketTokenModal
 				useNFTModal
 				activeToken={activeToken}

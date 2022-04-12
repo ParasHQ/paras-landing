@@ -315,8 +315,8 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 
 	return (
 		<>
-			<TokenSeriesDetailModal tokens={[token]} />
-			<TokenDetailModal tokens={[token]} />
+			<TokenSeriesDetailModal tokens={[token]} isAuctionEnds={isEndedTime} />
+			<TokenDetailModal tokens={[token]} isAuctionEnds={isEndedTime} />
 			<MarketTokenModal
 				activeToken={activeToken}
 				onCloseModal={onCloseModal}

@@ -5,7 +5,7 @@ import TokenDetail from './TokenDetail'
 import Modal from 'components/Modal'
 import { useIntl } from 'hooks/useIntl'
 
-function TokenDetailModal({ tokens = [] }) {
+function TokenDetailModal({ tokens = [], isAuctionEnds }) {
 	const router = useRouter()
 	const { localeLn } = useIntl()
 	const [activeToken, setActiveToken] = useState(null)
@@ -79,7 +79,7 @@ function TokenDetailModal({ tokens = [] }) {
 								</p>
 							</div>
 						</div>
-						<TokenDetail token={activeToken} />
+						<TokenDetail token={activeToken} isAuctionEnds={isAuctionEnds} />
 					</div>
 				</Modal>
 			)}

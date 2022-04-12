@@ -9,12 +9,13 @@ import Avatar from 'components/Common/Avatar'
 import Link from 'next/link'
 import useToken from 'hooks/useToken'
 
-const TabAuction = ({ localToken }) => {
+const TabAuction = ({ localToken, setAuctionEnds = () => {} }) => {
 	const [historyBid, setHistoryBid] = useState([])
 	const [days, setDays] = useState('-')
 	const [hours, setHours] = useState('-')
 	const [mins, setMins] = useState('-')
 	const [secs, setSecs] = useState('-')
+	const [isEndedTime, setIsEndedTime] = useState(false)
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
@@ -40,22 +41,26 @@ const TabAuction = ({ localToken }) => {
 		const timer = setInterval(() => {
 			const startedDate = new Date().getTime()
 
-			let distance = parseInt(endedDate) - parseInt(startedDate)
+			if (!isEndedTime) {
+				let distance = parseInt(endedDate) - parseInt(startedDate)
 
-			let days = Math.floor(distance / (1000 * 60 * 60 * 24))
-			let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-			let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
-			let seconds = Math.floor((distance % (1000 * 60)) / 1000)
+				let days = Math.floor(distance / (1000 * 60 * 60 * 24))
+				let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+				let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
+				let seconds = Math.floor((distance % (1000 * 60)) / 1000)
 
-			setDays(days)
-			setHours(hours)
-			setMins(minutes)
-			setSecs(seconds)
+				setDays(days)
+				setHours(hours)
+				setMins(minutes)
+				setSecs(seconds)
 
-			if (distance < 0) {
-				clearInterval(timer)
+				if (distance < 0) {
+					clearInterval(timer)
+					setIsEndedTime(true)
+					setAuctionEnds(true)
+				}
 			}
-		}, 1000)
+		})
 	}
 
 	const startedAtDate = (startedAt) => {
