@@ -8,6 +8,7 @@ import { parseImgUrl } from 'utils/common'
 import { sentryCaptureException } from 'lib/sentry'
 import useToken from 'hooks/useToken'
 import { useEffect, useState } from 'react'
+import router from 'next/router'
 
 const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.contract_id
@@ -23,6 +24,10 @@ const TokenPage = ({ errorCode, initial }) => {
 	const [mins, setMins] = useState('-')
 	const [secs, setSecs] = useState('-')
 	const [isEndedTime, setIsEndedTime] = useState(false)
+
+	// useEffect(() => {
+	// 	router.replace()
+	// }, [isEndedTime])
 
 	useEffect(() => {
 		countDownTimeAuction()

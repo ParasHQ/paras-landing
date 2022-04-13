@@ -105,6 +105,10 @@ export const descriptionMaker = (activity, localToken, localTradedToken) => {
 		return `${activity.from} add bid for ${formatNearAmount(activity.msg.params.price)}`
 	}
 
+	if (type === 'cancel_bid') {
+		return `${activity.from} cancel bid ${formatNearAmount(activity.msg.params.price)}`
+	}
+
 	return ``
 }
 
@@ -398,6 +402,20 @@ const Activity = ({ activity, localTradedToken, localToken }) => {
 				</span>
 				<span> {localeLn('add bid for')}</span>
 				<span> {formatNearAmount(activity.msg.params.amount)} Ⓝ</span>
+			</p>
+		)
+	}
+
+	if (type === 'cancel_bid') {
+		return (
+			<p>
+				<span>
+					<LinkToProfile
+						className="text-gray-100 hover:border-gray-100"
+						accountId={activity.from}
+					/>
+				</span>
+				<span> {localeLn('cancel bid from auction ')}</span>
 			</p>
 		)
 	}

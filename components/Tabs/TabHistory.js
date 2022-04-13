@@ -137,6 +137,15 @@ const Activity = ({ activity }) => {
 			)
 		}
 
+		if (type === 'cancel_bid') {
+			return (
+				<p>
+					<LinkToProfile accountId={activity.msg.params.bidder_id} />
+					<span> {localeLn('cancel bid from auction')}</span>
+				</p>
+			)
+		}
+
 		if (type === 'add_market_data' || type === 'update_market_data') {
 			return (
 				<p>

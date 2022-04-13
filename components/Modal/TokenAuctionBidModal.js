@@ -7,7 +7,7 @@ import Button from 'components/Common/Button'
 import { InputText } from 'components/Common/form'
 import { sentryCaptureException } from 'lib/sentry'
 import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
-import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import { IconX } from 'components/Icons'
 import { useEffect, useState } from 'react'
@@ -135,14 +135,28 @@ const TokenAuctionBidModal = ({
 		}
 	}
 
+	const isCurrentBid = (type) => {
+		let list = []
+		data?.bidder_list?.map((item) => {
+			if (type === 'bidder') list.push(item.bidder)
+			else if (type === 'time') list.push(item.issued_at)
+			else if (type === 'amount') list.push(item.amount)
+		})
+		const currentBid = list.reverse()
+
+		return currentBid[0]
+	}
+
 	const checkNextPriceBid = () => {
-		const currentBid = Number(
-			!data?.amount ? data?.price?.$numberDecimal || data?.price : data?.amount
+		const currentBid = JSBI.BigInt(
+			data?.bidder_list && data?.bidder_list?.length !== 0
+				? data?.amount
+				: data?.price?.$numberDecimal || data?.price || ''
 		)
-		const multipleBid = (currentBid / 100) * 5
-		const nextBid = currentBid + multipleBid
-		const totalNextBid = prettyBalance(nextBid, 24, 2)
-		return parseFloat(totalNextBid.replace(',', ''))
+		const multiplebid = JSBI.multiply(JSBI.divide(currentBid, JSBI.BigInt(100)), JSBI.BigInt(5))
+		const nextBid = JSBI.add(currentBid, multiplebid).toString()
+		const totalNextBid = Math.ceil(formatNearAmount(nextBid))
+		return totalNextBid
 	}
 
 	return (
@@ -202,11 +216,9 @@ const TokenAuctionBidModal = ({
 								<div className="flex justify-between">
 									<div className="text-sm">{localeLn('Highest Bid')}</div>
 									<div>
-										{prettyBalance(
-											data?.amount ? data?.amount : data?.price?.$numberDecimal || data?.price,
-											24,
-											4
-										)}{' '}
+										{data?.bidder_list && data?.bidder_list?.length !== 0
+											? prettyBalance(isCurrentBid('amount'), 24, 4)
+											: prettyBalance(data.price, 24, 4)}{' '}
 										Ⓝ
 									</div>
 								</div>

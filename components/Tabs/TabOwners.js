@@ -184,7 +184,12 @@ const Owner = ({ initial = {}, onBuy, onUpdateListing, isAuctionEnds }) => {
 			return (
 				<p className="text-white">
 					{localeLn('OnAuction')}{' '}
-					{formatNearAmount(token?.is_auction ? token?.amount || token.price : token.price)} Ⓝ
+					{formatNearAmount(
+						token?.is_auction && token?.bidder_list && token?.bidder_list.length !== 0
+							? token?.amount || token.price
+							: token.price
+					)}{' '}
+					Ⓝ
 				</p>
 			)
 		} else if (token.price) {

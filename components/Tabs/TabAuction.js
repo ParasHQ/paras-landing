@@ -90,7 +90,7 @@ const TabAuction = ({ localToken, setAuctionEnds = () => {} }) => {
 			</div>
 			<CurrentBid initial={localToken} key={localToken.token_id} />
 			<p className="text-center mt-2">History Bids</p>
-			{historyBid?.length !== 0 &&
+			{historyBid && historyBid?.length !== 0 ? (
 				historyBid
 					?.slice(0)
 					.reverse()
@@ -107,8 +107,8 @@ const TabAuction = ({ localToken, setAuctionEnds = () => {} }) => {
 								<p className="mt-1 text-xs">{startedAtDate(x.issued_at)} UTC</p>
 							</div>
 						</div>
-					))}
-			{!localToken?.bidder_list && (
+					))
+			) : (
 				<div className="bg-gray-800 p-3 rounded-md shadow-md">
 					<div className="text-white text-center">{'No bidder at the moment'}</div>
 				</div>
@@ -162,6 +162,7 @@ const CurrentBid = ({ initial = {} }) => {
 		token?.bidder_list?.map((item) => {
 			if (type === 'bidder') data.push(item.bidder)
 			else if (type === 'time') data.push(item.issued_at)
+			else if (type === 'amount') data.push(item.amount)
 		})
 		const currentBid = data.reverse()
 
@@ -171,22 +172,41 @@ const CurrentBid = ({ initial = {} }) => {
 	return (
 		<div className="bg-gray-800 mt-2 p-3 rounded-md shadow-md">
 			<p className="text-right text-[9px]">
-				{startedAtDate(token?.bidder_list ? isCurrentBid('time') : token.started_at)} UTC
+				{startedAtDate(
+					token?.bidder_list && token?.bidder_list.length !== 0
+						? isCurrentBid('time')
+						: token.started_at
+				)}{' '}
+				UTC
 			</p>
 			<div className="flex items-center justify-between -mt-2">
 				<div className="flex items-center">
-					<Link href={`/${token?.bidder_list ? isCurrentBid('bidder') : token.owner_id}`}>
+					<Link
+						href={`/${
+							token?.bidder_list && token?.bidder_list.length !== 0
+								? isCurrentBid('bidder')
+								: token.owner_id
+						}`}
+					>
 						<a className="hover:opacity-80">
 							<Avatar size="lg" src={parseImgUrl(profile.imgUrl)} className="align-bottom" />
 						</a>
 					</Link>
 					<div>
 						<div className="ml-2">
-							<Link href={`/${token?.bidder_list ? isCurrentBid('bidder') : token.owner_id}`}>
+							<Link
+								href={`/${
+									token?.bidder_list && token?.bidder_list.length !== 0
+										? isCurrentBid('bidder')
+										: token.owner_id
+								}`}
+							>
 								<a className="hover:opacity-80">
 									<p className="text-white font-semibold truncate text-sm">
 										{prettyTruncate(
-											token?.bidder_list ? isCurrentBid('bidder') : token.owner_id,
+											token?.bidder_list && token?.bidder_list.length !== 0
+												? isCurrentBid('bidder')
+												: token.owner_id,
 											16,
 											'address'
 										)}
@@ -194,14 +214,20 @@ const CurrentBid = ({ initial = {} }) => {
 								</a>
 							</Link>
 						</div>
-						{!token.amount ? (
+						{!token.amount || (token?.bidder_list && token?.bidder_list.length === 0) ? (
 							<p className="ml-2 text-white">
 								{localeLn('Starting Bid')}{' '}
 								{formatNearAmount(token.price?.$numberDecimal || token.price)} Ⓝ
 							</p>
 						) : (
 							<p className="ml-2 text-white text-sm">
-								{localeLn('On Bid')} {formatNearAmount(token.amount)} Ⓝ
+								{localeLn('On Bid')}{' '}
+								{formatNearAmount(
+									token?.bidder_list && token?.bidder_list?.length !== 0
+										? isCurrentBid('amount')
+										: token?.price
+								)}{' '}
+								Ⓝ
 							</p>
 						)}
 					</div>

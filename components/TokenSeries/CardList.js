@@ -127,7 +127,10 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 	const { localeLn } = useIntl()
 	const toast = useToast()
 
-	const price = token.token?.amount ? token.token?.amount : token.lowest_price || token.price
+	const price =
+		token.token?.amount && token.token?.bidder_list?.length !== 0
+			? token.token?.amount
+			: token.lowest_price || token.price
 
 	const [days, setDays] = useState('-')
 	const [hours, setHours] = useState('-')
@@ -228,7 +231,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 			if (token.token && token.token.owner_id === currentUser) {
 				return localeLn('UpdateListing')
 			} else {
-				return price && (!token.token?.is_auction || isEndedTime)
+				return price && (!token.token?.is_auction || !isEndedTime)
 					? 'Buy Now'
 					: token.token?.is_auction && !isEndedTime
 					? 'Place a Bid'
@@ -302,7 +305,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 	}
 
 	const checkBidder = () => {
-		if (token.token?.bidder_list) {
+		if (token.token?.bidder_list && token.token?.bidder_list.length !== 0) {
 			return 'Highest Bid'
 		} else {
 			return 'Starting Bid'
@@ -389,7 +392,9 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 										) : (price && token.token?.has_price && !isEndedTime) ||
 										  (token.lowest_price && !isEndedTime) ? (
 											`${prettyBalance(
-												token.token?.is_auction ? token.token?.amount || price : price,
+												token.token?.is_auction && token.token?.bidder_list?.length !== 0
+													? token.token?.amount || price
+													: price,
 												24,
 												4
 											)} Ⓝ`
@@ -408,7 +413,9 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 											~ $
 											{prettyBalance(
 												JSBI.BigInt(
-													token.token?.is_auction ? token.token?.amount || price : price
+													token.token?.is_auction && token.token?.bidder_list?.length !== 0
+														? token.token?.amount || price
+														: price
 												) * store.nearUsdPrice,
 												24,
 												2
@@ -424,7 +431,9 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 											~ $
 											{prettyBalance(
 												JSBI.BigInt(
-													token.token?.is_auction ? token.token?.amount || price : price
+													token.token?.is_auction && token.token?.bidder_list?.length !== 0
+														? token.token?.amount || price
+														: price
 												) * store.nearUsdPrice,
 												24,
 												2

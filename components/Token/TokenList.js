@@ -117,7 +117,10 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 	const { localeLn } = useIntl()
 	const toast = useToast()
 
-	const price = token.price
+	const price =
+		token.token?.amount && token.token?.bidder_list?.length !== 0
+			? token.token?.amount
+			: token.lowest_price || token.price
 	const [days, setDays] = useState('-')
 	const [hours, setHours] = useState('-')
 	const [mins, setMins] = useState('-')
@@ -217,7 +220,7 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 			return localeLn('UpdateListing')
 		}
 
-		return token.price && (!token?.is_auction || !isEndedTime)
+		return token.price && (!token?.is_auction || isEndedTime)
 			? 'Buy Now'
 			: token?.is_auction && !isEndedTime
 			? 'Place a Bid'
@@ -343,7 +346,9 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 											localeLn('Free')
 										) : price && token?.has_price && !isEndedTime ? (
 											`${prettyBalance(
-												token?.is_auction && !isEndedTime ? token?.amount || price : price,
+												token?.is_auction && !isEndedTime && token?.bidder_list.length !== 0
+													? token?.amount || price
+													: price,
 												24,
 												4
 											)} Ⓝ`
@@ -361,8 +366,11 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 										>
 											~ $
 											{prettyBalance(
-												JSBI.BigInt(token?.is_auction ? token?.amount || price : price) *
-													store.nearUsdPrice,
+												JSBI.BigInt(
+													token?.is_auction && token?.bidder_list.length !== 0
+														? token?.amount || price
+														: price
+												) * store.nearUsdPrice,
 												24,
 												2
 											)}
@@ -376,8 +384,11 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 										>
 											~ $
 											{prettyBalance(
-												JSBI.BigInt(token?.is_auction ? token?.amount || price : price) *
-													store.nearUsdPrice,
+												JSBI.BigInt(
+													token?.is_auction && token?.bidder_list.length !== 0
+														? token?.amount || price
+														: price
+												) * store.nearUsdPrice,
 												24,
 												2
 											)}
