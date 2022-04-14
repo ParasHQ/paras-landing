@@ -28,7 +28,7 @@ import Media from 'components/Common/Media'
 import ReportModal from 'components/Modal/ReportModal'
 import Card from 'components/Card/Card'
 import Tooltip from 'components/Common/Tooltip'
-import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
 import TabAuction from 'components/Tabs/TabAuction'
 import TokenAuctionBidModal from 'components/Modal/TokenAuctionBidModal'
@@ -37,7 +37,6 @@ import AcceptBidAuctionModal from 'components/Modal/AcceptBidAuctionModal'
 import { useToast } from 'hooks/useToast'
 import CancelAuctionModal from 'components/Modal/CancelAuctionModal'
 import CancelBidModal from 'components/Modal/CancelBidModal'
-import { data } from 'autoprefixer'
 
 const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -202,16 +201,32 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 		return userBid[0]
 	}
 
-	const checkNextPriceBid = () => {
+	const isCurrentBid = (type) => {
+		let list = []
+		token?.bidder_list?.map((item) => {
+			if (type === 'bidder') list.push(item.bidder)
+			else if (type === 'time') list.push(item.issued_at)
+			else if (type === 'amount') list.push(item.amount)
+		})
+		const currentBid = list.reverse()
+
+		return currentBid[0]
+	}
+
+	const checkNextPriceBid = (type) => {
 		const currentBid = JSBI.BigInt(
 			token?.bidder_list && token?.bidder_list?.length !== 0
-				? token?.amount
+				? isCurrentBid('amount')
 				: token?.price?.$numberDecimal || token?.price || ''
 		)
 		const multiplebid = JSBI.multiply(JSBI.divide(currentBid, JSBI.BigInt(100)), JSBI.BigInt(5))
 		const nextBid = JSBI.add(currentBid, multiplebid).toString()
 		const totalNextBid = Math.ceil(formatNearAmount(nextBid))
-		return totalNextBid
+		if (type === 'near') {
+			return totalNextBid
+		} else if (type === 'usd') {
+			return totalNextBid.toString()
+		}
 	}
 
 	return (
@@ -363,10 +378,12 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 												<div>
 													<p className="font-thin text-white text-xs">Next Bid</p>
 													<div className="flex items-center gap-1">
-														<div className="truncate text-white text-base font-bold">{`${checkNextPriceBid()} Ⓝ`}</div>
+														<div className="truncate text-white text-base font-bold">{`${checkNextPriceBid(
+															'near'
+														)} Ⓝ`}</div>
 														{token.price !== '0' && store.nearUsdPrice !== 0 && (
 															<div className="text-[9px] text-gray-400 truncate mt-1">
-																~ ${checkNextPriceBid() * store.nearUsdPrice}
+																~ ${parseInt(checkNextPriceBid('usd')) * store.nearUsdPrice}
 															</div>
 														)}
 														{token.price === '0' && token?.is_auction && !isAuctionEnds && (
@@ -384,7 +401,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 												</div>
 											</div>
 											{token?.bidder_list && token?.is_auction && !isAuctionEnds ? (
-												<div>
+												<div className="flex">
 													{token?.bidder_list.length !== 0 && (
 														<Button
 															size="md"
@@ -422,19 +439,23 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 												<div>
 													<p className="font-thin text-white text-xs">Next Bid</p>
 													<div className="flex items-center gap-1">
-														<div className="truncate text-white text-base font-bold">{`${checkNextPriceBid()} Ⓝ`}</div>
+														<div className="truncate text-white text-base font-bold">{`${checkNextPriceBid(
+															'near'
+														)} Ⓝ`}</div>
 														{token.price !== '0' && store.nearUsdPrice !== 0 && (
 															<div className="text-[9px] text-gray-400 truncate mt-1">
-																~ ${checkNextPriceBid() * store.nearUsdPrice}
+																~ ${parseInt(checkNextPriceBid('usd')) * store.nearUsdPrice}
 															</div>
 														)}
 													</div>
 												</div>
 											</div>
 											<div className="flex">
-												<Button size="md" onClick={onClickAuction} className="px-8 mr-2">
-													{`Place a Bid`}
-												</Button>
+												{token.owner_id !== currentUser && isCurrentBid('bidder') !== currentUser && (
+													<Button size="md" onClick={onClickAuction} className="px-8 mr-2">
+														{`Place a Bid`}
+													</Button>
+												)}
 												{token.owner_id !== currentUser && checkUserBid() && (
 													<Button size="md" onClick={onCancelBid} isFullWidth variant="error">
 														{`Cancel Bid`}

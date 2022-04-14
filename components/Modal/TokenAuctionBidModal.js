@@ -150,7 +150,7 @@ const TokenAuctionBidModal = ({
 	const checkNextPriceBid = () => {
 		const currentBid = JSBI.BigInt(
 			data?.bidder_list && data?.bidder_list?.length !== 0
-				? data?.amount
+				? isCurrentBid('amount')
 				: data?.price?.$numberDecimal || data?.price || ''
 		)
 		const multiplebid = JSBI.multiply(JSBI.divide(currentBid, JSBI.BigInt(100)), JSBI.BigInt(5))
@@ -211,7 +211,7 @@ const TokenAuctionBidModal = ({
 								</div>
 								<div className="flex justify-between">
 									<div className="text-sm">{localeLn('Your Bid')}</div>
-									<div>{watch('bidAuctionAmount', bidAuctionAmount || 0)} Ⓝ</div>
+									<div>{watch('bidAuctionAmount', bidAuctionAmount)} Ⓝ</div>
 								</div>
 								<div className="flex justify-between">
 									<div className="text-sm">{localeLn('Highest Bid')}</div>
@@ -224,7 +224,7 @@ const TokenAuctionBidModal = ({
 								</div>
 								<div className="flex justify-between">
 									<div className="text-sm">{localeLn('Total')}</div>
-									<div>{watch('bidAuctionAmount', bidAuctionAmount || 0)} Ⓝ</div>
+									<div>{watch('bidAuctionAmount', bidAuctionAmount)} Ⓝ</div>
 								</div>
 							</div>
 							{creatorData?.flag && (

@@ -207,7 +207,7 @@ const Owner = ({ initial = {}, onBuy, onUpdateListing, isAuctionEnds }) => {
 
 	const checkTypeTransaction = () => {
 		if (token.owner_id === currentUser) {
-			if (!token.is_staked && !token?.is_auction && isAuctionEnds) {
+			if (!token.is_staked && !token?.is_auction) {
 				return (
 					<div className="w-24">
 						<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>

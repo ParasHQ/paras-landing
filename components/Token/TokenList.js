@@ -220,7 +220,7 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 			return localeLn('UpdateListing')
 		}
 
-		return token.price && (!token?.is_auction || isEndedTime)
+		return token.price && !token?.is_auction && isEndedTime
 			? 'Buy Now'
 			: token?.is_auction && !isEndedTime
 			? 'Place a Bid'
@@ -346,7 +346,7 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 											localeLn('Free')
 										) : price && token?.has_price && !isEndedTime ? (
 											`${prettyBalance(
-												token?.is_auction && !isEndedTime && token?.bidder_list.length !== 0
+												token?.is_auction && !isEndedTime && token?.bidder_list?.length !== 0
 													? token?.amount || price
 													: price,
 												24,
@@ -385,7 +385,7 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 											~ $
 											{prettyBalance(
 												JSBI.BigInt(
-													token?.is_auction && token?.bidder_list.length !== 0
+													token?.is_auction && token?.bidder_list?.length !== 0
 														? token?.amount || price
 														: price
 												) * store.nearUsdPrice,

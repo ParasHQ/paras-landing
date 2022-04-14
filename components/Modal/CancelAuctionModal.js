@@ -9,6 +9,8 @@ import { IconX } from 'components/Icons'
 import { useState } from 'react'
 import WalletHelper from 'lib/WalletHelper'
 import { trackUpdateListingToken } from 'lib/ga'
+import { useToast } from 'hooks/useToast'
+import { useRouter } from 'next/router'
 
 const CancelAuctionModal = ({ data, show, onClose, onSuccess, tokenType = `token` }) => {
 	const { localeLn } = useIntl()
@@ -17,6 +19,8 @@ const CancelAuctionModal = ({ data, show, onClose, onSuccess, tokenType = `token
 		currentUser: state.currentUser,
 		setTransactionRes: state.setTransactionRes,
 	}))
+	const toast = useToast()
+	const router = useRouter()
 
 	const hasStorageBalance = async () => {
 		try {
@@ -72,8 +76,8 @@ const CancelAuctionModal = ({ data, show, onClose, onSuccess, tokenType = `token
 						{
 							methodName: 'cancel_auction',
 							args: params,
-							deposit: '1',
 							gas: GAS_FEE,
+							deposit: '1',
 						},
 					],
 				})
@@ -84,22 +88,40 @@ const CancelAuctionModal = ({ data, show, onClose, onSuccess, tokenType = `token
 						{
 							methodName: 'storage_deposit',
 							args: depositParams,
-							deposit: STORAGE_ADD_MARKET_FEE,
 							gas: GAS_FEE,
+							deposit: STORAGE_ADD_MARKET_FEE,
 						},
 						{
 							methodName: 'cancel_auction',
 							args: params,
-							deposit: '1',
 							gas: GAS_FEE,
+							deposit: '1',
 						},
 					],
 				})
 			}
-			if (res?.response) {
+			if (res?.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res?.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+			} else if (res) {
 				onClose()
 				setTransactionRes(res?.response)
 				onSuccess && onSuccess()
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">{`Successfully cancel auction`}</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
+				router.push(`/token/${data.contract_id}::${data.token_series_id}`)
 			}
 			setIsCancelAuction(false)
 		} catch (err) {
