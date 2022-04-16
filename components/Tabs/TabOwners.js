@@ -179,6 +179,18 @@ const Owner = ({ initial = {}, onBuy, onUpdateListing, isAuctionEnds }) => {
 		}
 	}
 
+	const isCurrentBid = (type) => {
+		let list = []
+		token?.bidder_list?.map((item) => {
+			if (type === 'bidder') list.push(item.bidder)
+			else if (type === 'time') list.push(item.issued_at)
+			else if (type === 'amount') list.push(item.amount)
+		})
+		const currentBid = list.reverse()
+
+		return currentBid[0]
+	}
+
 	const checkStatuTransaction = () => {
 		if (token?.is_auction) {
 			return (
@@ -186,7 +198,7 @@ const Owner = ({ initial = {}, onBuy, onUpdateListing, isAuctionEnds }) => {
 					{localeLn('OnAuction')}{' '}
 					{formatNearAmount(
 						token?.is_auction && token?.bidder_list && token?.bidder_list.length !== 0
-							? token?.amount || token.price
+							? isCurrentBid('amount') || token.price
 							: token.price
 					)}{' '}
 					Ⓝ

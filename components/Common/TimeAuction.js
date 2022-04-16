@@ -55,10 +55,10 @@ const TimeAuction = ({ endedAt }) => {
 	return (
 		!isEndedTime && (
 			<div className="absolute right-0 bottom-5 text-gray-100 py-1 px-2 rounded-l-md bg-primary bg-opacity-70 z-10">
-				<p className="text-[10px] md:text-[8px] font-thin">Auction ends in</p>
+				<p className="text-[8px] md:text-[8px] font-thin">Auction ends in</p>
 				<div className="flex justify-between items-center gap-1">
 					<svg
-						className="w-8 h-8 md:w-6 md:h-6"
+						className="w-4 h-4 md:w-6 md:h-6"
 						fill="none"
 						stroke="currentColor"
 						viewBox="0 0 24 24"
@@ -72,11 +72,11 @@ const TimeAuction = ({ endedAt }) => {
 						/>
 					</svg>
 					<div>
-						<p className="text-[15px] md:text-[10px] font-bold">
+						<p className="text-[10px] md:text-[10px] font-bold">
 							{days} &nbsp;&nbsp;:&nbsp;&nbsp; {hours} &nbsp;&nbsp;:&nbsp;&nbsp; {mins}{' '}
 							&nbsp;&nbsp;:&nbsp;&nbsp; {secs}
 						</p>
-						<p className="text-[13px] md:text-[8px]">Days&nbsp; Hours&nbsp; Mins&nbsp; Secs</p>
+						<p className="text-[8px] md:text-[8px]">Days&nbsp; Hours&nbsp; Mins&nbsp; Secs</p>
 					</div>
 				</div>
 			</div>

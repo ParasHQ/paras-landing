@@ -231,7 +231,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 			if (token.token && token.token.owner_id === currentUser) {
 				return localeLn('UpdateListing')
 			} else {
-				return price && !token.token?.is_auction && isEndedTime
+				return (price && !token.token?.is_auction) || isEndedTime
 					? 'Buy Now'
 					: token.token?.is_auction && !isEndedTime
 					? 'Place a Bid'
@@ -248,7 +248,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 			return localeLn('UpdateListing')
 		}
 
-		return price && (!token.token?.is_auction || isEndedTime)
+		return (price && !token.token?.is_auction) || isEndedTime
 			? 'Buy Now'
 			: token.token?.is_auction && !token.token?.owner_id && !isEndedTime
 			? 'Place a Bid'
@@ -312,12 +312,16 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 		}
 	}
 
-	const isCurrentBid = () => {
-		if (token.token?.bidder_list) {
-			const data = token.token?.bidder_list[token.token?.bidder_list.length - 1]
-			return data?.bidder
-		}
-		return
+	const isCurrentBid = (type) => {
+		let list = []
+		token.token?.bidder_list?.map((item) => {
+			if (type === 'bidder') list.push(item.bidder)
+			else if (type === 'time') list.push(item.issued_at)
+			else if (type === 'amount') list.push(item.amount)
+		})
+		const currentBid = list.reverse()
+
+		return currentBid[0]
 	}
 
 	return (
@@ -393,7 +397,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 										  (token.lowest_price && !isEndedTime) ? (
 											`${prettyBalance(
 												token.token?.is_auction && token.token?.bidder_list?.length !== 0
-													? token.token?.amount || price
+													? isCurrentBid('amount') || price
 													: price,
 												24,
 												4
@@ -414,7 +418,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 											{prettyBalance(
 												JSBI.BigInt(
 													token.token?.is_auction && token.token?.bidder_list?.length !== 0
-														? token.token?.amount || price
+														? isCurrentBid('amount') || price
 														: price
 												) * store.nearUsdPrice,
 												24,
@@ -432,7 +436,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 											{prettyBalance(
 												JSBI.BigInt(
 													token.token?.is_auction && token.token?.bidder_list?.length !== 0
-														? token.token?.amount || price
+														? isCurrentBid('amount') || price
 														: price
 												) * store.nearUsdPrice,
 												24,
@@ -477,7 +481,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 					)}
 					<div className="flex justify-between md:items-baseline">
 						{!token.token?.is_auction ||
-						(currentUser !== token.token?.owner_id && isCurrentBid() !== currentUser) ? (
+						(currentUser !== token.token?.owner_id && isCurrentBid('bidder') !== currentUser) ? (
 							<p
 								className={`font-bold text-white ${
 									isEndedTime && 'text-opacity-40'
@@ -490,7 +494,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 							>
 								{actionButtonText(token)}
 							</p>
-						) : isCurrentBid() === currentUser && !isEndedTime ? (
+						) : isCurrentBid('bidder') === currentUser && !isEndedTime ? (
 							<p
 								className={`font-bold text-white text-opacity-40 ${
 									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`

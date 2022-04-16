@@ -383,7 +383,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 														)} Ⓝ`}</div>
 														{token.price !== '0' && store.nearUsdPrice !== 0 && (
 															<div className="text-[9px] text-gray-400 truncate mt-1">
-																~ ${parseInt(checkNextPriceBid('usd')) * store.nearUsdPrice}
+																~ ${JSBI.BigInt(checkNextPriceBid('usd')) * store.nearUsdPrice}
 															</div>
 														)}
 														{token.price === '0' && token?.is_auction && !isAuctionEnds && (
@@ -444,7 +444,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 														)} Ⓝ`}</div>
 														{token.price !== '0' && store.nearUsdPrice !== 0 && (
 															<div className="text-[9px] text-gray-400 truncate mt-1">
-																~ ${parseInt(checkNextPriceBid('usd')) * store.nearUsdPrice}
+																~ ${JSBI.BigInt(checkNextPriceBid('usd')) * store.nearUsdPrice}
 															</div>
 														)}
 													</div>
@@ -452,7 +452,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 											</div>
 											<div className="flex">
 												{token.owner_id !== currentUser && isCurrentBid('bidder') !== currentUser && (
-													<Button size="md" onClick={onClickAuction} className="px-8 mr-2">
+													<Button size="md" onClick={onClickAuction} className="px-6 mr-2">
 														{`Place a Bid`}
 													</Button>
 												)}
