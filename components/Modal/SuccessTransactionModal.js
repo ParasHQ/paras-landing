@@ -117,6 +117,16 @@ const SuccessTransactionModal = () => {
 					setToken(res.data.data.results[0])
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
+				} else if (FunctionCall.method_name === 'accept_bid') {
+					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+						params: {
+							contract_id: args.nft_contract_id,
+							token_id: args.token_id,
+						},
+					})
+					setToken(res.data.data.results[0])
+					setTxDetail({ ...FunctionCall, args })
+					setShowModal(true)
 				} else if (FunctionCall.method_name === 'nft_set_series_price') {
 					const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
 						params: {
@@ -214,6 +224,8 @@ const SuccessTransactionModal = () => {
 			return 'Offer Success'
 		} else if (txDetail.method_name === 'add_bid') {
 			return 'Place Bid Success'
+		} else if (txDetail.method_name === 'accept_bid') {
+			return 'Accept Bid Success'
 		} else if (txDetail.method_name === 'nft_buy' || txDetail.method_name === 'buy') {
 			return 'Purchase Success'
 		} else if (txDetail.method_name === 'nft_set_series_price') {
@@ -256,6 +268,12 @@ const SuccessTransactionModal = () => {
 				<>
 					You successfully bid of auction <b>{token.metadata.title}</b> for{' '}
 					{formatNearAmount(txDetail.args.amount)} Ⓝ
+				</>
+			)
+		} else if (txDetail.method_name === 'accept_bid') {
+			return (
+				<>
+					You successfully accept bid auction <b>{token.metadata.title}</b>
 				</>
 			)
 		} else if (txDetail.method_name === 'nft_buy' || txDetail.method_name === 'buy') {

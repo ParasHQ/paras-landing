@@ -148,7 +148,7 @@ const TabOwners = ({ localToken, isAuctionEnds }) => {
 	)
 }
 
-const Owner = ({ initial = {}, onBuy, onUpdateListing, isAuctionEnds }) => {
+const Owner = ({ initial = {}, onBuy, onUpdateListing }) => {
 	const { token } = useToken({
 		key: `${initial.contract_id}::${initial.token_series_id}/${initial.token_id}`,
 		initialData: initial,
