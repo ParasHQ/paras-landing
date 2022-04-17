@@ -42,6 +42,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState(null)
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
+	const [isEndedTime, setIsEndedTime] = useState(false)
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
 	const store = useStore()
@@ -359,7 +360,9 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 							</div>
 
 							{activeTab === 'info' && <TabInfo localToken={token} isNFT={true} />}
-							{activeTab === 'auction' && <TabAuction localToken={token} />}
+							{activeTab === 'auction' && (
+								<TabAuction localToken={token} setAuctionEnds={() => setIsEndedTime(true)} />
+							)}
 							{activeTab === 'owners' && (
 								<TabOwners localToken={token} isAuctionEnds={isAuctionEnds} />
 							)}
@@ -371,7 +374,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 					<div className="p-3">
 						{token?.is_auction ? (
 							<div>
-								{token.owner_id === currentUser && !isAuctionEnds ? (
+								{token.owner_id === currentUser && !isAuctionEnds && !isEndedTime ? (
 									<>
 										<div className="flex justify-between items-center gap-2">
 											<div className="flex items-baseline space-x-1 md:pl-2">
@@ -433,7 +436,8 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										</div>
 									</>
 								) : (
-									!isAuctionEnds && (
+									!isAuctionEnds &&
+									!isEndedTime && (
 										<div className="flex justify-between items-center gap-2">
 											<div className="flex items-baseline space-x-1 md:pl-2">
 												<div>
@@ -512,7 +516,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 								{`Place an offer`}
 							</Button>
 						)}
-						{isAuctionEnds && (
+						{(isAuctionEnds || isEndedTime) && (
 							<div className="flex justify-center items-center gap-2 text-white text-center mt-2 rounded-md p-2">
 								<div className="flex items-center">
 									<h4>Auction Ends..</h4>

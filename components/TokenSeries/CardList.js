@@ -231,7 +231,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 			if (token.token && token.token.owner_id === currentUser) {
 				return localeLn('UpdateListing')
 			} else {
-				return (price && !token.token?.is_auction) || isEndedTime
+				return price && !token.token?.is_auction && !isEndedTime
 					? 'Buy Now'
 					: token.token?.is_auction && !isEndedTime
 					? 'Place a Bid'
@@ -248,10 +248,12 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 			return localeLn('UpdateListing')
 		}
 
-		return (price && !token.token?.is_auction) || isEndedTime
+		return (price && !token.token?.is_auction) || !isEndedTime
 			? 'Buy Now'
 			: token.token?.is_auction && !token.token?.owner_id && !isEndedTime
 			? 'Place a Bid'
+			: isEndedTime
+			? 'Auction Ends'
 			: 'Place Offer'
 	}
 

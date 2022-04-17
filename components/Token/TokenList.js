@@ -220,7 +220,7 @@ const TokenSingle = ({ initialData, displayType = 'large' }) => {
 			return localeLn('UpdateListing')
 		}
 
-		return token.price && !token?.is_auction && isEndedTime
+		return token.price && !token?.is_auction && !isEndedTime
 			? 'Buy Now'
 			: token?.is_auction && !isEndedTime
 			? 'Place a Bid'

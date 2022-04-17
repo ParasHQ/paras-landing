@@ -78,14 +78,20 @@ const TabAuction = ({ localToken, setAuctionEnds = () => {} }) => {
 			<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 				<p className="text-xs">Auction ends in:</p>
 				<div className="text-center">
-					<p className="text-base font-bold">
-						{days} &nbsp;&nbsp;:&nbsp;&nbsp; {hours} &nbsp;&nbsp;:&nbsp;&nbsp; {mins}{' '}
-						&nbsp;&nbsp;:&nbsp;&nbsp; {secs}
-					</p>
-					<p className="text-xs">
-						Days&nbsp;&nbsp;&nbsp;&nbsp; Hours&nbsp;&nbsp;&nbsp;&nbsp; Mins&nbsp;&nbsp;&nbsp;&nbsp;
-						Secs
-					</p>
+					{!isEndedTime ? (
+						<>
+							<p className="text-base font-bold">
+								{days} &nbsp;&nbsp;:&nbsp;&nbsp; {hours} &nbsp;&nbsp;:&nbsp;&nbsp; {mins}{' '}
+								&nbsp;&nbsp;:&nbsp;&nbsp; {secs}
+							</p>
+							<p className="text-xs">
+								Days&nbsp;&nbsp;&nbsp;&nbsp; Hours&nbsp;&nbsp;&nbsp;&nbsp;
+								Mins&nbsp;&nbsp;&nbsp;&nbsp; Secs
+							</p>{' '}
+						</>
+					) : (
+						<p className="text-base">Auction is over.</p>
+					)}
 				</div>
 			</div>
 			<CurrentBid initial={localToken} key={localToken.token_id} />
