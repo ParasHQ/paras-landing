@@ -25,7 +25,7 @@ const TabAuction = ({ localToken, setAuctionEnds = () => {} }) => {
 
 	useEffect(() => {
 		countDownTimeAuction(localToken.ended_at)
-	}, [days, hours, mins, secs])
+	}, [isEndedTime])
 
 	const convertTimeOfAuction = (date) => {
 		const sliceNanoSec = String(date).slice(0, 13)

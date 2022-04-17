@@ -131,11 +131,6 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 		token.token?.amount && token.token?.bidder_list?.length !== 0
 			? token.token?.amount
 			: token.lowest_price || token.price
-
-	const [days, setDays] = useState('-')
-	const [hours, setHours] = useState('-')
-	const [mins, setMins] = useState('-')
-	const [secs, setSecs] = useState('-')
 	const [isEndedTime, setIsEndedTime] = useState(false)
 
 	const _showInfoUpdatingAuction = () => {
@@ -154,11 +149,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 
 	useEffect(() => {
 		countDownTimeAuction()
-	}, [])
-
-	useEffect(() => {
-		countDownTimeAuction()
-	}, [days, hours, mins, secs, isEndedTime])
+	}, [isEndedTime])
 
 	const convertTimeOfAuction = (date) => {
 		const sliceNanoSec = String(date).slice(0, 13)
@@ -176,16 +167,6 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 
 			if (!isEndedTime) {
 				let distance = parseInt(endedDate) - parseInt(startedDate)
-
-				let days = Math.floor(distance / (1000 * 60 * 60 * 24))
-				let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-				let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
-				let seconds = Math.floor((distance % (1000 * 60)) / 1000)
-
-				setDays(days)
-				setHours(hours)
-				setMins(minutes)
-				setSecs(seconds)
 
 				if (distance <= 0) {
 					clearInterval(timer)
