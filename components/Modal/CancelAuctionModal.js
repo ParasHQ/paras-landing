@@ -10,7 +10,6 @@ import { useState } from 'react'
 import WalletHelper from 'lib/WalletHelper'
 import { trackUpdateListingToken } from 'lib/ga'
 import { useToast } from 'hooks/useToast'
-import { useRouter } from 'next/router'
 
 const CancelAuctionModal = ({ data, show, onClose, onSuccess, tokenType = `token` }) => {
 	const { localeLn } = useIntl()
@@ -20,7 +19,6 @@ const CancelAuctionModal = ({ data, show, onClose, onSuccess, tokenType = `token
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const toast = useToast()
-	const router = useRouter()
 
 	const hasStorageBalance = async () => {
 		try {
@@ -116,12 +114,11 @@ const CancelAuctionModal = ({ data, show, onClose, onSuccess, tokenType = `token
 				onSuccess && onSuccess()
 				toast.show({
 					text: (
-						<div className="font-semibold text-center text-sm">{`Successfully cancel auction`}</div>
+						<div className="font-semibold text-center text-sm">{`Successfully remove auction`}</div>
 					),
 					type: 'success',
 					duration: 2500,
 				})
-				router.push(`/token/${data.contract_id}::${data.token_series_id}`)
 			}
 			setIsCancelAuction(false)
 		} catch (err) {

@@ -16,6 +16,7 @@ import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
 import WalletHelper from 'lib/WalletHelper'
 import { trackUpdateListingToken } from 'lib/ga'
+import { useToast } from 'hooks/useToast'
 
 const TokenAuctionBidModal = ({
 	data,
@@ -39,6 +40,7 @@ const TokenAuctionBidModal = ({
 		userBalance: state.userBalance,
 		setTransactionRes: state.setTransactionRes,
 	}))
+	const toast = useToast()
 
 	useEffect(() => {
 		checkNextPriceBid()
@@ -123,10 +125,27 @@ const TokenAuctionBidModal = ({
 					],
 				})
 			}
-			if (res?.response) {
+			if (res?.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res?.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+			} else if (res) {
 				onClose()
 				setTransactionRes(res?.response)
 				onSuccess && onSuccess()
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">{`Successfully add bid auction`}</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
 			}
 			setIsBidding(false)
 		} catch (err) {

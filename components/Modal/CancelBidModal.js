@@ -9,6 +9,7 @@ import { IconX } from 'components/Icons'
 import { useState } from 'react'
 import WalletHelper from 'lib/WalletHelper'
 import { trackUpdateListingToken } from 'lib/ga'
+import { useToast } from 'hooks/useToast'
 
 const CancelBidModal = ({ data, show, onClose, onSuccess, tokenType = `token` }) => {
 	const { localeLn } = useIntl()
@@ -17,6 +18,7 @@ const CancelBidModal = ({ data, show, onClose, onSuccess, tokenType = `token` })
 		currentUser: state.currentUser,
 		setTransactionRes: state.setTransactionRes,
 	}))
+	const toast = useToast()
 
 	const hasStorageBalance = async () => {
 		try {
@@ -97,10 +99,27 @@ const CancelBidModal = ({ data, show, onClose, onSuccess, tokenType = `token` })
 					],
 				})
 			}
-			if (res?.response) {
+			if (res?.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res?.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+			} else if (res) {
 				onClose()
 				setTransactionRes(res?.response)
 				onSuccess && onSuccess()
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">{`Successfully cancel bid auction`}</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
 			}
 			setIsCancelBid(false)
 		} catch (err) {

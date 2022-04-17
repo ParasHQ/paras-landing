@@ -12,6 +12,7 @@ import WalletHelper from 'lib/WalletHelper'
 import { trackUpdateListingToken } from 'lib/ga'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Tooltip from 'components/Common/Tooltip'
+import { useToast } from 'hooks/useToast'
 
 const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess, tokenType = `token` }) => {
 	const { localeLn } = useIntl()
@@ -27,6 +28,7 @@ const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess, tokenType = `to
 		currentUser: state.currentUser,
 		setTransactionRes: state.setTransactionRes,
 	}))
+	const toast = useToast()
 
 	useEffect(() => {
 		const getTxFee = async () => {
@@ -120,10 +122,27 @@ const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess, tokenType = `to
 					],
 				})
 			}
-			if (res?.response) {
+			if (res?.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res?.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+			} else if (res) {
 				onClose()
 				setTransactionRes(res?.response)
 				onSuccess && onSuccess()
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">{`Successfully accept bid auction`}</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
 			}
 			setIsAcceptBid(false)
 		} catch (err) {

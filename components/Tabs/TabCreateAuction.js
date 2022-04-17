@@ -10,15 +10,15 @@ import JSBI from 'jsbi'
 import { useEffect, useState } from 'react'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
-import BannedConfirmModal from 'components/Modal/BannedConfirmModal'
 import WalletHelper from 'lib/WalletHelper'
 import { trackUpdateListingToken } from 'lib/ga'
+import { useToast } from 'hooks/useToast'
 
 const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpirationDate }) => {
 	const [needDeposit, setNeedDeposit] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
 	const { localeLn } = useIntl()
-	const { errors, register, handleSubmit, watch, setValue } = useForm({
+	const { errors, register, handleSubmit, watch } = useForm({
 		defaultValues: {
 			startingBid,
 			expirationDate,
@@ -27,11 +27,12 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 	})
 	const [isCreatingAuction, setIsCreatingPrice] = useState(false)
 	const [expirationDateAuction, setExpirationDateAuction] = useState()
-	const { currentUser, userBalance, setTransactionRes } = useStore((state) => ({
+	const { currentUser, setTransactionRes } = useStore((state) => ({
 		currentUser: state.currentUser,
 		userBalance: state.userBalance,
 		setTransactionRes: state.setTransactionRes,
 	}))
+	const toast = useToast()
 
 	useEffect(() => {
 		parseTimeExpirationDate()
@@ -155,9 +156,26 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 
 			const res = await WalletHelper.multipleCallFunction(txs)
 
-			if (res?.response) {
+			if (res?.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res?.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+			} else if (res) {
 				onClose()
 				setTransactionRes(res?.response)
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">{`Successfully create auction`}</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
 			}
 			setIsCreatingPrice(false)
 		} catch (err) {
