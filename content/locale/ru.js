@@ -139,6 +139,7 @@ const CardInfo = {
 	Royalty: 'Роялти',
 	Views: 'взгляды',
 	Fee: 'Комиссия',
+	LockedFee: `заблокированная плата`,
 	Cancel: 'Отменить',
 	RemoveListing: 'Очистить Список',
 	CollectDigitalCard:
