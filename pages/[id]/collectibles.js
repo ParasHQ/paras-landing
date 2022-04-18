@@ -12,6 +12,7 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import FilterDisplay from 'components/Filter/FilterDisplay'
+import FilterCollection from 'components/Filter/FilterCollection'
 
 const LIMIT = 12
 
@@ -26,12 +27,14 @@ const Collection = ({ userProfile, accountId }) => {
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(false)
+	const [filterColls, setFilterColls] = useState([])
 	const [display, setDisplay] = useState(
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
 
 	useEffect(async () => {
 		await fetchOwnerTokens(true)
+		await fetchOwnerCollections(true)
 	}, [router.query.id])
 
 	const fetchOwnerTokens = async () => {
@@ -114,6 +117,38 @@ const Collection = ({ userProfile, accountId }) => {
 		setIsFiltering(false)
 	}
 
+	const fetchOwnerCollections = async () => {
+		if (!hasMore || isFetching) {
+			return
+		}
+
+		setIsFetching(true)
+		const params = tokensParams({
+			owner_id: 'iqbalutomo.near',
+			collection_id: 'valenci-kid-by-valencinear',
+		})
+		const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+			params: {
+				owner_id: userProfile.accountId,
+				collection_id: 'valenci-kid-by-valencinear',
+			},
+		})
+		const newData = await res.data.data
+
+		const newTokens = [...(tokens || []), ...newData.results]
+		setFilterColls(newTokens)
+		if (newData.results.length < LIMIT) {
+			setHasMore(false)
+		} else {
+			setHasMore(true)
+
+			const lastData = newData.results[newData.results.length - 1]
+			setIdNext(lastData._id)
+			params.__sort.includes('price') && setPriceNext(lastData.price)
+		}
+		setIsFetching(false)
+	}
+
 	const onClickDisplay = (typeDisplay) => {
 		setDataLocalStorage('display', typeDisplay, setDisplay)
 	}
@@ -160,6 +195,12 @@ const Collection = ({ userProfile, accountId }) => {
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'collection'} />
 				<div className="flex justify-end my-4 md:mb-14 md:-mr-4">
+					{/* {Object.keys(filterColls).length > 0 && ( */}
+					<FilterCollection
+						// onClearAll={removeAllAttributesFilter}
+						collections={filterColls}
+					/>
+					{/* )} */}
 					<FilterMarket isShowVerified={false} isCollectibles={true} isShowStaked={true} />
 					<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 				</div>
