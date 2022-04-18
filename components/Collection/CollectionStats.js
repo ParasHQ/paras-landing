@@ -1,38 +1,61 @@
 import { prettyBalance } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
+import { useEffect, useState } from 'react'
+import ReactTooltip from 'react-tooltip'
 
 const CollectionStats = ({ stats }) => {
 	const { localeLn } = useIntl()
+	const [showTooltip, setShowTooltip] = useState(false)
+
+	useEffect(() => {
+		setShowTooltip(true)
+	}, [stats])
 
 	return (
 		<>
-			<div className="text-center rounded-l block p-3 sm:p-5">
-				<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
-					{stats.total_cards || '0'}
-				</p>
-				<p className="text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg">
-					{localeLn('Items')}
-				</p>
-			</div>
-			<div className="text-center block p-3 sm:p-5">
-				<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
-					{stats.total_owners || '0'}
-				</p>
-				<p className="text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg">
-					{localeLn('TotalOwners')}
-				</p>
-			</div>
-			<div className="text-center block p-3 sm:p-5">
-				<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
-					{formatNearAmount(stats.volume, 2) + ' Ⓝ'}
-				</p>
-				<p className="text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg">
-					{localeLn('TotalVolume')}
-				</p>
-			</div>
-			<div className="flex md:flex-none justify-center">
-				<div className="text-center block p-3 sm:p-5">
+			{showTooltip && <ReactTooltip place="right" type="dark" />}
+			<div className="grid grid-cols-3 md:flex md:flex-row justify-around items-center">
+				<div
+					data-tip="Number of NFT that has been minted."
+					className="text-center rounded-l block p-3 sm:p-5"
+				>
+					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
+						{stats.total_cards || '0'}
+					</p>
+					<p className="text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg">
+						{localeLn('Items')}
+					</p>
+				</div>
+				<div
+					data-tip="Total NFT that is currently being sold."
+					className="text-center block p-3 sm:p-5"
+				>
+					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
+						{stats.total_card_sale}
+					</p>
+					<p className="text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg">
+						{localeLn('TotalListed')}
+					</p>
+				</div>
+
+				<div data-tip="Total of unique owners." className="text-center block p-3 sm:p-5">
+					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
+						{stats.total_owners || '0'}
+					</p>
+					<p className="text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg">
+						{localeLn('TotalOwners')}
+					</p>
+				</div>
+				<div data-tip="The sales in the last 30 days." className="text-center block p-3 sm:p-5">
+					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
+						{formatNearAmount(stats.volume, 2) + ' Ⓝ'}
+					</p>
+					<p className="text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg">
+						{localeLn('TotalVolume')}
+					</p>
+				</div>
+				<div data-tip="The cheapest price." className="text-center block p-3 sm:p-5">
 					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
 						{stats.floor_price ? prettyBalance(stats.floor_price, 24, 4) + ' Ⓝ' : '---'}
 					</p>
@@ -40,7 +63,10 @@ const CollectionStats = ({ stats }) => {
 						{localeLn('FloorPrice')}
 					</p>
 				</div>
-				<div className="text-center rounded-r block p-3 sm:p-5">
+				<div
+					data-tip="The average price in the last 30 days."
+					className="text-center rounded-r block p-3 sm:p-5"
+				>
 					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
 						{prettyBalance(stats.avg_price || '0', 24, 4)} Ⓝ
 					</p>

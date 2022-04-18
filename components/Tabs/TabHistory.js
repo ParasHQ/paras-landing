@@ -19,19 +19,23 @@ const TabHistory = ({ localToken }) => {
 
 	useEffect(() => {
 		if (localToken.token_series_id) {
-			fetchHistory()
+			fetchHistory(true)
 		}
 	}, [localToken])
 
-	const fetchHistory = async () => {
-		if (!hasMore || isFetching) {
+	const fetchHistory = async (fromStart = false) => {
+		const _hasMore = fromStart ? true : hasMore
+		const _id_before = fromStart ? null : idBefore
+		const _history = fromStart ? [] : history
+
+		if (!_hasMore || isFetching) {
 			return
 		}
 
 		setIsFetching(true)
 
 		const params = {
-			_id_before: idBefore,
+			_id_before: _id_before,
 			__limit: FETCH_TOKENS_LIMIT,
 		}
 
@@ -49,12 +53,12 @@ const TabHistory = ({ localToken }) => {
 		})
 		const newData = resp.data.data
 
-		const newHistory = [...(history || []), ...newData.results]
-		const _hasMore = newData.results.length < FETCH_TOKENS_LIMIT ? false : true
+		const newHistory = [...(_history || []), ...newData.results]
+		const _hasMoreFetch = newData.results.length < FETCH_TOKENS_LIMIT ? false : true
 
 		setHistory(newHistory)
-		if (_hasMore) setIdBefore(newData.results[newData.results.length - 1]._id)
-		setHasMore(_hasMore)
+		if (_hasMoreFetch) setIdBefore(newData.results[newData.results.length - 1]._id)
+		setHasMore(_hasMoreFetch)
 
 		setIsFetching(false)
 	}
@@ -434,10 +438,52 @@ const Activity = ({ activity }) => {
 	}
 
 	return (
-		<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
-			<TextActivity type={activity.type} msg={activity.msg} />
-			<p className="mt-1 text-sm">{timeAgo.format(new Date(activity.msg.datetime))}</p>
+		<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md flex items-center justify-between relative">
+			<div className="w-11/12">
+				<TextActivity type={activity.type} msg={activity.msg} />
+				<p className="mt-1 text-sm">{timeAgo.format(new Date(activity.msg.datetime))}</p>
+			</div>
+			<div className="absolute top-2 right-2">
+				<TxHashLink activity={activity} />
+			</div>
 		</div>
+	)
+}
+
+const TxHashLink = ({ activity }) => {
+	return (
+		<>
+			{activity.transaction_hash && (
+				<a
+					href={`https://${
+						process.env.APP_ENV === 'production' ? `` : `testnet.`
+					}nearblocks.io/txns/${activity.transaction_hash}${
+						activity.msg?.receipt_id && `#${activity.msg?.receipt_id}`
+					}`}
+					target={`_blank`}
+				>
+					<div className="w-8 h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-3 flex items-center justify-center">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="icon icon-tabler icon-tabler-external-link"
+							width={18}
+							height={18}
+							viewBox="0 0 24 24"
+							strokeWidth="2"
+							stroke="#fff"
+							fill="none"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						>
+							<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+							<path d="M11 7h-5a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-5" />
+							<line x1={10} y1={14} x2={20} y2={4} />
+							<polyline points="15 4 20 4 20 9" />
+						</svg>
+					</div>
+				</a>
+			)}
+		</>
 	)
 }
 

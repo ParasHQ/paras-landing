@@ -1,13 +1,13 @@
 import React from 'react'
 import { iconDefaultProps } from '../IconProps'
 
-const IconInfo = ({ size, color, ...props }) => (
+const IconInfo = ({ size, color, className = 'inline mb-2', ...props }) => (
 	<svg
 		width={size}
 		height={size}
 		viewBox="0 0 24 24"
 		fill={color}
-		className="inline mb-2"
+		className={className}
 		xmlns="http://www.w3.org/2000/svg"
 		{...props}
 	>

@@ -20,6 +20,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
 	const [isUpdatingPrice, setIsUpdatingPrice] = useState(false)
 	const [isRemovingPrice, setIsRemovingPrice] = useState(false)
+	const [lockedTxFee, setLockedTxFee] = useState('')
 	const { register, handleSubmit, errors } = useForm()
 	const { localeLn } = useIntl()
 
@@ -28,6 +29,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 		date: parseDate((txFee?.start_time || 0) * 1000),
 		fee: (txFee?.current_fee || 0) / 100,
 	})
+	const tooltipLockedFeeText = `This is the current locked transaction fee. Every update to the NFT price will also update the value according to the global transaction fee.`
 	const { currentUser, setTransactionRes } = useStore()
 
 	useEffect(() => {
@@ -47,6 +49,14 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 			getTxFee()
 		}
 	}, [show])
+
+	useEffect(async () => {
+		if (!data?.transaction_fee || !newPrice) return
+		else {
+			const calcLockedTxFee = (data?.transaction_fee / 10000) * 100
+			setLockedTxFee(calcLockedTxFee.toString())
+		}
+	}, [show, newPrice])
 
 	const onUpdateListing = async () => {
 		if (!currentUser) {
@@ -288,6 +298,25 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
                   4
                 )} */}
 							</div>
+							{data.transaction_fee && txFee && `${txFee.current_fee}` !== data.transaction_fee && (
+								<div className="flex items-center">
+									<Tooltip
+										id="locked-fee"
+										show={true}
+										text={tooltipLockedFeeText}
+										className="font-normal"
+										type="light"
+									>
+										<div className="border-primary border-2 text-xs mr-1 flex">
+											<span className=" text-white font-semibold">{localeLn('LockedFee')} :</span>
+											<span className=" text-white font-semibold">
+												{` `}
+												{lockedTxFee} %
+											</span>
+										</div>
+									</Tooltip>
+								</div>
+							)}
 							<div className="mt-2 text-sm text-red-500">
 								{/* {errors.amount?.type === 'required' && `Sale price is required`}
                 {errors.amount?.type === 'min' && `Minimum 0`} */}

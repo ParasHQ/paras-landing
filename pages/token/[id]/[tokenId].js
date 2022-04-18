@@ -15,7 +15,7 @@ const getCreatorId = (token) => {
 
 const TokenPage = ({ errorCode, initial }) => {
 	const { token } = useToken({
-		key: `${initial.contract_id}::${initial.token_series_id}/${initial.token_id}`,
+		key: `${initial?.contract_id}::${initial?.token_series_id}/${initial?.token_id}`,
 		initialData: initial,
 	})
 	const [days, setDays] = useState('-')

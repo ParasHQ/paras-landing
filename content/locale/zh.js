@@ -144,6 +144,7 @@ const CardInfo = {
 	Royalty: '版税',
 	Views: '意見',
 	Fee: '费用',
+	LockedFee: `锁定费`,
 	Cancel: '取消',
 	RemoveListing: '删除列表',
 	CollectDigitalCard: 'Collect Digital Art Card that you can truly own.',

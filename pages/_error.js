@@ -1,4 +1,5 @@
 import NextErrorComponent from 'next/error'
+import ErrorComponent from 'components/Common/Error'
 
 import * as Sentry from '@sentry/nextjs'
 
@@ -11,7 +12,7 @@ const MyError = ({ statusCode, hasGetInitialPropsRun, err }) => {
 		// Flushing is not required in this case as it only happens on the client
 	}
 
-	return <NextErrorComponent statusCode={statusCode} />
+	return <ErrorComponent statusCode={statusCode} />
 }
 
 MyError.getInitialProps = async ({ res, err, asPath }) => {

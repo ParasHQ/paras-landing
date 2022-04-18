@@ -29,6 +29,7 @@ export const config = ({
 			...common,
 			...home,
 			...market,
+			...p404,
 		},
 		'/': {
 			...common,

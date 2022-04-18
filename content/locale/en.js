@@ -144,6 +144,7 @@ const CardInfo = {
 	Royalty: 'Royalty',
 	Views: 'Views',
 	Fee: 'Fee',
+	LockedFee: 'Locked Fee',
 	Cancel: 'Cancel',
 	RemoveListing: 'Remove Listing',
 	CollectDigitalCard: 'Collect Digital Art Card that you can truly own.',
@@ -612,6 +613,7 @@ const collection = {
 	Time: 'Time',
 	Type: 'Type',
 	NoActivity: 'No Activity',
+	TotalListed: 'Total Listed',
 }
 const deleteCollection = {
 	DeleteTitle: 'Delete Confirmation',
