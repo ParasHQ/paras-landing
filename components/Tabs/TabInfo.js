@@ -9,7 +9,6 @@ import TokenRoyaltyModal from 'components/Modal/TokenRoyaltyModal'
 import cachios from 'cachios'
 import StillReferenceModal from 'components/Modal/StillReferenceModal'
 import Tooltip from 'components/Common/Tooltip'
-import { IconInfo } from 'components/Icons'
 
 const TabInfo = ({ localToken, isNFT }) => {
 	const { localeLn } = useIntl()
@@ -46,11 +45,11 @@ const TabInfo = ({ localToken, isNFT }) => {
 		setAttributeRarity(newAttribute)
 	}
 
-	useEffect(() => {
+	useEffect(async () => {
 		if (!localToken.transaction_fee) return
 		const calcLockedTxFee = (localToken?.transaction_fee / 10000) * 100
 		setLockedTxFee(calcLockedTxFee.toString())
-	}, [localToken.transaction_fee])
+	}, [])
 
 	return (
 		<div>
@@ -306,21 +305,22 @@ const TabInfo = ({ localToken, isNFT }) => {
 					/>
 				</div>
 				{localToken.transaction_fee && (
-					<div className="flex items-center justify-between relative z-10 text-sm">
-						<p className="text-white">{localeLn('LockedFee')} </p>
-						<div className="text-xs flex items-center gap-2">
-							<p className="text-white">{lockedTxFee} %</p>
-							<Tooltip
-								id="locked-fee"
-								show={true}
-								text={tooltipLockedFeeText}
-								className="font-normal w-full flex items-center"
-								type="light"
-								place="top"
-							>
-								<IconInfo size={16} color="#ffffff" className="inline mb-1" />
-							</Tooltip>
-						</div>
+					<div className="flex items-center justify-end mt-2">
+						<Tooltip
+							id="locked-fee"
+							show={true}
+							text={tooltipLockedFeeText}
+							className="font-normal"
+							type="light"
+						>
+							<div className="border-primary border-2 rounded-md px-2 py-1 text-xs">
+								<span className="text-white font-semibold">{localeLn('LockedFee')}: </span>
+								<span className="text-white font-semibold">
+									{` `}
+									{lockedTxFee} %
+								</span>
+							</div>
+						</Tooltip>
 					</div>
 				)}
 			</div>
