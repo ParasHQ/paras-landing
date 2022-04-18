@@ -8,8 +8,6 @@ import { useRouter } from 'next/router'
 import TokenRoyaltyModal from 'components/Modal/TokenRoyaltyModal'
 import cachios from 'cachios'
 import StillReferenceModal from 'components/Modal/StillReferenceModal'
-import JSBI from 'jsbi'
-import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Tooltip from 'components/Common/Tooltip'
 
 const TabInfo = ({ localToken, isNFT }) => {
@@ -18,7 +16,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 	const [showModal, setShowModal] = useState('')
 	const [attributeRarity, setAttributeRarity] = useState([])
 	const [lockedTxFee, setLockedTxFee] = useState('')
-	const tooltipLockedFeeText = `If you already had changed your card price, Smart contract will be used this locked fee to calculate your next transaction fee.`
+	const tooltipLockedFeeText = `This is the current locked transaction fee. Every update to the NFT price will also update the value according to the global transaction fee.`
 
 	const collection = localToken.metadata.collection_id
 		? {
@@ -49,11 +47,8 @@ const TabInfo = ({ localToken, isNFT }) => {
 
 	useEffect(async () => {
 		if (!localToken.transaction_fee) return
-		const calcLockedTxFee = JSBI.divide(
-			JSBI.multiply(JSBI.BigInt(localToken?.price), JSBI.BigInt(localToken?.transaction_fee || 0)),
-			JSBI.BigInt(10000)
-		)
-		setLockedTxFee(formatNearAmount(calcLockedTxFee.toString()))
+		const calcLockedTxFee = (localToken?.transaction_fee / 10000) * 100
+		setLockedTxFee(calcLockedTxFee.toString())
 	}, [])
 
 	return (
@@ -316,9 +311,12 @@ const TabInfo = ({ localToken, isNFT }) => {
 							className="font-normal"
 							type="light"
 						>
-							<div className="bg-white rounded-md px-2 py-1 text-xs">
-								<span className=" text-primary font-semibold">{localeLn('LockedFee')}: </span>
-								<span className=" text-primary font-semibold">{lockedTxFee} Ⓝ</span>
+							<div className="border-primary border-2 rounded-md px-2 py-1 text-xs">
+								<span className="text-white font-semibold">{localeLn('LockedFee')}: </span>
+								<span className="text-white font-semibold">
+									{` `}
+									{lockedTxFee} %
+								</span>
 							</div>
 						</Tooltip>
 					</div>

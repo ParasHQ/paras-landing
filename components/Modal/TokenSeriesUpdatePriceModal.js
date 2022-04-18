@@ -29,7 +29,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 		date: parseDate((txFee?.start_time || 0) * 1000),
 		fee: (txFee?.current_fee || 0) / 100,
 	})
-	const tooltipLockedFeeText = `If you already had changed your card price, Smart contract will be used this locked fee to calculate your next transaction fee.`
+	const tooltipLockedFeeText = `This is the current locked transaction fee. Every update to the NFT price will also update the value according to the global transaction fee.`
 	const { currentUser, setTransactionRes } = useStore()
 
 	useEffect(() => {
@@ -53,11 +53,8 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 	useEffect(async () => {
 		if (!data?.transaction_fee || !newPrice) return
 		else {
-			const calcLockedTxFee = JSBI.divide(
-				JSBI.multiply(JSBI.BigInt(data?.price), JSBI.BigInt(data?.transaction_fee || 0)),
-				JSBI.BigInt(10000)
-			)
-			setLockedTxFee(formatNearAmount(calcLockedTxFee.toString()))
+			const calcLockedTxFee = (data?.transaction_fee / 10000) * 100
+			setLockedTxFee(calcLockedTxFee.toString())
 		}
 	}, [show, newPrice])
 
@@ -310,9 +307,12 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 										className="font-normal"
 										type="light"
 									>
-										<div className="bg-white border-primary border-2 rounded-md py-1 px-2 text-xs mr-1 flex">
-											<span className=" text-primary font-semibold">{localeLn('LockedFee')}: </span>
-											<span className=" text-primary font-semibold">{lockedTxFee} Ⓝ</span>
+										<div className="border-primary border-2 text-xs mr-1 flex">
+											<span className=" text-white font-semibold">{localeLn('LockedFee')} :</span>
+											<span className=" text-white font-semibold">
+												{` `}
+												{lockedTxFee} %
+											</span>
 										</div>
 									</Tooltip>
 								</div>
