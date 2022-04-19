@@ -4,7 +4,7 @@ import Modal from 'components/Common/Modal'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
-import { GAS_FEE, STORAGE_ADD_MARKET_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
+import { GAS_FEE, GAS_FEE_200, STORAGE_ADD_MARKET_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
 import { IconInfo, IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
@@ -156,7 +156,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 						contractId: data.contract_id,
 						args: params,
 						attachedDeposit: data.approval_id ? `1` : STORAGE_APPROVE_FEE,
-						gas: GAS_FEE,
+						gas: GAS_FEE_200,
 					},
 				],
 			})
@@ -441,7 +441,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
                   4
                 )} */}
 							</div>
-							{data.transaction_fee && txFee && `${txFee.current_fee}` !== data.transaction_fee && (
+							{data.transaction_fee && txFee && `${txFee?.current_fee}` !== data.transaction_fee && (
 								<div className="flex items-center">
 									<Tooltip
 										id="locked-fee"
@@ -450,7 +450,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 										className="font-normal"
 										type="light"
 									>
-										<div className="border-primary border-2 text-xs mr-1 flex">
+										<div className="border-primary p-1 rounded-md border-2 text-xs mr-1 flex">
 											<span className="text-white font-semibold">{localeLn('LockedFee')} :</span>
 											<span className="text-white font-semibold">
 												{` `}

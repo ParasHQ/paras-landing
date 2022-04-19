@@ -19,8 +19,8 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 	const [txFee, setTxFee] = useState(null)
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
 	const [isUpdatingPrice, setIsUpdatingPrice] = useState(false)
-	const [isRemovingPrice, setIsRemovingPrice] = useState(false)
 	const [lockedTxFee, setLockedTxFee] = useState('')
+	const [isRemovingPrice, setIsRemovingPrice] = useState(false)
 	const { register, handleSubmit, errors } = useForm()
 	const { localeLn } = useIntl()
 
@@ -298,7 +298,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
                   4
                 )} */}
 							</div>
-							{data.transaction_fee && txFee && `${txFee.current_fee}` !== data.transaction_fee && (
+							{data.transaction_fee && txFee && `${txFee?.current_fee}` !== data.transaction_fee && (
 								<div className="flex items-center">
 									<Tooltip
 										id="locked-fee"
@@ -307,7 +307,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 										className="font-normal"
 										type="light"
 									>
-										<div className="border-primary border-2 text-xs mr-1 flex">
+										<div className="border-primary p-1 rounded-md border-2 text-xs mr-1 flex">
 											<span className=" text-white font-semibold">{localeLn('LockedFee')} :</span>
 											<span className=" text-white font-semibold">
 												{` `}
