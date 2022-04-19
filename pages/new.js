@@ -943,7 +943,7 @@ const NewPage = () => {
 							</div>
 						)}
 						{step === 2 && (
-							<form onSubmit={handleSubmit(_handleSubmitStep1)}>
+							<form onSubmit={handleSubmit(_handleSubmitStep1)} autoComplete="off">
 								<div className="min-h-[60vh] pb-8">
 									<div className="mt-2">
 										<label className="block text-sm">{localeLn('Name')}</label>
