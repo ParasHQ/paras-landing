@@ -190,6 +190,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		router.query.min_copies,
 		router.query.max_copies,
 		router.query.attributes,
+		router.query.is_staked,
 	])
 
 	useEffect(() => {
@@ -251,6 +252,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			...(query.max_copies && { max_copies: query.max_copies }),
 			...(query.price_next &&
 				parsedSortQuery.includes('price') && { price_next: query.price_next }),
+			...(query.is_staked && { is_staked: query.is_staked }),
 			owner_id: router.query.tab === 'owned' && currentUser,
 		}
 		if (query.pmin === undefined && query.is_notforsale === 'false') {
@@ -748,6 +750,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 											isShowVerified={false}
 											defaultMinPrice={true}
 											isCollectibles={true}
+											isShowStaked={true}
 										/>
 									) : (
 										<FilterMarket
@@ -772,7 +775,12 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							)}
 
 							{router.query.tab == 'owned' ? (
-								<FilterMarket isShowVerified={false} defaultMinPrice={true} isCollectibles={true} />
+								<FilterMarket
+									isShowVerified={false}
+									defaultMinPrice={true}
+									isCollectibles={true}
+									isShowStaked={true}
+								/>
 							) : (
 								<FilterMarket isShowVerified={false} defaultMinPrice={true} isCollection={true} />
 							)}
