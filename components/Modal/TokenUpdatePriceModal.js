@@ -441,7 +441,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
                   4
                 )} */}
 							</div>
-							{data.transaction_fee && txFee && `${txFee.current_fee}` !== data.transaction_fee && (
+							{data.transaction_fee && txFee && `${txFee?.current_fee}` !== data.transaction_fee && (
 								<div className="flex items-center">
 									<Tooltip
 										id="locked-fee"
