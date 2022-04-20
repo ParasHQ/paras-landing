@@ -600,6 +600,7 @@ const collection = {
 	Type: 'Type',
 	NoActivity: 'No Activity',
 	TotalListed: 'Total Listed',
+	Search: 'Search by Title',
 }
 const deleteCollection = {
 	DeleteTitle: 'Delete Confirmation',

@@ -28,6 +28,7 @@ import FilterDisplay from 'components/Filter/FilterDisplay'
 import WalletHelper from 'lib/WalletHelper'
 import ReactTooltip from 'react-tooltip'
 import TokenList from 'components/Token/TokenList'
+import CollectionSearch from 'components/Collection/CollectionSearch'
 
 const LIMIT = 12
 const LIMIT_ACTIVITY = 20
@@ -191,6 +192,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		router.query.max_copies,
 		router.query.attributes,
 		router.query.is_staked,
+		router.query.q,
 	])
 
 	useEffect(() => {
@@ -254,6 +256,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				parsedSortQuery.includes('price') && { price_next: query.price_next }),
 			...(query.is_staked && { is_staked: query.is_staked }),
 			owner_id: router.query.tab === 'owned' && currentUser,
+			...(query.q && { search: query.q }),
 		}
 		if (query.pmin === undefined && query.is_notforsale === 'false') {
 			delete params.min_price
@@ -689,7 +692,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				<div className="mb-4 md:mb-10 sm:my-2 flex flex-wrap items-center justify-center px-4">
 					<CollectionStats stats={stats} />
 				</div>
-				<div className="flex items-center justify-center relative">
+				<div className="flex items-center justify-center relative mb-10 md:mb-20">
 					<div className="flex justify-center mt-4 relative z-10">
 						<div className="flex mx-4">
 							<div className="px-4 relative" onClick={() => changeTab('items')}>
@@ -736,9 +739,30 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						</div>
 					</div>
 					{(router.query.tab !== 'activity' || router.query.tab === undefined) && (
-						<div className="hidden sm:flex md:ml-8 items-center justify-end right-0 absolute w-full">
-							<div className="flex justify-center mt-4">
-								<div className="flex">
+						<div className="hidden sm:flex md:ml-8 md:mt-32 items-center justify-between right-0 absolute w-full">
+							<div className="flex justify-center items-center relative z-10">
+								<CollectionSearch collectionId={collectionId} />
+							</div>
+							<div className="flex">
+								{Object.keys(attributes).length > 0 && (
+									<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
+								)}
+								<FilterMarket isShowVerified={false} defaultMinPrice={true} isCollection={true} />
+								<div className="hidden lg:flex mt-0 mr-4">
+									<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
+								</div>
+							</div>
+						</div>
+					)}
+				</div>
+				<div className="flex lg:hidden mt-6 mx-4 justify-center sm:justify-end">
+					{(router.query.tab !== 'activity' || router.query.tab === undefined) && (
+						<div>
+							<div className="flex justify-center items-center relative z-10 mb-4">
+								<CollectionSearch collectionId={collectionId} />
+							</div>
+							<div className="flex justify-around">
+								<div className="flex sm:hidden">
 									{Object.keys(attributes).length > 0 && (
 										<FilterAttribute
 											onClearAll={removeAllAttributesFilter}
