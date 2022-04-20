@@ -740,9 +740,11 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					</div>
 					{(router.query.tab !== 'activity' || router.query.tab === undefined) && (
 						<div className="hidden sm:flex md:ml-8 md:mt-32 items-center justify-between right-0 absolute w-full">
-							<div className="flex justify-center items-center relative z-10">
-								<CollectionSearch collectionId={collectionId} />
-							</div>
+							{router.query.tab === 'items' && (
+								<div className="flex justify-center items-center relative z-10">
+									<CollectionSearch collectionId={collectionId} />
+								</div>
+							)}
 							<div className="flex">
 								{Object.keys(attributes).length > 0 && (
 									<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
@@ -758,9 +760,11 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				<div className="flex lg:hidden mt-6 mx-4 justify-center sm:justify-end">
 					{(router.query.tab !== 'activity' || router.query.tab === undefined) && (
 						<div>
-							<div className="flex justify-center items-center relative z-10 mb-4">
-								<CollectionSearch collectionId={collectionId} />
-							</div>
+							{router.query.tab === 'items' && (
+								<div className="flex justify-center items-center relative z-10 mb-4">
+									<CollectionSearch collectionId={collectionId} />
+								</div>
+							)}
 							<div className="flex justify-around">
 								<div className="flex sm:hidden">
 									{Object.keys(attributes).length > 0 && (
@@ -783,33 +787,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 											isCollection={true}
 										/>
 									)}
-									<div className="hidden lg:flex mt-0 mr-4">
-										<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
-									</div>
+									<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 								</div>
 							</div>
-						</div>
-					)}
-				</div>
-				<div className="flex lg:hidden mt-6 mx-4 justify-center sm:justify-end">
-					{(router.query.tab !== 'activity' || router.query.tab === undefined) && (
-						<div className="flex sm:hidden">
-							{Object.keys(attributes).length > 0 && (
-								<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
-							)}
-
-							{router.query.tab == 'owned' ? (
-								<FilterMarket
-									isShowVerified={false}
-									defaultMinPrice={true}
-									isCollectibles={true}
-									isShowStaked={true}
-								/>
-							) : (
-								<FilterMarket isShowVerified={false} defaultMinPrice={true} isCollection={true} />
-							)}
-
-							<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 						</div>
 					)}
 				</div>
