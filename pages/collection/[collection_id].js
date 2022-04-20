@@ -9,7 +9,7 @@ import useStore from 'lib/store'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { parseImgUrl, parseSortQuery, setDataLocalStorage } from 'utils/common'
+import { parseImgUrl, parseSortQuery, setDataLocalStorage, parseSortTokenQuery } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useIntl } from 'hooks/useIntl'
 import CollectionStats from 'components/Collection/CollectionStats'
@@ -27,6 +27,7 @@ import cachios from 'cachios'
 import FilterDisplay from 'components/Filter/FilterDisplay'
 import WalletHelper from 'lib/WalletHelper'
 import ReactTooltip from 'react-tooltip'
+import TokenList from 'components/Token/TokenList'
 
 const LIMIT = 12
 const LIMIT_ACTIVITY = 20
@@ -38,16 +39,21 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	const [attributes, setAttributes] = useState([])
 	const [tokens, setTokens] = useState([])
+	const [tokensOwned, setTokensOwned] = useState([])
 	const [idNext, setIdNext] = useState(null)
+	const [idNextOwned, setIdNextOwned] = useState(null)
 	const [lowestPriceNext, setLowestPriceNext] = useState(null)
+	const [lowestPriceNextOwned, setLowestPriceNextOwned] = useState(null)
 	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [activityPage, setActivityPage] = useState(0)
 	const [stats, setStats] = useState({})
 	const [activities, setActivities] = useState([])
 	const [isFetching, setIsFetching] = useState(false)
+	const [isFetchingOwned, setIsFetchingOwned] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
 	const [hasMoreActivities, setHasMoreActivities] = useState(true)
+	const [hasMoreOwned, setHasMoreOwned] = useState(true)
 	const [deleteModal, setDeleteModal] = useState(false)
 	const [deleteLoading, setDeleteLoading] = useState(false)
 	const [dailyVolume, setDailyVolume] = useState([])
@@ -60,6 +66,66 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	)
 
 	const toast = useToast()
+
+	const _fetchCollectionStats = async (initialFetch) => {
+		if (initialFetch) {
+			const stat = await axios(`${process.env.V2_API_URL}/collection-stats`, {
+				params: {
+					collection_id: collectionId,
+				},
+			})
+
+			const attributes = await axios(`${process.env.V2_API_URL}/collection-attributes`, {
+				params: {
+					collection_id: collectionId,
+				},
+			})
+			const newAttributes = await attributes.data.data.results
+			const newStat = await stat.data.data.results
+			setAttributes(newAttributes)
+			setStats(newStat)
+		}
+	}
+
+	const fetchDataOwned = async (initialFetch) => {
+		const _hasMore = initialFetch ? true : hasMoreOwned
+
+		if (!_hasMore || isFetchingOwned || currentUser == null) {
+			return
+		}
+		setIsFetchingOwned(true)
+		const params = tokensParams({
+			...(router.query || serverQuery),
+			...(initialFetch
+				? { owner_id: currentUser }
+				: {
+						_id_next: idNextOwned,
+						price_next: lowestPriceNextOwned,
+						owner_id: currentUser,
+				  }),
+		})
+
+		const res = await axios(`${process.env.V2_API_URL}/token`, {
+			params: params,
+		})
+
+		const newData = await res.data.data
+		const newTokens = initialFetch ? [...newData.results] : [...tokens, ...newData.results]
+		setTokensOwned(newTokens)
+
+		_fetchCollectionStats(initialFetch)
+
+		if (newData.results.length < LIMIT) {
+			setHasMoreOwned(false)
+		} else {
+			setHasMoreOwned(true)
+
+			const lastData = newData.results[newData.results.length - 1]
+			setIdNextOwned(lastData._id)
+			params.__sort.includes('price') && setLowestPriceNextOwned(lastData.price)
+		}
+		setIsFetchingOwned(false)
+	}
 
 	const fetchData = async (initialFetch = false) => {
 		const _hasMore = initialFetch ? true : hasMore
@@ -88,23 +154,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		const newTokens = initialFetch ? [...newData.results] : [...tokens, ...newData.results]
 		setTokens(newTokens)
 
-		if (initialFetch) {
-			const stat = await axios(`${process.env.V2_API_URL}/collection-stats`, {
-				params: {
-					collection_id: collectionId,
-				},
-			})
-
-			const attributes = await axios(`${process.env.V2_API_URL}/collection-attributes`, {
-				params: {
-					collection_id: collectionId,
-				},
-			})
-			const newAttributes = await attributes.data.data.results
-			const newStat = await stat.data.data.results
-			setAttributes(newAttributes)
-			setStats(newStat)
-		}
+		_fetchCollectionStats(initialFetch)
 
 		if (newData.results.length < LIMIT) {
 			setHasMore(false)
@@ -140,14 +190,17 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		router.query.min_copies,
 		router.query.max_copies,
 		router.query.attributes,
+		router.query.is_staked,
 	])
 
 	useEffect(() => {
 		if (router.query.tab === 'activity') {
 			fetchCollectionActivity(true)
 			fetchCollectionDailyVolume()
+		} else if (router.query.tab === 'owned' && currentUser !== null) {
+			fetchDataOwned(true)
 		}
-	}, [router.query.tab, router.query.headerActivities, router.query.sortActivities])
+	}, [router.query.tab, router.query.headerActivities, router.query.sortActivities, currentUser])
 
 	const editCollection = () => {
 		router.push(`/collection/edit/${collectionId}`)
@@ -174,14 +227,18 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			})
 		}
 
-		const parsedSortQuery = query ? parseSortQuery(query.sort, true) : null
+		let parsedSortQuery
+		router.query.tab === 'items'
+			? (parsedSortQuery = query ? parseSortQuery(query.sort, true) : null)
+			: (parsedSortQuery = query ? parseSortTokenQuery(query.sort) : null)
+
 		params = {
 			...params,
 			collection_id: collectionId,
 			exclude_total_burn: true,
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
-			lookup_token: true,
+			lookup_token: router.query.tab === 'items' && true,
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
@@ -193,6 +250,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				parsedSortQuery.includes('metadata.score') && { score_next: query.score_next }),
 			...(query.min_copies && { min_copies: query.min_copies }),
 			...(query.max_copies && { max_copies: query.max_copies }),
+			...(query.price_next &&
+				parsedSortQuery.includes('price') && { price_next: query.price_next }),
+			...(query.is_staked && { is_staked: query.is_staked }),
+			owner_id: router.query.tab === 'owned' && currentUser,
 		}
 		if (query.pmin === undefined && query.is_notforsale === 'false') {
 			delete params.min_price
@@ -224,25 +285,44 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const updateFilter = async (query) => {
+		let params, res
 		setIsFiltering(true)
-		const params = tokensParams(query || serverQuery)
-		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
-			params: params,
-		})
+		if (query.tab === 'items') {
+			params = tokensParams(query || serverQuery)
+			res = await axios(`${process.env.V2_API_URL}/token-series`, {
+				params: params,
+			})
+			setTokens(res.data.data.results)
+			if (res.data.data.results.length < LIMIT) {
+				setHasMore(false)
+			} else {
+				setHasMore(true)
 
-		setTokens(res.data.data.results)
-		if (res.data.data.results.length < LIMIT) {
-			setHasMore(false)
-		} else {
-			setHasMore(true)
+				const lastData = res.data.data.results[res.data.data.results.length - 1]
+				setIdNext(lastData._id)
+				params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+				params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+				params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
+			}
+		} else if (query.tab === 'owned' && currentUser !== null) {
+			params = tokensParams({
+				...(query || serverQuery),
+				owner_id: currentUser,
+			})
+			res = await axios(`${process.env.V2_API_URL}/token`, {
+				params: params,
+			})
+			setTokensOwned(res.data.data.results)
+			if (res.data.data.results.length < LIMIT) {
+				setHasMoreOwned(false)
+			} else {
+				setHasMoreOwned(true)
 
-			const lastData = res.data.data.results[res.data.data.results.length - 1]
-			setIdNext(lastData._id)
-			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
-			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
-			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
+				const lastData = res.data.data.results[res.data.data.results.length - 1]
+				setIdNextOwned(lastData._id)
+				params.__sort.includes('price') && setLowestPriceNextOwned(lastData.lowest_price)
+			}
 		}
-
 		setIsFiltering(false)
 	}
 
@@ -638,9 +718,24 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 									</div>
 								)}
 							</div>
+							{currentUser && (
+								<div className="px-4 relative" onClick={() => changeTab('owned')}>
+									<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Owned')}</h4>
+									{router.query.tab === 'owned' && (
+										<div
+											className="absolute left-0 right-0"
+											style={{
+												bottom: `-.25rem`,
+											}}
+										>
+											<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+										</div>
+									)}
+								</div>
+							)}
 						</div>
 					</div>
-					{(router.query.tab === 'items' || router.query.tab === undefined) && (
+					{(router.query.tab !== 'activity' || router.query.tab === undefined) && (
 						<div className="hidden sm:flex md:ml-8 items-center justify-end right-0 absolute w-full">
 							<div className="flex justify-center mt-4">
 								<div className="flex">
@@ -650,7 +745,20 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 											attributes={attributes}
 										/>
 									)}
-									<FilterMarket isShowVerified={false} defaultMinPrice={true} isCollection={true} />
+									{router.query.tab == 'owned' ? (
+										<FilterMarket
+											isShowVerified={false}
+											defaultMinPrice={true}
+											isCollectibles={true}
+											isShowStaked={true}
+										/>
+									) : (
+										<FilterMarket
+											isShowVerified={false}
+											defaultMinPrice={true}
+											isCollection={true}
+										/>
+									)}
 									<div className="hidden lg:flex mt-0 mr-4">
 										<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 									</div>
@@ -660,12 +768,23 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					)}
 				</div>
 				<div className="flex lg:hidden mt-6 mx-4 justify-center sm:justify-end">
-					{(router.query.tab === 'items' || router.query.tab === undefined) && (
+					{(router.query.tab !== 'activity' || router.query.tab === undefined) && (
 						<div className="flex sm:hidden">
 							{Object.keys(attributes).length > 0 && (
 								<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
 							)}
-							<FilterMarket isShowVerified={false} defaultMinPrice={true} isCollection={true} />
+
+							{router.query.tab == 'owned' ? (
+								<FilterMarket
+									isShowVerified={false}
+									defaultMinPrice={true}
+									isCollectibles={true}
+									isShowStaked={true}
+								/>
+							) : (
+								<FilterMarket isShowVerified={false} defaultMinPrice={true} isCollection={true} />
+							)}
+
 							<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 						</div>
 					)}
@@ -709,6 +828,14 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							hasMore={hasMoreActivities}
 							collectionId={collectionId}
 							querySort={router.query}
+						/>
+					) : router.query.tab == 'owned' ? (
+						<TokenList
+							name={collectionId}
+							tokens={tokensOwned}
+							fetchData={fetchDataOwned}
+							hasMore={hasMoreOwned}
+							displayType={display}
 						/>
 					) : (
 						<CardList
