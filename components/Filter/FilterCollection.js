@@ -176,7 +176,7 @@ const CollectionItem = ({ collections, setShowFilterModal, setSearchCollection }
 		setSearchCollection('')
 	}
 
-	return (
+	return collections.length > 0 ? (
 		<div>
 			{collections.map((value, index) => {
 				return (
@@ -225,5 +225,7 @@ const CollectionItem = ({ collections, setShowFilterModal, setSearchCollection }
 				)
 			})}
 		</div>
+	) : (
+		<p className="text-white text-center mt-4">No Collections</p>
 	)
 }
