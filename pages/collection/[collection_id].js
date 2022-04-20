@@ -739,7 +739,11 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						</div>
 					</div>
 					{(router.query.tab !== 'activity' || router.query.tab === undefined) && (
-						<div className="hidden sm:flex md:ml-8 md:mt-32 items-center justify-between right-0 absolute w-full">
+						<div
+							className={`hidden sm:flex md:ml-8 md:mt-32 items-center right-0 absolute w-full ${
+								router.query.tab === 'items' ? `justify-between` : `justify-end`
+							}`}
+						>
 							{router.query.tab === 'items' && (
 								<div className="flex justify-center items-center relative z-10">
 									<CollectionSearch collectionId={collectionId} />
@@ -750,7 +754,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 									<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
 								)}
 								<FilterMarket isShowVerified={false} defaultMinPrice={true} isCollection={true} />
-								<div className="hidden lg:flex mt-0 mr-4">
+								<div className="hidden md:flex mt-0 mr-4">
 									<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 								</div>
 							</div>
@@ -761,7 +765,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					{(router.query.tab !== 'activity' || router.query.tab === undefined) && (
 						<div>
 							{router.query.tab === 'items' && (
-								<div className="flex justify-center items-center relative z-10 mb-4">
+								<div className="flex sm:hidden justify-center items-center relative z-10 mb-4">
 									<CollectionSearch collectionId={collectionId} />
 								</div>
 							)}
