@@ -22,23 +22,24 @@ const Collection = ({ userProfile, accountId }) => {
 	const scrollCollection = `${router.query.id}::collection`
 
 	const [tokens, setTokens] = useState([])
+	const [collections, setCollections] = useState([])
 	const [idNext, setIdNext] = useState(null)
 	const [priceNext, setPriceNext] = useState(null)
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(false)
-	const [filterColls, setFilterColls] = useState([])
 	const [display, setDisplay] = useState(
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
 
 	useEffect(async () => {
 		await fetchOwnerTokens(true)
-		await fetchOwnerCollections(true)
 	}, [router.query.id])
 
-	const fetchOwnerTokens = async () => {
-		if (!hasMore || isFetching) {
+	const fetchOwnerTokens = async (initialFetch = false) => {
+		const _hasMore = initialFetch ? true : hasMore
+
+		if (!_hasMore || isFetching) {
 			return
 		}
 
@@ -57,6 +58,17 @@ const Collection = ({ userProfile, accountId }) => {
 
 		const newTokens = [...(tokens || []), ...newData.results]
 		setTokens(newTokens)
+
+		if (initialFetch) {
+			const collections = await axios(`${process.env.V2_API_URL}/owned-collections`, {
+				params: {
+					accountId: accountId,
+				},
+			})
+			const newCollections = await collections.data.result
+			setCollections(newCollections)
+		}
+
 		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
@@ -77,11 +89,13 @@ const Collection = ({ userProfile, accountId }) => {
 		router.query.pmax,
 		router.query.is_notforsale,
 		router.query.is_staked,
+		router.query.collections,
 	])
 
 	const tokensParams = (query) => {
 		const parsedSortQuery = parseSortTokenQuery(query.sort)
 		const params = {
+			collection_id: query.collections,
 			exclude_total_burn: true,
 			owner_id: accountId,
 			__limit: LIMIT,
@@ -99,6 +113,7 @@ const Collection = ({ userProfile, accountId }) => {
 
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
+
 		const params = tokensParams(query)
 		const res = await axios(`${process.env.V2_API_URL}/token`, {
 			params: params,
@@ -117,40 +132,21 @@ const Collection = ({ userProfile, accountId }) => {
 		setIsFiltering(false)
 	}
 
-	const fetchOwnerCollections = async () => {
-		if (!hasMore || isFetching) {
-			return
-		}
-
-		setIsFetching(true)
-		const params = tokensParams({
-			owner_id: 'iqbalutomo.near',
-			collection_id: 'valenci-kid-by-valencinear',
-		})
-		const res = await axios.get(`${process.env.V2_API_URL}/token`, {
-			params: {
-				owner_id: userProfile.accountId,
-				collection_id: 'valenci-kid-by-valencinear',
-			},
-		})
-		const newData = await res.data.data
-
-		const newTokens = [...(tokens || []), ...newData.results]
-		setFilterColls(newTokens)
-		if (newData.results.length < LIMIT) {
-			setHasMore(false)
-		} else {
-			setHasMore(true)
-
-			const lastData = newData.results[newData.results.length - 1]
-			setIdNext(lastData._id)
-			params.__sort.includes('price') && setPriceNext(lastData.price)
-		}
-		setIsFetching(false)
-	}
-
 	const onClickDisplay = (typeDisplay) => {
 		setDataLocalStorage('display', typeDisplay, setDisplay)
+	}
+
+	const removeAllCollectionsFilter = () => {
+		router.push(
+			{
+				query: {
+					...router.query,
+					collections: '',
+				},
+			},
+			{},
+			{ shallow: true, scroll: false }
+		)
 	}
 
 	const headMeta = {
@@ -195,12 +191,7 @@ const Collection = ({ userProfile, accountId }) => {
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'collection'} />
 				<div className="flex justify-end my-4 md:mb-14 md:-mr-4">
-					{/* {Object.keys(filterColls).length > 0 && ( */}
-					<FilterCollection
-						// onClearAll={removeAllAttributesFilter}
-						collections={filterColls}
-					/>
-					{/* )} */}
+					<FilterCollection onClearAll={removeAllCollectionsFilter} collections={collections} />
 					<FilterMarket isShowVerified={false} isCollectibles={true} isShowStaked={true} />
 					<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 				</div>

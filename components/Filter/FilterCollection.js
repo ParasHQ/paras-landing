@@ -1,16 +1,17 @@
 import Scrollbars from 'react-custom-scrollbars'
-import { useRouter } from 'next/router'
+import router, { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
-import Button from 'components/Common/Button'
+import Media from 'components/Common/Media'
+import { parseImgUrl } from 'utils/common'
 
 const FilterCollection = ({ collections, onClearAll }) => {
-	const [collectionFilter, setCollectionFilter] = useState([])
 	const router = useRouter()
 	const filterModalRef = useRef()
 	const { localeLn } = useIntl()
 
 	const [showFilterModal, setShowFilterModal] = useState(false)
+	const [searchCollection, setSearchCollection] = useState('')
 
 	useEffect(() => {
 		const onClickEv = (e) => {
@@ -27,23 +28,44 @@ const FilterCollection = ({ collections, onClearAll }) => {
 	}, [showFilterModal])
 
 	useEffect(() => {
-		router.query.attributes && setCollectionFilter(JSON.parse(router.query.attributes))
-	}, [router.query.attributes])
+		router.query.collections
+	}, [router.query.collections])
 
-	const onClickApply = () => {
-		router.push(
-			{
-				query: {
-					...router.query,
-					attributes: JSON.stringify(collectionFilter),
-				},
-			},
-			{},
-			{ shallow: true, scroll: false }
-		)
+	const debounce = (func, timeout) => {
+		let timer
 
-		setShowFilterModal(false)
+		return function (...args) {
+			const context = this
+			if (timer) clearTimeout(timer)
+			timer = setTimeout(() => {
+				timer = null
+				func.apply(context, args)
+			}, timeout)
+		}
 	}
+
+	const handleAutoCompleteCollections = async (event) => {
+		const { value } = event
+
+		if (value.length >= 1) {
+			let dataCollections = []
+			collections.map((coll) => dataCollections.push(coll))
+			let searchCollection = dataCollections.filter((coll) =>
+				coll.collection.toLowerCase().includes(value.toLowerCase())
+			)
+			setSearchCollection(searchCollection)
+		} else {
+			setSearchCollection('')
+		}
+	}
+
+	const debounceAutoCompleteCollections = debounce(handleAutoCompleteCollections, 400)
+
+	const onChangeAutoComplete = (event) => {
+		debounceAutoCompleteCollections(event)
+	}
+
+	const debounceOnChange = debounce(onChangeAutoComplete, 200)
 
 	return (
 		<div ref={filterModalRef} className="inline-block md:relative">
@@ -52,7 +74,7 @@ const FilterCollection = ({ collections, onClearAll }) => {
 				onClick={() => setShowFilterModal(!showFilterModal)}
 			>
 				<svg
-					className="w-6 h-6 text-white mr-1"
+					className="w-6 h-6 text-white md:mr-1"
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
@@ -71,41 +93,63 @@ const FilterCollection = ({ collections, onClearAll }) => {
 			</div>
 			{showFilterModal && (
 				<div className="absolute mr-4 z-20 mt-2 right-0 bg-dark-primary-2 rounded-md w-80">
-					<Scrollbars
-						autoHeight
-						autoHeightMax={`30rem`}
-						renderView={(props) => <div {...props} id="scrollableDiv" />}
-					>
-						<div className=" p-4">
-							<h1 className="text-white font-semibold text-xl mb-2">{localeLn('Collections')}</h1>
-							<div>
-								{Object.keys(collections).map((collection, index) => (
-									<CollectionItem
-										key={index}
-										collectionFilter={collectionFilter}
-										setCollectionFilter={setCollectionFilter}
-										collection={collection}
-										collections={collections}
-										router={router}
-									/>
-								))}
+					<div className=" p-4">
+						<form action="/search" method="get" onSubmit={'_handleSubmit'} autoComplete="off">
+							<div className="flex border-dark-primary-1 border-2 rounded-lg bg-dark-primary-1 mb-2">
+								<svg
+									width="36"
+									height="36"
+									viewBox="0 0 32 32"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<path
+										fillRule="evenodd"
+										clipRule="evenodd"
+										d="M10.6667 15.1667C10.6667 12.6814 12.6814 10.6667 15.1667 10.6667C17.6519 10.6667 19.6667 12.6814 19.6667 15.1667C19.6667 17.6519 17.6519 19.6667 15.1667 19.6667C12.6814 19.6667 10.6667 17.6519 10.6667 15.1667ZM15.1667 8C11.2086 8 8 11.2086 8 15.1667C8 19.1247 11.2086 22.3333 15.1667 22.3333C16.6639 22.3333 18.0538 21.8742 19.2035 21.0891L21.7239 23.6095C22.2446 24.1302 23.0888 24.1302 23.6095 23.6095C24.1302 23.0888 24.1302 22.2446 23.6095 21.7239L21.0891 19.2035C21.8742 18.0538 22.3333 16.6639 22.3333 15.1667C22.3333 11.2086 19.1247 8 15.1667 8Z"
+										fill="white"
+									></path>
+								</svg>
+								<input
+									id="search"
+									name="q"
+									type="search"
+									value={router.query.search}
+									onChange={(e) => debounceOnChange(e.target)}
+									placeholder={localeLn('Search in collections')}
+									className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-base md:text-sm font-medium"
+									style={{ WebkitAppearance: 'none' }}
+								/>
 							</div>
-						</div>
-					</Scrollbars>
-					<div className="p-4">
-						<Button onClick={onClickApply} isFullWidth size="sm">
-							{localeLn('Apply')}
-						</Button>
+						</form>
+						<Scrollbars
+							autoHeight
+							autoHeightMax={`15rem`}
+							renderView={(props) => <div {...props} id="scrollableDiv" />}
+						>
+							<div>
+								{collections.length > 0 ? (
+									<CollectionItem
+										collections={searchCollection ? searchCollection : collections}
+										router={router}
+										setShowFilterModal={() => setShowFilterModal(false)}
+										setSearchCollection={() => setSearchCollection('')}
+									/>
+								) : (
+									<p className="text-white text-center mt-4">No Collections</p>
+								)}
+							</div>
+						</Scrollbars>
 					</div>
-					{router.query.attributes && JSON.parse(router.query.attributes)?.length >= 1 && (
+					{router.query.collections && router.query.collections?.length >= 1 && (
 						<div
-							className=" text-gray-400 hover:text-opacity-70 transition duration-150 ease-in-out  cursor-pointer my-1 flex items-center justify-center px-4 pb-2 text-xs"
+							className=" text-gray-400 hover:text-opacity-70 transition duration-150 ease-in-out  cursor-pointer my-1 flex items-center justify-center px-4 pb-2 pt-2 text-xs"
 							onClick={() => {
 								onClearAll()
 								setShowFilterModal(false)
 							}}
 						>
-							Clear All
+							Clear
 						</div>
 					)}
 				</div>
@@ -116,76 +160,70 @@ const FilterCollection = ({ collections, onClearAll }) => {
 
 export default FilterCollection
 
-const CollectionItem = ({ collectionFilter, setCollectionFilter, collection, collections }) => {
-	const [isOpen, setIsOpen] = useState(false)
+const CollectionItem = ({ collections, setShowFilterModal, setSearchCollection }) => {
+	const onClickApplyCollection = (collectionId) => {
+		router.push(
+			{
+				query: {
+					...router.query,
+					collections: collectionId,
+				},
+			},
+			{ shallow: true, scroll: false }
+		)
 
-	const addCollection = (addedCollection) => {
-		if (checkIfObjectExist(addedCollection)) {
-			const newCollection = collectionFilter.filter(
-				(attr) => JSON.stringify(attr) !== JSON.stringify(addedCollection)
-			)
-			setCollectionFilter(newCollection)
-		} else {
-			setCollectionFilter([...collectionFilter, addedCollection])
-		}
-	}
-
-	const checkIfObjectExist = (obj) => {
-		return collectionFilter.some((coll) => JSON.stringify(coll) === JSON.stringify(obj))
+		setShowFilterModal(false)
+		setSearchCollection('')
 	}
 
 	return (
 		<div>
-			<button
-				onClick={() => setIsOpen(!isOpen)}
-				className="flex flex-row justify-between items-center w-full text-white p-2"
-			>
-				<p className="font-medium text-lg">{collection}</p>
-				<div className="flex flex-col items-center justify-center text-center">
-					<p className="text-opacity-15 text-white text-xs">
-						{Object.keys(collections[collection]).length}
-					</p>
-					<svg
-						width="10"
-						height="10"
-						viewBox="0 0 21 19"
-						fill="none"
-						xmlns="http://www.w3.org/2000/svg"
+			{collections.map((value, index) => {
+				return (
+					<button
+						key={index}
+						onClick={() => onClickApplyCollection(value.collection_id)}
+						className="flex flex-row justify-between items-center w-full text-white p-2 hover:bg-dark-primary-1 rounded-md"
 					>
-						<path d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z" fill="white" />
-					</svg>
-				</div>
-			</button>
-			{isOpen && (
-				<div className="max-w-sm mx-auto p-2 mb-3 rounded-md bg-blue-400 bg-opacity-5">
-					{Object.keys(collections[collection]).map((value, index) => {
-						return (
-							<div
-								className="group rounded-md pl-3 pr-3 hover:bg-gray-600 hover:bg-opacity-10"
-								key={index}
-							>
-								<label className="inline-flex items-center w-full cursor-pointer">
-									<input
-										className="text-white w-4 h-4 mr-2 focus:ring-indigo-400 focus:ring-opacity-25 border border-gray-300 rounded cursor-pointer"
-										type="checkbox"
-										onChange={() => addCollection({ [collection]: value })}
-										checked={checkIfObjectExist({ [collection]: value })}
+						<label className="inline-flex justify-between items-center w-full cursor-pointer">
+							<div className="flex items-center gap-1 truncate">
+								<div
+									className={`w-10 h-10 flex-shrink-0 rounded-full overflow-hidden bg-primary shadow-inner`}
+								>
+									<Media
+										url={parseImgUrl(value.media ? value.media : '', null, {
+											width: '200',
+											useOriginal: process.env.APP_ENV !== 'production',
+										})}
+										videoControls={false}
+										videoMuted={true}
+										videoLoop={true}
 									/>
-									<p className="font-thin text-white text-sm py-1 md:py-2">{value}</p>
-									<p className="font-thin text-right flex-grow text-gray-500 text-sm py-1 md:py-2">
-										{collections[collection][value].count} (
-										{collections[collection][value].rarity?.rarity > 1
-											? Math.round(collections[collection][value].rarity)
-											: collections[collection][value].rarity.toFixed(2)}
-										%)
-									</p>
-								</label>
-								<br />
+								</div>
+								<p className="text-white font-medium text-md truncate ml-1">{value.collection}</p>
 							</div>
-						)
-					})}
-				</div>
-			)}
+							{value.collection_id === router.query.collections && (
+								<div>
+									<svg
+										className="w-6 h-6 text-blue-600"
+										fill="none"
+										stroke="currentColor"
+										viewBox="0 0 24 24"
+										xmlns="http://www.w3.org/2000/svg"
+									>
+										<path
+											strokeLinecap="round"
+											strokeLinejoin="round"
+											strokeWidth={2}
+											d="M5 13l4 4L19 7"
+										/>
+									</svg>
+								</div>
+							)}
+						</label>
+					</button>
+				)
+			})}
 		</div>
 	)
 }
