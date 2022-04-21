@@ -140,6 +140,7 @@ const CardInfo = {
 	Royalty: 'Regalía',
 	Views: 'Puntos De Vista',
 	Fee: 'Comisión',
+	LockedFee: `tarifa bloqueada`,
 	Cancel: 'Cancelar',
 	RemoveListing: 'Eliminar listado',
 	CollectDigitalCard: 'Colecciona Tarjetas de Arte Digital que tu verdaderamente puedes poseer.',
