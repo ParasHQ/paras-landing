@@ -232,7 +232,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		}
 
 		let parsedSortQuery
-		router.query.tab === 'items'
+		isItemActiveTab
 			? (parsedSortQuery = query ? parseSortQuery(query.sort, true) : null)
 			: (parsedSortQuery = query ? parseSortTokenQuery(query.sort) : null)
 
@@ -242,7 +242,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			exclude_total_burn: true,
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
-			lookup_token: router.query.tab === 'items' && true,
+			lookup_token: isItemActiveTab && true,
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
@@ -294,6 +294,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		setIsFiltering(true)
 		if (isItemActiveTab) {
 			params = tokensParams(query || serverQuery)
+			console.log('params', params)
 			res = await axios(`${process.env.V2_API_URL}/token-series`, {
 				params: params,
 			})
