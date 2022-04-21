@@ -13,6 +13,8 @@ on:
 jobs:
   run-linters:
     name: Run linters
+    env:
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     runs-on: ubuntu-latest
 
     steps:
