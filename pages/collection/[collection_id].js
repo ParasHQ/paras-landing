@@ -29,6 +29,7 @@ import WalletHelper from 'lib/WalletHelper'
 import ReactTooltip from 'react-tooltip'
 import TokenList from 'components/Token/TokenList'
 import CollectionSearch from 'components/Collection/CollectionSearch'
+import { SHOW_TX_HASH_LINK } from 'constants/common'
 
 const LIMIT = 12
 const LIMIT_ACTIVITY = 20
@@ -508,7 +509,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						}}
 					/>
 					<div className="absolute top-32 md:top-72 right-0 md:right-5 h-10 w-10">
-						{tokens[0]?.contract_id && (
+						{SHOW_TX_HASH_LINK && tokens[0]?.contract_id && (
 							<>
 								<ReactTooltip place="left" type="dark" />
 								<a
