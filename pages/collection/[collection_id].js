@@ -65,6 +65,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [mediaQueryMd, setMediaQueryMd] = useState(
 		typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)')
 	)
+	const isItemActiveTab = router.query.tab === 'items' || router.query.tab === undefined
 
 	const toast = useToast()
 
@@ -290,7 +291,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const updateFilter = async (query) => {
 		let params, res
 		setIsFiltering(true)
-		if (query.tab === 'items') {
+		if (isItemActiveTab) {
 			params = tokensParams(query || serverQuery)
 			res = await axios(`${process.env.V2_API_URL}/token-series`, {
 				params: params,
@@ -697,7 +698,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						<div className="flex mx-4">
 							<div className="px-4 relative" onClick={() => changeTab('items')}>
 								<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn('Items')}</h4>
-								{(router.query.tab === 'items' || router.query.tab === undefined) && (
+								{isItemActiveTab && (
 									<div
 										className="absolute left-0 right-0"
 										style={{
@@ -741,10 +742,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					{(router.query.tab !== 'activity' || router.query.tab === undefined) && (
 						<div
 							className={`hidden sm:flex md:ml-8 md:mt-32 items-center right-0 absolute w-full ${
-								router.query.tab === 'items' ? `justify-between` : `justify-end`
+								isItemActiveTab ? `justify-between` : `justify-end`
 							}`}
 						>
-							{router.query.tab === 'items' && (
+							{isItemActiveTab && (
 								<div className="flex justify-center items-center relative z-10">
 									<CollectionSearch collectionId={collectionId} />
 								</div>
@@ -764,7 +765,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				<div className="flex lg:hidden mt-6 mx-4 justify-center sm:justify-end">
 					{(router.query.tab !== 'activity' || router.query.tab === undefined) && (
 						<div>
-							{router.query.tab === 'items' && (
+							{isItemActiveTab && (
 								<div className="flex sm:hidden justify-center items-center relative z-10 mb-4">
 									<CollectionSearch collectionId={collectionId} />
 								</div>
