@@ -14,6 +14,7 @@ import { useRouter } from 'next/router'
 import CopyLink from 'components/Common/CopyLink'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
+import { SHOW_TX_HASH_LINK } from 'constants/common'
 
 export const descriptionMaker = (activity, localToken, localTradedToken) => {
 	const type = activity.type
@@ -604,7 +605,7 @@ const ActivityDetail = ({ activity }) => {
 										/>
 									</svg>
 								</div>
-								{activity.transaction_hash && (
+								{SHOW_TX_HASH_LINK && activity.transaction_hash && (
 									<a
 										href={`https://${
 											process.env.APP_ENV === 'production' ? `` : `testnet.`

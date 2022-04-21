@@ -7,6 +7,7 @@ import ReactTooltip from 'react-tooltip'
 const CollectionStats = ({ stats }) => {
 	const { localeLn } = useIntl()
 	const [showTooltip, setShowTooltip] = useState(false)
+	const randomID = String(Math.random())
 
 	useEffect(() => {
 		setShowTooltip(true)
@@ -14,9 +15,10 @@ const CollectionStats = ({ stats }) => {
 
 	return (
 		<>
-			{showTooltip && <ReactTooltip place="right" type="dark" />}
+			{showTooltip && <ReactTooltip id={randomID} place="right" type="dark" />}
 			<div className="grid grid-cols-3 md:flex md:flex-row justify-around items-center">
 				<div
+					data-for={randomID}
 					data-tip="Number of NFT that has been minted."
 					className="text-center rounded-l block p-3 sm:p-5"
 				>
@@ -28,6 +30,7 @@ const CollectionStats = ({ stats }) => {
 					</p>
 				</div>
 				<div
+					data-for={randomID}
 					data-tip="Total NFT that is currently being sold."
 					className="text-center block p-3 sm:p-5"
 				>
@@ -39,7 +42,11 @@ const CollectionStats = ({ stats }) => {
 					</p>
 				</div>
 
-				<div data-tip="Total of unique owners." className="text-center block p-3 sm:p-5">
+				<div
+					data-for={randomID}
+					data-tip="Total of unique owners."
+					className="text-center block p-3 sm:p-5"
+				>
 					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
 						{stats.total_owners || '0'}
 					</p>
@@ -47,7 +54,11 @@ const CollectionStats = ({ stats }) => {
 						{localeLn('TotalOwners')}
 					</p>
 				</div>
-				<div data-tip="The sales in the last 30 days." className="text-center block p-3 sm:p-5">
+				<div
+					data-for={randomID}
+					data-tip="The sales in the last 30 days."
+					className="text-center block p-3 sm:p-5"
+				>
 					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
 						{formatNearAmount(stats.volume, 2) + ' Ⓝ'}
 					</p>
@@ -55,7 +66,11 @@ const CollectionStats = ({ stats }) => {
 						{localeLn('TotalVolume')}
 					</p>
 				</div>
-				<div data-tip="The cheapest price." className="text-center block p-3 sm:p-5">
+				<div
+					data-for={randomID}
+					data-tip="The cheapest price."
+					className="text-center block p-3 sm:p-5"
+				>
 					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
 						{stats.floor_price ? prettyBalance(stats.floor_price, 24, 4) + ' Ⓝ' : '---'}
 					</p>
@@ -64,6 +79,7 @@ const CollectionStats = ({ stats }) => {
 					</p>
 				</div>
 				<div
+					data-for={randomID}
 					data-tip="The average price in the last 30 days."
 					className="text-center rounded-r block p-3 sm:p-5"
 				>
