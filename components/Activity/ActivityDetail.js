@@ -2,12 +2,11 @@ import { Fragment, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton } from 'react-share'
 import cachios from 'cachios'
-
 import Card from 'components/Card/Card'
 import LinkToProfile from 'components/LinkToProfile'
 import Modal from 'components/Modal'
-
-import { parseImgUrl, timeAgo } from 'utils/common'
+import Media from 'components/Common/Media'
+import { parseImgUrl, timeAgo, prettyTruncate } from 'utils/common'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
 import { useRouter } from 'next/router'
@@ -368,19 +367,86 @@ const Activity = ({ activity, localTradedToken, localToken }) => {
 	return null
 }
 
-const ActivityDetail = ({ activity }) => {
+const ActivityDetail = ({ activity, index }) => {
 	const { localeLn } = useIntl()
 	const router = useRouter()
 	const [showModal, setShowModal] = useState(null)
 	const [isCopied, setIsCopied] = useState(false)
 	const [localToken, setLocalToken] = useState(null)
+	const [showDetailActivity, setShowDetailActivity] = useState(-1)
 
 	const shareLink = `${process.env.BASE_URL}/activity/${activity._id}`
 	const [isFlipped, setIsFlipped] = useState(true)
 	const [localTradedToken, setLocalTradedToken] = useState(null)
-	const topCardPositionStyle = `top-0 left-1/4 md:left-0 lg:left-5 z-30`
-	const bottomCardPositionStyle = `top-3 left-24 md:left-1 lg:left-8 z-20`
+	const topCardPositionStyle = `-top-10 left-0 md:left-0 lg:left-5 z-30`
+	const bottomCardPositionStyle = `-top-9 left-2 md:left-1 lg:left-8 z-20`
 	const isTradeActivity = activity?.type?.includes('trade')
+
+	const HEADERS = [
+		{
+			id: 'title',
+			title: 'Title',
+			className: `flex w-4/6 lg:w-full flex-shrink-0 p-3 h-full`,
+		},
+		{
+			id: 'price',
+			title: 'Price',
+			className: `flex items-center w-2/6 lg:w-full flex-shrink-0 p-2 h-full`,
+		},
+		{
+			id: 'from',
+			title: 'From',
+			className: `flex items-center w-2/6 lg:w-full flex-shrink-0 p-2 h-full`,
+		},
+		{
+			id: 'to',
+			title: 'To',
+			className: `flex items-center w-2/6 lg:w-full flex-shrink-0 p-2 h-full`,
+		},
+		{
+			id: 'time',
+			title: 'Time',
+			className: `flex flex-row md:flex-row items-center w-2/6 md:w-full md:flex-shrink-0 p-3 md:p-0 lg:p-3 md:h-full`,
+		},
+		{
+			id: 'type',
+			title: 'Type',
+			className: `flex items-center w-2/6 lg:w-full flex-shrink-0 p-3 h-full`,
+		},
+	]
+
+	const parseType = (creator, price, from, to, type) => {
+		if ((type === 'nft_transfer' && price && from && to) || type === 'resolve_purchase') {
+			return 'Sold'
+		} else if (type === 'nft_transfer' && from === null) {
+			return 'Minted'
+		} else if (type === 'nft_transfer' && to === null) {
+			return 'Burned'
+		} else if (type === 'nft_transfer' && (!price || to === creator)) {
+			return 'Transfer'
+		} else if (type === 'nft_set_series_price') {
+			return 'Set Price'
+		} else if (type === 'notification_add_offer' || type === 'add_offer') {
+			return 'Offer'
+		} else if (
+			type === 'notification_category_accepted' ||
+			type === 'notification_category_rejected'
+		) {
+			return 'Submission'
+		} else if (type === 'nft_create_series') {
+			return 'Creation'
+		} else if (type === 'add_market_data') {
+			return 'List'
+		} else if (type === 'delete_market_data') {
+			return 'Remove Sale'
+		} else if (type === 'add_trade' && to === null) {
+			return 'Add Trade'
+		} else if (type === 'accept_trade') {
+			return 'Accept Trade'
+		} else {
+			return type
+		}
+	}
 
 	const fetchTradeToken = async () => {
 		const params = {
@@ -428,6 +494,11 @@ const ActivityDetail = ({ activity }) => {
 		}, 1500)
 	}
 
+	const showDetail = (index) => {
+		if (showDetailActivity == index) setShowDetailActivity(-1)
+		else setShowDetailActivity(index)
+	}
+
 	if (activity.type === 'resolve_purchase_fail' || activity.type === 'notification_add_offer') {
 		return null
 	}
@@ -438,7 +509,7 @@ const ActivityDetail = ({ activity }) => {
 			<TokenDetailModal tokens={[localToken]} />
 			{showModal === 'options' && (
 				<Modal close={() => setShowModal('')}>
-					<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md">
+					<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md text-black">
 						<CopyLink link={shareLink} afterCopy={handleAfterCopy}>
 							<div className="py-2 cursor-pointer flex items-center">
 								<svg
@@ -495,168 +566,253 @@ const ActivityDetail = ({ activity }) => {
 					</div>
 				</Modal>
 			)}
-			<div className="flex flex-wrap border-2 border-dashed border-gray-800 p-4 rounded-md max-w-2xl mx-auto">
-				<div className={`w-full md:w-1/3 ${isTradeActivity && `relative h-60`}`}>
-					{isTradeActivity && (
-						<div
-							className={`${`absolute w-6/12 md:w-40 cursor-pointer ${
-								isFlipped
-									? `transition-all ${topCardPositionStyle}`
-									: `transition-all ${bottomCardPositionStyle}`
-							}`}`}
-							onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
-						>
-							<Card
-								imgUrl={parseImgUrl(localTradedToken?.metadata.media, null, {
-									width: `600`,
-									useOriginal: process.env.APP_ENV === 'production' ? false : true,
-								})}
-								imgBlur={localTradedToken?.metadata.blurhash}
-								token={{
-									title: localTradedToken?.metadata.title,
-									edition_id: localTradedToken?.edition_id,
-									collection:
-										localTradedToken?.metadata.collection || localTradedToken?.contract_id,
-									copies: localTradedToken?.metadata.copies,
-									creatorId: localTradedToken?.metadata.creator_id || localTradedToken?.contract_id,
-									is_creator: localTradedToken?.is_creator,
-								}}
-							/>
-						</div>
-					)}
-					<div
-						className={`${
-							isTradeActivity
-								? `absolute w-6/12 md:w-40 cursor-pointer ${
-										!isFlipped
-											? `transition-all ${topCardPositionStyle}`
-											: `transition-all ${bottomCardPositionStyle}`
-								  }`
-								: `w-40 mx-auto`
-						}`}
-						onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
-					>
-						<Card
-							imgUrl={parseImgUrl(localToken?.metadata.media, null, {
-								width: `600`,
-								useOriginal: process.env.APP_ENV === 'production' ? false : true,
-							})}
-							imgBlur={localToken?.metadata.blurhash}
-							token={{
-								title: localToken?.metadata.title,
-								edition_id: localToken?.edition_id,
-								collection: localToken?.metadata.collection || localToken?.contract_id,
-								copies: localToken?.metadata.copies,
-								creatorId: localToken?.metadata.creator_id || localToken?.contract_id,
-								is_creator: localToken?.is_creator,
-							}}
-						/>
-					</div>
-				</div>
-				<div className="w-full md:w-2/3 text-gray-100 pt-4 pl-0 md:pt-0 md:pl-4">
-					<div className="overflow-hidden">
-						<div className="flex items-center justify-between">
-							<div className="w-10/12 overflow-hidden truncate">
-								<Link
-									href={{
-										pathname: router.pathname,
-										query: {
-											...router.query,
-											...(activity.token_id
-												? { tokenId: localToken?.token_id }
-												: { tokenSeriesId: localToken?.token_series_id }),
-											contractId: localToken?.contract_id,
-										},
-									}}
-									as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
-										activity.token_id ? `/${localToken?.token_id}` : ''
+			<div key={activity._id} className="text-white">
+				<div className="w-full">
+					<div className="flex flex-row items-center justify-between w-full cursor-pointer sm:cursor-default md:grid md:grid-cols-7 md:gap-5 lg:gap-10 md:h-19 md:hover:bg-gray-800">
+						<div className="flex md:col-span-2 items-center md:cursor-pointer">
+							<div className="w-8 md:w-full mr-8 bg-blue-900 rounded-lg z-20 relative">
+								<div
+									className={`${
+										isTradeActivity
+											? `absolute w-full md:w-10 cursor-pointer ${
+													isFlipped
+														? `transition-all ${topCardPositionStyle}`
+														: `transition-all ${bottomCardPositionStyle}`
+											  }`
+											: `w-16 mx-auto`
 									}`}
-									scroll={false}
-									shallow
+									onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
 								>
-									<a
-										title={localToken?.metadata?.title}
-										className="text-2xl font-bold border-b-2 border-transparent hover:border-gray-100"
+									<a>
+										<Media
+											className="rounded-lg overflow-hidden"
+											url={parseImgUrl(localToken?.metadata.media, null, {
+												width: `300`,
+												useOriginal: process.env.APP_ENV === 'production' ? false : true,
+												isMediaCdn: localToken?.isMediaCdn,
+											})}
+											videoControls={false}
+											videoLoop={true}
+											videoMuted={true}
+											autoPlay={false}
+											playVideoButton={false}
+										/>
+									</a>
+								</div>
+
+								{isTradeActivity && (
+									<div
+										className={`${
+											isTradeActivity
+												? `absolute w-full md:w-10 cursor-pointer ${
+														!isFlipped
+															? `transition-all ${topCardPositionStyle}`
+															: `transition-all ${bottomCardPositionStyle}`
+												  }`
+												: `w-16 mx-auto`
+										}`}
+										onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
 									>
-										{isTradeActivity
-											? localTradedToken?.metadata?.title
-											: localToken?.metadata?.title}
+										<Media
+											className="rounded-lg overflow-hidden"
+											url={parseImgUrl(localTradedToken?.metadata.media, null, {
+												width: `300`,
+												useOriginal: process.env.APP_ENV === 'production' ? false : true,
+												isMediaCdn: localTradedToken?.isMediaCdn,
+											})}
+											videoControls={false}
+											videoLoop={true}
+											videoMuted={true}
+											autoPlay={false}
+											playVideoButton={false}
+										/>
+									</div>
+								)}
+							</div>
+							<div className="pl-4 overflow-hidden cursor-pointer w-40">
+								<Link
+									href={`/collection/${
+										localToken?.metadata?.collection_id || localToken?.metadata?.contract_id
+									}`}
+								>
+									<a>
+										<p className="opacity-75 truncate text-xs py-2">
+											{localToken?.metadata?.collection_id
+												? isTradeActivity
+													? localTradedToken?.metadata?.collection
+													: localToken?.metadata.collection
+												: isTradeActivity
+												? localTradedToken?.metadata?.contract_id
+												: localToken?.contract_id}
+										</p>
 									</a>
 								</Link>
+								<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
+									<a className="font-semibold z-20 text-sm md:text-md">
+										{prettyTruncate(localToken?.metadata.title, 25)}
+									</a>
+								</Link>
+								<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
+									<p className="w-min md:hidden font-semibold truncate z-20">
+										{!activity.msg.params.price
+											? '---'
+											: `${formatNearAmount(activity.msg.params.price)} Ⓝ`}
+									</p>
+								</Link>
 							</div>
-							<div>
+						</div>
+						<div
+							className={`${HEADERS[1].className} hidden md:flex md:text-sm lg:text-base font-bold justify-start`}
+						>
+							{!activity.msg.params.price === null
+								? '---'
+								: `${formatNearAmount(activity.msg.params.price)} Ⓝ `}
+						</div>
+						<div
+							className={`${HEADERS[2].className} hidden md:flex md:text-sm lg:text-base justify-start`}
+						>
+							<Link href={`/${activity.from}`}>
+								<p className="font-thin border-b-2 border-transparent hover:border-gray-100 cursor-pointer">
+									{activity.from ? prettyTruncate(activity.from, 12, 'address') : '---'}
+								</p>
+							</Link>{' '}
+						</div>
+						<div
+							className={`${HEADERS[3].className} hidden md:flex md:text-sm lg:text-base justify-start`}
+						>
+							<Link href={`/${activity.to}`}>
+								<p className="font-thin border-b-2 border-transparent hover:border-gray-100 cursor-pointer">
+									{activity.to ? prettyTruncate(activity.to, 12, 'address') : '---'}
+								</p>
+							</Link>
+						</div>
+						<div
+							className={`${HEADERS[4].className} text-xs text-center sm:text-base md:text-sm text-gray-50 opacity-50 font-thin w-full justify-end`}
+						>
+							<div className="flex flex-row justify-center items-center">
 								<div
-									onClick={() => setShowModal('options')}
-									className="cursor-pointer w-8 h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-4 flex items-center justify-center"
+									className="flex flex-col relative top-1 items-center justify-center p-1 md:hidden"
+									onClick={() => showDetail(index)}
 								>
+									{timeAgo.format(
+										new Date(activity.issued_at ? activity.issued_at : 1636197684986)
+									)}
 									<svg
-										width="18"
-										height="18"
-										viewBox="0 0 24 24"
+										width="10"
+										height="10"
+										viewBox="0 0 21 19"
 										fill="none"
 										xmlns="http://www.w3.org/2000/svg"
+										className="mt-1 md:mt-0"
 									>
 										<path
-											fillRule="evenodd"
-											clipRule="evenodd"
-											d="M12 2.79623V8.02302C5.45134 8.33141 2 11.7345 2 18V20.4142L3.70711 18.7071C5.95393 16.4603 8.69021 15.5189 12 15.8718V21.2038L22.5186 12L12 2.79623ZM14 10V7.20377L19.4814 12L14 16.7962V14.1529L13.1644 14.0136C9.74982 13.4445 6.74443 14.0145 4.20125 15.7165C4.94953 11.851 7.79936 10 13 10H14Z"
+											d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z"
 											fill="white"
 										/>
 									</svg>
 								</div>
-								{activity.transaction_hash && (
-									<a
-										href={`https://${
-											process.env.APP_ENV === 'production' ? `` : `testnet.`
-										}nearblocks.io/txns/${activity.transaction_hash}${
-											activity.msg?.receipt_id && `#${activity.msg?.receipt_id}`
-										}`}
-										target={`_blank`}
+								<div>
+									<div
+										onClick={() => setShowModal('options')}
+										className="cursor-pointer w-8 h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-4 flex items-center justify-center"
 									>
-										<div className="w-8 h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-4 flex items-center justify-center">
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												className="icon icon-tabler icon-tabler-external-link"
-												width={18}
-												height={18}
-												viewBox="0 0 24 24"
-												strokeWidth="2"
-												stroke="#fff"
-												fill="none"
-												strokeLinecap="round"
-												strokeLinejoin="round"
-											>
-												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-												<path d="M11 7h-5a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-5" />
-												<line x1={10} y1={14} x2={20} y2={4} />
-												<polyline points="15 4 20 4 20 9" />
-											</svg>
-										</div>
-									</a>
-								)}
+										<svg
+											width="18"
+											height="18"
+											viewBox="0 0 24 24"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<path
+												fillRule="evenodd"
+												clipRule="evenodd"
+												d="M12 2.79623V8.02302C5.45134 8.33141 2 11.7345 2 18V20.4142L3.70711 18.7071C5.95393 16.4603 8.69021 15.5189 12 15.8718V21.2038L22.5186 12L12 2.79623ZM14 10V7.20377L19.4814 12L14 16.7962V14.1529L13.1644 14.0136C9.74982 13.4445 6.74443 14.0145 4.20125 15.7165C4.94953 11.851 7.79936 10 13 10H14Z"
+												fill="white"
+											/>
+										</svg>
+									</div>
+									{activity.transaction_hash && (
+										<a
+											href={`https://${
+												process.env.APP_ENV === 'production' ? `` : `testnet.`
+											}nearblocks.io/txns/${activity.transaction_hash}${
+												activity.msg?.receipt_id && `#${activity.msg?.receipt_id}`
+											}`}
+											target={`_blank`}
+										>
+											<div className="w-8 h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-4 flex items-center justify-center">
+												<svg
+													xmlns="http://www.w3.org/2000/svg"
+													className="icon icon-tabler icon-tabler-external-link"
+													width={18}
+													height={18}
+													viewBox="0 0 24 24"
+													strokeWidth="2"
+													stroke="#fff"
+													fill="none"
+													strokeLinecap="round"
+													strokeLinejoin="round"
+												>
+													<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+													<path d="M11 7h-5a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-5" />
+													<line x1={10} y1={14} x2={20} y2={4} />
+													<polyline points="15 4 20 4 20 9" />
+												</svg>
+											</div>
+										</a>
+									)}
+								</div>
 							</div>
 						</div>
-						<p className="opacity-75 truncate">
-							{localToken?.metadata?.collection_id
-								? isTradeActivity
-									? localTradedToken?.metadata?.collection
-									: localToken?.metadata.collection
-								: isTradeActivity
-								? localTradedToken?.metadata?.contract_id
-								: localToken?.contract_id}
-						</p>
-						<div className="my-4">
-							<Activity
-								activity={activity}
-								localToken={localToken}
-								localTradedToken={localTradedToken}
-							/>
-							<p className="mt-2 text-sm opacity-50">
-								{timeAgo.format(new Date(activity.msg.datetime))}
-							</p>
+						<div
+							className={`${HEADERS[4].className} font-thin hidden md:flex md:text-sm lg:text-base justify-start`}
+						>
+							{parseType(
+								activity.creator_id,
+								activity.price,
+								activity.from,
+								activity.to,
+								activity.type
+							)}
 						</div>
 					</div>
 				</div>
+
+				{showDetailActivity == index && (
+					<div
+						key={activity._id}
+						className="flex order-5 w-full justify-between items-center my-2 py-2 border-t-2 border-b-2 border-opacity-10 border-white text-xs md:hidden"
+					>
+						<div className="flex flex-col flex-shrink text-center w-1/2">
+							<p className="font-thin text-white text-opacity-50 pb-2">From</p>
+							<Link href={`/${activity.from}`}>
+								<p className="font-bold cursor-pointer">
+									{activity.from ? prettyTruncate(activity.from, 12, 'address') : '---'}
+								</p>
+							</Link>
+						</div>
+						<div className="flex flex-col flex-shrink text-center w-1/2">
+							<p className="font-thin text-white text-opacity-50 pb-2">To</p>
+							<Link href={`/${activity.to}`}>
+								<p className="font-bold cursor-pointer">
+									{activity.to ? prettyTruncate(activity.to, 12, 'address') : '---'}
+								</p>
+							</Link>
+						</div>
+						<div className="flex flex-col flex-shrink text-center w-1/2">
+							<p className="font-thin text-white text-opacity-50 pb-2">Type</p>
+							<p className="font-bold">
+								{parseType(
+									activity.creator_id,
+									activity.price,
+									activity.from,
+									activity.to,
+									activity.type
+								)}
+							</p>
+						</div>
+					</div>
+				)}
 			</div>
 		</Fragment>
 	)

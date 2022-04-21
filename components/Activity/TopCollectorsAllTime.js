@@ -51,15 +51,17 @@ const TopCollectorsAllTime = ({ className }) => {
 					</svg>
 				</a>
 			</div>
-			{data?.map((user, idx) => (
-				<TopCollector key={idx} user={user} idx={idx} />
-			))}
-			<h4 className="text-white text-opacity-80 italic text-sm">
-				*Data provided by{' '}
-				<a href="https://whales.apollo42.app" className="underline">
-					Apollo
-				</a>
-			</h4>
+			<div className="block md:flex md:flex-row">
+				{data?.map((user, idx) => (
+					<TopCollector key={idx} user={user} idx={idx} />
+				))}
+				<h4 className="text-white text-opacity-80 italic text-sm">
+					*Data provided by{' '}
+					<a href="https://whales.apollo42.app" className="underline">
+						Apollo
+					</a>
+				</h4>
+			</div>
 		</div>
 	)
 }

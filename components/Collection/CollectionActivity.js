@@ -572,7 +572,7 @@ const CollectionActivity = ({
 									{showDetailActivity == index && (
 										<div
 											key={activity._id}
-											className="flex order-5 w-full justify-between items-center my-2 py-2 border-t-2 border-b-2 border-opacity-10 text-xs md:hidden"
+											className="flex order-5 w-full justify-between items-center my-2 py-2 border-t-2 border-b-2 border-opacity-10 border-white text-xs md:hidden"
 										>
 											<div className="flex flex-col flex-shrink text-center w-1/2">
 												<p className="font-thin text-white text-opacity-50 pb-2">From</p>
