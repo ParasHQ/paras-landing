@@ -203,6 +203,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			fetchCollectionDailyVolume()
 		} else if (router.query.tab === 'owned' && currentUser !== null) {
 			fetchDataOwned(true)
+		} else if (isItemActiveTab) {
+			fetchData(true)
 		}
 	}, [router.query.tab, router.query.headerActivities, router.query.sortActivities, currentUser])
 
@@ -665,7 +667,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							>
 								Edit
 							</Button>
-							{!isFetching && tokens.length < 1 && (
+							{!isFetching && tokens.length < 1 && window.location.search < 1 && (
 								<div className="cursor-pointer flex items-center" onClick={onShowDeleteModal}>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -755,7 +757,16 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 								{Object.keys(attributes).length > 0 && (
 									<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
 								)}
-								<FilterMarket isShowVerified={false} defaultMinPrice={true} isCollection={true} />
+								{router.query.tab == 'owned' ? (
+									<FilterMarket
+										isShowVerified={false}
+										defaultMinPrice={true}
+										isCollectibles={true}
+										isShowStaked={true}
+									/>
+								) : (
+									<FilterMarket isShowVerified={false} defaultMinPrice={true} isCollection={true} />
+								)}
 								<div className="hidden md:flex mt-0 mr-4">
 									<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 								</div>
