@@ -36,6 +36,4 @@ jobs:
         run: yarn lint
 
       - name: Run Build
-        env:
-          SUPER_SECRET: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: yarn build
