@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { IconLeft, IconRight } from 'components/Icons'
+import { trackFeatureBannerCommunity, trackFeatureBannerOfficial } from 'lib/ga'
 import { useRef, useState, useEffect } from 'react'
 import { Carousel } from 'react-responsive-carousel'
 import useSWR from 'swr'
@@ -132,6 +133,11 @@ const FeaturedOfficialParas = ({ list, className }) => {
 		}
 	}, [ref])
 
+	const onFeatureBannerOfficial = (data) => {
+		trackFeatureBannerOfficial(data._id)
+		window.open(data.url)
+	}
+
 	return (
 		<div className={`md:w-1/2 p-2 md:p-4 md:pr-2 snap-start ${className}`}>
 			<Carousel showStatus={false} showThumbs={false} autoPlay infiniteLoop showArrows={false}>
@@ -139,7 +145,7 @@ const FeaturedOfficialParas = ({ list, className }) => {
 					<div
 						key={data._id}
 						className="w-full rounded-lg overflow-hidden flex-shrink-0 cursor-pointer"
-						onClick={() => window.open(data.url)}
+						onClick={() => onFeatureBannerOfficial(data)}
 					>
 						<div ref={ref} className="rounded-lg overflow-hidden shadow-xl drop-shadow-xl">
 							<div className="w-full bg-primary aspect-[3/2]" style={{ height }}>
@@ -177,10 +183,15 @@ const FeaturedCommunity = ({ list, idx }) => {
 		}
 	}, [ref])
 
+	const onFeatureBannerCommunity = () => {
+		trackFeatureBannerCommunity(list[idx]._id)
+		window.open(list[idx].url)
+	}
+
 	return (
 		<div className="w-full md:w-[30%] rounded-lg overflow-hidden flex-shrink-0 flex snap-start">
 			<div className="w-full">
-				<div className="pt-4 px-2 cursor-pointer" onClick={() => window.open(list[idx].url)}>
+				<div className="pt-4 px-2 cursor-pointer" onClick={() => onFeatureBannerCommunity()}>
 					<div className="rounded-md overflow-hidden shadow-xl drop-shadow-xl">
 						<div ref={ref} className="w-full aspect-[2/1]" style={{ height }}>
 							<img
