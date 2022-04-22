@@ -296,7 +296,6 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		setIsFiltering(true)
 		if (isItemActiveTab) {
 			params = tokensParams(query || serverQuery)
-			console.log('params', params)
 			res = await axios(`${process.env.V2_API_URL}/token-series`, {
 				params: params,
 			})
