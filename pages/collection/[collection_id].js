@@ -203,6 +203,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			fetchCollectionDailyVolume()
 		} else if (router.query.tab === 'owned' && currentUser !== null) {
 			fetchDataOwned(true)
+		} else if (isItemActiveTab) {
+			fetchData(true)
 		}
 	}, [router.query.tab, router.query.headerActivities, router.query.sortActivities, currentUser])
 
@@ -666,7 +668,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							>
 								Edit
 							</Button>
-							{!isFetching && tokens.length < 1 && (
+							{!isFetching && tokens.length < 1 && window.location.search < 1 && (
 								<div className="cursor-pointer flex items-center" onClick={onShowDeleteModal}>
 									<svg
 										xmlns="http://www.w3.org/2000/svg"
@@ -695,7 +697,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				<div className="mb-4 md:mb-10 sm:my-2 flex flex-wrap items-center justify-center px-4">
 					<CollectionStats stats={stats} />
 				</div>
-				<div className="flex items-center justify-center relative mb-10 md:mb-20">
+				<div className="flex items-center justify-center relative mb-6">
 					<div className="flex justify-center mt-4 relative z-10">
 						<div className="flex mx-4">
 							<div className="px-4 relative" onClick={() => changeTab('items')}>
@@ -741,30 +743,39 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							)}
 						</div>
 					</div>
-					{(router.query.tab !== 'activity' || router.query.tab === undefined) && (
-						<div
-							className={`hidden sm:flex md:ml-8 md:mt-32 items-center right-0 absolute w-full ${
-								isItemActiveTab ? `justify-between` : `justify-end`
-							}`}
-						>
-							{isItemActiveTab && (
-								<div className="flex justify-center items-center relative z-10">
-									<CollectionSearch collectionId={collectionId} />
-								</div>
+				</div>
+				{(router.query.tab !== 'activity' || router.query.tab === undefined) && (
+					<div
+						className={`hidden sm:flex items-center mx-4 ${
+							isItemActiveTab ? `justify-between` : `justify-end`
+						}`}
+					>
+						{isItemActiveTab && (
+							<div className="flex justify-center items-center relative z-10">
+								<CollectionSearch collectionId={collectionId} />
+							</div>
+						)}
+						<div className="flex">
+							{Object.keys(attributes).length > 0 && (
+								<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
 							)}
-							<div className="flex">
-								{Object.keys(attributes).length > 0 && (
-									<FilterAttribute onClearAll={removeAllAttributesFilter} attributes={attributes} />
-								)}
+							{router.query.tab == 'owned' ? (
+								<FilterMarket
+									isShowVerified={false}
+									defaultMinPrice={true}
+									isCollectibles={true}
+									isShowStaked={true}
+								/>
+							) : (
 								<FilterMarket isShowVerified={false} defaultMinPrice={true} isCollection={true} />
-								<div className="hidden md:flex mt-0 mr-4">
-									<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
-								</div>
+							)}
+							<div className="hidden md:flex mt-0">
+								<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 							</div>
 						</div>
-					)}
-				</div>
-				<div className="flex lg:hidden mt-6 mx-4 justify-center sm:justify-end">
+					</div>
+				)}
+				<div className="flex lg:hidden mt-8 mx-4 justify-center sm:justify-end">
 					{(router.query.tab !== 'activity' || router.query.tab === undefined) && (
 						<div>
 							{isItemActiveTab && (
@@ -800,7 +811,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						</div>
 					)}
 				</div>
-				<div className="relative flex flex-row flex-wrap left-0 ml-5 mt-5 ">
+				<div className="relative flex flex-row flex-wrap left-0 mx-5 mt-4">
 					{router.query.attributes &&
 						router.query.tab !== 'activity' &&
 						JSON.parse(router.query.attributes).map((type, index) => {

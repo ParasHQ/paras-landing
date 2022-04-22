@@ -26,7 +26,7 @@ const CollectionSearch = ({ collectionId }) => {
 	}
 
 	return (
-		<div className="flex-1 md:mx-5">
+		<div className="flex-1">
 			<div className="max-w-sm">
 				<form method="get" onSubmit={_handleSubmit} autoComplete="off">
 					<div className="flex items-center border-dark-primary-1 border-2 rounded-lg bg-dark-primary-1 h-12 w-80 sm:w-60 md:w-96">
