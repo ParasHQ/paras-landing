@@ -38,13 +38,13 @@ const Card = ({
 			let w = containerRef.current.parentNode.offsetWidth
 			let h = containerRef.current.parentNode.offsetWidth * (imgHeight / imgWidth)
 
-			if (
-				containerRef.current.parentNode.offsetHeight !== 0 &&
-				h > containerRef.current.parentNode.offsetHeight
-			) {
-				w = (imgWidth * containerRef.current.parentNode.offsetHeight) / imgHeight
-				h = containerRef.current.parentNode.offsetHeight
-			}
+			// if (
+			// 	containerRef.current.parentNode.offsetHeight !== 0 &&
+			// 	h > containerRef.current.parentNode.offsetHeight
+			// ) {
+			// 	w = (imgWidth * containerRef.current.parentNode.offsetHeight) / imgHeight
+			// 	h = containerRef.current.parentNode.offsetHeight
+			// }
 
 			setDimension({
 				width: w,
