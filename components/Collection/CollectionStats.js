@@ -57,7 +57,7 @@ const CollectionStats = ({ stats }) => {
 				<div
 					data-for={randomID}
 					data-tip="The sales in the last 30 days."
-					className="text-center block p-3 sm:p-5"
+					className="text-center block w-32 p-1 sm:w-auto sm:p-5"
 				>
 					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
 						{formatNearAmount(stats.volume, 2) + ' Ⓝ'}
