@@ -5,19 +5,21 @@ const ActivityLoader = (props) => (
 		speed={2}
 		width="100%"
 		height="100%"
-		viewBox="0 0 1200 470"
+		viewBox="0 0 850 100"
 		className="hidden md:block"
 		backgroundColor="#1D1D1D"
 		foregroundColor="#282828"
 		uniqueKey="activity-list-loader"
 		{...props}
 	>
-		<rect x="70" y="40" rx="10" ry="10" width="300" height="375" />
+		<rect x="0" y="10" rx="4" ry="4" width="60" height="60" />
 
-		<rect x="430" y="60" rx="4" ry="4" width="350" height="40" />
-		<rect x="430" y="110" rx="4" ry="4" width="175" height="20" />
-		<rect x="430" y="170" rx="4" ry="4" width="350" height="30" />
-		<rect x="430" y="210" rx="4" ry="4" width="175" height="20" />
+		<rect x="70" y="20" rx="4" ry="4" width="300" height="15" />
+		<rect x="70" y="45" rx="4" ry="4" width="300" height="15" />
+		<rect x="380" y="20" rx="4" ry="4" width="330" height="15" />
+		<rect x="380" y="45" rx="4" ry="4" width="330" height="15" />
+		<rect x="720" y="20" rx="4" ry="4" width="100" height="15" />
+		<rect x="720" y="45" rx="4" ry="4" width="100" height="15" />
 	</ContentLoader>
 )
 

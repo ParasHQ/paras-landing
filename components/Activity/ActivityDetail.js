@@ -103,270 +103,6 @@ export const descriptionMaker = (activity, localToken, localTradedToken) => {
 	return ``
 }
 
-const Activity = ({ activity, localTradedToken, localToken }) => {
-	const { localeLn } = useIntl()
-	const type = activity.type
-
-	if (type === 'add_market_data' || type === 'update_market_data') {
-		return (
-			<p>
-				<LinkToProfile
-					className="text-gray-100 hover:border-gray-100"
-					accountId={activity.msg.params.owner_id}
-				/>
-				<span>
-					{' '}
-					{localeLn('PutOnSaleFor')} {formatNearAmount(activity.msg.params.price)} Ⓝ
-				</span>
-			</p>
-		)
-	}
-
-	if (type === 'delete_market_data') {
-		return (
-			<p>
-				<LinkToProfile
-					className="text-gray-100 hover:border-gray-100"
-					accountId={activity.msg.params.owner_id}
-				/>
-				<span> {localeLn('RemoveFromSale')}</span>
-			</p>
-		)
-	}
-
-	if (type === 'nft_transfer' && activity.from === null) {
-		const [, edition_id] = activity.msg.params.token_id.split(':')
-
-		if (activity.price) {
-			return (
-				<p>
-					<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
-					<span>
-						{' '}
-						bought{' '}
-						<span className="font-semibold">
-							#{edition_id || activity.msg.params.token_id}
-						</span> for{' '}
-					</span>
-					{formatNearAmount(activity.msg.params.price)} Ⓝ
-				</p>
-			)
-		}
-
-		return (
-			<p>
-				<span>
-					minted{' '}
-					<span className="font-semibold">#{edition_id || activity.msg.params.token_id}</span> by{' '}
-				</span>
-				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
-			</p>
-		)
-	}
-
-	if (type === 'nft_transfer' && activity.msg.is_staked) {
-		const [, edition_id] = activity.msg.params.token_id.split(':')
-
-		return (
-			<p>
-				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.from} />
-				<span>
-					{' '}
-					staked{' '}
-					<span className="font-semibold">#{edition_id || activity.msg.params.token_id}</span>
-				</span>
-				<span>
-					{' '}
-					to{' '}
-					<Link href="https://stake.paras.id">
-						<a className="border-b-2 border-transparent text-gray-100 hover:border-gray-100">
-							<span className="font-semibold">{activity.msg.seed_title}</span>
-						</a>
-					</Link>
-				</span>
-			</p>
-		)
-	}
-
-	if (type === 'nft_transfer' && activity.to === null) {
-		const [, edition_id] = activity.msg.params.token_id.split(':')
-
-		return (
-			<p>
-				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.from} />
-				<span>
-					{' '}
-					burned{' '}
-					<span className="font-semibold">#{edition_id || activity.msg.params.token_id}</span>
-				</span>
-			</p>
-		)
-	}
-
-	if (type === 'nft_transfer' || type === 'resolve_purchase') {
-		if (activity.price) {
-			if (activity.is_offer) {
-				return (
-					<p>
-						<LinkToProfile
-							className="text-gray-100 hover:border-gray-100"
-							accountId={activity.from}
-						/>
-						<span> {localeLn('accepted offer from')} </span>
-						<LinkToProfile
-							className="text-gray-100 hover:border-gray-100"
-							accountId={activity.to}
-						/>{' '}
-						<span>
-							{' '}
-							{localeLn('for')} {formatNearAmount(activity.msg.params.price)} Ⓝ
-						</span>
-					</p>
-				)
-			}
-			return (
-				<p>
-					<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
-					<span> bought from </span>
-					<LinkToProfile
-						className="text-gray-100 hover:border-gray-100"
-						accountId={activity.from}
-					/>
-					<span> {localeLn('for')} </span>
-					{formatNearAmount(activity.msg.params.price) === '0'
-						? 'free'
-						: `${formatNearAmount(activity.msg.params.price)} Ⓝ`}
-				</p>
-			)
-		}
-		return (
-			<p>
-				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.from} />
-				<span> transferred to </span>
-				<LinkToProfile className="text-gray-100 hover:border-gray-100" accountId={activity.to} />
-			</p>
-		)
-	}
-
-	if (type === 'nft_create_series') {
-		return (
-			<p>
-				<span>series created by </span>
-				<LinkToProfile
-					className="text-gray-100 hover:border-gray-100"
-					accountId={activity.msg.params.creator_id}
-				/>
-			</p>
-		)
-	}
-
-	if (type === 'nft_set_series_price') {
-		if (!activity.msg.params.price) {
-			return (
-				<p>
-					<span>put the series to not for sale</span>
-				</p>
-			)
-		}
-		return (
-			<p>
-				<span>put the series on sale for {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
-			</p>
-		)
-	}
-
-	if (type === 'nft_set_series_non_mintable') {
-		return (
-			<p>
-				<span> put the series to non-mintable </span>
-			</p>
-		)
-	}
-
-	if (type === 'nft_decrease_series_copies') {
-		return (
-			<p>
-				<span> decrease the series copies to {activity.msg.params.copies} </span>
-			</p>
-		)
-	}
-
-	if (type === 'add_offer') {
-		return (
-			<p>
-				<span>
-					<LinkToProfile
-						className="text-gray-100 hover:border-gray-100"
-						accountId={activity.from}
-					/>
-				</span>
-				<span> {localeLn('add offer for')}</span>
-				<span> {formatNearAmount(activity.msg.params.price)} Ⓝ</span>
-			</p>
-		)
-	}
-
-	if (type === 'delete_offer') {
-		return (
-			<p>
-				<span>
-					<span>
-						<LinkToProfile
-							className="text-gray-100 hover:border-gray-100"
-							accountId={activity.from}
-						/>
-					</span>
-					<span> {localeLn('removed offer')}</span>
-				</span>
-			</p>
-		)
-	}
-
-	if (type === 'add_trade' || type === 'delete_trade') {
-		return (
-			<p>
-				<span>
-					<span>
-						<LinkToProfile
-							className="text-gray-100 hover:border-gray-100"
-							accountId={activity.msg.params.buyer_id}
-						/>
-					</span>
-					<span>
-						{` `}
-						{type.includes(`add`) ? `add` : `delete`} trade{' '}
-						<span className="font-bold">{localTradedToken?.metadata?.title}</span> with{' '}
-						<span className="font-bold">{localToken?.metadata.title}</span>
-					</span>
-				</span>
-			</p>
-		)
-	}
-
-	if (type === 'accept_trade') {
-		return (
-			<p>
-				<span>
-					<span>
-						<LinkToProfile
-							className="text-gray-100 hover:border-gray-100"
-							accountId={localTradedToken?.owner_id}
-						/>
-					</span>
-					<span>
-						{` `}
-						accept trade <span className="font-bold">
-							{localTradedToken?.metadata?.title}
-						</span> with <span className="font-bold">{localToken?.metadata.title}</span>
-					</span>
-				</span>
-			</p>
-		)
-	}
-
-	return null
-}
-
 const ActivityDetail = ({ activity, index }) => {
 	const { localeLn } = useIntl()
 	const router = useRouter()
@@ -386,66 +122,93 @@ const ActivityDetail = ({ activity, index }) => {
 		{
 			id: 'title',
 			title: 'Title',
-			className: `flex w-4/6 lg:w-full flex-shrink-0 p-3 h-full`,
+			className: ` w-6/12 lg:w-6/12 flex-shrink-0 p-3 h-full`,
 		},
 		{
 			id: 'price',
 			title: 'Price',
-			className: `flex items-center w-2/6 lg:w-full flex-shrink-0 p-2 h-full`,
+			className: ` items-center w-1/12 lg:w-1/12 flex-shrink-0 p-2 h-full`,
 		},
 		{
 			id: 'from',
 			title: 'From',
-			className: `flex items-center w-2/6 lg:w-full flex-shrink-0 p-2 h-full`,
+			className: `items-center w-1/12 lg:w-1/12 flex-shrink-0 p-2 h-full`,
 		},
 		{
 			id: 'to',
 			title: 'To',
-			className: `flex items-center w-2/6 lg:w-full flex-shrink-0 p-2 h-full`,
+			className: `items-center w-1/12 lg:w-1/12 flex-shrink-0 p-2 h-full`,
 		},
 		{
 			id: 'time',
 			title: 'Time',
-			className: `flex flex-row md:flex-row items-center w-2/6 md:w-full md:flex-shrink-0 p-3 md:p-0 lg:p-3 md:h-full`,
+			className: `w-2/12 md:w-2/12 md:flex-shrink-0 p-3 md:p-0 lg:p-3 md:h-full`,
 		},
 		{
 			id: 'type',
 			title: 'Type',
-			className: `flex items-center w-2/6 lg:w-full flex-shrink-0 p-3 h-full`,
+			className: `w-1/12 lg:w-1/12 flex-shrink-0 p-3 h-full`,
 		},
 	]
 
-	const parseType = (creator, price, from, to, type) => {
-		if ((type === 'nft_transfer' && price && from && to) || type === 'resolve_purchase') {
+	const parseType = (creator, price, from, to, type, isOffer = null) => {
+		if (
+			(type === 'nft_transfer' && price && from && to) ||
+			(type === 'resolve_purchase' && price)
+		) {
+			if (isOffer) {
+				return 'Accept'
+			}
 			return 'Sold'
 		} else if (type === 'nft_transfer' && from === null) {
 			return 'Minted'
-		} else if (type === 'nft_transfer' && to === null) {
-			return 'Burned'
-		} else if (type === 'nft_transfer' && (!price || to === creator)) {
-			return 'Transfer'
-		} else if (type === 'nft_set_series_price') {
-			return 'Set Price'
-		} else if (type === 'notification_add_offer' || type === 'add_offer') {
-			return 'Offer'
-		} else if (
-			type === 'notification_category_accepted' ||
-			type === 'notification_category_rejected'
-		) {
-			return 'Submission'
-		} else if (type === 'nft_create_series') {
-			return 'Creation'
-		} else if (type === 'add_market_data') {
-			return 'List'
-		} else if (type === 'delete_market_data') {
-			return 'Remove Sale'
-		} else if (type === 'add_trade' && to === null) {
-			return 'Add Trade'
-		} else if (type === 'accept_trade') {
-			return 'Accept Trade'
-		} else {
-			return type
 		}
+
+		if (type === 'nft_transfer' && to === null) {
+			return 'Burned'
+		}
+
+		if (type === 'nft_transfer' && (!price || to === creator)) {
+			return 'Transfer'
+		}
+
+		if (type === 'nft_set_series_price') {
+			return 'Set Price'
+		}
+
+		if (type === 'notification_add_offer' || type === 'add_offer') {
+			return 'Offer'
+		}
+
+		if (type === 'notification_category_accepted' || type === 'notification_category_rejected') {
+			return 'Submission'
+		}
+
+		if (type === 'nft_create_series') {
+			return 'Creation'
+		}
+
+		if (type === 'add_market_data' || type === 'update_market_data') {
+			return 'Listing'
+		}
+
+		if (type === 'delete_market_data') {
+			return 'Remove Sale'
+		}
+
+		if (type === 'add_trade') {
+			return 'Add Trade'
+		}
+
+		if (type === 'delete_trade') {
+			return 'Delete Trade'
+		}
+
+		if (type === 'accept_trade') {
+			return 'Accept Trade'
+		}
+
+		return type
 	}
 
 	const fetchTradeToken = async () => {
@@ -568,9 +331,27 @@ const ActivityDetail = ({ activity, index }) => {
 			)}
 			<div key={activity._id} className="text-white">
 				<div className="w-full">
-					<div className="flex flex-row items-center justify-between w-full cursor-pointer sm:cursor-default md:grid md:grid-cols-7 md:gap-5 lg:gap-10 md:h-19 md:hover:bg-gray-800">
-						<div className="flex md:col-span-2 items-center md:cursor-pointer">
-							<div className="w-8 md:w-full mr-8 bg-blue-900 rounded-lg z-20 relative">
+					<div className="hidden md:block">
+						<div className="grid grid-cols-7 gap-10 text-gray-300 hover:opacity-75 border-gray-800 border-b-2">
+							{index === 0 &&
+								HEADERS.map((d, index) => {
+									return (
+										<div
+											key={d.id}
+											className={`${
+												index === 0 && 'col-span-2 justify-start'
+											} flex flex-row items-center w-2/6 lg:w-full flex-shrink-0 p-3 h-full`}
+										>
+											<span>{localeLn(d.title)}</span>
+										</div>
+									)
+								})}
+						</div>
+					</div>
+
+					<div className="flex flex-row items-center justify-between w-full cursor-pointer sm:cursor-default md:inline-flex md:w-full md:h-19 md:hover:bg-gray-800 md:hover:bg-opacity-30">
+						<div className="flex md:col-span-2 items-center md:cursor-pointer md:w-3/12">
+							<div className="w-8 mr-8 bg-blue-900 rounded-lg z-20 relative">
 								<div
 									className={`${
 										isTradeActivity
@@ -632,11 +413,11 @@ const ActivityDetail = ({ activity, index }) => {
 							<div className="pl-4 overflow-hidden cursor-pointer w-40">
 								<Link
 									href={`/collection/${
-										localToken?.metadata?.collection_id || localToken?.metadata?.contract_id
+										localToken?.metadata?.collection_id || localToken?.contract_id
 									}`}
 								>
 									<a>
-										<p className="opacity-75 truncate text-xs py-2">
+										<p className="opacity-80 truncate text-xs py-2 font-thin border-b-2 border-transparent hover:opacity-50 cursor-pointer">
 											{localToken?.metadata?.collection_id
 												? isTradeActivity
 													? localTradedToken?.metadata?.collection
@@ -648,7 +429,7 @@ const ActivityDetail = ({ activity, index }) => {
 									</a>
 								</Link>
 								<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
-									<a className="font-semibold z-20 text-sm md:text-md">
+									<a className="font-semibold z-20 text-sm md:text-md hover:text-gray-300">
 										{prettyTruncate(localToken?.metadata.title, 25)}
 									</a>
 								</Link>
@@ -711,6 +492,13 @@ const ActivityDetail = ({ activity, index }) => {
 										/>
 									</svg>
 								</div>
+								<div className="hidden md:flex md:flex-row">
+									<div>
+										{timeAgo.format(
+											new Date(activity.issued_at ? activity.issued_at : 1636197684986)
+										)}
+									</div>
+								</div>
 								<div>
 									<div
 										onClick={() => setShowModal('options')}
@@ -765,7 +553,7 @@ const ActivityDetail = ({ activity, index }) => {
 							</div>
 						</div>
 						<div
-							className={`${HEADERS[4].className} font-thin hidden md:flex md:text-sm lg:text-base justify-start`}
+							className={`${HEADERS[4].className} font-thin hidden md:flex md:text-sm lg:text-base justify-start md:w-3/12`}
 						>
 							{parseType(
 								activity.creator_id,

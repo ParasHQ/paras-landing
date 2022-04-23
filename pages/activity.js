@@ -245,13 +245,13 @@ const ActivityLog = ({ query }) => {
 									</div>
 								)}
 							</div>
-							<div className={`${activityType === 'top-users' && 'hidden'} md:block`}>
+							<div className={`${activityType === 'top-users' ? 'hidden' : 'md:block'}`}>
 								<FilterActivity onClickFilter={onClickFilter} />
 							</div>
 						</div>
 
 						{activityType === 'top-users' && (
-							<div>
+							<div className="w-full md:w-2/4">
 								<div
 									className="flex cursor-pointer mt-10 px-4"
 									onClick={() => window.open('https://stats.paras.id', '_blank').focus()}
@@ -278,16 +278,16 @@ const ActivityLog = ({ query }) => {
 									userType={'buyer'}
 									linkTo="/activity/top-buyers"
 									isFetching={isFetchingTop}
-									className="mt-8 px-4 py-2 md:flex md:flex-col"
+									className="mt-8 px-4 py-2"
 								/>
 								<ActivityTopUsers
 									data={topUser.sellers}
 									userType={'seller'}
 									linkTo="/activity/top-sellers"
 									isFetching={isFetchingTop}
-									className="mt-8 px-4 py-2 md:flex md:flex-col"
+									className="mt-8 px-4 py-2"
 								/>
-								<TopCollectorsAllTime className="mt-8 px-4 py-2 md:flex md:flex-col" />
+								<TopCollectorsAllTime className="mt-8 px-4 py-2" />
 							</div>
 						)}
 

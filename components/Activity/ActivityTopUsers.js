@@ -34,7 +34,7 @@ const TopUsers = ({ data = [], className, userType = 'buyer', linkTo, isFetching
 					</a>
 				</Link>
 			</div>
-			<div className="block md:flex md:flex-row">
+			<div className="block md:flex md:flex-col">
 				{isFetching ? (
 					<TopUserLoader />
 				) : (
