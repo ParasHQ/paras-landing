@@ -243,8 +243,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			collection_id: collectionId,
 			exclude_total_burn: true,
 			__limit: LIMIT,
-			__sort: parsedSortQuery,
-			lookup_token: isItemActiveTab && true,
+			__sort: parsedSortQuery || '',
+			...(isItemActiveTab && { lookup_token: true }),
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
@@ -259,7 +259,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			...(query.price_next &&
 				parsedSortQuery.includes('price') && { price_next: query.price_next }),
 			...(query.is_staked && { is_staked: query.is_staked }),
-			owner_id: router.query.tab === 'owned' && currentUser,
+			...(router.query.tab === 'owned' && { owner_id: currentUser }),
 			...(query.q && { search: query.q }),
 		}
 		if (query.pmin === undefined && query.is_notforsale === 'false') {
