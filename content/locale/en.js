@@ -357,6 +357,7 @@ const common = {
 	FlaggeyByPARASRemint:
 		'WARNING: This collection has been paused for reminting, please contact the creator',
 	FlaggeyByPARASRugpull: 'This creator has been flagged by Paras due to rug pull',
+	FlaggedByPARASScam: 'This creator has been flagged by Paras due to scam',
 	UseOwnRisk:
 		"Paras' smart contract is not yet audited by well-known security organization or firm. Use at your own risk!",
 	...token,
