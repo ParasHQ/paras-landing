@@ -4,6 +4,7 @@ export const flagText = {
 	hacked: 'FlaggedByPARASHacked',
 	remint: 'FlaggeyByPARASRemint',
 	rugpull: 'FlaggeyByPARASRugpull',
+	scam: 'FlaggedByPARASScam',
 }
 
 export const flagColor = {
@@ -12,4 +13,5 @@ export const flagColor = {
 	hacked: 'bg-yellow-600',
 	remint: 'bg-yellow-600',
 	rugpull: 'bg-red-500',
+	scam: 'bg-red-400',
 }
