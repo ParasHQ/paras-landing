@@ -108,6 +108,8 @@ const NewPage = () => {
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
 	const [showCreatingModal, setShowCreatingModal] = useState(false)
 	const [showCreateColl, setShowCreateColl] = useState(false)
+	const [categories, setCategories] = useState([])
+	const [selectedCategory, setSelectedCategory] = useState('')
 
 	const [showAlertErr, setShowAlertErr] = useState(false)
 	const [choosenCollection, setChoosenCollection] = useState({})
@@ -261,6 +263,12 @@ const NewPage = () => {
 			getAttributeKeys()
 		}
 	}, [step])
+
+	useEffect(async () => {
+		const res = await axios.get(`${process.env.V2_API_URL}/categories`)
+		const categories = await res.data.data.results
+		setCategories(categories)
+	}, [])
 
 	const _updateValues = () => {
 		const values = { ...getValues() }
@@ -817,7 +825,7 @@ const NewPage = () => {
 						{step === 0 && (
 							<div>
 								<div className="text-sm mt-2">Choose Collection</div>
-								<div id="collection::user" className="h-60vh overflow-auto">
+								<div id="collection::user" className="max-h-40 md:max-h-72 overflow-auto">
 									<InfiniteScroll
 										dataLength={collectionList.length}
 										next={fetchCollectionUser}
@@ -857,6 +865,20 @@ const NewPage = () => {
 											</div>
 										))}
 									</InfiniteScroll>
+								</div>
+								<div className="text-sm mt-3 mb-1">Choose Categories</div>
+								<div className="max-h-28 md:h-32 mb-10 grid grid-cols-2 md:grid-cols-3 gap-1 overflow-y-scroll">
+									{categories.map((categ, idx) => (
+										<div
+											key={idx}
+											className={`flex items-center justify-center text-xs flex-wrap p-1 py-2 md:py-1 rounded-md text-white bg-gray-800 hover:bg-dark-primary-3 cursor-pointer ${
+												categ.category_id === selectedCategory && `border border-white bg-gray-900`
+											}`}
+											onClick={() => setSelectedCategory(categ.category_id)}
+										>
+											{categ?.name}
+										</div>
+									))}
 								</div>
 								<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
 									<button disabled={step === 0} onClick={_handleBack}>
