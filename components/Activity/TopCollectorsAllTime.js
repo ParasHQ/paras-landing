@@ -51,7 +51,7 @@ const TopCollectorsAllTime = ({ className }) => {
 					</svg>
 				</a>
 			</div>
-			<div className="block md:flex md:flex-row">
+			<div className="block md:flex md:flex-col">
 				{data?.map((user, idx) => (
 					<TopCollector key={idx} user={user} idx={idx} />
 				))}

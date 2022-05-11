@@ -205,7 +205,10 @@ const ActivityLog = ({ query }) => {
 					<div className="w-full relative md:pt-4 md:block md:p-0">
 						<div className="px-4 flex flex-wrap items-center justify-between">
 							<div ref={modalRef}>
-								<div className="flex items-baseline" onClick={() => setShowModal(!showModal)}>
+								<div
+									className="flex items-baseline cursor-pointer hover:opacity-90"
+									onClick={() => setShowModal(!showModal)}
+								>
 									<h1 className="text-4xl font-bold text-gray-100 text-center mr-2 capitalize">
 										{activityType === 'activity' ? localeLn('Activity') : localeLn('TopUsers')}
 									</h1>
@@ -225,7 +228,7 @@ const ActivityLog = ({ query }) => {
 									</svg>
 								</div>
 								{showModal && (
-									<div className="absolute max-w-full z-30 bg-dark-primary-1 px-5 py-2 rounded-md text-lg text-gray-100 w-1/2">
+									<div className="absolute max-w-full z-30 bg-dark-primary-1 px-5 py-2 rounded-md text-lg text-gray-100 w-44">
 										<p
 											className={`opacity-50 cursor-pointer select-none my-1
 										${activityType === 'activity' && 'font-semibold opacity-100'}
@@ -251,7 +254,7 @@ const ActivityLog = ({ query }) => {
 						</div>
 
 						{activityType === 'top-users' && (
-							<div className="w-full md:w-2/4">
+							<div className="w-full">
 								<div
 									className="flex cursor-pointer mt-10 px-4"
 									onClick={() => window.open('https://stats.paras.id', '_blank').focus()}
@@ -273,21 +276,23 @@ const ActivityLog = ({ query }) => {
 										/>
 									</svg>
 								</div>
-								<ActivityTopUsers
-									data={topUser.buyers}
-									userType={'buyer'}
-									linkTo="/activity/top-buyers"
-									isFetching={isFetchingTop}
-									className="mt-8 px-4 py-2"
-								/>
-								<ActivityTopUsers
-									data={topUser.sellers}
-									userType={'seller'}
-									linkTo="/activity/top-sellers"
-									isFetching={isFetchingTop}
-									className="mt-8 px-4 py-2"
-								/>
-								<TopCollectorsAllTime className="mt-8 px-4 py-2" />
+								<div className="block md:grid md:grid-cols-3">
+									<ActivityTopUsers
+										data={topUser.buyers}
+										userType={'buyer'}
+										linkTo="/activity/top-buyers"
+										isFetching={isFetchingTop}
+										className="mt-8 px-4 py-2"
+									/>
+									<ActivityTopUsers
+										data={topUser.sellers}
+										userType={'seller'}
+										linkTo="/activity/top-sellers"
+										isFetching={isFetchingTop}
+										className="mt-8 px-4 py-2"
+									/>
+									<TopCollectorsAllTime className="mt-8 px-4 py-2" />
+								</div>
 							</div>
 						)}
 
