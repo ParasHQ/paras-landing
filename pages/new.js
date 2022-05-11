@@ -109,7 +109,6 @@ const NewPage = () => {
 	const [showCreatingModal, setShowCreatingModal] = useState(false)
 	const [showCreateColl, setShowCreateColl] = useState(false)
 	const [categories, setCategories] = useState([])
-	const [selectedCategory, setSelectedCategory] = useState('')
 
 	const [showAlertErr, setShowAlertErr] = useState(false)
 	const [choosenCollection, setChoosenCollection] = useState({})
@@ -206,6 +205,10 @@ const NewPage = () => {
 				}
 			}
 
+			if (store.selectedCategory !== '' && WalletHelper.activeWallet !== 'sender') {
+				window.sessionStorage.setItem(`categoryToken`, store.selectedCategory)
+			}
+
 			const res = await WalletHelper.callFunction({
 				contractId: process.env.NFT_CONTRACT_ID,
 				methodName: `nft_create_series`,
@@ -216,6 +219,9 @@ const NewPage = () => {
 
 			setIsCreating(false)
 			if (res?.response) {
+				if (store.selectedCategory !== '') {
+					await submitCategoryCard(res)
+				}
 				setTimeout(() => {
 					router.push('/market')
 					store.setTransactionRes(res?.response)
@@ -439,6 +445,36 @@ const NewPage = () => {
 
 		if (categoryId) {
 			return categoryId.split('-').map(capitalize).join(' ')
+		}
+	}
+
+	const submitCategoryCard = async (res) => {
+		const txLast = res?.response[res?.response.length - 1]
+		const resFromTxLast = txLast.receipts_outcome[0].outcome.logs[0]
+		const resOutcome = await JSON.parse(`${resFromTxLast}`)
+		try {
+			await axios.post(
+				`${process.env.V2_API_URL}/categories/tokens`,
+				{
+					account_id: store.currentUser,
+					contract_id: txLast?.transaction?.receiver_id,
+					token_series_id: resOutcome?.params?.token_series_id,
+					category_id: store.selectedCategory,
+				},
+				{
+					headers: {
+						authorization: await WalletHelper.authToken(),
+					},
+				}
+			)
+		} catch (err) {
+			sentryCaptureException(err)
+			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{msg}</div>,
+				type: 'warning',
+				duration: 2500,
+			})
 		}
 	}
 
@@ -872,9 +908,12 @@ const NewPage = () => {
 										<div
 											key={idx}
 											className={`flex items-center justify-center text-xs flex-wrap p-1 py-2 md:py-1 rounded-md text-white bg-gray-800 hover:bg-dark-primary-3 cursor-pointer ${
-												categ.category_id === selectedCategory && `border border-white bg-gray-900`
+												categ.category_id === store.selectedCategory &&
+												`border border-white bg-gray-900`
 											}`}
-											onClick={() => setSelectedCategory(categ.category_id)}
+											onClick={() => {
+												store.setSelectedCategory(categ.category_id)
+											}}
 										>
 											{categ?.name}
 										</div>
