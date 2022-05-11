@@ -2,14 +2,11 @@ import { Fragment, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton } from 'react-share'
 import cachios from 'cachios'
-import Card from 'components/Card/Card'
-import LinkToProfile from 'components/LinkToProfile'
 import Modal from 'components/Modal'
 import Media from 'components/Common/Media'
 import { parseImgUrl, timeAgo, prettyTruncate } from 'utils/common'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
-import { useRouter } from 'next/router'
 import CopyLink from 'components/Common/CopyLink'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
@@ -105,7 +102,6 @@ export const descriptionMaker = (activity, localToken, localTradedToken) => {
 
 const ActivityDetail = ({ activity, index }) => {
 	const { localeLn } = useIntl()
-	const router = useRouter()
 	const [showModal, setShowModal] = useState(null)
 	const [isCopied, setIsCopied] = useState(false)
 	const [localToken, setLocalToken] = useState(null)
@@ -122,32 +118,32 @@ const ActivityDetail = ({ activity, index }) => {
 		{
 			id: 'title',
 			title: 'Title',
-			className: ` w-6/12 lg:w-6/12 flex-shrink-0 p-3 h-full`,
+			className: `w-3/12 p-3 h-full`,
 		},
 		{
 			id: 'price',
 			title: 'Price',
-			className: ` items-center w-1/12 lg:w-1/12 flex-shrink-0 p-2 h-full`,
+			className: `items-center text-center w-2/12 p-3 h-full`,
 		},
 		{
 			id: 'from',
 			title: 'From',
-			className: `items-center w-1/12 lg:w-1/12 flex-shrink-0 p-2 h-full`,
+			className: `items-center w-2/12 p-2 h-full`,
 		},
 		{
 			id: 'to',
 			title: 'To',
-			className: `items-center w-1/12 lg:w-1/12 flex-shrink-0 p-2 h-full`,
+			className: `items-center w-2/12 p-2 h-full`,
 		},
 		{
 			id: 'time',
 			title: 'Time',
-			className: `w-2/12 md:w-2/12 md:flex-shrink-0 p-3 md:p-0 lg:p-3 md:h-full`,
+			className: `w-3/12 md:w-2/12 p-3 md:p-0 lg:p-3 text-center md:h-full`,
 		},
 		{
 			id: 'type',
 			title: 'Type',
-			className: `w-1/12 lg:w-1/12 flex-shrink-0 p-3 h-full`,
+			className: `w-2/12 p-3 h-full`,
 		},
 	]
 
@@ -206,6 +202,10 @@ const ActivityDetail = ({ activity, index }) => {
 
 		if (type === 'accept_trade') {
 			return 'Accept Trade'
+		}
+
+		if (type === 'nft_decrease_series_copies') {
+			return 'Decrease Copy'
 		}
 
 		return type
@@ -332,16 +332,11 @@ const ActivityDetail = ({ activity, index }) => {
 			<div key={activity._id} className="text-white">
 				<div className="w-full">
 					<div className="hidden md:block">
-						<div className="grid grid-cols-7 gap-10 text-gray-300 hover:opacity-75 border-gray-800 border-b-2">
+						<div className="flex flex-row w-full text-gray-300 hover:opacity-75 border-gray-800 border-b-2">
 							{index === 0 &&
 								HEADERS.map((d, index) => {
 									return (
-										<div
-											key={d.id}
-											className={`${
-												index === 0 && 'col-span-2 justify-start'
-											} flex flex-row items-center w-2/6 lg:w-full flex-shrink-0 p-3 h-full`}
-										>
+										<div key={d.id} className={`${HEADERS[index].className} h-full`}>
 											<span>{localeLn(d.title)}</span>
 										</div>
 									)
@@ -350,7 +345,7 @@ const ActivityDetail = ({ activity, index }) => {
 					</div>
 
 					<div className="flex flex-row items-center justify-between w-full cursor-pointer sm:cursor-default md:inline-flex md:w-full md:h-19 md:hover:bg-gray-800 md:hover:bg-opacity-30">
-						<div className="flex md:col-span-2 items-center md:cursor-pointer md:w-3/12">
+						<div className="flex items-center md:cursor-pointer md:w-3/12">
 							<div className="w-8 mr-8 bg-blue-900 rounded-lg z-20 relative">
 								<div
 									className={`${
@@ -443,7 +438,7 @@ const ActivityDetail = ({ activity, index }) => {
 							</div>
 						</div>
 						<div
-							className={`${HEADERS[1].className} hidden md:flex md:text-sm lg:text-base font-bold justify-start`}
+							className={`${HEADERS[1].className} hidden md:flex md:text-sm lg:text-base font-bold justify-center`}
 						>
 							{!activity.msg.params.price === null
 								? '---'
@@ -453,24 +448,24 @@ const ActivityDetail = ({ activity, index }) => {
 							className={`${HEADERS[2].className} hidden md:flex md:text-sm lg:text-base justify-start`}
 						>
 							<Link href={`/${activity.from}`}>
-								<p className="font-thin border-b-2 border-transparent hover:border-gray-100 cursor-pointer">
+								<a className="font-thin border-b-2 border-transparent hover:border-gray-100 cursor-pointer">
 									{activity.from ? prettyTruncate(activity.from, 12, 'address') : '---'}
-								</p>
-							</Link>{' '}
+								</a>
+							</Link>
 						</div>
 						<div
 							className={`${HEADERS[3].className} hidden md:flex md:text-sm lg:text-base justify-start`}
 						>
 							<Link href={`/${activity.to}`}>
-								<p className="font-thin border-b-2 border-transparent hover:border-gray-100 cursor-pointer">
+								<a className="font-thin border-b-2 border-transparent hover:border-gray-100 cursor-pointer">
 									{activity.to ? prettyTruncate(activity.to, 12, 'address') : '---'}
-								</p>
+								</a>
 							</Link>
 						</div>
 						<div
-							className={`${HEADERS[4].className} text-xs text-center sm:text-base md:text-sm text-gray-50 opacity-50 font-thin w-full justify-end`}
+							className={`${HEADERS[4].className} text-xs text-center sm:text-base md:text-sm text-gray-50 opacity-50 font-thin`}
 						>
-							<div className="flex flex-row justify-center items-center">
+							<div className="flex flex-row md:flex-col justify-center items-center">
 								<div
 									className="flex flex-col relative top-1 items-center justify-center p-1 md:hidden"
 									onClick={() => showDetail(index)}
@@ -499,7 +494,7 @@ const ActivityDetail = ({ activity, index }) => {
 										)}
 									</div>
 								</div>
-								<div>
+								<div className="md:flex md:flex-row">
 									<div
 										onClick={() => setShowModal('options')}
 										className="cursor-pointer w-8 h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-4 flex items-center justify-center"
@@ -553,7 +548,7 @@ const ActivityDetail = ({ activity, index }) => {
 							</div>
 						</div>
 						<div
-							className={`${HEADERS[4].className} font-thin hidden md:flex md:text-sm lg:text-base justify-start md:w-3/12`}
+							className={`${HEADERS[4].className} font-thin hidden md:flex md:text-sm lg:text-base justify-start`}
 						>
 							{parseType(
 								activity.creator_id,
