@@ -70,7 +70,7 @@ const FilterCollection = ({ collections, onClearAll }) => {
 	return (
 		<div ref={filterModalRef} className="inline-block md:relative">
 			<div
-				className="md:mx-4 inline-flex cursor-pointer px-4 py-2 bg-dark-primary-2 button-wrapper rounded-md"
+				className="inline-flex cursor-pointer px-4 py-2 bg-dark-primary-2 button-wrapper rounded-md"
 				onClick={() => setShowFilterModal(!showFilterModal)}
 			>
 				<svg
@@ -92,8 +92,8 @@ const FilterCollection = ({ collections, onClearAll }) => {
 				</h1>
 			</div>
 			{showFilterModal && (
-				<div className="absolute mr-4 z-20 mt-2 right-0 bg-dark-primary-2 rounded-md w-80">
-					<div className=" p-4">
+				<div className="absolute mr-4 md:mr-0 z-20 mt-2 right-0 bg-dark-primary-2 rounded-md w-80">
+					<div className=" p-3">
 						<form action="/search" method="get" onSubmit={'_handleSubmit'} autoComplete="off">
 							<div className="flex border-dark-primary-1 border-2 rounded-lg bg-dark-primary-1 mb-2">
 								<svg

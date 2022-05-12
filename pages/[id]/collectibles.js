@@ -190,7 +190,7 @@ const Collection = ({ userProfile, accountId }) => {
 			<Nav />
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'collection'} />
-				<div className="flex justify-end my-4 md:mb-14 md:-mr-4">
+				<div className="flex justify-center md:justify-end my-4 md:mb-14 md:-mr-4">
 					<FilterCollection onClearAll={removeAllCollectionsFilter} collections={collections} />
 					<FilterMarket isShowVerified={false} isCollectibles={true} isShowStaked={true} />
 					<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
