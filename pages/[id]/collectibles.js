@@ -12,6 +12,7 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import FilterDisplay from 'components/Filter/FilterDisplay'
+import FilterCollection from 'components/Filter/FilterCollection'
 
 const LIMIT = 12
 
@@ -21,6 +22,7 @@ const Collection = ({ userProfile, accountId }) => {
 	const scrollCollection = `${router.query.id}::collection`
 
 	const [tokens, setTokens] = useState([])
+	const [collections, setCollections] = useState([])
 	const [idNext, setIdNext] = useState(null)
 	const [priceNext, setPriceNext] = useState(null)
 	const [hasMore, setHasMore] = useState(true)
@@ -34,8 +36,10 @@ const Collection = ({ userProfile, accountId }) => {
 		await fetchOwnerTokens(true)
 	}, [router.query.id])
 
-	const fetchOwnerTokens = async () => {
-		if (!hasMore || isFetching) {
+	const fetchOwnerTokens = async (initialFetch = false) => {
+		const _hasMore = initialFetch ? true : hasMore
+
+		if (!_hasMore || isFetching) {
 			return
 		}
 
@@ -54,6 +58,17 @@ const Collection = ({ userProfile, accountId }) => {
 
 		const newTokens = [...(tokens || []), ...newData.results]
 		setTokens(newTokens)
+
+		if (initialFetch) {
+			const collections = await axios(`${process.env.V2_API_URL}/owned-collections`, {
+				params: {
+					accountId: accountId,
+				},
+			})
+			const newCollections = await collections.data.result
+			setCollections(newCollections)
+		}
+
 		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
@@ -72,17 +87,20 @@ const Collection = ({ userProfile, accountId }) => {
 		router.query.sort,
 		router.query.pmin,
 		router.query.pmax,
-		router.query.is_notforsale,
+		router.query.card_trade_type,
 		router.query.is_staked,
+		router.query.collections,
 	])
 
 	const tokensParams = (query) => {
 		const parsedSortQuery = parseSortTokenQuery(query.sort)
 		const params = {
+			collection_id: query.collections,
 			exclude_total_burn: true,
 			owner_id: accountId,
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
+			...(query.card_trade_type === 'notForSale' && { has_price: false }),
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
@@ -96,6 +114,7 @@ const Collection = ({ userProfile, accountId }) => {
 
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
+
 		const params = tokensParams(query)
 		const res = await axios(`${process.env.V2_API_URL}/token`, {
 			params: params,
@@ -116,6 +135,19 @@ const Collection = ({ userProfile, accountId }) => {
 
 	const onClickDisplay = (typeDisplay) => {
 		setDataLocalStorage('display', typeDisplay, setDisplay)
+	}
+
+	const removeAllCollectionsFilter = () => {
+		router.push(
+			{
+				query: {
+					...router.query,
+					collections: '',
+				},
+			},
+			{},
+			{ shallow: true, scroll: false }
+		)
 	}
 
 	const headMeta = {
@@ -159,7 +191,8 @@ const Collection = ({ userProfile, accountId }) => {
 			<Nav />
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'collection'} />
-				<div className="flex justify-end my-4 md:mb-14 md:-mr-4">
+				<div className="flex justify-center md:justify-end my-4 md:mb-14 md:-mr-4">
+					<FilterCollection onClearAll={removeAllCollectionsFilter} collections={collections} />
 					<FilterMarket isShowVerified={false} isCollectibles={true} isShowStaked={true} />
 					<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 				</div>
