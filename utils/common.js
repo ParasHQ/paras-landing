@@ -205,7 +205,7 @@ export const checkSocialMediaUrl = (str) => {
 
 export const checkTokenUrl = (str) => {
 	var pattern = new RegExp(
-		/^((https?|ftp|smtp):\/\/)?(www\.)?(paras\.id|localhost:\d+|marketplace-v2-testnet\.paras\.id|testnet\.paras\.id)\/token\/([a-z0-9\-#_]+\.?)+::\d+(\/\d+)?/
+		/^((https?|ftp|smtp):\/\/)?(www\.)?(paras\.id|localhost:\d+|marketplace-v2-testnet\.paras\.id|testnet\.paras\.id)\/token\/([a-z0-9\-#_]+\.?)+::[0-9A-z\-#_]+(\/[0-9A-z\-#_]+)?/
 	)
 	return !!pattern.test(str)
 }

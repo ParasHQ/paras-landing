@@ -1,1 +1,1 @@
-export const SHOW_TX_HASH_LINK = false
+export const SHOW_TX_HASH_LINK = true
