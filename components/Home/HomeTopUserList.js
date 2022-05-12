@@ -21,7 +21,8 @@ const TopCollection = ({ collection, idx }) => {
 		setColDetail(res.data.data.results[0])
 	}, [])
 
-	const onTopColllection = () => {
+	const onTopColllection = (e) => {
+		e.preventDefault()
 		trackTopCollection(collection.collection_id)
 		router.push(`/collection/${collection.collection_id}`)
 	}
@@ -29,7 +30,11 @@ const TopCollection = ({ collection, idx }) => {
 	return (
 		<div className="my-3 flex items-center">
 			<p className="text-base text-gray-100 opacity-50 mr-3">{idx + 1}</p>
-			<div onClick={() => onTopColllection()} className="cursor-pointer">
+			<a
+				href={`/collection/${collection.collection_id}`}
+				onClick={onTopColllection}
+				className="cursor-pointer"
+			>
 				<div className="flex-shrink-0 cursor-pointer w-12 h-12 rounded-full overflow-hidden bg-primary border-white border">
 					<img
 						src={parseImgUrl(colDetail?.media, null, {
@@ -38,11 +43,15 @@ const TopCollection = ({ collection, idx }) => {
 						className="object-cover"
 					/>
 				</div>
-			</div>
+			</a>
 			<div className="ml-3 min-w-0">
 				{collection.collection_id && (
-					<div onClick={() => onTopColllection()} className="cursor-pointer">
-						<a className="text-gray-100 border-b-2 border-transparent hover:border-gray-100 font-semibold overflow-hidden text-ellipsis truncate">
+					<div onClick={onTopColllection} className="cursor-pointer">
+						<a
+							href={`/collection/${collection.collection_id}`}
+							onClick={(e) => e.preventDefault()}
+							className="text-gray-100 border-b-2 border-transparent hover:border-gray-100 font-semibold overflow-hidden text-ellipsis truncate"
+						>
 							{colDetail?.collection}
 						</a>
 					</div>
@@ -80,14 +89,16 @@ const TopUser = ({ user, idx, topUserType }) => {
 		<div className="my-3 flex items-center">
 			<p className="text-base text-gray-100 opacity-50 mr-3">{idx + 1}</p>
 			<div onClick={() => onTopUser(topUserType)}>
-				<div className="flex-shrink-0 cursor-pointer w-12 h-12 rounded-full overflow-hidden bg-primary border-white border">
-					<img
-						src={parseImgUrl(profile?.imgUrl, null, {
-							width: `300`,
-						})}
-						className="object-cover"
-					/>
-				</div>
+				<a href={`/${user.account_id}`} onClick={(e) => e.preventDefault()}>
+					<div className="flex-shrink-0 cursor-pointer w-12 h-12 rounded-full overflow-hidden bg-primary border-white border">
+						<img
+							src={parseImgUrl(profile?.imgUrl, null, {
+								width: `300`,
+							})}
+							className="object-cover"
+						/>
+					</div>
+				</a>
 			</div>
 			<div onClick={() => onTopUser(topUserType)} className="ml-3">
 				{user.account_id && (

@@ -53,7 +53,9 @@ export const CollectionItem = ({
 	const defaultAvatar = `data:image/svg+xml;utf8,${generateFromString(collection.collection_id)}`
 
 	const onToCollection = () => {
-		trackCollectionList(collection.collection_id)
+		if (router.pathname === '/') {
+			trackCollectionList(collection.collection_id)
+		}
 		router.push(`/collection/${collection.collection_id}`, undefined, { shallow: true })
 	}
 
@@ -63,8 +65,12 @@ export const CollectionItem = ({
 				collection?.isCreator || fullOpacity ? 'opacity-100' : 'opacity-60'
 			}`}
 		>
-			<div onClick={() => onToCollection()}>
-				<a className="cursor-pointer">
+			<div onClick={onToCollection}>
+				<a
+					href={`/collection/${collection.collection_id}`}
+					onClick={(e) => e.preventDefault()}
+					className="cursor-pointer"
+				>
 					<div className="flex flex-row flex-wrap md:h-40 h-48">
 						<div className="w-full h-full mb-4 rounded">
 							<img
@@ -80,8 +86,12 @@ export const CollectionItem = ({
 			<div className="text-white mt-2">
 				<div className="flex flex-row justify-start">
 					<div className="mx-2">
-						<div onClick={() => onToCollection()}>
-							<a className="cursor-pointer">
+						<div onClick={onToCollection}>
+							<a
+								href={`/collection/${collection.collection_id}`}
+								onClick={(e) => e.preventDefault()}
+								className="cursor-pointer"
+							>
 								<div
 									className="w-14 h-14 overflow-hidden
              shadow-inner z-20 rounded-full"
@@ -97,8 +107,12 @@ export const CollectionItem = ({
 						</div>
 					</div>
 					<div>
-						<div onClick={() => onToCollection()}>
-							<a className="cursor-pointer">
+						<div onClick={onToCollection}>
+							<a
+								href={`/collection/${collection.collection_id}`}
+								onClick={(e) => e.preventDefault()}
+								className="cursor-pointer"
+							>
 								<p className="grid grid-flow-col text-xl hover:underline font-bold">
 									{collection.collection}
 								</p>
