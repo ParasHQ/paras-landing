@@ -36,6 +36,7 @@ const Verify = () => {
 	const [isQuotaAvail, setIsQuotaAvail] = useState(true)
 	const [formState, setFormState] = useState('loading')
 	const [verifyStatus, setVerifyStatus] = useState({})
+	const [scheduleTimestamp, setScheduleTimestamp] = useState('')
 	const {
 		formState: { errors },
 		register,
@@ -49,6 +50,7 @@ const Verify = () => {
 			setProfile(`${window.location.origin}/${store.currentUser}`)
 			checkStatusVerification()
 			checkQuota()
+			checkFinishSchedule()
 		} else if (store.initialized && store.currentUser === null) {
 			router.push('/login')
 		}
@@ -84,6 +86,26 @@ const Verify = () => {
 				duration: 2500,
 			})
 			return false
+		}
+	}
+
+	const checkFinishSchedule = async () => {
+		try {
+			const resp = await axios.get(`${process.env.V2_API_URL}/verifications/scheduled-finish`, {
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+			})
+			const data = resp.data.data
+			setScheduleTimestamp(data.timestamp)
+		} catch (err) {
+			sentryCaptureException(err)
+			const errMsg = 'SomethingWentWrong'
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{localeLn(errMsg)}</div>,
+				type: 'error',
+				duration: 2500,
+			})
 		}
 	}
 
@@ -326,7 +348,7 @@ const Verify = () => {
 					{!isQuotaAvail && (
 						<p className="mt-6 block text-lg text-red-600">
 							<strong>Quota:</strong> {totalCurrent} / {totalQuota} Quota full. Please wait for the
-							next cycle
+							next cycle {scheduleTimestamp !== '' && `at ${scheduleTimestamp} UTC+7`}
 						</p>
 					)}
 					{isQuotaAvail && (

@@ -8,6 +8,7 @@ import { useIntl } from 'hooks/useIntl'
 import Media from 'components/Common/Media'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { SHOW_TX_HASH_LINK } from 'constants/common'
 const FETCH_TOKENS_LIMIT = 12
 
 const TabHistory = ({ localToken }) => {
@@ -453,7 +454,7 @@ const Activity = ({ activity }) => {
 const TxHashLink = ({ activity }) => {
 	return (
 		<>
-			{activity.transaction_hash && (
+			{SHOW_TX_HASH_LINK && activity.transaction_hash && (
 				<a
 					href={`https://${
 						process.env.APP_ENV === 'production' ? `` : `testnet.`

@@ -62,7 +62,11 @@ const BannedConfirmModal = ({
 						{localeLn(flagText[creatorData?.flag] || 'FlaggedByPARASStealing')}
 					</div>
 				)}
-				<div className="w-full text-white text-center">
+				<div
+					className={`w-full text-white text-sm text-center ${
+						!creatorData.isCreator && `bg-red-600 p-1 rounded-md`
+					}`}
+				>
 					{isTradeType ? `Are you sure to accept NFT trade with` : localeLn('AreYouSureBuy')}
 					{` `}
 					{isTradeType && <span className="font-bold">{tradedTokenData?.metadata.title}</span>}?
