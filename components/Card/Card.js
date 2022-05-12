@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import Media from 'components/Common/Media'
 import { parseImgUrl } from 'utils/common'
-import TimeAuction from 'components/Common/timeAuction'
+import TimeAuction from 'components/Common/TimeAuction'
 
 const Card = ({
 	imgUrl,
