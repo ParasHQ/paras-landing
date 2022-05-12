@@ -764,6 +764,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 									isShowVerified={false}
 									defaultMinPrice={true}
 									isCollection={true}
+									isCollectibles={true}
 									isShowStaked={true}
 								/>
 							) : (
@@ -796,6 +797,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 											isShowVerified={false}
 											defaultMinPrice={true}
 											isCollection={true}
+											isCollectibles={true}
 											isShowStaked={true}
 										/>
 									) : (
