@@ -239,6 +239,10 @@ export const parseSortTokenQuery = (sort) => {
 		return 'price::-1'
 	} else if (sort === 'priceasc') {
 		return 'price::1'
+	} else if (sort === 'scoredesc') {
+		return 'metadata.score::-1'
+	} else {
+		return '_id::-1'
 	}
 }
 

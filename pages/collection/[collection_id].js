@@ -126,6 +126,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			const lastData = newData.results[newData.results.length - 1]
 			setIdNextOwned(lastData._id)
 			params.__sort.includes('price') && setLowestPriceNextOwned(lastData.price)
+			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
 		}
 		setIsFetchingOwned(false)
 	}
@@ -763,6 +764,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 								<FilterMarket
 									isShowVerified={false}
 									defaultMinPrice={true}
+									isCollection={true}
 									isCollectibles={true}
 									isShowStaked={true}
 								/>
@@ -795,6 +797,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 										<FilterMarket
 											isShowVerified={false}
 											defaultMinPrice={true}
+											isCollection={true}
 											isCollectibles={true}
 											isShowStaked={true}
 										/>
@@ -858,6 +861,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							fetchData={fetchDataOwned}
 							hasMore={hasMoreOwned}
 							displayType={display}
+							showRarityScore={true}
 						/>
 					) : (
 						<CardList
