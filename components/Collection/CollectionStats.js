@@ -7,7 +7,7 @@ import ReactTooltip from 'react-tooltip'
 const CollectionStats = ({ stats }) => {
 	const { localeLn } = useIntl()
 	const [showTooltip, setShowTooltip] = useState(false)
-	const randomID = String(Math.random())
+	const randomID = 'collection-stats'
 
 	useEffect(() => {
 		setShowTooltip(true)

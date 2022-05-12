@@ -761,7 +761,8 @@ const Bid = ({ data, type, freshFetch }) => {
 														creatorTradeToken.flag &&
 														(creatorTradeToken.flag === 'banned' ||
 															creatorTradeToken.flag === 'rugpull' ||
-															creatorTradeToken.flag === 'hacked')
+															creatorTradeToken.flag === 'hacked' ||
+															creatorTradeToken.flag === 'scam')
 															? true
 															: false,
 											  })
@@ -797,7 +798,8 @@ const Bid = ({ data, type, freshFetch }) => {
 					creatorTradeToken?.flag &&
 					(creatorTradeToken?.flag === 'banned' ||
 						creatorTradeToken.flag === 'rugpull' ||
-						creatorTradeToken.flag === 'hacked') && (
+						creatorTradeToken.flag === 'hacked' ||
+						creatorTradeToken.flag === 'scam') && (
 						<div className="mt-8">
 							<div className={`flex items-center justify-center w-full`}>
 								<p
