@@ -4,6 +4,8 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import CollectionListLoader from './CollectionListLoader'
 import { generateFromString } from 'generate-avatar'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
+import router from 'next/router'
+import { trackCollectionList } from 'lib/ga'
 
 const CollectionList = ({ data, fetchData, hasMore, page }) => {
 	if (data.length === 0 && !hasMore) {
@@ -49,14 +51,26 @@ export const CollectionItem = ({
 	showDetails = true,
 }) => {
 	const defaultAvatar = `data:image/svg+xml;utf8,${generateFromString(collection.collection_id)}`
+
+	const onToCollection = () => {
+		if (router.pathname === '/') {
+			trackCollectionList(collection.collection_id)
+		}
+		router.push(`/collection/${collection.collection_id}`, undefined, { shallow: true })
+	}
+
 	return (
 		<div
 			className={`${className} ${
 				collection?.isCreator || fullOpacity ? 'opacity-100' : 'opacity-60'
 			}`}
 		>
-			<Link href={`/collection/${collection.collection_id}`} shallow={true}>
-				<a className="cursor-pointer">
+			<div onClick={onToCollection}>
+				<a
+					href={`/collection/${collection.collection_id}`}
+					onClick={(e) => e.preventDefault()}
+					className="cursor-pointer"
+				>
 					<div className="flex flex-row flex-wrap md:h-40 h-48">
 						<div className="w-full h-full mb-4 rounded">
 							<img
@@ -68,12 +82,16 @@ export const CollectionItem = ({
 						</div>
 					</div>
 				</a>
-			</Link>
+			</div>
 			<div className="text-white mt-2">
 				<div className="flex flex-row justify-start">
 					<div className="mx-2">
-						<Link href={`/collection/${collection.collection_id}`} shallow={true}>
-							<a className="cursor-pointer">
+						<div onClick={onToCollection}>
+							<a
+								href={`/collection/${collection.collection_id}`}
+								onClick={(e) => e.preventDefault()}
+								className="cursor-pointer"
+							>
 								<div
 									className="w-14 h-14 overflow-hidden
              shadow-inner z-20 rounded-full"
@@ -86,16 +104,20 @@ export const CollectionItem = ({
 									/>
 								</div>
 							</a>
-						</Link>
+						</div>
 					</div>
 					<div>
-						<Link href={`/collection/${collection.collection_id}`} shallow={true}>
-							<a className="cursor-pointer">
+						<div onClick={onToCollection}>
+							<a
+								href={`/collection/${collection.collection_id}`}
+								onClick={(e) => e.preventDefault()}
+								className="cursor-pointer"
+							>
 								<p className="grid grid-flow-col text-xl hover:underline font-bold">
 									{collection.collection}
 								</p>
 							</a>
-						</Link>
+						</div>
 						<div className="flex flex-row flex-wrap text-sm text-gray-400 items-center w-full">
 							<span className="mr-1">collection by</span>
 							<Link href={`/${collection.creator_id}`} shallow={true}>
