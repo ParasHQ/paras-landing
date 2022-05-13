@@ -22,6 +22,7 @@ const TokenList = ({
 	hasMore,
 	displayType = 'large',
 	volume,
+	showRarityScore = false,
 }) => {
 	const store = useStore()
 	const containerRef = useRef()
@@ -100,6 +101,7 @@ const TokenList = ({
 							initialData={token}
 							displayType={displayType}
 							volume={token.volume || volume?.[idx]}
+							showRarityScore={showRarityScore}
 						/>
 					))}
 				</div>
@@ -110,7 +112,7 @@ const TokenList = ({
 
 export default TokenList
 
-const TokenSingle = ({ initialData, displayType = 'large', volume }) => {
+const TokenSingle = ({ initialData, displayType = 'large', volume, showRarityScore }) => {
 	const { token, mutate } = useToken({
 		key: `${initialData.contract_id}::${initialData.token_series_id}/${initialData.token_id}`,
 		initialData: initialData,
@@ -239,6 +241,33 @@ const TokenSingle = ({ initialData, displayType = 'large', volume }) => {
 							)}
 						</div>
 					</div>
+					{showRarityScore && !!token.metadata.score && (
+						<div
+							className={`${
+								displayType === 'large' ? `block` : `flex gap-1`
+							} text-right absolute top-0 right-0`}
+						>
+							<p
+								className={`${
+									displayType === 'large' ? `block` : `hidden`
+								} text-white opacity-80 md:text-sm`}
+								style={{ fontSize: 11 }}
+							>
+								Rarity Score
+							</p>
+							<p
+								className={`${
+									displayType === 'large' ? `hidden` : `block`
+								} text-white opacity-80 md:text-sm`}
+								style={{ fontSize: 11 }}
+							>
+								Rarity Score
+							</p>
+							<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
+								{token.metadata?.score?.toFixed(2)}
+							</p>
+						</div>
+					)}
 					{volume && (
 						<div
 							className={`${

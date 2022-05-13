@@ -126,6 +126,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			const lastData = newData.results[newData.results.length - 1]
 			setIdNextOwned(lastData._id)
 			params.__sort.includes('price') && setLowestPriceNextOwned(lastData.price)
+			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
 		}
 		setIsFetchingOwned(false)
 	}
@@ -245,6 +246,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			__limit: LIMIT,
 			__sort: parsedSortQuery || '',
 			...(isItemActiveTab && { lookup_token: true }),
+			...(query.card_trade_type === 'notForSale' && { has_price: false }),
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
@@ -262,7 +264,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			...(router.query.tab === 'owned' && { owner_id: currentUser }),
 			...(query.q && { search: query.q }),
 		}
-		if (query.pmin === undefined && query.is_notforsale === 'false') {
+		if (query.pmin === undefined && query.card_trade_type === 'forSale') {
 			delete params.min_price
 		}
 
@@ -762,6 +764,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 								<FilterMarket
 									isShowVerified={false}
 									defaultMinPrice={true}
+									isCollection={true}
 									isCollectibles={true}
 									isShowStaked={true}
 								/>
@@ -794,6 +797,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 										<FilterMarket
 											isShowVerified={false}
 											defaultMinPrice={true}
+											isCollection={true}
 											isCollectibles={true}
 											isShowStaked={true}
 										/>
@@ -857,6 +861,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							fetchData={fetchDataOwned}
 							hasMore={hasMoreOwned}
 							displayType={display}
+							showRarityScore={true}
 						/>
 					) : (
 						<CardList
