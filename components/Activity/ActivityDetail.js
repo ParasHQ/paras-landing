@@ -4,7 +4,7 @@ import { FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton } fr
 import cachios from 'cachios'
 import Modal from 'components/Modal'
 import Media from 'components/Common/Media'
-import { parseImgUrl, timeAgo, prettyTruncate } from 'utils/common'
+import { parseImgUrl, timeAgo, prettyTruncate, prettyBalance } from 'utils/common'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
 import CopyLink from 'components/Common/CopyLink'
@@ -128,12 +128,12 @@ const ActivityDetail = ({ activity, index }) => {
 		{
 			id: 'from',
 			title: 'From',
-			className: `items-center w-2/12 p-2 h-full`,
+			className: `items-center w-2/12 p-3 h-full`,
 		},
 		{
 			id: 'to',
 			title: 'To',
-			className: `items-center w-2/12 p-2 h-full`,
+			className: `items-center w-2/12 p-3 h-full`,
 		},
 		{
 			id: 'time',
@@ -332,7 +332,7 @@ const ActivityDetail = ({ activity, index }) => {
 			<div key={activity._id} className="text-white">
 				<div className="w-full">
 					<div className="hidden md:block">
-						<div className="flex flex-row w-full text-gray-300 hover:opacity-75 border-gray-800 border-b-2">
+						<div className="flex flex-row w-full text-gray-300 hover:opacity-75">
 							{index === 0 &&
 								HEADERS.map((d, index) => {
 									return (
@@ -344,9 +344,9 @@ const ActivityDetail = ({ activity, index }) => {
 						</div>
 					</div>
 
-					<div className="flex flex-row items-center justify-between w-full cursor-pointer sm:cursor-default md:inline-flex md:w-full md:h-19 md:hover:bg-gray-800 md:hover:bg-opacity-30">
+					<div className="flex flex-row items-center justify-between w-full cursor-pointer sm:cursor-default md:inline-flex md:w-full md:h-19 md:hover:bg-gray-800 md:hover:bg-opacity-50">
 						<div className="flex items-center md:cursor-pointer md:w-3/12">
-							<div className="w-8 mr-8 bg-blue-900 rounded-lg z-20 relative">
+							<div className="w-8 my-2 mr-8 ml-2 bg-transparent rounded-lg z-20 relative">
 								<div
 									className={`${
 										isTradeActivity
@@ -359,21 +359,23 @@ const ActivityDetail = ({ activity, index }) => {
 									}`}
 									onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
 								>
-									<a>
-										<Media
-											className="rounded-lg overflow-hidden"
-											url={parseImgUrl(localToken?.metadata.media, null, {
-												width: `300`,
-												useOriginal: process.env.APP_ENV === 'production' ? false : true,
-												isMediaCdn: localToken?.isMediaCdn,
-											})}
-											videoControls={false}
-											videoLoop={true}
-											videoMuted={true}
-											autoPlay={false}
-											playVideoButton={false}
-										/>
-									</a>
+									<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
+										<a>
+											<Media
+												className="rounded-lg overflow-hidden"
+												url={parseImgUrl(localToken?.metadata.media, null, {
+													width: `300`,
+													useOriginal: process.env.APP_ENV === 'production' ? false : true,
+													isMediaCdn: localToken?.isMediaCdn,
+												})}
+												videoControls={false}
+												videoLoop={true}
+												videoMuted={true}
+												autoPlay={false}
+												playVideoButton={false}
+											/>
+										</a>
+									</Link>
 								</div>
 
 								{isTradeActivity && (
@@ -389,19 +391,23 @@ const ActivityDetail = ({ activity, index }) => {
 										}`}
 										onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
 									>
-										<Media
-											className="rounded-lg overflow-hidden"
-											url={parseImgUrl(localTradedToken?.metadata.media, null, {
-												width: `300`,
-												useOriginal: process.env.APP_ENV === 'production' ? false : true,
-												isMediaCdn: localTradedToken?.isMediaCdn,
-											})}
-											videoControls={false}
-											videoLoop={true}
-											videoMuted={true}
-											autoPlay={false}
-											playVideoButton={false}
-										/>
+										<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
+											<a>
+												<Media
+													className="rounded-lg overflow-hidden"
+													url={parseImgUrl(localTradedToken?.metadata.media, null, {
+														width: `300`,
+														useOriginal: process.env.APP_ENV === 'production' ? false : true,
+														isMediaCdn: localTradedToken?.isMediaCdn,
+													})}
+													videoControls={false}
+													videoLoop={true}
+													videoMuted={true}
+													autoPlay={false}
+													playVideoButton={false}
+												/>
+											</a>
+										</Link>
 									</div>
 								)}
 							</div>
@@ -430,9 +436,9 @@ const ActivityDetail = ({ activity, index }) => {
 								</Link>
 								<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
 									<p className="w-min md:hidden font-semibold truncate z-20">
-										{!activity.msg.params.price
-											? '---'
-											: `${formatNearAmount(activity.msg.params.price)} Ⓝ`}
+										{activity.msg.params.price !== null
+											? `${prettyBalance(activity.msg.params.price, 24, 4)} Ⓝ `
+											: '---'}
 									</p>
 								</Link>
 							</div>
@@ -440,9 +446,9 @@ const ActivityDetail = ({ activity, index }) => {
 						<div
 							className={`${HEADERS[1].className} hidden md:flex md:text-sm lg:text-base font-bold justify-center`}
 						>
-							{!activity.msg.params.price === null
-								? '---'
-								: `${formatNearAmount(activity.msg.params.price)} Ⓝ `}
+							{activity.msg.params.price !== null
+								? `${prettyBalance(activity.msg.params.price, 24, 4)} Ⓝ `
+								: '---'}
 						</div>
 						<div
 							className={`${HEADERS[2].className} hidden md:flex md:text-sm lg:text-base justify-start`}

@@ -73,9 +73,14 @@ const ActivityLog = ({ query }) => {
 	}
 
 	const _filterQuery = (filter) => {
-		if (!filter || filter === 'showAll') {
+		if (!filter) {
+			return `type=market_sales&`
+		}
+
+		if (filter === 'showAll') {
 			return ``
 		}
+
 		return `type=${filter}&`
 	}
 
