@@ -40,11 +40,24 @@ const AddTradeNFTUrlModal = ({ setIsShow, onClose, setTradedToken }) => {
 			return
 		}
 		const [contract_id, token_id] = _urlToken.split('/')
-		const _owner_id = await getOwnerTradedToken(contract_id, token_id)
-		if (!_owner_id) {
+		const _owner = await getOwnerTradedToken(contract_id, token_id)
+		if (_owner?.length === 0) {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">You are not the owner of the card</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsAdding(false)
+			return
+		}
+		if (!_owner[0].is_creator) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						The creator of this card is not verified
+					</div>
 				),
 				type: 'error',
 				duration: 2500,
@@ -67,7 +80,7 @@ const AddTradeNFTUrlModal = ({ setIsShow, onClose, setTradedToken }) => {
 			params: params,
 			ttl: 60,
 		})
-		return resp.data.data.results.length !== 0
+		return resp.data.data.results
 	}
 
 	return (

@@ -4,7 +4,7 @@ import Modal from 'components/Common/Modal'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
-import { GAS_FEE, STORAGE_ADD_MARKET_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
+import { GAS_FEE, GAS_FEE_200, STORAGE_ADD_MARKET_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
 import { IconInfo, IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
@@ -156,7 +156,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 						contractId: data.contract_id,
 						args: params,
 						attachedDeposit: data.approval_id ? `1` : STORAGE_APPROVE_FEE,
-						gas: GAS_FEE,
+						gas: GAS_FEE_200,
 					},
 				],
 			})

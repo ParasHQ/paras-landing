@@ -275,7 +275,8 @@ const Offer = ({
 													creatorTradeToken.flag &&
 													(creatorTradeToken.flag === 'banned' ||
 														creatorTradeToken.flag === 'rugpull' ||
-														creatorTradeToken.flag === 'hacked')
+														creatorTradeToken.flag === 'hacked' ||
+														creatorTradeToken.flag === 'scam')
 														? true
 														: false,
 										  }),
@@ -302,7 +303,8 @@ const Offer = ({
 					creatorTradeToken?.flag &&
 					(creatorTradeToken?.flag === 'banned' ||
 						creatorTradeToken.flag === 'rugpull' ||
-						creatorTradeToken.flag === 'hacked') && (
+						creatorTradeToken.flag === 'hacked' ||
+						creatorTradeToken.flag === 'scam') && (
 						<div className="mt-4">
 							<div className={`flex items-center justify-center w-full`}>
 								<p
