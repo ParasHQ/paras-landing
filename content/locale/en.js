@@ -143,6 +143,7 @@ const CardInfo = {
 	Royalty: 'Royalty',
 	Views: 'Views',
 	Fee: 'Fee',
+	LockedFee: 'Locked Fee',
 	Cancel: 'Cancel',
 	RemoveListing: 'Remove Listing',
 	CollectDigitalCard: 'Collect Digital Art Card that you can truly own.',
@@ -356,6 +357,8 @@ const common = {
 	FlaggeyByPARASRemint:
 		'WARNING: This collection has been paused for reminting, please contact the creator',
 	FlaggeyByPARASRugpull: 'This creator has been flagged by Paras due to rug pull',
+	FlaggedByPARASScam:
+		'This account is scamming the community. Please be careful when interacting with this account.',
 	UseOwnRisk:
 		"Paras' smart contract is not yet audited by well-known security organization or firm. Use at your own risk!",
 	...token,
@@ -598,6 +601,8 @@ const collection = {
 	Time: 'Time',
 	Type: 'Type',
 	NoActivity: 'No Activity',
+	TotalListed: 'Total Listed',
+	Search: 'Search by Title',
 }
 const deleteCollection = {
 	DeleteTitle: 'Delete Confirmation',

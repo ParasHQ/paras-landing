@@ -175,6 +175,7 @@ const TokenDetail = ({ token, className }) => {
 												videoPadding={true}
 												mimeType={token?.metadata?.mime_type}
 												seeDetails={true}
+                        isMediaCdn={token.isMediaCdn}
 											/>
 										</div>
 										<div className="w-full m-auto">
@@ -199,6 +200,7 @@ const TokenDetail = ({ token, className }) => {
 										videoPadding={false}
 										mimeType={token?.metadata?.mime_type}
 										seeDetails={true}
+                    isMediaCdn={token.isMediaCdn}
 									/>
 								)}
 							</>

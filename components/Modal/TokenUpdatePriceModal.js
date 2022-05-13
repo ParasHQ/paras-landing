@@ -4,7 +4,7 @@ import Modal from 'components/Common/Modal'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import { InputText } from 'components/Common/form'
-import { GAS_FEE, STORAGE_ADD_MARKET_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
+import { GAS_FEE, GAS_FEE_200, STORAGE_ADD_MARKET_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
 import { IconInfo, IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
@@ -28,6 +28,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 	const currentUser = useStore((state) => state.currentUser)
 	const setTransactionRes = useStore((state) => state.setTransactionRes)
 	const [isAnyTradeOffer, setIsAnyTradeOffer] = useState(false)
+	const [lockedTxFee, setLockedTxFee] = useState('')
 	const { localeLn } = useIntl()
 	const toast = useToast()
 
@@ -36,6 +37,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 		date: parseDate((txFee?.start_time || 0) * 1000),
 		fee: (txFee?.current_fee || 0) / 100,
 	})
+	const tooltipLockedFeeText = `This is the current locked transaction fee. Every update to the NFT price will also update the value according to the global transaction fee.`
 
 	useEffect(() => {
 		const getTxFee = async () => {
@@ -50,6 +52,12 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 			getTxFee()
 		}
 	}, [show])
+
+	useEffect(async () => {
+		if (!data?.transaction_fee || !newPrice) return
+		const calcLockedTxFee = (data?.transaction_fee / 10000) * 100
+		setLockedTxFee(calcLockedTxFee.toString())
+	}, [show, newPrice])
 
 	useEffect(async () => {
 		const resp = await axios.get(`${process.env.V2_API_URL}/offers`, {
@@ -148,7 +156,7 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 						contractId: data.contract_id,
 						args: params,
 						attachedDeposit: data.approval_id ? `1` : STORAGE_APPROVE_FEE,
-						gas: GAS_FEE,
+						gas: GAS_FEE_200,
 					},
 				],
 			})
@@ -433,6 +441,25 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
                   4
                 )} */}
 							</div>
+							{data.transaction_fee && txFee && `${txFee?.current_fee}` !== data.transaction_fee && (
+								<div className="flex items-center">
+									<Tooltip
+										id="locked-fee"
+										show={true}
+										text={tooltipLockedFeeText}
+										className="font-normal"
+										type="light"
+									>
+										<div className="border-primary p-1 rounded-md border-2 text-xs mr-1 flex">
+											<span className="text-white font-semibold">{localeLn('LockedFee')} :</span>
+											<span className="text-white font-semibold">
+												{` `}
+												{lockedTxFee} %
+											</span>
+										</div>
+									</Tooltip>
+								</div>
+							)}
 							<div className="mt-2 text-sm text-red-500">
 								{/* {errors.amount?.type === 'required' && `Sale price is required`}
                 {errors.amount?.type === 'min' && `Minimum 0`} */}

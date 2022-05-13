@@ -35,6 +35,7 @@ const InputTextAuto = forwardRef(
 					onBlur={() => setShowSuggestion(false)}
 					onChange={(e) => _onChange(e.target.value)}
 					value={value}
+					autoComplete="off"
 					{...rest}
 				/>
 				<div

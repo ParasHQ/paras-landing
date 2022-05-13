@@ -77,7 +77,7 @@ const Creation = ({ userProfile, accountId }) => {
 		router.query.pmax,
 		router.query.min_copies,
 		router.query.max_copies,
-		router.query.is_notforsale,
+		router.query.card_trade_type,
 	])
 
 	const tokensParams = (query) => {
@@ -88,6 +88,7 @@ const Creation = ({ userProfile, accountId }) => {
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
 			lookup_token: true,
+			...(query.card_trade_type === 'notForSale' && { has_price: false }),
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),

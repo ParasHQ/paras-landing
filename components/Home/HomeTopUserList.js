@@ -6,6 +6,8 @@ import LinkToProfile from 'components/LinkToProfile'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import HomeTopUsersLoader from 'components/Home/Loaders/TopUsers'
 import { useIntl } from 'hooks/useIntl'
+import { trackTopBuyer, trackTopCollection, trackTopSeller } from 'lib/ga'
+import router from 'next/router'
 
 const TopCollection = ({ collection, idx }) => {
 	const [colDetail, setColDetail] = useState({})
@@ -19,10 +21,20 @@ const TopCollection = ({ collection, idx }) => {
 		setColDetail(res.data.data.results[0])
 	}, [])
 
+	const onTopColllection = (e) => {
+		e.preventDefault()
+		trackTopCollection(collection.collection_id)
+		router.push(`/collection/${collection.collection_id}`)
+	}
+
 	return (
 		<div className="my-3 flex items-center">
 			<p className="text-base text-gray-100 opacity-50 mr-3">{idx + 1}</p>
-			<Link href={`/collection/${collection.collection_id}`}>
+			<a
+				href={`/collection/${collection.collection_id}`}
+				onClick={onTopColllection}
+				className="cursor-pointer"
+			>
 				<div className="flex-shrink-0 cursor-pointer w-12 h-12 rounded-full overflow-hidden bg-primary border-white border">
 					<img
 						src={parseImgUrl(colDetail?.media, null, {
@@ -31,14 +43,18 @@ const TopCollection = ({ collection, idx }) => {
 						className="object-cover"
 					/>
 				</div>
-			</Link>
+			</a>
 			<div className="ml-3 min-w-0">
 				{collection.collection_id && (
-					<Link href={`/collection/${collection.collection_id}`}>
-						<a className="text-gray-100 border-b-2 border-transparent hover:border-gray-100 font-semibold overflow-hidden text-ellipsis truncate">
+					<div onClick={onTopColllection} className="cursor-pointer">
+						<a
+							href={`/collection/${collection.collection_id}`}
+							onClick={(e) => e.preventDefault()}
+							className="text-gray-100 border-b-2 border-transparent hover:border-gray-100 font-semibold overflow-hidden text-ellipsis truncate"
+						>
 							{colDetail?.collection}
 						</a>
-					</Link>
+					</div>
 				)}
 				<p className="text-base text-gray-400">{formatNearAmount(collection.total_sum, 2)} Ⓝ</p>
 			</div>
@@ -46,7 +62,7 @@ const TopCollection = ({ collection, idx }) => {
 	)
 }
 
-const TopUser = ({ user, idx }) => {
+const TopUser = ({ user, idx, topUserType }) => {
 	const [profile, setProfile] = useState({})
 
 	useEffect(async () => {
@@ -59,20 +75,32 @@ const TopUser = ({ user, idx }) => {
 		setProfile(res.data.data.results[0])
 	}, [])
 
+	const onTopUser = (type) => {
+		if (type === 'top-buyers') {
+			trackTopBuyer(user.account_id)
+			router.push(`/${user.account_id}`)
+		} else if (type === 'top-sellers') {
+			trackTopSeller(user.account_id)
+			router.push(`/${user.account_id}`)
+		}
+	}
+
 	return (
 		<div className="my-3 flex items-center">
 			<p className="text-base text-gray-100 opacity-50 mr-3">{idx + 1}</p>
-			<Link href={`/${user.account_id}`}>
-				<div className="flex-shrink-0 cursor-pointer w-12 h-12 rounded-full overflow-hidden bg-primary border-white border">
-					<img
-						src={parseImgUrl(profile?.imgUrl, null, {
-							width: `300`,
-						})}
-						className="object-cover"
-					/>
-				</div>
-			</Link>
-			<div className="ml-3">
+			<div onClick={() => onTopUser(topUserType)}>
+				<a href={`/${user.account_id}`} onClick={(e) => e.preventDefault()}>
+					<div className="flex-shrink-0 cursor-pointer w-12 h-12 rounded-full overflow-hidden bg-primary border-white border">
+						<img
+							src={parseImgUrl(profile?.imgUrl, null, {
+								width: `300`,
+							})}
+							className="object-cover"
+						/>
+					</div>
+				</a>
+			</div>
+			<div onClick={() => onTopUser(topUserType)} className="ml-3">
 				{user.account_id && (
 					<LinkToProfile
 						accountId={user.account_id}
@@ -246,7 +274,7 @@ export const HomeTopUserList = ({
 								topBuyerList.map((user, idx) => {
 									return (
 										<div key={idx} className="flex-shrink-0 flex-grow-0 px-2 w-72">
-											<TopUser user={user} idx={idx} />
+											<TopUser user={user} idx={idx} topUserType={topUserType} />
 										</div>
 									)
 								})}
@@ -254,7 +282,7 @@ export const HomeTopUserList = ({
 								topSellerList.map((user, idx) => {
 									return (
 										<div key={idx} className="flex-shrink-0 flex-grow-0 px-2 w-72">
-											<TopUser user={user} idx={idx} />
+											<TopUser user={user} idx={idx} topUserType={topUserType} />
 										</div>
 									)
 								})}

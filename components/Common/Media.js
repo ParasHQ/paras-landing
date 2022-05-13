@@ -61,6 +61,7 @@ const Media = ({
 	playVideoButton = true,
 	mimeType,
 	seeDetails,
+	isMediaCdn,
 }) => {
 	const [media, setMedia] = useState(null)
 	const [isLoading, setIsLoading] = useState(true)
@@ -69,6 +70,9 @@ const Media = ({
 	const [isPlaying, setIsPlaying] = useState(false)
 
 	useEffect(() => {
+		if (url && seeDetails && media !== null) {
+			setMedia(null)
+		}
 		if (url && !mimeType?.includes('gif')) {
 			getMedia()
 		} else {
@@ -89,7 +93,7 @@ const Media = ({
 
 	const getMedia = async () => {
 		try {
-			const resp = await axios.get(`${parseImgUrl(url, undefined, { seeDetails: seeDetails })}`, {
+			const resp = await axios.get(`${parseImgUrl(url, undefined, { seeDetails, isMediaCdn })}`, {
 				responseType: 'blob',
 			})
 
@@ -105,7 +109,7 @@ const Media = ({
 		} catch (err) {
 			setMedia({
 				type: 'image/jpg',
-				url: parseImgUrl(url, undefined, { seeDetails: seeDetails }),
+				url: parseImgUrl(url, undefined, { seeDetails, isMediaCdn }),
 			})
 			setIsLoading(false)
 		}

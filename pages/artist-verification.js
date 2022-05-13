@@ -13,6 +13,14 @@ import { useForm } from 'react-hook-form'
 import ReCAPTCHA from 'react-google-recaptcha'
 
 import { useIntl } from 'hooks/useIntl'
+import {
+	FacebookIcon,
+	FacebookShareButton,
+	TelegramIcon,
+	TelegramShareButton,
+	TwitterIcon,
+	TwitterShareButton,
+} from 'react-share'
 const Verify = () => {
 	const { localeLn } = useIntl()
 	const router = useRouter()
@@ -28,6 +36,7 @@ const Verify = () => {
 	const [isQuotaAvail, setIsQuotaAvail] = useState(true)
 	const [formState, setFormState] = useState('loading')
 	const [verifyStatus, setVerifyStatus] = useState({})
+	const [scheduleTimestamp, setScheduleTimestamp] = useState('')
 	const {
 		formState: { errors },
 		register,
@@ -41,6 +50,7 @@ const Verify = () => {
 			setProfile(`${window.location.origin}/${store.currentUser}`)
 			checkStatusVerification()
 			checkQuota()
+			checkFinishSchedule()
 		} else if (store.initialized && store.currentUser === null) {
 			router.push('/login')
 		}
@@ -76,6 +86,26 @@ const Verify = () => {
 				duration: 2500,
 			})
 			return false
+		}
+	}
+
+	const checkFinishSchedule = async () => {
+		try {
+			const resp = await axios.get(`${process.env.V2_API_URL}/verifications/scheduled-finish`, {
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+			})
+			const data = resp.data.data
+			setScheduleTimestamp(data.timestamp)
+		} catch (err) {
+			sentryCaptureException(err)
+			const errMsg = 'SomethingWentWrong'
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{localeLn(errMsg)}</div>,
+				type: 'error',
+				duration: 2500,
+			})
 		}
 	}
 
@@ -318,7 +348,7 @@ const Verify = () => {
 					{!isQuotaAvail && (
 						<p className="mt-6 block text-lg text-red-600">
 							<strong>Quota:</strong> {totalCurrent} / {totalQuota} Quota full. Please wait for the
-							next cycle
+							next cycle {scheduleTimestamp !== '' && `at ${scheduleTimestamp} UTC+7`}
 						</p>
 					)}
 					{isQuotaAvail && (
@@ -440,18 +470,38 @@ const Verify = () => {
 		const verifiedDate = store.userProfile?.verifiedAt
 			? new Date(store.userProfile?.verifiedAt).toISOString().substring(0, 10)
 			: ''
+		const urlShare = `${process.env.BASE_URL}/${store.currentUser}/creation`
 
 		return (
 			<div className="max-w-4xl relative m-auto py-12 px-4">
 				<h1 className="text-4xl font-bold text-gray-100 text-center">
 					{localeLn('VerificationStatus')}
 				</h1>
-				<div className="mt-6 text-justify text-l text-gray-300 mb-20">
+				<div className="mt-6 text-justify text-l text-gray-300 mb-12">
 					<div className=" text-center ">
 						<h3 className="text-2xl font-bold text-green-500 mt-20">
 							{localeLn('YouAreVerified')}
 						</h3>
 						<p className="mt-3">{verifiedDate && `${localeLn('Since')} ${verifiedDate}`}</p>
+						<p className="mt-16 mb-3">{localeLn('ShareNow')}</p>
+						<div className="flex flex-row items-center justify-center gap-3">
+							<TwitterShareButton
+								title={`Hey I'm verified creator on Paras. Check out my creation only on @ParasHQ\n\n#paras #cryptoart #digitalart #tradingcards`}
+								url={urlShare}
+								className="flex text-white"
+							>
+								<TwitterIcon size={24} round />
+								<p className="ml-2">Twitter</p>
+							</TwitterShareButton>
+							<FacebookShareButton url={urlShare} className="flex text-white">
+								<FacebookIcon size={24} round />
+								<p className="ml-2">Facebook</p>
+							</FacebookShareButton>
+							<TelegramShareButton url={urlShare} className="flex text-white">
+								<TelegramIcon size={24} round />
+								<p className="ml-2">Telegram</p>
+							</TelegramShareButton>
+						</div>
 					</div>
 				</div>
 				<center>
@@ -484,7 +534,10 @@ const Verify = () => {
 					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 
-				<meta name="twitter:title" content="Paras - NFT Marketplace for Digital Collectibles" />
+				<meta
+					name="twitter:title"
+					content="Paras - NFT Marketplace for Digital Collectibles on NEAR"
+				/>
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -497,8 +550,14 @@ const Verify = () => {
 					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Paras - NFT Marketplace for Digital Collectibles" />
-				<meta property="og:site_name" content="Paras - NFT Marketplace for Digital Collectibles" />
+				<meta
+					property="og:title"
+					content="Paras - NFT Marketplace for Digital Collectibles on NEAR"
+				/>
+				<meta
+					property="og:site_name"
+					content="Paras - NFT Marketplace for Digital Collectibles on NEAR"
+				/>
 				<meta
 					property="og:description"
 					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
