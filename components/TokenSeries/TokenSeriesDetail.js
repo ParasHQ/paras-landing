@@ -261,20 +261,50 @@ const TokenSeriesDetail = ({ token, className }) => {
 					</div>
 					<div className="w-full h-full flex items-center justify-center p-2 lg:p-12 relative z-10 ">
 						{tokenDisplay === 'detail' ? (
-							<Media
-								className="rounded-lg overflow-hidden"
-								url={
-									token.metadata?.mime_type
-										? parseImgUrl(token.metadata.media)
-										: token.metadata.media
-								}
-								videoControls={true}
-								videoLoop={true}
-								videoMuted={true}
-								videoPadding={true}
-								mimeType={token?.metadata?.mime_type}
-								seeDetails={true}
-							/>
+							<>
+								{token?.metadata.animation_url ? (
+									<div className="max-h-80 md:max-h-72 lg:max-h-96 w-full mx-2 md:mx-0">
+										<div className="w-1/2 md:w-full h-full m-auto">
+											<Media
+												className="rounded-lg overflow-hidden max-h-80 md:max-h-72 lg:max-h-96"
+												url={
+													token.metadata?.mime_type
+														? parseImgUrl(token.metadata.media)
+														: token.metadata.media
+												}
+												videoControls={true}
+												videoLoop={true}
+												videoMuted={true}
+												videoPadding={true}
+												mimeType={token?.metadata?.mime_type}
+												seeDetails={true}
+											/>
+										</div>
+										<div className="w-full m-auto">
+											<div className="my-3 flex items-center justify-center w-full">
+												<audio controls className="w-full">
+													<source src={parseImgUrl(token?.metadata.animation_url)}></source>
+												</audio>
+											</div>
+										</div>
+									</div>
+								) : (
+									<Media
+										className="rounded-lg overflow-hidden"
+										url={
+											token.metadata?.mime_type
+												? parseImgUrl(token.metadata.media)
+												: token.metadata.media
+										}
+										videoControls={true}
+										videoLoop={true}
+										videoMuted={true}
+										videoPadding={true}
+										mimeType={token?.metadata?.mime_type}
+										seeDetails={true}
+									/>
+								)}
+							</>
 						) : (
 							<div className="w-1/2 h-full md:w-full m-auto flex items-center">
 								<Card
@@ -283,6 +313,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 										useOriginal: process.env.APP_ENV === 'production' ? false : true,
 										isMediaCdn: token.isMediaCdn,
 									})}
+									audioUrl={token.metadata?.animation_url}
 									imgBlur={token.metadata.blurhash}
 									token={{
 										title: token.metadata.title,
