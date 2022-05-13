@@ -97,6 +97,7 @@ const NewPage = () => {
 		control,
 		name: 'royalties',
 	})
+	const { category_name, category_id } = router.query
 
 	const [showImgCrop, setShowImgCrop] = useState(false)
 	const [isLoading, setIsLoading] = useState(null)
@@ -108,8 +109,6 @@ const NewPage = () => {
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
 	const [showCreatingModal, setShowCreatingModal] = useState(false)
 	const [showCreateColl, setShowCreateColl] = useState(false)
-	const [categories, setCategories] = useState([])
-	const [selectedCategory, setSelectedCategory] = useState('')
 
 	const [showAlertErr, setShowAlertErr] = useState(false)
 	const [choosenCollection, setChoosenCollection] = useState({})
@@ -206,6 +205,10 @@ const NewPage = () => {
 				}
 			}
 
+			if (store.selectedCategory !== '' && WalletHelper.activeWallet !== 'sender') {
+				window.sessionStorage.setItem(`categoryToken`, store.selectedCategory)
+			}
+
 			const res = await WalletHelper.callFunction({
 				contractId: process.env.NFT_CONTRACT_ID,
 				methodName: `nft_create_series`,
@@ -216,6 +219,9 @@ const NewPage = () => {
 
 			setIsCreating(false)
 			if (res?.response) {
+				if (store.selectedCategory !== '') {
+					await submitCategoryCard(res)
+				}
 				setTimeout(() => {
 					router.push('/market')
 					store.setTransactionRes(res?.response)
@@ -264,10 +270,10 @@ const NewPage = () => {
 		}
 	}, [step])
 
-	useEffect(async () => {
-		const res = await axios.get(`${process.env.V2_API_URL}/categories`)
-		const categories = await res.data.data.results
-		setCategories(categories)
+	useEffect(() => {
+		if (category_id) {
+			store.setSelectedCategory(category_id)
+		}
 	}, [])
 
 	const _updateValues = () => {
@@ -439,6 +445,36 @@ const NewPage = () => {
 
 		if (categoryId) {
 			return categoryId.split('-').map(capitalize).join(' ')
+		}
+	}
+
+	const submitCategoryCard = async (res) => {
+		const txLast = res?.response[res?.response.length - 1]
+		const resFromTxLast = txLast.receipts_outcome[0].outcome.logs[0]
+		const resOutcome = await JSON.parse(`${resFromTxLast}`)
+		try {
+			await axios.post(
+				`${process.env.V2_API_URL}/categories/tokens`,
+				{
+					account_id: store.currentUser,
+					contract_id: txLast?.transaction?.receiver_id,
+					token_series_id: resOutcome?.params?.token_series_id,
+					category_id: store.selectedCategory,
+				},
+				{
+					headers: {
+						authorization: await WalletHelper.authToken(),
+					},
+				}
+			)
+		} catch (err) {
+			sentryCaptureException(err)
+			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{msg}</div>,
+				type: 'warning',
+				duration: 2500,
+			})
 		}
 	}
 
@@ -866,19 +902,11 @@ const NewPage = () => {
 										))}
 									</InfiniteScroll>
 								</div>
-								<div className="text-sm mt-3 mb-1">Choose Categories</div>
-								<div className="max-h-28 md:h-32 mb-10 grid grid-cols-2 md:grid-cols-3 gap-1 overflow-y-scroll">
-									{categories.map((categ, idx) => (
-										<div
-											key={idx}
-											className={`flex items-center justify-center text-xs flex-wrap p-1 py-2 md:py-1 rounded-md text-white bg-gray-800 hover:bg-dark-primary-3 cursor-pointer ${
-												categ.category_id === selectedCategory && `border border-white bg-gray-900`
-											}`}
-											onClick={() => setSelectedCategory(categ.category_id)}
-										>
-											{categ?.name}
-										</div>
-									))}
+								<div className="text-sm mt-3 mb-1 text-opacity-30 flex justify-between items-center">
+									<p className="font-semibold">Choosen category:</p>
+									<div className="p-2 bg-gray-800 bg-opacity-80 rounded-md font-thin border border-white">
+										{category_name}
+									</div>
 								</div>
 								<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
 									<button disabled={step === 0} onClick={_handleBack}>
