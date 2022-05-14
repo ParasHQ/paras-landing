@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { IconLeft, IconRight } from 'components/Icons'
+import { trackFeatureBannerCommunity, trackFeatureBannerOfficial } from 'lib/ga'
+import { useRouter } from 'next/router'
 import { useRef, useState, useEffect } from 'react'
 import { Carousel } from 'react-responsive-carousel'
 import useSWR from 'swr'
@@ -125,12 +127,18 @@ const clampStyle = {
 const FeaturedOfficialParas = ({ list, className }) => {
 	const [height, setHeight] = useState(0)
 	const ref = useRef()
+	const router = useRouter()
 
 	useEffect(() => {
 		if (ref.current.clientWidth !== 0) {
 			setHeight((ref.current.clientWidth * 2) / 3)
 		}
 	}, [ref])
+
+	const onFeatureBannerOfficial = (data) => {
+		trackFeatureBannerOfficial(data.url)
+		router.push(data.url)
+	}
 
 	return (
 		<div className={`md:w-1/2 p-2 md:p-4 md:pr-2 snap-start ${className}`}>
@@ -139,27 +147,29 @@ const FeaturedOfficialParas = ({ list, className }) => {
 					<div
 						key={data._id}
 						className="w-full rounded-lg overflow-hidden flex-shrink-0 cursor-pointer"
-						onClick={() => window.open(data.url)}
+						onClick={() => onFeatureBannerOfficial(data)}
 					>
-						<div ref={ref} className="rounded-lg overflow-hidden shadow-xl drop-shadow-xl">
-							<div className="w-full bg-primary aspect-[3/2]" style={{ height }}>
-								<img
-									src={parseImgUrl(data.image, null, {
-										width: `800`,
-										useOriginal: process.env.APP_ENV === 'production' ? false : true,
-									})}
-									className="object-cover h-full w-full publication-card-img"
-								/>
+						<a href={data.url} onClick={(e) => e.preventDefault()}>
+							<div ref={ref} className="rounded-lg overflow-hidden shadow-xl drop-shadow-xl">
+								<div className="w-full bg-primary aspect-[3/2]" style={{ height }}>
+									<img
+										src={parseImgUrl(data.image, null, {
+											width: `800`,
+											useOriginal: process.env.APP_ENV === 'production' ? false : true,
+										})}
+										className="object-cover h-full w-full publication-card-img"
+									/>
+								</div>
+								<div className="w-full p-3 bg-gray-900 bg-opacity-50 h-[7.5rem] text-left">
+									<h1 className="text-white font-semibold text-2xl capitalize truncate">
+										{data.title}
+									</h1>
+									<p className="text-gray-200 text-sm" style={clampStyle}>
+										{data.description}
+									</p>
+								</div>
 							</div>
-							<div className="w-full p-3 bg-gray-900 bg-opacity-50 h-[7.5rem] text-left">
-								<h1 className="text-white font-semibold text-2xl capitalize truncate">
-									{data.title}
-								</h1>
-								<p className="text-gray-200 text-sm" style={clampStyle}>
-									{data.description}
-								</p>
-							</div>
-						</div>
+						</a>
 					</div>
 				))}
 			</Carousel>
@@ -170,6 +180,7 @@ const FeaturedOfficialParas = ({ list, className }) => {
 const FeaturedCommunity = ({ list, idx }) => {
 	const [height, setHeight] = useState(0)
 	const ref = useRef()
+	const router = useRouter()
 
 	useEffect(() => {
 		if (ref.current.clientWidth !== 0) {
@@ -177,46 +188,61 @@ const FeaturedCommunity = ({ list, idx }) => {
 		}
 	}, [ref])
 
+	const onFeatureBannerCommunity = (url) => {
+		trackFeatureBannerCommunity(url)
+		router.push(url)
+	}
+
 	return (
 		<div className="w-full md:w-[30%] rounded-lg overflow-hidden flex-shrink-0 flex snap-start">
 			<div className="w-full">
-				<div className="pt-4 px-2 cursor-pointer" onClick={() => window.open(list[idx].url)}>
-					<div className="rounded-md overflow-hidden shadow-xl drop-shadow-xl">
-						<div ref={ref} className="w-full aspect-[2/1]" style={{ height }}>
-							<img
-								src={parseImgUrl(list[idx].image, null, {
-									width: `400`,
-									useOriginal: process.env.APP_ENV === 'production' ? false : true,
-								})}
-								className="object-cover h-full w-full publication-card-img"
-							/>
+				<div
+					className="pt-4 px-2 cursor-pointer"
+					onClick={() => onFeatureBannerCommunity(list[idx].url)}
+				>
+					<a href={list[idx].url} onClick={(e) => e.preventDefault()}>
+						<div className="rounded-md overflow-hidden shadow-xl drop-shadow-xl">
+							<div ref={ref} className="w-full aspect-[2/1]" style={{ height }}>
+								<img
+									src={parseImgUrl(list[idx].image, null, {
+										width: `400`,
+										useOriginal: process.env.APP_ENV === 'production' ? false : true,
+									})}
+									className="object-cover h-full w-full publication-card-img"
+								/>
+							</div>
+							<div className="w-full p-3 bg-gray-900 bg-opacity-50">
+								<h1 className="text-white font-semibold text-lg capitalize truncate">
+									{list[idx].title}
+								</h1>
+								<p className="text-gray-200 text-sm truncate">{list[idx].description}</p>
+							</div>
 						</div>
-						<div className="w-full p-3 bg-gray-900 bg-opacity-50">
-							<h1 className="text-white font-semibold text-lg capitalize truncate">
-								{list[idx].title}
-							</h1>
-							<p className="text-gray-200 text-sm truncate">{list[idx].description}</p>
-						</div>
-					</div>
+					</a>
 				</div>
-				<div className="pt-4 px-2 cursor-pointer" onClick={() => window.open(list[idx + 1].url)}>
-					<div className="rounded-md overflow-hidden shadow-xl drop-shadow-xl">
-						<div className="w-full aspect-[2/1]" style={{ height }}>
-							<img
-								src={parseImgUrl(list[idx + 1].image, null, {
-									width: `400`,
-									useOriginal: process.env.APP_ENV === 'production' ? false : true,
-								})}
-								className="object-cover h-full w-full publication-card-img"
-							/>
+				<div
+					className="pt-4 px-2 cursor-pointer"
+					onClick={() => onFeatureBannerCommunity(list[idx + 1].url)}
+				>
+					<a href={list[idx].url} onClick={(e) => e.preventDefault()}>
+						<div className="rounded-md overflow-hidden shadow-xl drop-shadow-xl">
+							<div className="w-full aspect-[2/1]" style={{ height }}>
+								<img
+									src={parseImgUrl(list[idx + 1].image, null, {
+										width: `400`,
+										useOriginal: process.env.APP_ENV === 'production' ? false : true,
+									})}
+									className="object-cover h-full w-full publication-card-img"
+								/>
+							</div>
+							<div className="w-full p-3 bg-gray-900 bg-opacity-50">
+								<h1 className="text-white font-semibold text-lg capitalize truncate">
+									{list[idx + 1].title}
+								</h1>
+								<p className="text-gray-200 text-sm truncate">{list[idx + 1].description}</p>
+							</div>
 						</div>
-						<div className="w-full p-3 bg-gray-900 bg-opacity-50">
-							<h1 className="text-white font-semibold text-lg capitalize truncate">
-								{list[idx + 1].title}
-							</h1>
-							<p className="text-gray-200 text-sm truncate">{list[idx + 1].description}</p>
-						</div>
-					</div>
+					</a>
 				</div>
 			</div>
 		</div>

@@ -16,6 +16,7 @@ import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
 import WalletHelper from 'lib/WalletHelper'
 import TradeNFTModal from './TradeNFTModal'
+import { trackOfferToken, trackOfferTokenImpression } from 'lib/ga'
 
 const PlaceBidModal = ({
 	data,
@@ -46,6 +47,12 @@ const PlaceBidModal = ({
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const [isEnableTrade, setIsEnableTrade] = useState(true)
+
+	useEffect(() => {
+		if (show) {
+			trackOfferTokenImpression(data.token_id)
+		}
+	}, [show])
 
 	useEffect(() => {
 		if (
@@ -110,6 +117,8 @@ const PlaceBidModal = ({
 	const onPlaceBid = async ({ bidAmount }) => {
 		setIsBidding(true)
 		const hasDepositStorage = await hasStorageBalance()
+
+		trackOfferToken(data.token_id)
 
 		try {
 			const depositParams = { receiver_id: currentUser }
