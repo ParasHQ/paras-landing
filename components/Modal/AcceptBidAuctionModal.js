@@ -9,12 +9,11 @@ import JSBI from 'jsbi'
 import { IconInfo } from 'components/Icons'
 import { useEffect, useState } from 'react'
 import WalletHelper from 'lib/WalletHelper'
-import { trackUpdateListingToken } from 'lib/ga'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Tooltip from 'components/Common/Tooltip'
 import { useToast } from 'hooks/useToast'
 
-const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess, tokenType = `token` }) => {
+const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess }) => {
 	const { localeLn } = useIntl()
 	const { nearUsdPrice } = useStore()
 	const [txFee, setTxFee] = useState(null)
@@ -75,8 +74,6 @@ const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess, tokenType = `to
 	const onAcceptBidAuction = async () => {
 		setIsAcceptBid(true)
 
-		trackUpdateListingToken(data.token_id)
-
 		const hasDepositStorage = await hasStorageBalance()
 
 		try {
@@ -84,9 +81,6 @@ const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess, tokenType = `to
 
 			const params = {
 				nft_contract_id: data.contract_id,
-				...(data.token_id
-					? { token_id: data.token_id }
-					: { token_series_id: data.token_series_id }),
 				token_id: data.token_id,
 			}
 
@@ -200,16 +194,13 @@ const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess, tokenType = `to
 		}
 	}
 
-	const isCurrentBid = (type) => {
+	const isCurrentBid = () => {
 		let list = []
 		data?.bidder_list?.map((item) => {
-			if (type === 'bidder') list.push(item.bidder)
-			else if (type === 'time') list.push(item.issued_at)
-			else if (type === 'amount') list.push(item.amount)
+			list.push(item.amount)
 		})
-		const currentBid = list.reverse()
 
-		return currentBid[0]
+		return list[list.length - 1]
 	}
 
 	return (

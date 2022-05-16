@@ -28,7 +28,7 @@ import Media from 'components/Common/Media'
 import ReportModal from 'components/Modal/ReportModal'
 import Card from 'components/Card/Card'
 import Tooltip from 'components/Common/Tooltip'
-import { formatNearAmount } from 'near-api-js/lib/utils/format'
+import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
 import TabAuction from 'components/Tabs/TabAuction'
 import TokenAuctionBidModal from 'components/Modal/TokenAuctionBidModal'
@@ -209,24 +209,22 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			else if (type === 'time') list.push(item.issued_at)
 			else if (type === 'amount') list.push(item.amount)
 		})
-		const currentBid = list.reverse()
 
-		return currentBid[0]
+		return list[list.length - 1]
 	}
 
 	const checkNextPriceBid = (type) => {
 		const currentBid = JSBI.BigInt(
-			token?.bidder_list && token?.bidder_list?.length !== 0
-				? isCurrentBid('amount')
-				: token?.price?.$numberDecimal || token?.price || ''
+			token?.bidder_list && token?.bidder_list?.length !== 0 ? isCurrentBid('amount') : token?.price
 		)
 		const multiplebid = JSBI.multiply(JSBI.divide(currentBid, JSBI.BigInt(100)), JSBI.BigInt(5))
 		const nextBid = JSBI.add(currentBid, multiplebid).toString()
-		const totalNextBid = Math.ceil(formatNearAmount(nextBid))
+		const nextBidToNear = Math.ceil(formatNearAmount(nextBid))
+		const nextBidToUSD = parseNearAmount(nextBidToNear.toString())
 		if (type === 'near') {
-			return totalNextBid
+			return nextBidToNear
 		} else if (type === 'usd') {
-			return nextBid.toString()
+			return nextBidToUSD.toString()
 		}
 	}
 
@@ -387,7 +385,12 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 														)} Ⓝ`}</div>
 														{token.price !== '0' && store.nearUsdPrice !== 0 && (
 															<div className="text-[9px] text-gray-400 truncate mt-1">
-																~ ${JSBI.BigInt(checkNextPriceBid('usd')) * store.nearUsdPrice}
+																~ $
+																{prettyBalance(
+																	JSBI.BigInt(checkNextPriceBid('usd')) * store.nearUsdPrice,
+																	24,
+																	2
+																)}
 															</div>
 														)}
 														{token.price === '0' && token?.is_auction && !isAuctionEnds && (
@@ -453,7 +456,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 																{prettyBalance(
 																	JSBI.BigInt(checkNextPriceBid('usd')) * store.nearUsdPrice,
 																	24,
-																	4
+																	2
 																)}
 															</div>
 														)}

@@ -10,22 +10,14 @@ import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import { IconX } from 'components/Icons'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
 import WalletHelper from 'lib/WalletHelper'
-import { trackUpdateListingToken } from 'lib/ga'
 import { useToast } from 'hooks/useToast'
 
-const TokenAuctionBidModal = ({
-	data,
-	show,
-	onClose,
-	bidAuctionAmount,
-	onSuccess,
-	tokenType = `token`,
-}) => {
+const TokenAuctionBidModal = ({ data, show, onClose, bidAuctionAmount, onSuccess }) => {
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const creatorData = useProfileData(data?.metadata.creator_id)
 	const { localeLn } = useIntl()
@@ -41,10 +33,6 @@ const TokenAuctionBidModal = ({
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const toast = useToast()
-
-	useEffect(() => {
-		checkNextPriceBid()
-	}, [])
 
 	const hasStorageBalance = async () => {
 		try {
@@ -77,8 +65,6 @@ const TokenAuctionBidModal = ({
 	const onPlaceBidAuction = async ({ bidAuctionAmount }) => {
 		setIsBidding(true)
 
-		trackUpdateListingToken(data.token_id)
-
 		const hasDepositStorage = await hasStorageBalance()
 
 		try {
@@ -86,9 +72,7 @@ const TokenAuctionBidModal = ({
 
 			const params = {
 				nft_contract_id: data.contract_id,
-				...(data.token_id
-					? { token_id: data.token_id }
-					: { token_series_id: data.token_series_id }),
+				token_id: data.token_id,
 				ft_token_id: 'near',
 				amount: parseNearAmount(bidAuctionAmount),
 			}

@@ -8,10 +8,9 @@ import JSBI from 'jsbi'
 import { IconX } from 'components/Icons'
 import { useState } from 'react'
 import WalletHelper from 'lib/WalletHelper'
-import { trackUpdateListingToken } from 'lib/ga'
 import { useToast } from 'hooks/useToast'
 
-const CancelBidModal = ({ data, show, onClose, onSuccess, tokenType = `token` }) => {
+const CancelBidModal = ({ data, show, onClose, onSuccess }) => {
 	const { localeLn } = useIntl()
 	const [isCancelBid, setIsCancelBid] = useState(false)
 	const { currentUser, setTransactionRes } = useStore((state) => ({
@@ -51,8 +50,6 @@ const CancelBidModal = ({ data, show, onClose, onSuccess, tokenType = `token` })
 	const onCancelBid = async () => {
 		setIsCancelBid(true)
 
-		trackUpdateListingToken(data.token_id)
-
 		const hasDepositStorage = await hasStorageBalance()
 
 		try {
@@ -60,9 +57,6 @@ const CancelBidModal = ({ data, show, onClose, onSuccess, tokenType = `token` })
 
 			const params = {
 				nft_contract_id: data.contract_id,
-				...(data.token_id
-					? { token_id: data.token_id }
-					: { token_series_id: data.token_series_id }),
 				token_id: data.token_id,
 				account_id: currentUser,
 			}

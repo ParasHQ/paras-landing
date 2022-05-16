@@ -137,7 +137,6 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 					price: parseNearAmount(watch('startingBid')),
 					ft_token_id: 'near',
 					market_type: 'sale',
-					started_at: `${(Date.now() + 10 * 60 * 60).toString()}000000`,
 					ended_at: expirationDateAuction,
 					is_auction: true,
 				}),
@@ -259,7 +258,7 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 							</div>
 
 							<div className="mb-2 flex justify-end items-center gap-2">
-								<p className="text-white text-sm">at</p>
+								<p className="text-white text-sm mt-1">UTC</p>
 								<InputText
 									name="timeExpirationDate"
 									type="time"
@@ -269,7 +268,6 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 									})}
 									className={`${errors.timeExpirationDate && 'error'}`}
 								/>
-								<p className="text-white text-sm mt-1">UTC</p>
 							</div>
 							<div className="mt-2 text-sm text-red-500 text-right">
 								{errors.timeExpirationDate?.type === 'required' &&

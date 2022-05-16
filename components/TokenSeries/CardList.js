@@ -128,7 +128,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 	const toast = useToast()
 
 	const price =
-		token.token?.amount && token.token?.bidder_list?.length !== 0
+		token.token?.amount && token.token?.bidder_list
 			? token.token?.amount
 			: token.lowest_price || token.price
 	const [isEndedTime, setIsEndedTime] = useState(false)
@@ -280,10 +280,10 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 	const typeSale = () => {
 		if (token.token?.is_auction && !isEndedTime) {
 			return localeLn('OnAuction')
-		} else if (token.token || token.metadata.copies === 1) {
-			return localeLn('OnSale')
+		} else if (token.lowest_price && token.metadata.copies > 1) {
+			return localeLn('StartFrom')
 		} else {
-			localeLn('StartFrom')
+			return localeLn('OnSale')
 		}
 	}
 
@@ -391,25 +391,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 											</div>
 										)}
 									</div>
-									{token.token?.is_auction && price === '0' && !isEndedTime && (
-										<div
-											className={`${
-												token.token?.is_auction ? 'text-[9px]' : 'text-xs'
-											} text-gray-400 truncate`}
-										>
-											~ $
-											{prettyBalance(
-												JSBI.BigInt(
-													token.token?.is_auction && token.token?.bidder_list?.length !== 0
-														? isCurrentBid('amount') || price
-														: price
-												) * store.nearUsdPrice,
-												24,
-												2
-											)}
-										</div>
-									)}
-									{price !== '0' && store?.nearUsdPrice !== 0 && !isEndedTime && (
+									{price && !isEndedTime && (
 										<div
 											className={`${
 												token.token?.is_auction ? 'text-[9px]' : 'text-xs'
