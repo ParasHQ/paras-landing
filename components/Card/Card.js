@@ -95,7 +95,7 @@ const Card = ({
 	}
 
 	const calculateRoyalty = () => {
-		if (JSON.stringify(token.royalty) !== '{}') {
+		if (token.royalty) {
 			return Object.values(token.royalty).reduce((a, b) => parseInt(a) + parseInt(b), 0) / 100 + '%'
 		}
 		return 'None'

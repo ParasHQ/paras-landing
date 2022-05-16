@@ -17,6 +17,7 @@ import BannedConfirmModal from './BannedConfirmModal'
 import WalletHelper from 'lib/WalletHelper'
 import TradeNFTModal from './TradeNFTModal'
 import { trackOfferToken, trackOfferTokenImpression } from 'lib/ga'
+import { specialBidTokens } from 'pages/drops'
 
 const PlaceBidModal = ({
 	data,
@@ -176,6 +177,10 @@ const PlaceBidModal = ({
 		}
 	}
 
+	const specialBidToken = specialBidTokens.find(
+		(token) => token.tokenSeriesId === data.token_series_id
+	)
+
 	return (
 		<>
 			{showTradeNFTModal && (
@@ -235,7 +240,8 @@ const PlaceBidModal = ({
 									step="any"
 									ref={register({
 										required: true,
-										min: 0.01,
+										// min: 0.01,
+										min: specialBidToken ? specialBidToken.price : 0.01,
 										max: parseFloat(userBalance.available / 10 ** 24),
 									})}
 									className={`${errors.bidAmount && 'error'}`}
@@ -243,7 +249,8 @@ const PlaceBidModal = ({
 								/>
 								<div className="mt-2 text-sm text-red-500">
 									{errors.bidAmount?.type === 'required' && `Offer amount is required`}
-									{errors.bidAmount?.type === 'min' && `Minimum 0.01 Ⓝ`}
+									{errors.bidAmount?.type === 'min' &&
+										(specialBidToken ? `Minimum ${specialBidToken.price} Ⓝ` : `Minimum 0.01 Ⓝ`)}
 									{errors.bidAmount?.type === 'max' && `You don't have enough balance`}
 								</div>
 							</div>
