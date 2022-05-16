@@ -19,51 +19,32 @@ import ReactLinkify from 'react-linkify'
 
 export const specialBidTokens = [
 	{
-		contractId: 'x.paras.near',
-		tokenSeriesId: '289013',
+		contractId: 'spin-nft-contract.near',
+		tokenSeriesId: '49',
 		supply: `1`,
 		price: 10,
 		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
 	},
 	{
-		contractId: 'x.paras.near',
-		tokenSeriesId: '289113',
+		contractId: 'spin-nft-contract.near',
+		tokenSeriesId: '21',
 		supply: `1`,
-		price: 10,
+		price: 20,
 		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
 	},
 	{
-		contractId: 'x.paras.near',
-		tokenSeriesId: '289087',
+		contractId: 'spin-nft-contract.near',
+		tokenSeriesId: '26',
 		supply: `1`,
-		price: 10,
-		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
-	},
-	{
-		contractId: 'x.paras.near',
-		tokenSeriesId: '293199',
-		supply: `10`,
-		price: 5,
-		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
-	},
-	{
-		contractId: 'x.paras.near',
-		tokenSeriesId: '293209',
-		supply: `10`,
-		price: 5,
-		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
-	},
-	{
-		contractId: 'x.paras.near',
-		tokenSeriesId: '293216',
-		supply: `10`,
-		price: 5,
+		price: 20,
 		blurhash: 'U9FsJl?900DqMa?wR?9t4|9a?X=C02E3-Q%Y',
 	},
 ]
 
 const descText =
-	'The Help is Near & Create for Ukraine are created exclusively for charity auctions & donations by the NFT artist communities to support the people who are directly impacted by the war in Ukraine.\n\nAll donations will go to:\nhttps://twitter.com/RedCrossUkraine\nhttps://twitter.com/Ukraine\nhttps://twitter.com/Unchainfund'
+	'BUY Our Freaky Elves and Help Us Save Lives! \r\n\r\nWe are auctioning 3 of our Freaky Elves NFT collections. We plan to donate all the proceeds from the sales in crypto to the Save the Children Fund via the Giving Block platform.\r\n\r\nAuction Start Date: (dd:mm:yyyy) / time: 18/05/2022 15:00 UTC\r\n\r\nAuction End Date: (dd:mm:yyyy) / time: 23/05/2022 15:00 UTC\r\n\r\n\r\nThe NFTs that will be auctioned on Paras NFT Marketplace are as follows:\r\n\r\n1-  Freaky Elf #49 – 10 NEAR\r\n\r\n2- Freaky Elf #21 – 20 NEAR\r\n\r\n3- Freaky Elf #26 – 20 NEAR'
+
+const auctionEndDate = 1653318000000
 
 export const specialTokenId = [
 	// {
@@ -105,12 +86,12 @@ export const specialTokenId = [
 
 const timeline = [
 	{
-		date: `March 10th`,
-		note: [`NFT drop is live by offer`, `Drops will start on March 10th at 10.00 UTC`],
+		date: `May 18th`,
+		note: [`NFT drop is live by offer`, `Drops will start on May 18th at 3.00 PM UTC`],
 	},
 	{
-		date: 'March 16th',
-		note: [`NFT drop will end on March 16th at 9.59 UTC`],
+		date: 'May 23th',
+		note: [`NFT drop will end on March 16th at 3.00 PM UTC`],
 	},
 ]
 
@@ -138,12 +119,12 @@ export default function Drops() {
 			}}
 		>
 			<Head>
-				<title>Charity Auction for Ukraine - NFT Drops</title>
+				<title>Freaky Elves by Spin - NFT Drops</title>
 				<meta
 					name="description"
 					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
-				<meta name="twitter:title" content="Charity Auction for Ukraine - NFT Drops" />
+				<meta name="twitter:title" content="Freaky Elves by Spin - NFT Drops" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
@@ -153,11 +134,11 @@ export default function Drops() {
 				/>
 				<meta
 					name="twitter:image"
-					content="https://paras-cdn.imgix.net/bafybeianndejhlttfzkcxmpfxfjqkjdqpuvyoxv4ts7achio3x2ovmtyn4?w=800&auto=format,compress"
+					content="https://paras-cdn.imgix.net/bafkreihi34lwqfn4syfx24rme5ssfmbyuks62gftdsqrfmkcicybxzu2a4?w=800&auto=format,compress"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Charity Auction for Ukraine - NFT Drops" />
-				<meta property="og:site_name" content="Charity Auction for Ukraine - NFT Drops" />
+				<meta property="og:title" content="Freaky Elves by Spin - NFT Drops" />
+				<meta property="og:site_name" content="Freaky Elves by Spin - NFT Drops" />
 				<meta
 					property="og:description"
 					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
@@ -165,7 +146,7 @@ export default function Drops() {
 				<meta property="og:url" content="https://paras.id" />
 				<meta
 					property="og:image"
-					content="https://paras-cdn.imgix.net/bafybeianndejhlttfzkcxmpfxfjqkjdqpuvyoxv4ts7achio3x2ovmtyn4?w=800&auto=format,compress"
+					content="https://paras-cdn.imgix.net/bafkreihi34lwqfn4syfx24rme5ssfmbyuks62gftdsqrfmkcicybxzu2a4?w=800&auto=format,compress"
 				/>
 			</Head>
 			<Nav />
@@ -217,9 +198,7 @@ export default function Drops() {
 								</svg>
 							</div> */}
 							{/* <p className="text-gray-100 ml-2 font-bold text-2xl">x</p> */}
-							<p className="text-gray-100 ml-2 font-bold text-2xl">
-								{'Charity Auction for Ukraine'}
-							</p>
+							<p className="text-gray-100 ml-2 font-bold text-2xl">{'Freaky Elves by Spin'}</p>
 						</div>
 						<h1 className="text-white font-bold text-6xl mt-4 mb-2">{localeLn('NFTDrops')}</h1>
 						{/* <img
@@ -240,11 +219,20 @@ export default function Drops() {
 									{descText.replace(/\n\s*\n\s*\n/g, '\n\n')}
 								</p>
 							</ReactLinkify>
+							<p className="text-white mt-4">
+								Read more info{' '}
+								<a
+									className="underline font-bold"
+									href="https://paras.id/publication/freaky-elves-nft-auction-626663b2cc76b63c7b64df97"
+								>
+									here
+								</a>
+							</p>
 							<div className="mt-8 border-2 border-dashed border-gray-800 rounded-md p-4">
 								<div className="text-white font-bold mb-2">Limited time only</div>
 								<Countdown
 									className="text-white text-2xl font-bold"
-									date={1647424799000}
+									date={auctionEndDate}
 									renderer={({ formatted }) => (
 										<div className="text-white flex justify-center items-center font-bold">
 											<div className="w-1/4 md:w-20">
@@ -619,7 +607,7 @@ const SpecialCardBid = ({
 			params: {
 				contract_id: contractId,
 				token_series_id: tokenId,
-				// lookup_token: true,
+				lookup_token: true,
 			},
 		})
 		const token = (await res.data.data.results[0]) || null
@@ -698,7 +686,13 @@ const SpecialCardBid = ({
 							<div className="w-full m-auto">
 								<Card
 									special
-									imgUrl={localToken ? parseImgUrl(localToken.metadata.media) : parseImgUrl(imgUrl)}
+									imgUrl={
+										localToken
+											? parseImgUrl(localToken.metadata.media, undefined, {
+													isMediaCdn: localToken.isMediaCdn,
+											  })
+											: parseImgUrl(imgUrl)
+									}
 									imgBlur={localToken?.metadata.blurhash}
 									flippable
 									token={{
