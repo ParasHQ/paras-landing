@@ -11,6 +11,7 @@ import WalletHelper, { walletType } from 'lib/WalletHelper'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { sentryCaptureException } from 'lib/sentry'
 import {
 	FacebookIcon,
 	FacebookShareButton,
@@ -37,6 +38,9 @@ const SuccessTransactionModal = () => {
 				accountId: near.currentUser.accountId,
 				txHash: txHash[txHash.length - 1],
 			})
+			if (window.sessionStorage.getItem('categoryToken')) {
+				await submitCategoryCard(txStatus)
+			}
 			await processTransaction(txStatus)
 		}
 
@@ -180,6 +184,37 @@ const SuccessTransactionModal = () => {
 		const query = router.query
 		delete query.transactionHashes
 		router.replace({ pathname: router.pathname, query }, undefined, { shallow: true })
+	}
+
+	const submitCategoryCard = async (res) => {
+		const txLast = res
+		const resFromTxLast = txLast.receipts_outcome[0].outcome.logs[0]
+		const resOutcome = await JSON.parse(`${resFromTxLast}`)
+		try {
+			await axios.post(
+				`${process.env.V2_API_URL}/categories/tokens`,
+				{
+					account_id: currentUser,
+					contract_id: txLast?.transaction?.receiver_id,
+					token_series_id: resOutcome?.params?.token_series_id,
+					category_id: window.sessionStorage.getItem(`categoryToken`),
+				},
+				{
+					headers: {
+						authorization: await WalletHelper.authToken(),
+					},
+				}
+			)
+			window.sessionStorage.removeItem('categoryToken')
+		} catch (err) {
+			sentryCaptureException(err)
+			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{msg}</div>,
+				type: 'warning',
+				duration: 2500,
+			})
+		}
 	}
 
 	if (!showModal || !token) return null
