@@ -826,6 +826,8 @@ const NewPage = () => {
 									setAudioUrl('')
 									setThumbnailAudioUrl('')
 									setthumbnailAudioFile('')
+									setImgFile('')
+									setImgUrl('')
 									setShowAudioThumbnailModal(false)
 								}}
 							>
@@ -854,9 +856,11 @@ const NewPage = () => {
 							<div
 								className="px-4 py-2 w-full rounded-md bg-primary text-white hover:bg-opacity-30 transition-all cursor-pointer text-center font-semibold"
 								onClick={() => {
-									setImgUrl(thumbnailAudioUrl)
-									setImgFile(thumbnailAudioFile)
-									setShowAudioThumbnailModal(false)
+									if (thumbnailAudioUrl) {
+										setImgUrl(thumbnailAudioUrl)
+										setImgFile(thumbnailAudioFile)
+										setShowAudioThumbnailModal(false)
+									}
 								}}
 							>
 								Submit
