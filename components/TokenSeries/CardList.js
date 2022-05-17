@@ -128,7 +128,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 	const toast = useToast()
 
 	const price =
-		token.token?.amount && token.token?.bidder_list
+		token.token?.amount && token.token?.bidder_list && token.token?.bidder_list.length !== 0
 			? token.token?.amount
 			: token.lowest_price || token.price
 	const [isEndedTime, setIsEndedTime] = useState(false)

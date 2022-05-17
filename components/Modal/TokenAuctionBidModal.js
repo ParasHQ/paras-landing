@@ -145,21 +145,22 @@ const TokenAuctionBidModal = ({ data, show, onClose, bidAuctionAmount, onSuccess
 			else if (type === 'time') list.push(item.issued_at)
 			else if (type === 'amount') list.push(item.amount)
 		})
-		const currentBid = list.reverse()
 
-		return currentBid[0]
+		return list[list.length - 1]
 	}
 
 	const checkNextPriceBid = () => {
-		const currentBid = JSBI.BigInt(
-			data?.bidder_list && data?.bidder_list?.length !== 0
-				? isCurrentBid('amount')
-				: data?.price?.$numberDecimal || data?.price || ''
-		)
-		const multiplebid = JSBI.multiply(JSBI.divide(currentBid, JSBI.BigInt(100)), JSBI.BigInt(5))
-		const nextBid = JSBI.add(currentBid, multiplebid).toString()
-		const totalNextBid = Math.ceil(formatNearAmount(nextBid))
-		return totalNextBid
+		if (data?.bidder_list && data?.bidder_list.length !== 0) {
+			const currentBid = JSBI.BigInt(
+				data?.bidder_list && data?.bidder_list?.length !== 0 ? isCurrentBid('amount') : data?.price
+			)
+			const multiplebid = JSBI.multiply(JSBI.divide(currentBid, JSBI.BigInt(100)), JSBI.BigInt(5))
+			const nextBid = JSBI.add(currentBid, multiplebid).toString()
+			const totalNextBid = Math.ceil(formatNearAmount(nextBid))
+			return totalNextBid
+		} else {
+			return formatNearAmount(data?.price || data?.lowest_price)
+		}
 	}
 
 	return (
@@ -217,7 +218,11 @@ const TokenAuctionBidModal = ({ data, show, onClose, bidAuctionAmount, onSuccess
 									<div>{watch('bidAuctionAmount', bidAuctionAmount)} Ⓝ</div>
 								</div>
 								<div className="flex justify-between">
-									<div className="text-sm">{localeLn('Highest Bid')}</div>
+									<div className="text-sm">
+										{data?.bidder_list && data?.bidder_list?.length !== 0
+											? localeLn('Highest Bid')
+											: localeLn('Starting Bid')}
+									</div>
 									<div>
 										{data?.bidder_list && data?.bidder_list?.length !== 0
 											? prettyBalance(isCurrentBid('amount'), 24, 4)

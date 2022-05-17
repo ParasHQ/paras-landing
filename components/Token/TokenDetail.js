@@ -214,17 +214,28 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	}
 
 	const checkNextPriceBid = (type) => {
-		const currentBid = JSBI.BigInt(
-			token?.bidder_list && token?.bidder_list?.length !== 0 ? isCurrentBid('amount') : token?.price
-		)
-		const multiplebid = JSBI.multiply(JSBI.divide(currentBid, JSBI.BigInt(100)), JSBI.BigInt(5))
-		const nextBid = JSBI.add(currentBid, multiplebid).toString()
-		const nextBidToNear = Math.ceil(formatNearAmount(nextBid))
-		const nextBidToUSD = parseNearAmount(nextBidToNear.toString())
-		if (type === 'near') {
-			return nextBidToNear
-		} else if (type === 'usd') {
-			return nextBidToUSD.toString()
+		if (token?.bidder_list && token?.bidder_list?.length !== 0) {
+			const currentBid = JSBI.BigInt(
+				token?.bidder_list && token?.bidder_list?.length !== 0
+					? isCurrentBid('amount')
+					: token?.price
+			)
+			const multiplebid = JSBI.multiply(JSBI.divide(currentBid, JSBI.BigInt(100)), JSBI.BigInt(5))
+			const nextBid = JSBI.add(currentBid, multiplebid).toString()
+			const nextBidToNear = Math.ceil(formatNearAmount(nextBid))
+			const nextBidToUSD = parseNearAmount(nextBidToNear.toString())
+			if (type === 'near') {
+				return nextBidToNear
+			} else if (type === 'usd') {
+				return nextBidToUSD.toString()
+			}
+		} else {
+			if (type === 'near') {
+				return formatNearAmount(token?.price)
+			} else if (type === 'usd') {
+				const price = token?.price || token?.lowest_price
+				return price.toString()
+			}
 		}
 	}
 
@@ -378,7 +389,11 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										<div className="flex justify-between items-center gap-2">
 											<div className="flex items-baseline space-x-1 md:pl-2">
 												<div>
-													<p className="font-thin text-white text-xs">Next Bid</p>
+													<p className="font-thin text-white text-xs">
+														{token?.bidder_list && token?.bidder_list.length !== 0
+															? 'Next Bid'
+															: 'First Bid'}
+													</p>
 													<div className="flex items-center gap-1">
 														<div className="truncate text-white text-base font-bold">{`${checkNextPriceBid(
 															'near'
@@ -445,7 +460,11 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										<div className="flex justify-between items-center gap-2">
 											<div className="flex items-baseline space-x-1 md:pl-2">
 												<div>
-													<p className="font-thin text-white text-xs">Next Bid</p>
+													<p className="font-thin text-white text-xs">
+														{token?.bidder_list && token?.bidder_list.length !== 0
+															? 'Next Bid'
+															: 'First Bid'}
+													</p>
 													<div className="flex items-center gap-1">
 														<div className="truncate text-white text-base font-bold">{`${checkNextPriceBid(
 															'near'
