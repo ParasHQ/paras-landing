@@ -111,8 +111,8 @@ const ActivityDetail = ({ activity, index }) => {
 	const shareLink = `${process.env.BASE_URL}/activity/${activity._id}`
 	const [isFlipped, setIsFlipped] = useState(true)
 	const [localTradedToken, setLocalTradedToken] = useState(null)
-	const topCardPositionStyle = `-top-10 left-0 md:left-0 lg:left-5 z-30`
-	const bottomCardPositionStyle = `-top-9 left-2 md:left-1 lg:left-8 z-20`
+	const topCardPositionStyle = `-top-10 left-0 md:left-0 z-30`
+	const bottomCardPositionStyle = `-top-8 left-2 md:left-2 z-20`
 	const isTradeActivity = activity?.type?.includes('trade')
 
 	const HEADERS = [
@@ -175,6 +175,10 @@ const ActivityDetail = ({ activity, index }) => {
 
 		if (type === 'notification_add_offer' || type === 'add_offer') {
 			return 'Offer'
+		}
+
+		if (type === 'delete_offer') {
+			return 'Delete Offer'
 		}
 
 		if (type === 'notification_category_accepted' || type === 'notification_category_rejected') {
@@ -338,7 +342,7 @@ const ActivityDetail = ({ activity, index }) => {
 								HEADERS.map((d, index) => {
 									return (
 										<div key={d.id} className={`${HEADERS[index].className} h-full`}>
-											<span>{localeLn(d.title)}</span>
+											<span className="capitalize">{localeLn(d.title)}</span>
 										</div>
 									)
 								})}
@@ -351,7 +355,7 @@ const ActivityDetail = ({ activity, index }) => {
 								<div
 									className={`${
 										isTradeActivity
-											? `absolute w-full md:w-10 cursor-pointer ${
+											? `absolute w-14 cursor-pointer ${
 													isFlipped
 														? `transition-all ${topCardPositionStyle}`
 														: `transition-all ${bottomCardPositionStyle}`
@@ -361,7 +365,7 @@ const ActivityDetail = ({ activity, index }) => {
 									onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
 								>
 									<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
-										<a>
+										<a onClick={(e) => isTradeActivity && e.preventDefault()}>
 											<Media
 												className="rounded-lg overflow-hidden"
 												url={parseImgUrl(localToken?.metadata.media, null, {
@@ -383,7 +387,7 @@ const ActivityDetail = ({ activity, index }) => {
 									<div
 										className={`${
 											isTradeActivity
-												? `absolute w-full md:w-10 cursor-pointer ${
+												? `absolute w-14 cursor-pointer ${
 														!isFlipped
 															? `transition-all ${topCardPositionStyle}`
 															: `transition-all ${bottomCardPositionStyle}`
@@ -393,7 +397,7 @@ const ActivityDetail = ({ activity, index }) => {
 										onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
 									>
 										<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
-											<a>
+											<a onClick={(e) => isTradeActivity && e.preventDefault()}>
 												<Media
 													className="rounded-lg overflow-hidden"
 													url={parseImgUrl(localTradedToken?.metadata.media, null, {
