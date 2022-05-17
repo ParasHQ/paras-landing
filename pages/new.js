@@ -902,12 +902,14 @@ const NewPage = () => {
 										))}
 									</InfiniteScroll>
 								</div>
-								<div className="text-sm mt-3 mb-1 text-opacity-30 flex justify-between items-center">
-									<p className="font-semibold">Choosen category:</p>
-									<div className="p-2 bg-gray-800 bg-opacity-80 rounded-md font-thin border border-white">
-										{category_name}
+								{category_id && category_name && (
+									<div className="text-sm mt-3 mb-1 text-opacity-30 flex justify-between items-center">
+										<p className="font-semibold">Choosen category:</p>
+										<div className="p-2 bg-gray-800 bg-opacity-80 rounded-md font-thin border border-white">
+											{category_name}
+										</div>
 									</div>
-								</div>
+								)}
 								<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
 									<button disabled={step === 0} onClick={_handleBack}>
 										{localeLn('Back')}
