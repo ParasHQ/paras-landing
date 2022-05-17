@@ -175,7 +175,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 			}
 
 			return
-		})
+		}, 1000)
 	}
 
 	const onClickSeeDetails = async (choosenToken, additionalQuery) => {

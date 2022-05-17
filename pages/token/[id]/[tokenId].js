@@ -18,19 +18,11 @@ const TokenPage = ({ errorCode, initial }) => {
 		key: `${initial?.contract_id}::${initial?.token_series_id}/${initial?.token_id}`,
 		initialData: initial,
 	})
-	const [days, setDays] = useState('-')
-	const [hours, setHours] = useState('-')
-	const [mins, setMins] = useState('-')
-	const [secs, setSecs] = useState('-')
 	const [isEndedTime, setIsEndedTime] = useState(false)
 
 	useEffect(() => {
-		countDownTimeAuction()
-	}, [])
-
-	useEffect(() => {
-		countDownTimeAuction()
-	}, [days, hours, mins, secs, isEndedTime])
+		checkAuctionTime()
+	}, [isEndedTime])
 
 	const convertTimeOfAuction = (date) => {
 		const sliceNanoSec = String(date).slice(0, 13)
@@ -40,33 +32,11 @@ const TokenPage = ({ errorCode, initial }) => {
 		}
 	}
 
-	const countDownTimeAuction = () => {
+	const checkAuctionTime = () => {
+		const startedDate = new Date().getTime()
 		const endedDate = convertTimeOfAuction(token?.ended_at)
-
-		const timer = setInterval(() => {
-			const startedDate = new Date().getTime()
-
-			if (!isEndedTime) {
-				let distance = parseInt(endedDate) - parseInt(startedDate)
-
-				let days = Math.floor(distance / (1000 * 60 * 60 * 24))
-				let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-				let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
-				let seconds = Math.floor((distance % (1000 * 60)) / 1000)
-
-				setDays(days)
-				setHours(hours)
-				setMins(minutes)
-				setSecs(seconds)
-
-				if (distance <= 0) {
-					clearInterval(timer)
-					setIsEndedTime(true)
-				}
-			}
-
-			return
-		})
+		const endAuctionDate = parseInt(endedDate) - parseInt(startedDate)
+		setTimeout(() => setIsEndedTime(true), endAuctionDate)
 	}
 
 	if (errorCode) {
@@ -127,6 +97,7 @@ const TokenPage = ({ errorCode, initial }) => {
 			<Nav />
 			<div className="relative max-w-6xl m-auto pt-16 px-4">
 				<TokenDetail token={token} isAuctionEnds={isEndedTime} />
+				{/* <TokenDetail token={token} /> */}
 			</div>
 			<Footer />
 		</div>

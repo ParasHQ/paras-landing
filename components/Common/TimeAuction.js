@@ -9,11 +9,7 @@ const TimeAuction = ({ endedAt }) => {
 
 	useEffect(() => {
 		countDownTimeAuction()
-	}, [])
-
-	useEffect(() => {
-		countDownTimeAuction()
-	}, [days, hours, mins, secs, isEndedTime])
+	}, [isEndedTime])
 
 	const convertTimeOfAuction = (date) => {
 		const sliceNanoSec = String(date).slice(0, 13)
@@ -49,7 +45,7 @@ const TimeAuction = ({ endedAt }) => {
 			}
 
 			return
-		}, 1000)
+		})
 	}
 
 	return (
