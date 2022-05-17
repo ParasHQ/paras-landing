@@ -23,7 +23,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import Scrollbars from 'react-custom-scrollbars'
 import getConfig from 'config/near'
 import Tooltip from 'components/Common/Tooltip'
-import { IconInfo } from 'components/Icons'
+import { IconInfo, IconX } from 'components/Icons'
 import WalletHelper from 'lib/WalletHelper'
 import AudioPlayer from 'components/Common/AudioPlayer'
 
@@ -818,7 +818,20 @@ const NewPage = () => {
 					closeOnEscape={false}
 				>
 					<div className="max-w-sm m-auto p-4 bg-gray-800 rounded-md w-full relative">
-						<div className="absolute right-0 top-0 pr-4 pt-4"></div>
+						<div className="absolute right-0 top-0 pr-4 pt-4">
+							<div
+								className="cursor-pointer"
+								onClick={() => {
+									setAudioFile('')
+									setAudioUrl('')
+									setThumbnailAudioUrl('')
+									setthumbnailAudioFile('')
+									setShowAudioThumbnailModal(false)
+								}}
+							>
+								<IconX />
+							</div>
+						</div>
 						<h1 className="mt-4 text-xl font-bold text-white tracking-tight">
 							Thumbnail Image for Audio
 						</h1>
@@ -836,12 +849,6 @@ const NewPage = () => {
 									<div className="text-white">+ Add</div>
 								</div>
 							)}
-						</div>
-						<div className="mt-4">
-							<p className="text-gray-500 italic text-xs text-center">
-								Thumbnail upload is optional, you can still use default thumbnail by close this pop
-								up
-							</p>
 						</div>
 						<div className="mt-5 flex items-center">
 							<div
