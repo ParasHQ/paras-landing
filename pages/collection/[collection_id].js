@@ -62,6 +62,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [deleteLoading, setDeleteLoading] = useState(false)
 	const [dailyVolume, setDailyVolume] = useState([])
 	const [dataNearTracker, setDataNearTracker] = useState([])
+	const [dataTopOwnersTracker, setDataTopOwnersTracker] = useState([])
+	const [isLoadingTracker, setIsLoadingTracker] = useState(false)
 	const [display, setDisplay] = useState(
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
@@ -378,13 +380,22 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	const fetchCollectionTracker = async () => {
+		setIsLoadingTracker(true)
+
 		// NearTracker API
 		const resNearTracker = await cachios.get(
 			`https://api.degenwhale.club/paras-data/${collectionId}`
 		)
+		const resTopOwners = await cachios.get(
+			`https://api.degenwhale.club/paras-data/top-holders/${collectionId}`
+		)
 
 		const newDataTracker = await resNearTracker.data
+		const newDataTopOwners = await resTopOwners.data.top_holders
 		setDataNearTracker(newDataTracker)
+		setDataTopOwnersTracker(newDataTopOwners)
+
+		setIsLoadingTracker(false)
 	}
 
 	const changeTab = (tab) => {
@@ -896,77 +907,85 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						/>
 					) : router.query.tab == 'tracker' ? (
 						<>
-							<div className="md:grid grid-cols-2">
-								<div>
-									<p className="text-white text-xl font-bold ml-2 mb-2 text-opacity-70">
-										Floor Price
-									</p>
-									<DailyTracker data={dataNearTracker} title="Floor Price" value="floor_price" />
-								</div>
-								<div>
-									<p className="text-white text-xl font-bold ml-2 mb-2 text-opacity-70">Owners</p>
-									<DailyTracker data={dataNearTracker} title="Owners" value="owner_count" />
-								</div>
-								<div>
-									<p className="text-white text-xl font-bold ml-2 mb-2 text-opacity-70">
-										Token Listed
-									</p>
-									<DailyTracker
-										data={dataNearTracker}
-										title="Token Listed"
-										value="listed_token_count"
-									/>
-								</div>
-								<div>
-									<p className="text-white text-xl font-bold ml-2 mb-2 text-opacity-70">
-										Top Owners
-									</p>
-									<div className="overflow-y-auto no-scrollbar h-72">
-										<div className="table w-11/12 text-white border-collapse ml-7">
-											<div className="table-header-group border-b py-4">
-												<div className="table-row font-bold">
-													<div className="table-cell text-left px-3"></div>
-													<div className="table-cell text-left">Wallet Address</div>
-													<div className="table-cell text-center"># of tokens</div>
+							{isLoadingTracker ? (
+								<LoadingTracker />
+							) : (
+								<div className="md:grid grid-cols-2">
+									<div>
+										<p className="text-white text-xl font-bold ml-2 mb-2 text-opacity-70">
+											Floor Price
+										</p>
+										<DailyTracker data={dataNearTracker} title="Floor Price" value="floor_price" />
+									</div>
+									<div>
+										<p className="text-white text-xl font-bold ml-2 mb-2 text-opacity-70">Owners</p>
+										<DailyTracker data={dataNearTracker} title="Owners" value="owner_count" />
+									</div>
+									<div>
+										<p className="text-white text-xl font-bold ml-2 mb-2 text-opacity-70">
+											Token Listed
+										</p>
+										<DailyTracker
+											data={dataNearTracker}
+											title="Token Listed"
+											value="listed_token_count"
+										/>
+									</div>
+									<div>
+										<p className="text-white text-xl font-bold ml-2 mb-2 text-opacity-70">
+											Top Owners
+										</p>
+										<div className="overflow-y-auto no-scrollbar h-72">
+											<div className="table w-11/12 text-white border-collapse ml-7">
+												<div className="table-header-group border-b py-4">
+													<div className="table-row font-bold">
+														<div className="table-cell text-left px-3"></div>
+														<div className="table-cell text-left">Wallet Address</div>
+														<div className="table-cell text-center"># of tokens</div>
+													</div>
 												</div>
-											</div>
-											<div className="table-row-group">
-												{dataTopOwners.map((item, idx) => {
-													return (
-														<div
-															key={idx}
-															className="table-row hover:bg-[#231D58] hover:bg-opacity-40 border-b border-white border-opacity-15 p-10"
-														>
-															<div className="table-cell">{idx + 1}</div>
-															<div className="table-cell py-2.5 md:py-3">
-																<Link href={`/${item.accountId}`}>
-																	<span className="hover:border-b-2 hover:cursor-pointer">
-																		{item.accountId.length > 24
-																			? item.accountId.substring(0, 22) + '...'
-																			: item.accountId}
-																	</span>
-																</Link>
+												<div className="table-row-group">
+													{dataTopOwnersTracker.map((item, idx) => {
+														return (
+															<div
+																key={idx}
+																className="table-row hover:bg-[#231D58] hover:bg-opacity-40 border-b border-white border-opacity-15 p-10"
+															>
+																<div className="table-cell">{idx + 1}</div>
+																<div className="table-cell py-2.5 md:py-3">
+																	<Link href={`/${item?.wallet_id}`}>
+																		<span className="hover:border-b-2 hover:cursor-pointer">
+																			{item?.wallet_id?.length > 24
+																				? item?.wallet_id?.substring(0, 22) + '...'
+																				: item?.wallet_id}
+																		</span>
+																	</Link>
+																</div>
+																<div className="table-cell text-center">{item?.token_count}</div>
 															</div>
-															<div className="table-cell text-center">{item.ofTokens}</div>
-														</div>
-													)
-												})}
+														)
+													})}
+												</div>
 											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-							<p className="text-center text-white mt-4 mb-2">
-								Supported by{' '}
+							)}
+							<a href={`https://neartracker.io/`} target="_blank" rel="noreferrer">
+								<img
+									src="/near-tracker.png"
+									width={50}
+									className="mx-auto cursor-pointer mt-6 mb-6"
+								/>
+							</a>
+							<p className="text-center text-white">
+								Powered by{' '}
 								<Link href={`/collection/thebullishbulls.near`}>
 									<span className="text-[#726DEF] hover:underline hover:underline-offset-2 cursor-pointer">
 										Bullish Bulls
 									</span>
 								</Link>
 							</p>
-							<a href={`https://neartracker.io/`} target="_blank" rel="noreferrer">
-								<img src="/near-tracker.png" width={50} className="mx-auto cursor-pointer" />
-							</a>
 						</>
 					) : (
 						<CardList
@@ -1020,45 +1039,40 @@ export async function getServerSideProps({ params }) {
 	}
 }
 
-const dataTopOwners = [
-	{
-		accountId: 'nearbigbraind.near',
-		ofTokens: 42,
-	},
-	{
-		accountId: 'ravimonke.near',
-		ofTokens: 40,
-	},
-	{
-		accountId: 'f1b05051d8564cad77ca947d1b38a0c1031f27b0f13bd641ccd214f62ecf3f1d',
-		ofTokens: 35,
-	},
-	{
-		accountId: 'nearlynoob.near',
-		ofTokens: 33,
-	},
-	{
-		accountId: 'dmoney.near',
-		ofTokens: 32,
-	},
-	{
-		accountId: 'drcryptog.near',
-		ofTokens: 31,
-	},
-	{
-		accountId: 'kyarto2.near',
-		ofTokens: 30,
-	},
-	{
-		accountId: 'kyle13.near',
-		ofTokens: 28,
-	},
-	{
-		accountId: 'jellyyy.near',
-		ofTokens: 26,
-	},
-	{
-		accountId: 'techysparks.near',
-		ofTokens: 24,
-	},
-]
+const LoadingTracker = () => {
+	return (
+		<div className="md:grid grid-cols-2">
+			<LoadingTrackerIcon />
+			<LoadingTrackerIcon />
+			<LoadingTrackerIcon />
+			<LoadingTrackerIcon />
+		</div>
+	)
+}
+
+const LoadingTrackerIcon = () => {
+	return (
+		<div className="flex items-center justify-center w-full h-80">
+			<svg
+				className="animate-spin m h-5 w-5 text-white"
+				xmlns="http://www.w3.org/2000/svg"
+				fill="none"
+				viewBox="0 0 24 24"
+			>
+				<circle
+					className="opacity-25"
+					cx="12"
+					cy="12"
+					r="10"
+					stroke="currentColor"
+					strokeWidth="4"
+				></circle>
+				<path
+					className="opacity-75"
+					fill="currentColor"
+					d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+				></path>
+			</svg>
+		</div>
+	)
+}
