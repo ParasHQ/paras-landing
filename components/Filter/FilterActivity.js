@@ -6,7 +6,7 @@ const FilterActivity = ({ onClickFilter }) => {
 	const router = useRouter()
 
 	const [showFilterModal, setShowFilterModal] = useState(false)
-	const [filterBy, setFilterBy] = useState(router.query.filter || filter[1].key)
+	const [filterBy, setFilterBy] = useState(router.query.filter || filter[0].key)
 	const [minPrice, setMinPrice] = useState(router.query.pmin || '')
 	const [maxPrice, setMaxPrice] = useState(router.query.pmax || '')
 	const [isVerified, setIsVerified] = useState(

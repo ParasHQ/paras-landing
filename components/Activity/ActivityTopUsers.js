@@ -34,13 +34,11 @@ const TopUsers = ({ data = [], className, userType = 'buyer', linkTo, isFetching
 					</a>
 				</Link>
 			</div>
-			<div className="block md:flex md:flex-col">
-				{isFetching ? (
-					<TopUserLoader />
-				) : (
-					data?.map((user, idx) => <TopUser key={idx} user={user} idx={idx} />)
-				)}
-			</div>
+			{isFetching ? (
+				<TopUserLoader />
+			) : (
+				data?.map((user, idx) => <TopUser key={idx} user={user} idx={idx} />)
+			)}
 		</div>
 	)
 }
