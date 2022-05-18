@@ -210,7 +210,7 @@ const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess }) => {
 				<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative">
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
-							{localeLn('Accept Highest Bid of Auction')}
+							{localeLn('Accept Highest Bid')}
 						</h1>
 						<p className="text-white mt-2">
 							{localeLn('You are about to accept bid auction from ')}{' '}
