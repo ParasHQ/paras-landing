@@ -65,6 +65,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [dataNearTracker, setDataNearTracker] = useState([])
 	const [dataTopOwnersTracker, setDataTopOwnersTracker] = useState([])
 	const [isLoadingTracker, setIsLoadingTracker] = useState(false)
+	const [isErrorTracker, setIsErrorTracker] = useState()
 	const [display, setDisplay] = useState(
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
@@ -383,18 +384,21 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const fetchCollectionTracker = async () => {
 		setIsLoadingTracker(true)
 
-		// NearTracker API
-		const resNearTracker = await cachios.get(
-			`https://api.degenwhale.club/paras-data/${collectionId}`
-		)
-		const resTopOwners = await cachios.get(
-			`https://api.degenwhale.club/paras-data/top-holders/${collectionId}`
-		)
-
-		const newDataTracker = await resNearTracker.data
-		const newDataTopOwners = await resTopOwners.data.top_holders
-		setDataNearTracker(newDataTracker)
-		setDataTopOwnersTracker(newDataTopOwners)
+		try {
+			// NearTracker API
+			const resNearTracker = await cachios.get(
+				`https://api.degenwhale.club/paras-data/${collectionId}`
+			)
+			const resTopOwners = await cachios.get(
+				`https://api.degenwhale.club/paras-data/top-holders/${collectionId}`
+			)
+			const newDataTracker = await resNearTracker.data
+			const newDataTopOwners = await resTopOwners.data.top_holders
+			setDataNearTracker(newDataTracker)
+			setDataTopOwnersTracker(newDataTopOwners)
+		} catch (error) {
+			setIsErrorTracker(error)
+		}
 
 		setIsLoadingTracker(false)
 	}
@@ -910,6 +914,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						<>
 							{isLoadingTracker ? (
 								<LoadingTracker />
+							) : isErrorTracker ? (
+								<div className="text-center text-white text-lg my-20">
+									data not yet available from NearTracker
+								</div>
 							) : (
 								<div className="md:grid grid-cols-2">
 									<div>
