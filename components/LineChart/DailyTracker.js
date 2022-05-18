@@ -52,11 +52,7 @@ export const DailyTracker = ({ data, title, value }) => {
 		<div>
 			{data.length > 0 && (
 				<div className="h-80">
-					<ResponsiveContainer
-					// width="100%"
-					// height="100%"
-					// className="bg-[url('/near-tracker.png')] bg-[length:250px_150px] bg-[position:11.5rem_3rem] bg-no-repeat"
-					>
+					<ResponsiveContainer>
 						<AreaChart data={data} margin={{ top: 5, right: 20, left: 10, bottom: 35 }}>
 							<defs>
 								<linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
