@@ -617,7 +617,7 @@ const SpecialCardBid = ({
 	const fetchOffers = async () => {
 		const resp = await axios.get(`${process.env.V2_API_URL}/offers`, {
 			params: {
-				tokenId: tokenId,
+				token_id: tokenId,
 				__skip: 0,
 				__limit: 1,
 				contract_id: contractId,
