@@ -915,8 +915,13 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							{isLoadingTracker ? (
 								<LoadingTracker />
 							) : isErrorTracker ? (
-								<div className="text-center text-white text-lg my-20">
-									data not yet available from NearTracker
+								<div className="text-center text-white my-20">
+									<p className="text-lg">data not yet available from NearTracker</p>
+									<p className="text-xs mt-4 hover:underline hover:underline-offset-2">
+										<a href="https://tally.so/r/woqaOm" target="_blank" rel="noreferrer">
+											Get listed on NearTracker!
+										</a>
+									</p>
 								</div>
 							) : (
 								<div className="md:grid grid-cols-2">
