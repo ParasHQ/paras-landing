@@ -296,7 +296,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 										ref={chooseSubmitRef}
 										className="absolute w-full z-20 mt-2 right-0 shadow-lg"
 									>
-										<div className="bg-dark-primary-2 rounded-md p-4">
+										<div className="bg-dark-primary-2 rounded-t-md p-4">
 											<h1
 												className="text-white font-medium cursor-pointer"
 												onClick={() => {
@@ -305,6 +305,18 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 												}}
 											>
 												{localeLn('SubmitExistingCards')}
+											</h1>
+										</div>
+										<div className="bg-dark-primary-2 rounded-b-md p-4">
+											<h1
+												className="text-white font-medium cursor-pointer"
+												onClick={() => {
+													router.push(
+														`/new?category_name=${categoryDetail.name}&category_id=${categoryDetail.category_id}`
+													)
+												}}
+											>
+												Submit a new card
 											</h1>
 										</div>
 									</div>
