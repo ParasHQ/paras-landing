@@ -59,16 +59,15 @@ const TokenUpdatePriceModal = ({ show, onClose, data }) => {
 					</h1>
 					<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
 						{tabDetail('updatePrice')}
-						{(data.metadata?.copies === 1 || !data.metadata?.copies) && tabDetail('createAuction')}
+						{tabDetail('createAuction')}
 					</div>
 
 					{activeTab === 'updatePrice' && (
 						<TabTokenUpdatePrice show={show} onClose={onClose} data={data} />
 					)}
-					{activeTab === 'createAuction' &&
-						(data.metadata?.copies === 1 || !data.metadata?.copies) && (
-							<TabCreateAuction show={show} onClose={onClose} data={data} />
-						)}
+					{activeTab === 'createAuction' && (
+						<TabCreateAuction show={show} onClose={onClose} data={data} />
+					)}
 				</div>
 			</div>
 		</Modal>

@@ -33,10 +33,12 @@ const TokenPage = ({ errorCode, initial }) => {
 	}
 
 	const checkAuctionTime = () => {
-		const startedDate = new Date().getTime()
-		const endedDate = convertTimeOfAuction(token?.ended_at)
-		const endAuctionDate = parseInt(endedDate) - parseInt(startedDate)
-		setTimeout(() => setIsEndedTime(true), endAuctionDate)
+		if (token?.ended_at) {
+			const startedDate = new Date().getTime()
+			const endedDate = convertTimeOfAuction(token?.ended_at)
+			const endAuctionDate = parseInt(endedDate) - parseInt(startedDate)
+			setTimeout(() => setIsEndedTime(true), endAuctionDate)
+		}
 	}
 
 	if (errorCode) {
@@ -97,7 +99,6 @@ const TokenPage = ({ errorCode, initial }) => {
 			<Nav />
 			<div className="relative max-w-6xl m-auto pt-16 px-4">
 				<TokenDetail token={token} isAuctionEnds={isEndedTime} />
-				{/* <TokenDetail token={token} /> */}
 			</div>
 			<Footer />
 		</div>
