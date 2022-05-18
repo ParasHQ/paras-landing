@@ -194,10 +194,11 @@ const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess }) => {
 		}
 	}
 
-	const isCurrentBid = () => {
+	const isCurrentBid = (type) => {
 		let list = []
 		data?.bidder_list?.map((item) => {
-			list.push(item.amount)
+			if (type == 'amount') list.push(item.amount)
+			else if (type == 'bidder') list.push(item.bidder)
 		})
 
 		return list[list.length - 1]
@@ -209,11 +210,11 @@ const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess }) => {
 				<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative">
 					<div>
 						<h1 className="text-2xl font-bold text-white tracking-tight">
-							{localeLn('Accept a Bid of Auction')}
+							{localeLn('Accept Highest Bid of Auction')}
 						</h1>
 						<p className="text-white mt-2">
-							{localeLn('You are about to accept bid auction for from ')}{' '}
-							<b>{data.metadata.title}</b>
+							{localeLn('You are about to accept bid auction from ')}{' '}
+							<b>{isCurrentBid('bidder')}</b>
 						</p>
 						<div className="text-center">
 							<div className="text-white mt-4 text-2xl font-bold text-center">

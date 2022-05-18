@@ -327,7 +327,7 @@ const token = {
 	ReserveBid: 'Réserver une enchère',
 	DescReserveBid: 'Créez une limite cachée en fixant un prix de réserve.',
 	ExpirationDate: `Date d'expiration`,
-	DescExpirationDate: `Votre enchère se terminera automatiquement à ce moment et le plus offrant l'emportera. Pas besoin de l'annuler !.`,
+	DescExpirationDate: `Votre enchère se terminera automatiquement à ce moment et le plus offrant l'emportera.`,
 }
 const common = {
 	OK: 'OK',

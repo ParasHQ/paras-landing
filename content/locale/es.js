@@ -340,7 +340,7 @@ const token = {
 	DescReserveBid: 'Crea un límite oculto estableciendo un precio de reserva.',
 	ExpirationDate: 'Fecha de caducidad',
 	DescExpirationDate:
-		'Su subasta terminará automáticamente en este momento y ganará el mejor postor. ¡No es necesario cancelarlo!.',
+		'Su subasta terminará automáticamente en este momento y ganará el mejor postor.',
 }
 const common = {
 	OK: 'OK',

@@ -333,7 +333,7 @@ const token = {
 	ReserveBid: '保留投标',
 	DescReserveBid: '通过设置底价创建隐藏限制。',
 	ExpirationDate: '截止日期',
-	DescExpirationDate: '您的拍卖将在此时自动结束，出价最高的人将获胜。无需取消！。',
+	DescExpirationDate: '您的拍卖将在此时自动结束，出价最高的人将获胜。',
 }
 const common = {
 	OK: '确定',

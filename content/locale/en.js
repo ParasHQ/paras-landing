@@ -343,7 +343,7 @@ const token = {
 	DescReserveBid: 'Create a hidden limit by setting a reserve price.',
 	ExpirationDate: 'Expiration Date',
 	DescExpirationDate:
-		'Your auction will automatically  end at this time and the highest bidder will win. No need to cancel it!.',
+		'Your auction will automatically  end at this time and the highest bidder will win.',
 }
 const common = {
 	OK: 'OK',
