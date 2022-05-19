@@ -167,7 +167,6 @@ const NewPage = () => {
 
 			setIsUploading('success')
 
-			console.log('dsfdsfs', store.selectedCategory)
 			if (store.selectedCategory !== '' && WalletHelper.activeWallet !== 'sender') {
 				window.sessionStorage.setItem(`categoryToken`, store.selectedCategory)
 			}
@@ -487,8 +486,6 @@ const NewPage = () => {
 			}
 		)
 	}
-
-	console.log('ss', store.selectedCategory)
 
 	return (
 		<div className="min-h-screen bg-black">
