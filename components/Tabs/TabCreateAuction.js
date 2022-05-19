@@ -32,10 +32,12 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 		userBalance: state.userBalance,
 		setTransactionRes: state.setTransactionRes,
 	}))
+	const [isGreaterTime, setIsGreaterTime] = useState(false)
 	const toast = useToast()
 
 	useEffect(() => {
 		parseTimeExpirationDate()
+		minimumTimeExpirationDate()
 	}, [watch, expirationDateAuction])
 
 	useEffect(() => {
@@ -193,6 +195,14 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 			return `${currentDate.toISOString().split('T')[0]}`
 		}
 	}
+	const minimumTimeExpirationDate = () => {
+		const now = new Date()
+		const currentUTC = new Date(now.toUTCString())
+		const currentDate = `${currentUTC.getTime()}000000`
+		const result = expirationDateAuction > currentDate
+		setIsGreaterTime(result)
+		console.log(result)
+	}
 
 	return (
 		<>
@@ -275,6 +285,9 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 							</div>
 						</div>
 					</div>
+					<div className="mt-2 text-sm text-red-500 text-right">
+						{!isGreaterTime && `Auction time must be greater than the current time`}
+					</div>
 				</div>
 				{creatorData?.flag && (
 					<div className="z-20 bottom-0 flex items-center justify-center px-4 mt-4 w-full">
@@ -291,16 +304,22 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 					{localeLn('RedirectedToconfirm')}
 				</p>
 				<div className="">
-					<Button
-						disabled={isCreatingAuction}
-						isLoading={isCreatingAuction}
-						className="mt-4"
-						isFullWidth
-						size="md"
-						type="submit"
-					>
-						{localeLn('CreateAuction')}
-					</Button>
+					{isGreaterTime ? (
+						<Button
+							disabled={isCreatingAuction}
+							isLoading={isCreatingAuction}
+							className="mt-4"
+							isFullWidth
+							size="md"
+							type="submit"
+						>
+							{localeLn('CreateAuction')}
+						</Button>
+					) : (
+						<div className="bg-primary text-gray-400 mt-4 py-3 px-4 text-sm rounded-md text-center bg-opacity-20">
+							{localeLn('CreateAuction')}
+						</div>
+					)}
 					<Button variant="ghost" size="md" isFullWidth className="mt-4" onClick={onClose}>
 						{localeLn('Cancel')}
 					</Button>

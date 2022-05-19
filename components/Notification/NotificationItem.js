@@ -309,7 +309,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		)
 	}
 
-	if (notif.type === 'notification_cancel_bid') {
+	if (notif.type === 'cancel_bid') {
 		return (
 			<div>
 				<Link href={`${url}?tab=auction`}>
