@@ -25,6 +25,7 @@ import getConfig from 'config/near'
 import Tooltip from 'components/Common/Tooltip'
 import { IconInfo } from 'components/Icons'
 import WalletHelper from 'lib/WalletHelper'
+import retry from 'async-retry'
 
 const LIMIT = 16
 
@@ -452,30 +453,33 @@ const NewPage = () => {
 		const txLast = res?.response[res?.response.length - 1]
 		const resFromTxLast = txLast.receipts_outcome[0].outcome.logs[0]
 		const resOutcome = await JSON.parse(`${resFromTxLast}`)
-		try {
-			await axios.post(
-				`${process.env.V2_API_URL}/categories/tokens`,
-				{
-					account_id: store.currentUser,
-					contract_id: txLast?.transaction?.receiver_id,
-					token_series_id: resOutcome?.params?.token_series_id,
-					category_id: store.selectedCategory,
-				},
-				{
-					headers: {
-						authorization: await WalletHelper.authToken(),
+		await retry(
+			async () => {
+				const res = await axios.post(
+					`${process.env.V2_API_URL}/categories/tokens`,
+					{
+						account_id: store.currentUser,
+						contract_id: txLast?.transaction?.receiver_id,
+						token_series_id: resOutcome?.params?.token_series_id,
+						category_id: store.selectedCategory,
 					},
+					{
+						headers: {
+							authorization: await WalletHelper.authToken(),
+						},
+					}
+				)
+				if (res.status === 403 || res.status === 400) {
+					sentryCaptureException(res.data?.message || `Token series still haven't exist`)
+					return
 				}
-			)
-		} catch (err) {
-			sentryCaptureException(err)
-			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
-			toast.show({
-				text: <div className="font-semibold text-center text-sm">{msg}</div>,
-				type: 'warning',
-				duration: 2500,
-			})
-		}
+				window.sessionStorage.removeItem('categoryToken')
+			},
+			{
+				retries: 20,
+				factor: 2,
+			}
+		)
 	}
 
 	return (
@@ -859,7 +863,7 @@ const NewPage = () => {
 							</h1>
 						</div>
 						{step === 0 && (
-							<div>
+							<div className="h-60">
 								<div className="text-sm mt-2">Choose Collection</div>
 								<div id="collection::user" className="max-h-40 md:max-h-72 overflow-auto">
 									<InfiniteScroll
