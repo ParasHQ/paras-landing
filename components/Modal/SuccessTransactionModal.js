@@ -328,7 +328,7 @@ const SuccessTransactionModal = () => {
 			return (
 				<>
 					You successfully bid of auction <b>{token.metadata.title}</b> for{' '}
-					{prettyBalance(formatNearAmount(txDetail.args.amount), 0, 2)} Ⓝ
+					{prettyBalance(txDetail.args.amount, 24, 2)} Ⓝ
 				</>
 			)
 		} else if (txDetail.method_name === 'cancel_bid') {

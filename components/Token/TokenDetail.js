@@ -229,9 +229,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			)
 			const multiplebid = JSBI.multiply(JSBI.divide(currentBid, JSBI.BigInt(100)), JSBI.BigInt(5))
 			const nextBid = JSBI.add(currentBid, multiplebid).toString()
-			const nextBidToNear = Math.ceil(
-				parseFloat(JSBI.divide(JSBI.BigInt(nextBid), JSBI.BigInt(10 ** 24)).toString())
-			)
+			const nextBidToNear = Math.ceil((nextBid / 10 ** 24).toFixed(2))
 			const nextBidToUSD = parseNearAmount(nextBidToNear.toString())
 			if (type === 'near') {
 				return nextBidToNear
