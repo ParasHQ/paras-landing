@@ -153,7 +153,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 						</svg>
 					</div>
 				</div>
-				<div className="md:flex md:pl-2 md:space-x-4 md:space-x-6 pb-2 items-center">
+				<div className="md:flex md:pl-2 md:space-x-4 pb-2 items-center">
 					<div className="w-1/2 mb-4 md:mb-0 md:w-1/3 h-full text-black">
 						<Card
 							imgUrl={parseImgUrl(tokenData?.metadata.media, null, {
