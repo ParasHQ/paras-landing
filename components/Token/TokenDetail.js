@@ -37,6 +37,7 @@ import AcceptBidAuctionModal from 'components/Modal/AcceptBidAuctionModal'
 import { useToast } from 'hooks/useToast'
 import CancelAuctionModal from 'components/Modal/CancelAuctionModal'
 import CancelBidModal from 'components/Modal/CancelBidModal'
+import { mutate } from 'swr'
 
 const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -105,7 +106,12 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 						? 'text-gray-100 border-b-2 border-white font-semibold'
 						: 'hover:bg-opacity-15 text-gray-100'
 				}`}
-				onClick={() => changeActiveTab(tab)}
+				onClick={() => {
+					if (tab === 'auction') {
+						mutate(`${token.contract_id}::${token.token_series_id}/${token.token_id}`)
+					}
+					changeActiveTab(tab)
+				}}
 			>
 				<div className="capitalize">{localeLn(capitalize(tab))}</div>
 			</div>
@@ -222,7 +228,9 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			)
 			const multiplebid = JSBI.multiply(JSBI.divide(currentBid, JSBI.BigInt(100)), JSBI.BigInt(5))
 			const nextBid = JSBI.add(currentBid, multiplebid).toString()
-			const nextBidToNear = Math.ceil(formatNearAmount(nextBid))
+			const nextBidToNear = Math.ceil(
+				parseFloat(JSBI.divide(JSBI.BigInt(nextBid), JSBI.BigInt(10 ** 24)).toString())
+			)
 			const nextBidToUSD = parseNearAmount(nextBidToNear.toString())
 			if (type === 'near') {
 				return nextBidToNear
@@ -466,8 +474,10 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 															: 'First Bid'}
 													</p>
 													<div className="flex items-center gap-1">
-														<div className="truncate text-white text-base font-bold">{`${checkNextPriceBid(
-															'near'
+														<div className="truncate text-white text-base font-bold">{`${prettyBalance(
+															checkNextPriceBid('near'),
+															0,
+															2
 														)} Ⓝ`}</div>
 														{token.price !== '0' && store.nearUsdPrice !== 0 && (
 															<div className="text-[9px] text-gray-400 truncate mt-1">
