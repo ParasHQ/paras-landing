@@ -309,6 +309,32 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		)
 	}
 
+	if (notif.type === 'notification_cancel_bid') {
+		return (
+			<div>
+				<Link href={`${url}?tab=auction`}>
+					<a>
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={token.metadata?.media} />
+							<div className="pl-2 text-gray-100">
+								<span className="font-semibold">{prettyTruncate(notif.from, 14, 'address')}</span>{' '}
+								bid <span className="font-medium text-gray-100">{token.metadata?.title}</span>
+								{' for '}
+								{formatNearAmount(
+									notif.msg.params.amount ? notif.msg.params.amount : notif.msg.params.price
+								)}{' '}
+								Ⓝ
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
 	if (notif.type === 'notification_category_accepted') {
 		return (
 			<div>
