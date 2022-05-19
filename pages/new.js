@@ -166,6 +166,10 @@ const NewPage = () => {
 			setReferenceHash(resp.data.data[1].split('://')[1])
 
 			setIsUploading('success')
+
+			if (store.selectedCategory !== '' && WalletHelper.activeWallet !== 'sender') {
+				window.sessionStorage.setItem(`categoryToken`, store.selectedCategory)
+			}
 		} catch (err) {
 			sentryCaptureException(err)
 			const msg = err.response?.data?.message || `Something went wrong, try again later`
@@ -206,10 +210,6 @@ const NewPage = () => {
 				}
 			}
 
-			if (store.selectedCategory !== '' && WalletHelper.activeWallet !== 'sender') {
-				window.sessionStorage.setItem(`categoryToken`, store.selectedCategory)
-			}
-
 			const res = await WalletHelper.callFunction({
 				contractId: process.env.NFT_CONTRACT_ID,
 				methodName: `nft_create_series`,
@@ -242,7 +242,10 @@ const NewPage = () => {
 
 	useEffect(() => {
 		if (router.query.transactionHashes) {
-			router.push('/market')
+			router.push('/market', {
+				pathname: '/market',
+				query: router.query,
+			})
 		}
 	}, [router.query.transactionHashes])
 
