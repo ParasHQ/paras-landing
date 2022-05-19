@@ -8,7 +8,7 @@ import Avatar from 'components/Common/Avatar'
 import Link from 'next/link'
 import useToken from 'hooks/useToken'
 
-const TabAuction = ({ localToken, setAuctionEnds = () => {} }) => {
+const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => {
 	const [historyBid, setHistoryBid] = useState([])
 	const [days, setDays] = useState('-')
 	const [hours, setHours] = useState('-')
@@ -16,6 +16,18 @@ const TabAuction = ({ localToken, setAuctionEnds = () => {} }) => {
 	const [secs, setSecs] = useState('-')
 	const [isEndedTime, setIsEndedTime] = useState(false)
 	const { localeLn } = useIntl()
+
+	const { token: localToken } = useToken({
+		key: `${initialToken.contract_id}::${initialToken.token_series_id}/${initialToken.token_id}`,
+		initialData: initialToken,
+		args: {
+			revalidateOnMount: true,
+			revalidateOnFocus: true,
+			revalidateIfStale: true,
+			revalidateOnReconnect: true,
+			refreshInterval: 15000,
+		},
+	})
 
 	useEffect(() => {
 		const bidderList = localToken.bidder_list
