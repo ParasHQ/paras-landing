@@ -1,10 +1,9 @@
 import cachios from 'cachios'
 import LinkToProfile from 'components/Common/LinkToProfile'
-import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
-import { parseImgUrl, prettyTruncate } from 'utils/common'
+import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
 import Avatar from 'components/Common/Avatar'
 import Link from 'next/link'
 import useToken from 'hooks/useToken'
@@ -112,7 +111,7 @@ const TabAuction = ({ localToken, setAuctionEnds = () => {} }) => {
 									<LinkToProfile accountId={x.bidder} />
 									<span>
 										{' '}
-										{localeLn('On Bid')} {formatNearAmount(x.amount)} Ⓝ
+										{localeLn('On Bid')} {prettyBalance(x.amount, 24, 2)} Ⓝ
 									</span>
 								</p>
 								<p className="mt-1 text-xs">{startedAtDate(x.issued_at)} UTC</p>
@@ -228,15 +227,17 @@ const CurrentBid = ({ initial = {} }) => {
 						{!token.amount || (token?.bidder_list && token?.bidder_list.length === 0) ? (
 							<p className="ml-2 text-white">
 								{localeLn('Starting Bid')}{' '}
-								{formatNearAmount(token.price?.$numberDecimal || token.price)} Ⓝ
+								{prettyBalance(token.price?.$numberDecimal || token.price, 24, 2)} Ⓝ
 							</p>
 						) : (
 							<p className="ml-2 text-white text-sm">
 								{localeLn('On Bid')}{' '}
-								{formatNearAmount(
+								{prettyBalance(
 									token?.bidder_list && token?.bidder_list?.length !== 0
 										? isCurrentBid('amount')
-										: token?.price
+										: token?.price,
+									24,
+									2
 								)}{' '}
 								Ⓝ
 							</p>

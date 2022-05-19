@@ -8,7 +8,7 @@ import useStore from 'lib/store'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { parseImgUrl, prettyTruncate } from 'utils/common'
+import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import useToken from 'hooks/useToken'
 
@@ -196,10 +196,12 @@ const Owner = ({ initial = {}, onBuy, onUpdateListing }) => {
 			return (
 				<p className="text-white">
 					{localeLn('OnAuction')}{' '}
-					{formatNearAmount(
+					{prettyBalance(
 						token?.is_auction && token?.bidder_list && token?.bidder_list.length !== 0
 							? isCurrentBid('amount') || token.price
-							: token.price
+							: token.price,
+						24,
+						2
 					)}{' '}
 					Ⓝ
 				</p>

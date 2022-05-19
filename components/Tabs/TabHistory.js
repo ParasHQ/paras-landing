@@ -2,7 +2,7 @@ import cachios from 'cachios'
 import LinkToProfile from 'components/Common/LinkToProfile'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
-import { parseImgUrl, timeAgo } from 'utils/common'
+import { parseImgUrl, prettyBalance, timeAgo } from 'utils/common'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useIntl } from 'hooks/useIntl'
 import Media from 'components/Common/Media'
@@ -124,7 +124,7 @@ const Activity = ({ activity }) => {
 					<LinkToProfile accountId={activity.msg.params.owner_id} />
 					<span>
 						{' '}
-						{localeLn('put on auction for')} {formatNearAmount(activity.msg.params.price)} Ⓝ
+						{localeLn('put on auction for')} {prettyBalance(activity.msg.params.price, 24, 2)} Ⓝ
 					</span>
 				</p>
 			)
