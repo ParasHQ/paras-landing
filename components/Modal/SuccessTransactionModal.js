@@ -192,7 +192,7 @@ const SuccessTransactionModal = () => {
 		const resFromTxLast = txLast.receipts_outcome[0].outcome.logs[0]
 		const resOutcome = await JSON.parse(`${resFromTxLast}`)
 		await retry(
-			async (bail) => {
+			async () => {
 				const res = await axios.post(
 					`${process.env.V2_API_URL}/categories/tokens`,
 					{
@@ -209,7 +209,6 @@ const SuccessTransactionModal = () => {
 				)
 				if (res.status === 403 || res.status === 400) {
 					sentryCaptureException(res.data?.message || `Token series still haven't exist`)
-					bail(new Error(res.data?.message || `Token series still haven't exist`))
 					return
 				}
 				window.sessionStorage.removeItem('categoryToken')
