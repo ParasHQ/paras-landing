@@ -10,22 +10,18 @@ import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import { IconX } from 'components/Icons'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
 import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
 
-const TokenAuctionBidModal = ({ data, show, onClose, bidAuctionAmount, onSuccess }) => {
+const TokenAuctionBidModal = ({ data, show, onClose, onSuccess }) => {
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const creatorData = useProfileData(data?.metadata.creator_id)
 	const { localeLn } = useIntl()
-	const { errors, register, handleSubmit, watch } = useForm({
-		defaultValues: {
-			bidAuctionAmount,
-		},
-	})
+	const { errors, register, handleSubmit, watch, setValue } = useForm()
 	const [isBidding, setIsBidding] = useState(false)
 	const { currentUser, userBalance, setTransactionRes } = useStore((state) => ({
 		currentUser: state.currentUser,
@@ -33,6 +29,12 @@ const TokenAuctionBidModal = ({ data, show, onClose, bidAuctionAmount, onSuccess
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const toast = useToast()
+
+	useEffect(() => {
+		if (data && show) {
+			setValue('bidAuctionAmount', checkNextPriceBid())
+		}
+	}, [data, show])
 
 	const hasStorageBalance = async () => {
 		try {
@@ -156,10 +158,12 @@ const TokenAuctionBidModal = ({ data, show, onClose, bidAuctionAmount, onSuccess
 			)
 			const multiplebid = JSBI.multiply(JSBI.divide(currentBid, JSBI.BigInt(100)), JSBI.BigInt(5))
 			const nextBid = JSBI.add(currentBid, multiplebid).toString()
-			const totalNextBid = Math.ceil(formatNearAmount(nextBid))
+			const totalNextBid = Math.ceil(
+				parseFloat(JSBI.divide(JSBI.BigInt(nextBid), JSBI.BigInt(10 ** 24)).toString())
+			)
 			return totalNextBid
 		} else {
-			return formatNearAmount(data?.price || data?.lowest_price)
+			return prettyBalance(data.price || data?.lowest_price, 24, 4)
 		}
 	}
 
@@ -196,7 +200,7 @@ const TokenAuctionBidModal = ({ data, show, onClose, bidAuctionAmount, onSuccess
 									step="any"
 									ref={register({
 										required: true,
-										min: checkNextPriceBid(),
+										min: prettyBalance(checkNextPriceBid(), 0, 2),
 										max: parseFloat(userBalance.available / 10 ** 24),
 									})}
 									className={`${errors.bidAuctionAmount && 'error'}`}
@@ -204,7 +208,8 @@ const TokenAuctionBidModal = ({ data, show, onClose, bidAuctionAmount, onSuccess
 								/>
 								<div className="mt-2 text-sm text-red-500">
 									{errors.bidAuctionAmount?.type === 'required' && `Bid amount is required`}
-									{errors.bidAuctionAmount?.type === 'min' && `Minimum ${checkNextPriceBid()} Ⓝ`}
+									{errors.bidAuctionAmount?.type === 'min' &&
+										`Minimum ${prettyBalance(checkNextPriceBid(), 0, 2)} Ⓝ`}
 									{errors.bidAuctionAmount?.type === 'max' && `You don't have enough balance`}
 								</div>
 							</div>
@@ -214,8 +219,8 @@ const TokenAuctionBidModal = ({ data, show, onClose, bidAuctionAmount, onSuccess
 									<div>{prettyBalance(userBalance.available, 24, 4)} Ⓝ</div>
 								</div>
 								<div className="flex justify-between">
-									<div className="text-sm">{localeLn('Your Bid')}</div>
-									<div>{watch('bidAuctionAmount', bidAuctionAmount)} Ⓝ</div>
+									<div className="text-sm">{localeLn('Minimum Bid')}</div>
+									<div>{checkNextPriceBid()} Ⓝ</div>
 								</div>
 								<div className="flex justify-between">
 									<div className="text-sm">
@@ -229,10 +234,6 @@ const TokenAuctionBidModal = ({ data, show, onClose, bidAuctionAmount, onSuccess
 											: prettyBalance(data.price, 24, 4)}{' '}
 										Ⓝ
 									</div>
-								</div>
-								<div className="flex justify-between">
-									<div className="text-sm">{localeLn('Total')}</div>
-									<div>{watch('bidAuctionAmount', bidAuctionAmount)} Ⓝ</div>
 								</div>
 							</div>
 							{creatorData?.flag && (
@@ -271,7 +272,7 @@ const TokenAuctionBidModal = ({ data, show, onClose, bidAuctionAmount, onSuccess
 			{showBannedConfirm && (
 				<BannedConfirmModal
 					creatorData={creatorData}
-					action={() => onPlaceBidAuction(watch(bidAuctionAmount))}
+					action={() => onPlaceBidAuction(watch('bidAuctionAmount'))}
 					setIsShow={(e) => setShowBannedConfirm(e)}
 					onClose={onClose}
 					type="placeabid"

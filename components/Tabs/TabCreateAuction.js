@@ -5,7 +5,7 @@ import Button from 'components/Common/Button'
 import { InputText } from 'components/Common/form'
 import { sentryCaptureException } from 'lib/sentry'
 import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
-import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import { useEffect, useState } from 'react'
 import useProfileData from 'hooks/useProfileData'
@@ -13,6 +13,7 @@ import { flagColor, flagText } from 'constants/flag'
 import WalletHelper from 'lib/WalletHelper'
 import { trackUpdateListingToken } from 'lib/ga'
 import { useToast } from 'hooks/useToast'
+import { prettyBalance } from 'utils/common'
 
 const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpirationDate }) => {
 	const [needDeposit, setNeedDeposit] = useState(false)
@@ -136,7 +137,9 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 				token_id: data.token_id,
 				account_id: process.env.MARKETPLACE_CONTRACT_ID,
 				msg: JSON.stringify({
-					price: parseNearAmount(watch('startingBid')),
+					price: parseNearAmount(
+						prettyBalance(formatNearAmount(parseNearAmount(watch('startingBid'))), 0, 2)
+					),
 					ft_token_id: 'near',
 					market_type: 'sale',
 					ended_at: expirationDateAuction,

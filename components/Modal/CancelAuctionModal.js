@@ -85,7 +85,7 @@ const CancelAuctionModal = ({ data, show, onClose, onSuccess }) => {
 							deposit: STORAGE_ADD_MARKET_FEE,
 						},
 						{
-							methodName: 'cancel_auction',
+							methodName: 'delete_market_data',
 							args: params,
 							gas: GAS_FEE,
 							deposit: '1',

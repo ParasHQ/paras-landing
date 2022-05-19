@@ -21,7 +21,7 @@ import {
 	TwitterShareButton,
 } from 'react-share'
 import { mutate } from 'swr'
-import { decodeBase64 } from 'utils/common'
+import { decodeBase64, prettyBalance } from 'utils/common'
 
 const SuccessTransactionModal = () => {
 	const [showModal, setShowModal] = useState(false)
@@ -328,7 +328,7 @@ const SuccessTransactionModal = () => {
 			return (
 				<>
 					You successfully bid of auction <b>{token.metadata.title}</b> for{' '}
-					{formatNearAmount(txDetail.args.amount)} Ⓝ
+					{prettyBalance(formatNearAmount(txDetail.args.amount), 0, 2)} Ⓝ
 				</>
 			)
 		} else if (txDetail.method_name === 'cancel_bid') {

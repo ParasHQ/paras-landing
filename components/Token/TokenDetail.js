@@ -404,8 +404,10 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 															: 'First Bid'}
 													</p>
 													<div className="flex items-center gap-1">
-														<div className="truncate text-white text-base font-bold">{`${checkNextPriceBid(
-															'near'
+														<div className="truncate text-white text-base font-bold">{`${prettyBalance(
+															checkNextPriceBid('near'),
+															0,
+															2
 														)} Ⓝ`}</div>
 														{token.price !== '0' && store.nearUsdPrice !== 0 && (
 															<div className="text-[9px] text-gray-400 truncate mt-1">

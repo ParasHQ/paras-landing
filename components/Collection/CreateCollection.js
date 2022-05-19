@@ -183,7 +183,7 @@ const CreateCollection = ({ onFinishCreate, oneGrid }) => {
 				<div className="text-white font-bold text-4xl">{localeLn('NavCreateCollection')}</div>
 				<div className="md:flex gap-8">
 					<div>
-						<div className="text-white mt-4">{localeLn('Logo')}</div>
+						<div className="text-white mt-4">*{localeLn('Logo')}</div>
 						<div className="relative cursor-pointer w-32 h-32 overflow-hidden rounded-md mt-2">
 							<input
 								className="cursor-pointer w-full opacity-0 absolute inset-0"
@@ -231,7 +231,7 @@ const CreateCollection = ({ onFinishCreate, oneGrid }) => {
 						</div>
 					</div>
 				</div>
-				<div className="text-white mt-4">{localeLn('Name')}</div>
+				<div className="text-white mt-4">*{localeLn('Name')}</div>
 				<InputText
 					type="text"
 					value={collectionName}
@@ -239,7 +239,7 @@ const CreateCollection = ({ onFinishCreate, oneGrid }) => {
 					className="mt-2 focus:border-gray-800 focus:bg-white focus:bg-opacity-10"
 					placeholder="Pillars of Paras"
 				/>
-				<div className="text-white mt-4">{localeLn('Description')}</div>
+				<div className="text-white mt-4">*{localeLn('Description')}</div>
 				<InputTextarea
 					value={collectionDesc}
 					onChange={(e) => setCollectionDesc(e.target.value)}
