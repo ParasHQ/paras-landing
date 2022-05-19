@@ -58,6 +58,7 @@ const CancelAuctionModal = ({ data, show, onClose, onSuccess }) => {
 			const params = {
 				nft_contract_id: data.contract_id,
 				token_id: data.token_id,
+				is_auction: true,
 			}
 
 			let res

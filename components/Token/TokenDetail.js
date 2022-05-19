@@ -167,6 +167,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	}
 
 	const onClickAuction = () => {
+		mutate(`${token.contract_id}::${token.token_series_id}/${token.token_id}`)
 		if (!currentUser) {
 			setShowModal('notLogin')
 			return

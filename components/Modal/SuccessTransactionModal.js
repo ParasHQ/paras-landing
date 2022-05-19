@@ -283,21 +283,19 @@ const SuccessTransactionModal = () => {
 			return 'Success Remove Bid'
 		} else if (txDetail.method_name === 'accept_bid') {
 			return 'Accept Bid Success'
-		} else if (txDetail.method_name === 'cancel_auction') {
-			return 'Remove Auction Success'
 		} else if (txDetail.method_name === 'nft_buy' || txDetail.method_name === 'buy') {
 			return 'Purchase Success'
 		} else if (txDetail.method_name === 'nft_set_series_price') {
 			return 'Update Price Success'
 		} else if (txDetail.method_name === 'nft_approve') {
 			const msg = JSON.parse(txDetail.args.msg)
-			if (msg.market_type === 'sale' && !token?.is_auction) {
+			if (msg.market_type === 'sale' && !msg.is_auction) {
 				return 'Update Listing Success'
 			} else if (msg.market_type === 'accept_offer') {
 				return 'Accept Offer Success'
 			} else if (msg.market_type === 'add_trade') {
 				return 'Add Trade Success'
-			} else if (token?.is_auction) {
+			} else if (msg.is_auction) {
 				return 'Create Auction Success'
 			} else if (
 				msg.market_type === 'accept_trade' ||
@@ -306,6 +304,10 @@ const SuccessTransactionModal = () => {
 				return 'Accept Trade Success'
 			}
 		} else if (txDetail.method_name === 'delete_market_data') {
+			const args = txDetail.args
+			if (args.is_auction) {
+				return 'Remove Auction Success'
+			}
 			return 'Remove Listing Success'
 		} else if (txDetail.method_name === 'nft_create_series') {
 			return 'Create Card Success'
@@ -373,7 +375,7 @@ const SuccessTransactionModal = () => {
 			if (msg.market_type === 'sale') {
 				return (
 					<>
-						You successfully {token?.is_auction ? 'create auction' : 'update'}{' '}
+						You successfully {msg.is_auction ? 'create auction' : 'update'}{' '}
 						<b>{token.metadata.title}</b> price to {formatNearAmount(msg.price || 0)} Ⓝ
 					</>
 				)
