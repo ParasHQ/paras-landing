@@ -11,6 +11,7 @@ import CopyLink from 'components/Common/CopyLink'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { SHOW_TX_HASH_LINK } from 'constants/common'
+import { useRouter } from 'next/router'
 
 export const descriptionMaker = (activity, localToken, localTradedToken) => {
 	const type = activity.type
@@ -122,6 +123,7 @@ const ActivityDetail = ({ activity, index }) => {
 	const topCardPositionStyle = `-top-10 left-0 md:left-0 z-30`
 	const bottomCardPositionStyle = `-top-8 left-2 md:left-2 z-20`
 	const isTradeActivity = activity?.type?.includes('trade')
+	const router = useRouter()
 
 	const HEADERS = [
 		{
@@ -391,11 +393,27 @@ const ActivityDetail = ({ activity, index }) => {
 														? `transition-all ${topCardPositionStyle}`
 														: `transition-all ${bottomCardPositionStyle}`
 											  }`
-											: `w-16 mx-auto`
+											: `w-16 h-16 mx-auto`
 									}`}
 									onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
 								>
-									<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
+									<Link
+										href={{
+											pathname: router.pathname,
+											query: {
+												...router.query,
+												...(activity.token_id
+													? { tokenId: localToken?.token_id }
+													: { tokenSeriesId: localToken?.token_series_id }),
+												contractId: localToken?.contract_id,
+											},
+										}}
+										as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+											activity.token_id ? `/${localToken?.token_id}` : ''
+										}`}
+										scroll={false}
+										shallow
+									>
 										<a onClick={(e) => isTradeActivity && e.preventDefault()}>
 											<Media
 												className="rounded-lg overflow-hidden"
@@ -423,14 +441,30 @@ const ActivityDetail = ({ activity, index }) => {
 															? `transition-all ${topCardPositionStyle}`
 															: `transition-all ${bottomCardPositionStyle}`
 												  }`
-												: `w-16 mx-auto`
+												: `w-16 h-16 mx-auto`
 										}`}
 										onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
 									>
-										<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
+										<Link
+											href={{
+												pathname: router.pathname,
+												query: {
+													...router.query,
+													...(activity.token_id
+														? { tokenId: localToken?.token_id }
+														: { tokenSeriesId: localToken?.token_series_id }),
+													contractId: localToken?.contract_id,
+												},
+											}}
+											as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+												activity.token_id ? `/${localToken?.token_id}` : ''
+											}`}
+											scroll={false}
+											shallow
+										>
 											<a onClick={(e) => isTradeActivity && e.preventDefault()}>
 												<Media
-													className="rounded-lg overflow-hidden"
+													className="rounded-lg overflow-hidden object-cover"
 													url={parseImgUrl(localTradedToken?.metadata.media, null, {
 														width: `300`,
 														useOriginal: process.env.APP_ENV === 'production' ? false : true,
@@ -465,7 +499,23 @@ const ActivityDetail = ({ activity, index }) => {
 										</p>
 									</a>
 								</Link>
-								<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
+								<Link
+									href={{
+										pathname: router.pathname,
+										query: {
+											...router.query,
+											...(activity.token_id
+												? { tokenId: localToken?.token_id }
+												: { tokenSeriesId: localToken?.token_series_id }),
+											contractId: localToken?.contract_id,
+										},
+									}}
+									as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+										activity.token_id ? `/${localToken?.token_id}` : ''
+									}`}
+									scroll={false}
+									shallow
+								>
 									<a className="font-semibold z-20 text-sm md:text-md hover:text-gray-300">
 										{prettyTruncate(localToken?.metadata.title, 25)}
 									</a>

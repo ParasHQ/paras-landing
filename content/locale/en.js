@@ -72,7 +72,7 @@ const market = {
 	ApplyAsArtist: 'Apply as an Artist',
 	Status: 'Status',
 	Open: 'Open',
-	SubmitExistingCards: 'Submit an existing cards',
+	SubmitExistingCards: 'Submit an existing card',
 	CreateNewCard: 'Create a new card',
 	Curators: 'Curators',
 	PleaseEnterTokenID: 'Please enter correct Token ID',
