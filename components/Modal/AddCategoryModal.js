@@ -96,6 +96,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 			contract_id: contractId,
 			token_series_id: tokenSeriesId,
 			category_id: categoryId,
+			storeToSheet: categoryId === 'art-competition' ? 'true' : 'false',
 		}
 
 		try {
