@@ -40,6 +40,7 @@ const CategorySubmission = () => {
 			try {
 				const response = await axios.get(`${process.env.V2_API_URL}/categories/tokens/submission`, {
 					params: {
+						token_series_id: submissionId,
 						category_id: categoryId,
 						status: 'pending',
 					},
@@ -49,8 +50,7 @@ const CategorySubmission = () => {
 					},
 				})
 				const results = response.data.data.results
-				const token = await results.filter((item) => item.token_series_id === submissionId)
-				setToken(token[0])
+				setToken(results[0])
 				setSubmissions(results)
 				setIsLoading(false)
 			} catch (error) {
@@ -74,6 +74,7 @@ const CategorySubmission = () => {
 	const updateSubmissionData = (_id) => {
 		const updatedData = submissions.filter((sbm) => sbm._id !== _id)
 		setSubmissions(updatedData)
+		setToken(updatedData[0])
 	}
 
 	return (
@@ -96,7 +97,11 @@ const CategorySubmission = () => {
 								<div>
 									<div className="text-white text-2xl mt-8">{localeLn('Category submission')}</div>
 									<div className="text-white font-bold text-4xl mb-8 capitalize">
-										{categoryId && categoryId.split('-').join(' ')}
+										<Link
+											href={`${process.env.BASE_URL}/category-submission/${token?.category_id}`}
+										>
+											{categoryId && categoryId.split('-').join(' ')}
+										</Link>
 									</div>
 								</div>
 							</div>
@@ -200,12 +205,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 						<div className="mb-6 m-auto text-gray-400">
 							<span>You are going to accept </span>
 							<span className="font-bold text-white">{localToken?.metadata.title}</span>
-							<span>
-								{' '}
-								{localeLn('To{categoryId}Category', {
-									categoryId: submission.category_id,
-								})}
-							</span>
+							<span>{` to ${submission?.category_id} category`}</span>
 						</div>
 						<button
 							disabled={isLoading}
@@ -223,14 +223,9 @@ const SubmissionDetail = ({ submission, updateData }) => {
 					<div className="bg-dark-primary-1 w-full max-w-xs p-4 m-auto rounded-md text-center">
 						<div className="font-bold text-2xl mb-4 text-white">{localeLn('Reject the card')}</div>
 						<div className="mb-6 m-auto text-gray-400">
-							<span>{localeLn('GoingToReject')} </span>
+							<span>You are going to reject </span>
 							<span className="font-bold text-white">{localToken?.metadata.title}</span>
-							<span>
-								{' '}
-								{localeLn('From{categoryId}Category', {
-									categoryId: submission.category_id,
-								})}
-							</span>
+							<span>{` to ${submission?.category_id} category`}</span>
 						</div>
 						<button
 							disabled={isLoading}
