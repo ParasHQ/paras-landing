@@ -20,26 +20,26 @@ const HomeBanner = () => {
 		if (refMobile.current && refMobile.current.clientWidth !== 0) {
 			setHeightMobile(refMobile.current.clientWidth / 2)
 		}
-	}, [refMobile])
+	}, [refMobile, data])
 
 	useEffect(() => {
 		if (refDesktop.current && refDesktop?.current?.clientWidth !== 0) {
-			setHeightDesktop((refDesktop.current.clientWidth * 5) / 2)
+			setHeightDesktop((refDesktop.current.clientWidth * 2) / 8)
 		}
-	}, [refDesktop])
+	}, [refDesktop, data])
 
 	if ((!data && isValidating) || data.length === 0) {
 		return null
 	}
 
 	return (
-		<div className="rounded-xl overflow-hidden mb-12">
-			<Carousel showStatus={false} showThumbs={false} autoPlay infiniteLoop>
+		<div className="rounded-xl overflow-hidden mb-12 w-full">
+			<Carousel showStatus={false} showThumbs={false} autoPlay infiniteLoop className="w-full">
 				{data.map((item, idx) => (
 					<a key={idx} href={`${item.openLink}`} target="_blank" rel="noreferrer">
 						<div
 							ref={refDesktop}
-							className="hidden md:block w-full aspect-[2/1] md:aspect-[5/2]"
+							className="hidden md:block w-full aspect-[2/1] md:aspect-[5/1]"
 							style={{ height: heightDesktop }}
 						>
 							<img
@@ -51,7 +51,7 @@ const HomeBanner = () => {
 						</div>
 						<div
 							ref={refMobile}
-							className="md:hidden w-full aspect-[2/1] md:aspect-[5/2]"
+							className="md:hidden w-full aspect-[2/1] md:aspect-[5/1]"
 							style={{ height: heightMobile }}
 						>
 							<img
