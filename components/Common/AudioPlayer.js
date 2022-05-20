@@ -170,14 +170,10 @@ const AudioPlayer = ({ audioSrc, showTime = true, showForwardBackward = false })
 	return (
 		<div className="w-full">
 			<audio ref={audioRef} src={audioSrc}></audio>
-			<div
-				className={`flex relative items-center ${
-					showForwardBackward ? `justify-center` : `justify-end`
-				}`}
-			>
+			<div className={`flex relative items-center justify-center`}>
 				{showTime && (
 					<div className="absolute left-0 top-2">
-						<p className="pt-1 text-xs text-white">
+						<p className="pt-0 md:pt-1 text-xs text-white">
 							{calculateTime(currentTime)} /{' '}
 							{duration && !isNaN(duration) && calculateTime(duration)}
 						</p>

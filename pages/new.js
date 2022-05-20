@@ -837,6 +837,9 @@ const NewPage = () => {
 						<h1 className="mt-4 text-xl font-bold text-white tracking-tight">
 							Thumbnail Image for Audio
 						</h1>
+						<p className="text-xs font-thin text-white text-opacity-80">
+							Supported file types: PNG,JPG,GIF
+						</p>
 						<div className="px-2 flex items-center justify-center mt-4">
 							{thumbnailAudioFile ? (
 								<img src={thumbnailAudioUrl} className="object-contain w-9/12 h-80" alt="" />
@@ -907,7 +910,7 @@ const NewPage = () => {
 							/>
 							{audioUrl && (
 								<div className="my-3 flex items-center justify-center w-full">
-									<AudioPlayer showForwardBackward={true} audioSrc={audioUrl} />
+									<AudioPlayer showForwardBackward={false} audioSrc={audioUrl} />
 								</div>
 							)}
 						</div>
