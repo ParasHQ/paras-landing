@@ -11,6 +11,7 @@ import WalletHelper, { walletType } from 'lib/WalletHelper'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { sentryCaptureException } from 'lib/sentry'
 import {
 	FacebookIcon,
 	FacebookShareButton,
@@ -21,6 +22,7 @@ import {
 } from 'react-share'
 import { mutate } from 'swr'
 import { decodeBase64 } from 'utils/common'
+import retry from 'async-retry'
 
 const SuccessTransactionModal = () => {
 	const [showModal, setShowModal] = useState(false)
@@ -37,6 +39,9 @@ const SuccessTransactionModal = () => {
 				accountId: near.currentUser.accountId,
 				txHash: txHash[txHash.length - 1],
 			})
+			if (window.sessionStorage.getItem('categoryToken')) {
+				await submitCategoryCard(txStatus)
+			}
 			await processTransaction(txStatus)
 		}
 
@@ -180,6 +185,39 @@ const SuccessTransactionModal = () => {
 		const query = router.query
 		delete query.transactionHashes
 		router.replace({ pathname: router.pathname, query }, undefined, { shallow: true })
+	}
+
+	const submitCategoryCard = async (res) => {
+		const txLast = res
+		const resFromTxLast = txLast.receipts_outcome[0].outcome.logs[0]
+		const resOutcome = await JSON.parse(`${resFromTxLast}`)
+		await retry(
+			async () => {
+				const res = await axios.post(
+					`${process.env.V2_API_URL}/categories/tokens`,
+					{
+						account_id: currentUser,
+						contract_id: txLast?.transaction?.receiver_id,
+						token_series_id: resOutcome?.params?.token_series_id,
+						category_id: window.sessionStorage.getItem(`categoryToken`),
+					},
+					{
+						headers: {
+							authorization: await WalletHelper.authToken(),
+						},
+					}
+				)
+				if (res.status === 403 || res.status === 400) {
+					sentryCaptureException(res.data?.message || `Token series still haven't exist`)
+					return
+				}
+				window.sessionStorage.removeItem('categoryToken')
+			},
+			{
+				retries: 20,
+				factor: 2,
+			}
+		)
 	}
 
 	if (!showModal || !token) return null
