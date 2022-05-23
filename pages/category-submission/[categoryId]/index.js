@@ -137,6 +137,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 			category_id: submission.category_id,
 			token_series_id: submission.token_series_id,
 			contract_id: submission.contract_id,
+			storeToSheet: submission.category_id === 'art-competition' ? 'true' : 'false',
 			msg: 'ok',
 		}
 
