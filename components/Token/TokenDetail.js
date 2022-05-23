@@ -541,7 +541,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 									)
 								)}
 							</div>
-						) : token.is_staked ? (
+						) : token.is_staked && currentUser === token.owner_id ? (
 							<div className="flex flex-wrap flex-col">
 								<div className="w-full flex-1">
 									<Button
