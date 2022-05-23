@@ -293,6 +293,7 @@ const TokenSingle = ({ initialData, displayType = 'large', volume, showRaritySco
 									useOriginal: process.env.APP_ENV === 'production' ? false : true,
 									isMediaCdn: token.isMediaCdn,
 								})}
+								audioUrl={token.metadata.animation_url}
 								imgBlur={token.metadata.blurhash}
 								flippable
 								token={{
