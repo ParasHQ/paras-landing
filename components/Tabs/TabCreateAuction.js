@@ -225,7 +225,7 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 							step="any"
 							ref={register({
 								required: true,
-								min: 1,
+								min: 0.1,
 							})}
 							placeHolder={'Ⓝ'}
 							className={`${errors.startingBid && 'error'}`}
@@ -233,7 +233,7 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 					</div>
 					<div className="mt-2 text-sm text-red-500 text-right">
 						{errors.startingBid?.type === 'required' && `Starting bid is required`}
-						{errors.startingBid?.type === 'min' && `Minimum 1 Ⓝ`}
+						{errors.startingBid?.type === 'min' && `Minimum 0.1 Ⓝ`}
 					</div>
 				</div>
 				<div className="mt-4">
