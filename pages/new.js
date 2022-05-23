@@ -467,6 +467,7 @@ const NewPage = () => {
 						contract_id: txLast?.transaction?.receiver_id,
 						token_series_id: resOutcome?.params?.token_series_id,
 						category_id: store.selectedCategory,
+						storeToSheet: store.selectedCategory === 'art-competition' ? 'true' : 'false',
 					},
 					{
 						headers: {
