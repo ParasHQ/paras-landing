@@ -244,21 +244,35 @@ const SubmissionDetail = ({ submission, updateData }) => {
 			</div>
 			<div className="flex flex-wrap justify-center border-2 border-dashed border-gray-800 p-4 md:p-8 rounded-md items-center">
 				<div className="w-40 md:mr-6">
-					<Card
-						imgUrl={parseImgUrl(localToken?.metadata.media, null, {
-							width: `600`,
-							useOriginal: process.env.APP_ENV === 'production' ? false : true,
-						})}
-						imgBlur={localToken?.metadata.blurhash}
-						token={{
-							title: localToken?.metadata.title,
-							edition_id: localToken?.edition_id,
-							collection: localToken?.metadata.collection || localToken?.contract_id,
-							copies: localToken?.metadata.copies,
-							creatorId: localToken?.metadata.creator_id || localToken?.contract_id,
-							is_creator: localToken?.is_creator,
+					<Link
+						href={{
+							pathname: router.pathname,
+							query: {
+								...router.query,
+								tokenSeriesId: localToken?.token_series_id,
+								contractId: localToken?.contract_id,
+							},
 						}}
-					/>
+						as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}`}
+						scroll={false}
+						shallow
+					>
+						<Card
+							imgUrl={parseImgUrl(localToken?.metadata.media, null, {
+								width: `600`,
+								useOriginal: process.env.APP_ENV === 'production' ? false : true,
+							})}
+							imgBlur={localToken?.metadata.blurhash}
+							token={{
+								title: localToken?.metadata.title,
+								edition_id: localToken?.edition_id,
+								collection: localToken?.metadata.collection || localToken?.contract_id,
+								copies: localToken?.metadata.copies,
+								creatorId: localToken?.metadata.creator_id || localToken?.contract_id,
+								is_creator: localToken?.is_creator,
+							}}
+						/>
+					</Link>
 				</div>
 				<div className="mt-4 text-white">
 					<div className="overflow-hidden truncate">
