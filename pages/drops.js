@@ -90,7 +90,7 @@ const timeline = [
 		note: [`NFT drop is live by offer`, `Drops will start on May 18th at 3.00 PM UTC`],
 	},
 	{
-		date: 'May 23th',
+		date: 'May 23rd',
 		note: [`NFT drop will end on May 23rd at 3.00 PM UTC`],
 	},
 ]
