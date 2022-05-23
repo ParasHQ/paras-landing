@@ -14,6 +14,7 @@ import TokenDetailModal from 'components/Token/TokenDetailModal'
 import MarketTokenModal from 'components/Modal/MarketTokenModal'
 import CardListLoaderSmall from 'components/Card/CardListLoaderSmall'
 import useTokenSeries from 'hooks/useTokenSeries'
+import { useToast } from 'hooks/useToast'
 
 const CardList = ({
 	name = 'default',
@@ -124,8 +125,58 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 	const [modalType, setModalType] = useState(null)
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
+	const toast = useToast()
 
-	const price = token.lowest_price || token.price
+	const price =
+		token.token?.amount && token.token?.bidder_list && token.token?.bidder_list.length !== 0
+			? token.token?.amount
+			: token.lowest_price || token.price
+	const [isEndedTime, setIsEndedTime] = useState(false)
+
+	const _showInfoUpdatingAuction = () => {
+		toast.show({
+			text: (
+				<div className="text-sm text-white text-justify">
+					<p>
+						This auction data is being updated, please refresh the page periodically each minute.
+					</p>
+				</div>
+			),
+			type: 'updatingAuction',
+			duration: null,
+		})
+	}
+
+	useEffect(() => {
+		countDownTimeAuction()
+	}, [isEndedTime])
+
+	const convertTimeOfAuction = (date) => {
+		const sliceNanoSec = String(date).slice(0, 13)
+
+		if (sliceNanoSec !== 'undefined') {
+			return sliceNanoSec
+		}
+	}
+
+	const countDownTimeAuction = () => {
+		const endedDate = convertTimeOfAuction(token.token?.ended_at)
+
+		const timer = setInterval(() => {
+			const startedDate = new Date().getTime()
+
+			if (!isEndedTime) {
+				let distance = parseInt(endedDate) - parseInt(startedDate)
+
+				if (distance <= 0) {
+					clearInterval(timer)
+					setIsEndedTime(true)
+				}
+			}
+
+			return
+		}, 1000)
+	}
 
 	const onClickSeeDetails = async (choosenToken, additionalQuery) => {
 		const token = (await mutate()) || choosenToken
@@ -161,7 +212,13 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 			if (token.token && token.token.owner_id === currentUser) {
 				return localeLn('UpdateListing')
 			} else {
-				return price ? 'Buy Now' : 'Place Offer'
+				return price && !token.token?.is_auction && !isEndedTime
+					? 'Buy Now'
+					: token.token?.is_auction && !isEndedTime
+					? 'Place a Bid'
+					: isEndedTime
+					? 'Auction Ends'
+					: 'Place Offer'
 			}
 		} else if (
 			currentUser === token.metadata.creator_id ||
@@ -172,7 +229,13 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 			return localeLn('UpdateListing')
 		}
 
-		return price ? 'Buy Now' : 'Place Offer'
+		return (price && !token.token?.is_auction) || !isEndedTime
+			? 'Buy Now'
+			: token.token?.is_auction && !token.token?.owner_id && !isEndedTime
+			? 'Place a Bid'
+			: isEndedTime
+			? 'Auction Ends'
+			: 'Place Offer'
 	}
 
 	const actionButtonClick = (token) => {
@@ -191,7 +254,13 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 			}
 			// 1 of 1 Edition
 			else {
-				setModalType(price ? 'buy' : 'offer')
+				setModalType(
+					price && (!token.token?.is_auction || isEndedTime)
+						? 'buy'
+						: token.token?.is_auction && !isEndedTime
+						? 'placebid'
+						: 'offer'
+				)
 			}
 		} else if (
 			currentUser === token.metadata.creator_id ||
@@ -202,14 +271,46 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 		} else if (token.price === null && token.token === undefined && token.lowest_price) {
 			onClickSeeDetails(token, { tab: 'owners' })
 		} else {
-			setModalType(price ? 'buy' : 'offer')
+			setModalType(
+				price && !token.token?.is_auction ? 'buy' : token.token?.is_auction ? 'placebid' : 'offer'
+			)
 		}
+	}
+
+	const typeSale = () => {
+		if (token.token?.is_auction && !isEndedTime) {
+			return localeLn('OnAuction')
+		} else if (token.lowest_price && token.metadata.copies > 1) {
+			return localeLn('StartFrom')
+		} else {
+			return localeLn('OnSale')
+		}
+	}
+
+	const checkBidder = () => {
+		if (token.token?.bidder_list && token.token?.bidder_list.length !== 0) {
+			return 'Highest Bid'
+		} else {
+			return 'Starting Bid'
+		}
+	}
+
+	const isCurrentBid = (type) => {
+		let list = []
+		token.token?.bidder_list?.map((item) => {
+			if (type === 'bidder') list.push(item.bidder)
+			else if (type === 'time') list.push(item.issued_at)
+			else if (type === 'amount') list.push(item.amount)
+		})
+		const currentBid = list.reverse()
+
+		return currentBid[0]
 	}
 
 	return (
 		<>
-			<TokenSeriesDetailModal tokens={[token]} />
-			<TokenDetailModal tokens={[token]} />
+			<TokenSeriesDetailModal tokens={[token]} isAuctionEnds={isEndedTime} />
+			<TokenDetailModal tokens={[token]} isAuctionEnds={isEndedTime} />
 			<MarketTokenModal
 				activeToken={activeToken}
 				onCloseModal={onCloseModal}
@@ -244,6 +345,9 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 									attributes: token.metadata.attributes,
 									_is_the_reference_merged: token._is_the_reference_merged,
 									mime_type: token.metadata.mime_type,
+									is_auction: token.token?.is_auction,
+									started_at: token.token?.started_at,
+									ended_at: token.token?.ended_at,
 								}}
 								profileCollection={profileCollection}
 								type={type}
@@ -253,20 +357,57 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 				</Link>
 				<div className={`px-1 relative ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
 					<div className="block">
-						<p className="text-gray-400 text-xs">
-							{token.token || token.metadata.copies === 1
-								? localeLn('OnSale')
-								: localeLn('StartFrom')}
-						</p>
-						<div className={`text-gray-100 ${displayType === 'large' ? `text-2xl` : `text-lg`}`}>
-							{price ? (
+						<p className="text-gray-400 text-xs">{typeSale()}</p>
+						{token.token?.is_auction && !isEndedTime && (
+							<p className="text-gray-100 text-[9px] font-bold">{checkBidder()}</p>
+						)}
+						<div
+							className={`text-gray-100 ${
+								(displayType === 'large' && !token.token?.is_auction) || isEndedTime
+									? `text-2xl`
+									: displayType !== 'small' && token.token?.is_auction && !isEndedTime
+									? 'text-lg -mt-.5 -mb-2'
+									: displayType === 'small' && token.token?.is_auction && !isEndedTime
+									? `text-base`
+									: 'text-lg'
+							}`}
+						>
+							{price || (token.token?.is_auction && !isEndedTime) ? (
 								<div className="flex items-baseline space-x-1">
 									<div className="truncate">
-										{price === '0' ? localeLn('Free') : `${prettyBalance(price, 24, 4)} Ⓝ`}
+										{price === '0' && !token.token?.is_auction ? (
+											localeLn('Free')
+										) : (price && token.token?.has_price && !isEndedTime) ||
+										  (token.lowest_price && !isEndedTime) ? (
+											`${prettyBalance(
+												token.token?.is_auction && token.token?.bidder_list?.length !== 0
+													? isCurrentBid('amount') || price
+													: price,
+												24,
+												4
+											)} Ⓝ`
+										) : (
+											<div className="line-through text-red-600">
+												<span className="text-gray-100">{localeLn('SALE')}</span>
+											</div>
+										)}
 									</div>
-									{price !== '0' && store.nearUsdPrice !== 0 && (
-										<div className="text-xs text-gray-400 truncate">
-											~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 2)}
+									{price && !isEndedTime && (
+										<div
+											className={`${
+												token.token?.is_auction ? 'text-[9px]' : 'text-xs'
+											} text-gray-400 truncate`}
+										>
+											~ $
+											{prettyBalance(
+												JSBI.BigInt(
+													token.token?.is_auction && token.token?.bidder_list?.length !== 0
+														? isCurrentBid('amount') || price
+														: price
+												) * store.nearUsdPrice,
+												24,
+												2
+											)}
 										</div>
 									)}
 								</div>
@@ -305,14 +446,46 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 						</div>
 					)}
 					<div className="flex justify-between md:items-baseline">
-						<p
-							className={`font-bold text-white cursor-pointer hover:opacity-80 ${
-								displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
-							} mb-1 md:mb-0`}
-							onClick={() => actionButtonClick(token)}
-						>
-							{actionButtonText(token)}
-						</p>
+						{!token.token?.is_auction ||
+						(currentUser !== token.token?.owner_id && isCurrentBid('bidder') !== currentUser) ? (
+							<p
+								className={`font-bold text-white ${
+									isEndedTime && 'text-opacity-40'
+								} cursor-pointer hover:opacity-80 ${
+									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+								} mb-1 md:mb-0`}
+								onClick={() =>
+									isEndedTime ? _showInfoUpdatingAuction() : actionButtonClick(token)
+								}
+							>
+								{actionButtonText(token)}
+							</p>
+						) : isCurrentBid('bidder') === currentUser && !isEndedTime ? (
+							<p
+								className={`font-bold text-white text-opacity-40 ${
+									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+								} mb-1 md:mb-0`}
+							>
+								{`You're currently bid`}
+							</p>
+						) : !isEndedTime ? (
+							<p
+								className={`font-bold text-white text-opacity-40 ${
+									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+								} mb-1 md:mb-0`}
+							>
+								Auction on going
+							</p>
+						) : (
+							<p
+								className={`font-bold text-white text-opacity-40 hover:opacity-80 cursor-pointer ${
+									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+								} mb-1 md:mb-0`}
+								onClick={_showInfoUpdatingAuction}
+							>
+								Auction Ends
+							</p>
+						)}
 						<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
 							<a
 								onClick={(e) => {

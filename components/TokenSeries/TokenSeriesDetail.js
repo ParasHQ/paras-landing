@@ -31,7 +31,7 @@ import Card from 'components/Card/Card'
 import { useRouter } from 'next/router'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
 
-const TokenSeriesDetail = ({ token, className }) => {
+const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
 	const currentUser = useStore((state) => state.currentUser)
@@ -388,7 +388,9 @@ const TokenSeriesDetail = ({ token, className }) => {
 								{tabDetail('publication')}
 							</div>
 							{activeTab === 'info' && <TabInfo localToken={token} />}
-							{activeTab === 'owners' && <TabOwners localToken={token} />}
+							{activeTab === 'owners' && (
+								<TabOwners localToken={token} isAuctionEnds={isAuctionEnds} />
+							)}
 							{activeTab === 'offers' && <TabOffers localToken={token} />}
 							{activeTab === 'history' && <TabHistory localToken={token} />}
 							{activeTab === 'publication' && <TabPublication localToken={token} />}
