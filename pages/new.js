@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
-import { useEffect, useRef, useState } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import Card from 'components/Card/Card'
 import ImgCrop from 'components/ImgCrop'
 import Nav from 'components/Nav'
@@ -26,6 +26,8 @@ import Tooltip from 'components/Common/Tooltip'
 import { IconInfo, IconX } from 'components/Icons'
 import WalletHelper from 'lib/WalletHelper'
 import AudioPlayer from 'components/Common/AudioPlayer'
+import { Canvas } from '@react-three/fiber'
+import { Model1 } from 'components/Model3D/ThreeDModel'
 
 const LIMIT = 16
 
@@ -77,6 +79,31 @@ const RoyaltyWatch = ({ control, append }) => {
 	)
 }
 
+const LoaderIcon = () => (
+	<div className="flex items-center justify-center">
+		<svg
+			className="animate-spin m h-5 w-5 text-white"
+			xmlns="http://www.w3.org/2000/svg"
+			fill="none"
+			viewBox="0 0 24 24"
+		>
+			<circle
+				className="opacity-25"
+				cx="12"
+				cy="12"
+				r="10"
+				stroke="currentColor"
+				strokeWidth="4"
+			></circle>
+			<path
+				className="opacity-75"
+				fill="currentColor"
+				d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+			></path>
+		</svg>
+	</div>
+)
+
 const NewPage = () => {
 	const { localeLn } = useIntl()
 	const scrollBar = useRef()
@@ -99,6 +126,10 @@ const NewPage = () => {
 		name: 'royalties',
 	})
 
+	const [threeDFile, setThreeDFile] = useState('')
+	const [threeDUrl, setThreeDUrl] = useState('')
+	const [show3dFile, setShow3dFile] = useState(false)
+	const [isUpload3DFile, setIsUpload3DFile] = useState(false)
 	const [showImgCrop, setShowImgCrop] = useState(false)
 	const [isLoading, setIsLoading] = useState(null)
 	const [imgFile, setImgFile] = useState('')
@@ -394,6 +425,8 @@ const NewPage = () => {
 				setAudioFile('')
 				setImgUrl('')
 				setImgFile('')
+				setThreeDUrl('')
+				setThreeDFile('')
 				setthumbnailAudioFile('')
 				setThumbnailAudioUrl('')
 				if (e.target.files[0].type?.includes('audio')) {
@@ -401,6 +434,14 @@ const NewPage = () => {
 					setAudioFile(e.target.files[0])
 					setAudioUrl(_audioUrl)
 					setFileType(e.target.files[0].type)
+					setShowAudioThumbnailModal(true)
+				} else if (
+					e.target.files[0].name?.includes('glb') ||
+					e.target.files[0].name?.includes('gltf')
+				) {
+					const threeDUrl = URL.createObjectURL(e.target.files[0])
+					setThreeDUrl(threeDUrl)
+					setThreeDFile(e.target.files[0])
 					setShowAudioThumbnailModal(true)
 				} else {
 					const newImgUrl = await readFileAsUrl(e.target.files[0])
@@ -824,6 +865,8 @@ const NewPage = () => {
 								onClick={() => {
 									setAudioFile('')
 									setAudioUrl('')
+									setThreeDFile('')
+									setThreeDUrl('')
 									setThumbnailAudioUrl('')
 									setthumbnailAudioFile('')
 									setImgFile('')
@@ -835,7 +878,7 @@ const NewPage = () => {
 							</div>
 						</div>
 						<h1 className="mt-4 text-xl font-bold text-white tracking-tight">
-							Thumbnail Image for Audio
+							Thumbnail Image for Audio and 3D
 						</h1>
 						<div className="px-2 flex items-center justify-center mt-4">
 							{thumbnailAudioFile ? (
@@ -853,9 +896,10 @@ const NewPage = () => {
 							)}
 						</div>
 						<div className="mt-5 flex items-center">
-							<div
+							<button
+								disabled={isUpload3DFile}
 								className="px-4 py-2 w-full rounded-md bg-primary text-white hover:bg-opacity-30 transition-all cursor-pointer text-center font-semibold"
-								onClick={() => {
+								onClick={async () => {
 									if (thumbnailAudioUrl) {
 										setImgUrl(thumbnailAudioUrl)
 										setImgFile(thumbnailAudioFile)
@@ -863,8 +907,8 @@ const NewPage = () => {
 									}
 								}}
 							>
-								Submit
-							</div>
+								{isUpload3DFile ? <LoaderIcon /> : `Submit`}
+							</button>
 						</div>
 					</div>
 				</Modal>
@@ -880,7 +924,7 @@ const NewPage = () => {
 			<div className="relative max-w-6xl m-auto py-12 px-4 text-white">
 				<div className="flex flex-wrap rounded-md overflow-hidden">
 					<div
-						className="w-full lg:w-2/3 py-16 px-8 flex justify-center items-center bg-dark-primary-2 "
+						className="w-full lg:w-2/3 py-16 px-8 flex justify-center items-center bg-dark-primary-2 relative"
 						style={{ background: '#202124' }}
 					>
 						<div
@@ -889,28 +933,80 @@ const NewPage = () => {
 								height: `60vh`,
 							}}
 						>
-							<Card
-								imgWidth={640}
-								imgHeight={890}
-								imgUrl={parseImgUrl(imgUrl)}
-								imgBlur={blurhash}
-								token={{
-									title: watch('name', formInput.name) || 'Name',
-									collection: choosenCollection.collection || 'Collection',
-									creatorId: store.currentUser,
-									copies: watch('supply', formInput.supply),
-								}}
-								initialRotate={{
-									x: 0,
-									y: 0,
-								}}
-							/>
-							{audioUrl && (
-								<div className="my-3 flex items-center justify-center w-full">
-									<AudioPlayer showForwardBackward={true} audioSrc={audioUrl} />
-								</div>
+							{threeDUrl && show3dFile ? (
+								<>
+									<Suspense fallback={null}>
+										<Canvas>
+											<Model1 threeDUrl={threeDUrl} threeDFile={threeDFile} />
+										</Canvas>
+									</Suspense>
+								</>
+							) : (
+								<>
+									<Card
+										imgWidth={640}
+										imgHeight={890}
+										imgUrl={parseImgUrl(imgUrl)}
+										imgBlur={blurhash}
+										token={{
+											title: watch('name', formInput.name) || 'Name',
+											collection: choosenCollection.collection || 'Collection',
+											creatorId: store.currentUser,
+											copies: watch('supply', formInput.supply),
+										}}
+										initialRotate={{
+											x: 0,
+											y: 0,
+										}}
+									/>
+									{audioUrl && (
+										<div className="my-3 flex items-center justify-center w-full">
+											<AudioPlayer showForwardBackward={true} audioSrc={audioUrl} />
+										</div>
+									)}
+								</>
 							)}
 						</div>
+						{threeDUrl && (
+							<div className="absolute top-5 right-5">
+								<div
+									className={`py-1 px-2 text-white rounded-full flex items-center bg-gray-700 hover:bg-gray-900 transition-all cursor-pointer ${
+										show3dFile && `border border-white`
+									}`}
+									onClick={() => {
+										setShow3dFile(!show3dFile)
+									}}
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										className="icon icon-tabler icon-tabler-3d-cube-sphere"
+										width={25}
+										height={25}
+										viewBox="0 0 24 24"
+										strokeWidth="1.5"
+										stroke="#fff"
+										fill="none"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									>
+										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+										<path d="M6 17.6l-2 -1.1v-2.5" />
+										<path d="M4 10v-2.5l2 -1.1" />
+										<path d="M10 4.1l2 -1.1l2 1.1" />
+										<path d="M18 6.4l2 1.1v2.5" />
+										<path d="M20 14v2.5l-2 1.12" />
+										<path d="M14 19.9l-2 1.1l-2 -1.1" />
+										<line x1={12} y1={12} x2={14} y2="10.9" />
+										<line x1={18} y1="8.6" x2={20} y2="7.5" />
+										<line x1={12} y1={12} x2={12} y2="14.5" />
+										<line x1={12} y1="18.5" x2={12} y2={21} />
+										<path d="M12 12l-2 -1.12" />
+										<line x1={6} y1="8.6" x2={4} y2="7.5" />
+									</svg>
+									3D
+								</div>
+							</div>
+						)}
 					</div>
 					<div className="w-full lg:w-1/3 bg-gray-700 p-4 relative">
 						{router.query.categoryId && (
@@ -928,6 +1024,11 @@ const NewPage = () => {
 							<h1 className="text-2xl font-bold text-white tracking-tight">
 								{localeLn('CardCreation')}
 							</h1>
+							{step === 1 && (
+								<p className="text-xs font-thin text-white text-opacity-80">
+									Supported file types: PNG,JPG,GIF,MP3,MP4,GLB
+								</p>
+							)}
 						</div>
 						{step === 0 && (
 							<div>
@@ -993,7 +1094,7 @@ const NewPage = () => {
 									<input
 										className="cursor-pointer w-full opacity-0 absolute inset-0"
 										type="file"
-										accept="image/*,video/*,audio/*"
+										accept="image/*,video/*,audio/*,.glb"
 										onClick={(e) => {
 											e.target.value = null
 										}}
@@ -1018,7 +1119,11 @@ const NewPage = () => {
 													/>
 												</svg>
 												<p className="text-gray-200 mt-4 truncate text-center">
-													{audioFile ? audioFile.name : imgFile.name}
+													{audioFile || threeDFile
+														? audioFile
+															? audioFile.name
+															: threeDFile.name
+														: imgFile.name}
 												</p>
 											</div>
 										) : (
@@ -1042,7 +1147,7 @@ const NewPage = () => {
 													{localeLn('Maximum30MB')}
 												</p>
 												<p className="text-sm text-gray-200 opacity-50">
-													Supported image, video, and audio file
+													Supported image, video, audio, and 3D file
 												</p>
 											</div>
 										)}
