@@ -23,8 +23,9 @@ import { sentryCaptureException } from 'lib/sentry'
 import Scrollbars from 'react-custom-scrollbars'
 import getConfig from 'config/near'
 import Tooltip from 'components/Common/Tooltip'
-import { IconInfo } from 'components/Icons'
+import { IconInfo, IconX } from 'components/Icons'
 import WalletHelper from 'lib/WalletHelper'
+import AudioPlayer from 'components/Common/AudioPlayer'
 import retry from 'async-retry'
 
 const LIMIT = 16
@@ -104,11 +105,17 @@ const NewPage = () => {
 	const [isLoading, setIsLoading] = useState(null)
 	const [imgFile, setImgFile] = useState('')
 	const [imgUrl, setImgUrl] = useState('')
+	const [audioFile, setAudioFile] = useState('')
+	const [audioUrl, setAudioUrl] = useState('')
+	const uploadedAudioRef = useRef()
+	const [thumbnailAudioFile, setthumbnailAudioFile] = useState('')
+	const [thumbnailAudioUrl, setThumbnailAudioUrl] = useState('')
 	const [step, setStep] = useState(0)
 	const [isUploading, setIsUploading] = useState(false)
 	const [isCreating, setIsCreating] = useState(false)
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
 	const [showCreatingModal, setShowCreatingModal] = useState(false)
+	const [showAudioThumbnailModal, setShowAudioThumbnailModal] = useState(false)
 	const [showCreateColl, setShowCreateColl] = useState(false)
 
 	const [showAlertErr, setShowAlertErr] = useState(false)
@@ -135,9 +142,25 @@ const NewPage = () => {
 		fee: (txFee?.current_fee || 0) / 100,
 	})
 
+	const uploadAudioFile = async () => {
+		const formDataAudio = new FormData()
+		formDataAudio.append(`files`, audioFile)
+		const respAudioUpload = await axios.post(`${process.env.V2_API_URL}/uploads`, formDataAudio, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				authorization: await WalletHelper.authToken(),
+			},
+		})
+		uploadedAudioRef.current = respAudioUpload.data.data[0].split('://')[1]
+	}
+
 	const uploadImageMetadata = async () => {
 		setIsUploading(true)
 		setShowCreatingModal(true)
+
+		if (audioUrl) {
+			await uploadAudioFile()
+		}
 
 		const reference = JSON.stringify({
 			description: formInput.description,
@@ -147,6 +170,7 @@ const NewPage = () => {
 			attributes: formInput.attributes,
 			blurhash: blurhash,
 			mime_type: fileType,
+			animation_url: uploadedAudioRef.current,
 		})
 		const blob = new Blob([reference], { type: 'text/plain' })
 
@@ -380,17 +404,45 @@ const NewPage = () => {
 		}
 	}
 
-	const _setImg = async (e) => {
+	const _setFile = async (e) => {
 		if (e.target.files[0]) {
 			if (e.target.files[0].size > MAX_FILE_SIZE) {
 				setShowAlertErr('Maximum file size is 30MB')
 				return
 			} else {
-				const newImgUrl = await readFileAsUrl(e.target.files[0])
-				setImgFile(e.target.files[0])
-				setImgUrl(newImgUrl)
-				setFileType(e.target.files[0].type)
-				encodeBlurhash(newImgUrl)
+				setAudioUrl('')
+				setAudioFile('')
+				setImgUrl('')
+				setImgFile('')
+				setthumbnailAudioFile('')
+				setThumbnailAudioUrl('')
+				if (e.target.files[0].type?.includes('audio')) {
+					const _audioUrl = URL.createObjectURL(e.target.files[0])
+					setAudioFile(e.target.files[0])
+					setAudioUrl(_audioUrl)
+					setFileType(e.target.files[0].type)
+					setShowAudioThumbnailModal(true)
+				} else {
+					const newImgUrl = await readFileAsUrl(e.target.files[0])
+					setImgFile(e.target.files[0])
+					setImgUrl(newImgUrl)
+					setFileType(e.target.files[0].type)
+					encodeBlurhash(newImgUrl)
+				}
+			}
+		}
+	}
+
+	const _setThumbnailAudio = async (e) => {
+		if (e.target.files[0]) {
+			if (e.target.files[0].size > MAX_FILE_SIZE) {
+				setShowAlertErr('Maximum file size is 30MB')
+				return
+			} else {
+				const newThumbUrl = URL.createObjectURL(e.target.files[0])
+				setthumbnailAudioFile(e.target.files[0])
+				setThumbnailAudioUrl(newThumbUrl)
+				encodeBlurhash(newThumbUrl)
 			}
 		}
 	}
@@ -563,6 +615,7 @@ const NewPage = () => {
 									imgHeight={890}
 									imgBlur={blurhash}
 									imgUrl={parseImgUrl(imgUrl)}
+									audioUrl={audioUrl}
 									token={{
 										title: formInput.name,
 										collection: choosenCollection.collection,
@@ -813,6 +866,67 @@ const NewPage = () => {
 					}}
 				/>
 			)}
+			{showAudioThumbnailModal && (
+				<Modal
+					close={() => setShowAudioThumbnailModal(false)}
+					closeOnBgClick={false}
+					closeOnEscape={false}
+				>
+					<div className="max-w-sm m-auto p-4 bg-gray-800 rounded-md w-full relative">
+						<div className="absolute right-0 top-0 pr-4 pt-4">
+							<div
+								className="cursor-pointer"
+								onClick={() => {
+									setAudioFile('')
+									setAudioUrl('')
+									setThumbnailAudioUrl('')
+									setthumbnailAudioFile('')
+									setImgFile('')
+									setImgUrl('')
+									setShowAudioThumbnailModal(false)
+								}}
+							>
+								<IconX />
+							</div>
+						</div>
+						<h1 className="mt-4 text-xl font-bold text-white tracking-tight">
+							Thumbnail Image for Audio
+						</h1>
+						<p className="text-xs font-thin text-white text-opacity-80">
+							Supported file types: PNG,JPG,GIF
+						</p>
+						<div className="px-2 flex items-center justify-center mt-4">
+							{thumbnailAudioFile ? (
+								<img src={thumbnailAudioUrl} className="object-contain w-9/12 h-80" alt="" />
+							) : (
+								<div className="bg-gray-500 bg-opacity-60 hover:bg-opacity-30 transition-all cursor-pointer rounded-md w-9/12 h-80 flex items-center justify-center relative">
+									<input
+										type="file"
+										accept="image/*"
+										className="cursor-pointer w-full opacity-0 absolute inset-0"
+										onChange={_setThumbnailAudio}
+									/>
+									<div className="text-white">+ Add</div>
+								</div>
+							)}
+						</div>
+						<div className="mt-5 flex items-center">
+							<div
+								className="px-4 py-2 w-full rounded-md bg-primary text-white hover:bg-opacity-30 transition-all cursor-pointer text-center font-semibold"
+								onClick={() => {
+									if (thumbnailAudioUrl) {
+										setImgUrl(thumbnailAudioUrl)
+										setImgFile(thumbnailAudioFile)
+										setShowAudioThumbnailModal(false)
+									}
+								}}
+							>
+								Submit
+							</div>
+						</div>
+					</div>
+				</Modal>
+			)}
 			<CreateCollectionModal
 				show={showCreateColl}
 				onClose={() => setShowCreateColl(!showCreateColl)}
@@ -849,6 +963,11 @@ const NewPage = () => {
 									y: 0,
 								}}
 							/>
+							{audioUrl && (
+								<div className="my-3 flex items-center justify-center w-full">
+									<AudioPlayer showForwardBackward={false} audioSrc={audioUrl} />
+								</div>
+							)}
 						</div>
 					</div>
 					<div className="w-full lg:w-1/3 bg-gray-700 p-4 relative">
@@ -940,11 +1059,11 @@ const NewPage = () => {
 									<input
 										className="cursor-pointer w-full opacity-0 absolute inset-0"
 										type="file"
-										accept="image/*,video/*"
+										accept="image/*,video/*,audio/*"
 										onClick={(e) => {
 											e.target.value = null
 										}}
-										onChange={_setImg}
+										onChange={_setFile}
 									/>
 									<div className="flex items-center justify-center h-full">
 										{imgFile ? (
@@ -964,7 +1083,9 @@ const NewPage = () => {
 														fill="rgba(229, 231, 235, 0.5)"
 													/>
 												</svg>
-												<p className="text-gray-200 mt-4 truncate text-center">{imgFile.name}</p>
+												<p className="text-gray-200 mt-4 truncate text-center">
+													{audioFile ? audioFile.name : imgFile.name}
+												</p>
 											</div>
 										) : (
 											<div className="text-center">
@@ -987,7 +1108,7 @@ const NewPage = () => {
 													{localeLn('Maximum30MB')}
 												</p>
 												<p className="text-sm text-gray-200 opacity-50">
-													Supported image or video file
+													Supported image, video, and audio file
 												</p>
 											</div>
 										)}
@@ -997,7 +1118,7 @@ const NewPage = () => {
 									<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
 										<button onClick={_handleBack}>{localeLn('Back')}</button>
 										<div>{step + 1}/4</div>
-										<button disabled={!imgFile} onClick={() => setStep(step + 1)}>
+										<button disabled={!imgFile && !imgUrl} onClick={() => setStep(step + 1)}>
 											{localeLn('Next')}
 										</button>
 									</div>
