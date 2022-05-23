@@ -17,7 +17,7 @@ import FilterDisplay from 'components/Filter/FilterDisplay'
 
 const LIMIT = 12
 
-function MarketPage({ serverQuery }) {
+const MarketPage = ({ serverQuery }) => {
 	const store = useStore()
 	const router = useRouter()
 
@@ -32,6 +32,7 @@ function MarketPage({ serverQuery }) {
 	)
 	const [hasMore, setHasMore] = useState(true)
 	const { localeLn } = useIntl()
+
 	useEffect(() => {
 		getCategory()
 		return () => {
