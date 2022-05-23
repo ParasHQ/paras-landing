@@ -379,7 +379,7 @@ const SuccessTransactionModal = () => {
 				return (
 					<>
 						You successfully {msg.is_auction ? 'create auction' : 'update'}{' '}
-						<b>{token.metadata.title}</b> price to {formatNearAmount(msg.price || 0)} Ⓝ
+						<b>{token.metadata.title}</b> with starting price {formatNearAmount(msg.price || 0)} Ⓝ
 					</>
 				)
 			} else if (msg.market_type === 'accept_offer') {

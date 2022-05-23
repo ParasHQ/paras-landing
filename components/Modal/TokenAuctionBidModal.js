@@ -158,7 +158,7 @@ const TokenAuctionBidModal = ({ data, show, onClose, onSuccess }) => {
 			)
 			const multiplebid = JSBI.multiply(JSBI.divide(currentBid, JSBI.BigInt(100)), JSBI.BigInt(5))
 			const nextBid = JSBI.add(currentBid, multiplebid).toString()
-			const totalNextBid = Math.ceil(Math.ceil((nextBid / 10 ** 24).toFixed(2)))
+			const totalNextBid = (nextBid / 10 ** 24).toFixed(1)
 			return totalNextBid
 		} else {
 			return prettyBalance(data.price || data?.lowest_price, 24, 4)
