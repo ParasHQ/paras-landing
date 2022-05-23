@@ -422,6 +422,7 @@ const NewPage = () => {
 				const newThumbUrl = URL.createObjectURL(e.target.files[0])
 				setthumbnailAudioFile(e.target.files[0])
 				setThumbnailAudioUrl(newThumbUrl)
+				encodeBlurhash(newThumbUrl)
 			}
 		}
 	}
