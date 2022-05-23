@@ -12,6 +12,7 @@ import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { SHOW_TX_HASH_LINK } from 'constants/common'
 import { useRouter } from 'next/router'
+import useStore from 'lib/store'
 
 export const descriptionMaker = (activity, localToken, localTradedToken) => {
 	const type = activity.type
@@ -116,6 +117,7 @@ const ActivityDetail = ({ activity, index }) => {
 	const bottomCardPositionStyle = `-top-8 left-2 md:left-2 z-20`
 	const isTradeActivity = activity?.type?.includes('trade')
 	const router = useRouter()
+	const store = useStore()
 
 	const HEADERS = [
 		{
@@ -141,7 +143,7 @@ const ActivityDetail = ({ activity, index }) => {
 		{
 			id: 'time',
 			title: 'Time',
-			className: `w-3/12 md:w-2/12 p-3 md:p-0 lg:p-3 text-center md:h-full`,
+			className: `w-4/12 md:w-2/12 pr-2 md:p-0 lg:p-3 text-center md:h-full`,
 		},
 		{
 			id: 'type',
@@ -339,7 +341,7 @@ const ActivityDetail = ({ activity, index }) => {
 			<div key={activity._id} className="text-white">
 				<div className="w-full">
 					<div className="hidden md:block">
-						<div className="flex flex-row w-full text-gray-300 hover:opacity-75">
+						<div className="flex flex-row w-full text-gray-300 hover:opacity-75 items-center">
 							{index === 0 &&
 								HEADERS.map((d, index) => {
 									return (
@@ -457,7 +459,7 @@ const ActivityDetail = ({ activity, index }) => {
 									}`}
 								>
 									<a>
-										<p className="opacity-80 truncate text-xs py-2 font-thin border-b-2 border-transparent hover:opacity-50 cursor-pointer">
+										<p className="opacity-80 truncate text-xs py-1 font-thin border-b-2 border-transparent hover:opacity-50 cursor-pointer">
 											{localToken?.metadata?.collection_id
 												? isTradeActivity
 													? localTradedToken?.metadata?.collection
@@ -524,41 +526,29 @@ const ActivityDetail = ({ activity, index }) => {
 							</Link>
 						</div>
 						<div
-							className={`${HEADERS[4].className} text-xs text-center sm:text-base md:text-sm text-gray-50 opacity-50 font-thin`}
+							className={`${HEADERS[4].className} text-xs text-right sm:text-base md:text-sm font-thin`}
 						>
-							<div className="flex flex-row md:flex-col justify-center items-center">
-								<div
-									className="flex flex-col relative top-1 items-center justify-center p-1 md:hidden"
-									onClick={() => showDetail(index)}
-								>
-									{timeAgo.format(
-										new Date(activity.issued_at ? activity.issued_at : 1636197684986)
-									)}
-									<svg
-										width="10"
-										height="10"
-										viewBox="0 0 21 19"
-										fill="none"
-										xmlns="http://www.w3.org/2000/svg"
-										className="mt-1 md:mt-0"
-									>
-										<path
-											d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z"
-											fill="white"
-										/>
-									</svg>
-								</div>
-								<div className="hidden md:flex md:flex-row">
-									<div>
-										{timeAgo.format(
-											new Date(activity.issued_at ? activity.issued_at : 1636197684986)
+							<div className="flex flex-col md:flex-col justify-center items-end md:items-center">
+								<div className="flex flex-col relative top-1 items-center justify-center pb-1 md:hidden">
+									<div className="font-bold text-gray-300">
+										{parseType(
+											activity.creator_id,
+											activity.price,
+											activity.from,
+											activity.to,
+											activity.type
 										)}
 									</div>
 								</div>
-								<div className="md:flex md:flex-row">
+								<div className="hidden md:flex md:flex-row text-gray-50 opacity-50">
+									{timeAgo.format(
+										new Date(activity.issued_at ? activity.issued_at : 1636197684986)
+									)}
+								</div>
+								<div className="flex flex-row md:flex-row mt-1 text-gray-50 opacity-50">
 									<div
 										onClick={() => setShowModal('options')}
-										className="cursor-pointer w-8 h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-4 flex items-center justify-center"
+										className="cursor-pointer w-8 h-4 md:h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-4 flex items-center justify-end md:justify-center"
 									>
 										<svg
 											width="18"
@@ -584,7 +574,7 @@ const ActivityDetail = ({ activity, index }) => {
 											}`}
 											target={`_blank`}
 										>
-											<div className="w-8 h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-4 flex items-center justify-center">
+											<div className="w-8 h-4 md:h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-4 flex items-center justify-end md:justify-center">
 												<svg
 													xmlns="http://www.w3.org/2000/svg"
 													className="icon icon-tabler icon-tabler-external-link"
@@ -605,6 +595,27 @@ const ActivityDetail = ({ activity, index }) => {
 											</div>
 										</a>
 									)}
+								</div>
+								<div
+									className="flex md:hidden flex-row text-right items-center mt-2 text-gray-50 opacity-50"
+									onClick={() => showDetail(index)}
+								>
+									{timeAgo.format(
+										new Date(activity.issued_at ? activity.issued_at : 1636197684986)
+									)}
+									<svg
+										width="10"
+										height="10"
+										viewBox="0 0 21 19"
+										fill="none"
+										xmlns="http://www.w3.org/2000/svg"
+										className="ml-2 md:mt-0"
+									>
+										<path
+											d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z"
+											fill="white"
+										/>
+									</svg>
 								</div>
 							</div>
 						</div>
@@ -644,15 +655,22 @@ const ActivityDetail = ({ activity, index }) => {
 							</Link>
 						</div>
 						<div className="flex flex-col flex-shrink text-center w-1/2">
-							<p className="font-thin text-white text-opacity-50 pb-2">Type</p>
+							<p className="font-thin text-white text-opacity-50 pb-2">Usd Price</p>
 							<p className="font-bold">
-								{parseType(
-									activity.creator_id,
-									activity.price,
-									activity.from,
-									activity.to,
-									activity.type
-								)}
+								{activity.price
+									? store.nearUsdPrice !== 0 && (
+											<>
+												$
+												{prettyBalance(
+													Number(store.nearUsdPrice * formatNearAmount(activity.msg.params.price))
+														.toPrecision(4)
+														.toString(),
+													0,
+													6
+												)}
+											</>
+									  )
+									: '---'}
 							</p>
 						</div>
 					</div>
