@@ -7,6 +7,7 @@ import TokenDetail from 'components/Token/TokenDetail'
 import { parseImgUrl } from 'utils/common'
 import { sentryCaptureException } from 'lib/sentry'
 import useToken from 'hooks/useToken'
+import { useEffect, useState } from 'react'
 
 const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.contract_id
@@ -17,6 +18,28 @@ const TokenPage = ({ errorCode, initial }) => {
 		key: `${initial?.contract_id}::${initial?.token_series_id}/${initial?.token_id}`,
 		initialData: initial,
 	})
+	const [isEndedTime, setIsEndedTime] = useState(false)
+
+	useEffect(() => {
+		checkAuctionTime()
+	}, [isEndedTime])
+
+	const convertTimeOfAuction = (date) => {
+		const sliceNanoSec = String(date).slice(0, 13)
+
+		if (sliceNanoSec !== 'undefined') {
+			return sliceNanoSec
+		}
+	}
+
+	const checkAuctionTime = () => {
+		if (token?.ended_at) {
+			const startedDate = new Date().getTime()
+			const endedDate = convertTimeOfAuction(token?.ended_at)
+			const endAuctionDate = parseInt(endedDate) - parseInt(startedDate)
+			setTimeout(() => setIsEndedTime(true), endAuctionDate)
+		}
+	}
 
 	if (errorCode) {
 		return <Error />
@@ -75,7 +98,7 @@ const TokenPage = ({ errorCode, initial }) => {
 			</Head>
 			<Nav />
 			<div className="relative max-w-6xl m-auto pt-16 px-4">
-				<TokenDetail token={token} />
+				<TokenDetail token={token} isAuctionEnds={isEndedTime} />
 			</div>
 			<Footer />
 		</div>

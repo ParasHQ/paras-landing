@@ -100,6 +100,14 @@ export const descriptionMaker = (activity, localToken, localTradedToken) => {
 		return `${localToken?.metadata?.owner_id} accepted trade ${localToken?.metadata?.title} with ${localToken?.metadata?.title}`
 	}
 
+	if (type === 'add_bid') {
+		return `${activity.from} add bid for ${formatNearAmount(activity.msg.params.price)}`
+	}
+
+	if (type === 'cancel_bid') {
+		return `${activity.from} cancel bid ${formatNearAmount(activity.msg.params.price)}`
+	}
+
 	return ``
 }
 
@@ -193,7 +201,10 @@ const ActivityDetail = ({ activity, index }) => {
 			return 'Creation'
 		}
 
-		if (type === 'add_market_data' || type === 'update_market_data') {
+		if (
+			(type === 'add_market_data' || type === 'update_market_data') &&
+			!activity.msg.params.is_auction
+		) {
 			return 'Listing'
 		}
 
@@ -215,6 +226,26 @@ const ActivityDetail = ({ activity, index }) => {
 
 		if (type === 'nft_decrease_series_copies') {
 			return 'Decrease Copy'
+		}
+
+		if (type === 'accept_trade') {
+			return 'Accept Trade'
+		}
+
+		if (type === 'nft_decrease_series_copies') {
+			return 'Decrease Copy'
+		}
+
+		if (type === 'add_market_data' || activity.msg.params.is_auction) {
+			return 'Auction'
+		}
+
+		if (type === 'add_bid') {
+			return 'Bid'
+		}
+
+		if (type === 'cancel_bid') {
+			return 'Cancel Bid'
 		}
 
 		return type

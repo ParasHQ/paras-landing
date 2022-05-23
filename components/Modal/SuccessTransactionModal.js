@@ -21,7 +21,7 @@ import {
 	TwitterShareButton,
 } from 'react-share'
 import { mutate } from 'swr'
-import { decodeBase64 } from 'utils/common'
+import { decodeBase64, prettyBalance } from 'utils/common'
 import retry from 'async-retry'
 
 const SuccessTransactionModal = () => {
@@ -109,6 +109,46 @@ const SuccessTransactionModal = () => {
 							},
 						}
 					)
+					setToken(res.data.data.results[0])
+					setTxDetail({ ...FunctionCall, args })
+					setShowModal(true)
+				} else if (FunctionCall.method_name === 'add_bid') {
+					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+						params: {
+							contract_id: args.nft_contract_id,
+							token_id: args.token_id,
+						},
+					})
+					setToken(res.data.data.results[0])
+					setTxDetail({ ...FunctionCall, args })
+					setShowModal(true)
+				} else if (FunctionCall.method_name === 'cancel_bid') {
+					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+						params: {
+							contract_id: args.nft_contract_id,
+							token_id: args.token_id,
+						},
+					})
+					setToken(res.data.data.results[0])
+					setTxDetail({ ...FunctionCall, args })
+					setShowModal(true)
+				} else if (FunctionCall.method_name === 'accept_bid') {
+					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+						params: {
+							contract_id: args.nft_contract_id,
+							token_id: args.token_id,
+						},
+					})
+					setToken(res.data.data.results[0])
+					setTxDetail({ ...FunctionCall, args })
+					setShowModal(true)
+				} else if (FunctionCall.method_name === 'cancel_auction') {
+					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+						params: {
+							contract_id: args.nft_contract_id,
+							token_id: args.token_id,
+						},
+					})
 					setToken(res.data.data.results[0])
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
@@ -240,18 +280,26 @@ const SuccessTransactionModal = () => {
 	const titleText = () => {
 		if (txDetail.method_name === 'add_offer') {
 			return 'Offer Success'
+		} else if (txDetail.method_name === 'add_bid') {
+			return 'Place Bid Success'
+		} else if (txDetail.method_name === 'cancel_bid') {
+			return 'Success Remove Bid'
+		} else if (txDetail.method_name === 'accept_bid') {
+			return 'Accept Bid Success'
 		} else if (txDetail.method_name === 'nft_buy' || txDetail.method_name === 'buy') {
 			return 'Purchase Success'
 		} else if (txDetail.method_name === 'nft_set_series_price') {
 			return 'Update Price Success'
 		} else if (txDetail.method_name === 'nft_approve') {
 			const msg = JSON.parse(txDetail.args.msg)
-			if (msg.market_type === 'sale') {
+			if (msg.market_type === 'sale' && !msg.is_auction) {
 				return 'Update Listing Success'
 			} else if (msg.market_type === 'accept_offer') {
 				return 'Accept Offer Success'
 			} else if (msg.market_type === 'add_trade') {
 				return 'Add Trade Success'
+			} else if (msg.is_auction) {
+				return 'Create Auction Success'
 			} else if (
 				msg.market_type === 'accept_trade' ||
 				msg.market_type === 'accept_trade_paras_series'
@@ -259,6 +307,10 @@ const SuccessTransactionModal = () => {
 				return 'Accept Trade Success'
 			}
 		} else if (txDetail.method_name === 'delete_market_data') {
+			const args = txDetail.args
+			if (args.is_auction) {
+				return 'Remove Auction Success'
+			}
 			return 'Remove Listing Success'
 		} else if (txDetail.method_name === 'nft_create_series') {
 			return 'Create Card Success'
@@ -273,6 +325,32 @@ const SuccessTransactionModal = () => {
 				<>
 					You successfully offer <b>{token.metadata.title}</b> for{' '}
 					{formatNearAmount(txDetail.args.price)} Ⓝ
+				</>
+			)
+		} else if (txDetail.method_name === 'add_bid') {
+			return (
+				<>
+					You successfully bid of auction <b>{token.metadata.title}</b> for{' '}
+					{prettyBalance(txDetail.args.amount, 24, 2)} Ⓝ
+				</>
+			)
+		} else if (txDetail.method_name === 'cancel_bid') {
+			return (
+				<>
+					You successfully remove bid auction <b>{token.metadata.title}</b> for{' '}
+					{formatNearAmount(txDetail.args.amount)} Ⓝ
+				</>
+			)
+		} else if (txDetail.method_name === 'accept_bid') {
+			return (
+				<>
+					You successfully accept bid auction <b>{token.metadata.title}</b>
+				</>
+			)
+		} else if (txDetail.method_name === 'cancel_auction') {
+			return (
+				<>
+					You successfully remove auction <b>{token.metadata.title}</b>
 				</>
 			)
 		} else if (txDetail.method_name === 'nft_buy' || txDetail.method_name === 'buy') {
@@ -300,8 +378,8 @@ const SuccessTransactionModal = () => {
 			if (msg.market_type === 'sale') {
 				return (
 					<>
-						You successfully update <b>{token.metadata.title}</b> price to{' '}
-						{formatNearAmount(msg.price || 0)} Ⓝ
+						You successfully {msg.is_auction ? 'create auction' : 'update'}{' '}
+						<b>{token.metadata.title}</b> with starting price {formatNearAmount(msg.price || 0)} Ⓝ
 					</>
 				)
 			} else if (msg.market_type === 'accept_offer') {

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import Media from 'components/Common/Media'
 import { parseImgUrl } from 'utils/common'
+import TimeAuction from 'components/Common/TimeAuction'
 
 const Card = ({
 	imgUrl,
@@ -216,15 +217,18 @@ const Card = ({
 										</div>
 									</>
 								) : (
-									<Media
-										className="mx-auto h-full object-contain relative z-10"
-										url={imgUrl}
-										audioUrl={audioUrl}
-										videoControls={false}
-										videoMuted={true}
-										videoLoop={true}
-										mimeType={token?.mime_type}
-									/>
+									<>
+										<Media
+											className="mx-auto h-full object-contain relative z-10"
+											url={imgUrl}
+											audioUrl={audioUrl}
+											videoControls={false}
+											videoMuted={true}
+											videoLoop={true}
+											mimeType={token?.mime_type}
+										/>
+										{token?.is_auction && <TimeAuction endedAt={token.ended_at} />}
+									</>
 								)}
 							</div>
 							<div className="px-2 mt-auto">
@@ -320,14 +324,17 @@ const Card = ({
 										</div>
 									</>
 								) : (
-									<Media
-										className="mx-auto h-full object-cover relative z-10 img-hor-vert"
-										url={imgUrl}
-										videoControls={false}
-										videoMuted={true}
-										videoLoop={true}
-										mimeType={token?.mime_type}
-									/>
+									<>
+										<Media
+											className="mx-auto h-full object-cover relative z-10 img-hor-vert"
+											url={imgUrl}
+											videoControls={false}
+											videoMuted={true}
+											videoLoop={true}
+											mimeType={token?.mime_type}
+										/>
+										{token?.is_auction && <TimeAuction endedAt={token.ended_at} />}
+									</>
 								)}
 							</div>
 							<div className="card-bg relative z-10">
