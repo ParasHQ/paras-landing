@@ -16,6 +16,7 @@ import Countdown from 'react-countdown'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
 import ReactLinkify from 'react-linkify'
+import JSBI from 'jsbi'
 
 export const specialBidTokens = [
 	{
@@ -835,7 +836,7 @@ const SpecialCardBid = ({
 												<div>
 													<div>{prettyBalance(offer.price, 24, 4)} Ⓝ</div>
 													<div className="opacity-80 text-sm">
-														~ ${(price * nearUsdPrice).toFixed(2)}
+														~ ${prettyBalance(JSBI.BigInt(offer.price) * nearUsdPrice, 24, 2)}
 													</div>
 												</div>
 											</div>
