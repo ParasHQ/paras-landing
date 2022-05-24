@@ -26,18 +26,21 @@ export default function SearchPage({ collectionName }) {
 
 	const { query } = router
 
-	useEffect(async () => {
+	useEffect(() => {
 		setIsRefreshing(true)
 		window.scrollTo(0, 0)
-		const res = await axios(`${process.env.API_URL}/tokens`, {
-			params: tokensParams(page, collectionName, query),
-		})
-		if (res.data.data.results.length === LIMIT) {
-			setPage(1)
-			setHasMore(true)
-		}
-		setTokens(res.data.data.results)
-		setIsRefreshing(false)
+		let res
+		;(async () => {
+			res = await axios(`${process.env.API_URL}/tokens`, {
+				params: tokensParams(page, collectionName, query),
+			})
+			if (res.data.data.results.length === LIMIT) {
+				setPage(1)
+				setHasMore(true)
+			}
+			setTokens(res.data.data.results)
+			setIsRefreshing(false)
+		})()
 	}, [query.sort, query.pmin, query.pmax])
 
 	useEffect(() => {

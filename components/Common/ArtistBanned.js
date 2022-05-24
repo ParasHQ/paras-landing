@@ -2,21 +2,15 @@ import { useEffect, useState } from 'react'
 import cachios from 'cachios'
 import { useIntl } from 'hooks/useIntl'
 import { flagColor, flagText } from 'constants/flag'
+import { getProfiles } from 'utils/common'
 
 const ArtistBanned = ({ creatorId, className }) => {
 	const [artistData, setArtistData] = useState(null)
 	const { localeLn } = useIntl()
 
-	useEffect(async () => {
+	useEffect(() => {
 		if (creatorId) {
-			const profileRes = await cachios.get(`${process.env.V2_API_URL}/profiles`, {
-				params: {
-					accountId: creatorId,
-				},
-				ttl: 600,
-			})
-			const userProfile = profileRes.data.data.results[0]
-			setArtistData(userProfile)
+			getProfiles(creatorId, setArtistData)
 		}
 	}, [creatorId])
 

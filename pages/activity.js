@@ -51,15 +51,18 @@ const ActivityLog = ({ query }) => {
 		}
 	})
 
-	useEffect(async () => {
+	useEffect(() => {
 		setIsFetchingTop(true)
 		if (query) {
 			_fetchData(query, true)
 		} else {
 			_fetchData({}, true)
 		}
-		const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=5`)
-		setTopUser(res.data.data)
+		let res
+		;(async () => {
+			res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=5`)
+			setTopUser(res.data.data)
+		})()
 		setIsFetchingTop(false)
 	}, [])
 

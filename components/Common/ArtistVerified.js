@@ -1,24 +1,16 @@
 import Link from 'next/link'
-import cachios from 'cachios'
 import { useEffect, useState } from 'react'
 
 import ReactTooltip from 'react-tooltip'
-import { prettyTruncate } from 'utils/common'
+import { getProfiles, prettyTruncate } from 'utils/common'
 
 const ArtistVerified = ({ token, collection }) => {
 	const [artistData, setArtistData] = useState(null)
 	const [showTooltip, setShowTooltip] = useState(false)
 
-	useEffect(async () => {
+	useEffect(() => {
 		if (token?.metadata.creator_id) {
-			const profileRes = await cachios.get(`${process.env.V2_API_URL}/profiles`, {
-				params: {
-					accountId: token?.metadata.creator_id,
-				},
-				ttl: 600,
-			})
-			const userProfile = profileRes.data.data.results[0]
-			setArtistData(userProfile)
+			getProfiles(token?.metadata.creator_id, setArtistData)
 		}
 		setShowTooltip(true)
 	}, [token])

@@ -13,13 +13,15 @@ const CollectionTransactionDetail = ({ data, idx, setLocalToken }) => {
 
 	const [colDetail, setColDetail] = useState({})
 
-	useEffect(async () => {
-		const res = await axios(`${process.env.V2_API_URL}/collections`, {
-			params: {
-				collection_id: data.collection_id,
-			},
-		})
-		setColDetail(res.data.data.results[0])
+	useEffect(() => {
+		;(async () => {
+			const res = await axios(`${process.env.V2_API_URL}/collections`, {
+				params: {
+					collection_id: data.collection_id,
+				},
+			})
+			setColDetail(res.data.data.results[0])
+		})()
 	}, [])
 
 	return (

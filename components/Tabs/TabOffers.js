@@ -67,17 +67,21 @@ const Offer = ({
 		}
 	}, [])
 
-	useEffect(async () => {
+	useEffect(() => {
 		if (!localToken.token_id && data.type === 'trade') {
-			const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
-				params: {
-					token_series_id: localToken.token_series_id,
-					contract_id: localToken.contract_id,
-					owner_id: currentUser,
-				},
-				ttl: 60,
-			})
-			resp.data.data.results.length === 0 ? setIsEnableForAccept(false) : setIsEnableForAccept(true)
+			;(async () => {
+				const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
+					params: {
+						token_series_id: localToken.token_series_id,
+						contract_id: localToken.contract_id,
+						owner_id: currentUser,
+					},
+					ttl: 60,
+				})
+				resp.data.data.results.length === 0
+					? setIsEnableForAccept(false)
+					: setIsEnableForAccept(true)
+			})()
 		}
 	}, [])
 

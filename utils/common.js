@@ -3,6 +3,7 @@ import Compressor from 'compressorjs'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import crypto from 'crypto'
+import axios from 'axios'
 
 TimeAgo.addLocale(en)
 export const timeAgo = new TimeAgo('en-US')
@@ -290,4 +291,13 @@ export const getRandomInt = (min, max) => {
 	min = Math.ceil(min)
 	max = Math.floor(max)
 	return Math.floor(Math.random() * (max - min) + min)
+}
+
+export const getProfiles = async (accountId, setData) => {
+	const res = await axios(`${process.env.V2_API_URL}/profiles`, {
+		params: {
+			accountId: accountId,
+		},
+	})
+	setData(res.data.data.results[0])
 }

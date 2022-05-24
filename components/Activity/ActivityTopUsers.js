@@ -1,7 +1,6 @@
-import axios from 'axios'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { parseImgUrl, prettyBalance } from 'utils/common'
+import { getProfiles, parseImgUrl, prettyBalance } from 'utils/common'
 import LinkToProfile from '../LinkToProfile'
 import { useIntl } from 'hooks/useIntl'
 import TopUserLoader from './TopUserLoader'
@@ -46,13 +45,8 @@ const TopUsers = ({ data = [], className, userType = 'buyer', linkTo, isFetching
 const TopUser = ({ user, idx }) => {
 	const [profile, setProfile] = useState({})
 
-	useEffect(async () => {
-		const res = await axios(`${process.env.V2_API_URL}/profiles`, {
-			params: {
-				accountId: user.account_id,
-			},
-		})
-		setProfile(res.data.data.results[0])
+	useEffect(() => {
+		getProfiles(user.account_id, setProfile)
 	}, [])
 
 	return (

@@ -53,81 +53,85 @@ export default function SearchPage({ searchQuery }) {
 
 	const { query } = router
 
-	useEffect(async () => {
+	useEffect(() => {
 		setIsRefreshing(true)
 		window.scrollTo(0, 0)
 
 		/** Tokens */
 		const params = tokensParams(query)
-		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
-			params: params,
-		})
-		if (res.data.data.results.length === LIMIT) {
-			setHasMore(true)
+		let res
+		;(async () => {
+			res = await axios(`${process.env.V2_API_URL}/token-series`, {
+				params: params,
+			})
+			if (res.data.data.results.length === LIMIT) {
+				setHasMore(true)
 
-			const lastData = res.data.data.results[res.data.data.results.length - 1]
-			if (params.__sort) {
-				setIdNext(lastData._id)
-				params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
-				params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+				const lastData = res.data.data.results[res.data.data.results.length - 1]
+				if (params.__sort) {
+					setIdNext(lastData._id)
+					params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+					params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+				}
+			} else {
+				setHasMore(false)
 			}
-		} else {
-			setHasMore(false)
-		}
-		setTokens(res.data.data.results)
-
-		/** Publication */
-		const resPub = await axios(`${process.env.V2_API_URL}/publications`, {
-			params: {
-				search: query.q,
-				__view: 'simple',
-				__skip: 0,
-				__limit: LIMIT,
-			},
-		})
-		if (resPub.data.data.results.length === LIMIT) {
-			setPubPage(1)
-			setPubHasMore(true)
-		} else {
-			setPubHasMore(false)
-		}
-		setPublication(resPub.data.data.results)
-
-		// Collection
-		const resColl = await axios(`${process.env.V2_API_URL}/collections`, {
-			params: {
-				collection_search: query.q,
-				__skip: 0,
-				__limit: LIMIT,
-				__sort: 'volume::-1',
-				__showEmpty: false,
-			},
-		})
-		if (resColl.data.data.results.length === LIMIT) {
-			setCollPage(1)
-			setCollHasMore(true)
-		} else {
-			setCollHasMore(false)
-		}
-		setCollections(resColl.data.data.results)
-
-		// Profile
-		const resPro = await axios.get(`${process.env.V2_API_URL}/profiles`, {
-			params: {
-				search: query.q,
-				__skip: 0,
-				__limit: LIMIT,
-			},
-		})
-
-		if (resPro.data.data.results.length === LIMIT) {
-			setProPage(1)
-			setProHasMore(true)
-		} else {
-			setProHasMore(false)
-		}
-		setProfiles(resPro.data.data.results)
-
+			setTokens(res.data.data.results)
+		})()
+		let resPub /** Publication */
+		;(async () => {
+			resPub = await axios(`${process.env.V2_API_URL}/publications`, {
+				params: {
+					search: query.q,
+					__view: 'simple',
+					__skip: 0,
+					__limit: LIMIT,
+				},
+			})
+			if (resPub.data.data.results.length === LIMIT) {
+				setPubPage(1)
+				setPubHasMore(true)
+			} else {
+				setPubHasMore(false)
+			}
+			setPublication(resPub.data.data.results)
+		})()
+		let resColl // Collection
+		;(async () => {
+			resColl = await axios(`${process.env.V2_API_URL}/collections`, {
+				params: {
+					collection_search: query.q,
+					__skip: 0,
+					__limit: LIMIT,
+					__sort: 'volume::-1',
+					__showEmpty: false,
+				},
+			})
+			if (resColl.data.data.results.length === LIMIT) {
+				setCollPage(1)
+				setCollHasMore(true)
+			} else {
+				setCollHasMore(false)
+			}
+			setCollections(resColl.data.data.results)
+		})()
+		let resPro // Profile
+		;(async () => {
+			resPro = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+				params: {
+					search: query.q,
+					__skip: 0,
+					__limit: LIMIT,
+				},
+			})
+			if (resPro.data.data.results.length === LIMIT) {
+				setProPage(1)
+				setProHasMore(true)
+			} else {
+				setProHasMore(false)
+			}
+			setProfiles(resPro.data.data.results)
+		})()
 		setIsRefreshing(false)
 	}, [
 		query.q,

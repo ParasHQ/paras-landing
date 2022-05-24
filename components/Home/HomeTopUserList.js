@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import cachios from 'cachios'
 import Link from 'next/link'
-import { parseImgUrl } from 'utils/common'
+import { getProfiles, parseImgUrl } from 'utils/common'
 import LinkToProfile from 'components/LinkToProfile'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import HomeTopUsersLoader from 'components/Home/Loaders/TopUsers'
@@ -12,13 +12,15 @@ import router from 'next/router'
 const TopCollection = ({ collection, idx }) => {
 	const [colDetail, setColDetail] = useState({})
 
-	useEffect(async () => {
-		const res = await cachios.get(`${process.env.V2_API_URL}/collections`, {
-			params: {
-				collection_id: collection.collection_id,
-			},
-		})
-		setColDetail(res.data.data.results[0])
+	useEffect(() => {
+		;(async () => {
+			const res = await cachios.get(`${process.env.V2_API_URL}/collections`, {
+				params: {
+					collection_id: collection.collection_id,
+				},
+			})
+			setColDetail(res.data.data.results[0])
+		})()
 	}, [])
 
 	const onTopColllection = (e) => {
@@ -65,14 +67,8 @@ const TopCollection = ({ collection, idx }) => {
 const TopUser = ({ user, idx, topUserType }) => {
 	const [profile, setProfile] = useState({})
 
-	useEffect(async () => {
-		const res = await cachios.get(`${process.env.V2_API_URL}/profiles`, {
-			params: {
-				accountId: user.account_id,
-			},
-			ttl: 600,
-		})
-		setProfile(res.data.data.results[0])
+	useEffect(() => {
+		getProfiles(user.account_id, setProfile)
 	}, [])
 
 	const onTopUser = (type) => {
