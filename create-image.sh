@@ -39,7 +39,6 @@ IMAGE_NAME=${IMAGE_NAME//$FIND/$REPLACE}
 
 REPOSITORY="${ARTIFACT_REPOSITORY}/${IMAGE_NAME}"
 REPOSITORY_WITH_TAG="${ARTIFACT_REPOSITORY}/${IMAGE_NAME}:${LAST_COMMIT}"
-echo "$REPOSITORY"
 
 if [ "$GIT_STATUS" != "" ]; then
 	echo "Please commit the current changes before creating the image!"
