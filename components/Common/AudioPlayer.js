@@ -105,7 +105,7 @@ const AudioPlayer = ({ audioSrc, showTime = true, showForwardBackward = false })
 		const nextToggleValue = type
 		if (nextToggleValue === 'play') {
 			setIsPlaying(false)
-			audioRef.current.pause()
+			audioRef?.current?.pause()
 			cancelAnimationFrame(animateRef.current)
 		} else {
 			setIsPlaying(true)
@@ -166,6 +166,12 @@ const AudioPlayer = ({ audioSrc, showTime = true, showForwardBackward = false })
 		setDuration(durationAudio)
 		progressRef.current.max = durationAudio
 	}, [audioRef?.current?.loadedmetadata, audioRef?.current?.readyState])
+
+	useEffect(() => {
+		return async () => {
+			togglePlayPause('play')
+		}
+	}, [])
 
 	return (
 		<div className="w-full">

@@ -28,6 +28,7 @@ import WalletHelper from 'lib/WalletHelper'
 import AudioPlayer from 'components/Common/AudioPlayer'
 import { Canvas } from '@react-three/fiber'
 import { Model1 } from 'components/Model3D/ThreeDModel'
+import FileType from 'file-type/browser'
 
 const LIMIT = 16
 
@@ -130,13 +131,14 @@ const NewPage = () => {
 	const [threeDUrl, setThreeDUrl] = useState('')
 	const [show3dFile, setShow3dFile] = useState(false)
 	const [isUpload3DFile, setIsUpload3DFile] = useState(false)
+	const uploaded3DRef = useRef(null)
 	const [showImgCrop, setShowImgCrop] = useState(false)
 	const [isLoading, setIsLoading] = useState(null)
 	const [imgFile, setImgFile] = useState('')
 	const [imgUrl, setImgUrl] = useState('')
 	const [audioFile, setAudioFile] = useState('')
 	const [audioUrl, setAudioUrl] = useState('')
-	const uploadedAudioRef = useRef()
+	const uploadedAudioRef = useRef(null)
 	const [thumbnailAudioFile, setthumbnailAudioFile] = useState('')
 	const [thumbnailAudioUrl, setThumbnailAudioUrl] = useState('')
 	const [step, setStep] = useState(0)
@@ -180,7 +182,19 @@ const NewPage = () => {
 				authorization: await WalletHelper.authToken(),
 			},
 		})
-		uploadedAudioRef.current = respAudioUpload.data.data[0].split('://')[1]
+		uploadedAudioRef.current = respAudioUpload.data.data[0]?.split('://')[1]
+	}
+
+	const upload3DFile = async () => {
+		const formData3D = new FormData()
+		formData3D.append(`files`, threeDFile)
+		const resp3DUpload = await axios.post(`${process.env.V2_API_URL}/uploads`, formData3D, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				authorization: await WalletHelper.authToken(),
+			},
+		})
+		uploaded3DRef.current = resp3DUpload.data.data[0]?.split('://')[1]
 	}
 
 	const uploadImageMetadata = async () => {
@@ -189,6 +203,9 @@ const NewPage = () => {
 
 		if (audioUrl) {
 			await uploadAudioFile()
+		}
+		if (threeDUrl) {
+			await upload3DFile()
 		}
 
 		const reference = JSON.stringify({
@@ -199,7 +216,7 @@ const NewPage = () => {
 			attributes: formInput.attributes,
 			blurhash: blurhash,
 			mime_type: fileType,
-			animation_url: uploadedAudioRef.current,
+			animation_url: uploadedAudioRef.current ? uploadedAudioRef.current : uploaded3DRef.current,
 		})
 		const blob = new Blob([reference], { type: 'text/plain' })
 
@@ -435,14 +452,15 @@ const NewPage = () => {
 					setAudioUrl(_audioUrl)
 					setFileType(e.target.files[0].type)
 					setShowAudioThumbnailModal(true)
-				} else if (
-					e.target.files[0].name?.includes('glb') ||
-					e.target.files[0].name?.includes('gltf')
-				) {
+				} else if (e.target.files[0].name?.includes('glb')) {
+					setIsUpload3DFile(true)
 					const threeDUrl = URL.createObjectURL(e.target.files[0])
 					setThreeDUrl(threeDUrl)
 					setThreeDFile(e.target.files[0])
+					const _fileType = await FileType.fromBlob(e.target.files[0])
+					setFileType(_fileType?.mime)
 					setShowAudioThumbnailModal(true)
+					setIsUpload3DFile(false)
 				} else {
 					const newImgUrl = await readFileAsUrl(e.target.files[0])
 					setImgFile(e.target.files[0])
@@ -937,7 +955,7 @@ const NewPage = () => {
 								<>
 									<Suspense fallback={null}>
 										<Canvas>
-											<Model1 threeDUrl={threeDUrl} threeDFile={threeDFile} />
+											<Model1 threeDUrl={threeDUrl} />
 										</Canvas>
 									</Suspense>
 								</>
