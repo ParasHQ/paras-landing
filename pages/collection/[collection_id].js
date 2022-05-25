@@ -198,6 +198,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		router.query.sort,
 		router.query.pmin,
 		router.query.pmax,
+		router.query.card_trade_type,
 		router.query.min_copies,
 		router.query.max_copies,
 		router.query.attributes,
