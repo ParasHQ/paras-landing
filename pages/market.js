@@ -49,6 +49,7 @@ const MarketPage = ({ serverQuery }) => {
 		router.query.min_copies,
 		router.query.max_copies,
 		router.query.is_verified,
+		router.query.card_trade_type,
 	])
 
 	const updateFilter = async (query) => {
@@ -199,6 +200,8 @@ const tokensParams = (query) => {
 		__limit: LIMIT,
 		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
 		lookup_token: true,
+		...(query.card_trade_type === 'notForSale' && { has_price: false }),
+		...(query.card_trade_type === 'onAuction' && { is_auction: true }),
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 		...(query._id_next && { _id_next: query._id_next }),
