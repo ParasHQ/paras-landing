@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export BUILD_ENV=$1
+BUILD_ENV=$1
 
 if ([ -z "$BUILD_ENV" ])
   then
@@ -57,7 +57,7 @@ fi
 echo "OK.."
 echo "Creating image and push to artifact.."
 
-docker build . -t "${REPOSITORY_WITH_TAG}"
+docker build . -t "${REPOSITORY_WITH_TAG}" --build-arg var_name="${BUILD_ENV}"
 docker push "${REPOSITORY_WITH_TAG}"
 
 echo "$REPOSITORY_WITH_TAG"
