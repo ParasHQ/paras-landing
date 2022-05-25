@@ -15,17 +15,11 @@ import { trackUpdateListingToken } from 'lib/ga'
 import { useToast } from 'hooks/useToast'
 import { prettyBalance } from 'utils/common'
 
-const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpirationDate }) => {
+const TabCreateAuction = ({ data, onClose }) => {
 	const [needDeposit, setNeedDeposit] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
 	const { localeLn } = useIntl()
-	const { errors, register, handleSubmit, watch } = useForm({
-		defaultValues: {
-			startingBid,
-			expirationDate,
-			timeExpirationDate,
-		},
-	})
+	const { errors, register, handleSubmit, watch, setValue } = useForm()
 	const [isCreatingAuction, setIsCreatingPrice] = useState(false)
 	const [expirationDateAuction, setExpirationDateAuction] = useState()
 	const { currentUser, setTransactionRes } = useStore((state) => ({
@@ -40,6 +34,12 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 		parseTimeExpirationDate()
 		minimumTimeExpirationDate()
 	}, [watch, expirationDateAuction])
+
+	useEffect(() => {
+		const now = new Date()
+		now.setUTCMinutes(now.getUTCMinutes() + 10)
+		setValue('timeExpirationDate', `${now.getUTCHours()}:${now.getUTCMinutes()}`)
+	}, [])
 
 	useEffect(() => {
 		if (currentUser) {
@@ -278,7 +278,7 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 									ref={register({
 										required: true,
 									})}
-									className={`${errors.timeExpirationDate && 'error'}`}
+									className={`${errors.timeExpirationDate && 'error'} w-auto`}
 								/>
 							</div>
 							<div className="mt-2 text-sm text-red-500 text-right">
