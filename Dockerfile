@@ -1,6 +1,7 @@
-ARG BUILD_ENV=develop
 
 FROM node:14
+
+ARG BUILD_ENV=develop
 
 WORKDIR /usr/src/app
 COPY package*.json ./
@@ -11,6 +12,6 @@ RUN yarn install
 
 COPY . .
 
-RUN yarn build 
+RUN yarn build
 
 ENTRYPOINT [ "yarn", "start" ]
