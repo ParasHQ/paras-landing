@@ -111,10 +111,10 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
 			let transformationList = []
 			if (opts.width) {
 				transformationList.push(`w=${opts.width}`)
-				transformationList.push(`auto=format,compress`)
+				!opts.seeDetails && transformationList.push(`auto=format,compress`)
 			} else {
 				transformationList.push('w=800')
-				transformationList.push(`auto=format,compress`)
+				!opts.seeDetails && transformationList.push(`auto=format,compress`)
 			}
 			return `https://paras-cdn.imgix.net/${cid}?${transformationList.join('&')}`
 		} else if (opts.isMediaCdn) {
@@ -122,10 +122,10 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
 			let transformationList = []
 			if (opts.width) {
 				transformationList.push(`w=${opts.width}`)
-				transformationList.push(`auto=format,compress`)
+				!opts.seeDetails && transformationList.push(`auto=format,compress`)
 			} else {
 				transformationList.push('w=800')
-				transformationList.push(`auto=format,compress`)
+				!opts.seeDetails && transformationList.push(`auto=format,compress`)
 			}
 			return `https://paras-cdn.imgix.net/${sha1Url}?${transformationList.join('&')}`
 		}
@@ -144,10 +144,10 @@ export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
 			let transformationList = []
 			if (opts.width) {
 				transformationList.push(`w=${opts.width}`)
-				transformationList.push(`auto=format,compress`)
+				!opts.seeDetails && transformationList.push(`auto=format,compress`)
 			} else {
 				transformationList.push('w=800')
-				transformationList.push(`auto=format,compress`)
+				!opts.seeDetails && transformationList.push(`auto=format,compress`)
 			}
 			return `https://paras-cdn.imgix.net/${cid}?${transformationList.join('&')}`
 		} catch (err) {
@@ -198,6 +198,18 @@ export const checkUrl = (str) => {
 	return !!pattern.test(str)
 }
 
+export const checkSocialMediaUrl = (str) => {
+	var pattern = new RegExp(/(^((https?|ftp|smtp):\/\/)?(www.)?[a-z0-9]+\.[a-z]+\/)|(\/)/)
+	return !!pattern.test(str)
+}
+
+export const checkTokenUrl = (str) => {
+	var pattern = new RegExp(
+		/^((https?|ftp|smtp):\/\/)?(www\.)?(paras\.id|localhost:\d+|marketplace-v2-testnet\.paras\.id|testnet\.paras\.id)\/token\/([a-z0-9\-#_]+\.?)+::[0-9A-z\-#_]+(\/[0-9A-z\-#_]+)?/
+	)
+	return !!pattern.test(str)
+}
+
 export const parseSortQuery = (sort, defaultMinPrice = false) => {
 	if (!sort) {
 		return defaultMinPrice ? 'lowest_price::1' : 'updated_at::-1'
@@ -213,6 +225,8 @@ export const parseSortQuery = (sort, defaultMinPrice = false) => {
 		return 'lowest_price::-1'
 	} else if (sort === 'priceasc') {
 		return 'lowest_price::1'
+	} else if (sort === 'scoredesc') {
+		return 'metadata.score::-1'
 	}
 }
 
@@ -225,6 +239,10 @@ export const parseSortTokenQuery = (sort) => {
 		return 'price::-1'
 	} else if (sort === 'priceasc') {
 		return 'price::1'
+	} else if (sort === 'scoredesc') {
+		return 'metadata.score::-1'
+	} else {
+		return '_id::-1'
 	}
 }
 
@@ -252,4 +270,24 @@ export default function sha1(data, encoding) {
 		.createHash('sha1')
 		.update(data)
 		.digest(encoding || 'hex')
+}
+
+export const decodeBase64 = (b64text) => {
+	return new TextDecoder().decode(Buffer.from(b64text, 'base64'))
+}
+
+export const isChromeBrowser =
+	typeof navigator !== 'undefined' && navigator.userAgent.indexOf('Chrome') !== -1
+
+export const setDataLocalStorage = (key, value, setState = () => {}) => {
+	if (typeof window !== 'undefined') {
+		window.localStorage.setItem(key, value)
+		setState(window.localStorage.getItem(key))
+	}
+}
+
+export const getRandomInt = (min, max) => {
+	min = Math.ceil(min)
+	max = Math.floor(max)
+	return Math.floor(Math.random() * (max - min) + min)
 }

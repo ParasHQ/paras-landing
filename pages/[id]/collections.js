@@ -31,6 +31,7 @@ const Collections = ({ userProfile, accountId }) => {
 				creator_id: router.query.id,
 				__skip: page * LIMIT,
 				__limit: LIMIT,
+				__sort: 'volume::-1',
 			},
 		})
 		const data = await res.data.data.results
@@ -47,7 +48,7 @@ const Collections = ({ userProfile, accountId }) => {
 
 	const headMeta = {
 		title: `${accountId} — Paras`,
-		description: `See digital card collections from ${accountId}. ${userProfile?.bio || ''}`,
+		description: `See NFT digital card collections from ${accountId}. ${userProfile?.bio || ''}`,
 		image: userProfile?.imgUrl
 			? `${process.env.V2_API_URL}/socialCard/avatar/${userProfile.imgUrl.split('://')[1]}`
 			: `https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png`,

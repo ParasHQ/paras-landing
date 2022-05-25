@@ -35,7 +35,7 @@ const footer = {
 	Discord: 'Discord',
 	ApplyAsArtist: 'Apply as an Artist',
 	FooterBeta: 'This project is in public beta.',
-	Paras2021: '2021 Paras',
+	Paras2022: '2022 Paras',
 	PoweredBy: 'Powered by',
 	UseOwnRisk: `Paras' smart contract is not yet audited by well-known security
   organization or firm. Use at your own risk!`,
@@ -72,7 +72,7 @@ const market = {
 	ApplyAsArtist: 'Apply as an Artist',
 	Status: 'Status',
 	Open: 'Open',
-	SubmitExistingCards: 'Submit an existing cards',
+	SubmitExistingCards: 'Submit an existing card',
 	CreateNewCard: 'Create a new card',
 	Curators: 'Curators',
 	PleaseEnterTokenID: 'Please enter correct Token ID',
@@ -118,6 +118,7 @@ const CardInfo = {
 	'Transfer{quantity}PcsTo': 'transfer {quantity}pcs to',
 	Owns: 'owns',
 	OnSale: 'On sale',
+	OnAuction: 'On Auction',
 	Update: 'Update',
 	Buy: 'Buy',
 	NotForSale: 'Not for sale',
@@ -143,13 +144,16 @@ const CardInfo = {
 	Royalty: 'Royalty',
 	Views: 'Views',
 	Fee: 'Fee',
+	LockedFee: 'Locked Fee',
 	Cancel: 'Cancel',
 	RemoveListing: 'Remove Listing',
 	CollectDigitalCard: 'Collect Digital Art Card that you can truly own.',
 	GoToLogin: 'Go to Login',
 	ConfirmBuy: 'Confirm Buy',
+	ConfirmBid: 'Confirm Auction Bid',
 	Warning: 'Warning',
 	AreYouSureBuy: 'Are you sure to buy this card?',
+	AreYouSureAcceptTrade: 'Are you sure to accept this trade?',
 	IUnderstand: 'I understand',
 	BuyQuantityAvailable: 'Buy quantity (Available for buy',
 	YouWillRedirectedTo: 'You will be redirected to NEAR Web Wallet to confirm your transaction',
@@ -204,6 +208,8 @@ const CardInfo = {
 	Year: 'Year',
 	EditionOf: 'Edition of',
 	AboutToBid: 'You are about to bid',
+	AddNFTTrade: 'Add NFT for trade',
+	AboutToBidAuction: 'You are about to bid of auction',
 	Quantity: 'Quantity',
 	AmountIn: 'Amount in',
 	TotalBidAmount: 'Total bid Amount',
@@ -274,8 +280,9 @@ const modal = {
 	GoToLogin: 'Go to Login',
 	BurnAsset: 'Burn Asset',
 	AreAboutToBurn: 'You are about to burn',
-	RedirectedToconfirm: 'You will be redirected to NEAR Web Wallet to confirm your transaction.',
+	RedirectedToconfirm: 'You will be redirected to your wallet to confirm your transaction.',
 	AreAboutToPurchase: 'You are about to purchase',
+	AreAboutToBid: 'You are about to bid',
 	Total: 'Total',
 	GetForFree: 'Get for Free',
 	AreAboutToReduce: 'You are about to reduce the copies of',
@@ -316,16 +323,27 @@ const tab = {
 	Copies: 'Copies',
 	NoOwnersBecome: 'No owners, become the first one!',
 	Burned: 'Burned',
+	StakedTo: 'staked to',
 }
 const token = {
 	SERIES: 'SERIES',
 	CheckOwners: 'Check Owners',
 	Mint: 'Mint',
 	UpdatePrice: 'Update Price',
+	CreateAuction: 'Create Auction',
 	'BuyFor{price}On': 'Buy for {price} on Secondary Marketplace',
 	SeeTokenSeries: 'See token series',
 	Notifications: 'Notifications',
 	NoNotifications: 'No Notifications',
+	StartingBid: 'Starting Bid',
+	DescStartingBid: 'Set your starting bid price.',
+	MultipleBid: 'Multiple Bid',
+	DescMultipleBid: 'Set a multiple of the bid price.',
+	ReserveBid: 'Reserve Bid',
+	DescReserveBid: 'Create a hidden limit by setting a reserve price.',
+	ExpirationDate: 'Expiration Date',
+	DescExpirationDate:
+		'Your auction will automatically  end at this time and the highest bidder will win.',
 }
 const common = {
 	OK: 'OK',
@@ -350,6 +368,11 @@ const common = {
 	FlaggedByPARASStealing: 'WARNING: This creator has been flagged by PARAS due to art stealing',
 	FlaggedByPARASFake: "WARNING: This account uses someone else's identity",
 	FlaggedByPARASHacked: 'WARNING: The account has been hacked. Please contact the original creator',
+	FlaggeyByPARASRemint:
+		'WARNING: This collection has been paused for reminting, please contact the creator',
+	FlaggeyByPARASRugpull: 'This creator has been flagged by Paras due to rug pull',
+	FlaggedByPARASScam:
+		'This account is scamming the community. Please be careful when interacting with this account.',
 	UseOwnRisk:
 		"Paras' smart contract is not yet audited by well-known security organization or firm. Use at your own risk!",
 	...token,
@@ -592,6 +615,8 @@ const collection = {
 	Time: 'Time',
 	Type: 'Type',
 	NoActivity: 'No Activity',
+	TotalListed: 'Total Listed',
+	Search: 'Search by Title',
 }
 const deleteCollection = {
 	DeleteTitle: 'Delete Confirmation',
@@ -606,6 +631,34 @@ const categories = {
 	Categories: 'Categories',
 	ExploreAllCategoriesOnParas: 'Explore All Categories on Paras',
 	CuratedBy: 'Curated by : ',
+}
+
+const artistVerification = {
+	ArtistVerification: 'Paras — Artist Verification',
+	ParasArtistVerification: 'Paras Artist Verification',
+	TextFormParagraph1: `As a Paras artist, you need to be verified to access full features of Paras. Verification gives extra visibility on the marketplace. Currently, non-verified artists' NFTs will not appear on the "market" feed. Whole process take 3-4 days.`,
+	TextFormParagraph2: 'To get verified, you only need to do these steps :',
+	Step1: 'Use a profile picture',
+	Step2: 'Fill in your Bio',
+	Step3: 'Link to your social media on your Paras profile (Twitter and Instagram)',
+	Step4: 'Link to your website (not required but will increase your chances of getting verified)',
+	Step5: 'Have authentic art, you did not steal or have been list your own work on other platform.',
+	Step6: 'You need to create at least 3 NFTs on Paras.',
+	TextFormParagraph3:
+		'It’s also extremely important to remember that becoming verified artist does not grant you instant success. It’s a method to introduce yourself to a bigger community of Paras.',
+	VerificationStatus: 'Verification Status',
+	TextStatusParagraph1:
+		'Whole verification process may take 3-4 days, announced every Wednesday & Saturday. If you are not successfully verified, you can re-submit verification status in the next batch.',
+	TextStatusParagraph2: 'For further question, you can ask our team on Discord',
+	Submitted: 'Submitted',
+	SubmittedDesc: 'You have submitted verification request',
+	InReview: 'In Review',
+	InReviewDesc: 'Your profile is under review by our team',
+	Result: 'Result',
+	ResultDesc: 'The result of your verification request. Check your email for details.',
+	YouAreVerified: 'You are verified !',
+	VerificationRequestRejected: 'Verification Request Rejected !',
+	Since: 'Since',
 }
 
 import { config } from './config.js'
@@ -633,6 +686,7 @@ const data = {
 	deleteCollection,
 	collection,
 	categories,
+	artistVerification,
 }
 
 export const en = config(data)

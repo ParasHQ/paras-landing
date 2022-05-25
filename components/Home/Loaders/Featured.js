@@ -11,10 +11,7 @@ const HomeFeaturedLoader = (props) => (
 		foregroundColor="#282828"
 		{...props}
 	>
-		<rect x="20" y="20" rx="4" ry="4" width="553" height="237" />
-		<rect x="20" y="275" rx="4" ry="4" width="389" height="44" />
-		<rect x="20" y="333" rx="4" ry="4" width="458" height="21" />
-		<rect x="20" y="367" rx="4" ry="4" width="425" height="21" />
+		<rect x="0" y="0" rx="8" ry="8" width="600" height="500" />
 	</ContentLoader>
 )
 

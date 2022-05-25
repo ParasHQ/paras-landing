@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import TokenSeriesDetail from './TokenSeriesDetail'
-import { useIntl } from 'hooks/useIntl'
 import Modal from 'components/Modal'
+import { useIntl } from 'hooks/useIntl'
 
-function TokenSeriesDetailModal({ tokens = [] }) {
+function TokenSeriesDetailModal({ tokens = [], isAuctionEnds }) {
 	const router = useRouter()
 	const { localeLn } = useIntl()
 	const [activeToken, setActiveToken] = useState(null)
@@ -27,19 +27,19 @@ function TokenSeriesDetailModal({ tokens = [] }) {
 	}, [])
 
 	useEffect(() => {
-		if (router.query.tokenSeriesId && activeToken === null) {
+		if (router.query.tokenSeriesId) {
 			const token = tokens.find(
 				(token) =>
 					token?.token_series_id === router.query.tokenSeriesId &&
 					token?.contract_id === router.query.contractId
 			)
-			if (token?.token === undefined || token?.token.token_id !== router.query.tokenSeriesId) {
+			if (token?.token === undefined) {
 				setActiveToken(token)
 			}
 		} else {
 			setActiveToken(null)
 		}
-	}, [router.query])
+	}, [router.query, JSON.stringify(tokens), isAuctionEnds])
 
 	return (
 		<div>
@@ -70,7 +70,7 @@ function TokenSeriesDetailModal({ tokens = [] }) {
 								</p>
 							</div>
 						</div>
-						<TokenSeriesDetail token={activeToken} />
+						<TokenSeriesDetail token={activeToken} isAuctionEnds={isAuctionEnds} />
 					</div>
 				</Modal>
 			)}

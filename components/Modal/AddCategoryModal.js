@@ -2,12 +2,12 @@ import axios from 'axios'
 import { sentryCaptureException } from 'lib/sentry'
 import { useState } from 'react'
 import { useToast } from 'hooks/useToast'
-import near from 'lib/near'
 import useStore from 'lib/store'
 import { parseImgUrl } from 'utils/common'
 import Card from 'components/Card/Card'
 import Modal from 'components/Modal'
 import { useIntl } from 'hooks/useIntl'
+import WalletHelper from 'lib/WalletHelper'
 
 const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 	const { localeLn } = useIntl()
@@ -16,9 +16,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 	const [page, setPage] = useState(1)
 	const [isLoading, setIsLoading] = useState(false)
 	const toast = useToast()
-	const { currentUser } = useStore((state) => ({
-		currentUser: state.currentUser,
-	}))
+	const currentUser = useStore((state) => state.currentUser)
 
 	const getCreatorId = () => {
 		if (!tokenData) {
@@ -98,12 +96,13 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 			contract_id: contractId,
 			token_series_id: tokenSeriesId,
 			category_id: categoryId,
+			storeToSheet: categoryId === 'art-competition' ? 'true' : 'false',
 		}
 
 		try {
 			await axios.post(`${process.env.V2_API_URL}/categories/tokens`, params, {
 				headers: {
-					authorization: await near.authToken(),
+					authorization: await WalletHelper.authToken(),
 				},
 			})
 			onClose()
@@ -155,7 +154,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 						</svg>
 					</div>
 				</div>
-				<div className="md:flex md:pl-2 md:space-x-4 md:space-x-6 pb-2 items-center">
+				<div className="md:flex md:pl-2 md:space-x-4 pb-2 items-center">
 					<div className="w-1/2 mb-4 md:mb-0 md:w-1/3 h-full text-black">
 						<Card
 							imgUrl={parseImgUrl(tokenData?.metadata.media, null, {

@@ -1,12 +1,15 @@
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
+import InputDropdown from 'components/Common/form/components/InputDropdown'
 
 const FilterMarket = ({
 	isShowVerified = true,
 	isShowNotForSale = true,
 	isCollectibles = false,
 	defaultMinPrice = false,
+	isCollection = false,
+	isShowStaked = false,
 }) => {
 	const filterModalRef = useRef()
 	const router = useRouter()
@@ -21,8 +24,11 @@ const FilterMarket = ({
 	const [isVerified, setIsVerified] = useState(
 		router.query.is_verified ? router.query.is_verified === 'true' : true
 	)
-	const [isNotForSale, setIsNotForSale] = useState(
-		router.query.is_notforsale ? router.query.is_notforsale === 'true' : false
+	const [cardTradeType, setCardTradeType] = useState(
+		router.query.card_trade_type ? router.query.card_trade_type : 'all'
+	)
+	const [isStaked, setIsStaked] = useState(
+		router.query.is_staked ? router.query.is_staked === 'true' : false
 	)
 	const { localeLn } = useIntl()
 
@@ -72,10 +78,15 @@ const FilterMarket = ({
 			} else {
 				setIsVerified(true)
 			}
-			if (router.query.is_notforsale) {
-				setIsNotForSale(router.query.is_notforsale === 'true')
+			if (router.query.card_trade_type) {
+				setCardTradeType(router.query.card_trade_type)
 			} else {
-				setIsNotForSale(false)
+				setCardTradeType('all')
+			}
+			if (router.query.is_staked) {
+				setIsStaked(router.query.is_staked === 'true')
+			} else {
+				setIsStaked(false)
 			}
 		}
 	}, [router.query])
@@ -87,7 +98,8 @@ const FilterMarket = ({
 			...(minPrice && { pmin: minPrice }),
 			...(maxPrice && { pmax: maxPrice }),
 			...(isShowVerified && { is_verified: isVerified }),
-			...(isShowNotForSale && { is_notforsale: isNotForSale }),
+			...(isShowNotForSale && { card_trade_type: cardTradeType }),
+			...(isShowStaked && { is_staked: isStaked }),
 		}
 
 		if (minPrice === '') {
@@ -95,11 +107,6 @@ const FilterMarket = ({
 		}
 		if (maxPrice === '') {
 			delete query.pmax
-		}
-		if (defaultMinPrice) {
-			if (!isNotForSale) {
-				delete query.pmin
-			}
 		}
 
 		if (sortCopies === 'undefined') {
@@ -113,11 +120,20 @@ const FilterMarket = ({
 			delete query.max_copies
 		}
 
-		if (isNotForSale && minPrice === '') query.pmin = 0
+		if (cardTradeType === 'forSale' && minPrice === '') query.pmin = 0
 
-		router.push({
-			query: query,
-		})
+		if (cardTradeType === 'notForSale') {
+			delete query.pmin
+			delete query.pmax
+		}
+
+		router.push(
+			{
+				query: query,
+			},
+			{},
+			{ shallow: true, scroll: false }
+		)
 		setShowFilterModal(false)
 	}
 
@@ -140,7 +156,7 @@ const FilterMarket = ({
 			</div>
 			{showFilterModal && (
 				<div
-					className="absolute max-w-full z-20 mt-2 px-4 right-0"
+					className="absolute w-96 z-20 mt-2 px-4 right-0"
 					style={{
 						width: `24rem`,
 					}}
@@ -150,6 +166,7 @@ const FilterMarket = ({
 						<div>
 							{filter
 								.filter((item) => (isCollectibles ? item.key !== 'marketupdate' : item.key))
+								.filter((item) => (!isCollection ? item.key !== 'scoredesc' : item))
 								.map((item) => (
 									<button
 										key={item.key}
@@ -162,30 +179,34 @@ const FilterMarket = ({
 									</button>
 								))}
 						</div>
-						<h1 className="text-white font-semibold text-xl mt-2">{localeLn('Price')}</h1>
-						<form onSubmit={onClickApply} className={`flex w-full space-x-2`}>
-							<div className="flex w-1/2 bg-gray-300 p-2 rounded-md focus:bg-gray-100 ">
-								<input
-									type="number"
-									value={minPrice}
-									onChange={(e) => setMinPrice(e.target.value)}
-									className="clear pr-2"
-									placeholder="Minimum"
-								/>
-								<div className="inline-block">Ⓝ</div>
-							</div>
-							<div className="flex w-1/2 bg-gray-300 p-2 rounded-md focus:bg-gray-100 ">
-								<input
-									type="number"
-									value={maxPrice}
-									onChange={(e) => setMaxPrice(e.target.value)}
-									className="clear pr-2"
-									placeholder="Maximum"
-								/>
-								<div className="inline-block">Ⓝ</div>
-							</div>
-							<input type="submit" className="hidden" />
-						</form>
+						{cardTradeType !== 'notForSale' && (
+							<>
+								<h1 className="text-white font-semibold text-xl mt-2">{localeLn('Price')}</h1>
+								<form onSubmit={onClickApply} className={`flex w-full space-x-2 mb-2`}>
+									<div className="flex w-1/2 bg-gray-300 p-2 rounded-md focus:bg-gray-100 ">
+										<input
+											type="number"
+											value={minPrice}
+											onChange={(e) => setMinPrice(e.target.value)}
+											className="clear pr-2"
+											placeholder="Minimum"
+										/>
+										<div className="inline-block">Ⓝ</div>
+									</div>
+									<div className="flex w-1/2 bg-gray-300 p-2 rounded-md focus:bg-gray-100 ">
+										<input
+											type="number"
+											value={maxPrice}
+											onChange={(e) => setMaxPrice(e.target.value)}
+											className="clear pr-2"
+											placeholder="Maximum"
+										/>
+										<div className="inline-block">Ⓝ</div>
+									</div>
+									<input type="submit" className="hidden" />
+								</form>
+							</>
+						)}
 						{!isCollectibles && (
 							<h1 className="text-white font-semibold text-xl mt-4">{localeLn('CopiesOfCard')}</h1>
 						)}
@@ -203,8 +224,8 @@ const FilterMarket = ({
 							))}
 						{isShowVerified && (
 							<label htmlFor="put-marketplace">
-								<div className="mt-2 flex items-center justify-between">
-									<h1 className="text-white font-semibold text-xl mt-2">Verified Only</h1>
+								<div className="mt-3 flex items-center justify-between">
+									<h1 className="text-white font-semibold text-xl">Verified Only</h1>
 									<input
 										id="put-marketplace"
 										className="w-auto"
@@ -219,18 +240,35 @@ const FilterMarket = ({
 						)}
 						{isShowNotForSale && (
 							<label htmlFor="put-forsale-only">
-								<div className="mt-2 flex items-center justify-between">
-									<h1 className="text-white font-semibold text-xl mt-2">For Sale Only</h1>
-									<input
-										id="put-forsale-only"
-										className="w-auto"
-										type="checkbox"
-										defaultChecked={isNotForSale}
-										onChange={() => setIsNotForSale(!isNotForSale)}
+								<div className="mt-3 flex items-center justify-between">
+									<h1 className="text-white font-semibold text-xl">Type</h1>
+									<InputDropdown
+										data={[
+											{ id: 'all', label: 'All' },
+											{ id: 'forSale', label: 'Sale Only' },
+											{ id: 'notForSale', label: 'Not for Sale' },
+										]}
+										defaultValue={cardTradeType}
+										selectItem={setCardTradeType}
 									/>
 								</div>
 							</label>
 						)}
+						{isCollectibles && (
+							<label htmlFor="put-isstaked-only">
+								<div className="mt-2 flex items-center justify-between">
+									<h1 className="text-white font-semibold text-xl mt-2">Staked Only</h1>
+									<input
+										id="put-isstaked-only"
+										className="w-auto"
+										type="checkbox"
+										defaultChecked={isStaked}
+										onChange={() => setIsStaked(!isStaked)}
+									/>
+								</div>
+							</label>
+						)}
+
 						<button
 							onClick={onClickApply}
 							className="w-full outline-none mt-4 rounded-md bg-transparent text-sm font-semibold py-2 bg-primary text-gray-100"
@@ -268,6 +306,10 @@ const filter = [
 	{
 		key: 'priceasc',
 		value: 'Lowest Price',
+	},
+	{
+		key: 'scoredesc',
+		value: 'Highest Score',
 	},
 ]
 

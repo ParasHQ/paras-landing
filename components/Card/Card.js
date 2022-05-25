@@ -2,9 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import Media from 'components/Common/Media'
 import { parseImgUrl } from 'utils/common'
+import TimeAuction from 'components/Common/TimeAuction'
 
 const Card = ({
 	imgUrl,
+	audioUrl,
 	imgWidth = 640,
 	imgHeight = 890,
 	token,
@@ -133,7 +135,7 @@ const Card = ({
 					}}
 				>
 					<div
-						className="card bg-transparent w-full h-full bg-black"
+						className="card bg-black w-full h-full"
 						style={{
 							fontSize: `${dimension.width / 14}px`,
 							transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)`,
@@ -141,13 +143,57 @@ const Card = ({
 						}}
 					>
 						<div className="h-full py-2 flex flex-col">
-							<div className="text-center px-2">
+							<div className="text-center px-2 relative">
 								<p className="text-white font-bold truncate" style={{ fontSize: `.85em` }}>
 									{token.title}
 								</p>
 								<p className="text-white truncate" style={{ fontSize: `.6em` }}>
 									{token.collection}
 								</p>
+								{audioUrl && (
+									<div className="absolute top-1 right-2">
+										<div className="block md:hidden">
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												className="icon icon-tabler icon-tabler-music"
+												width={14}
+												height={14}
+												viewBox="0 0 24 24"
+												strokeWidth="1.5"
+												stroke="#fff"
+												fill="none"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+											>
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<circle cx={6} cy={17} r={3} />
+												<circle cx={16} cy={17} r={3} />
+												<polyline points="9 17 9 4 19 4 19 17" />
+												<line x1={9} y1={8} x2={19} y2={8} />
+											</svg>
+										</div>
+										<div className="hidden md:block">
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												className="icon icon-tabler icon-tabler-music"
+												width={20}
+												height={20}
+												viewBox="0 0 24 24"
+												strokeWidth="1.5"
+												stroke="#fff"
+												fill="none"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+											>
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<circle cx={6} cy={17} r={3} />
+												<circle cx={16} cy={17} r={3} />
+												<polyline points="9 17 9 4 19 4 19 17" />
+												<line x1={9} y1={8} x2={19} y2={8} />
+											</svg>
+										</div>
+									</div>
+								)}
 							</div>
 							<div className="card-content my-2 relative flex flex-grow h-0">
 								{token._is_the_reference_merged !== undefined &&
@@ -171,13 +217,18 @@ const Card = ({
 										</div>
 									</>
 								) : (
-									<Media
-										className="mx-auto h-full object-contain relative z-10"
-										url={imgUrl}
-										videoControls={false}
-										videoMuted={true}
-										videoLoop={true}
-									/>
+									<>
+										<Media
+											className="mx-auto h-full object-contain relative z-10"
+											url={imgUrl}
+											audioUrl={audioUrl}
+											videoControls={false}
+											videoMuted={true}
+											videoLoop={true}
+											mimeType={token?.mime_type}
+										/>
+										{token?.is_auction && <TimeAuction endedAt={token.ended_at} />}
+									</>
 								)}
 							</div>
 							<div className="px-2 mt-auto">
@@ -273,13 +324,17 @@ const Card = ({
 										</div>
 									</>
 								) : (
-									<Media
-										className="mx-auto h-full object-cover relative z-10 img-hor-vert"
-										url={imgUrl}
-										videoControls={false}
-										videoMuted={true}
-										videoLoop={true}
-									/>
+									<>
+										<Media
+											className="mx-auto h-full object-cover relative z-10 img-hor-vert"
+											url={imgUrl}
+											videoControls={false}
+											videoMuted={true}
+											videoLoop={true}
+											mimeType={token?.mime_type}
+										/>
+										{token?.is_auction && <TimeAuction endedAt={token.ended_at} />}
+									</>
 								)}
 							</div>
 							<div className="card-bg relative z-10">

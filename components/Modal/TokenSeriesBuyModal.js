@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import near from 'lib/near'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import JSBI from 'jsbi'
@@ -13,10 +12,14 @@ import { trackBuyTokenSeries, trackBuyTokenSeriesImpression } from 'lib/ga'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
+import useStore from 'lib/store'
+import WalletHelper from 'lib/WalletHelper'
 
 const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
+	const [isBuying, setIsBuying] = useState(false)
+	const { currentUser, setTransactionRes } = useStore()
 	const creatorData = useProfileData(data.metadata.creator_id)
 
 	const { localeLn } = useIntl()
@@ -28,13 +31,14 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 	}, [show])
 
 	const onBuyToken = async () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowLogin(true)
 			return
 		}
+		setIsBuying(true)
 		const params = {
 			token_series_id: data.token_series_id,
-			receiver_id: near.currentUser.accountId,
+			receiver_id: currentUser,
 		}
 
 		const attachedDeposit = JSBI.add(JSBI.BigInt(data.price), JSBI.BigInt(STORAGE_MINT_FEE))
@@ -42,15 +46,21 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 		trackBuyTokenSeries(data.token_series_id)
 
 		try {
-			await near.wallet.account().functionCall({
+			const res = await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_buy`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: attachedDeposit.toString(),
+				deposit: attachedDeposit.toString(),
 			})
+			if (res?.response) {
+				onClose()
+				setTransactionRes(res?.response)
+			}
+			setIsBuying(false)
 		} catch (err) {
 			sentryCaptureException(err)
+			setIsBuying(false)
 		}
 	}
 
@@ -96,7 +106,7 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 								</p>
 							</div>
 						)}
-						<p className="text-white mt-4 text-sm text-center opacity-90">
+						<p className="text-white mt-4 text-sm text-center opacity-90 px-4">
 							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
@@ -104,6 +114,8 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 								size="md"
 								isFullWidth
 								onClick={() => (creatorData?.flag ? setShowBannedConfirm(true) : onBuyToken())}
+								isDisabled={isBuying}
+								isLoading={isBuying}
 							>
 								{data.price !== '0' ? localeLn('Buy') : localeLn('GetForFree')}
 							</Button>

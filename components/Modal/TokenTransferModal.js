@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import near from 'lib/near'
 import LoginModal from './LoginModal'
 import { InputText } from 'components/Common/form'
 import { GAS_FEE } from 'config/constants'
@@ -12,24 +11,30 @@ import { useToast } from 'hooks/useToast'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackTransferToken } from 'lib/ga'
+import useStore from 'lib/store'
+import WalletHelper from 'lib/WalletHelper'
 
 const TokenTransferModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [receiverId, setReceiverId] = useState('')
+	const [isTransferring, setIsTransferring] = useState(false)
+	const { currentUser } = useStore()
 	const toast = useToast()
 	const { localeLn } = useIntl()
+
 	const onTransfer = async () => {
-		if (!near.currentUser) {
+		if (!currentUser) {
 			setShowLogin(true)
 			return
 		}
+		setIsTransferring(true)
 		const params = {
 			token_id: data.token_id,
 			receiver_id: receiverId,
 		}
 
 		try {
-			if (receiverId === near.currentUser.accountId) {
+			if (receiverId === currentUser) {
 				throw new Error(`Cannot transfer to self`)
 			}
 			const nearConfig = getConfig(process.env.APP_ENV || 'development')
@@ -54,21 +59,48 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 				type: 'error',
 				duration: 2500,
 			})
+			setIsTransferring(false)
 			return
 		}
 
 		trackTransferToken(data.token_id)
 
 		try {
-			await near.wallet.account().functionCall({
+			const res = await WalletHelper.callFunction({
 				contractId: data.contract_id,
 				methodName: `nft_transfer`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: `1`,
+				deposit: `1`,
 			})
+			if (res?.response.error) {
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{res?.response.error.kind.ExecutionError}
+						</div>
+					),
+					type: 'error',
+					duration: 2500,
+				})
+				return
+			} else if (res) {
+				onClose()
+				setReceiverId('')
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							{`Successfully transferred to ${receiverId}`}
+						</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
+			}
+			setIsTransferring(false)
 		} catch (err) {
 			sentryCaptureException(err)
+			setIsTransferring(false)
 		}
 	}
 
@@ -105,11 +137,17 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 								placeholder="Account ID (abc.near)"
 							/>
 						</div>
-						<p className="text-white mt-4 text-sm text-center opacity-90">
+						<p className="text-white mt-4 text-sm text-center opacity-90 px-4">
 							{localeLn('RedirectedToconfirm')}
 						</p>
 						<div className="mt-6">
-							<Button size="md" isFullWidth onClick={onTransfer}>
+							<Button
+								size="md"
+								isFullWidth
+								onClick={onTransfer}
+								isDisabled={isTransferring}
+								isLoading={isTransferring}
+							>
 								{localeLn('Transfer')}
 							</Button>
 						</div>

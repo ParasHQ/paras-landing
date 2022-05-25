@@ -7,9 +7,12 @@ import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import Profile from 'components/Profile/Profile'
 import FilterMarket from 'components/Filter/FilterMarket'
-import { parseSortTokenQuery } from 'utils/common'
+import { parseSortTokenQuery, setDataLocalStorage } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
+import FilterDisplay from 'components/Filter/FilterDisplay'
+import FilterCollection from 'components/Filter/FilterCollection'
 
 const LIMIT = 12
 
@@ -19,25 +22,34 @@ const Collection = ({ userProfile, accountId }) => {
 	const scrollCollection = `${router.query.id}::collection`
 
 	const [tokens, setTokens] = useState([])
+	const [collections, setCollections] = useState([])
 	const [idNext, setIdNext] = useState(null)
 	const [priceNext, setPriceNext] = useState(null)
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
+	const [isFiltering, setIsFiltering] = useState(false)
+	const [display, setDisplay] = useState(
+		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
+	)
 
 	useEffect(async () => {
 		await fetchOwnerTokens(true)
 	}, [router.query.id])
 
-	const fetchOwnerTokens = async () => {
-		if (!hasMore || isFetching) {
+	const fetchOwnerTokens = async (initialFetch = false) => {
+		const _hasMore = initialFetch ? true : hasMore
+
+		if (!_hasMore || isFetching) {
 			return
 		}
 
 		setIsFetching(true)
 		const params = tokensParams({
 			...router.query,
-			_id_next: idNext,
-			price_next: priceNext,
+			...{
+				_id_next: idNext,
+				price_next: priceNext,
+			},
 		})
 		const res = await axios.get(`${process.env.V2_API_URL}/token`, {
 			params: params,
@@ -46,6 +58,17 @@ const Collection = ({ userProfile, accountId }) => {
 
 		const newTokens = [...(tokens || []), ...newData.results]
 		setTokens(newTokens)
+
+		if (initialFetch) {
+			const collections = await axios(`${process.env.V2_API_URL}/owned-collections`, {
+				params: {
+					accountId: accountId,
+				},
+			})
+			const newCollections = await collections.data.result
+			setCollections(newCollections)
+		}
+
 		if (newData.results.length < LIMIT) {
 			setHasMore(false)
 		} else {
@@ -60,26 +83,38 @@ const Collection = ({ userProfile, accountId }) => {
 
 	useEffect(() => {
 		updateFilter(router.query)
-	}, [router.query.sort, router.query.pmin, router.query.pmax, router.query.is_notforsale])
+	}, [
+		router.query.sort,
+		router.query.pmin,
+		router.query.pmax,
+		router.query.card_trade_type,
+		router.query.is_staked,
+		router.query.collections,
+	])
 
 	const tokensParams = (query) => {
 		const parsedSortQuery = parseSortTokenQuery(query.sort)
 		const params = {
+			collection_id: query.collections,
 			exclude_total_burn: true,
 			owner_id: accountId,
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
+			...(query.card_trade_type === 'notForSale' && { has_price: false }),
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
 			...(query.price_next &&
 				parsedSortQuery.includes('price') && { price_next: query.price_next }),
+			...(query.is_staked && { is_staked: query.is_staked }),
 		}
 
 		return params
 	}
 
 	const updateFilter = async (query) => {
+		setIsFiltering(true)
+
 		const params = tokensParams(query)
 		const res = await axios(`${process.env.V2_API_URL}/token`, {
 			params: params,
@@ -94,11 +129,30 @@ const Collection = ({ userProfile, accountId }) => {
 			setIdNext(lastData._id)
 			params.__sort.includes('price') && setPriceNext(lastData.price)
 		}
+
+		setIsFiltering(false)
+	}
+
+	const onClickDisplay = (typeDisplay) => {
+		setDataLocalStorage('display', typeDisplay, setDisplay)
+	}
+
+	const removeAllCollectionsFilter = () => {
+		router.push(
+			{
+				query: {
+					...router.query,
+					collections: '',
+				},
+			},
+			{},
+			{ shallow: true, scroll: false }
+		)
 	}
 
 	const headMeta = {
 		title: `${accountId} — Paras`,
-		description: `See digital card collectibles and creations from ${accountId}. ${
+		description: `See NFT digital card collectibles and creations from ${accountId}. ${
 			userProfile?.bio || ''
 		}`,
 		image: userProfile?.imgUrl
@@ -137,16 +191,23 @@ const Collection = ({ userProfile, accountId }) => {
 			<Nav />
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'collection'} />
-				<div className="flex justify-end mt-4 md:mb-14 md:-mr-4">
-					<FilterMarket isShowVerified={false} isCollectibles={true} />
+				<div className="flex justify-center md:justify-end my-4 md:mb-14 md:-mr-4">
+					<FilterCollection onClearAll={removeAllCollectionsFilter} collections={collections} />
+					<FilterMarket isShowVerified={false} isCollectibles={true} isShowStaked={true} />
+					<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 				</div>
 				<div className="-mt-4 md:-mt-6">
-					<TokenList
-						name={scrollCollection}
-						tokens={tokens}
-						fetchData={fetchOwnerTokens}
-						hasMore={hasMore}
-					/>
+					{isFiltering ? (
+						<CardListLoader />
+					) : (
+						<TokenList
+							name={scrollCollection}
+							tokens={tokens}
+							fetchData={fetchOwnerTokens}
+							hasMore={hasMore}
+							displayType={display}
+						/>
+					)}
 				</div>
 				<ButtonScrollTop />
 			</div>
@@ -163,7 +224,6 @@ export async function getServerSideProps({ params }) {
 			accountId: params.id,
 		},
 	})
-
 	const userProfile = (await profileRes.data.data.results[0]) || null
 
 	return {

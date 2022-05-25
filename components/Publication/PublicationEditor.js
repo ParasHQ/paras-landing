@@ -3,7 +3,6 @@ import axios from 'axios'
 import { convertFromRaw, convertToRaw, EditorState } from 'draft-js'
 import { useRouter } from 'next/router'
 
-import near from 'lib/near'
 import { useToast } from 'hooks/useToast'
 import {
 	compressImg,
@@ -22,6 +21,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import { v4 as uuidv4 } from 'uuid'
 import DraftPublication from 'components/Draft/DraftPublication'
 import { generateFromString } from 'generate-avatar'
+import WalletHelper from 'lib/WalletHelper'
 
 let redirectUrl = null
 
@@ -58,7 +58,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 	const [searchToken, setSearchToken] = useState('')
 	const [searchCollection, setSearchCollection] = useState('')
 	const [currentDraftStorage, setCurrentDraftStorage] = useState()
-	const currentUser = near.currentUser
+	const currentUser = WalletHelper.currentUser
 	const uid = uuidv4()
 
 	useEffect(() => {
@@ -107,21 +107,38 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 	}
 
 	const fetchCollection = async () => {
-		let collection = []
-		pubDetail?.collection_ids?.map(async (collectionId) => {
-			const url = process.env.V2_API_URL
-			const res = await axios({
-				url: url + `/collections`,
-				method: 'GET',
-				params: {
-					collection_id: collectionId,
-				},
+		if (pubDetail?.isComic) {
+			let comic = []
+			pubDetail?.collection_ids?.map(async (comicId) => {
+				const url = process.env.COMIC_API_URL
+				const res = await axios({
+					url: url + `/comics`,
+					method: 'GET',
+					params: {
+						comic_id: comicId,
+					},
+				})
+				const _comic = (await res.data.data.results[0]) || null
+				comic = [...comic, _comic]
+				setEmbeddedCollections(comic)
 			})
+		} else {
+			let collection = []
+			pubDetail?.collection_ids?.map(async (collectionId) => {
+				const url = process.env.V2_API_URL
+				const res = await axios({
+					url: url + `/collections`,
+					method: 'GET',
+					params: {
+						collection_id: collectionId,
+					},
+				})
 
-			const _collection = (await res.data.data.results[0]) || null
-			collection = [...collection, _collection]
-			setEmbeddedCollections(collection)
-		})
+				const _collection = (await res.data.data.results[0]) || null
+				collection = [...collection, _collection]
+				setEmbeddedCollections(collection)
+			})
+		}
 	}
 
 	const getDataFromTokenId = async () => {
@@ -271,7 +288,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 							method: 'post',
 							data: data,
 							headers: {
-								authorization: await near.authToken(),
+								authorization: await WalletHelper.authToken(),
 							},
 					  }
 					: {
@@ -279,7 +296,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 							method: isEdit ? 'put' : 'post',
 							data: data,
 							headers: {
-								authorization: await near.authToken(),
+								authorization: await WalletHelper.authToken(),
 							},
 					  }
 			)
@@ -381,7 +398,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 		const resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
 			headers: {
 				'Content-Type': 'multipart/form-data',
-				authorization: await near.authToken(),
+				authorization: await WalletHelper.authToken(),
 			},
 		})
 
@@ -410,7 +427,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 			const resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
-					authorization: await near.authToken(),
+					authorization: await WalletHelper.authToken(),
 				},
 			})
 			return resp.data.data[0]
@@ -686,7 +703,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 				<div className="max-w-4xl mx-auto px-4 pt-16">
 					<div className="rounded-md p-4 md:p-8">
 						<h4 className="text-white font-semibold text-3xl mb-4 text-center">
-							{localeLn('Collections')}
+							{pubDetail?.isComic ? 'Comics' : localeLn('Collections')}
 						</h4>
 						<div
 							className={`md:flex md:flex-wrap ${
@@ -703,6 +720,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 											)
 											setEmbeddedCollections(temp)
 										}}
+										pubDetail={pubDetail}
 									/>
 								</div>
 							))}
@@ -821,23 +839,34 @@ const CardPublication = ({ localToken, deleteCard }) => {
 	)
 }
 
-const CollectionPublication = ({ localCollection, onDelete }) => {
+const CollectionPublication = ({ localCollection, onDelete, pubDetail }) => {
 	const { localeLn } = useIntl()
 	return (
 		<div className="flex flex-col">
 			<div className="w-full h-full rounded">
-				<img
-					className="object-cover w-full md:h-56 h-full transform ease-in-out duration-200 hover:opacity-80 rounded-xl"
-					src={parseImgUrl(
-						localCollection?.media ||
-							`data:image/svg+xml;utf8,${generateFromString(localCollection?.collection_id)}`,
-						null,
-						{
-							width: `600`,
-							useOriginal: process.env.APP_ENV === 'production' ? false : true,
-						}
-					)}
-				/>
+				{pubDetail?.isComic ? (
+					<div
+						className="mx-auto w-52 h-72 lg:w-56 lg:h-80 flex-none bg-no-repeat bg-center bg-cover shadow-xl"
+						style={{
+							backgroundImage: `url(${parseImgUrl(
+								localCollection?.media
+							)}?w=800&auto=format,compress)`,
+						}}
+					/>
+				) : (
+					<img
+						className="object-cover w-full md:h-56 h-full transform ease-in-out duration-200 hover:opacity-80 rounded-xl"
+						src={parseImgUrl(
+							localCollection?.media ||
+								`data:image/svg+xml;utf8,${generateFromString(localCollection?.collection_id)}`,
+							null,
+							{
+								width: `600`,
+								useOriginal: process.env.APP_ENV === 'production' ? false : true,
+							}
+						)}
+					/>
+				)}
 			</div>
 			<a
 				href={`/collection/${localCollection?.collection_id}`}
@@ -845,15 +874,17 @@ const CollectionPublication = ({ localCollection, onDelete }) => {
 				target={`_blank`}
 			>
 				<p
-					title={localCollection?.collection}
+					title={pubDetail?.isComic ? localCollection?.title : localCollection?.collection}
 					className="text-2xl font-bold truncate hover:underline text-white mt-4"
 				>
-					{localCollection?.collection}
+					{pubDetail?.isComic ? localCollection?.title : localCollection?.collection}
 				</p>
 			</a>
 			<div className="flex flex-row flex-wrap text-sm text-gray-400 items-center w-full">
 				<span className="mr-1">collection by</span>
-				<span className="truncate font-semibold">{localCollection?.creator_id}</span>
+				<span className="truncate font-semibold">
+					{pubDetail?.isComic ? localCollection?.author_ids[0] : localCollection?.creator_id}
+				</span>
 			</div>
 			<div className="text-red-600 text-sm cursor-pointer mt-2" onClick={onDelete}>
 				{localeLn('Delete')}

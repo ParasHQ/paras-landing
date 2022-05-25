@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { readFileAsUrl } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 let cropper = null
-let height = 0
-let width = 0
+let containersize = 0
 
 const ImgCrop = ({
 	input,
@@ -30,8 +29,7 @@ const ImgCrop = ({
 
 	useEffect(() => {
 		if (containerRef) {
-			height = containerRef.current.offsetWidth - offset
-			width = containerRef.current.offsetHeight - offset
+			containersize = containerRef.current.offsetWidth - offset
 		}
 	}, [containerRef])
 
@@ -40,16 +38,15 @@ const ImgCrop = ({
 			const Croppie = require('croppie')
 			let vWidth
 			let vHeight
-			if (size.width > size.height) {
-				vWidth = width
-				vHeight = width * (size.height / size.width)
+			if (size.height > size.width) {
+				vWidth = containersize * (size.width / size.height)
+				vHeight = containersize
 			} else {
-				vWidth = height * (size.width / size.height)
-				vHeight = height
+				vWidth = containersize
+				vHeight = containersize * (size.height / size.width)
 			}
-
 			cropper = new Croppie(document.getElementById('new-img'), {
-				boundary: { width: width, height: height },
+				boundary: { width: containersize, height: containersize },
 				viewport: { width: vWidth, height: vHeight, type: type },
 			})
 			setFirstLoad(false)
@@ -85,9 +82,7 @@ const ImgCrop = ({
 	return (
 		<div
 			id="new-modal-bg"
-			className={`${!firstLoad ? `visible` : `invisible`}
-      fixed inset-0 z-50 flex items-center
-      `}
+			className={`${!firstLoad ? `visible` : `invisible`} fixed inset-0 z-50 flex items-center`}
 			style={{
 				backgroundColor: `rgba(0,0,0,0.86)`,
 			}}
@@ -153,7 +148,7 @@ const ImgCrop = ({
 						ref={containerRef}
 						className="relative w-full"
 						style={{
-							minHeight: `${height}px`,
+							minHeight: `${containersize}px`,
 						}}
 					>
 						<div>

@@ -29,8 +29,9 @@ import TabPublication from 'components/Tabs/TabPublication'
 import ReportModal from 'components/Modal/ReportModal'
 import Card from 'components/Card/Card'
 import { useRouter } from 'next/router'
+import TradeNFTModal from 'components/Modal/TradeNFTModal'
 
-const TokenSeriesDetail = ({ token, className }) => {
+const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
 	const currentUser = useStore((state) => state.currentUser)
@@ -39,6 +40,13 @@ const TokenSeriesDetail = ({ token, className }) => {
 		setActiveTab(tab)
 	}
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
+	const [isEnableTrade, setIsEnableTrade] = useState(true)
+
+	useEffect(() => {
+		if (!process.env.WHITELIST_CONTRACT_ID.split(';').includes(token?.contract_id)) {
+			setIsEnableTrade(false)
+		}
+	}, [])
 
 	const router = useRouter()
 
@@ -138,6 +146,14 @@ const TokenSeriesDetail = ({ token, className }) => {
 			return
 		}
 		setShowModal('placeoffer')
+	}
+
+	const onClickOfferNFT = () => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+		setShowModal('placeofferNFT')
 	}
 
 	const isCreator = () => {
@@ -245,14 +261,52 @@ const TokenSeriesDetail = ({ token, className }) => {
 					</div>
 					<div className="w-full h-full flex items-center justify-center p-2 lg:p-12 relative z-10 ">
 						{tokenDisplay === 'detail' ? (
-							<Media
-								className="rounded-lg overflow-hidden"
-								url={token.metadata.media}
-								videoControls={true}
-								videoLoop={true}
-								videoMuted={true}
-								videoPadding={true}
-							/>
+							<>
+								{token?.metadata.animation_url ? (
+									<div className="max-h-80 md:max-h-72 lg:max-h-96 w-full mx-2 md:mx-0">
+										<div className="w-1/2 md:w-full h-full m-auto">
+											<Media
+												className="rounded-lg overflow-hidden max-h-80 md:max-h-72 lg:max-h-96"
+												url={
+													token.metadata?.mime_type
+														? parseImgUrl(token.metadata.media)
+														: token.metadata.media
+												}
+												videoControls={true}
+												videoLoop={true}
+												videoMuted={true}
+												videoPadding={true}
+												mimeType={token?.metadata?.mime_type}
+												seeDetails={true}
+												isMediaCdn={token?.isMediaCdn}
+											/>
+										</div>
+										<div className="w-full m-auto">
+											<div className="my-3 flex items-center justify-center w-full">
+												<audio controls className="w-full">
+													<source src={parseImgUrl(token?.metadata.animation_url)}></source>
+												</audio>
+											</div>
+										</div>
+									</div>
+								) : (
+									<Media
+										className="rounded-lg overflow-hidden"
+										url={
+											token.metadata?.mime_type
+												? parseImgUrl(token.metadata.media)
+												: token.metadata.media
+										}
+										videoControls={true}
+										videoLoop={true}
+										videoMuted={true}
+										videoPadding={true}
+										mimeType={token?.metadata?.mime_type}
+										seeDetails={true}
+										isMediaCdn={token?.isMediaCdn}
+									/>
+								)}
+							</>
 						) : (
 							<div className="w-1/2 h-full md:w-full m-auto flex items-center">
 								<Card
@@ -261,6 +315,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 										useOriginal: process.env.APP_ENV === 'production' ? false : true,
 										isMediaCdn: token.isMediaCdn,
 									})}
+									audioUrl={token.metadata?.animation_url}
 									imgBlur={token.metadata.blurhash}
 									token={{
 										title: token.metadata.title,
@@ -268,6 +323,7 @@ const TokenSeriesDetail = ({ token, className }) => {
 										copies: token.metadata.copies,
 										creatorId: token.metadata.creator_id || token.contract_id,
 										is_creator: token.is_creator,
+										mime_type: token.metadata.mime_type,
 									}}
 								/>
 							</div>
@@ -332,7 +388,9 @@ const TokenSeriesDetail = ({ token, className }) => {
 								{tabDetail('publication')}
 							</div>
 							{activeTab === 'info' && <TabInfo localToken={token} />}
-							{activeTab === 'owners' && <TabOwners localToken={token} />}
+							{activeTab === 'owners' && (
+								<TabOwners localToken={token} isAuctionEnds={isAuctionEnds} />
+							)}
 							{activeTab === 'offers' && <TabOffers localToken={token} />}
 							{activeTab === 'history' && <TabHistory localToken={token} />}
 							{activeTab === 'publication' && <TabPublication localToken={token} />}
@@ -371,13 +429,29 @@ const TokenSeriesDetail = ({ token, className }) => {
 				onClose={onDismissModal}
 				listModalItem={[
 					{ name: 'Share to...', onClick: onClickShare },
+					isEnableTrade && {
+						name: 'Offer Via NFT',
+						onClick: onClickOfferNFT,
+					},
 					{ name: 'Transfer', onClick: onClickBuyerTransfer },
 					isCreator() && { name: 'Reduce Copies', onClick: onClickDecreaseCopies },
 					{ name: 'Report', onClick: () => setShowModal('report') },
 				].filter((x) => x)}
 			/>
 			<TokenShareModal show={showModal === 'share'} onClose={onDismissModal} tokenData={token} />
-			<PlaceBidModal show={showModal === 'placeoffer'} data={token} onClose={onDismissModal} />
+			<PlaceBidModal
+				show={showModal === 'placeoffer'}
+				data={token}
+				onClose={onDismissModal}
+				tokenType={`tokenSeries`}
+			/>
+			<TradeNFTModal
+				show={showModal === 'placeofferNFT'}
+				data={token}
+				onClose={onDismissModal}
+				tokenType={`tokenSeries`}
+				setShowModal={setShowModal}
+			/>
 			<ReportModal show={showModal === 'report'} data={token} onClose={onDismissModal} />
 			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>

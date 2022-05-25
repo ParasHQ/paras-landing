@@ -26,6 +26,7 @@ const ActivityLog = ({ query }) => {
 		setActivityListIdBefore,
 		activityListHasMore,
 		setActivityListHasMore,
+		setActivitySlowUpdate,
 	} = useStore()
 	const router = useRouter()
 	const modalRef = useRef()
@@ -72,9 +73,14 @@ const ActivityLog = ({ query }) => {
 	}
 
 	const _filterQuery = (filter) => {
-		if (!filter || filter === 'showAll') {
+		if (!filter) {
+			return `type=market_sales&`
+		}
+
+		if (filter === 'showAll') {
 			return ``
 		}
+
 		return `type=${filter}&`
 	}
 
@@ -119,6 +125,16 @@ const ActivityLog = ({ query }) => {
 			const newData = await res.data.data
 
 			const newActivityList = [..._activityList, ...newData.results]
+			if (
+				initial &&
+				Math.floor((new Date() - new Date(newActivityList[0].msg?.datetime)) / (1000 * 60)) >= 5 &&
+				_filterQuery(fetchQuery?.filter) === '' &&
+				_filterMinMax(fetchQuery?.filter, fetchQuery?.pmin, fetchQuery?.pmax) === ''
+			) {
+				setActivitySlowUpdate(true)
+			} else {
+				setActivitySlowUpdate(false)
+			}
 			setActivityList(newActivityList)
 			if (newData.results.length === 0) {
 				setActivityListHasMore(false)
@@ -152,27 +168,36 @@ const ActivityLog = ({ query }) => {
 					<title>{localeLn('ActivityParas')}</title>
 					<meta
 						name="description"
-						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+						content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 					/>
 
-					<meta name="twitter:title" content="Paras — Digital Art Cards Market" />
+					<meta
+						name="twitter:title"
+						content="Paras - NFT Marketplace for Digital Collectibles on NEAR"
+					/>
 					<meta name="twitter:card" content="summary_large_image" />
 					<meta name="twitter:site" content="@ParasHQ" />
 					<meta name="twitter:url" content="https://paras.id" />
 					<meta
 						name="twitter:description"
-						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+						content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 					/>
 					<meta
 						name="twitter:image"
 						content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 					/>
 					<meta property="og:type" content="website" />
-					<meta property="og:title" content="Paras — Digital Art Cards Market" />
-					<meta property="og:site_name" content="Paras — Digital Art Cards Market" />
+					<meta
+						property="og:title"
+						content="Paras - NFT Marketplace for Digital Collectibles on NEAR"
+					/>
+					<meta
+						property="og:site_name"
+						content="Paras - NFT Marketplace for Digital Collectibles on NEAR"
+					/>
 					<meta
 						property="og:description"
-						content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+						content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 					/>
 					<meta property="og:url" content="https://paras.id" />
 					<meta
@@ -181,11 +206,14 @@ const ActivityLog = ({ query }) => {
 					/>
 				</Head>
 				<Nav />
-				<div className="max-w-5xl m-auto py-12 md:flex md:space-x-8">
-					<div className="md:w-2/3 max-w-2xl relative mx-auto">
+				<div className="max-w-5xl m-auto py-12 md:flex md:flex-col md:space-x-8">
+					<div className="w-full relative md:pt-4 md:block md:p-0">
 						<div className="px-4 flex flex-wrap items-center justify-between">
 							<div ref={modalRef}>
-								<div className="flex items-baseline" onClick={() => setShowModal(!showModal)}>
+								<div
+									className="flex items-baseline cursor-pointer hover:opacity-90"
+									onClick={() => setShowModal(!showModal)}
+								>
 									<h1 className="text-4xl font-bold text-gray-100 text-center mr-2 capitalize">
 										{activityType === 'activity' ? localeLn('Activity') : localeLn('TopUsers')}
 									</h1>
@@ -195,7 +223,6 @@ const ActivityLog = ({ query }) => {
 										width="18"
 										height="18"
 										xlmns="http://www.w3.org/2000/svg"
-										className="md:hidden"
 									>
 										<path
 											fillRule="evenodd"
@@ -206,7 +233,7 @@ const ActivityLog = ({ query }) => {
 									</svg>
 								</div>
 								{showModal && (
-									<div className="absolute max-w-full z-20 bg-dark-primary-1 px-5 py-2 rounded-md text-lg text-gray-100 md:hidden w-1/2">
+									<div className="absolute max-w-full z-30 bg-dark-primary-1 px-5 py-2 rounded-md text-lg text-gray-100 w-44">
 										<p
 											className={`opacity-50 cursor-pointer select-none my-1
 										${activityType === 'activity' && 'font-semibold opacity-100'}
@@ -226,78 +253,86 @@ const ActivityLog = ({ query }) => {
 									</div>
 								)}
 							</div>
-							<div className={`${activityType === 'top-users' && 'hidden'} md:block`}>
+							<div className={`${activityType === 'top-users' ? 'hidden' : 'md:block'}`}>
 								<FilterActivity onClickFilter={onClickFilter} />
 							</div>
 						</div>
-						<div
-							className={`px-4 max-w-2xl mx-auto ${
-								activityType === 'top-users' && 'hidden'
-							} md:block`}
-						>
-							{activityList.length === 0 && !activityListHasMore && (
-								<div className="border-2 border-gray-800 border-dashed mt-4 p-2 rounded-md text-center">
-									<p className="text-gray-300 py-8">{localeLn('NoTransactions')}</p>
+
+						{activityType === 'top-users' && (
+							<div className="w-full">
+								<div
+									className="flex cursor-pointer mt-10 px-4"
+									onClick={() => window.open('https://stats.paras.id', '_blank').focus()}
+								>
+									<div className="font-bold text-white text-3xl ">Stats Page</div>
+									<svg
+										className="inline-block pl-1 -mt-2"
+										width="30"
+										height="30"
+										viewBox="0 0 24 24"
+										fill="none"
+										xmlns="http://www.w3.org/2000/svg"
+									>
+										<path
+											fillRule="evenodd"
+											clipRule="evenodd"
+											d="M5 5V19H19V12H21V19C21 20.1 20.1 21 19 21H5C3.89 21 3 20.1 3 19V5C3 3.9 3.89 3 5 3H12V5H5ZM14 5V3H21V10H19V6.41L9.17 16.24L7.76 14.83L17.59 5H14Z"
+											fill="white"
+										/>
+									</svg>
 								</div>
-							)}
-							<InfiniteScroll
-								dataLength={activityList.length}
-								next={_fetchDataWrapper}
-								hasMore={activityListHasMore}
-								loader={<ActivityListLoader />}
-							>
-								{activityList.map((act) => {
-									return (
-										<div key={act._id} className="mt-6">
-											<ActivityDetail activity={act} />
+								<div className="block md:grid md:grid-cols-3">
+									<ActivityTopUsers
+										data={topUser.buyers}
+										userType={'buyer'}
+										linkTo="/activity/top-buyers"
+										isFetching={isFetchingTop}
+										className="mt-8 px-4 py-2"
+									/>
+									<ActivityTopUsers
+										data={topUser.sellers}
+										userType={'seller'}
+										linkTo="/activity/top-sellers"
+										isFetching={isFetchingTop}
+										className="mt-8 px-4 py-2"
+									/>
+									<TopCollectorsAllTime className="mt-8 px-4 py-2" />
+								</div>
+							</div>
+						)}
+
+						{activityType === 'activity' && (
+							<div className="relative w-full text-white">
+								<div
+									className={`px-4 w-full mx-auto ${
+										activityType === 'top-users' && 'hidden'
+									} md:block`}
+								>
+									{activityList.length === 0 && !activityListHasMore && (
+										<div className="border-2 border-gray-800 border-dashed mt-4 p-2 rounded-md text-center">
+											<p className="text-gray-300 py-8">{localeLn('NoTransactions')}</p>
 										</div>
-									)
-								})}
-							</InfiniteScroll>
-						</div>
+									)}
+									<InfiniteScroll
+										dataLength={activityList.length}
+										next={_fetchDataWrapper}
+										hasMore={activityListHasMore}
+										loader={<ActivityListLoader />}
+									>
+										{activityList.map((act, index) => {
+											return (
+												<div key={act._id} className="mt-6">
+													<ActivityDetail activity={act} index={index} />
+												</div>
+											)
+										})}
+									</InfiniteScroll>
+								</div>
+							</div>
+						)}
 					</div>
-					<div
-						className={`relative pt-8 md:pt-4 md:w-1/3 md:block px-4 md:p-0 ${
-							activityType === 'activity' && 'hidden'
-						} md:block`}
-					>
-						<div
-							className="flex cursor-pointer"
-							onClick={() => window.open('https://stats.paras.id', '_blank').focus()}
-						>
-							<div className="font-bold text-white text-3xl mb-4">Stats Page</div>
-							<svg
-								className="inline-block pl-1 -mt-2"
-								width="30"
-								height="30"
-								viewBox="0 0 24 24"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									fillRule="evenodd"
-									clipRule="evenodd"
-									d="M5 5V19H19V12H21V19C21 20.1 20.1 21 19 21H5C3.89 21 3 20.1 3 19V5C3 3.9 3.89 3 5 3H12V5H5ZM14 5V3H21V10H19V6.41L9.17 16.24L7.76 14.83L17.59 5H14Z"
-									fill="white"
-								/>
-							</svg>
-						</div>
-						<ActivityTopUsers
-							data={topUser.buyers}
-							userType={'buyer'}
-							linkTo="/activity/top-buyers"
-							isFetching={isFetchingTop}
-						/>
-						<ActivityTopUsers
-							data={topUser.sellers}
-							userType={'seller'}
-							className="mt-12"
-							linkTo="/activity/top-sellers"
-							isFetching={isFetchingTop}
-						/>
-						<TopCollectorsAllTime className="mt-12" />
-						<ButtonScrollTop />
-					</div>
+
+					<ButtonScrollTop />
 				</div>
 				<Footer />
 			</div>

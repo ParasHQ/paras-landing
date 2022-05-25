@@ -23,10 +23,27 @@ const NotificationImage = ({ media }) => {
 
 const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 	const [token, setToken] = useState({})
+	const [tradedToken, setTradedToken] = useState({})
 
 	useEffect(() => {
 		fetchToken()
+		if (notif.type?.includes('trade')) {
+			fetchTradedToken()
+		}
 	}, [])
+
+	const fetchTradedToken = async () => {
+		const params = {
+			token_id: notif.msg.params.buyer_token_id,
+			contract_id: notif.msg.params.buyer_nft_contract_id,
+		}
+		const resp = await axios.get(`${process.env.V2_API_URL}/token`, {
+			params: params,
+		})
+		if (resp.data.data.results.length > 0) {
+			setTradedToken(resp.data.data.results[0])
+		}
+	}
 
 	const fetchToken = async () => {
 		const query = notif.token_id
@@ -54,36 +71,17 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		}
 	}
 
-	const url = `/token/${notif.contract_id}::${notif.token_series_id}${
-		notif.token_id ? `/${notif.token_id}` : ''
-	}`
+	const url = `/token/${notif.contract_id}::${
+		notif.type === 'notification_add_trade' || notif.type === 'accept_trade'
+			? notif.token_id.split(':')[0]
+			: notif.token_series_id
+	}${notif.token_id ? `/${notif.token_id}` : ''}`
 
 	if (!token) {
 		return null
 	}
 
 	if (notif.type === 'nft_transfer' && notif.from === null) {
-		if (notif.price) {
-			return (
-				<div>
-					<Link href={url}>
-						<a>
-							<div
-								className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
-								onClick={() => notificationModal(false)}
-							>
-								<NotificationImage media={token.metadata?.media} />
-								<div className="pl-2 text-gray-300">
-									bought <span className="font-medium text-gray-100">{token.metadata?.title}</span>{' '}
-									for {formatNearAmount(notif.msg.params.price)} Ⓝ
-								</div>
-							</div>
-						</a>
-					</Link>
-				</div>
-			)
-		}
-
 		return (
 			<div>
 				<Link href={url}>
@@ -94,7 +92,11 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-300">
-								Creator minted #{token.edition_id || token.token_id} to {notif.to}
+								{`Creator minted ${token.metadata?.title} to ${prettyTruncate(
+									notif.to,
+									14,
+									'address'
+								)}`}
 							</div>
 						</div>
 					</a>
@@ -113,7 +115,9 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={token.metadata?.media} />
-							<div className="pl-2 text-gray-300">burned #{token.edition_id || token.token_id}</div>
+							<div className="pl-2 text-gray-300">
+								burned <span className="font-medium text-gray-100">{token.metadata?.title}</span>
+							</div>
 						</div>
 					</a>
 				</Link>
@@ -135,8 +139,35 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								<div className="pl-2 text-gray-300">
 									sold <span className="font-medium text-gray-100">{token.metadata?.title}</span>
 									{' to '}
-									<span className="font-semibold">{notif.to}</span> for{' '}
-									{formatNearAmount(notif.msg.params.price)} Ⓝ
+									<span className="font-semibold">
+										{prettyTruncate(notif.to, 14, 'address')}
+									</span>{' '}
+									for {formatNearAmount(notif.msg.params.price)} Ⓝ
+								</div>
+							</div>
+						</a>
+					</Link>
+				</div>
+			)
+		}
+
+		if (notif.price) {
+			return (
+				<div>
+					<Link href={url}>
+						<a>
+							<div
+								className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+								onClick={() => notificationModal(false)}
+							>
+								<NotificationImage media={token.metadata?.media} />
+								<div className="pl-2 text-gray-300">
+									bought <span className="font-medium text-gray-100">{token.metadata?.title}</span>{' '}
+									from{' '}
+									<span className="font-semibold text-gray-100">
+										{prettyTruncate(notif.from, 14, 'address')}
+									</span>{' '}
+									for {formatNearAmount(notif.msg.params.price)} Ⓝ
 								</div>
 							</div>
 						</a>
@@ -159,8 +190,8 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 									received{' '}
 									<span className="font-medium text-gray-100">{token.metadata?.title} </span>
 									from{' '}
-									<span className="font-medium text-gray-100">
-										{prettyTruncate(notif.from, 12, 'address')}
+									<span className="font-semibold text-gray-100">
+										{prettyTruncate(notif.from, 14, 'address')}
 									</span>
 								</div>
 							</div>
@@ -181,12 +212,25 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={token.metadata?.media} />
-							<div className="pl-2 text-gray-200">
-								sold <span className="font-medium text-gray-100">{token.metadata?.title}</span>
-								{' to '}
-								<span className="font-semibold">{notif.to}</span> for{' '}
-								{formatNearAmount(notif.msg.params.price)} Ⓝ
-							</div>
+							{notif.to === currentUser ? (
+								<div className="pl-2 text-gray-200">
+									bought <span className="font-medium text-gray-100">{token.metadata?.title}</span>
+									{' from '}
+									<span className="font-semibold">
+										{prettyTruncate(notif.from, 14, 'address')}
+									</span>{' '}
+									for {formatNearAmount(notif.msg.params.price)} Ⓝ
+								</div>
+							) : (
+								<div className="pl-2 text-gray-200">
+									sold <span className="font-medium text-gray-100">{token.metadata?.title}</span>
+									{' to '}
+									<span className="font-semibold">
+										{prettyTruncate(notif.to, 14, 'address')}
+									</span>{' '}
+									for {formatNearAmount(notif.msg.params.price)} Ⓝ
+								</div>
+							)}
 						</div>
 					</a>
 				</Link>
@@ -227,10 +271,62 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-100">
-								<span className="font-semibold">{notif.from}</span> offer{' '}
-								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
+								<span className="font-semibold">{prettyTruncate(notif.from, 14, 'address')}</span>{' '}
+								offer <span className="font-medium text-gray-100">{token.metadata?.title}</span>
 								{' for '}
 								{formatNearAmount(notif.msg.params.price)} Ⓝ
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
+	if (notif.type === 'add_bid') {
+		return (
+			<div>
+				<Link href={`${url}?tab=auction`}>
+					<a>
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={token.metadata?.media} />
+							<div className="pl-2 text-gray-100">
+								<span className="font-semibold">{prettyTruncate(notif.from, 14, 'address')}</span>{' '}
+								bid <span className="font-medium text-gray-100">{token.metadata?.title}</span>
+								{' for '}
+								{formatNearAmount(
+									notif.msg.params.amount ? notif.msg.params.amount : notif.msg.params.price
+								)}{' '}
+								Ⓝ
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
+	if (notif.type === 'cancel_bid') {
+		return (
+			<div>
+				<Link href={`${url}?tab=auction`}>
+					<a>
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={token.metadata?.media} />
+							<div className="pl-2 text-gray-100">
+								<span className="font-semibold">{prettyTruncate(notif.from, 14, 'address')}</span>{' '}
+								bid <span className="font-medium text-gray-100">{token.metadata?.title}</span>
+								{' for '}
+								{formatNearAmount(
+									notif.msg.params.amount ? notif.msg.params.amount : notif.msg.params.price
+								)}{' '}
+								Ⓝ
 							</div>
 						</div>
 					</a>
@@ -250,7 +346,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-100">
-								Token <span className="font-semibold">{token.metadata?.title}</span> submission has
+								Token <span className="font-medium">{token.metadata?.title}</span> submission has
 								been accepted
 								{' to '} <span className="font-semibold">{notif.msg.category_name}</span> category
 							</div>
@@ -275,6 +371,55 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								Token <span className="font-semibold">{token.metadata?.title}</span> submission has
 								been rejected from <span className="font-semibold">{notif.msg.category_name}</span>{' '}
 								category.
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_add_trade') {
+		return (
+			<div>
+				<Link href={`${url}?tab=offers`}>
+					<a>
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={tradedToken.metadata?.media} />
+							<div className="pl-2 text-gray-100">
+								<span className="font-semibold">{prettyTruncate(notif.from, 14, 'address')}</span>{' '}
+								offered trade{' '}
+								<span className="font-semibold text-gray-100">{tradedToken.metadata?.title}</span>{' '}
+								with your
+								{` `}
+								<span className="font-semibold text-gray-100">{token.metadata?.title}</span>
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
+	if (notif.type === 'accept_trade') {
+		return (
+			<div>
+				<Link href={`${url}?tab=offers`}>
+					<a>
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={tradedToken.metadata?.media} />
+							<div className="pl-2 text-gray-100">
+								<span className="font-semibold">
+									{prettyTruncate(notif.msg.params.sender_id, 14, 'address')}
+								</span>{' '}
+								accepted trade{' '}
+								<span className="font-semibold text-gray-100">{tradedToken.metadata?.title}</span>
 							</div>
 						</div>
 					</a>

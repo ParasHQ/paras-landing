@@ -5,7 +5,7 @@ import TokenDetail from './TokenDetail'
 import Modal from 'components/Modal'
 import { useIntl } from 'hooks/useIntl'
 
-function TokenDetailModal({ tokens = [] }) {
+function TokenDetailModal({ tokens = [], isAuctionEnds }) {
 	const router = useRouter()
 	const { localeLn } = useIntl()
 	const [activeToken, setActiveToken] = useState(null)
@@ -27,13 +27,16 @@ function TokenDetailModal({ tokens = [] }) {
 	}, [])
 
 	useEffect(() => {
-		if (router.query.tokenId && activeToken === null) {
-			const token = tokens.find(
-				(token) =>
+		if (router.query.tokenId) {
+			const token = tokens.find((token) => {
+				const lookupToken = token?.token
+				return (
 					(token?.token_id === router.query.tokenId ||
-						token?.token_series_id === router.query.tokenId) &&
+						token?.token_series_id === router.query.tokenId ||
+						lookupToken?.token_id === router.query.tokenId) &&
 					token?.contract_id === router.query.contractId
-			)
+				)
+			})
 			if (token?.token) {
 				setActiveToken({
 					...token.token,
@@ -45,7 +48,7 @@ function TokenDetailModal({ tokens = [] }) {
 		} else {
 			setActiveToken(null)
 		}
-	}, [router.query])
+	}, [router.query, JSON.stringify(tokens), isAuctionEnds, tokens.token?.bidder_list])
 
 	return (
 		<div>
@@ -76,7 +79,7 @@ function TokenDetailModal({ tokens = [] }) {
 								</p>
 							</div>
 						</div>
-						<TokenDetail token={activeToken} />
+						<TokenDetail token={activeToken} isAuctionEnds={isAuctionEnds} />
 					</div>
 				</Modal>
 			)}

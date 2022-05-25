@@ -12,7 +12,7 @@ const CardListLoader = ({ length = 12 }) => (
 			})}
 		</div>
 		<div className="flex md:hidden">
-			<div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-4 relative ">
+			<div className="w-full md:w-1/3 lg:w-1/4 flex-shrink-0 p-4 relative mt-4">
 				<CardLoader />
 			</div>
 		</div>

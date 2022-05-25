@@ -8,12 +8,12 @@ import Footer from 'components/Footer'
 import Modal from 'components/Modal'
 import Nav from 'components/Nav'
 import { useToast } from 'hooks/useToast'
-import near from 'lib/near'
 import useStore from 'lib/store'
 import { parseImgUrl, timeAgo } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
+import WalletHelper from 'lib/WalletHelper'
 
 const CategorySubmission = () => {
 	const [submissions, setSubmissions] = useState(null)
@@ -32,7 +32,7 @@ const CategorySubmission = () => {
 	}, [categoryId, currentUser])
 
 	const getCategorySubmission = async () => {
-		const auth = await near.authToken()
+		const auth = await WalletHelper.authToken()
 		if (categoryId) {
 			try {
 				const res = await axios.get(`${process.env.V2_API_URL}/categories/tokens/submission`, {
@@ -137,6 +137,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 			category_id: submission.category_id,
 			token_series_id: submission.token_series_id,
 			contract_id: submission.contract_id,
+			storeToSheet: submission.category_id === 'art-competition' ? 'true' : 'false',
 			msg: 'ok',
 		}
 
@@ -145,7 +146,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 		try {
 			await axios.put(`${process.env.V2_API_URL}/categories/tokens/${type}`, params, {
 				headers: {
-					authorization: await near.authToken(),
+					authorization: await WalletHelper.authToken(),
 				},
 			})
 			setShowModal('')

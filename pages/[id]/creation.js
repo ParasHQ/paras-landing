@@ -7,10 +7,11 @@ import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import Profile from 'components/Profile/Profile'
 import FilterMarket from 'components/Filter/FilterMarket'
-import { parseSortQuery } from 'utils/common'
+import { parseSortQuery, setDataLocalStorage } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
+import FilterDisplay from 'components/Filter/FilterDisplay'
 
 const LIMIT = 12
 
@@ -25,7 +26,10 @@ const Creation = ({ userProfile, accountId }) => {
 	const [lowestPriceNext, setLowestPriceNext] = useState(null)
 	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [isFetching, setIsFetching] = useState(false)
-	const [isFiltering, setIsFiltering] = useState(true)
+	const [isFiltering, setIsFiltering] = useState(false)
+	const [display, setDisplay] = useState(
+		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
+	)
 
 	useEffect(async () => {
 		await fetchCreatorTokens()
@@ -73,7 +77,7 @@ const Creation = ({ userProfile, accountId }) => {
 		router.query.pmax,
 		router.query.min_copies,
 		router.query.max_copies,
-		router.query.is_notforsale,
+		router.query.card_trade_type,
 	])
 
 	const tokensParams = (query) => {
@@ -84,6 +88,7 @@ const Creation = ({ userProfile, accountId }) => {
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
 			lookup_token: true,
+			...(query.card_trade_type === 'notForSale' && { has_price: false }),
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
@@ -120,9 +125,13 @@ const Creation = ({ userProfile, accountId }) => {
 		setIsFiltering(false)
 	}
 
+	const onClickDisplay = (typeDisplay) => {
+		setDataLocalStorage('display', typeDisplay, setDisplay)
+	}
+
 	const headMeta = {
 		title: `${accountId} — Paras`,
-		description: `See digital card collectibles and creations from ${accountId}. ${
+		description: `See NFT digital card collectibles and creations from ${accountId}. ${
 			userProfile?.bio || ''
 		}`,
 		image: userProfile?.imgUrl
@@ -161,8 +170,9 @@ const Creation = ({ userProfile, accountId }) => {
 			<Nav />
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
 				<Profile userProfile={userProfile} activeTab={'creation'} />
-				<div className="flex justify-end mt-4 md:mb-14 md:-mr-4">
+				<div className="flex justify-end my-4 md:mb-14 md:-mr-4">
 					<FilterMarket isShowVerified={false} />
+					<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 				</div>
 				<div className="-mt-4 md:-mt-6">
 					{isFiltering ? (
@@ -173,6 +183,7 @@ const Creation = ({ userProfile, accountId }) => {
 							tokens={tokens}
 							fetchData={fetchCreatorTokens}
 							hasMore={hasMore}
+							displayType={display}
 						/>
 					)}
 				</div>

@@ -8,7 +8,6 @@ import useStore from 'lib/store'
 import { useForm, useFieldArray, useWatch } from 'react-hook-form'
 import Modal from 'components/Modal'
 import { useRouter } from 'next/router'
-import near from 'lib/near'
 import Head from 'next/head'
 import { useToast } from 'hooks/useToast'
 import Footer from 'components/Footer'
@@ -24,7 +23,10 @@ import { sentryCaptureException } from 'lib/sentry'
 import Scrollbars from 'react-custom-scrollbars'
 import getConfig from 'config/near'
 import Tooltip from 'components/Common/Tooltip'
-import { IconInfo } from 'components/Icons'
+import { IconInfo, IconX } from 'components/Icons'
+import WalletHelper from 'lib/WalletHelper'
+import AudioPlayer from 'components/Common/AudioPlayer'
+import retry from 'async-retry'
 
 const LIMIT = 16
 
@@ -97,15 +99,23 @@ const NewPage = () => {
 		control,
 		name: 'royalties',
 	})
+	const { category_name, category_id } = router.query
 
 	const [showImgCrop, setShowImgCrop] = useState(false)
 	const [isLoading, setIsLoading] = useState(null)
 	const [imgFile, setImgFile] = useState('')
 	const [imgUrl, setImgUrl] = useState('')
+	const [audioFile, setAudioFile] = useState('')
+	const [audioUrl, setAudioUrl] = useState('')
+	const uploadedAudioRef = useRef()
+	const [thumbnailAudioFile, setthumbnailAudioFile] = useState('')
+	const [thumbnailAudioUrl, setThumbnailAudioUrl] = useState('')
 	const [step, setStep] = useState(0)
 	const [isUploading, setIsUploading] = useState(false)
+	const [isCreating, setIsCreating] = useState(false)
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
 	const [showCreatingModal, setShowCreatingModal] = useState(false)
+	const [showAudioThumbnailModal, setShowAudioThumbnailModal] = useState(false)
 	const [showCreateColl, setShowCreateColl] = useState(false)
 
 	const [showAlertErr, setShowAlertErr] = useState(false)
@@ -132,9 +142,25 @@ const NewPage = () => {
 		fee: (txFee?.current_fee || 0) / 100,
 	})
 
+	const uploadAudioFile = async () => {
+		const formDataAudio = new FormData()
+		formDataAudio.append(`files`, audioFile)
+		const respAudioUpload = await axios.post(`${process.env.V2_API_URL}/uploads`, formDataAudio, {
+			headers: {
+				'Content-Type': 'multipart/form-data',
+				authorization: await WalletHelper.authToken(),
+			},
+		})
+		uploadedAudioRef.current = respAudioUpload.data.data[0].split('://')[1]
+	}
+
 	const uploadImageMetadata = async () => {
 		setIsUploading(true)
 		setShowCreatingModal(true)
+
+		if (audioUrl) {
+			await uploadAudioFile()
+		}
 
 		const reference = JSON.stringify({
 			description: formInput.description,
@@ -144,6 +170,7 @@ const NewPage = () => {
 			attributes: formInput.attributes,
 			blurhash: blurhash,
 			mime_type: fileType,
+			animation_url: uploadedAudioRef.current,
 		})
 		const blob = new Blob([reference], { type: 'text/plain' })
 
@@ -156,13 +183,17 @@ const NewPage = () => {
 			resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
-					authorization: await near.authToken(),
+					authorization: await WalletHelper.authToken(),
 				},
 			})
 			setMediaHash(resp.data.data[0].split('://')[1])
 			setReferenceHash(resp.data.data[1].split('://')[1])
 
 			setIsUploading('success')
+
+			if (store.selectedCategory !== '' && WalletHelper.activeWallet !== 'sender') {
+				window.sessionStorage.setItem(`categoryToken`, store.selectedCategory)
+			}
 		} catch (err) {
 			sentryCaptureException(err)
 			const msg = err.response?.data?.message || `Something went wrong, try again later`
@@ -177,6 +208,7 @@ const NewPage = () => {
 	}
 
 	const createSeriesNFT = async () => {
+		setIsCreating(true)
 		try {
 			let params = {
 				creator_id: store.currentUser,
@@ -202,13 +234,24 @@ const NewPage = () => {
 				}
 			}
 
-			await near.wallet.account().functionCall({
+			const res = await WalletHelper.callFunction({
 				contractId: process.env.NFT_CONTRACT_ID,
 				methodName: `nft_create_series`,
 				args: params,
 				gas: GAS_FEE,
-				attachedDeposit: STORAGE_CREATE_SERIES_FEE,
+				deposit: STORAGE_CREATE_SERIES_FEE,
 			})
+
+			setIsCreating(false)
+			if (res?.response) {
+				if (store.selectedCategory !== '') {
+					await submitCategoryCard(res)
+				}
+				setTimeout(() => {
+					router.push('/market')
+					store.setTransactionRes(res?.response)
+				}, 2000)
+			}
 		} catch (err) {
 			sentryCaptureException(err)
 			const msg = err.response?.data?.message || `Something went wrong, try again later`
@@ -223,7 +266,10 @@ const NewPage = () => {
 
 	useEffect(() => {
 		if (router.query.transactionHashes) {
-			router.push('/market')
+			router.push('/market', {
+				pathname: '/market',
+				query: router.query,
+			})
 		}
 	}, [router.query.transactionHashes])
 
@@ -251,6 +297,14 @@ const NewPage = () => {
 			getAttributeKeys()
 		}
 	}, [step])
+
+	useEffect(() => {
+		if (category_id) {
+			store.setSelectedCategory(category_id)
+		} else {
+			store.setSelectedCategory('')
+		}
+	}, [])
 
 	const _updateValues = () => {
 		const values = { ...getValues() }
@@ -350,17 +404,45 @@ const NewPage = () => {
 		}
 	}
 
-	const _setImg = async (e) => {
+	const _setFile = async (e) => {
 		if (e.target.files[0]) {
 			if (e.target.files[0].size > MAX_FILE_SIZE) {
 				setShowAlertErr('Maximum file size is 30MB')
 				return
 			} else {
-				const newImgUrl = await readFileAsUrl(e.target.files[0])
-				setImgFile(e.target.files[0])
-				setImgUrl(newImgUrl)
-				setFileType(e.target.files[0].type)
-				encodeBlurhash(newImgUrl)
+				setAudioUrl('')
+				setAudioFile('')
+				setImgUrl('')
+				setImgFile('')
+				setthumbnailAudioFile('')
+				setThumbnailAudioUrl('')
+				if (e.target.files[0].type?.includes('audio')) {
+					const _audioUrl = URL.createObjectURL(e.target.files[0])
+					setAudioFile(e.target.files[0])
+					setAudioUrl(_audioUrl)
+					setFileType(e.target.files[0].type)
+					setShowAudioThumbnailModal(true)
+				} else {
+					const newImgUrl = await readFileAsUrl(e.target.files[0])
+					setImgFile(e.target.files[0])
+					setImgUrl(newImgUrl)
+					setFileType(e.target.files[0].type)
+					encodeBlurhash(newImgUrl)
+				}
+			}
+		}
+	}
+
+	const _setThumbnailAudio = async (e) => {
+		if (e.target.files[0]) {
+			if (e.target.files[0].size > MAX_FILE_SIZE) {
+				setShowAlertErr('Maximum file size is 30MB')
+				return
+			} else {
+				const newThumbUrl = URL.createObjectURL(e.target.files[0])
+				setthumbnailAudioFile(e.target.files[0])
+				setThumbnailAudioUrl(newThumbUrl)
+				encodeBlurhash(newThumbUrl)
 			}
 		}
 	}
@@ -378,15 +460,16 @@ const NewPage = () => {
 
 	useEffect(() => {
 		const getTxFee = async () => {
-			const txFeeContract = await near.wallet
-				.account()
-				.viewFunction(process.env.NFT_CONTRACT_ID, `get_transaction_fee`)
+			const txFeeContract = await WalletHelper.viewFunction({
+				methodName: 'get_transaction_fee',
+				contractId: process.env.NFT_CONTRACT_ID,
+			})
 			setTxFee(txFeeContract)
 		}
-		if (store.currentUser) {
+		if (store.initialized) {
 			getTxFee()
 		}
-	}, [store.currentUser])
+	}, [store.initialized])
 
 	const fetchCollectionUser = async () => {
 		if (!hasMore || isFetching) {
@@ -423,6 +506,40 @@ const NewPage = () => {
 		}
 	}
 
+	const submitCategoryCard = async (res) => {
+		const txLast = res?.response[res?.response.length - 1]
+		const resFromTxLast = txLast.receipts_outcome[0].outcome.logs[0]
+		const resOutcome = await JSON.parse(`${resFromTxLast}`)
+		await retry(
+			async () => {
+				const res = await axios.post(
+					`${process.env.V2_API_URL}/categories/tokens`,
+					{
+						account_id: store.currentUser,
+						contract_id: txLast?.transaction?.receiver_id,
+						token_series_id: resOutcome?.params?.token_series_id,
+						category_id: store.selectedCategory,
+						storeToSheet: store.selectedCategory === 'art-competition' ? 'true' : 'false',
+					},
+					{
+						headers: {
+							authorization: await WalletHelper.authToken(),
+						},
+					}
+				)
+				if (res.status === 403 || res.status === 400) {
+					sentryCaptureException(res.data?.message || `Token series still haven't exist`)
+					return
+				}
+				window.sessionStorage.removeItem('categoryToken')
+			},
+			{
+				retries: 20,
+				factor: 2,
+			}
+		)
+	}
+
 	return (
 		<div className="min-h-screen bg-black">
 			<div
@@ -438,7 +555,7 @@ const NewPage = () => {
 				<title>{localeLn('CreateNewCardParas')}</title>
 				<meta
 					name="description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 
 				<meta name="twitter:title" content="Market — Paras" />
@@ -447,7 +564,7 @@ const NewPage = () => {
 				<meta name="twitter:url" content="https://paras.id" />
 				<meta
 					name="twitter:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 				<meta
 					name="twitter:image"
@@ -458,7 +575,7 @@ const NewPage = () => {
 				<meta property="og:site_name" content="Market — Paras" />
 				<meta
 					property="og:description"
-					content="Create, Trade and Collect. All-in-one social digital art cards marketplace for creators and collectors."
+					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta
@@ -498,6 +615,7 @@ const NewPage = () => {
 									imgHeight={890}
 									imgBlur={blurhash}
 									imgUrl={parseImgUrl(imgUrl)}
+									audioUrl={audioUrl}
 									token={{
 										title: formInput.name,
 										collection: choosenCollection.collection,
@@ -707,6 +825,7 @@ const NewPage = () => {
 							</p>
 							<Button
 								isDisabled={!(isUploading === 'success')}
+								isLoading={isCreating}
 								isFullWidth
 								size="md"
 								onClick={createSeriesNFT}
@@ -747,6 +866,67 @@ const NewPage = () => {
 					}}
 				/>
 			)}
+			{showAudioThumbnailModal && (
+				<Modal
+					close={() => setShowAudioThumbnailModal(false)}
+					closeOnBgClick={false}
+					closeOnEscape={false}
+				>
+					<div className="max-w-sm m-auto p-4 bg-gray-800 rounded-md w-full relative">
+						<div className="absolute right-0 top-0 pr-4 pt-4">
+							<div
+								className="cursor-pointer"
+								onClick={() => {
+									setAudioFile('')
+									setAudioUrl('')
+									setThumbnailAudioUrl('')
+									setthumbnailAudioFile('')
+									setImgFile('')
+									setImgUrl('')
+									setShowAudioThumbnailModal(false)
+								}}
+							>
+								<IconX />
+							</div>
+						</div>
+						<h1 className="mt-4 text-xl font-bold text-white tracking-tight">
+							Thumbnail Image for Audio
+						</h1>
+						<p className="text-xs font-thin text-white text-opacity-80">
+							Supported file types: PNG,JPG,GIF
+						</p>
+						<div className="px-2 flex items-center justify-center mt-4">
+							{thumbnailAudioFile ? (
+								<img src={thumbnailAudioUrl} className="object-contain w-9/12 h-80" alt="" />
+							) : (
+								<div className="bg-gray-500 bg-opacity-60 hover:bg-opacity-30 transition-all cursor-pointer rounded-md w-9/12 h-80 flex items-center justify-center relative">
+									<input
+										type="file"
+										accept="image/*"
+										className="cursor-pointer w-full opacity-0 absolute inset-0"
+										onChange={_setThumbnailAudio}
+									/>
+									<div className="text-white">+ Add</div>
+								</div>
+							)}
+						</div>
+						<div className="mt-5 flex items-center">
+							<div
+								className="px-4 py-2 w-full rounded-md bg-primary text-white hover:bg-opacity-30 transition-all cursor-pointer text-center font-semibold"
+								onClick={() => {
+									if (thumbnailAudioUrl) {
+										setImgUrl(thumbnailAudioUrl)
+										setImgFile(thumbnailAudioFile)
+										setShowAudioThumbnailModal(false)
+									}
+								}}
+							>
+								Submit
+							</div>
+						</div>
+					</div>
+				</Modal>
+			)}
 			<CreateCollectionModal
 				show={showCreateColl}
 				onClose={() => setShowCreateColl(!showCreateColl)}
@@ -783,9 +963,14 @@ const NewPage = () => {
 									y: 0,
 								}}
 							/>
+							{audioUrl && (
+								<div className="my-3 flex items-center justify-center w-full">
+									<AudioPlayer showForwardBackward={false} audioSrc={audioUrl} />
+								</div>
+							)}
 						</div>
 					</div>
-					<div className="w-full lg:w-1/3 bg-gray-700 p-4">
+					<div className="w-full lg:w-1/3 bg-gray-700 p-4 relative">
 						{router.query.categoryId && (
 							<div
 								className="w-full bg-primary px-4 py-1 text-center -m-4 mb-4 shadow-md"
@@ -803,21 +988,9 @@ const NewPage = () => {
 							</h1>
 						</div>
 						{step === 0 && (
-							<div>
-								<div className="flex justify-between py-2">
-									<button disabled={step === 0} onClick={_handleBack}>
-										{localeLn('Back')}
-									</button>
-									<div>{step + 1}/4</div>
-									<button
-										disabled={!choosenCollection.collection_id}
-										onClick={() => setStep(step + 1)}
-									>
-										{localeLn('Next')}
-									</button>
-								</div>
+							<div className="h-60">
 								<div className="text-sm mt-2">Choose Collection</div>
-								<div id="collection::user" className="h-60vh overflow-auto">
+								<div id="collection::user" className="max-h-40 md:max-h-72 overflow-auto">
 									<InfiniteScroll
 										dataLength={collectionList.length}
 										next={fetchCollectionUser}
@@ -858,28 +1031,39 @@ const NewPage = () => {
 										))}
 									</InfiniteScroll>
 								</div>
+								{category_id && category_name && (
+									<div className="text-sm mt-3 mb-1 text-opacity-30 flex justify-between items-center">
+										<p className="font-semibold">Choosen category:</p>
+										<div className="p-2 bg-gray-800 bg-opacity-80 rounded-md font-thin border border-white">
+											{category_name}
+										</div>
+									</div>
+								)}
+								<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
+									<button disabled={step === 0} onClick={_handleBack}>
+										{localeLn('Back')}
+									</button>
+									<div>{step + 1}/4</div>
+									<button
+										disabled={!choosenCollection.collection_id}
+										onClick={() => setStep(step + 1)}
+									>
+										{localeLn('Next')}
+									</button>
+								</div>
 							</div>
 						)}
 						{step === 1 && (
-							<div>
-								<div>
-									<div className="flex justify-between py-2">
-										<button onClick={_handleBack}>{localeLn('Back')}</button>
-										<div>{step + 1}/4</div>
-										<button disabled={!imgFile} onClick={() => setStep(step + 1)}>
-											{localeLn('Next')}
-										</button>
-									</div>
-								</div>
+							<div className="pb-12">
 								<div className="mt-4 relative border-2 h-56 border-dashed rounded-md cursor-pointer overflow-hidden border-gray-400">
 									<input
 										className="cursor-pointer w-full opacity-0 absolute inset-0"
 										type="file"
-										accept="image/*,video/*"
+										accept="image/*,video/*,audio/*"
 										onClick={(e) => {
 											e.target.value = null
 										}}
-										onChange={_setImg}
+										onChange={_setFile}
 									/>
 									<div className="flex items-center justify-center h-full">
 										{imgFile ? (
@@ -899,7 +1083,9 @@ const NewPage = () => {
 														fill="rgba(229, 231, 235, 0.5)"
 													/>
 												</svg>
-												<p className="text-gray-200 mt-4 truncate text-center">{imgFile.name}</p>
+												<p className="text-gray-200 mt-4 truncate text-center">
+													{audioFile ? audioFile.name : imgFile.name}
+												</p>
 											</div>
 										) : (
 											<div className="text-center">
@@ -922,24 +1108,26 @@ const NewPage = () => {
 													{localeLn('Maximum30MB')}
 												</p>
 												<p className="text-sm text-gray-200 opacity-50">
-													Supported image or video file
+													Supported image, video, and audio file
 												</p>
 											</div>
 										)}
+									</div>
+								</div>
+								<div>
+									<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
+										<button onClick={_handleBack}>{localeLn('Back')}</button>
+										<div>{step + 1}/4</div>
+										<button disabled={!imgFile && !imgUrl} onClick={() => setStep(step + 1)}>
+											{localeLn('Next')}
+										</button>
 									</div>
 								</div>
 							</div>
 						)}
 						{step === 2 && (
 							<form onSubmit={handleSubmit(_handleSubmitStep1)}>
-								<div>
-									<div className="flex justify-between py-2">
-										<button onClick={_handleBack}>Back</button>
-										<div>{step + 1}/4</div>
-										<button type="submit" onClick={handleSubmit(_handleSubmitStep1)}>
-											{localeLn('Next')}
-										</button>
-									</div>
+								<div className="min-h-[60vh] pb-8">
 									<div className="mt-2">
 										<label className="block text-sm">{localeLn('Name')}</label>
 										<InputText
@@ -1047,7 +1235,7 @@ const NewPage = () => {
 															height="14"
 															viewBox="0 0 16 16"
 															fill="none"
-															transform="rotate(45)"
+															style={{ transform: 'rotate(45deg)' }}
 															className="relative z-10"
 															xmlns="http://www.w3.org/2000/svg"
 														>
@@ -1058,22 +1246,18 @@ const NewPage = () => {
 											))}
 										</Scrollbars>
 									</div>
+									<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
+										<button onClick={_handleBack}>Back</button>
+										<div>{step + 1}/4</div>
+										<button type="submit" onClick={handleSubmit(_handleSubmitStep1)}>
+											{localeLn('Next')}
+										</button>
+									</div>
 								</div>
 							</form>
 						)}
 						{step === 3 && (
-							<form onSubmit={handleSubmit(_handleSubmitStep2)}>
-								<div className="flex justify-between py-2">
-									<button onClick={_handleBack}>Back</button>
-									<div>{step + 1}/4</div>
-									<button
-										disabled={isLoading === 3}
-										type="submit"
-										onClick={handleSubmit(_handleSubmitStep2)}
-									>
-										{localeLn('Next')}
-									</button>
-								</div>
+							<form onSubmit={handleSubmit(_handleSubmitStep2)} className="pb-12">
 								<div className="mt-2">
 									<div>
 										<RoyaltyWatch control={control} fields={royaltyFields} append={royaltyAppend} />
@@ -1105,7 +1289,7 @@ const NewPage = () => {
 															height="14"
 															viewBox="0 0 16 16"
 															fill="none"
-															transform="rotate(45)"
+															style={{ transform: 'rotate(45deg)' }}
 															className="relative z-10"
 															xmlns="http://www.w3.org/2000/svg"
 														>
@@ -1166,6 +1350,17 @@ const NewPage = () => {
 											</div>
 										</>
 									)}
+								</div>
+								<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
+									<button onClick={_handleBack}>Back</button>
+									<div>{step + 1}/4</div>
+									<button
+										disabled={isLoading === 3}
+										type="submit"
+										onClick={handleSubmit(_handleSubmitStep2)}
+									>
+										{localeLn('Next')}
+									</button>
 								</div>
 							</form>
 						)}

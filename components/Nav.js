@@ -11,35 +11,99 @@ import Setting from './Setting'
 import Cookies from 'js-cookie'
 import NotificationList from './Notification/NotificationList'
 import User from './User/User'
-import TokenNav from './Nav/TokenNav'
+import SlowActivityInfo from './SlowActivityInfo'
+import axios from 'axios'
+import AutoCompleteList from './AutoComplete/AutoCompleteList'
+
+const LIMIT = 5
 
 const Nav = () => {
 	const [showMobileNav, setShowMobileNav] = useState(false)
+	const [showAutoComplete, setShowAutoComplete] = useState(false)
+	const [isRefreshing, setIsRefreshing] = useState(false)
+
+	const [collections, setCollections] = useState()
+	const [profiles, setProfiles] = useState()
+	const [items, setItems] = useState()
 
 	const store = useStore()
 	const router = useRouter()
 	const mobileNavRef = useRef()
 	const testnetBannerRef = useRef()
+	const autoCompleteRef = useRef()
 	const toast = useToast()
 
 	const [showSettingModal, setShowSettingModal] = useState(false)
 	const [searchQuery, setSearchQuery] = useState(router.query.q || '')
 	const { localeLn } = useIntl()
+
 	useEffect(() => {
 		const onClickEv = (e) => {
 			if (mobileNavRef && !mobileNavRef?.current?.contains(e.target)) {
 				setShowMobileNav(false)
+			}
+			if (autoCompleteRef.current?.contains && !autoCompleteRef.current.contains(e.target)) {
+				setShowAutoComplete(false)
 			}
 		}
 
 		if (showMobileNav) {
 			document.body.addEventListener('click', onClickEv)
 		}
+		if (showAutoComplete) {
+			document.body.addEventListener('click', onClickEv)
+		}
 
 		return () => {
 			document.body.removeEventListener('click', onClickEv)
 		}
-	}, [showMobileNav])
+	}, [showMobileNav, showAutoComplete])
+
+	const debounce = (func, timeout) => {
+		let timer
+
+		return function (...args) {
+			const context = this
+			if (timer) clearTimeout(timer)
+			timer = setTimeout(() => {
+				timer = null
+				func.apply(context, args)
+			}, timeout)
+		}
+	}
+
+	const handleAutoComplete = async (event) => {
+		const { value } = event
+
+		if (value.length >= 3) {
+			const resSearchAutoComplete = await axios.get(`${process.env.V2_API_URL}/search`, {
+				params: {
+					search: value,
+					__skip: 0,
+					__limit: LIMIT,
+					is_verified: true,
+				},
+			})
+
+			const res = resSearchAutoComplete.data.data
+
+			setCollections(res.collections.results)
+			setProfiles(res.profiles.results)
+			setItems(res.tokenSeries.results)
+		}
+
+		setIsRefreshing(false)
+	}
+
+	const debounceAutoComplete = debounce(handleAutoComplete, 400)
+
+	const onChangeAutoComplete = (event) => {
+		setSearchQuery(event)
+		setIsRefreshing(true)
+		debounceAutoComplete(event)
+	}
+
+	const debounceOnChange = debounce(onChangeAutoComplete, 200)
 
 	const _showTestnetInfo = () => {
 		toast.show({
@@ -60,11 +124,12 @@ const Nav = () => {
 	}
 
 	const _handleSubmit = (event) => {
+		const data = new FormData(event.target)
 		event.preventDefault()
 		router.push({
 			pathname: '/search',
 			query: {
-				q: searchQuery,
+				q: data.get('q'),
 			},
 		})
 	}
@@ -72,6 +137,10 @@ const Nav = () => {
 	const hideEmailNotVerified = () => {
 		Cookies.set('hideEmailNotVerified', 'true', { expires: 3 })
 		store.setShowEmailWarning(false)
+	}
+
+	const toggleAutoComplete = () => {
+		setShowAutoComplete(true)
 	}
 
 	return (
@@ -84,6 +153,9 @@ const Nav = () => {
 				>
 					<Setting close={() => setShowSettingModal(false)} />
 				</Modal>
+			)}
+			{store.activitySlowUpdate && process.env.APP_ENV !== 'testnet' && (
+				<SlowActivityInfo refresh={router.pathname.includes('activity')} />
 			)}
 			<div className="sticky top-0 left-0 right-0 z-40 bg-black">
 				{process.env.APP_ENV !== 'testnet' && (
@@ -128,13 +200,14 @@ const Nav = () => {
 					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
 				>
 					<div className="px-10 py-1 md:p-0 ">
-						{`Prepare your best arts for Card4Card on Jan 28th! Read more info `}
+						{`Update: Marketplace Fee Reduction. More info `}
 						<a
-							href="https://paras.id/publication/first-card4card-in-2022-61ed5a50cd08b4959dde48b7"
+							href="https://paras.id/publication/paras-marketplace-comfortable-fee-622367bd12bbfa5e33c37f38"
 							target="_blank"
 							className="font-bold cursor-pointer hover:underline"
+							rel="noreferrer"
 						>
-							here
+							here.
 						</a>
 					</div>
 				</div> */}
@@ -218,8 +291,12 @@ const Nav = () => {
 					</div>
 					<div className="flex-1 pr-4">
 						<div className="max-w-sm mr-auto flex items-center">
-							<form action="/search" method="get" onSubmit={_handleSubmit}>
-								<div className="flex border-dark-primary-1 border-2 rounded-lg bg-dark-primary-1">
+							<form action="/search" method="get" onSubmit={_handleSubmit} autoComplete="off">
+								<div
+									ref={autoCompleteRef}
+									className="flex border-dark-primary-1 border-2 rounded-lg bg-dark-primary-1"
+									onClick={toggleAutoComplete}
+								>
 									<svg
 										width="36"
 										height="36"
@@ -235,14 +312,27 @@ const Nav = () => {
 										></path>
 									</svg>
 									<input
+										id="search"
 										name="q"
 										type="search"
-										value={searchQuery}
-										onChange={(event) => setSearchQuery(event.target.value)}
+										value={router.query.search}
+										onChange={(e) => debounceOnChange(e.target)}
 										placeholder={localeLn('SearchByTitle')}
 										className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-base md:text-sm font-medium"
 										style={{ WebkitAppearance: 'none' }}
 									/>
+								</div>
+								<div className="hidden md:block">
+									{showAutoComplete && (
+										<AutoCompleteList
+											collectionList={collections}
+											profileList={profiles}
+											itemList={items}
+											modal={(e) => setShowAutoComplete(e)}
+											searchQuery={searchQuery}
+											isRefreshing={isRefreshing}
+										/>
+									)}
 								</div>
 							</form>
 							<div>
@@ -282,13 +372,18 @@ const Nav = () => {
 							)}
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block text-sm">
-							<Link href="/publication">
-								<a>{localeLn('Publication')}</a>
+							<Link href="/token">
+								<a>{localeLn('Token')}</a>
 							</Link>
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block text-sm">
 							<Link href="/activity">
 								<a>{localeLn('Activity')}</a>
+							</Link>
+						</div>
+						<div className="px-3 text-gray-100 hidden md:block text-sm">
+							<Link href="/publication">
+								<a>{localeLn('Publication')}</a>
 							</Link>
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block text-sm">
@@ -300,9 +395,6 @@ const Nav = () => {
 							>
 								{localeLn('Comics')}
 							</a>
-						</div>
-						<div className="px-3 text-gray-100 hidden md:block text-sm">
-							<TokenNav />
 						</div>
 						<div className="px-3">
 							{store.currentUser ? (
@@ -321,6 +413,18 @@ const Nav = () => {
 							)}
 						</div>
 					</div>
+				</div>
+				<div className="md:hidden">
+					{showAutoComplete && (
+						<AutoCompleteList
+							collectionList={collections}
+							profileList={profiles}
+							itemList={items}
+							modal={(e) => setShowAutoComplete(e)}
+							searchQuery={searchQuery}
+							isRefreshing={isRefreshing}
+						/>
+					)}
 				</div>
 				<div className="relative">
 					<div
@@ -356,13 +460,18 @@ const Nav = () => {
 								)}
 							</div>
 							<div className="text-gray-100 ">
-								<Link href="/publication">
-									<a className="p-4 block w-full">{localeLn('Publication')}</a>
+								<Link href="/token">
+									<a className="p-4 block w-full">{localeLn('Token')}</a>
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
 								<Link href="/activity">
 									<a className="p-4 block w-full">{localeLn('Activity')}</a>
+								</Link>
+							</div>
+							<div className="text-gray-100 ">
+								<Link href="/publication">
+									<a className="p-4 block w-full">{localeLn('Publication')}</a>
 								</Link>
 							</div>
 							<div className="text-gray-100 ">
@@ -373,36 +482,6 @@ const Nav = () => {
 									rel="noreferrer"
 								>
 									{localeLn('Comics')}
-								</a>
-							</div>
-							<div className="text-gray-100 ">
-								<a
-									href="https://ipfs.fleek.co/ipfs/bafybeihu6atdada45rmx4sszny6sahrzas4tuzrpuufdcpe6b63r6ugdce"
-									target="_blank"
-									className="p-4 block w-full"
-									rel="noreferrer"
-								>
-									{localeLn('Whitepaper')}
-								</a>
-							</div>
-							<div className="text-gray-100 ">
-								<a
-									href="https://app.ref.finance/#wrap.near|token.paras.near"
-									target="_blank"
-									className="p-4 block w-full"
-									rel="noreferrer"
-								>
-									{localeLn('NavGetParas')}
-								</a>
-							</div>
-							<div className="text-gray-100 fireText">
-								<a
-									className="p-4 block w-full"
-									href="https://stake.paras.id"
-									target="_blank"
-									rel="noreferrer"
-								>
-									Stake Paras
 								</a>
 							</div>
 						</div>

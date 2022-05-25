@@ -8,11 +8,13 @@ import useStore from 'lib/store'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { parseImgUrl, prettyTruncate } from 'utils/common'
+import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
+import useToken from 'hooks/useToken'
+
 const FETCH_TOKENS_LIMIT = 100
 
-const TabOwners = ({ localToken }) => {
+const TabOwners = ({ localToken, isAuctionEnds }) => {
 	const [tokens, setTokens] = useState([])
 	const [isFetching, setIsFetching] = useState(false)
 	const [activeToken, setActiveToken] = useState(null)
@@ -62,8 +64,8 @@ const TabOwners = ({ localToken }) => {
 	}
 
 	const onDismissModal = () => {
-		setActiveToken(null)
 		setShowModal(null)
+		setActiveToken(null)
 	}
 
 	const changeSortBy = (sortby) => {
@@ -118,7 +120,7 @@ const TabOwners = ({ localToken }) => {
 					</div>
 					{tokens.map((token) => (
 						<Owner
-							token={token}
+							initial={token}
 							key={token.token_id}
 							onBuy={(token) => {
 								setShowModal('buy')
@@ -127,6 +129,7 @@ const TabOwners = ({ localToken }) => {
 							onUpdateListing={(token) => {
 								onUpdateListing(token)
 							}}
+							isAuctionEnds={isAuctionEnds}
 						/>
 					))}
 				</>
@@ -145,10 +148,16 @@ const TabOwners = ({ localToken }) => {
 	)
 }
 
-const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
+const Owner = ({ initial = {}, onBuy, onUpdateListing }) => {
+	const { token } = useToken({
+		key: `${initial.contract_id}::${initial.token_series_id}/${initial.token_id}`,
+		initialData: initial,
+	})
+
 	const [profile, setProfile] = useState({})
 	const { currentUser } = useStore()
 	const { localeLn } = useIntl()
+
 	useEffect(() => {
 		if (token.owner_id) {
 			fetchOwnerProfile()
@@ -167,6 +176,70 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 			setProfile(newData)
 		} catch (err) {
 			sentryCaptureException(err)
+		}
+	}
+
+	const isCurrentBid = (type) => {
+		let list = []
+		token?.bidder_list?.map((item) => {
+			if (type === 'bidder') list.push(item.bidder)
+			else if (type === 'time') list.push(item.issued_at)
+			else if (type === 'amount') list.push(item.amount)
+		})
+		const currentBid = list.reverse()
+
+		return currentBid[0]
+	}
+
+	const checkStatuTransaction = () => {
+		if (token?.is_auction) {
+			return (
+				<p className="text-white">
+					{localeLn('OnAuction')}{' '}
+					{prettyBalance(
+						token?.is_auction && token?.bidder_list && token?.bidder_list.length !== 0
+							? isCurrentBid('amount') || token.price
+							: token.price,
+						24,
+						2
+					)}{' '}
+					Ⓝ
+				</p>
+			)
+		} else if (token.price) {
+			return (
+				<p className="text-white">
+					{localeLn('OnSale')} {formatNearAmount(token.price)} Ⓝ
+				</p>
+			)
+		} else if (token.is_staked) {
+			return <p className="text-white">{localeLn('Staked')}</p>
+		} else {
+			return <p className="text-white">{localeLn('NotForSale')}</p>
+		}
+	}
+
+	const checkTypeTransaction = () => {
+		if (token.owner_id === currentUser) {
+			if (!token.is_staked && !token?.is_auction) {
+				return (
+					<div className="w-24">
+						<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>
+							{localeLn('Update')}
+						</Button>
+					</div>
+				)
+			}
+		} else if (token.owner_id !== currentUser) {
+			if (token.price && !token.is_auction) {
+				return (
+					<div className="w-24">
+						<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
+							{localeLn('Buy')}
+						</Button>
+					</div>
+				)
+			}
 		}
 	}
 
@@ -207,32 +280,8 @@ const Owner = ({ token = {}, onBuy, onUpdateListing }) => {
 			</div>
 			<div className="mt-1">
 				<div className="flex items-center justify-between">
-					{token.price ? (
-						<p className="text-white">
-							{localeLn('OnSale')} {formatNearAmount(token.price)} Ⓝ
-						</p>
-					) : (
-						<p className="text-white">{localeLn('NotForSale')}</p>
-					)}
-					{currentUser && (
-						<>
-							{token.owner_id === currentUser ? (
-								<div className="w-24">
-									<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>
-										{localeLn('Update')}
-									</Button>
-								</div>
-							) : (
-								token.price && (
-									<div className="w-24">
-										<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
-											{localeLn('Buy')}
-										</Button>
-									</div>
-								)
-							)}
-						</>
-					)}
+					{checkStatuTransaction()}
+					{currentUser && checkTypeTransaction()}
 				</div>
 			</div>
 		</div>

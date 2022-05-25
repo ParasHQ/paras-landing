@@ -6,7 +6,7 @@ const FilterActivity = ({ onClickFilter }) => {
 	const router = useRouter()
 
 	const [showFilterModal, setShowFilterModal] = useState(false)
-	const [filterBy, setFilterBy] = useState(router.query.filter || filter[0].key)
+	const [filterBy, setFilterBy] = useState(router.query.filter || filter[1].key)
 	const [minPrice, setMinPrice] = useState(router.query.pmin || '')
 	const [maxPrice, setMaxPrice] = useState(router.query.pmax || '')
 	const [isVerified, setIsVerified] = useState(
@@ -58,7 +58,7 @@ const FilterActivity = ({ onClickFilter }) => {
 			</div>
 			{showFilterModal && (
 				<div
-					className="absolute max-w-full z-20 mt-2 px-4 right-0"
+					className="absolute max-w-full z-40 mt-2 px-4 right-0"
 					style={{
 						width: `24rem`,
 					}}

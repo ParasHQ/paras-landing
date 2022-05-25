@@ -1,32 +1,99 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { parseImgUrl } from 'utils/common'
 import axios from 'axios'
 import FileType from 'file-type/browser'
 
+const PlayIcon = ({ onClick }) => (
+	<div
+		onClick={onClick}
+		className="w-9 h-9 p-1 flex items-center justify-center rounded-full bg-dark-primary-5 cursor-pointer hover:bg-dark-primary-7 transition-all"
+	>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			className="icon icon-tabler icon-tabler-player-play"
+			width={26}
+			height={26}
+			viewBox="0 0 24 24"
+			strokeWidth="1.5"
+			stroke="#fff"
+			fill="none"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		>
+			<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+			<path d="M7 4v16l13 -8z" />
+		</svg>
+	</div>
+)
+
+const PauseIcon = ({ onClick }) => (
+	<div
+		onClick={onClick}
+		className="w-9 h-9 p-1 flex items-center justify-center rounded-full bg-dark-primary-5 cursor-pointer hover:bg-dark-primary-7 transition-all"
+	>
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			className="icon icon-tabler icon-tabler-player-pause"
+			width={26}
+			height={26}
+			viewBox="0 0 24 24"
+			strokeWidth="1.5"
+			stroke="#fff"
+			fill="none"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		>
+			<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+			<rect x={6} y={5} width={4} height={14} rx={1} />
+			<rect x={14} y={5} width={4} height={14} rx={1} />
+		</svg>
+	</div>
+)
+
 const Media = ({
 	className,
 	url,
+	audioUrl,
 	videoControls = false,
 	videoMuted = true,
 	videoLoop = false,
 	videoPadding = false,
 	playVideoButton = true,
+	mimeType,
+	seeDetails,
+	isMediaCdn,
 }) => {
 	const [media, setMedia] = useState(null)
 	const [isLoading, setIsLoading] = useState(true)
 	const [playVideo, setPlayVideo] = useState(false)
+	const audioRef = useRef()
+	const [isPlaying, setIsPlaying] = useState(false)
 
 	useEffect(() => {
-		if (url) {
+		if (url && seeDetails && media !== null) {
+			setMedia(null)
+		}
+		if (url && !mimeType?.includes('gif')) {
 			getMedia()
 		} else {
 			setIsLoading(false)
 		}
 	}, [url, playVideo])
 
+	const togglePlayPause = (type) => {
+		const nextToggleValue = type
+		if (nextToggleValue === 'play') {
+			setIsPlaying(false)
+			audioRef.current.pause()
+		} else {
+			setIsPlaying(true)
+			audioRef.current.play()
+		}
+	}
+
 	const getMedia = async () => {
 		try {
-			const resp = await axios.get(`${parseImgUrl(url)}`, {
+			const resp = await axios.get(`${parseImgUrl(url, undefined, { seeDetails, isMediaCdn })}`, {
 				responseType: 'blob',
 			})
 
@@ -42,7 +109,7 @@ const Media = ({
 		} catch (err) {
 			setMedia({
 				type: 'image/jpg',
-				url: parseImgUrl(url),
+				url: parseImgUrl(url, undefined, { seeDetails, isMediaCdn }),
 			})
 			setIsLoading(false)
 		}
@@ -77,11 +144,56 @@ const Media = ({
 		)
 	}
 
+	if (audioUrl) {
+		return (
+			<div className="relative flex items-center justify-center w-full">
+				<img className={`object-contain w-full h-full`} src={media.url} />
+				<div className="absolute bottom-1 md:bottom-2 flex justify-end items-center w-11/12 z-10">
+					{isPlaying ? (
+						<PauseIcon
+							onClick={(e) => {
+								e.preventDefault()
+								e.stopPropagation()
+								togglePlayPause('play')
+							}}
+						/>
+					) : (
+						<PlayIcon
+							onClick={(e) => {
+								e.preventDefault()
+								e.stopPropagation()
+								togglePlayPause('pause')
+							}}
+						/>
+					)}
+					<audio ref={audioRef}>
+						<source src={parseImgUrl(audioUrl, undefined, { seeDetails: seeDetails })} />
+					</audio>
+				</div>
+			</div>
+		)
+	}
+
 	if (media?.type.includes('image')) {
 		const isPng = media?.type === 'image/png'
 		const pixelated = isPng ? '' : ''
 		return (
 			<img className={`object-contain w-full h-full ${className} ${pixelated}`} src={media.url} />
+		)
+	}
+
+	if (mimeType?.includes('gif')) {
+		return (
+			<video
+				playsInline
+				controls={false}
+				loop={true}
+				muted={false}
+				autoPlay
+				className="w-full h-full"
+			>
+				<source type="video/mp4" src={`${url}&fm=mp4`}></source>
+			</video>
 		)
 	}
 
