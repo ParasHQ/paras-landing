@@ -4,7 +4,6 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 COPY .env.${BUILD_ENV} .env
-COPY .sentryclirc .sentryclirc
 
 RUN yarn install
 
