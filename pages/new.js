@@ -29,6 +29,7 @@ import AudioPlayer from 'components/Common/AudioPlayer'
 import { Canvas } from '@react-three/fiber'
 import { Model1 } from 'components/Model3D/ThreeDModel'
 import FileType from 'file-type/browser'
+import retry from 'async-retry'
 
 const LIMIT = 16
 
@@ -126,6 +127,7 @@ const NewPage = () => {
 		control,
 		name: 'royalties',
 	})
+	const { category_name, category_id } = router.query
 
 	const [threeDFile, setThreeDFile] = useState('')
 	const [threeDUrl, setThreeDUrl] = useState('')
@@ -236,6 +238,10 @@ const NewPage = () => {
 			setReferenceHash(resp.data.data[1].split('://')[1])
 
 			setIsUploading('success')
+
+			if (store.selectedCategory !== '' && WalletHelper.activeWallet !== 'sender') {
+				window.sessionStorage.setItem(`categoryToken`, store.selectedCategory)
+			}
 		} catch (err) {
 			sentryCaptureException(err)
 			const msg = err.response?.data?.message || `Something went wrong, try again later`
@@ -286,6 +292,9 @@ const NewPage = () => {
 
 			setIsCreating(false)
 			if (res?.response) {
+				if (store.selectedCategory !== '') {
+					await submitCategoryCard(res)
+				}
 				setTimeout(() => {
 					router.push('/market')
 					store.setTransactionRes(res?.response)
@@ -305,7 +314,10 @@ const NewPage = () => {
 
 	useEffect(() => {
 		if (router.query.transactionHashes) {
-			router.push('/market')
+			router.push('/market', {
+				pathname: '/market',
+				query: router.query,
+			})
 		}
 	}, [router.query.transactionHashes])
 
@@ -333,6 +345,14 @@ const NewPage = () => {
 			getAttributeKeys()
 		}
 	}, [step])
+
+	useEffect(() => {
+		if (category_id) {
+			store.setSelectedCategory(category_id)
+		} else {
+			store.setSelectedCategory('')
+		}
+	}, [])
 
 	const _updateValues = () => {
 		const values = { ...getValues() }
@@ -542,6 +562,39 @@ const NewPage = () => {
 		if (categoryId) {
 			return categoryId.split('-').map(capitalize).join(' ')
 		}
+	}
+
+	const submitCategoryCard = async (res) => {
+		const txLast = res?.response[res?.response.length - 1]
+		const resFromTxLast = txLast.receipts_outcome[0].outcome.logs[0]
+		const resOutcome = await JSON.parse(`${resFromTxLast}`)
+		await retry(
+			async () => {
+				const res = await axios.post(
+					`${process.env.V2_API_URL}/categories/tokens`,
+					{
+						account_id: store.currentUser,
+						contract_id: txLast?.transaction?.receiver_id,
+						token_series_id: resOutcome?.params?.token_series_id,
+						category_id: store.selectedCategory,
+					},
+					{
+						headers: {
+							authorization: await WalletHelper.authToken(),
+						},
+					}
+				)
+				if (res.status === 403 || res.status === 400) {
+					sentryCaptureException(res.data?.message || `Token series still haven't exist`)
+					return
+				}
+				window.sessionStorage.removeItem('categoryToken')
+			},
+			{
+				retries: 20,
+				factor: 2,
+			}
+		)
 	}
 
 	return (
@@ -1049,9 +1102,9 @@ const NewPage = () => {
 							)}
 						</div>
 						{step === 0 && (
-							<div>
+							<div className="h-60">
 								<div className="text-sm mt-2">Choose Collection</div>
-								<div id="collection::user" className="h-60vh overflow-auto">
+								<div id="collection::user" className="max-h-40 md:max-h-72 overflow-auto">
 									<InfiniteScroll
 										dataLength={collectionList.length}
 										next={fetchCollectionUser}
@@ -1092,6 +1145,14 @@ const NewPage = () => {
 										))}
 									</InfiniteScroll>
 								</div>
+								{category_id && category_name && (
+									<div className="text-sm mt-3 mb-1 text-opacity-30 flex justify-between items-center">
+										<p className="font-semibold">Choosen category:</p>
+										<div className="p-2 bg-gray-800 bg-opacity-80 rounded-md font-thin border border-white">
+											{category_name}
+										</div>
+									</div>
+								)}
 								<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
 									<button disabled={step === 0} onClick={_handleBack}>
 										{localeLn('Back')}
