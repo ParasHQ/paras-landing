@@ -1,7 +1,7 @@
 import axios from 'axios'
 import useSWR from 'swr'
 
-const useToken = ({ key, initialData }) => {
+const useToken = ({ key, initialData, args = {} }) => {
 	const fetchData = async (key) => {
 		const [contractId, token] = key.split('::')
 		const [tokenSeriesId, tokenId] = token.split('/')
@@ -26,6 +26,7 @@ const useToken = ({ key, initialData }) => {
 			revalidateIfStale: false,
 			revalidateOnReconnect: false,
 			refreshInterval: 0,
+			...args,
 		}
 	)
 

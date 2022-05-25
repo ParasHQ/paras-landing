@@ -14,6 +14,7 @@ import MarketTokenModal from 'components/Modal/MarketTokenModal'
 import CardListLoaderSmall from 'components/Card/CardListLoaderSmall'
 import useToken from 'hooks/useToken'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
+import { useToast } from 'hooks/useToast'
 
 const TokenList = ({
 	name = 'default',
@@ -124,8 +125,58 @@ const TokenSingle = ({ initialData, displayType = 'large', volume, showRaritySco
 	const [modalType, setModalType] = useState(null)
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
+	const toast = useToast()
 
-	const price = token.price
+	const price =
+		token.token?.amount && token.token?.bidder_list?.length !== 0
+			? token.token?.amount
+			: token.lowest_price || token.price
+	const [isEndedTime, setIsEndedTime] = useState(false)
+
+	const _showInfoUpdatingAuction = () => {
+		toast.show({
+			text: (
+				<div className="text-sm text-white text-justify">
+					<p>
+						This auction data is being updated, please refresh the page periodically each minute.
+					</p>
+				</div>
+			),
+			type: 'updatingAuction',
+			duration: null,
+		})
+	}
+
+	useEffect(() => {
+		countDownTimeAuction()
+	}, [isEndedTime])
+
+	const convertTimeOfAuction = (date) => {
+		const sliceNanoSec = String(date).slice(0, 13)
+
+		if (sliceNanoSec !== 'undefined') {
+			return sliceNanoSec
+		}
+	}
+
+	const countDownTimeAuction = () => {
+		const endedDate = convertTimeOfAuction(token?.ended_at)
+
+		const timer = setInterval(() => {
+			const startedDate = new Date().getTime()
+
+			if (!isEndedTime) {
+				let distance = parseInt(endedDate) - parseInt(startedDate)
+
+				if (distance <= 0) {
+					clearInterval(timer)
+					setIsEndedTime(true)
+				}
+			}
+
+			return
+		}, 1000)
+	}
 
 	const onClickSeeDetails = async (choosenToken) => {
 		const token = (await mutate()) || choosenToken
@@ -152,8 +203,6 @@ const TokenSingle = ({ initialData, displayType = 'large', volume, showRaritySco
 	}
 
 	const actionButtonText = (token) => {
-		const price = token.price
-
 		if (token.owner_id === currentUser) {
 			if (token.is_staked) {
 				return localeLn('Unstake')
@@ -161,7 +210,13 @@ const TokenSingle = ({ initialData, displayType = 'large', volume, showRaritySco
 			return localeLn('UpdateListing')
 		}
 
-		return price ? 'Buy Now' : 'Place Offer'
+		return token.price && !token?.is_auction && !isEndedTime
+			? 'Buy Now'
+			: token?.is_auction && !isEndedTime
+			? 'Place a Bid'
+			: isEndedTime
+			? 'Auction Ends'
+			: 'Place Offer'
 	}
 
 	const actionButtonClick = (token) => {
@@ -175,13 +230,48 @@ const TokenSingle = ({ initialData, displayType = 'large', volume, showRaritySco
 			}
 			setModalType('updatelisting')
 		} else {
-			setModalType(price ? 'buy' : 'offer')
+			setModalType(
+				price && (!token?.is_auction || isEndedTime)
+					? 'buy'
+					: token?.is_auction && !isEndedTime
+					? 'placebid'
+					: 'offer'
+			)
 		}
+	}
+
+	const typeSale = () => {
+		if (token?.is_auction && !isEndedTime) {
+			return localeLn('OnAuction')
+		} else if (token.lowest_price && token.metadata.copies > 1) {
+			return localeLn('StartFrom')
+		} else {
+			return localeLn('OnSale')
+		}
+	}
+
+	const checkBidder = () => {
+		if (token?.bidder_list) {
+			return 'Highest Bid'
+		} else {
+			return 'Starting Bid'
+		}
+	}
+
+	const isCurrentBid = (type) => {
+		let list = []
+		token?.bidder_list?.map((item) => {
+			if (type === 'bidder') list.push(item.bidder)
+			else if (type === 'time') list.push(item.issued_at)
+			else if (type === 'amount') list.push(item.amount)
+		})
+
+		return list[list.length - 1]
 	}
 
 	return (
 		<>
-			<TokenDetailModal tokens={[token]} />
+			<TokenDetailModal tokens={[token]} isAuctionEnds={isEndedTime} />
 			<MarketTokenModal
 				useNFTModal
 				activeToken={activeToken}
@@ -226,6 +316,9 @@ const TokenSingle = ({ initialData, displayType = 'large', volume, showRaritySco
 									royalty: token.royalty,
 									attributes: token.metadata.attributes,
 									mime_type: token.metadata.mime_type,
+									is_auction: token?.is_auction,
+									started_at: token?.started_at,
+									ended_at: token?.ended_at,
 								}}
 							/>
 						</div>
@@ -233,14 +326,56 @@ const TokenSingle = ({ initialData, displayType = 'large', volume, showRaritySco
 				</Link>
 				<div className={`px-1 relative ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
 					<div className="block">
-						<p className="text-gray-400 text-xs">{localeLn('OnSale')}</p>
-						<div className={`text-gray-100 ${displayType === 'large' ? `text-2xl` : `text-lg`}`}>
-							{price ? (
+						<p className="text-gray-400 text-xs">{typeSale()}</p>
+						{token?.is_auction && !isEndedTime && (
+							<p className="text-gray-100 text-[9px] font-bold">{checkBidder()}</p>
+						)}
+						<div
+							className={`text-gray-100 ${
+								(displayType === 'large' && !token?.is_auction) || isEndedTime
+									? `text-2xl`
+									: displayType !== 'small' && token?.is_auction && !isEndedTime
+									? 'text-lg -mt-.5 -mb-2'
+									: displayType === 'small' && token?.is_auction && !isEndedTime
+									? `text-base`
+									: 'text-lg'
+							}`}
+						>
+							{price || (token?.is_auction && !isEndedTime) ? (
 								<div className="flex items-baseline space-x-1">
-									<div className="truncate">{prettyBalance(price, 24, 2)} Ⓝ</div>
-									{store.nearUsdPrice !== 0 && (
-										<div className="text-xs text-gray-400 truncate">
-											~ ${prettyBalance(JSBI.BigInt(price) * store.nearUsdPrice, 24, 4)}
+									<div className="truncate">
+										{price === '0' && !token?.is_auction ? (
+											localeLn('Free')
+										) : price && token?.has_price && !isEndedTime ? (
+											`${prettyBalance(
+												token?.is_auction && !isEndedTime && token?.bidder_list?.length !== 0
+													? token?.amount || price
+													: price,
+												24,
+												4
+											)} Ⓝ`
+										) : (
+											<div className="line-through text-red-600">
+												<span className="text-gray-100">{localeLn('SALE')}</span>
+											</div>
+										)}
+									</div>
+									{price && !isEndedTime && (
+										<div
+											className={`${
+												token?.is_auction ? 'text-[9px]' : 'text-xs'
+											} text-gray-400 truncate`}
+										>
+											~ $
+											{prettyBalance(
+												JSBI.BigInt(
+													token?.is_auction && token?.bidder_list?.length !== 0
+														? isCurrentBid('amount') || price
+														: price
+												) * store.nearUsdPrice,
+												24,
+												2
+											)}
 										</div>
 									)}
 								</div>
@@ -304,14 +439,46 @@ const TokenSingle = ({ initialData, displayType = 'large', volume, showRaritySco
 						</div>
 					)}
 					<div className="flex justify-between md:items-baseline">
-						<p
-							className={`font-bold text-white cursor-pointer hover:opacity-80 ${
-								displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
-							} mb-1 md:mb-0`}
-							onClick={() => actionButtonClick(token)}
-						>
-							{actionButtonText(token)}
-						</p>
+						{!token?.is_auction ||
+						(currentUser !== token?.owner_id && isCurrentBid('bidder') !== currentUser) ? (
+							<p
+								className={`font-bold text-white ${
+									isEndedTime && 'text-opacity-40'
+								} cursor-pointer hover:opacity-80 ${
+									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+								} mb-1 md:mb-0`}
+								onClick={() =>
+									isEndedTime ? _showInfoUpdatingAuction() : actionButtonClick(token)
+								}
+							>
+								{actionButtonText(token)}
+							</p>
+						) : isCurrentBid('bidder') === currentUser ? (
+							<p
+								className={`font-bold text-white text-opacity-40 ${
+									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+								} mb-1 md:mb-0`}
+							>
+								{`You're currently bid`}
+							</p>
+						) : !isEndedTime ? (
+							<p
+								className={`font-bold text-white text-opacity-40 ${
+									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+								} mb-1 md:mb-0`}
+							>
+								Auction on going
+							</p>
+						) : (
+							<p
+								className={`font-bold text-white text-opacity-40 hover:text-opacity-60 cursor-pointer ${
+									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+								} mb-1 md:mb-0`}
+								onClick={_showInfoUpdatingAuction}
+							>
+								Auction Ends
+							</p>
+						)}
 						<Link href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}>
 							<a
 								onClick={(e) => {

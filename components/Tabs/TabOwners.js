@@ -8,13 +8,13 @@ import useStore from 'lib/store'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { parseImgUrl, prettyTruncate } from 'utils/common'
+import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import useToken from 'hooks/useToken'
 
 const FETCH_TOKENS_LIMIT = 100
 
-const TabOwners = ({ localToken }) => {
+const TabOwners = ({ localToken, isAuctionEnds }) => {
 	const [tokens, setTokens] = useState([])
 	const [isFetching, setIsFetching] = useState(false)
 	const [activeToken, setActiveToken] = useState(null)
@@ -129,6 +129,7 @@ const TabOwners = ({ localToken }) => {
 							onUpdateListing={(token) => {
 								onUpdateListing(token)
 							}}
+							isAuctionEnds={isAuctionEnds}
 						/>
 					))}
 				</>
@@ -178,6 +179,70 @@ const Owner = ({ initial = {}, onBuy, onUpdateListing }) => {
 		}
 	}
 
+	const isCurrentBid = (type) => {
+		let list = []
+		token?.bidder_list?.map((item) => {
+			if (type === 'bidder') list.push(item.bidder)
+			else if (type === 'time') list.push(item.issued_at)
+			else if (type === 'amount') list.push(item.amount)
+		})
+		const currentBid = list.reverse()
+
+		return currentBid[0]
+	}
+
+	const checkStatuTransaction = () => {
+		if (token?.is_auction) {
+			return (
+				<p className="text-white">
+					{localeLn('OnAuction')}{' '}
+					{prettyBalance(
+						token?.is_auction && token?.bidder_list && token?.bidder_list.length !== 0
+							? isCurrentBid('amount') || token.price
+							: token.price,
+						24,
+						2
+					)}{' '}
+					Ⓝ
+				</p>
+			)
+		} else if (token.price) {
+			return (
+				<p className="text-white">
+					{localeLn('OnSale')} {formatNearAmount(token.price)} Ⓝ
+				</p>
+			)
+		} else if (token.is_staked) {
+			return <p className="text-white">{localeLn('Staked')}</p>
+		} else {
+			return <p className="text-white">{localeLn('NotForSale')}</p>
+		}
+	}
+
+	const checkTypeTransaction = () => {
+		if (token.owner_id === currentUser) {
+			if (!token.is_staked && !token?.is_auction) {
+				return (
+					<div className="w-24">
+						<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>
+							{localeLn('Update')}
+						</Button>
+					</div>
+				)
+			}
+		} else if (token.owner_id !== currentUser) {
+			if (token.price && !token.is_auction) {
+				return (
+					<div className="w-24">
+						<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
+							{localeLn('Buy')}
+						</Button>
+					</div>
+				)
+			}
+		}
+	}
+
 	return (
 		<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 			<div className="flex items-center justify-between">
@@ -215,34 +280,8 @@ const Owner = ({ initial = {}, onBuy, onUpdateListing }) => {
 			</div>
 			<div className="mt-1">
 				<div className="flex items-center justify-between">
-					{token.price ? (
-						<p className="text-white">
-							{localeLn('OnSale')} {formatNearAmount(token.price)} Ⓝ
-						</p>
-					) : token.is_staked ? (
-						<p className="text-white">{localeLn('Staked')}</p>
-					) : (
-						<p className="text-white">{localeLn('NotForSale')}</p>
-					)}
-					{currentUser && (
-						<>
-							{token.owner_id === currentUser
-								? !token.is_staked && (
-										<div className="w-24">
-											<Button onClick={() => onUpdateListing(token)} size="sm" isFullWidth>
-												{localeLn('Update')}
-											</Button>
-										</div>
-								  )
-								: token.price && (
-										<div className="w-24">
-											<Button onClick={() => onBuy(token)} size="sm" isFullWidth>
-												{localeLn('Buy')}
-											</Button>
-										</div>
-								  )}
-						</>
-					)}
+					{checkStatuTransaction()}
+					{currentUser && checkTypeTransaction()}
 				</div>
 			</div>
 		</div>

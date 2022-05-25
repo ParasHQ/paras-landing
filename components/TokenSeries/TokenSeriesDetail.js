@@ -35,7 +35,7 @@ import { Canvas } from '@react-three/fiber'
 import { Model1 } from 'components/Model3D/ThreeDModel'
 import FileType from 'file-type/browser'
 
-const TokenSeriesDetail = ({ token, className }) => {
+const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
 	const currentUser = useStore((state) => state.currentUser)
@@ -430,7 +430,9 @@ const TokenSeriesDetail = ({ token, className }) => {
 								{tabDetail('publication')}
 							</div>
 							{activeTab === 'info' && <TabInfo localToken={token} />}
-							{activeTab === 'owners' && <TabOwners localToken={token} />}
+							{activeTab === 'owners' && (
+								<TabOwners localToken={token} isAuctionEnds={isAuctionEnds} />
+							)}
 							{activeTab === 'offers' && <TabOffers localToken={token} />}
 							{activeTab === 'history' && <TabHistory localToken={token} />}
 							{activeTab === 'publication' && <TabPublication localToken={token} />}

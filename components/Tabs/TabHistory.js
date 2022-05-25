@@ -2,7 +2,7 @@ import cachios from 'cachios'
 import LinkToProfile from 'components/Common/LinkToProfile'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
-import { parseImgUrl, timeAgo } from 'utils/common'
+import { parseImgUrl, prettyBalance, timeAgo } from 'utils/common'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useIntl } from 'hooks/useIntl'
 import Media from 'components/Common/Media'
@@ -118,6 +118,39 @@ const Activity = ({ activity }) => {
 	}
 
 	const TextActivity = ({ type, msg }) => {
+		if (type === 'add_market_data' && msg.params.is_auction) {
+			return (
+				<p>
+					<LinkToProfile accountId={activity.msg.params.owner_id} />
+					<span>
+						{' '}
+						{localeLn('put on auction for')} {prettyBalance(activity.msg.params.price, 24, 2)} Ⓝ
+					</span>
+				</p>
+			)
+		}
+
+		if (type === 'add_bid') {
+			return (
+				<p>
+					<LinkToProfile accountId={activity.msg.params.bidder_id} />
+					<span>
+						{' '}
+						{localeLn('add bid for')} {formatNearAmount(activity.msg.params.amount)} Ⓝ
+					</span>
+				</p>
+			)
+		}
+
+		if (type === 'cancel_bid') {
+			return (
+				<p>
+					<LinkToProfile accountId={activity.msg.params.bidder_id} />
+					<span> {localeLn('cancel bid from auction')}</span>
+				</p>
+			)
+		}
+
 		if (type === 'add_market_data' || type === 'update_market_data') {
 			return (
 				<p>
