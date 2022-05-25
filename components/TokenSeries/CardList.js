@@ -229,9 +229,9 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 			return localeLn('UpdateListing')
 		}
 
-		return (price && !token.token?.is_auction) || !isEndedTime
+		return price && !token.token?.is_auction && !isEndedTime
 			? 'Buy Now'
-			: token.token?.is_auction && !token.token?.owner_id && !isEndedTime
+			: token.token?.is_auction && !isEndedTime
 			? 'Place a Bid'
 			: isEndedTime
 			? 'Auction Ends'
