@@ -1,17 +1,15 @@
+import useProfileData from 'hooks/useProfileData'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 import ReactTooltip from 'react-tooltip'
-import { getProfiles, prettyTruncate } from 'utils/common'
+import { prettyTruncate } from 'utils/common'
 
 const ArtistVerified = ({ token, collection }) => {
-	const [artistData, setArtistData] = useState(null)
 	const [showTooltip, setShowTooltip] = useState(false)
+	const artistData = useProfileData(token?.metadata.creator_id)
 
 	useEffect(() => {
-		if (token?.metadata.creator_id) {
-			getProfiles(token?.metadata.creator_id, setArtistData)
-		}
 		setShowTooltip(true)
 	}, [token])
 

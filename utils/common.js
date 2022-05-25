@@ -292,12 +292,3 @@ export const getRandomInt = (min, max) => {
 	max = Math.floor(max)
 	return Math.floor(Math.random() * (max - min) + min)
 }
-
-export const getProfiles = async (accountId, setData) => {
-	const res = await axios(`${process.env.V2_API_URL}/profiles`, {
-		params: {
-			accountId: accountId,
-		},
-	})
-	setData(res.data.data.results[0])
-}

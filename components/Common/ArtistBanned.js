@@ -1,18 +1,13 @@
-import { useEffect, useState } from 'react'
-import cachios from 'cachios'
+import { useEffect } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import { flagColor, flagText } from 'constants/flag'
-import { getProfiles } from 'utils/common'
+import useProfileData from 'hooks/useProfileData'
 
 const ArtistBanned = ({ creatorId, className }) => {
-	const [artistData, setArtistData] = useState(null)
 	const { localeLn } = useIntl()
+	const artistData = useProfileData(creatorId)
 
-	useEffect(() => {
-		if (creatorId) {
-			getProfiles(creatorId, setArtistData)
-		}
-	}, [creatorId])
+	useEffect(() => {}, [creatorId])
 
 	return (
 		<>

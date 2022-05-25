@@ -1,13 +1,14 @@
 import { useEffect, useState, useRef } from 'react'
 import cachios from 'cachios'
 import Link from 'next/link'
-import { getProfiles, parseImgUrl } from 'utils/common'
+import { parseImgUrl } from 'utils/common'
 import LinkToProfile from 'components/LinkToProfile'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import HomeTopUsersLoader from 'components/Home/Loaders/TopUsers'
 import { useIntl } from 'hooks/useIntl'
 import { trackTopBuyer, trackTopCollection, trackTopSeller } from 'lib/ga'
 import router from 'next/router'
+import useProfileData from 'hooks/useProfileData'
 
 const TopCollection = ({ collection, idx }) => {
 	const [colDetail, setColDetail] = useState({})
@@ -65,11 +66,7 @@ const TopCollection = ({ collection, idx }) => {
 }
 
 const TopUser = ({ user, idx, topUserType }) => {
-	const [profile, setProfile] = useState({})
-
-	useEffect(() => {
-		getProfiles(user.account_id, setProfile)
-	}, [])
+	const profile = useProfileData(user.account_id)
 
 	const onTopUser = (type) => {
 		if (type === 'top-buyers') {

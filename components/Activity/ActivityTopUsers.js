@@ -1,9 +1,9 @@
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { getProfiles, parseImgUrl, prettyBalance } from 'utils/common'
+import { parseImgUrl, prettyBalance } from 'utils/common'
 import LinkToProfile from '../LinkToProfile'
 import { useIntl } from 'hooks/useIntl'
 import TopUserLoader from './TopUserLoader'
+import useProfileData from 'hooks/useProfileData'
 
 const TopUsers = ({ data = [], className, userType = 'buyer', linkTo, isFetching }) => {
 	const { localeLn } = useIntl()
@@ -45,11 +45,7 @@ const TopUsers = ({ data = [], className, userType = 'buyer', linkTo, isFetching
 }
 
 const TopUser = ({ user, idx }) => {
-	const [profile, setProfile] = useState({})
-
-	useEffect(() => {
-		getProfiles(user.account_id, setProfile)
-	}, [])
+	const profile = useProfileData(user.account_id)
 
 	return (
 		<div className="my-3 flex items-center">
