@@ -1,4 +1,4 @@
-import axios from 'axios'
+import cachios from 'cachios'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { parseImgUrl, prettyBalance } from 'utils/common'
@@ -49,10 +49,11 @@ const TopUser = ({ user, idx }) => {
 	const [profile, setProfile] = useState({})
 
 	useEffect(async () => {
-		const res = await axios(`${process.env.V2_API_URL}/profiles`, {
+		const res = await cachios(`${process.env.V2_API_URL}/profiles`, {
 			params: {
 				accountId: user.account_id,
 			},
+			ttl: 60 * 15,
 		})
 		setProfile(res.data.data.results[0])
 	}, [])
