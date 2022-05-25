@@ -46,6 +46,7 @@ const MarketPage = ({ serverQuery }) => {
 		router.query.sort,
 		router.query.pmin,
 		router.query.pmax,
+		router.query.card_trade_type,
 		router.query.min_copies,
 		router.query.max_copies,
 		router.query.is_verified,
@@ -201,6 +202,7 @@ const tokensParams = (query) => {
 		lookup_token: true,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
+		...(query.card_trade_type === 'notForSale' && { has_price: false }),
 		...(query._id_next && { _id_next: query._id_next }),
 		...(query.lowest_price_next &&
 			parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
