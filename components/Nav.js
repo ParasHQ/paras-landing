@@ -200,7 +200,7 @@ const Nav = () => {
 					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
 				>
 					<div className="px-10 py-1 md:p-0 ">
-						{`Win a total of 2,000 USD by submitting your art `}
+						{`Win a total of 2,000 USD by submitting your oceanvironment art `}
 						<a
 							href="https://paras.id/market/art-competition"
 							target="_blank"
