@@ -8,7 +8,7 @@ COPY package*.json ./
 
 COPY .env.$BUILD_ENV .env
 
-RUN yarn install
+RUN ["yarn", "install"]
 
 COPY . .
 
