@@ -189,11 +189,21 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	useEffect(() => {
-		fetchData(true)
+		if (currentUser) {
+			fetchData(true)
+		}
+	}, [currentUser])
+
+	useEffect(() => {
+		if (router.isReady) {
+			fetchData(true)
+		}
 	}, [router.query.collection_id])
 
 	useEffect(() => {
-		updateFilter(router.query)
+		if (router.isReady) {
+			updateFilter(router.query)
+		}
 	}, [
 		router.query.sort,
 		router.query.pmin,
@@ -207,6 +217,10 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	])
 
 	useEffect(() => {
+		if (!router.isReady) {
+			return
+		}
+
 		if (router.query.tab === 'activity') {
 			fetchCollectionActivity(true)
 			fetchCollectionDailyVolume()
@@ -253,6 +267,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			...params,
 			collection_id: collectionId,
 			exclude_total_burn: true,
+			lookup_likes: true,
+			liked_by: currentUser,
 			__limit: LIMIT,
 			__sort: parsedSortQuery || '',
 			...(isItemActiveTab && { lookup_token: true }),
@@ -1012,6 +1028,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							profileCollection={collection.media}
 							type="collection"
 							displayType={display}
+							showLike={true}
 						/>
 					)}
 				</div>

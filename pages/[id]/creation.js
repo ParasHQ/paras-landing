@@ -12,6 +12,7 @@ import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import FilterDisplay from 'components/Filter/FilterDisplay'
+import useStore from 'lib/store'
 
 const LIMIT = 12
 
@@ -20,6 +21,7 @@ const Creation = ({ userProfile, accountId }) => {
 
 	const scrollCreation = `${router.query.id}::creation`
 
+	const currentUser = useStore((state) => state.currentUser)
 	const [tokens, setTokens] = useState([])
 	const [hasMore, setHasMore] = useState(true)
 	const [idNext, setIdNext] = useState(null)
@@ -32,8 +34,16 @@ const Creation = ({ userProfile, accountId }) => {
 	)
 
 	useEffect(async () => {
-		await fetchCreatorTokens()
+		if (router.isReady) {
+			await fetchCreatorTokens()
+		}
 	}, [router.query.id])
+
+	useEffect(async () => {
+		if (currentUser) {
+			await fetchCreatorTokens()
+		}
+	}, [currentUser])
 
 	const fetchCreatorTokens = async () => {
 		if (!hasMore || isFetching) {
@@ -70,7 +80,9 @@ const Creation = ({ userProfile, accountId }) => {
 	}
 
 	useEffect(() => {
-		updateFilter(router.query)
+		if (router.isReady) {
+			updateFilter(router.query)
+		}
 	}, [
 		router.query.sort,
 		router.query.pmin,
@@ -88,6 +100,8 @@ const Creation = ({ userProfile, accountId }) => {
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
 			lookup_token: true,
+			lookup_likes: true,
+			liked_by: currentUser,
 			...(query.card_trade_type === 'notForSale' && { has_price: false }),
 			...(query.card_trade_type === 'onAuction' && { is_auction: true }),
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
@@ -185,6 +199,7 @@ const Creation = ({ userProfile, accountId }) => {
 							fetchData={fetchCreatorTokens}
 							hasMore={hasMore}
 							displayType={display}
+							showLike={true}
 						/>
 					)}
 				</div>

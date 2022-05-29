@@ -25,6 +25,7 @@ export default function SearchPage({ searchQuery }) {
 	const { localeLn } = useIntl()
 	const store = useStore()
 	const router = useRouter()
+	const currentUser = useStore((state) => state.currentUser)
 
 	const [tokens, setTokens] = useState([])
 	const [idNext, setIdNext] = useState(null)
@@ -58,6 +59,8 @@ export default function SearchPage({ searchQuery }) {
 		window.scrollTo(0, 0)
 
 		/** Tokens */
+		query.lookup_likes = true
+		query.liked_by = currentUser
 		const params = tokensParams(query)
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
@@ -137,6 +140,7 @@ export default function SearchPage({ searchQuery }) {
 		query.min_copies,
 		query.max_copies,
 		query.is_verified,
+		currentUser,
 	])
 
 	useEffect(() => {
@@ -364,6 +368,7 @@ export default function SearchPage({ searchQuery }) {
 									tokens={tokens}
 									fetchData={_fetchData}
 									hasMore={hasMore}
+									showLike={true}
 								/>
 							</div>
 						))}
@@ -504,6 +509,8 @@ const tokensParams = (query) => {
 		_id_next: query._id_next,
 		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
 		lookup_token: true,
+		lookup_likes: query.lookup_likes,
+		liked_by: query.liked_by,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 		...(query.lowest_price_next &&

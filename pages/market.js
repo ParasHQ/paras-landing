@@ -38,6 +38,7 @@ function MarketPage({ serverQuery }) {
 			store.setMarketScrollPersist('market', 0)
 		}
 	}, [])
+	const currentUser = useStore((store) => store.currentUser)
 
 	useEffect(() => {
 		updateFilter(router.query)
@@ -53,7 +54,10 @@ function MarketPage({ serverQuery }) {
 
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
-		const params = tokensParams(query || serverQuery)
+		const params = tokensParams({
+			...(query || serverQuery),
+			liked_by: currentUser,
+		})
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
 		})
@@ -86,6 +90,7 @@ function MarketPage({ serverQuery }) {
 			_id_next: idNext,
 			lowest_price_next: lowestPriceNext,
 			updated_at_next: updatedAtNext,
+			liked_by: currentUser,
 		})
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
@@ -181,6 +186,7 @@ function MarketPage({ serverQuery }) {
 							fetchData={_fetchData}
 							hasMore={hasMore}
 							displayType={display}
+							showLike={true}
 						/>
 					)}
 				</div>
@@ -201,6 +207,8 @@ const tokensParams = (query) => {
 		lookup_token: true,
 		...(query.card_trade_type === 'notForSale' && { has_price: false }),
 		...(query.card_trade_type === 'onAuction' && { is_auction: true }),
+		lookup_likes: true,
+		liked_by: query.liked_by,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 		...(query._id_next && { _id_next: query._id_next }),

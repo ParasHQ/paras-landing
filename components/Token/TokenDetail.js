@@ -9,7 +9,7 @@ import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
-import { capitalize, parseImgUrl, prettyBalance } from 'utils/common'
+import { capitalize, parseImgUrl, prettyBalance, abbrNum } from 'utils/common'
 import TokenMoreModal from '../Modal/TokenMoreModal'
 import TokenShareModal from '../Modal/TokenShareModal'
 import TokenUpdatePriceModal from '../Modal/TokenUpdatePriceModal'
@@ -38,6 +38,7 @@ import { useToast } from 'hooks/useToast'
 import CancelAuctionModal from 'components/Modal/CancelAuctionModal'
 import CancelBidModal from 'components/Modal/CancelBidModal'
 import { mutate } from 'swr'
+import IconLove from 'components/Icons/component/IconLove'
 
 const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -382,6 +383,23 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										className="cursor-pointer mb-1"
 										onClick={() => setShowModal('more')}
 									/>
+									<div className="w-full flex flex-col items-center justify-center">
+										<IconLove
+											size={17}
+											color={token.likes ? 'red' : 'transparent'}
+											stroke={token.likes ? 'none' : 'white'}
+										/>
+										<p className="text-white text-center text-sm">
+											{abbrNum(
+												token.token_series_lookup?.total_likes
+													? token.token_series_lookup?.total_likes
+													: token.likes
+													? token.likes
+													: 0,
+												1
+											)}
+										</p>
+									</div>
 									{token.is_staked && (
 										<Tooltip
 											id="text-staked"

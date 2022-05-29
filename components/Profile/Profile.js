@@ -382,6 +382,11 @@ const TabItems = [
 		activeTab: 'creation',
 	},
 	{
+		title: 'Liked',
+		linkUrl: 'liked',
+		activeTab: 'liked',
+	},
+	{
 		title: 'Collections',
 		linkUrl: 'collections',
 		activeTab: 'collections',
