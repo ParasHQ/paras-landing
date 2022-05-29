@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Card from 'components/Card/Card'
-import { parseImgUrl, prettyBalance } from 'utils/common'
+import { parseImgUrl, prettyBalance, abbrNum } from 'utils/common'
 import Link from 'next/link'
 import useStore from 'lib/store'
 import { useRouter } from 'next/router'
@@ -15,6 +15,10 @@ import CardListLoaderSmall from 'components/Card/CardListLoaderSmall'
 import useToken from 'hooks/useToken'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useToast } from 'hooks/useToast'
+import axios from 'axios'
+import WalletHelper from 'lib/WalletHelper'
+import IconLove from 'components/Icons/component/IconLove'
+import LoginModal from 'components/Modal/LoginModal'
 
 const TokenList = ({
 	name = 'default',
@@ -24,11 +28,13 @@ const TokenList = ({
 	displayType = 'large',
 	volume,
 	showRarityScore = false,
+	showLike = false,
 }) => {
 	const store = useStore()
 	const containerRef = useRef()
 	const animValuesRef = useRef(store.marketScrollPersist[name])
 	const { localeLn } = useIntl()
+	const [tokenIsLiked, setTokenIsLiked] = useState({})
 
 	useEffect(() => {
 		animValuesRef.current = store.marketScrollPersist[name]
@@ -103,6 +109,9 @@ const TokenList = ({
 							displayType={displayType}
 							volume={token.volume || volume?.[idx]}
 							showRarityScore={showRarityScore}
+							showLike={showLike}
+							tokenIsLiked={tokenIsLiked}
+							setTokenIsLiked={setTokenIsLiked}
 						/>
 					))}
 				</div>
@@ -113,19 +122,35 @@ const TokenList = ({
 
 export default TokenList
 
-const TokenSingle = ({ initialData, displayType = 'large', volume, showRarityScore }) => {
+const TokenSingle = ({
+	initialData,
+	displayType = 'large',
+	volume,
+	showRarityScore,
+	showLike,
+	tokenIsLiked,
+	setTokenIsLiked,
+}) => {
+	const currentUser = useStore((state) => state.currentUser)
 	const { token, mutate } = useToken({
 		key: `${initialData.contract_id}::${initialData.token_series_id}/${initialData.token_id}`,
 		initialData: initialData,
+		params: {
+			lookup_likes: true,
+			liked_by: currentUser,
+		},
 	})
 
 	const store = useStore()
 	const router = useRouter()
 	const [activeToken, setActiveToken] = useState(null)
 	const [modalType, setModalType] = useState(null)
-	const currentUser = useStore((state) => state.currentUser)
+	const [isLiked, setIsLiked] = useState(false)
+	const [defaultLikes, setDefaultLikes] = useState(0)
+	const [showLogin, setShowLogin] = useState(false)
 	const { localeLn } = useIntl()
 	const toast = useToast()
+	const contractIdTokenSeriesId = `${token.contract_id}::${token.token_series_id}`
 
 	const price =
 		token.token?.amount && token.token?.bidder_list?.length !== 0
@@ -150,6 +175,36 @@ const TokenSingle = ({ initialData, displayType = 'large', volume, showRaritySco
 	useEffect(() => {
 		countDownTimeAuction()
 	}, [isEndedTime])
+
+	useEffect(() => {
+		asyncMutate()
+	}, [currentUser])
+
+	useEffect(() => {
+		if (token.token_series_lookup?.total_likes) {
+			if (token.likes) {
+				setIsLiked(true)
+			}
+
+			setDefaultLikes(token.token_series_lookup?.total_likes)
+		}
+	}, [token])
+
+	useEffect(() => {
+		if (tokenIsLiked[contractIdTokenSeriesId]?.liked === true) {
+			setIsLiked(true)
+			setDefaultLikes(tokenIsLiked[contractIdTokenSeriesId]?.total_liked ?? defaultLikes + 1)
+		} else if (tokenIsLiked[contractIdTokenSeriesId]?.liked === false) {
+			setIsLiked(false)
+			setDefaultLikes(tokenIsLiked[contractIdTokenSeriesId]?.total_liked ?? defaultLikes - 1)
+		} else {
+			return
+		}
+	}, [tokenIsLiked])
+
+	const asyncMutate = async () => {
+		await mutate()
+	}
 
 	const convertTimeOfAuction = (date) => {
 		const sliceNanoSec = String(date).slice(0, 13)
@@ -269,6 +324,76 @@ const TokenSingle = ({ initialData, displayType = 'large', volume, showRaritySco
 		return list[list.length - 1]
 	}
 
+	const likeToken = async (contract_id, token_series_id) => {
+		if (!currentUser) {
+			setShowLogin(true)
+			return
+		}
+
+		const contractIdTokenSeriesIdState = {
+			liked: true,
+			total_liked: defaultLikes + 1,
+		}
+		const tokenIsLikedState = {
+			...tokenIsLiked,
+			[contractIdTokenSeriesId]: contractIdTokenSeriesIdState,
+		}
+		setTokenIsLiked(tokenIsLikedState)
+		const params = {
+			account_id: currentUser,
+		}
+
+		const res = await axios.put(
+			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
+			params,
+			{
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+			}
+		)
+
+		if (res.status !== 200) {
+			setIsLiked(false)
+			setDefaultLikes(defaultLikes - 1)
+		}
+	}
+
+	const unlikeToken = async (contract_id, token_series_id) => {
+		if (!currentUser) {
+			setShowLogin(true)
+			return
+		}
+
+		const contractIdTokenSeriesIdState = {
+			liked: false,
+			total_liked: defaultLikes - 1,
+		}
+		const likedState = {
+			...tokenIsLiked,
+			[contractIdTokenSeriesId]: contractIdTokenSeriesIdState,
+		}
+		setTokenIsLiked(likedState)
+		const params = {
+			account_id: currentUser,
+		}
+
+		const res = await axios.put(
+			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
+			params,
+			{
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+			}
+		)
+
+		if (res.status !== 200) {
+			setIsLiked(true)
+			setDefaultLikes(defaultLikes + 1)
+		}
+	}
+
 	return (
 		<>
 			<TokenDetailModal tokens={[token]} isAuctionEnds={isEndedTime} />
@@ -377,33 +502,37 @@ const TokenSingle = ({ initialData, displayType = 'large', volume, showRaritySco
 							)}
 						</div>
 					</div>
-					{showRarityScore && !!token.metadata.score && (
-						<div
-							className={`${
-								displayType === 'large' ? `block` : `flex gap-1`
-							} text-right absolute top-0 right-0`}
-						>
-							<p
-								className={`${
-									displayType === 'large' ? `block` : `hidden`
-								} text-white opacity-80 md:text-sm`}
-								style={{ fontSize: 11 }}
-							>
-								Rarity Score
-							</p>
-							<p
-								className={`${
-									displayType === 'large' ? `hidden` : `block`
-								} text-white opacity-80 md:text-sm`}
-								style={{ fontSize: 11 }}
-							>
-								Rarity Score
-							</p>
+					<div
+						className={`${
+							displayType === 'large' ? `block` : `flex gap-1`
+						} text-right absolute top-0 right-0`}
+					>
+						{showRarityScore && !!token.metadata.score && (
 							<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
-								{token.metadata?.score?.toFixed(2)}
+								Rarity Score {token.metadata?.score?.toFixed(2)}
 							</p>
-						</div>
-					)}
+						)}
+						{showLike && (
+							<div className="inline-flex items-center">
+								<div
+									className="cursor-pointer"
+									onClick={() => {
+										isLiked
+											? unlikeToken(token.contract_id, token.token_series_id)
+											: likeToken(token.contract_id, token.token_series_id)
+									}}
+								>
+									<IconLove
+										size={17}
+										color={isLiked ? 'red' : 'transparent'}
+										stroke={isLiked ? 'none' : 'white'}
+									/>
+								</div>
+								<p className="text-white ml-2">{abbrNum(defaultLikes ?? 0, 1)}</p>
+							</div>
+						)}
+					</div>
+
 					{volume && (
 						<div
 							className={`${
@@ -486,6 +615,7 @@ const TokenSingle = ({ initialData, displayType = 'large', volume, showRaritySco
 					</div>
 				</div>
 			</div>
+			<LoginModal onClose={() => setShowLogin(false)} show={showLogin} />
 		</>
 	)
 }

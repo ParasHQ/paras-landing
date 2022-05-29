@@ -98,6 +98,8 @@ const Collection = ({ userProfile, accountId }) => {
 			collection_id: query.collections,
 			exclude_total_burn: true,
 			owner_id: accountId,
+			lookup_likes: true,
+			liked_by: accountId,
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
 			...(query.card_trade_type === 'notForSale' && { has_price: false }),
@@ -206,6 +208,7 @@ const Collection = ({ userProfile, accountId }) => {
 							fetchData={fetchOwnerTokens}
 							hasMore={hasMore}
 							displayType={display}
+							showLike={true}
 						/>
 					)}
 				</div>
