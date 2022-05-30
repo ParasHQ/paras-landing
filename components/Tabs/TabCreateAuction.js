@@ -94,9 +94,9 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 
 			const pickedExpirationDate = days
 			const pickedDate = new Date(pickedExpirationDate)
-			const getDateFromPickedDate = pickedDate.getDate()
 
-			currentUTC.setUTCDate(getDateFromPickedDate)
+			currentUTC.setUTCDate(pickedDate.getDate())
+			currentUTC.setUTCMonth(pickedDate.getMonth())
 			currentUTC.setUTCHours(hours)
 			currentUTC.setUTCMinutes(minutes)
 
@@ -202,6 +202,8 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 		const now = new Date()
 		const currentUTC = new Date(now.toUTCString())
 		const currentDate = `${currentUTC.getTime()}000000`
+		console.log('expiration date', expirationDateAuction)
+		console.log('current date', currentDate)
 		const result = expirationDateAuction > currentDate
 		setIsGreaterTime(result)
 	}
