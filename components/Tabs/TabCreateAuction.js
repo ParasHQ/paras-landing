@@ -94,9 +94,9 @@ const TabCreateAuction = ({ data, onClose }) => {
 
 			const pickedExpirationDate = days
 			const pickedDate = new Date(pickedExpirationDate)
-			const getDateFromPickedDate = pickedDate.getDate()
 
-			currentUTC.setUTCDate(getDateFromPickedDate)
+			currentUTC.setUTCDate(pickedDate.getDate())
+			currentUTC.setUTCMonth(pickedDate.getMonth())
 			currentUTC.setUTCHours(hours)
 			currentUTC.setUTCMinutes(minutes)
 
