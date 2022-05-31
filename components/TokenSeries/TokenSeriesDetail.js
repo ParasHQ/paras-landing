@@ -61,7 +61,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 
 			setDefaultLikes(token?.total_likes)
 		}
-	}, [token, isLiked, defaultLikes])
+	}, [token])
 
 	const router = useRouter()
 

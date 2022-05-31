@@ -39,17 +39,31 @@ import CancelAuctionModal from 'components/Modal/CancelAuctionModal'
 import CancelBidModal from 'components/Modal/CancelBidModal'
 import { mutate } from 'swr'
 import IconLove from 'components/Icons/component/IconLove'
+import axios from 'axios'
+import WalletHelper from 'lib/WalletHelper'
 
 const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState(null)
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
 	const [isEndedTime, setIsEndedTime] = useState(false)
+	const [isLiked, setIsLiked] = useState(false)
+	const [defaultLikes, setDefaultLikes] = useState(0)
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
 	const store = useStore()
 	const router = useRouter()
 	const toast = useToast()
+
+	useEffect(() => {
+		if (token?.token_series_lookup?.total_likes || token?.total_likes) {
+			if (token.likes) {
+				setIsLiked(true)
+			}
+
+			setDefaultLikes(token?.token_series_lookup.total_likes || token?.total_likes)
+		}
+	}, [token])
 
 	useEffect(() => {
 		setActiveTab('info')
@@ -247,6 +261,62 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 		}
 	}
 
+	const likeToken = async (contract_id, token_series_id) => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+
+		setIsLiked(true)
+		setDefaultLikes(defaultLikes + 1)
+		const params = {
+			account_id: currentUser,
+		}
+
+		const res = await axios.put(
+			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
+			params,
+			{
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+			}
+		)
+
+		if (res.status !== 200) {
+			setIsLiked(false)
+			setDefaultLikes(defaultLikes - 1)
+		}
+	}
+
+	const unlikeToken = async (contract_id, token_series_id) => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+
+		setIsLiked(false)
+		setDefaultLikes(defaultLikes - 1)
+		const params = {
+			account_id: currentUser,
+		}
+
+		const res = await axios.put(
+			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
+			params,
+			{
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+			}
+		)
+
+		if (res.status !== 200) {
+			setIsLiked(true)
+			setDefaultLikes(defaultLikes + 1)
+		}
+	}
+
 	return (
 		<div className={`m-auto rounded-lg overflow-hidden ${className}`}>
 			<div className="flex flex-col lg:flex-row h-90vh lg:h-80vh">
@@ -384,20 +454,22 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										onClick={() => setShowModal('more')}
 									/>
 									<div className="w-full flex flex-col items-center justify-center">
-										<IconLove
-											size={17}
-											color={token.likes ? 'red' : 'transparent'}
-											stroke={token.likes ? 'none' : 'white'}
-										/>
+										<div
+											className="cursor-pointer"
+											onClick={() => {
+												isLiked
+													? unlikeToken(token.contract_id, token.token_series_id)
+													: likeToken(token.contract_id, token.token_series_id)
+											}}
+										>
+											<IconLove
+												size={17}
+												color={isLiked ? 'red' : 'transparent'}
+												stroke={isLiked ? 'none' : 'white'}
+											/>
+										</div>
 										<p className="text-white text-center text-sm">
-											{abbrNum(
-												token.token_series_lookup?.total_likes
-													? token.token_series_lookup?.total_likes
-													: token.likes
-													? token.likes
-													: 0,
-												1
-											)}
+											{abbrNum(defaultLikes ?? 0, 1)}
 										</p>
 									</div>
 									{token.is_staked && (

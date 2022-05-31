@@ -336,6 +336,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 							tokens={categoryCardList[categoryId] || []}
 							fetchData={_fetchData}
 							hasMore={hasMoreCategoryCard[categoryId]}
+							showLike={true}
 						/>
 					)}
 				</div>

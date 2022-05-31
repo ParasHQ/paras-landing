@@ -927,6 +927,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							hasMore={hasMoreOwned}
 							displayType={display}
 							showRarityScore={true}
+							showLike={true}
 						/>
 					) : router.query.tab == 'tracker' ? (
 						<>
