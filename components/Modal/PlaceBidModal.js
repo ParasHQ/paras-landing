@@ -65,7 +65,7 @@ const PlaceBidModal = ({
 
 	useEffect(() => {
 		if (show) {
-			;(async () => {
+			const viewGetOffer = async () => {
 				try {
 					const params = {
 						nft_contract_id: data.contract_id,
@@ -84,7 +84,8 @@ const PlaceBidModal = ({
 				} catch (error) {
 					// if doesn't have offer
 				}
-			})()
+			}
+			viewGetOffer()
 		}
 	}, [show])
 

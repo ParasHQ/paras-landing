@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import { flagColor, flagText } from 'constants/flag'
 import useProfileData from 'hooks/useProfileData'
@@ -6,8 +5,6 @@ import useProfileData from 'hooks/useProfileData'
 const ArtistBanned = ({ creatorId, className }) => {
 	const { localeLn } = useIntl()
 	const artistData = useProfileData(creatorId)
-
-	useEffect(() => {}, [creatorId])
 
 	return (
 		<>

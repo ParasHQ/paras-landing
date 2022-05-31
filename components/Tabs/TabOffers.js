@@ -69,7 +69,7 @@ const Offer = ({
 
 	useEffect(() => {
 		if (!localToken.token_id && data.type === 'trade') {
-			;(async () => {
+			const checkIsEnabledForAccept = async () => {
 				const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
 					params: {
 						token_series_id: localToken.token_series_id,
@@ -81,7 +81,8 @@ const Offer = ({
 				resp.data.data.results.length === 0
 					? setIsEnableForAccept(false)
 					: setIsEnableForAccept(true)
-			})()
+			}
+			checkIsEnabledForAccept()
 		}
 	}, [])
 

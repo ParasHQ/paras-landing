@@ -14,14 +14,15 @@ const TopCollection = ({ collection, idx }) => {
 	const [colDetail, setColDetail] = useState({})
 
 	useEffect(() => {
-		;(async () => {
+		const fetchCollection = async () => {
 			const res = await cachios.get(`${process.env.V2_API_URL}/collections`, {
 				params: {
 					collection_id: collection.collection_id,
 				},
 			})
 			setColDetail(res.data.data.results[0])
-		})()
+		}
+		fetchCollection()
 	}, [])
 
 	const onTopColllection = (e) => {

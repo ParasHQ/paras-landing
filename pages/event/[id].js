@@ -27,10 +27,10 @@ export default function SearchPage({ collectionName }) {
 	const { query } = router
 
 	useEffect(() => {
-		setIsRefreshing(true)
-		window.scrollTo(0, 0)
-		let res
-		;(async () => {
+		const fetchTokens = async () => {
+			setIsRefreshing(true)
+			window.scrollTo(0, 0)
+			let res
 			res = await axios(`${process.env.API_URL}/tokens`, {
 				params: tokensParams(page, collectionName, query),
 			})
@@ -40,7 +40,8 @@ export default function SearchPage({ collectionName }) {
 			}
 			setTokens(res.data.data.results)
 			setIsRefreshing(false)
-		})()
+		}
+		fetchTokens()
 	}, [query.sort, query.pmin, query.pmax])
 
 	useEffect(() => {

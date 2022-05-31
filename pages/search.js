@@ -54,13 +54,12 @@ export default function SearchPage({ searchQuery }) {
 	const { query } = router
 
 	useEffect(() => {
-		setIsRefreshing(true)
-		window.scrollTo(0, 0)
-
-		/** Tokens */
-		const params = tokensParams(query)
-		let res
-		;(async () => {
+		const fetchingBulk = async () => {
+			setIsRefreshing(true)
+			window.scrollTo(0, 0)
+			/** Tokens */
+			const params = tokensParams(query)
+			let res
 			res = await axios(`${process.env.V2_API_URL}/token-series`, {
 				params: params,
 			})
@@ -77,9 +76,7 @@ export default function SearchPage({ searchQuery }) {
 				setHasMore(false)
 			}
 			setTokens(res.data.data.results)
-		})()
-		let resPub /** Publication */
-		;(async () => {
+			let resPub /** Publication */
 			resPub = await axios(`${process.env.V2_API_URL}/publications`, {
 				params: {
 					search: query.q,
@@ -95,9 +92,7 @@ export default function SearchPage({ searchQuery }) {
 				setPubHasMore(false)
 			}
 			setPublication(resPub.data.data.results)
-		})()
-		let resColl // Collection
-		;(async () => {
+			let resColl // Collection
 			resColl = await axios(`${process.env.V2_API_URL}/collections`, {
 				params: {
 					collection_search: query.q,
@@ -114,9 +109,7 @@ export default function SearchPage({ searchQuery }) {
 				setCollHasMore(false)
 			}
 			setCollections(resColl.data.data.results)
-		})()
-		let resPro // Profile
-		;(async () => {
+			let resPro // Profile
 			resPro = await axios.get(`${process.env.V2_API_URL}/profiles`, {
 				params: {
 					search: query.q,
@@ -131,8 +124,9 @@ export default function SearchPage({ searchQuery }) {
 				setProHasMore(false)
 			}
 			setProfiles(resPro.data.data.results)
-		})()
-		setIsRefreshing(false)
+			setIsRefreshing(false)
+		}
+		fetchingBulk()
 	}, [
 		query.q,
 		query.sort,

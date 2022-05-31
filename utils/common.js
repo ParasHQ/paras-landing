@@ -3,7 +3,6 @@ import Compressor from 'compressorjs'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import crypto from 'crypto'
-import axios from 'axios'
 
 TimeAgo.addLocale(en)
 export const timeAgo = new TimeAgo('en-US')

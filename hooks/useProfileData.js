@@ -6,7 +6,7 @@ function useProfileData(creatorId) {
 
 	useEffect(() => {
 		if (creatorId) {
-			;(async () => {
+			const fetchProfile = async () => {
 				const profileRes = await cachios.get(`${process.env.V2_API_URL}/profiles`, {
 					params: {
 						accountId: creatorId,
@@ -15,7 +15,8 @@ function useProfileData(creatorId) {
 				})
 				const userProfile = profileRes.data.data.results[0]
 				setProfileData(userProfile)
-			})()
+			}
+			fetchProfile()
 		}
 	}, [creatorId])
 

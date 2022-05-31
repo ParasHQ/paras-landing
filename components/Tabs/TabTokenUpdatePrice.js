@@ -59,7 +59,7 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 	}, [show, newPrice])
 
 	useEffect(() => {
-		;(async () => {
+		const checkIsAnyTradeOffer = async () => {
 			const resp = await axios.get(`${process.env.V2_API_URL}/offers`, {
 				params: {
 					buyer_id: currentUser,
@@ -74,7 +74,8 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 			} else {
 				setIsAnyTradeOffer(false)
 			}
-		})()
+		}
+		checkIsAnyTradeOffer()
 	}, [show])
 
 	useEffect(() => {
