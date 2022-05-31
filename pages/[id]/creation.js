@@ -103,6 +103,7 @@ const Creation = ({ userProfile, accountId }) => {
 			lookup_likes: true,
 			liked_by: currentUser,
 			...(query.card_trade_type === 'notForSale' && { has_price: false }),
+			...(query.card_trade_type === 'onAuction' && { is_auction: true }),
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),

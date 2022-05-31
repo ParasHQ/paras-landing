@@ -248,6 +248,7 @@ const FilterMarket = ({
 											{ id: 'all', label: 'All' },
 											{ id: 'forSale', label: 'Sale Only' },
 											{ id: 'notForSale', label: 'Not for Sale' },
+											{ id: 'onAuction', label: 'On Auction' },
 										]}
 										defaultValue={cardTradeType}
 										selectItem={setCardTradeType}

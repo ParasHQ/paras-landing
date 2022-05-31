@@ -24,6 +24,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import { GTM_ID, pageview } from 'lib/gtm'
 import SuccessTransactionModal from 'components/Modal/SuccessTransactionModal'
 import WalletHelper from 'lib/WalletHelper'
+import cachios from 'cachios'
 
 const MAX_ACTIVITY_DELAY = 5
 
@@ -243,8 +244,11 @@ function MyApp({ Component, pageProps }) {
 
 	const getNearUsdPrice = async () => {
 		try {
-			const nearUsdPrice = await axios.get(
-				'https://api.coingecko.com/api/v3/simple/price?ids=NEAR&vs_currencies=USD'
+			const nearUsdPrice = await cachios.get(
+				'https://api.coingecko.com/api/v3/simple/price?ids=NEAR&vs_currencies=USD',
+				{
+					ttl: 60 * 15,
+				}
 			)
 			store.setNearUsdPrice(nearUsdPrice.data.near.usd)
 		} catch (error) {
