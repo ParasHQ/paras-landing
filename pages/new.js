@@ -133,6 +133,7 @@ const NewPage = () => {
 	const [referenceHash, setReferenceHash] = useState(null)
 	const [fileType, setFileType] = useState(null)
 	const [attributeKey, setAttributeKey] = useState([])
+	const [attributeValue, setAttributeValue] = useState({})
 	const [txFee, setTxFee] = useState(null)
 
 	const watchRoyalties = watch(`royalties`)
@@ -292,6 +293,7 @@ const NewPage = () => {
 				})
 				const attributes = await res.data.data.results
 				const newAttribute = Object.keys(attributes)
+				setAttributeValue(attributes)
 				setAttributeKey(newAttribute)
 			}
 			getAttributeKeys()
@@ -1211,7 +1213,7 @@ const NewPage = () => {
 											{fields.map((attr, idx) => (
 												<div key={attr.id} className="flex space-x-2 items-start mb-2">
 													<InputTextAuto
-														ref={register({ required: true })}
+														control={control}
 														name={`attributes.${idx}.trait_type`}
 														className={`${
 															errors.attributes && errors.attributes[idx]?.trait_type && 'error'
@@ -1220,14 +1222,17 @@ const NewPage = () => {
 														placeholder="Type"
 														suggestionList={attributeKey}
 													/>
-													<InputText
-														ref={register({ required: true })}
+													<InputTextAuto
+														control={control}
 														name={`attributes.${idx}.value`}
 														className={`${
 															errors.attributes && errors.attributes[idx]?.value && 'error'
 														}`}
 														defaultValue={formInput.attributes?.[idx]?.value || ''}
 														placeholder="Value"
+														suggestionList={Object.keys(
+															attributeValue[watch(`attributes`)[idx]?.trait_type] || {}
+														)}
 													/>
 													<div className="cursor-pointer self-center" onClick={() => remove(idx)}>
 														<svg
