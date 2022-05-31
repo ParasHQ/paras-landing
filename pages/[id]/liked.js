@@ -1,116 +1,121 @@
 import axios from 'axios'
-import TokenList from 'components/Token/TokenList'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import CardList from 'components/TokenSeries/CardList'
 import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import Profile from 'components/Profile/Profile'
 import FilterMarket from 'components/Filter/FilterMarket'
-import { parseSortTokenQuery, setDataLocalStorage } from 'utils/common'
+import { parseSortQuery, setDataLocalStorage } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import FilterDisplay from 'components/Filter/FilterDisplay'
-import FilterCollection from 'components/Filter/FilterCollection'
 import useStore from 'lib/store'
+import WalletHelper from 'lib/WalletHelper'
 
 const LIMIT = 12
 
-const Collection = ({ userProfile, accountId }) => {
-	const currentUser = useStore((state) => state.currentUser)
+const Liked = ({ userProfile, accountId }) => {
 	const router = useRouter()
 
-	const scrollCollection = `${router.query.id}::collection`
+	const scrollCreation = `${router.query.id}::creation`
 
+	const currentUser = useStore((state) => state.currentUser)
 	const [tokens, setTokens] = useState([])
-	const [collections, setCollections] = useState([])
-	const [idNext, setIdNext] = useState(null)
-	const [priceNext, setPriceNext] = useState(null)
 	const [hasMore, setHasMore] = useState(true)
+	const [idNext, setIdNext] = useState(null)
+	const [lowestPriceNext, setLowestPriceNext] = useState(null)
+	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(false)
 	const [display, setDisplay] = useState(
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
 
+	useEffect(() => {
+		if (!currentUser || currentUser !== router.query.id) {
+			router.replace({
+				pathname: '/[id]/collectibles',
+				query: { id: router.query.id },
+			})
+		}
+	}, [currentUser])
+
 	useEffect(async () => {
-		await fetchOwnerTokens(true)
+		if (router.isReady) {
+			await fetchCreatorTokens()
+		}
 	}, [router.query.id])
 
-	const fetchOwnerTokens = async (initialFetch = false) => {
-		const _hasMore = initialFetch ? true : hasMore
-
-		if (!_hasMore || isFetching) {
+	const fetchCreatorTokens = async () => {
+		if (!hasMore || isFetching) {
 			return
 		}
 
 		setIsFetching(true)
+
 		const params = tokensParams({
 			...router.query,
-			...{
-				_id_next: idNext,
-				price_next: priceNext,
+			_id_next: idNext,
+			lowest_price_next: lowestPriceNext,
+			updated_at_next: updatedAtNext,
+		})
+
+		const res = await axios.get(`${process.env.V2_API_URL}/liked-token`, {
+			params: params,
+			headers: {
+				authorization: await WalletHelper.authToken(),
 			},
 		})
-		const res = await axios.get(`${process.env.V2_API_URL}/token`, {
-			params: params,
-		})
-		const newData = await res.data.data
+		const newData = await res.data.data.results
 
-		const newTokens = [...(tokens || []), ...newData.results]
+		const newTokens = [...(tokens || []), ...newData]
 		setTokens(newTokens)
-
-		if (initialFetch) {
-			const collections = await axios(`${process.env.V2_API_URL}/owned-collections`, {
-				params: {
-					accountId: accountId,
-				},
-			})
-			const newCollections = await collections.data.result
-			setCollections(newCollections)
-		}
-
-		if (newData.results.length < LIMIT) {
+		if (newData.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
 
-			const lastData = newData.results[newData.results.length - 1]
+			const lastData = newData[newData.length - 1]
 			setIdNext(lastData._id)
-			params.__sort.includes('price') && setPriceNext(lastData.price)
+			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 		}
 		setIsFetching(false)
 	}
 
 	useEffect(() => {
-		updateFilter(router.query)
+		if (router.isReady) {
+			updateFilter(router.query)
+		}
 	}, [
 		router.query.sort,
 		router.query.pmin,
 		router.query.pmax,
+		router.query.min_copies,
+		router.query.max_copies,
 		router.query.card_trade_type,
-		router.query.is_staked,
-		router.query.collections,
 	])
 
 	const tokensParams = (query) => {
-		const parsedSortQuery = parseSortTokenQuery(query.sort)
+		const parsedSortQuery = parseSortQuery(query.sort, true)
 		const params = {
-			collection_id: query.collections,
-			exclude_total_burn: true,
-			owner_id: accountId,
-			lookup_likes: true,
-			liked_by: currentUser,
+			account_id: currentUser,
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
+			lookup_token: true,
 			...(query.card_trade_type === 'notForSale' && { has_price: false }),
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
-			...(query.price_next &&
-				parsedSortQuery.includes('price') && { price_next: query.price_next }),
-			...(query.is_staked && { is_staked: query.is_staked }),
+			...(query.lowest_price_next &&
+				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
+			...(query.updated_at_next &&
+				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+			...(query.min_copies && { min_copies: query.min_copies }),
+			...(query.max_copies && { max_copies: query.max_copies }),
 		}
 
 		return params
@@ -118,20 +123,26 @@ const Collection = ({ userProfile, accountId }) => {
 
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
-
 		const params = tokensParams(query)
-		const res = await axios(`${process.env.V2_API_URL}/token`, {
+		const res = await axios.get(`${process.env.V2_API_URL}/liked-token`, {
 			params: params,
+			headers: {
+				authorization: await WalletHelper.authToken(),
+			},
 		})
-		setTokens(res.data.data.results)
-		if (res.data.data.results.length < LIMIT) {
+
+		const newData = res.data.data.results
+
+		setTokens(newData)
+		if (newData.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
 
-			const lastData = res.data.data.results[res.data.data.results.length - 1]
+			const lastData = newData[newData.length - 1]
 			setIdNext(lastData._id)
-			params.__sort.includes('price') && setPriceNext(lastData.price)
+			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 		}
 
 		setIsFiltering(false)
@@ -141,22 +152,9 @@ const Collection = ({ userProfile, accountId }) => {
 		setDataLocalStorage('display', typeDisplay, setDisplay)
 	}
 
-	const removeAllCollectionsFilter = () => {
-		router.push(
-			{
-				query: {
-					...router.query,
-					collections: '',
-				},
-			},
-			{},
-			{ shallow: true, scroll: false }
-		)
-	}
-
 	const headMeta = {
 		title: `${accountId} — Paras`,
-		description: `See NFT digital card collectibles and creations from ${accountId}. ${
+		description: `See NFT digital card collectibles liked by ${accountId}. ${
 			userProfile?.bio || ''
 		}`,
 		image: userProfile?.imgUrl
@@ -194,20 +192,19 @@ const Collection = ({ userProfile, accountId }) => {
 			</Head>
 			<Nav />
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
-				<Profile userProfile={userProfile} activeTab={'collection'} />
-				<div className="flex justify-center md:justify-end my-4 md:mb-14 md:-mr-4">
-					<FilterCollection onClearAll={removeAllCollectionsFilter} collections={collections} />
-					<FilterMarket isShowVerified={false} isCollectibles={true} isShowStaked={true} />
+				<Profile userProfile={userProfile} activeTab={'liked'} />
+				<div className="flex justify-end my-4 md:mb-14 md:-mr-4">
+					<FilterMarket isShowVerified={false} isLikedTab={true} />
 					<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
 				</div>
 				<div className="-mt-4 md:-mt-6">
 					{isFiltering ? (
 						<CardListLoader />
 					) : (
-						<TokenList
-							name={scrollCollection}
+						<CardList
+							name={scrollCreation}
 							tokens={tokens}
-							fetchData={fetchOwnerTokens}
+							fetchData={fetchCreatorTokens}
 							hasMore={hasMore}
 							displayType={display}
 							showLike={true}
@@ -221,7 +218,7 @@ const Collection = ({ userProfile, accountId }) => {
 	)
 }
 
-export default Collection
+export default Liked
 
 export async function getServerSideProps({ params }) {
 	const profileRes = await axios.get(`${process.env.V2_API_URL}/profiles`, {

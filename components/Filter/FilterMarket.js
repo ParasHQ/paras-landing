@@ -10,6 +10,7 @@ const FilterMarket = ({
 	defaultMinPrice = false,
 	isCollection = false,
 	isShowStaked = false,
+	isLikedTab = false,
 }) => {
 	const filterModalRef = useRef()
 	const router = useRouter()
@@ -167,7 +168,7 @@ const FilterMarket = ({
 							{filter
 								.filter((item) => (isCollectibles ? item.key !== 'marketupdate' : item.key))
 								.filter((item) => (!isCollection ? item.key !== 'scoredesc' : item))
-								.map((item) => (
+								.map((item, index) => (
 									<button
 										key={item.key}
 										className={`rounded-md text-white px-3 py-1 inline-block mb-2 mr-2 border-2 border-gray-800 ${
@@ -175,7 +176,7 @@ const FilterMarket = ({
 										}`}
 										onClick={() => setSortBy(item.key)}
 									>
-										<p>{item.value}</p>
+										<p>{isLikedTab && index === 1 ? 'Card Liked' : item.value}</p>
 									</button>
 								))}
 						</div>

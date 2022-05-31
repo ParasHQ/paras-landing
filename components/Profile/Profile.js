@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import router, { useRouter } from 'next/router'
 import { Fragment, useContext, useEffect, useState } from 'react'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
 import CopyLink from '../Common/CopyLink'
@@ -253,25 +253,49 @@ const Profile = ({ userProfile, activeTab }) => {
 			<div className="hidden sm:block">
 				<div className="flex flex-row sm:justify-center overflow-auto mt-4 py-2 w-full">
 					<div className="flex flex-row">
-						{TabItems.map((tab) => (
-							<div
-								key={tab.title}
-								className="px-4 relative"
-								onClick={() => router.push(`/${router.query.id}/${tab.linkUrl}`)}
-							>
-								<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn(tab.title)}</h4>
-								{activeTab === tab.activeTab && (
+						{router.query.id !== currentUser
+							? TabItems.filter((item) => item.title !== 'Liked').map((tab) => (
 									<div
-										className="absolute left-0 right-0"
-										style={{
-											bottom: `-.25rem`,
-										}}
+										key={tab.title}
+										className="px-4 relative"
+										onClick={() => router.push(`/${router.query.id}/${tab.linkUrl}`)}
 									>
-										<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+										<h4 className="text-gray-100 font-bold cursor-pointer">
+											{localeLn(tab.title)}
+										</h4>
+										{activeTab === tab.activeTab && (
+											<div
+												className="absolute left-0 right-0"
+												style={{
+													bottom: `-.25rem`,
+												}}
+											>
+												<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+											</div>
+										)}
 									</div>
-								)}
-							</div>
-						))}
+							  ))
+							: TabItems.map((tab) => (
+									<div
+										key={tab.title}
+										className="px-4 relative"
+										onClick={() => router.push(`/${router.query.id}/${tab.linkUrl}`)}
+									>
+										<h4 className="text-gray-100 font-bold cursor-pointer">
+											{localeLn(tab.title)}
+										</h4>
+										{activeTab === tab.activeTab && (
+											<div
+												className="absolute left-0 right-0"
+												style={{
+													bottom: `-.25rem`,
+												}}
+											>
+												<div className="mx-auto w-8 h-1 bg-gray-100"></div>
+											</div>
+										)}
+									</div>
+							  ))}
 					</div>
 				</div>
 			</div>
@@ -283,6 +307,9 @@ const Profile = ({ userProfile, activeTab }) => {
 }
 
 const TabProfileMobile = ({ activeTab }) => {
+	const router = useRouter()
+	const currentUser = useStore((store) => store.currentUser)
+
 	return (
 		<div className="mt-4 py-2">
 			<ScrollMenu
@@ -291,15 +318,16 @@ const TabProfileMobile = ({ activeTab }) => {
 				wrapperClassName="flex items-center"
 				scrollContainerClassName="top-user-scroll"
 			>
-				{TabItems.map((tab) => (
-					<TabProfile
-						key={tab.title}
-						itemId={tab.activeTab}
-						title={tab.title}
-						linkUrl={tab.linkUrl}
-						activeTab={activeTab}
-					/>
-				))}
+				{router.query.id !== currentUser &&
+					TabItems.filter((item) => item.title !== 'Liked').map((tab) => (
+						<TabProfile
+							key={tab.title}
+							itemId={tab.activeTab}
+							title={tab.title}
+							linkUrl={tab.linkUrl}
+							activeTab={activeTab}
+						/>
+					))}
 			</ScrollMenu>
 		</div>
 	)
