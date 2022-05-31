@@ -120,7 +120,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		})
 
 		const newData = await res.data.data
-		const newTokens = initialFetch ? [...newData.results] : [...tokens, ...newData.results]
+		const newTokens = initialFetch ? [...newData.results] : [...tokensOwned, ...newData.results]
 		setTokensOwned(newTokens)
 
 		_fetchCollectionStats(initialFetch)
