@@ -56,12 +56,12 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const toast = useToast()
 
 	useEffect(() => {
-		if (token?.token_series_lookup?.total_likes || token?.total_likes) {
+		if (token?.total_likes) {
 			if (token.likes) {
 				setIsLiked(true)
 			}
 
-			setDefaultLikes(token?.token_series_lookup.total_likes || token?.total_likes)
+			setDefaultLikes(token?.total_likes)
 		}
 	}, [token])
 
@@ -283,6 +283,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			}
 		)
 
+		mutate(`${token.contract_id}::${token.token_series_id}/${token.token_id}`)
 		if (res.status !== 200) {
 			setIsLiked(false)
 			setDefaultLikes(defaultLikes - 1)
@@ -311,6 +312,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			}
 		)
 
+		mutate(`${token.contract_id}::${token.token_series_id}/${token.token_id}`)
 		if (res.status !== 200) {
 			setIsLiked(true)
 			setDefaultLikes(defaultLikes + 1)
@@ -464,7 +466,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										>
 											<IconLove
 												size={17}
-												color={isLiked ? 'red' : 'transparent'}
+												color={isLiked ? '#c51104' : 'transparent'}
 												stroke={isLiked ? 'none' : 'white'}
 											/>
 										</div>

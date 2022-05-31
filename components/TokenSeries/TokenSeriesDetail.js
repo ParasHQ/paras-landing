@@ -33,6 +33,7 @@ import TradeNFTModal from 'components/Modal/TradeNFTModal'
 import IconLove from 'components/Icons/component/IconLove'
 import axios from 'axios'
 import WalletHelper from 'lib/WalletHelper'
+import { mutate } from 'swr'
 
 const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -280,6 +281,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 			}
 		)
 
+		mutate(`${token.contract_id}::${token.token_series_id}`)
 		if (res.status !== 200) {
 			setIsLiked(false)
 			setDefaultLikes(defaultLikes - 1)
@@ -308,6 +310,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 			}
 		)
 
+		mutate(`${token.contract_id}::${token.token_series_id}`)
 		if (res.status !== 200) {
 			setIsLiked(true)
 			setDefaultLikes(defaultLikes + 1)
@@ -460,7 +463,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 										>
 											<IconLove
 												size={17}
-												color={isLiked ? 'red' : 'transparent'}
+												color={isLiked ? '#c51104' : 'transparent'}
 												stroke={isLiked ? 'none' : 'white'}
 											/>
 										</div>

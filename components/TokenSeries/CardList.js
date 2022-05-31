@@ -172,9 +172,11 @@ const TokenSeriesSingle = ({
 	}, [isEndedTime])
 
 	useEffect(() => {
-		if (token.total_likes) {
+		if (token.total_likes !== undefined) {
 			if (token.likes) {
 				setIsLiked(true)
+			} else {
+				setIsLiked(false)
 			}
 
 			setDefaultLikes(token.total_likes)
@@ -525,12 +527,14 @@ const TokenSeriesSingle = ({
 									}}
 								>
 									<IconLove
-										size={17}
-										color={isLiked ? 'red' : 'transparent'}
+										size={displayType === 'large' ? 18 : 16}
+										color={isLiked ? '#c51104' : 'transparent'}
 										stroke={isLiked ? 'none' : 'white'}
 									/>
 								</div>
-								<p className="text-white ml-1 text-sm">{abbrNum(defaultLikes ?? 0, 1)}</p>
+								<p className={`text-white ml-1 ${displayType === 'large' ? 'text-sm' : 'text-xs'}`}>
+									{abbrNum(defaultLikes || 0, 1)}
+								</p>
 							</div>
 						)}
 					</div>
