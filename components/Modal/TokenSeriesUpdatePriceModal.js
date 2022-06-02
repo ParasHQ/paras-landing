@@ -50,7 +50,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 		}
 	}, [show])
 
-	useEffect(async () => {
+	useEffect(() => {
 		if (!data?.transaction_fee || !newPrice) return
 		else {
 			const calcLockedTxFee = (data?.transaction_fee / 10000) * 100

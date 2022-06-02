@@ -33,9 +33,9 @@ const Creation = ({ userProfile, accountId }) => {
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
 
-	useEffect(async () => {
+	useEffect(() => {
 		if (router.isReady) {
-			await fetchCreatorTokens()
+			fetchCreatorTokens()
 		}
 	}, [router.query.id])
 

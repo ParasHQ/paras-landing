@@ -34,8 +34,8 @@ const Collection = ({ userProfile, accountId }) => {
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
 
-	useEffect(async () => {
-		await fetchOwnerTokens(true)
+	useEffect(() => {
+		fetchOwnerTokens(true)
 	}, [router.query.id])
 
 	const fetchOwnerTokens = async (initialFetch = false) => {
