@@ -348,7 +348,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 									is_auction: token.token?.is_auction,
 									started_at: token.token?.started_at,
 									ended_at: token.token?.ended_at,
-									token_series_id: token.token_series_id,
+									has_auction: token?.has_auction,
 								}}
 								profileCollection={profileCollection}
 								type={type}
