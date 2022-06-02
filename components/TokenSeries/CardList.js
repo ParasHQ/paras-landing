@@ -181,6 +181,11 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 	const onClickSeeDetails = async (choosenToken, additionalQuery) => {
 		const token = (await mutate()) || choosenToken
 		const lookupToken = token?.token
+		let platform = navigator.userAgent.includes('iPhone')
+		if (platform) {
+			router.push(`/token/${token.contract_id}::${token.token_series_id}`)
+			return
+		}
 		router.push(
 			{
 				pathname: router.pathname,
