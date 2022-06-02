@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { Blurhash } from 'react-blurhash'
 import Scrollbars from 'react-custom-scrollbars'
 import { useRouter } from 'next/router'
@@ -30,6 +30,10 @@ import Card from 'components/Card/Card'
 import Tooltip from 'components/Common/Tooltip'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
+import axios from 'axios'
+import { Canvas } from '@react-three/fiber'
+import { Model1 } from 'components/Model3D/ThreeDModel'
+import FileType from 'file-type/browser'
 import TabAuction from 'components/Tabs/TabAuction'
 import TokenAuctionBidModal from 'components/Modal/TokenAuctionBidModal'
 import JSBI from 'jsbi'
@@ -48,6 +52,8 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const { localeLn } = useIntl()
 	const store = useStore()
 	const router = useRouter()
+	const [threeDUrl, setThreeDUrl] = useState('')
+	const [threeDType, setThreeDType] = useState('')
 	const toast = useToast()
 
 	useEffect(() => {
@@ -71,6 +77,12 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	useEffect(() => {
 		TabNotification(router.query.tab)
 	}, [router.query.tab])
+
+	useEffect(() => {
+		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('model')) {
+			get3DModel(token?.metadata?.animation_url)
+		}
+	}, [])
 
 	const TabNotification = (tab) => {
 		switch (tab) {
@@ -198,6 +210,16 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 		return currentUser === token.owner_id
 	}
 
+	const get3DModel = async (url) => {
+		const resp = await axios.get(`${parseImgUrl(url, undefined)}`, {
+			responseType: `blob`,
+		})
+		const fileType = await FileType.fromBlob(resp.data)
+		setThreeDType(fileType.mime)
+		const objectUrl = URL.createObjectURL(resp.data)
+		setThreeDUrl(objectUrl)
+	}
+
 	const checkUserBid = () => {
 		let userBid = []
 		token?.bidder_list?.map((item) => {
@@ -266,32 +288,43 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 						{tokenDisplay === 'detail' ? (
 							<>
 								{token?.metadata?.animation_url ? (
-									<div className="max-h-80 md:max-h-52 lg:max-h-96 w-full mx-2 md:mx-0">
-										<div className="w-1/2 md:w-full h-full m-auto">
-											<Media
-												className="rounded-lg overflow-hidden max-h-80 md:max-h-52 lg:max-h-96"
-												url={
-													token.metadata?.mime_type
-														? parseImgUrl(token.metadata.media)
-														: token.metadata.media
-												}
-												videoControls={true}
-												videoLoop={true}
-												videoMuted={true}
-												videoPadding={true}
-												mimeType={token?.metadata?.mime_type}
-												seeDetails={true}
-												isMediaCdn={token?.isMediaCdn}
-											/>
-										</div>
-										<div className="w-full m-auto">
-											<div className="my-3 flex items-center justify-center w-full">
-												<audio controls className="w-full">
-													<source src={parseImgUrl(token?.metadata.animation_url)}></source>
-												</audio>
+									<>
+										{token?.metadata?.mime_type?.includes('audio') && (
+											<div className="max-h-80 md:max-h-52 lg:max-h-96 w-full mx-2 md:mx-0">
+												<div className="w-1/2 md:w-full h-full m-auto">
+													<Media
+														className="rounded-lg overflow-hidden max-h-80 md:max-h-52 lg:max-h-96"
+														url={
+															token.metadata?.mime_type
+																? parseImgUrl(token.metadata.media)
+																: token.metadata.media
+														}
+														videoControls={true}
+														videoLoop={true}
+														videoMuted={true}
+														videoPadding={true}
+														mimeType={token?.metadata?.mime_type}
+														seeDetails={true}
+														isMediaCdn={token?.isMediaCdn}
+													/>
+												</div>
+												<div className="w-full m-auto">
+													<div className="my-3 flex items-center justify-center w-full">
+														<audio controls className="w-full">
+															<source src={parseImgUrl(token?.metadata.animation_url)}></source>
+														</audio>
+													</div>
+												</div>
 											</div>
-										</div>
-									</div>
+										)}
+										{threeDType.includes(`model`) && threeDUrl && (
+											<Suspense fallback={null}>
+												<Canvas>
+													<Model1 threeDUrl={threeDUrl} />
+												</Canvas>
+											</Suspense>
+										)}
+									</>
 								) : (
 									<Media
 										className="rounded-lg overflow-hidden"
@@ -318,7 +351,16 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										useOriginal: process.env.APP_ENV === 'production' ? false : true,
 										isMediaCdn: token.isMediaCdn,
 									})}
-									audioUrl={token.metadata?.animation_url}
+									audioUrl={
+										token.metadata.mime_type &&
+										token.metadata.mime_type.includes('audio') &&
+										token.metadata?.animation_url
+									}
+									threeDUrl={
+										token.metadata.mime_type &&
+										token.metadata.mime_type.includes('model') &&
+										token.metadata.animation_url
+									}
 									imgBlur={token.metadata.blurhash}
 									token={{
 										title: token.metadata.title,

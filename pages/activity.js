@@ -51,16 +51,20 @@ const ActivityLog = ({ query }) => {
 		}
 	})
 
-	useEffect(async () => {
-		setIsFetchingTop(true)
-		if (query) {
-			_fetchData(query, true)
-		} else {
-			_fetchData({}, true)
+	useEffect(() => {
+		const fetchingTopUser = async () => {
+			setIsFetchingTop(true)
+			if (query) {
+				_fetchData(query, true)
+			} else {
+				_fetchData({}, true)
+			}
+			let res
+			res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=5`)
+			setTopUser(res.data.data)
+			setIsFetchingTop(false)
 		}
-		const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=5`)
-		setTopUser(res.data.data)
-		setIsFetchingTop(false)
+		fetchingTopUser()
 	}, [])
 
 	const onClickFilter = (query) => {
