@@ -109,7 +109,7 @@ const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => 
 			<div className="flex justify-center items-center relative">
 				<p className="text-center mt-2">History Bids</p>
 				<p className="text-center text-xs mt-2 absolute right-0">
-					Total bid : {localToken?.bidder_list?.length}
+					Total bid : {localToken?.bidder_list?.length || 0}
 				</p>
 			</div>
 			{historyBid && historyBid?.length !== 0 ? (

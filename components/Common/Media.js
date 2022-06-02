@@ -144,7 +144,7 @@ const Media = ({
 		)
 	}
 
-	if (audioUrl) {
+	if (audioUrl && mimeType?.includes('audio')) {
 		return (
 			<div className="relative flex items-center justify-center w-full">
 				<img className={`object-contain w-full h-full`} src={media.url} />
