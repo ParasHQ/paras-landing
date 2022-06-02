@@ -12,6 +12,7 @@ const Card = ({
 	token,
 	profileCollection,
 	type,
+	displayType,
 	onClick = () => {},
 	flippable = false,
 }) => {
@@ -227,7 +228,19 @@ const Card = ({
 											videoLoop={true}
 											mimeType={token?.mime_type}
 										/>
-										{token?.is_auction && <TimeAuction endedAt={token.ended_at} />}
+										{token?.is_auction ? (
+											<TimeAuction endedAt={token.ended_at} />
+										) : (
+											token?.has_auction && (
+												<div
+													className={`absolute text-xs text-center ${
+														displayType === 'large' ? 'w-2/3' : 'w-5/6'
+													} right-0 bottom-5 text-gray-100 px-1 py-2 rounded-l-md bg-primary bg-opacity-70 z-10`}
+												>
+													Some of this edition is being auctioned
+												</div>
+											)
+										)}
 									</>
 								)}
 							</div>

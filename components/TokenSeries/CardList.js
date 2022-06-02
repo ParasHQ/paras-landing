@@ -436,9 +436,11 @@ const TokenSeriesSingle = ({
 									is_auction: token.token?.is_auction,
 									started_at: token.token?.started_at,
 									ended_at: token.token?.ended_at,
+									has_auction: token?.has_auction,
 								}}
 								profileCollection={profileCollection}
 								type={type}
+								displayType={displayType}
 							/>
 						</div>
 					</a>
