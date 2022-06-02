@@ -54,6 +54,12 @@ export default function SearchPage({ searchQuery }) {
 
 	const { query } = router
 
+	useEffect(() => {
+		if (currentUser) {
+			_fetchData()
+		}
+	}, [currentUser])
+
 	useEffect(async () => {
 		setIsRefreshing(true)
 		window.scrollTo(0, 0)

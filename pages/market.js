@@ -41,6 +41,12 @@ function MarketPage({ serverQuery }) {
 	const currentUser = useStore((store) => store.currentUser)
 
 	useEffect(() => {
+		if (currentUser) {
+			_fetchData(true)
+		}
+	}, [currentUser])
+
+	useEffect(() => {
 		updateFilter(router.query)
 	}, [
 		router.query.sort,
@@ -80,23 +86,29 @@ function MarketPage({ serverQuery }) {
 		store.setCardCategory(res.data.data.results)
 	}
 
-	const _fetchData = async () => {
-		if (!hasMore || isFetching) {
+	const _fetchData = async (initialFetch = false) => {
+		const _hasMore = initialFetch ? true : hasMore
+
+		if (!_hasMore || isFetching) {
 			return
 		}
 		setIsFetching(true)
 		const params = tokensParams({
 			...(router.query || serverQuery),
-			_id_next: idNext,
-			lowest_price_next: lowestPriceNext,
-			updated_at_next: updatedAtNext,
-			liked_by: currentUser,
+			...(initialFetch
+				? { liked_by: currentUser }
+				: {
+						_id_next: idNext,
+						lowest_price_next: lowestPriceNext,
+						updated_at_next: updatedAtNext,
+						liked_by: currentUser,
+				  }),
 		})
 		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
 		})
 		const newData = await res.data.data
-		const newTokens = [...tokens, ...newData.results]
+		const newTokens = initialFetch ? [...newData.results] : [...tokens, ...newData.results]
 		setTokens(newTokens)
 		if (newData.results.length < LIMIT) {
 			setHasMore(false)
