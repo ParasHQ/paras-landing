@@ -12,6 +12,34 @@ import ChooseAccountModal from 'components/Modal/ChooseAccountModal'
 import Scrollbars from 'react-custom-scrollbars'
 import WalletHelper, { walletType } from 'lib/WalletHelper'
 import near from 'lib/near'
+import transakSDK from '@transak/transak-sdk'
+import getConfigTransak from 'config/transak'
+
+export function openTransak() {
+	const transak = new transakSDK(getConfigTransak('staging'))
+
+	transak.init()
+
+	transak.on(transak.ALL_EVENTS, (data) => {})
+
+	transak.on(transak.EVENTS.TRANSAK_WIDGET_OPEN, (eventData) => {})
+
+	transak.on(transak.EVENTS.TRANSAK_WIDGET_INITIALISED, (eventData) => {})
+
+	transak.on(transak.EVENTS.TRANSAK_WIDGET_CLOSE, (eventData) => {
+		transak.close()
+	})
+
+	transak.on(transak.EVENTS.TRANSAK_ORDER_FAILED, (failedData) => {
+		window.alert('Payment Failed')
+		transak.close()
+	})
+
+	transak.on(transak.EVENTS.TRANSAK_ORDER_SUCCESSFUL, (orderData) => {
+		window.alert('Payment Success')
+		transak.close()
+	})
+}
 
 const User = () => {
 	const store = useStore()
@@ -220,6 +248,16 @@ const User = () => {
 									>
 										{localeLn('NavViewWallet')}
 									</a>
+									<button
+										className="bg-white rounded-md p-1 text-xs font-semibold text-primary flex items-center justify-center cursor-pointer shadow-md shadow-primary"
+										style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
+										onClick={() => openTransak()}
+									>
+										<p className="mt-1">Buy Ⓝ with</p>
+										<div className="w-24 h-7 flex items-center justify-center">
+											<img src="/transakLogo.png" className="object-contain" alt="" />
+										</div>
+									</button>
 								</div>
 							</div>
 							<hr className="my-2" />
