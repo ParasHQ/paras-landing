@@ -65,9 +65,9 @@ export default function SearchPage({ searchQuery }) {
 			setIsRefreshing(true)
 			window.scrollTo(0, 0)
 			/** Tokens */
-
 			query.lookup_likes = true
 			query.liked_by = currentUser
+
 			const params = tokensParams(query)
 			let res
 			res = await axios(`${process.env.V2_API_URL}/token-series`, {
