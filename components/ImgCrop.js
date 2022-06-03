@@ -19,6 +19,7 @@ const ImgCrop = ({
 	const [imgUrl, setImgUrl] = useState('')
 	const [firstLoad, setFirstLoad] = useState(true)
 	const { localeLn } = useIntl()
+
 	useEffect(() => {
 		const readImg = async () => {
 			const imgUrl = await readFileAsUrl(input)

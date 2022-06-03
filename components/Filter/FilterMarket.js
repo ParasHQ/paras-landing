@@ -131,7 +131,7 @@ const FilterMarket = ({
 			{
 				query: query,
 			},
-			{},
+			undefined,
 			{ shallow: true, scroll: false }
 		)
 		setShowFilterModal(false)

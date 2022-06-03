@@ -228,6 +228,7 @@ const SuccessTransactionModal = () => {
 	}
 
 	const submitCategoryCard = async (res) => {
+		const _categoryId = window.sessionStorage.getItem(`categoryToken`)
 		const txLast = res
 		const resFromTxLast = txLast.receipts_outcome[0].outcome.logs[0]
 		const resOutcome = await JSON.parse(`${resFromTxLast}`)
@@ -239,7 +240,8 @@ const SuccessTransactionModal = () => {
 						account_id: currentUser,
 						contract_id: txLast?.transaction?.receiver_id,
 						token_series_id: resOutcome?.params?.token_series_id,
-						category_id: window.sessionStorage.getItem(`categoryToken`),
+						category_id: _categoryId,
+						storeToSheet: _categoryId === 'art-competition' ? `true` : `false`,
 					},
 					{
 						headers: {
