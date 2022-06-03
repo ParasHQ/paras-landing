@@ -41,6 +41,8 @@ function TokenDetailModal({ tokens = [], isAuctionEnds }) {
 				setActiveToken({
 					...token.token,
 					price: token.price || token.lowest_price,
+					total_likes: token?.total_likes || 0,
+					likes: token?.likes || null,
 				})
 			} else {
 				setActiveToken(token)

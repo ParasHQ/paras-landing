@@ -8,21 +8,35 @@ import { parseImgUrl } from 'utils/common'
 import { sentryCaptureException } from 'lib/sentry'
 import useToken from 'hooks/useToken'
 import { useEffect, useState } from 'react'
+import useStore from 'lib/store'
 
 const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.contract_id
 }
 
 const TokenPage = ({ errorCode, initial }) => {
-	const { token } = useToken({
+	const currentUser = useStore((state) => state.currentUser)
+	const { token, mutate } = useToken({
 		key: `${initial?.contract_id}::${initial?.token_series_id}/${initial?.token_id}`,
 		initialData: initial,
+		params: {
+			lookup_likes: true,
+			liked_by: currentUser,
+		},
 	})
 	const [isEndedTime, setIsEndedTime] = useState(false)
 
 	useEffect(() => {
 		checkAuctionTime()
 	}, [isEndedTime])
+
+	useEffect(() => {
+		asyncMutate()
+	}, [currentUser])
+
+	const asyncMutate = async () => {
+		await mutate()
+	}
 
 	const convertTimeOfAuction = (date) => {
 		const sliceNanoSec = String(date).slice(0, 13)
