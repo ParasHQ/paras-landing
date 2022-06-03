@@ -237,6 +237,11 @@ const TokenSingle = ({
 
 	const onClickSeeDetails = async (choosenToken) => {
 		const token = (await mutate()) || choosenToken
+		let platform = navigator.userAgent.includes('iPhone')
+		if (platform) {
+			router.push(`/token/${token.contract_id}::${token.token_series_id}`)
+			return
+		}
 		router.push(
 			{
 				pathname: router.pathname,

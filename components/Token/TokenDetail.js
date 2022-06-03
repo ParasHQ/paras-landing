@@ -265,7 +265,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			)
 			const multiplebid = JSBI.multiply(JSBI.divide(currentBid, JSBI.BigInt(100)), JSBI.BigInt(5))
 			const nextBid = JSBI.add(currentBid, multiplebid).toString()
-			const nextBidToNear = (nextBid / 10 ** 24).toFixed(1)
+			const nextBidToNear = (nextBid / 10 ** 24).toFixed(2)
 			const nextBidToUSD = parseNearAmount(nextBidToNear.toString())
 			if (type === 'near') {
 				return nextBidToNear
@@ -570,7 +570,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 														<div className="truncate text-white text-base font-bold">{`${prettyBalance(
 															checkNextPriceBid('near'),
 															0,
-															2
+															4
 														)} Ⓝ`}</div>
 														{token.price !== '0' && store.nearUsdPrice !== 0 && (
 															<div className="text-[9px] text-gray-400 truncate mt-1">
@@ -643,7 +643,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 														<div className="truncate text-white text-base font-bold">{`${prettyBalance(
 															checkNextPriceBid('near'),
 															0,
-															2
+															4
 														)} Ⓝ`}</div>
 														{token.price !== '0' && store.nearUsdPrice !== 0 && (
 															<div className="text-[9px] text-gray-400 truncate mt-1">
@@ -674,7 +674,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 									)
 								)}
 							</div>
-						) : token.is_staked ? (
+						) : token.is_staked && currentUser === token.owner_id ? (
 							<div className="flex flex-wrap flex-col">
 								<div className="w-full flex-1">
 									<Button

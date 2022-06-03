@@ -7,13 +7,14 @@ import Footer from 'components/Footer'
 import useStore from 'lib/store'
 import CardList from 'components/TokenSeries/CardList'
 import CardListLoader from 'components/Card/CardListLoader'
-import { parseImgUrl, parseSortQuery } from 'utils/common'
+import { parseImgUrl, parseSortQuery, setDataLocalStorage } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CategoryList from 'components/CategoryList'
 import AddCategoryModal from 'components/Modal/AddCategoryModal'
 import { useIntl } from 'hooks/useIntl'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import FilterMarket from 'components/Filter/FilterMarket'
+import FilterDisplay from 'components/Filter/FilterDisplay'
 
 const LIMIT = 12
 
@@ -39,6 +40,9 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 	const [showAddModal, setShowAddModal] = useState(false)
 	const [chooseSubmilModal, setChooseSubmitModal] = useState(false)
 	const [categoryDetail, setCategoryDetail] = useState(_categoryDetail)
+	const [display, setDisplay] = useState(
+		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
+	)
 
 	const { categoryId } = router.query
 
@@ -163,6 +167,10 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 		router.push(`/category-submission/${categoryId}`)
 	}
 
+	const onClickDisplay = (typeDisplay) => {
+		setDataLocalStorage('display', typeDisplay, setDisplay)
+	}
+
 	return (
 		<div className="min-h-screen bg-black">
 			<div
@@ -235,11 +243,16 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 			)}
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="grid grid-cols-3 mb-4">
-					<h1 className="col-start-2 col-span-1 text-4xl font-bold text-gray-100 text-center">
+					<h1 className="col-start-1 md:col-start-2 col-span-2 md:col-span-1 pl-5 md:pl-0 text-4xl font-bold text-gray-100 text-left md:text-center">
 						{localeLn('Market')}
 					</h1>
-					<div className="grid justify-items-end">
-						<FilterMarket />
+					<div className="flex items-center justify-end">
+						<div className="grid justify-items-end">
+							<FilterMarket />
+						</div>
+						<div className="flex mr-4 md:mx-4">
+							<FilterDisplay type={display} onClickDisplay={onClickDisplay} />
+						</div>
 					</div>
 				</div>
 				<CategoryList categoryId={categoryDetail?.category_id || ''} listCategory={cardCategory} />
@@ -337,6 +350,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 							fetchData={_fetchData}
 							hasMore={hasMoreCategoryCard[categoryId]}
 							showLike={true}
+							displayType={display}
 						/>
 					)}
 				</div>

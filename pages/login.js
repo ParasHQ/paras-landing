@@ -109,7 +109,7 @@ const LoginPage = () => {
 				/>
 			</Head>
 			<Nav />
-			<div className="relative min-h-screen flex flex-col justify-between px-4 pb-24">
+			<div className="relative min-h-screen flex flex-col justify-between px-4">
 				<div className="max-w-lg m-auto pt-16">
 					<div className="w-full">
 						<div className="flex items-center">
@@ -175,7 +175,7 @@ const LoginPage = () => {
 						</div> */}
 					</div>
 				</div>
-				<div className="mt-auto">
+				<div className="-mx-4">
 					<Footer />
 				</div>
 			</div>

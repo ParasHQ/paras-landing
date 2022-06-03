@@ -196,21 +196,21 @@ const Nav = () => {
 				)}
 
 				{/* Banner for special event */}
-				{/* <div
+				<div
 					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
 				>
 					<div className="px-10 py-1 md:p-0 ">
-						{`Update: Marketplace Fee Reduction. More info `}
+						{`Deadline EXTENDED to June 5th! Win a total of 2,000 USD & submit your oceanvironment art `}
 						<a
-							href="https://paras.id/publication/paras-marketplace-comfortable-fee-622367bd12bbfa5e33c37f38"
+							href="https://paras.id/market/art-competition"
 							target="_blank"
 							className="font-bold cursor-pointer hover:underline"
 							rel="noreferrer"
 						>
-							here.
+							here!
 						</a>
 					</div>
-				</div> */}
+				</div>
 
 				{process.env.APP_ENV !== 'production' && (
 					<div
