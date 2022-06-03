@@ -181,6 +181,11 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 	const onClickSeeDetails = async (choosenToken, additionalQuery) => {
 		const token = (await mutate()) || choosenToken
 		const lookupToken = token?.token
+		let platform = navigator.userAgent.includes('iPhone')
+		if (platform) {
+			router.push(`/token/${token.contract_id}::${token.token_series_id}`)
+			return
+		}
 		router.push(
 			{
 				pathname: router.pathname,
@@ -229,9 +234,9 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 			return localeLn('UpdateListing')
 		}
 
-		return (price && !token.token?.is_auction) || !isEndedTime
+		return price && !token.token?.is_auction && !isEndedTime
 			? 'Buy Now'
-			: token.token?.is_auction && !token.token?.owner_id && !isEndedTime
+			: token.token?.is_auction && !isEndedTime
 			? 'Place a Bid'
 			: isEndedTime
 			? 'Auction Ends'
