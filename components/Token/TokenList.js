@@ -308,6 +308,11 @@ const TokenSingle = ({ initialData, displayType = 'large', volume, showRaritySco
 									token.metadata.mime_type.includes('model') &&
 									token.metadata.animation_url
 								}
+								iframeUrl={
+									token.metadata.mime_type &&
+									token.metadata.mime_type.includes('iframe') &&
+									token.metadata.animation_url
+								}
 								imgBlur={token.metadata.blurhash}
 								flippable
 								token={{

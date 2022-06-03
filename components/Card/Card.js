@@ -8,6 +8,7 @@ const Card = ({
 	imgUrl,
 	audioUrl,
 	threeDUrl,
+	iframeUrl,
 	imgWidth = 640,
 	imgHeight = 890,
 	token,
@@ -252,6 +253,50 @@ const Card = ({
 												<line x1={12} y1="18.5" x2={12} y2={21} />
 												<path d="M12 12l-2 -1.12" />
 												<line x1={6} y1="8.6" x2={4} y2="7.5" />
+											</svg>
+										</div>
+									</div>
+								)}
+								{iframeUrl && token.mime_type?.includes('iframe') && (
+									<div className="absolute top-1 right-2">
+										<div className="block md:hidden">
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												className="icon icon-tabler icon-tabler-device-gamepad"
+												width={14}
+												height={14}
+												viewBox="0 0 24 24"
+												strokeWidth="1.5"
+												stroke="currentColor"
+												fill="#fff"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+											>
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<rect x={2} y={6} width={20} height={12} rx={2} />
+												<path d="M6 12h4m-2 -2v4" />
+												<line x1={15} y1={11} x2={15} y2="11.01" />
+												<line x1={18} y1={13} x2={18} y2="13.01" />
+											</svg>
+										</div>
+										<div className="hidden md:block">
+											<svg
+												xmlns="http://www.w3.org/2000/svg"
+												className="icon icon-tabler icon-tabler-device-gamepad"
+												width={20}
+												height={20}
+												viewBox="0 0 24 24"
+												strokeWidth="1.5"
+												stroke="currentColor"
+												fill="#fff"
+												strokeLinecap="round"
+												strokeLinejoin="round"
+											>
+												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+												<rect x={2} y={6} width={20} height={12} rx={2} />
+												<path d="M6 12h4m-2 -2v4" />
+												<line x1={15} y1={11} x2={15} y2="11.01" />
+												<line x1={18} y1={13} x2={18} y2="13.01" />
 											</svg>
 										</div>
 									</div>
