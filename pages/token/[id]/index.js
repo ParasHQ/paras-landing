@@ -7,7 +7,7 @@ import Footer from 'components/Footer'
 import { parseImgUrl } from 'utils/common'
 import useTokenSeries from 'hooks/useTokenSeries'
 import useStore from 'lib/store'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 
 const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.creator_id || token.contract_id

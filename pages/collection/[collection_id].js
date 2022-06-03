@@ -70,7 +70,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
 	const [scoreNext, setScoreNext] = useState('')
-	const [mediaQueryMd, setMediaQueryMd] = useState(
+	const [mediaQueryMd] = useState(
 		typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)')
 	)
 	const isItemActiveTab = router.query.tab === 'items' || router.query.tab === undefined

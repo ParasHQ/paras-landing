@@ -1,4 +1,4 @@
-import router, { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 import { Fragment, useContext, useEffect, useState } from 'react'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
 import CopyLink from '../Common/CopyLink'
