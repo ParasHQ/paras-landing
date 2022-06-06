@@ -1,7 +1,7 @@
 import axios from 'axios'
 import useSWR from 'swr'
 
-const useTokenSeries = ({ key, initialData }) => {
+const useTokenSeries = ({ key, initialData, params = {} }) => {
 	const fetchData = async (key) => {
 		const [contractId, tokenSeriesId] = key.split('::')
 		return axios
@@ -10,6 +10,7 @@ const useTokenSeries = ({ key, initialData }) => {
 					contract_id: contractId,
 					token_series_id: tokenSeriesId,
 					lookup_token: true,
+					...params,
 				},
 			})
 			.then((res) => res.data.data.results[0])

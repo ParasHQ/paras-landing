@@ -1,6 +1,4 @@
-import axios from 'axios'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
 import Scrollbars from 'react-custom-scrollbars'
 
 import LinkToProfile from '../LinkToProfile'
@@ -9,18 +7,11 @@ import { parseImgUrl } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import TopTransactionCard, { renderThumb } from './TopTransactionCard'
+import useProfileData from 'hooks/useProfileData'
 
 const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => {
-	const [profile, setProfile] = useState({})
+	const profile = useProfileData(data.account_id)
 	const { localeLn } = useIntl()
-	useEffect(async () => {
-		const res = await axios(`${process.env.V2_API_URL}/profiles`, {
-			params: {
-				accountId: data.account_id,
-			},
-		})
-		setProfile(res.data.data.results[0])
-	}, [])
 
 	return (
 		<div key={idx} className="md:flex border-2 border-dashed border-gray-800 rounded-md my-4">
