@@ -160,6 +160,10 @@ const filter = [
 		key: 'offer',
 		value: 'NFT Offer',
 	},
+	{
+		key: 'bid',
+		value: 'NFT Auction',
+	},
 ]
 
 export default FilterActivity

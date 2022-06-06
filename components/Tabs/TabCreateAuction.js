@@ -15,17 +15,11 @@ import { trackUpdateListingToken } from 'lib/ga'
 import { useToast } from 'hooks/useToast'
 import { prettyBalance } from 'utils/common'
 
-const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpirationDate }) => {
+const TabCreateAuction = ({ data, onClose }) => {
 	const [needDeposit, setNeedDeposit] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
 	const { localeLn } = useIntl()
-	const { errors, register, handleSubmit, watch } = useForm({
-		defaultValues: {
-			startingBid,
-			expirationDate,
-			timeExpirationDate,
-		},
-	})
+	const { errors, register, handleSubmit, watch, setValue } = useForm()
 	const [isCreatingAuction, setIsCreatingPrice] = useState(false)
 	const [expirationDateAuction, setExpirationDateAuction] = useState()
 	const { currentUser, setTransactionRes } = useStore((state) => ({
@@ -40,6 +34,12 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 		parseTimeExpirationDate()
 		minimumTimeExpirationDate()
 	}, [watch, expirationDateAuction])
+
+	useEffect(() => {
+		const now = new Date()
+		now.setUTCMinutes(now.getUTCMinutes() + 10)
+		setValue('timeExpirationDate', `${now.getUTCHours()}:${now.getUTCMinutes()}`)
+	}, [])
 
 	useEffect(() => {
 		if (currentUser) {
@@ -227,7 +227,7 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 							step="any"
 							ref={register({
 								required: true,
-								min: 1,
+								min: 0.1,
 							})}
 							placeHolder={'Ⓝ'}
 							className={`${errors.startingBid && 'error'}`}
@@ -235,7 +235,7 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 					</div>
 					<div className="mt-2 text-sm text-red-500 text-right">
 						{errors.startingBid?.type === 'required' && `Starting bid is required`}
-						{errors.startingBid?.type === 'min' && `Minimum 1 Ⓝ`}
+						{errors.startingBid?.type === 'min' && `Minimum 0.1 Ⓝ`}
 					</div>
 				</div>
 				<div className="mt-4">
@@ -280,7 +280,7 @@ const TabCreateAuction = ({ data, onClose, startingBid, expirationDate, timeExpi
 									ref={register({
 										required: true,
 									})}
-									className={`${errors.timeExpirationDate && 'error'}`}
+									className={`${errors.timeExpirationDate && 'error'} w-auto`}
 								/>
 							</div>
 							<div className="mt-2 text-sm text-red-500 text-right">

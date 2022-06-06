@@ -16,7 +16,7 @@ const InputDropdown = ({ data, defaultValue = '', selectItem = () => null }) => 
 	return (
 		<div className="relative">
 			<div
-				className="input-select input-text flex items-center justify-between relative w-40 px-3 py-2 rounded-lg bg-white bg-opacity-5 outline-none text-white text-opacity-90 text-body text-base  "
+				className="input-select input-text flex items-center justify-between relative w-40 px-3 py-2 rounded-lg bg-white bg-opacity-5 outline-none text-white text-opacity-90 text-body text-base cursor-pointer "
 				onClick={() => setModal(true)}
 			>
 				<p className="truncate text-white">{select}</p>
