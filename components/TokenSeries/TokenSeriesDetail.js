@@ -7,7 +7,7 @@ import { IconDots } from 'components/Icons'
 import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
-import { capitalize, parseImgUrl } from 'utils/common'
+import { capitalize, parseImgUrl, abbrNum } from 'utils/common'
 import TokenSeriesTransferBuyer from '../Modal/TokenSeriesTransferBuyer'
 import TokenSeriesUpdatePriceModal from '../Modal/TokenSeriesUpdatePriceModal'
 import TokenSeriesBuyModal from '../Modal/TokenSeriesBuyModal'
@@ -30,7 +30,10 @@ import ReportModal from 'components/Modal/ReportModal'
 import Card from 'components/Card/Card'
 import { useRouter } from 'next/router'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
+import IconLove from 'components/Icons/component/IconLove'
 import axios from 'axios'
+import WalletHelper from 'lib/WalletHelper'
+import { mutate } from 'swr'
 import { Canvas } from '@react-three/fiber'
 import { Model1 } from 'components/Model3D/ThreeDModel'
 import FileType from 'file-type/browser'
@@ -38,6 +41,8 @@ import FileType from 'file-type/browser'
 const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
+	const [isLiked, setIsLiked] = useState(false)
+	const [defaultLikes, setDefaultLikes] = useState(0)
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
 	const changeActiveTab = (tab) => {
@@ -55,10 +60,17 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	}, [])
 
 	useEffect(() => {
+		if (token?.total_likes) {
+			if (token.likes) {
+				setIsLiked(true)
+			}
+
+			setDefaultLikes(token?.total_likes)
+		}
 		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('model')) {
 			get3DModel(token?.metadata?.animation_url)
 		}
-	}, [])
+	}, [token])
 
 	const router = useRouter()
 
@@ -255,6 +267,64 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 		}
 	}
 
+	const likeToken = async (contract_id, token_series_id) => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+
+		setIsLiked(true)
+		setDefaultLikes(defaultLikes + 1)
+		const params = {
+			account_id: currentUser,
+		}
+
+		const res = await axios.put(
+			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
+			params,
+			{
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+			}
+		)
+
+		mutate(`${token.contract_id}::${token.token_series_id}`)
+		if (res.status !== 200) {
+			setIsLiked(false)
+			setDefaultLikes(defaultLikes - 1)
+		}
+	}
+
+	const unlikeToken = async (contract_id, token_series_id) => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+
+		setIsLiked(false)
+		setDefaultLikes(defaultLikes - 1)
+		const params = {
+			account_id: currentUser,
+		}
+
+		const res = await axios.put(
+			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
+			params,
+			{
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+			}
+		)
+
+		mutate(`${token.contract_id}::${token.token_series_id}`)
+		if (res.status !== 200) {
+			setIsLiked(true)
+			setDefaultLikes(defaultLikes + 1)
+		}
+	}
+
 	const get3DModel = async (url) => {
 		const resp = await axios.get(`${parseImgUrl(url, undefined)}`, {
 			responseType: `blob`,
@@ -420,6 +490,25 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 										className="cursor-pointer"
 										onClick={() => setShowModal('more')}
 									/>
+									<div className="w-full flex flex-col items-center justify-center">
+										<div
+											className="cursor-pointer"
+											onClick={() => {
+												isLiked
+													? unlikeToken(token.contract_id, token.token_series_id)
+													: likeToken(token.contract_id, token.token_series_id)
+											}}
+										>
+											<IconLove
+												size={17}
+												color={isLiked ? '#c51104' : 'transparent'}
+												stroke={isLiked ? 'none' : 'white'}
+											/>
+										</div>
+										<p className="text-white text-center text-sm">
+											{abbrNum(defaultLikes ?? 0, 1)}
+										</p>
+									</div>
 								</div>
 							</div>
 							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative flex-nowrap disable-scrollbars md:-mb-4">
