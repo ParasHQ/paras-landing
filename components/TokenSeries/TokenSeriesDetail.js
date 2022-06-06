@@ -51,7 +51,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
 	const [isEnableTrade, setIsEnableTrade] = useState(true)
 	const [threeDUrl, setThreeDUrl] = useState('')
-	const [threeDType, setThreeDType] = useState('')
+	const [fileType, setFileType] = useState(token?.metadata?.mime_type)
 
 	useEffect(() => {
 		if (!process.env.WHITELIST_CONTRACT_ID.split(';').includes(token?.contract_id)) {
@@ -69,6 +69,12 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 		}
 		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('model')) {
 			get3DModel(token?.metadata?.animation_url)
+		}
+		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('audio')) {
+			getAudio(token?.metadata?.animation_url)
+		}
+		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('iframe')) {
+			getIframe()
 		}
 	}, [token])
 
@@ -330,9 +336,21 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 			responseType: `blob`,
 		})
 		const fileType = await FileType.fromBlob(resp.data)
-		setThreeDType(fileType.mime)
+		setFileType(fileType.mime)
 		const objectUrl = URL.createObjectURL(resp.data)
 		setThreeDUrl(objectUrl)
+	}
+
+	const getAudio = async (url) => {
+		const resp = await axios.get(`${parseImgUrl(url, undefined)}`, {
+			responseType: `blob`,
+		})
+		const fileType = await FileType.fromBlob(resp.data)
+		setFileType(fileType?.mime)
+	}
+
+	const getIframe = () => {
+		setFileType(token?.metadata?.mime_type)
 	}
 
 	return (
@@ -356,7 +374,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 							<>
 								{token?.metadata.animation_url ? (
 									<>
-										{threeDType.includes('audio') && (
+										{fileType.includes('audio') && (
 											<div className="max-h-80 md:max-h-72 lg:max-h-96 w-full mx-2 md:mx-0">
 												<div className="w-1/2 md:w-full h-full m-auto">
 													<Media
@@ -384,12 +402,43 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 												</div>
 											</div>
 										)}
-										{threeDType.includes('model') && threeDUrl && (
-											<Suspense fallback={null}>
+										{fileType.includes('model') && threeDUrl && (
+											<Suspense
+												fallback={
+													<div className="flex items-center justify-center">
+														<svg
+															className="loaderIcon animate-spin m h-5 w-5 text-white"
+															xmlns="http://www.w3.org/2000/svg"
+															fill="none"
+															viewBox="0 0 24 24"
+														>
+															<circle
+																className="opacity-25"
+																cx="12"
+																cy="12"
+																r="10"
+																stroke="currentColor"
+																strokeWidth="4"
+															></circle>
+															<path
+																className="opacity-75"
+																fill="currentColor"
+																d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+															></path>
+														</svg>
+													</div>
+												}
+											>
 												<Canvas>
 													<Model1 threeDUrl={threeDUrl} />
 												</Canvas>
 											</Suspense>
+										)}
+										{fileType.includes('iframe') && (
+											<iframe
+												src={token?.metadata.animation_url}
+												className="object-contain w-full h-5/6 md:h-full"
+											/>
 										)}
 									</>
 								) : (
@@ -426,6 +475,11 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 									threeDUrl={
 										token.metadata.mime_type &&
 										token.metadata.mime_type.includes('model') &&
+										token.metadata.animation_url
+									}
+									iframeUrl={
+										token.metadata.mime_type &&
+										token.metadata.mime_type.includes('iframe') &&
 										token.metadata.animation_url
 									}
 									imgBlur={token.metadata.blurhash}
