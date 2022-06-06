@@ -57,18 +57,6 @@ function MyApp({ Component, pageProps }) {
 			})
 		}
 		const authHeader = await WalletHelper.authToken()
-		await axios.post(
-			`${process.env.V2_API_URL}/analytics`,
-			{
-				uid: uid,
-				page: url,
-			},
-			{
-				headers: {
-					authorization: authHeader,
-				},
-			}
-		)
 	}
 
 	useEffect(() => {
