@@ -170,8 +170,8 @@ const FilterMarket = ({
 								.map((item) => (
 									<button
 										key={item.key}
-										className={`rounded-md text-white px-3 py-1 inline-block mb-2 mr-2 border-2 border-gray-800 ${
-											sortBy === item.key && 'bg-gray-800'
+										className={`rounded-md text-white px-3 py-1 inline-block mb-2 mr-2 border-2 border-[#1B4FA7] border-opacity-[50%] ${
+											sortBy === item.key && 'bg-[#1B4FA7] bg-opacity-[50%]'
 										}`}
 										onClick={() => setSortBy(item.key)}
 									>
@@ -214,8 +214,8 @@ const FilterMarket = ({
 							filterCopies.map((item) => (
 								<button
 									key={item.key}
-									className={`rounded-md text-white px-3 py-1 inline-block mr-2 border-2 border-gray-800 ${
-										sortCopies === item.key && 'bg-gray-800'
+									className={`rounded-md text-white px-3 py-1 inline-block mr-2 border-2 border-[#1B4FA7] border-opacity-[50%] ${
+										sortCopies === item.key && 'bg-[#1B4FA7] bg-opacity-[50%]'
 									}`}
 									onClick={() => setSortCopies(item.key)}
 								>
