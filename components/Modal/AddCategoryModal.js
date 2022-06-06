@@ -8,6 +8,7 @@ import Card from 'components/Card/Card'
 import Modal from 'components/Modal'
 import { useIntl } from 'hooks/useIntl'
 import WalletHelper from 'lib/WalletHelper'
+import { IconX } from 'components/Icons'
 
 const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 	const { localeLn } = useIntl()
@@ -137,21 +138,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 						{localeLn('SubmitCardTo')} {categoryName}
 					</div>
 					<div onClick={onClose}>
-						<svg
-							className="cursor-pointer"
-							width="16"
-							height="16"
-							viewBox="0 0 16 16"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								fillRule="evenodd"
-								clipRule="evenodd"
-								d="M8.00008 9.41423L3.70718 13.7071L2.29297 12.2929L6.58586 8.00001L2.29297 3.70712L3.70718 2.29291L8.00008 6.5858L12.293 2.29291L13.7072 3.70712L9.41429 8.00001L13.7072 12.2929L12.293 13.7071L8.00008 9.41423Z"
-								fill="white"
-							/>
-						</svg>
+						<IconX className="cursor-pointer" />
 					</div>
 				</div>
 				<div className="md:flex md:pl-2 md:space-x-4 pb-2 items-center">
