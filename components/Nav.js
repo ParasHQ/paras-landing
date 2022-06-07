@@ -40,7 +40,7 @@ const Nav = () => {
 	useEffect(() => {
 		const onClickEv = (e) => {
 			if (mobileNavRef && !mobileNavRef?.current?.contains(e.target)) {
-				setShowMobileNav(true)
+				setShowMobileNav(false)
 			}
 			if (autoCompleteRef.current?.contains && !autoCompleteRef.current.contains(e.target)) {
 				setShowAutoComplete(false)
