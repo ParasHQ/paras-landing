@@ -2,7 +2,9 @@ import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import Media from 'components/Common/Media'
 import { parseImgUrl } from 'utils/common'
+import { debounce } from 'debounce'
 import TimeAuction from 'components/Common/TimeAuction'
+import IconLove from 'components/Icons/component/IconLove'
 
 const Card = ({
 	imgUrl,
@@ -16,6 +18,8 @@ const Card = ({
 	displayType,
 	onClick = () => {},
 	flippable = false,
+	isAbleToLike = false,
+	onLike = () => {},
 }) => {
 	const initialRotate = {
 		x: 0,
@@ -25,6 +29,7 @@ const Card = ({
 	const cardRef = useRef()
 	const [dimension, setDimension] = useState({ width: 0, height: 0 })
 	const [rotate, setRotate] = useState(initialRotate)
+	const [showLove, setShowLove] = useState(false)
 	const [isShowFront, setIsShowFront] = useState(true)
 	const wrapperRef = useRef()
 	const descRef = useRef()
@@ -92,9 +97,13 @@ const Card = ({
 		}, 500)
 	}
 
-	const _flipCard = () => {
-		if (flippable) {
+	const _flipCard = (e) => {
+		if (e.detail === 1 && flippable && !showLove) {
 			setIsShowFront(!isShowFront)
+		} else if (e.detail === 2 && isShowFront && isAbleToLike) {
+			setShowLove(true)
+			onLike()
+			setTimeout(() => setShowLove(false), 1200)
 		}
 	}
 
@@ -108,7 +117,7 @@ const Card = ({
 	return (
 		<div
 			className="relative select-none m-auto outline-none"
-			onClick={_flipCard}
+			onClick={debounce(_flipCard, 350, !isAbleToLike)}
 			style={{
 				transition: `transform .6s .1s`,
 				transform: !isShowFront && `rotateY(180deg)`,
@@ -356,7 +365,6 @@ const Card = ({
 					</div>
 				</div>
 			</div>
-
 			{flippable && (
 				<div
 					className="card-back absolute inset-0 z-10"
@@ -459,6 +467,11 @@ const Card = ({
 							</div>
 						</div>
 					</div>
+				</div>
+			)}
+			{showLove && (
+				<div className="absolute inset-0 flex items-center justify-center z-10">
+					<IconLove className="love-container" color="#ffffff" size="25%" />
 				</div>
 			)}
 		</div>

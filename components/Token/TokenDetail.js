@@ -58,6 +58,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const router = useRouter()
 	const [threeDUrl, setThreeDUrl] = useState('')
 	const [threeDType, setThreeDType] = useState('')
+	const [showLove, setShowLove] = useState(false)
 	const toast = useToast()
 
 	useEffect(() => {
@@ -340,6 +341,14 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 		}
 	}
 
+	const onDoubleClickDetail = () => {
+		if (currentUser) {
+			setShowLove(true)
+			!isLiked && likeToken(token.contract_id, token.token_series_id)
+			setTimeout(() => setShowLove(false), 1000)
+		}
+	}
+
 	return (
 		<div className={`m-auto rounded-lg overflow-hidden ${className}`}>
 			<div className="flex flex-col lg:flex-row h-90vh lg:h-80vh">
@@ -358,7 +367,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 					</div>
 					<div className="w-full h-full flex items-center justify-center p-2 lg:p-12 relative">
 						{tokenDisplay === 'detail' ? (
-							<>
+							<div className="relative h-full w-full" onDoubleClick={onDoubleClickDetail}>
 								{token?.metadata?.animation_url ? (
 									<>
 										{token?.metadata?.mime_type?.includes('audio') && (
@@ -414,7 +423,12 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										isMediaCdn={token?.isMediaCdn}
 									/>
 								)}
-							</>
+								{showLove && (
+									<div className="absolute inset-0 flex items-center justify-center z-10">
+										<IconLove className="love-container" color="#ffffff" size="20%" />
+									</div>
+								)}
+							</div>
 						) : (
 							<div className="w-1/2 h-full md:w-full m-auto flex items-center">
 								<Card
