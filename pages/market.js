@@ -90,8 +90,9 @@ const MarketPage = ({ serverQuery }) => {
 
 	const _fetchData = async (initialFetch = false) => {
 		const _hasMore = initialFetch ? true : hasMore
+		const _isFetching = initialFetch ? false : isFetching
 
-		if (!_hasMore || isFetching) {
+		if (!_hasMore || _isFetching) {
 			return
 		}
 		setIsFetching(true)
