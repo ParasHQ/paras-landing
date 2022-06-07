@@ -71,7 +71,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('model')) {
 			get3DModel(token?.metadata?.animation_url)
 		}
-	}, [token])
+	}, [JSON.stringify(token)])
 
 	const router = useRouter()
 

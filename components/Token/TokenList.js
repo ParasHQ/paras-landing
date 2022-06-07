@@ -190,7 +190,7 @@ const TokenSingle = ({
 
 			setDefaultLikes(token?.total_likes)
 		}
-	}, [token])
+	}, [JSON.stringify(token)])
 
 	useEffect(() => {
 		if (tokenIsLiked[contractIdTokenSeriesId]?.liked === true) {

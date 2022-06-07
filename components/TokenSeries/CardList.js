@@ -181,7 +181,7 @@ const TokenSeriesSingle = ({
 
 			setDefaultLikes(token.total_likes)
 		}
-	}, [token])
+	}, [JSON.stringify(token)])
 
 	const convertTimeOfAuction = (date) => {
 		const sliceNanoSec = String(date).slice(0, 13)
