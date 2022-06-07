@@ -213,7 +213,6 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		router.query.max_copies,
 		router.query.attributes,
 		router.query.is_staked,
-		router.query.card_trade_type,
 		router.query.q,
 	])
 
@@ -273,6 +272,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			...(isItemActiveTab && { lookup_token: true }),
 			...(query.card_trade_type === 'notForSale' && { has_price: false }),
 			...(query.card_trade_type === 'onAuction' && { is_auction: true }),
+			...(query.card_trade_type === 'ownedByCreator' && { owned_by_creator: true }),
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),

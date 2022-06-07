@@ -249,6 +249,7 @@ const FilterMarket = ({
 											{ id: 'forSale', label: 'Sale Only' },
 											{ id: 'notForSale', label: 'Not for Sale' },
 											{ id: 'onAuction', label: 'On Auction' },
+											{ id: 'ownedByCreator', label: 'Owned by Creator' },
 										]}
 										defaultValue={cardTradeType}
 										selectItem={setCardTradeType}
