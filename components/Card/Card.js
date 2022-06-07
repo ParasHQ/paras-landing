@@ -103,7 +103,7 @@ const Card = ({
 		} else if (e.detail === 2 && isShowFront && isAbleToLike) {
 			setShowLove(true)
 			onLike()
-			setTimeout(() => setShowLove(false), 1000)
+			setTimeout(() => setShowLove(false), 1200)
 		}
 	}
 
