@@ -189,7 +189,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	}
 
 	useEffect(() => {
-		if (currentUser) {
+		if (currentUser && isItemActiveTab) {
 			fetchData(true)
 		}
 	}, [currentUser])
@@ -229,8 +229,6 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			fetchDataOwned(true)
 		} else if (router.query.tab === 'tracker') {
 			fetchCollectionTracker()
-		} else if (isItemActiveTab) {
-			fetchData(true)
 		}
 	}, [router.query.tab, router.query.headerActivities, router.query.sortActivities, currentUser])
 
