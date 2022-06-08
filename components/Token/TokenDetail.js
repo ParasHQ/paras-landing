@@ -69,7 +69,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 
 			setDefaultLikes(token?.total_likes)
 		}
-	}, [token])
+	}, [JSON.stringify(token)])
 
 	useEffect(() => {
 		setActiveTab('info')
@@ -305,6 +305,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			}
 		)
 
+		mutate(`${token.contract_id}::${token.token_series_id}`)
 		mutate(`${token.contract_id}::${token.token_series_id}/${token.token_id}`)
 		if (res.status !== 200) {
 			setIsLiked(false)
@@ -334,6 +335,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			}
 		)
 
+		mutate(`${token.contract_id}::${token.token_series_id}`)
 		mutate(`${token.contract_id}::${token.token_series_id}/${token.token_id}`)
 		if (res.status !== 200) {
 			setIsLiked(true)
