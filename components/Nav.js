@@ -14,7 +14,7 @@ import User from './User/User'
 import SlowActivityInfo from './SlowActivityInfo'
 import axios from 'axios'
 import AutoCompleteList from './AutoComplete/AutoCompleteList'
-import { IconSearch } from './Icons'
+import { IconQuestion, IconSearch, IconX } from './Icons'
 
 const LIMIT = 5
 
@@ -174,25 +174,12 @@ const Nav = () => {
 								here
 							</span>
 						</div>
-
-						<svg
+						<IconX
+							size={20}
 							className={`absolute right-0 z-50 mr-2 cursor-pointer ${
 								!store.showEmailWarning && 'hidden'
 							}`}
-							onClick={hideEmailNotVerified}
-							width="16"
-							height="16"
-							viewBox="0 0 16 16"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								fillRule="evenodd"
-								clipRule="evenodd"
-								d="M8.00008 9.41423L3.70718 13.7071L2.29297 12.2929L6.58586 8.00001L2.29297 3.70712L3.70718 2.29291L8.00008 6.5858L12.293 2.29291L13.7072 3.70712L9.41429 8.00001L13.7072 12.2929L12.293 13.7071L8.00008 9.41423Z"
-								fill="white"
-							/>
-						</svg>
+						/>
 					</div>
 				)}
 
@@ -226,22 +213,11 @@ const Nav = () => {
 							>
 								Mainnet
 							</a>
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 16 16"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-								className="inline	ml-2 cursor-pointer opacity-75"
+							<IconQuestion
+								size={16}
+								className="inline ml-2 cursor-pointer opacity-75"
 								onClick={_showTestnetInfo}
-							>
-								<path
-									fillRule="evenodd"
-									clipRule="evenodd"
-									d="M0 8C0 12.4183 3.58172 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8ZM14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8ZM7 10V9.5C7 8.28237 7.42356 7.68233 8.4 6.95C8.92356 6.55733 9 6.44904 9 6C9 5.44772 8.55229 5 8 5C7.44772 5 7 5.44772 7 6H5C5 4.34315 6.34315 3 8 3C9.65685 3 11 4.34315 11 6C11 7.21763 10.5764 7.81767 9.6 8.55C9.07644 8.94267 9 9.05096 9 9.5V10H7ZM9.00066 11.9983C9.00066 12.5506 8.55279 12.9983 8.00033 12.9983C7.44786 12.9983 7 12.5506 7 11.9983C7 11.4461 7.44786 10.9983 8.00033 10.9983C8.55279 10.9983 9.00066 11.4461 9.00066 11.9983Z"
-									fill="white"
-								/>
-							</svg>
+							/>
 						</p>
 					</div>
 				)}

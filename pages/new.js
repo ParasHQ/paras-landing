@@ -66,16 +66,7 @@ const RoyaltyWatch = ({ control, append }) => {
 				onClick={() => append({ accountId: '', value: '' })}
 			>
 				<span className="text-sm pr-2">Add</span>
-				<svg
-					width="14"
-					height="14"
-					viewBox="0 0 16 16"
-					fill="none"
-					className="cursor-pointer"
-					xmlns="http://www.w3.org/2000/svg"
-				>
-					<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
-				</svg>
+				<IconX style={{ transform: 'rotate(45deg)' }} className="cursor-pointer" size={20} />
 			</button>
 		</div>
 	)
@@ -1316,17 +1307,12 @@ const NewPage = () => {
 									<div className="mt-4">
 										<div className="flex items-center justify-between mb-1">
 											<label className="block text-sm">{localeLn('Attributes')}</label>
-											<svg
-												width="14"
-												height="14"
-												viewBox="0 0 16 16"
-												fill="none"
+											<IconX
 												className="cursor-pointer"
 												onClick={() => append({ trait_type: '', value: '' })}
-												xmlns="http://www.w3.org/2000/svg"
-											>
-												<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
-											</svg>
+												size={20}
+												style={{ transform: 'rotate(45deg)' }}
+											/>
 										</div>
 										<Scrollbars ref={scrollBar} autoHeight={false} style={{ height: '200px' }}>
 											{fields.map((attr, idx) => (
@@ -1354,17 +1340,7 @@ const NewPage = () => {
 														)}
 													/>
 													<div className="cursor-pointer self-center" onClick={() => remove(idx)}>
-														<svg
-															width="14"
-															height="14"
-															viewBox="0 0 16 16"
-															fill="none"
-															style={{ transform: 'rotate(45deg)' }}
-															className="relative z-10"
-															xmlns="http://www.w3.org/2000/svg"
-														>
-															<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
-														</svg>
+														<IconX className="relative z-10" size={20} />
 													</div>
 												</div>
 											))}
@@ -1408,17 +1384,7 @@ const NewPage = () => {
 														placeholder="Value (10, 20, 30)"
 													/>
 													<div className="cursor-pointer" onClick={() => royaltyRemove(idx)}>
-														<svg
-															width="14"
-															height="14"
-															viewBox="0 0 16 16"
-															fill="none"
-															style={{ transform: 'rotate(45deg)' }}
-															className="relative z-10"
-															xmlns="http://www.w3.org/2000/svg"
-														>
-															<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
-														</svg>
+														<IconX className="relative z-10" size={20} />
 													</div>
 												</div>
 											))}
