@@ -986,13 +986,16 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 									</div>
 								</div>
 							)}
-							<a href={`https://neartracker.io/`} target="_blank" rel="noreferrer">
-								<img
-									src="/near-tracker.png"
-									width={50}
-									className="mx-auto cursor-pointer mt-6 mb-6"
-								/>
-							</a>
+							{
+								// eslint-disable-next-line react/jsx-no-target-blank
+								<a href={`https://neartracker.io/`} target="_blank">
+									<img
+										src="/near-tracker.png"
+										width={50}
+										className="mx-auto cursor-pointer mt-6 mb-6"
+									/>
+								</a>
+							}
 							<p className="text-center text-white">
 								Powered by{' '}
 								<Link href={`/collection/thebullishbulls.near`}>
