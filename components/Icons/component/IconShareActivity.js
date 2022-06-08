@@ -1,7 +1,7 @@
 import React from 'react'
 import { iconDefaultProps } from '../IconProps'
 
-const IconShareArrow = ({ size, color, ...props }) => (
+const IconShareActivity = ({ size, color, ...props }) => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		className="icon icon-tabler icon-tabler-external-link"
@@ -22,8 +22,8 @@ const IconShareArrow = ({ size, color, ...props }) => (
 	</svg>
 )
 
-IconShareArrow.defaultProps = {
+IconShareActivity.defaultProps = {
 	...iconDefaultProps,
 }
 
-export default IconShareArrow
+export default IconShareActivity
