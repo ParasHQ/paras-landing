@@ -9,6 +9,7 @@ const Tooltip = ({
 	effect = 'solid',
 	className,
 	text = '',
+	width = '80',
 }) => {
 	return (
 		<>
@@ -18,7 +19,7 @@ const Tooltip = ({
 					type={type}
 					effect={effect}
 					id={id}
-					className={`w-80 text-sm ${className}`}
+					className={`w-${width} text-sm ${className}`}
 				/>
 			)}
 			<div data-tip={text} data-for={id} className="cursor-default">
