@@ -197,12 +197,6 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	useEffect(() => {
 		if (router.isReady) {
-			fetchData(true)
-		}
-	}, [router.query.collection_id])
-
-	useEffect(() => {
-		if (router.isReady) {
 			updateFilter(router.query)
 		}
 	}, [
