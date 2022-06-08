@@ -9,6 +9,8 @@ import LineClampText from 'components/Common/LineClampText'
 import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu'
 import ProfileEdit from './ProfileEdit'
 import Modal from 'components/Modal'
+import Tooltip from 'components/Common/Tooltip'
+import { IconInfo } from 'components/Icons'
 
 const Profile = ({ userProfile, activeTab }) => {
 	const currentUser = useStore((store) => store.currentUser)
@@ -278,12 +280,29 @@ const Profile = ({ userProfile, activeTab }) => {
 							: TabItems.map((tab) => (
 									<div
 										key={tab.title}
-										className="px-4 relative"
+										className="px-4 relative flex flex-row"
 										onClick={() => router.push(`/${router.query.id}/${tab.linkUrl}`)}
 									>
 										<h4 className="text-gray-100 font-bold cursor-pointer">
 											{localeLn(tab.title)}
 										</h4>
+										{tab.title === 'Liked' && (
+											<Tooltip
+												id="locked-fee"
+												show={true}
+												text={'This page is only visible to you'}
+												className="font-bold"
+												type="dark"
+												place="top"
+											>
+												<IconInfo
+													size={16}
+													color="#ffffff"
+													className="inline mb-1 ml-1 text-white"
+												/>
+											</Tooltip>
+										)}
+
 										{activeTab === tab.activeTab && (
 											<div
 												className="absolute left-0 right-0"
