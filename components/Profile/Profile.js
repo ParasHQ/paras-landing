@@ -11,13 +11,16 @@ import ProfileEdit from './ProfileEdit'
 import Modal from 'components/Modal'
 import Tooltip from 'components/Common/Tooltip'
 import { IconInfo } from 'components/Icons'
+import FollowArtistModal from 'components/Modal/FollowArtistModal'
+import Follow from 'components/Follow/Follow'
 
-const Profile = ({ userProfile, activeTab }) => {
+const Profile = ({ userProfile, activeTab, dataFollowing, dataFollower }) => {
 	const currentUser = useStore((store) => store.currentUser)
 	const router = useRouter()
 	const { localeLn } = useIntl()
 	const [isCopied, setIsCopied] = useState(false)
 	const [showModal, setShowModal] = useState(false)
+	const [showFollowModal, setShowFollowModal] = useState('')
 
 	const [profileData, setProfileData] = useState(userProfile)
 	const userProfileStore = useStore((state) => state.userProfile)
@@ -239,6 +242,11 @@ const Profile = ({ userProfile, activeTab }) => {
 							</a>
 						)}
 					</div>
+					<Follow
+						dataFollowing={dataFollowing}
+						dataFollower={dataFollower}
+						showFollowModal={(e) => setShowFollowModal(e)}
+					/>
 				</div>
 			</div>
 			{profileData?.flag && (
@@ -296,6 +304,17 @@ const Profile = ({ userProfile, activeTab }) => {
 			<div className="sm:hidden">
 				<TabProfileMobile activeTab={activeTab} />
 			</div>
+			{showFollowModal === 'following' && (
+				<FollowArtistModal
+					show={true}
+					data={dataFollowing}
+					typeFollow="following"
+					onClose={() => setShowFollowModal('')}
+				/>
+			)}
+			{showFollowModal === 'followers' && (
+				<FollowArtistModal show={true} data={dataFollower} onClose={() => setShowFollowModal('')} />
+			)}
 		</Fragment>
 	)
 }
