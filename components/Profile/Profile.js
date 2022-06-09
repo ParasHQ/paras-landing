@@ -18,7 +18,7 @@ import {
 	IconTwitter,
 	IconWebsite,
 	IconWeibo,
-  IconInfo
+	IconInfo,
 } from 'components/Icons'
 import Tooltip from 'components/Common/Tooltip'
 
