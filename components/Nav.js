@@ -196,7 +196,7 @@ const Nav = () => {
 				)}
 
 				{/* Banner for special event */}
-				<div
+				{/* <div
 					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
 				>
 					<div className="px-10 py-1 md:p-0 ">
@@ -210,7 +210,7 @@ const Nav = () => {
 							here!
 						</a>
 					</div>
-				</div>
+				</div> */}
 
 				{process.env.APP_ENV !== 'production' && (
 					<div
