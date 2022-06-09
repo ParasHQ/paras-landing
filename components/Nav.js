@@ -143,6 +143,10 @@ const Nav = () => {
 		setShowAutoComplete(true)
 	}
 
+	const navActive = () => {
+		return <div className="absolute left-1/2 transform -translate-x-1/2 px-5 py-0.5 bg-primary" />
+	}
+
 	return (
 		<Fragment>
 			{showSettingModal && (
@@ -196,7 +200,7 @@ const Nav = () => {
 				)}
 
 				{/* Banner for special event */}
-				<div
+				{/* <div
 					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
 				>
 					<div className="px-10 py-1 md:p-0 ">
@@ -210,7 +214,7 @@ const Nav = () => {
 							here!
 						</a>
 					</div>
-				</div>
+				</div> */}
 
 				{process.env.APP_ENV !== 'production' && (
 					<div
@@ -360,7 +364,7 @@ const Nav = () => {
 								<a className="block w-full">{localeLn('Drops')}</a>
 							</Link>
 						</div> */}
-						<div className="px-3 text-gray-100 hidden md:block text-sm">
+						<div className="relative px-3 text-gray-100 hidden md:block text-sm">
 							{router.pathname === '/market' ? (
 								<a className="cursor-pointer" onClick={() => store.setMarketScrollPersist(0)}>
 									{localeLn('Market')}
@@ -370,21 +374,25 @@ const Nav = () => {
 									<a>{localeLn('Market')}</a>
 								</Link>
 							)}
+							{router.pathname.includes('/market') && navActive()}
 						</div>
-						<div className="px-3 text-gray-100 hidden md:block text-sm">
+						<div className="relative px-3 text-gray-100 hidden md:block text-sm">
 							<Link href="/token">
 								<a>{localeLn('Token')}</a>
 							</Link>
+							{router.pathname === '/token' && navActive()}
 						</div>
-						<div className="px-3 text-gray-100 hidden md:block text-sm">
+						<div className="relative px-3 text-gray-100 hidden md:block text-sm">
 							<Link href="/activity">
 								<a>{localeLn('Activity')}</a>
 							</Link>
+							{router.pathname === '/activity' && navActive()}
 						</div>
-						<div className="px-3 text-gray-100 hidden md:block text-sm">
+						<div className="relative px-3 text-gray-100 hidden md:block text-sm">
 							<Link href="/publication">
 								<a>{localeLn('Publication')}</a>
 							</Link>
+							{router.pathname.includes('/publication') && navActive()}
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block text-sm">
 							<a
@@ -435,9 +443,11 @@ const Nav = () => {
 						}}
 					>
 						<div className="text-center border-b-2 border-dashed border-gray-800">
-							<div className="text-gray-100 ">
+							<div className="text-gray-400 ">
 								<Link href="/">
-									<a className="p-4 block w-full">{localeLn('Home')}</a>
+									<a className={`p-4 block w-full ${router.pathname === '/' && 'text-white'}`}>
+										{localeLn('Home')}
+									</a>
 								</Link>
 							</div>
 							{/* <div className="text-gray-100 ">
@@ -445,36 +455,58 @@ const Nav = () => {
 									<a className="p-4 block w-full fireText">Drops</a>
 								</Link>
 							</div> */}
-							<div className="text-gray-100 ">
+							<div className="text-gray-400 ">
 								{router.pathname === '/market' ? (
 									<a
-										className="cursor-pointer p-4 block w-full"
+										className={`cursor-pointer p-4 block w-full ${
+											router.pathname.includes('/market') && 'text-white'
+										}`}
 										onClick={() => store.setMarketScrollPersist(0)}
 									>
 										{localeLn('Market')}
 									</a>
 								) : (
 									<Link href="/market">
-										<a className="p-4 block w-full">{localeLn('Market')}</a>
+										<a
+											className={`p-4 block w-full ${
+												router.pathname.includes('/market') && 'text-white'
+											}`}
+										>
+											{localeLn('Market')}
+										</a>
 									</Link>
 								)}
 							</div>
-							<div className="text-gray-100 ">
+							<div className="text-gray-400 ">
 								<Link href="/token">
-									<a className="p-4 block w-full">{localeLn('Token')}</a>
+									<a className={`p-4 block w-full ${router.pathname === '/token' && 'text-white'}`}>
+										{localeLn('Token')}
+									</a>
 								</Link>
 							</div>
-							<div className="text-gray-100 ">
+							<div className="text-gray-400 ">
 								<Link href="/activity">
-									<a className="p-4 block w-full">{localeLn('Activity')}</a>
+									<a
+										className={`p-4 block w-full ${
+											router.pathname === '/activity' && 'text-white'
+										}`}
+									>
+										{localeLn('Activity')}
+									</a>
 								</Link>
 							</div>
-							<div className="text-gray-100 ">
+							<div className="text-gray-400 ">
 								<Link href="/publication">
-									<a className="p-4 block w-full">{localeLn('Publication')}</a>
+									<a
+										className={`p-4 block w-full ${
+											router.pathname.includes('/publication') && 'text-white'
+										}`}
+									>
+										{localeLn('Publication')}
+									</a>
 								</Link>
 							</div>
-							<div className="text-gray-100 ">
+							<div className="text-gray-400 ">
 								<a
 									href="https://comic.paras.id?utm_source=paras-marketplace&utm_medium=website&utm_campaign=nav"
 									target="_blank"

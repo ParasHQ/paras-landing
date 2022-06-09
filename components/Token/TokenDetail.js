@@ -58,6 +58,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const router = useRouter()
 	const [threeDUrl, setThreeDUrl] = useState('')
 	const [threeDType, setThreeDType] = useState('')
+	const [showLove, setShowLove] = useState(false)
 	const toast = useToast()
 
 	useEffect(() => {
@@ -68,7 +69,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 
 			setDefaultLikes(token?.total_likes)
 		}
-	}, [token])
+	}, [JSON.stringify(token)])
 
 	useEffect(() => {
 		setActiveTab('info')
@@ -304,6 +305,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			}
 		)
 
+		mutate(`${token.contract_id}::${token.token_series_id}`)
 		mutate(`${token.contract_id}::${token.token_series_id}/${token.token_id}`)
 		if (res.status !== 200) {
 			setIsLiked(false)
@@ -333,10 +335,19 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			}
 		)
 
+		mutate(`${token.contract_id}::${token.token_series_id}`)
 		mutate(`${token.contract_id}::${token.token_series_id}/${token.token_id}`)
 		if (res.status !== 200) {
 			setIsLiked(true)
 			setDefaultLikes(defaultLikes + 1)
+		}
+	}
+
+	const onDoubleClickDetail = () => {
+		if (currentUser) {
+			setShowLove(true)
+			!isLiked && likeToken(token.contract_id, token.token_series_id)
+			setTimeout(() => setShowLove(false), 1000)
 		}
 	}
 
@@ -358,7 +369,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 					</div>
 					<div className="w-full h-full flex items-center justify-center p-2 lg:p-12 relative">
 						{tokenDisplay === 'detail' ? (
-							<>
+							<div className="relative h-full w-full" onDoubleClick={onDoubleClickDetail}>
 								{token?.metadata?.animation_url ? (
 									<>
 										{token?.metadata?.mime_type?.includes('audio') && (
@@ -414,7 +425,12 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										isMediaCdn={token?.isMediaCdn}
 									/>
 								)}
-							</>
+								{showLove && (
+									<div className="absolute inset-0 flex items-center justify-center z-10">
+										<IconLove className="love-container" color="#ffffff" size="20%" />
+									</div>
+								)}
+							</div>
 						) : (
 							<div className="w-1/2 h-full md:w-full m-auto flex items-center">
 								<Card

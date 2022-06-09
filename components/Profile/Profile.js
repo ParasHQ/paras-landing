@@ -9,6 +9,8 @@ import LineClampText from 'components/Common/LineClampText'
 import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu'
 import ProfileEdit from './ProfileEdit'
 import Modal from 'components/Modal'
+import Tooltip from 'components/Common/Tooltip'
+import { IconInfo } from 'components/Icons'
 
 const Profile = ({ userProfile, activeTab }) => {
 	const currentUser = useStore((store) => store.currentUser)
@@ -253,49 +255,41 @@ const Profile = ({ userProfile, activeTab }) => {
 			<div className="hidden sm:block">
 				<div className="flex flex-row sm:justify-center overflow-auto mt-4 py-2 w-full">
 					<div className="flex flex-row">
-						{router.query.id !== currentUser
-							? TabItems.filter((item) => item.title !== 'Liked').map((tab) => (
+						{TabItems.filter((item) =>
+							router.query.id !== currentUser ? item.title !== 'Liked' : item
+						).map((tab) => (
+							<div key={tab.title} className="px-4 relative flex flex-row">
+								<h4
+									onClick={() => router.push(`/${router.query.id}/${tab.linkUrl}`)}
+									className="text-gray-100 font-bold cursor-pointer"
+								>
+									{localeLn(tab.title)}
+								</h4>
+								{activeTab === tab.activeTab && (
 									<div
-										key={tab.title}
-										className="px-4 relative"
-										onClick={() => router.push(`/${router.query.id}/${tab.linkUrl}`)}
+										className="absolute left-0 right-0"
+										style={{
+											bottom: `-.25rem`,
+										}}
 									>
-										<h4 className="text-gray-100 font-bold cursor-pointer">
-											{localeLn(tab.title)}
-										</h4>
-										{activeTab === tab.activeTab && (
-											<div
-												className="absolute left-0 right-0"
-												style={{
-													bottom: `-.25rem`,
-												}}
-											>
-												<div className="mx-auto w-8 h-1 bg-gray-100"></div>
-											</div>
-										)}
+										<div className="mx-auto w-8 h-1 bg-gray-100"></div>
 									</div>
-							  ))
-							: TabItems.map((tab) => (
-									<div
-										key={tab.title}
-										className="px-4 relative"
-										onClick={() => router.push(`/${router.query.id}/${tab.linkUrl}`)}
+								)}
+								{tab.title === 'Liked' && (
+									<Tooltip
+										id="locked-fee"
+										show={true}
+										text={'This page is only visible to you'}
+										className="absolute text-center"
+										type="dark"
+										place="top"
+										width="36"
 									>
-										<h4 className="text-gray-100 font-bold cursor-pointer">
-											{localeLn(tab.title)}
-										</h4>
-										{activeTab === tab.activeTab && (
-											<div
-												className="absolute left-0 right-0"
-												style={{
-													bottom: `-.25rem`,
-												}}
-											>
-												<div className="mx-auto w-8 h-1 bg-gray-100"></div>
-											</div>
-										)}
-									</div>
-							  ))}
+										<IconInfo size={16} color="#ffffff" className="absolute mb-1 ml-1 text-white" />
+									</Tooltip>
+								)}
+							</div>
+						))}
 					</div>
 				</div>
 			</div>
@@ -318,16 +312,17 @@ const TabProfileMobile = ({ activeTab }) => {
 				wrapperClassName="flex items-center"
 				scrollContainerClassName="top-user-scroll"
 			>
-				{router.query.id !== currentUser &&
-					TabItems.filter((item) => item.title !== 'Liked').map((tab) => (
-						<TabProfile
-							key={tab.title}
-							itemId={tab.activeTab}
-							title={tab.title}
-							linkUrl={tab.linkUrl}
-							activeTab={activeTab}
-						/>
-					))}
+				{TabItems.filter((item) =>
+					router.query.id !== currentUser ? item.title !== 'Liked' : item
+				).map((tab) => (
+					<TabProfile
+						key={tab.title}
+						itemId={tab.activeTab}
+						title={tab.title}
+						linkUrl={tab.linkUrl}
+						activeTab={activeTab}
+					/>
+				))}
 			</ScrollMenu>
 		</div>
 	)
@@ -338,8 +333,13 @@ const TabProfile = ({ itemId, title, linkUrl, activeTab }) => {
 	const { localeLn } = useIntl()
 
 	return (
-		<div className="px-4 relative" onClick={() => router.push(`/${router.query.id}/${linkUrl}`)}>
-			<h4 className="text-gray-100 font-bold cursor-pointer">{localeLn(title)}</h4>
+		<div className="px-4 relative flex flex-row">
+			<h4
+				onClick={() => router.push(`/${router.query.id}/${linkUrl}`)}
+				className="text-gray-100 font-bold cursor-pointer"
+			>
+				{localeLn(title)}
+			</h4>
 			{activeTab === itemId && (
 				<div
 					className="absolute left-0 right-0"
@@ -347,8 +347,23 @@ const TabProfile = ({ itemId, title, linkUrl, activeTab }) => {
 						bottom: `-.10rem`,
 					}}
 				>
-					<div className="mx-auto w-8 h-1.5 bg-gray-100"></div>
+					<div
+						className={`${title === 'Liked' ? 'ml-6 w-7' : 'mx-auto w-8'} h-1.5 bg-gray-100`}
+					></div>
 				</div>
+			)}
+			{title === 'Liked' && (
+				<Tooltip
+					id="locked-fee-mobile"
+					show={true}
+					text={'This page is only visible to you'}
+					className=" text-center"
+					type="dark"
+					place="top"
+					width="36"
+				>
+					<IconInfo size={16} color="#ffffff" className=" z-10 mb-1 ml-1 text-white" />
+				</Tooltip>
 			)}
 		</div>
 	)

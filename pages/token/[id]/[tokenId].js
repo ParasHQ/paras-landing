@@ -31,7 +31,9 @@ const TokenPage = ({ errorCode, initial }) => {
 	}, [isEndedTime])
 
 	useEffect(() => {
-		asyncMutate()
+		if (currentUser) {
+			asyncMutate()
+		}
 	}, [currentUser])
 
 	const asyncMutate = async () => {
