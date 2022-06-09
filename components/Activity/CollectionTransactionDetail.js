@@ -13,13 +13,16 @@ const CollectionTransactionDetail = ({ data, idx, setLocalToken }) => {
 
 	const [colDetail, setColDetail] = useState({})
 
-	useEffect(async () => {
-		const res = await axios(`${process.env.V2_API_URL}/collections`, {
-			params: {
-				collection_id: data.collection_id,
-			},
-		})
-		setColDetail(res.data.data.results[0])
+	useEffect(() => {
+		const fetchCollection = async () => {
+			const res = await axios(`${process.env.V2_API_URL}/collections`, {
+				params: {
+					collection_id: data.collection_id,
+				},
+			})
+			setColDetail(res.data.data.results[0])
+		}
+		fetchCollection()
 	}, [])
 
 	return (
@@ -40,7 +43,7 @@ const CollectionTransactionDetail = ({ data, idx, setLocalToken }) => {
 						</a>
 					</Link>
 					<div className="ml-4">
-						{colDetail.collection && (
+						{colDetail?.collection && (
 							<Link href={`/collection/${data.collection_id}`}>
 								<a className="text-gray-100 border-b-2 border-transparent hover:border-gray-100 font-bold text-lg md:text-2xl">
 									{colDetail.collection}

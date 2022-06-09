@@ -4,7 +4,7 @@ import Footer from 'components/Footer'
 import { useIntl } from 'hooks/useIntl'
 import Button from 'components/Common/Button'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import cachios from 'cachios'
 import { getRandomInt, prettyBalance } from 'utils/common'
 import { CURRENT_SUPPLY } from 'constants/token'
 import useStore from 'lib/store'
@@ -205,15 +205,21 @@ export default function Home() {
 	}, [store.initialized])
 
 	const getParasPrice = async () => {
-		const res = await axios.get(
-			`https://api.coingecko.com/api/v3/simple/price?ids=PARAS&vs_currencies=USD`
+		const res = await cachios.get(
+			`https://api.coingecko.com/api/v3/simple/price?ids=PARAS&vs_currencies=USD`,
+			{
+				ttl: 60 * 15,
+			}
 		)
 		return res.data.paras.usd
 	}
 
 	const getNearPrice = async () => {
-		const res = await axios.get(
-			`https://api.coingecko.com/api/v3/simple/price?ids=NEAR&vs_currencies=USD`
+		const res = await cachios.get(
+			`https://api.coingecko.com/api/v3/simple/price?ids=NEAR&vs_currencies=USD`,
+			{
+				ttl: 60 * 15,
+			}
 		)
 		return res.data.near.usd
 	}

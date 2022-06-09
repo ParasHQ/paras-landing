@@ -8,17 +8,21 @@ import HomeTopUsersLoader from 'components/Home/Loaders/TopUsers'
 import { useIntl } from 'hooks/useIntl'
 import { trackTopBuyer, trackTopCollection, trackTopSeller } from 'lib/ga'
 import router from 'next/router'
+import useProfileData from 'hooks/useProfileData'
 
 const TopCollection = ({ collection, idx }) => {
 	const [colDetail, setColDetail] = useState({})
 
-	useEffect(async () => {
-		const res = await cachios.get(`${process.env.V2_API_URL}/collections`, {
-			params: {
-				collection_id: collection.collection_id,
-			},
-		})
-		setColDetail(res.data.data.results[0])
+	useEffect(() => {
+		const fetchCollection = async () => {
+			const res = await cachios.get(`${process.env.V2_API_URL}/collections`, {
+				params: {
+					collection_id: collection.collection_id,
+				},
+			})
+			setColDetail(res.data.data.results[0])
+		}
+		fetchCollection()
 	}, [])
 
 	const onTopColllection = (e) => {
@@ -63,17 +67,7 @@ const TopCollection = ({ collection, idx }) => {
 }
 
 const TopUser = ({ user, idx, topUserType }) => {
-	const [profile, setProfile] = useState({})
-
-	useEffect(async () => {
-		const res = await cachios.get(`${process.env.V2_API_URL}/profiles`, {
-			params: {
-				accountId: user.account_id,
-			},
-			ttl: 600,
-		})
-		setProfile(res.data.data.results[0])
-	}, [])
+	const profile = useProfileData(user.account_id)
 
 	const onTopUser = (type) => {
 		if (type === 'top-buyers') {

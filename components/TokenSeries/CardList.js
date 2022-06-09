@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import Card from 'components/Card/Card'
-import { parseImgUrl, prettyBalance } from 'utils/common'
+import { parseImgUrl, prettyBalance, abbrNum } from 'utils/common'
 import Link from 'next/link'
 import useStore from 'lib/store'
 import { useRouter } from 'next/router'
 import JSBI from 'jsbi'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import axios from 'axios'
+import WalletHelper from 'lib/WalletHelper'
 
 import { useIntl } from 'hooks/useIntl'
 import TokenSeriesDetailModal from './TokenSeriesDetailModal'
@@ -16,6 +18,9 @@ import CardListLoaderSmall from 'components/Card/CardListLoaderSmall'
 import useTokenSeries from 'hooks/useTokenSeries'
 import { useToast } from 'hooks/useToast'
 
+import IconLove from 'components/Icons/component/IconLove'
+import LoginModal from 'components/Modal/LoginModal'
+
 const CardList = ({
 	name = 'default',
 	tokens,
@@ -24,6 +29,7 @@ const CardList = ({
 	profileCollection,
 	type,
 	displayType = 'large',
+	showLike = false,
 }) => {
 	const store = useStore()
 	const containerRef = useRef()
@@ -103,6 +109,7 @@ const CardList = ({
 							profileCollection={profileCollection}
 							displayType={displayType}
 							type={type}
+							showLike={showLike}
 						/>
 					))}
 				</div>
@@ -113,17 +120,30 @@ const CardList = ({
 
 export default CardList
 
-const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'large' }) => {
+const TokenSeriesSingle = ({
+	_token,
+	profileCollection,
+	type,
+	displayType = 'large',
+	showLike,
+}) => {
+	const currentUser = useStore((state) => state.currentUser)
 	const { token, mutate } = useTokenSeries({
 		key: `${_token.contract_id}::${_token.token_series_id}`,
 		initialData: _token,
+		params: {
+			lookup_likes: true,
+			liked_by: currentUser,
+		},
 	})
 
 	const store = useStore()
 	const router = useRouter()
 	const [activeToken, setActiveToken] = useState(null)
 	const [modalType, setModalType] = useState(null)
-	const currentUser = useStore((state) => state.currentUser)
+	const [isLiked, setIsLiked] = useState(false)
+	const [defaultLikes, setDefaultLikes] = useState(0)
+	const [showLogin, setShowLogin] = useState(false)
 	const { localeLn } = useIntl()
 	const toast = useToast()
 
@@ -150,6 +170,18 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 	useEffect(() => {
 		countDownTimeAuction()
 	}, [isEndedTime])
+
+	useEffect(() => {
+		if (token.total_likes !== undefined) {
+			if (token.likes) {
+				setIsLiked(true)
+			} else {
+				setIsLiked(false)
+			}
+
+			setDefaultLikes(token.total_likes)
+		}
+	}, [JSON.stringify(token)])
 
 	const convertTimeOfAuction = (date) => {
 		const sliceNanoSec = String(date).slice(0, 13)
@@ -312,6 +344,62 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 		return currentBid[0]
 	}
 
+	const likeToken = async (contract_id, token_series_id) => {
+		if (!currentUser) {
+			setShowLogin(true)
+			return
+		}
+
+		setIsLiked(true)
+		setDefaultLikes(defaultLikes + 1)
+		const params = {
+			account_id: currentUser,
+		}
+
+		const res = await axios.put(
+			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
+			params,
+			{
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+			}
+		)
+
+		if (res.status !== 200) {
+			setIsLiked(false)
+			setDefaultLikes(defaultLikes - 1)
+		}
+	}
+
+	const unlikeToken = async (contract_id, token_series_id) => {
+		if (!currentUser) {
+			setShowLogin(true)
+			return
+		}
+
+		setIsLiked(false)
+		setDefaultLikes(defaultLikes - 1)
+		const params = {
+			account_id: currentUser,
+		}
+
+		const res = await axios.put(
+			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
+			params,
+			{
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+			}
+		)
+
+		if (res.status !== 200) {
+			setIsLiked(true)
+			setDefaultLikes(defaultLikes + 1)
+		}
+	}
+
 	return (
 		<>
 			<TokenSeriesDetailModal tokens={[token]} isAuctionEnds={isEndedTime} />
@@ -336,7 +424,16 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 									useOriginal: process.env.APP_ENV === 'production' ? false : true,
 									isMediaCdn: token.isMediaCdn,
 								})}
-								audioUrl={token.metadata.animation_url}
+								audioUrl={
+									token.metadata.mime_type &&
+									token.metadata.mime_type.includes('audio') &&
+									token.metadata.animation_url
+								}
+								threeDUrl={
+									token.metadata.mime_type &&
+									token.metadata.mime_type.includes('model') &&
+									token.metadata.animation_url
+								}
 								imgBlur={token.metadata.blurhash}
 								flippable
 								token={{
@@ -353,9 +450,13 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 									is_auction: token.token?.is_auction,
 									started_at: token.token?.started_at,
 									ended_at: token.token?.ended_at,
+									has_auction: token?.has_auction,
 								}}
 								profileCollection={profileCollection}
 								type={type}
+								displayType={displayType}
+								isAbleToLike
+								onLike={() => !isLiked && likeToken(token.contract_id, token.token_series_id)}
 							/>
 						</div>
 					</a>
@@ -423,33 +524,38 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 							)}
 						</div>
 					</div>
-					{type === 'collection' && !!token.metadata.score && (
-						<div
-							className={`${
-								displayType === 'large' ? `block` : `flex gap-1`
-							} text-right absolute top-0 right-0`}
-						>
-							<p
-								className={`${
-									displayType === 'large' ? `block` : `hidden`
-								} text-white opacity-80 md:text-sm`}
-								style={{ fontSize: 11 }}
-							>
-								Rarity Score
-							</p>
-							<p
-								className={`${
-									displayType === 'large' ? `hidden` : `block`
-								} text-white opacity-80 md:text-sm`}
-								style={{ fontSize: 11 }}
-							>
-								Rarity Score
-							</p>
+					<div
+						className={`${
+							displayType === 'large' ? `flex gap-1` : `flex gap-1`
+						} text-right absolute top-0 right-0 flex-col items-end`}
+					>
+						{type === 'collection' && !!token.metadata.score && (
 							<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
-								{token.metadata?.score?.toFixed(2)}
+								Rarity Score {token.metadata?.score?.toFixed(2)}
 							</p>
-						</div>
-					)}
+						)}
+						{showLike && (
+							<div className="inline-flex items-center">
+								<div
+									className="cursor-pointer"
+									onClick={() => {
+										isLiked
+											? unlikeToken(token.contract_id, token.token_series_id)
+											: likeToken(token.contract_id, token.token_series_id)
+									}}
+								>
+									<IconLove
+										size={displayType === 'large' ? 18 : 16}
+										color={isLiked ? '#c51104' : 'transparent'}
+										stroke={isLiked ? 'none' : 'white'}
+									/>
+								</div>
+								<p className={`text-white ml-1 ${displayType === 'large' ? 'text-sm' : 'text-xs'}`}>
+									{abbrNum(defaultLikes || 0, 1)}
+								</p>
+							</div>
+						)}
+					</div>
 					<div className="flex justify-between md:items-baseline">
 						{!token.token?.is_auction ||
 						(currentUser !== token.token?.owner_id && isCurrentBid('bidder') !== currentUser) ? (
@@ -507,6 +613,7 @@ const TokenSeriesSingle = ({ _token, profileCollection, type, displayType = 'lar
 					</div>
 				</div>
 			</div>
+			<LoginModal onClose={() => setShowLogin(false)} show={showLogin} />
 		</>
 	)
 }

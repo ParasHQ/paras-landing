@@ -35,7 +35,7 @@ const CollectionStats = ({ stats }) => {
 					className="text-center block p-3 sm:p-5"
 				>
 					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
-						{stats.total_card_sale}
+						{stats.total_card_sale || '0'}
 					</p>
 					<p className="text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg">
 						{localeLn('TotalListed')}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { Blurhash } from 'react-blurhash'
 import Scrollbars from 'react-custom-scrollbars'
 import { useRouter } from 'next/router'
@@ -9,7 +9,7 @@ import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
-import { capitalize, parseImgUrl, prettyBalance } from 'utils/common'
+import { capitalize, parseImgUrl, prettyBalance, abbrNum } from 'utils/common'
 import TokenMoreModal from '../Modal/TokenMoreModal'
 import TokenShareModal from '../Modal/TokenShareModal'
 import TokenUpdatePriceModal from '../Modal/TokenUpdatePriceModal'
@@ -30,6 +30,10 @@ import Card from 'components/Card/Card'
 import Tooltip from 'components/Common/Tooltip'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
+import axios from 'axios'
+import { Canvas } from '@react-three/fiber'
+import { Model1 } from 'components/Model3D/ThreeDModel'
+import FileType from 'file-type/browser'
 import TabAuction from 'components/Tabs/TabAuction'
 import TokenAuctionBidModal from 'components/Modal/TokenAuctionBidModal'
 import JSBI from 'jsbi'
@@ -38,17 +42,34 @@ import { useToast } from 'hooks/useToast'
 import CancelAuctionModal from 'components/Modal/CancelAuctionModal'
 import CancelBidModal from 'components/Modal/CancelBidModal'
 import { mutate } from 'swr'
+import IconLove from 'components/Icons/component/IconLove'
+import WalletHelper from 'lib/WalletHelper'
 
 const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState(null)
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
 	const [isEndedTime, setIsEndedTime] = useState(false)
+	const [isLiked, setIsLiked] = useState(false)
+	const [defaultLikes, setDefaultLikes] = useState(0)
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
 	const store = useStore()
 	const router = useRouter()
+	const [threeDUrl, setThreeDUrl] = useState('')
+	const [threeDType, setThreeDType] = useState('')
+	const [showLove, setShowLove] = useState(false)
 	const toast = useToast()
+
+	useEffect(() => {
+		if (token?.total_likes) {
+			if (token.likes) {
+				setIsLiked(true)
+			}
+
+			setDefaultLikes(token?.total_likes)
+		}
+	}, [JSON.stringify(token)])
 
 	useEffect(() => {
 		setActiveTab('info')
@@ -71,6 +92,12 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	useEffect(() => {
 		TabNotification(router.query.tab)
 	}, [router.query.tab])
+
+	useEffect(() => {
+		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('model')) {
+			get3DModel(token?.metadata?.animation_url)
+		}
+	}, [])
 
 	const TabNotification = (tab) => {
 		switch (tab) {
@@ -198,6 +225,16 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 		return currentUser === token.owner_id
 	}
 
+	const get3DModel = async (url) => {
+		const resp = await axios.get(`${parseImgUrl(url, undefined)}`, {
+			responseType: `blob`,
+		})
+		const fileType = await FileType.fromBlob(resp.data)
+		setThreeDType(fileType.mime)
+		const objectUrl = URL.createObjectURL(resp.data)
+		setThreeDUrl(objectUrl)
+	}
+
 	const checkUserBid = () => {
 		let userBid = []
 		token?.bidder_list?.map((item) => {
@@ -246,6 +283,74 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 		}
 	}
 
+	const likeToken = async (contract_id, token_series_id) => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+
+		setIsLiked(true)
+		setDefaultLikes(defaultLikes + 1)
+		const params = {
+			account_id: currentUser,
+		}
+
+		const res = await axios.put(
+			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
+			params,
+			{
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+			}
+		)
+
+		mutate(`${token.contract_id}::${token.token_series_id}`)
+		mutate(`${token.contract_id}::${token.token_series_id}/${token.token_id}`)
+		if (res.status !== 200) {
+			setIsLiked(false)
+			setDefaultLikes(defaultLikes - 1)
+		}
+	}
+
+	const unlikeToken = async (contract_id, token_series_id) => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+
+		setIsLiked(false)
+		setDefaultLikes(defaultLikes - 1)
+		const params = {
+			account_id: currentUser,
+		}
+
+		const res = await axios.put(
+			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
+			params,
+			{
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+			}
+		)
+
+		mutate(`${token.contract_id}::${token.token_series_id}`)
+		mutate(`${token.contract_id}::${token.token_series_id}/${token.token_id}`)
+		if (res.status !== 200) {
+			setIsLiked(true)
+			setDefaultLikes(defaultLikes + 1)
+		}
+	}
+
+	const onDoubleClickDetail = () => {
+		if (currentUser) {
+			setShowLove(true)
+			!isLiked && likeToken(token.contract_id, token.token_series_id)
+			setTimeout(() => setShowLove(false), 1000)
+		}
+	}
+
 	return (
 		<div className={`m-auto rounded-lg overflow-hidden ${className}`}>
 			<div className="flex flex-col lg:flex-row h-90vh lg:h-80vh">
@@ -264,34 +369,45 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 					</div>
 					<div className="w-full h-full flex items-center justify-center p-2 lg:p-12 relative">
 						{tokenDisplay === 'detail' ? (
-							<>
+							<div className="relative h-full w-full" onDoubleClick={onDoubleClickDetail}>
 								{token?.metadata?.animation_url ? (
-									<div className="max-h-80 md:max-h-52 lg:max-h-96 w-full mx-2 md:mx-0">
-										<div className="w-1/2 md:w-full h-full m-auto">
-											<Media
-												className="rounded-lg overflow-hidden max-h-80 md:max-h-52 lg:max-h-96"
-												url={
-													token.metadata?.mime_type
-														? parseImgUrl(token.metadata.media)
-														: token.metadata.media
-												}
-												videoControls={true}
-												videoLoop={true}
-												videoMuted={true}
-												videoPadding={true}
-												mimeType={token?.metadata?.mime_type}
-												seeDetails={true}
-												isMediaCdn={token?.isMediaCdn}
-											/>
-										</div>
-										<div className="w-full m-auto">
-											<div className="my-3 flex items-center justify-center w-full">
-												<audio controls className="w-full">
-													<source src={parseImgUrl(token?.metadata.animation_url)}></source>
-												</audio>
+									<>
+										{token?.metadata?.mime_type?.includes('audio') && (
+											<div className="max-h-80 md:max-h-52 lg:max-h-96 w-full mx-2 md:mx-0">
+												<div className="w-1/2 md:w-full h-full m-auto">
+													<Media
+														className="rounded-lg overflow-hidden max-h-80 md:max-h-52 lg:max-h-96"
+														url={
+															token.metadata?.mime_type
+																? parseImgUrl(token.metadata.media)
+																: token.metadata.media
+														}
+														videoControls={true}
+														videoLoop={true}
+														videoMuted={true}
+														videoPadding={true}
+														mimeType={token?.metadata?.mime_type}
+														seeDetails={true}
+														isMediaCdn={token?.isMediaCdn}
+													/>
+												</div>
+												<div className="w-full m-auto">
+													<div className="my-3 flex items-center justify-center w-full">
+														<audio controls className="w-full">
+															<source src={parseImgUrl(token?.metadata.animation_url)}></source>
+														</audio>
+													</div>
+												</div>
 											</div>
-										</div>
-									</div>
+										)}
+										{threeDType.includes(`model`) && threeDUrl && (
+											<Suspense fallback={null}>
+												<Canvas>
+													<Model1 threeDUrl={threeDUrl} />
+												</Canvas>
+											</Suspense>
+										)}
+									</>
 								) : (
 									<Media
 										className="rounded-lg overflow-hidden"
@@ -309,7 +425,12 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										isMediaCdn={token?.isMediaCdn}
 									/>
 								)}
-							</>
+								{showLove && (
+									<div className="absolute inset-0 flex items-center justify-center z-10">
+										<IconLove className="love-container" color="#ffffff" size="20%" />
+									</div>
+								)}
+							</div>
 						) : (
 							<div className="w-1/2 h-full md:w-full m-auto flex items-center">
 								<Card
@@ -318,7 +439,16 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										useOriginal: process.env.APP_ENV === 'production' ? false : true,
 										isMediaCdn: token.isMediaCdn,
 									})}
-									audioUrl={token.metadata?.animation_url}
+									audioUrl={
+										token.metadata.mime_type &&
+										token.metadata.mime_type.includes('audio') &&
+										token.metadata?.animation_url
+									}
+									threeDUrl={
+										token.metadata.mime_type &&
+										token.metadata.mime_type.includes('model') &&
+										token.metadata.animation_url
+									}
 									imgBlur={token.metadata.blurhash}
 									token={{
 										title: token.metadata.title,
@@ -382,6 +512,25 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										className="cursor-pointer mb-1"
 										onClick={() => setShowModal('more')}
 									/>
+									<div className="w-full flex flex-col items-center justify-center">
+										<div
+											className="cursor-pointer"
+											onClick={() => {
+												isLiked
+													? unlikeToken(token.contract_id, token.token_series_id)
+													: likeToken(token.contract_id, token.token_series_id)
+											}}
+										>
+											<IconLove
+												size={17}
+												color={isLiked ? '#c51104' : 'transparent'}
+												stroke={isLiked ? 'none' : 'white'}
+											/>
+										</div>
+										<p className="text-white text-center text-sm">
+											{abbrNum(defaultLikes ?? 0, 1)}
+										</p>
+									</div>
 									{token.is_staked && (
 										<Tooltip
 											id="text-staked"
