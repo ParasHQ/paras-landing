@@ -29,7 +29,9 @@ const TokenSeriesPage = ({ errorCode, initial }) => {
 	}
 
 	useEffect(() => {
-		asyncMutate()
+		if (currentUser) {
+			asyncMutate()
+		}
 	}, [currentUser])
 
 	if (errorCode) {

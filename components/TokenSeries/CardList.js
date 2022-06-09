@@ -181,7 +181,7 @@ const TokenSeriesSingle = ({
 
 			setDefaultLikes(token.total_likes)
 		}
-	}, [token])
+	}, [JSON.stringify(token)])
 
 	const convertTimeOfAuction = (date) => {
 		const sliceNanoSec = String(date).slice(0, 13)
@@ -455,6 +455,8 @@ const TokenSeriesSingle = ({
 								profileCollection={profileCollection}
 								type={type}
 								displayType={displayType}
+								isAbleToLike
+								onLike={() => !isLiked && likeToken(token.contract_id, token.token_series_id)}
 							/>
 						</div>
 					</a>
