@@ -13,7 +13,7 @@ import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { SHOW_TX_HASH_LINK } from 'constants/common'
 import { useRouter } from 'next/router'
 import useStore from 'lib/store'
-import { IconShareActivity } from 'components/Icons'
+import { IconShareActivity, IconTriangle } from 'components/Icons'
 
 export const descriptionMaker = (activity, localToken, localTradedToken) => {
 	const type = activity.type
@@ -619,19 +619,7 @@ const ActivityDetail = ({ activity, index }) => {
 									{timeAgo.format(
 										new Date(activity.issued_at ? activity.issued_at : 1636197684986)
 									)}
-									<svg
-										width="10"
-										height="10"
-										viewBox="0 0 21 19"
-										fill="none"
-										xmlns="http://www.w3.org/2000/svg"
-										className="ml-2 md:mt-0"
-									>
-										<path
-											d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z"
-											fill="white"
-										/>
-									</svg>
+									<IconTriangle size={10} />
 								</div>
 							</div>
 						</div>
