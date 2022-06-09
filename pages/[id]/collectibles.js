@@ -17,7 +17,7 @@ import useStore from 'lib/store'
 
 const LIMIT = 12
 
-const Collection = ({ userProfile, accountId }) => {
+const Collection = ({ userProfile, accountId, dataFollowing, dataFollower }) => {
 	const currentUser = useStore((state) => state.currentUser)
 	const router = useRouter()
 
@@ -195,7 +195,12 @@ const Collection = ({ userProfile, accountId }) => {
 			</Head>
 			<Nav />
 			<div className="max-w-6xl py-12 px-4 relative m-auto">
-				<Profile userProfile={userProfile} activeTab={'collection'} />
+				<Profile
+					userProfile={userProfile}
+					activeTab={'collection'}
+					dataFollowing={dataFollowing}
+					dataFollower={dataFollower}
+				/>
 				<div className="flex justify-center md:justify-end my-4 md:mb-14 md:-mr-4">
 					<FilterCollection onClearAll={removeAllCollectionsFilter} collections={collections} />
 					<FilterMarket isShowVerified={false} isCollectibles={true} isShowStaked={true} />
@@ -230,9 +235,19 @@ export async function getServerSideProps({ params }) {
 			accountId: params.id,
 		},
 	})
+	const followingRes = await axios.get(
+		'https://629fb1fd461f8173e4ef3a60.mockapi.io/api/v1/followings'
+	)
+
+	const followerRes = await axios.get(
+		`https://629fb1fd461f8173e4ef3a60.mockapi.io/api/v1/followers`
+	)
+
 	const userProfile = (await profileRes.data.data.results[0]) || null
+	const dataFollowing = (await followingRes.data) || null
+	const dataFollower = (await followerRes.data) || null
 
 	return {
-		props: { userProfile, accountId: params.id },
+		props: { userProfile, accountId: params.id, dataFollowing, dataFollower },
 	}
 }

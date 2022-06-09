@@ -11,6 +11,7 @@ const Button = ({
 	style,
 	isLoading,
 	onClick,
+	...props
 }) => {
 	const buttonBaseStyle =
 		'inline-block text-center relative whitespace-nowrap rounded-md font-medium text-body'
@@ -74,6 +75,7 @@ const Button = ({
 			className={buttonStyle}
 			style={style}
 			onClick={onClick}
+			{...props}
 		>
 			{isLoading ? <LoaderIcon /> : children}
 		</button>
