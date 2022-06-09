@@ -179,6 +179,7 @@ const Nav = () => {
 							className={`absolute right-0 z-50 mr-2 cursor-pointer ${
 								!store.showEmailWarning && 'hidden'
 							}`}
+							onClick={hideEmailNotVerified}
 						/>
 					</div>
 				)}
