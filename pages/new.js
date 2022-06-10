@@ -518,10 +518,6 @@ const NewPage = () => {
 			setShowThumbnailModal(true)
 			setFileType('iframe')
 		}
-		// } else {
-		// 	setIframeInput('')
-		// 	setIframeUrl('')
-		// }
 	}
 
 	const _setThumbnailFile = async (e) => {
