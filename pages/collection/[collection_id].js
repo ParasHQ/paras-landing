@@ -558,8 +558,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					<div className="absolute top-32 md:top-72 right-0 md:right-5 h-10 w-10">
 						{SHOW_TX_HASH_LINK && tokens[0]?.contract_id && (
 							<>
-								<ReactTooltip place="left" type="dark" />
+								<ReactTooltip id="view-contract-tooltip" place="left" type="dark" />
 								<a
+									data-for="view-contract-tooltip"
 									data-tip="View Contract"
 									href={`https://${
 										process.env.APP_ENV === 'production' ? `` : `testnet.`
