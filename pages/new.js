@@ -141,14 +141,14 @@ const NewPage = () => {
 	const [audioFile, setAudioFile] = useState('')
 	const [audioUrl, setAudioUrl] = useState('')
 	const uploadedAudioRef = useRef(null)
-	const [thumbnailAudioFile, setthumbnailAudioFile] = useState('')
-	const [thumbnailAudioUrl, setThumbnailAudioUrl] = useState('')
+	const [thumbnailFile, setThumbnailFile] = useState('')
+	const [thumbnailUrl, setThumbnailUrl] = useState('')
 	const [step, setStep] = useState(0)
 	const [isUploading, setIsUploading] = useState(false)
 	const [isCreating, setIsCreating] = useState(false)
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
 	const [showCreatingModal, setShowCreatingModal] = useState(false)
-	const [showAudioThumbnailModal, setShowAudioThumbnailModal] = useState(false)
+	const [showThumbnailModal, setShowThumbnailModal] = useState(false)
 	const [showCreateColl, setShowCreateColl] = useState(false)
 
 	const [showAlertErr, setShowAlertErr] = useState(false)
@@ -168,6 +168,10 @@ const NewPage = () => {
 	const [attributeKey, setAttributeKey] = useState([])
 	const [attributeValue, setAttributeValue] = useState({})
 	const [txFee, setTxFee] = useState(null)
+	const [showMoreFile, setShowMoreFile] = useState(false)
+	const [iframeInput, setIframeInput] = useState('')
+	const [iframeUrl, setIframeUrl] = useState('')
+	const [showIframeFile, setShowIframeFile] = useState(false)
 
 	const watchRoyalties = watch(`royalties`)
 	const showTooltipTxFee = (txFee?.next_fee || 0) > (txFee?.current_fee || 0)
@@ -219,7 +223,11 @@ const NewPage = () => {
 			attributes: formInput.attributes,
 			blurhash: blurhash,
 			mime_type: fileType,
-			animation_url: uploadedAudioRef.current ? uploadedAudioRef.current : uploaded3DRef.current,
+			animation_url: uploadedAudioRef.current
+				? uploadedAudioRef.current
+				: uploaded3DRef.current
+				? uploaded3DRef.current
+				: iframeUrl,
 		})
 		const blob = new Blob([reference], { type: 'text/plain' })
 
@@ -466,14 +474,16 @@ const NewPage = () => {
 				setImgFile('')
 				setThreeDUrl('')
 				setThreeDFile('')
-				setthumbnailAudioFile('')
-				setThumbnailAudioUrl('')
+				setIframeInput('')
+				setIframeUrl('')
+				setThumbnailFile('')
+				setThumbnailUrl('')
 				if (e.target.files[0].type?.includes('audio')) {
 					const _audioUrl = URL.createObjectURL(e.target.files[0])
 					setAudioFile(e.target.files[0])
 					setAudioUrl(_audioUrl)
 					setFileType(e.target.files[0].type)
-					setShowAudioThumbnailModal(true)
+					setShowThumbnailModal(true)
 				} else if (e.target.files[0].name?.includes('glb')) {
 					setIsUpload3DFile(true)
 					const threeDUrl = URL.createObjectURL(e.target.files[0])
@@ -481,7 +491,7 @@ const NewPage = () => {
 					setThreeDFile(e.target.files[0])
 					const _fileType = await FileType.fromBlob(e.target.files[0])
 					setFileType(_fileType?.mime)
-					setShowAudioThumbnailModal(true)
+					setShowThumbnailModal(true)
 					setIsUpload3DFile(false)
 				} else {
 					const newImgUrl = await readFileAsUrl(e.target.files[0])
@@ -494,15 +504,36 @@ const NewPage = () => {
 		}
 	}
 
-	const _setThumbnailAudio = async (e) => {
+	const _setMoreFile = async () => {
+		setThumbnailFile('')
+		setThumbnailUrl('')
+		setImgFile('')
+		setImgUrl('')
+		setThreeDUrl('')
+		setThreeDFile('')
+		setAudioUrl('')
+		setAudioFile('')
+		if (iframeInput) {
+			setIframeUrl(iframeInput)
+			setShowThumbnailModal(true)
+			setFileType('iframe')
+		}
+		// } else {
+		// 	setIframeInput('')
+		// 	setIframeUrl('')
+		// }
+	}
+
+	const _setThumbnailFile = async (e) => {
 		if (e.target.files[0]) {
 			if (e.target.files[0].size > MAX_FILE_SIZE) {
 				setShowAlertErr('Maximum file size is 30MB')
 				return
 			} else {
 				const newThumbUrl = URL.createObjectURL(e.target.files[0])
-				setthumbnailAudioFile(e.target.files[0])
-				setThumbnailAudioUrl(newThumbUrl)
+				setThumbnailFile(e.target.files[0])
+				setThumbnailUrl(newThumbUrl)
+				encodeBlurhash(newThumbUrl)
 			}
 		}
 	}
@@ -926,9 +957,9 @@ const NewPage = () => {
 					}}
 				/>
 			)}
-			{showAudioThumbnailModal && (
+			{showThumbnailModal && (
 				<Modal
-					close={() => setShowAudioThumbnailModal(false)}
+					close={() => setShowThumbnailModal(false)}
 					closeOnBgClick={false}
 					closeOnEscape={false}
 				>
@@ -941,29 +972,31 @@ const NewPage = () => {
 									setAudioUrl('')
 									setThreeDFile('')
 									setThreeDUrl('')
-									setThumbnailAudioUrl('')
-									setthumbnailAudioFile('')
+									setThumbnailUrl('')
+									setThumbnailFile('')
 									setImgFile('')
 									setImgUrl('')
-									setShowAudioThumbnailModal(false)
+									setIframeInput('')
+									setIframeUrl('')
+									setShowThumbnailModal(false)
 								}}
 							>
 								<IconX />
 							</div>
 						</div>
-						<h1 className="mt-4 text-xl font-bold text-white tracking-tight">
-							Thumbnail Image for Audio and 3D
+						<h1 className="mt-5 text-base font-bold text-white text-center tracking-tight">
+							Thumbnail Image for Audio, 3D, and Iframe
 						</h1>
 						<div className="px-2 flex items-center justify-center mt-4">
-							{thumbnailAudioFile ? (
-								<img src={thumbnailAudioUrl} className="object-contain w-9/12 h-80" alt="" />
+							{thumbnailFile ? (
+								<img src={thumbnailUrl} className="object-contain w-9/12 h-80" alt="" />
 							) : (
 								<div className="bg-gray-500 bg-opacity-60 hover:bg-opacity-30 transition-all cursor-pointer rounded-md w-9/12 h-80 flex items-center justify-center relative">
 									<input
 										type="file"
 										accept="image/*"
 										className="cursor-pointer w-full opacity-0 absolute inset-0"
-										onChange={_setThumbnailAudio}
+										onChange={_setThumbnailFile}
 									/>
 									<div className="text-white">+ Add</div>
 								</div>
@@ -974,10 +1007,10 @@ const NewPage = () => {
 								disabled={isUpload3DFile}
 								className="px-4 py-2 w-full rounded-md bg-primary text-white hover:bg-opacity-30 transition-all cursor-pointer text-center font-semibold"
 								onClick={async () => {
-									if (thumbnailAudioUrl) {
-										setImgUrl(thumbnailAudioUrl)
-										setImgFile(thumbnailAudioFile)
-										setShowAudioThumbnailModal(false)
+									if (thumbnailUrl) {
+										setImgUrl(thumbnailUrl)
+										setImgFile(thumbnailFile)
+										setShowThumbnailModal(false)
 									}
 								}}
 							>
@@ -1007,13 +1040,20 @@ const NewPage = () => {
 								height: `60vh`,
 							}}
 						>
-							{threeDUrl && show3dFile ? (
+							{(threeDUrl && show3dFile) || (iframeUrl && showIframeFile) ? (
 								<>
-									<Suspense fallback={null}>
-										<Canvas>
-											<Model1 threeDUrl={threeDUrl} />
-										</Canvas>
-									</Suspense>
+									{threeDUrl && show3dFile && (
+										<>
+											<Suspense fallback={null}>
+												<Canvas>
+													<Model1 threeDUrl={threeDUrl} />
+												</Canvas>
+											</Suspense>
+										</>
+									)}
+									{iframeUrl && showIframeFile && (
+										<iframe src={iframeUrl} className="object-contain w-full h-full" />
+									)}
 								</>
 							) : (
 								<>
@@ -1078,6 +1118,38 @@ const NewPage = () => {
 										<line x1={6} y1="8.6" x2={4} y2="7.5" />
 									</svg>
 									3D
+								</div>
+							</div>
+						)}
+						{iframeUrl && (
+							<div className="absolute top-5 right-5">
+								<div
+									className={`py-1 px-2 text-white rounded-full flex items-center bg-gray-700 hover:bg-gray-900 transition-all cursor-pointer ${
+										showIframeFile && `border border-white`
+									}`}
+									onClick={() => {
+										setShowIframeFile(!showIframeFile)
+									}}
+								>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										className="icon icon-tabler icon-tabler-device-gamepad mr-1"
+										width={25}
+										height={25}
+										viewBox="0 0 24 24"
+										strokeWidth="1.5"
+										stroke="currentColor"
+										fill="none"
+										strokeLinecap="round"
+										strokeLinejoin="round"
+									>
+										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
+										<rect x={2} y={6} width={20} height={12} rx={2} />
+										<path d="M6 12h4m-2 -2v4" />
+										<line x1={15} y1={11} x2={15} y2="11.01" />
+										<line x1={18} y1={13} x2={18} y2="13.01" />
+									</svg>
+									Iframe
 								</div>
 							</div>
 						)}
@@ -1235,6 +1307,55 @@ const NewPage = () => {
 										)}
 									</div>
 								</div>
+								<div
+									className="flex items-center cursor-pointer mt-3"
+									onClick={() => setShowMoreFile(!showMoreFile)}
+								>
+									<p className="text-gray-400 text-sm font-semibold mr-1 hover:text-gray-300">
+										More
+									</p>
+									<div>
+										<svg
+											viewBox="0 0 11 7"
+											fill="#9da3ae"
+											width="14"
+											height="14"
+											xlmns="http://www.w3.org/2000/svg"
+										>
+											<path
+												fillRule="evenodd"
+												clipRule="evenodd"
+												d="M5.00146 6.41431L9.70857 1.7072C10.0991 1.31668 10.0991 0.683511 9.70857 0.292986C9.31805 -0.097538 8.68488 -0.097538 8.29436 0.292986L5.00146 3.58588L1.70857 0.292986C1.31805 -0.097538 0.684882 -0.097538 0.294358 0.292986C-0.0961662 0.68351 -0.0961662 1.31668 0.294358 1.7072L5.00146 6.41431Z"
+												fill="#9da3ae"
+											></path>
+										</svg>
+									</div>
+								</div>
+								{showMoreFile && (
+									<div>
+										<div className="mt-2">
+											<label className="block text-sm text-gray-100 mb-1">Playable In-frame</label>
+											<div className="flex h-full space-x-1">
+												<div className={`${iframeUrl ? `w-full` : `w-10/12`}`}>
+													<input
+														type="text"
+														name="iframe"
+														value={iframeInput}
+														onChange={(e) => setIframeInput(e.target.value)}
+														className={`focus:border-gray-600 bg-white bg-opacity-10 text-xs focus:bg-white focus:bg-opacity-10`}
+														placeholder="Iframe URL"
+													/>
+												</div>
+												<div
+													className={`w-2/12 p-1 border-2 border-dashed border-gray-400 hover:text-opacity-30 transition-all text-white rounded-md text-xs cursor-pointer max-h-full flex items-center justify-center`}
+													onClick={_setMoreFile}
+												>
+													Submit
+												</div>
+											</div>
+										</div>
+									</div>
+								)}
 								<div>
 									<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
 										<button onClick={_handleBack}>{localeLn('Back')}</button>
