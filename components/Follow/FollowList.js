@@ -1,14 +1,22 @@
 import Avatar from 'components/Common/Avatar'
 import Button from 'components/Common/Button'
 import { IconVerified } from 'components/Icons'
+import ActionFollowModal from 'components/Modal/ActionFollowModal'
 import Link from 'next/link'
 import { useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
 import FollowListLoader from './FollowListLoader'
 
-const FollowList = ({ data, getMoreData, hasMore }) => {
+const FollowList = ({ data, getMoreData, hasMore, fetchDataAction = () => {} }) => {
 	const [buttonHover, setButtonHover] = useState()
+	const [showActionModal, setShowActionModal] = useState('')
+	const [dataActionModal, setDataActionModal] = useState()
+
+	const followAction = async (user) => {
+		setDataActionModal(user)
+		setShowActionModal('unfollow')
+	}
 
 	return (
 		<div className="rounded-md ml-1 md:ml-0">
@@ -35,7 +43,9 @@ const FollowList = ({ data, getMoreData, hasMore }) => {
 											<a>
 												<Avatar
 													size="lg"
-													src={parseImgUrl(user?.imgUrl)}
+													src={parseImgUrl(user?.imgUrl, null, {
+														width: `50`,
+													})}
 													className="align-bottom"
 												/>
 											</a>
@@ -62,6 +72,7 @@ const FollowList = ({ data, getMoreData, hasMore }) => {
 										}`}
 										size="sm"
 										variant="error"
+										onClick={() => followAction(user)}
 									>
 										{buttonHover === idx ? 'Unfollow' : 'Following'}
 									</Button>
@@ -71,6 +82,14 @@ const FollowList = ({ data, getMoreData, hasMore }) => {
 					})}
 				</div>
 			</InfiniteScroll>
+			{showActionModal === 'unfollow' && (
+				<ActionFollowModal
+					show={true}
+					data={dataActionModal}
+					onClose={() => setShowActionModal('')}
+					fetchDataAction={() => fetchDataAction()}
+				/>
+			)}
 		</div>
 	)
 }

@@ -17,35 +17,38 @@ const FollowArtistModal = ({ show, onClose, typeFollow }) => {
 	const [startPositionY, setStartPositionY] = useState(340.5)
 	const [endPositionY, setEndPositionY] = useState(404.5)
 
-	const followParams = (_page = 1) => {
+	const followParams = (_page = 1, type) => {
 		const params = {
-			page: _page,
-			limit: LIMIT,
+			page: type !== 'action-unfollow' ? _page : 1,
+			limit: type !== 'action-unfollow' ? LIMIT : LIMIT * (page === 1 ? page : page - 1),
 		}
 		return params
 	}
 
 	useEffect(() => {
-		const fetchData = async () => {
-			setIsRefreshing(true)
-			let res
-			res = await axios(
-				typeFollow === 'following'
-					? `https://629fb1fd461f8173e4ef3a60.mockapi.io/api/v1/followings`
-					: `https://629fb1fd461f8173e4ef3a60.mockapi.io/api/v1/followers`,
-				{
-					params: followParams(page),
-				}
-			)
-			if (res.data.length === LIMIT) {
-				setPage(2)
-				setHasMore(true)
-			}
-			setFollows(res.data)
-			setIsRefreshing(false)
-		}
 		fetchData()
 	}, [])
+
+	const fetchData = async (type) => {
+		setIsRefreshing(true)
+
+		let res
+		res = await axios(
+			typeFollow === 'following'
+				? `https://629fb1fd461f8173e4ef3a60.mockapi.io/api/v1/followings`
+				: `https://629fb1fd461f8173e4ef3a60.mockapi.io/api/v1/followers`,
+			{
+				params:
+					type !== 'action-unfollow' ? followParams(page) : followParams(page, 'action-unfollow'),
+			}
+		)
+		if (res.data.length === LIMIT && type !== 'action-unfollow') {
+			setPage(2)
+			setHasMore(true)
+		}
+		setFollows(res.data)
+		setIsRefreshing(false)
+	}
 
 	const getMoreData = async () => {
 		if (!hasMore || isFetching) {
@@ -98,12 +101,17 @@ const FollowArtistModal = ({ show, onClose, typeFollow }) => {
 					</p>
 				</div>
 				<div>
-					<Scrollbars autoHeight autoHeightMax="40vh" onScrollFrame={(e) => scrollList(e)}>
+					<Scrollbars autoHeight autoHeightMax="30vh" onScrollFrame={(e) => scrollList(e)}>
 						<div className="ml-2">
 							{isRefreshing ? (
 								<FollowListLoader length={5} />
 							) : (
-								<FollowList data={follows} getMoreData={getMoreData} hasMore={hasMore} />
+								<FollowList
+									data={follows}
+									getMoreData={getMoreData}
+									hasMore={hasMore}
+									fetchDataAction={() => fetchData('action-unfollow')}
+								/>
 							)}
 						</div>
 					</Scrollbars>
