@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import CardListLoader from 'components/Card/CardListLoader'
-import useToken from 'hooks/useToken'
 import axios from 'axios'
 import TokenList from 'components/Token/TokenList'
 import Link from 'next/link'
@@ -10,7 +9,7 @@ const HomeAuctionList = () => {
 	const { localeLn } = useIntl()
 	const _title = localeLn('LiveAuction')
 	const [auctionToken, setAuctionToken] = useState([])
-	const [volume, setVolume] = useState([])
+	const [_, setVolume] = useState([])
 	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
