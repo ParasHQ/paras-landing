@@ -4,7 +4,7 @@ import Scrollbars from 'react-custom-scrollbars'
 import { useRouter } from 'next/router'
 
 import Button from 'components/Common/Button'
-import { IconDots } from 'components/Icons'
+import { IconDots, IconLoader } from 'components/Icons'
 import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
@@ -419,7 +419,13 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 											</div>
 										)}
 										{fileType.includes(`model`) && threeDUrl && (
-											<Suspense fallback={null}>
+											<Suspense
+												fallback={
+													<div className="flex h-full w-full items-center justify-center">
+														<IconLoader />
+													</div>
+												}
+											>
 												<Canvas>
 													<Model1 threeDUrl={threeDUrl} />
 												</Canvas>
