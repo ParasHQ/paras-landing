@@ -4,8 +4,7 @@ import Scrollbars from 'react-custom-scrollbars'
 import { useRouter } from 'next/router'
 
 import Button from 'components/Common/Button'
-import { IconDots, IconLoader } from 'components/Icons'
-import { IconDots, IconInfo } from 'components/Icons'
+import { IconDots, IconLoader, IconInfo } from 'components/Icons'
 import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
