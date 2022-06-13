@@ -20,6 +20,7 @@ import { useToast } from 'hooks/useToast'
 import { sentryCaptureException } from 'lib/sentry'
 import EmbeddedCollection from 'components/Publication/EmbeddedCollection'
 import WalletHelper from 'lib/WalletHelper'
+import { IconDots } from 'components/Icons'
 
 const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const store = useStore()
@@ -256,37 +257,11 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 								</div>
 							</div>
 							<div>
-								<svg
-									className="cursor-pointer m-auto"
+								<IconDots
+									color="#ffffff"
+									className="cursor-pointer mb-1"
 									onClick={() => setShowModal('options')}
-									width="24"
-									height="24"
-									viewBox="0 0 29 7"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<rect
-										width="6.78723"
-										height="6.78723"
-										rx="2"
-										transform="matrix(1 0 0 -1 0 6.78711)"
-										fill="white"
-									/>
-									<rect
-										width="6.78723"
-										height="6.78723"
-										rx="2"
-										transform="matrix(1 0 0 -1 11.1064 6.78711)"
-										fill="white"
-									/>
-									<rect
-										width="6.78723"
-										height="6.78723"
-										rx="2"
-										transform="matrix(1 0 0 -1 22.2126 6.78711)"
-										fill="white"
-									/>
-								</svg>
+								/>
 							</div>
 						</div>
 						{content && (

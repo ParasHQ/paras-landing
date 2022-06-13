@@ -12,6 +12,7 @@ import ChooseAccountModal from 'components/Modal/ChooseAccountModal'
 import Scrollbars from 'react-custom-scrollbars'
 import WalletHelper, { walletType } from 'lib/WalletHelper'
 import near from 'lib/near'
+import { IconTriangle } from 'components/Icons'
 
 const User = () => {
 	const store = useStore()
@@ -141,18 +142,7 @@ const User = () => {
 							<img src={store.userProfile?.imgUrl ? parseImgUrl(store.userProfile.imgUrl) : null} />
 						</div>
 						<div className="ml-1">
-							<svg
-								width="10"
-								height="10"
-								viewBox="0 0 21 19"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z"
-									fill="white"
-								/>
-							</svg>
+							<IconTriangle size={10} />
 						</div>
 					</div>
 				</div>

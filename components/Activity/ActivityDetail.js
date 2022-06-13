@@ -13,6 +13,7 @@ import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { SHOW_TX_HASH_LINK } from 'constants/common'
 import { useRouter } from 'next/router'
 import useStore from 'lib/store'
+import { IconShareActivity, IconTriangle } from 'components/Icons'
 
 export const descriptionMaker = (activity, localToken, localTradedToken) => {
 	const type = activity.type
@@ -606,23 +607,7 @@ const ActivityDetail = ({ activity, index }) => {
 											target={`_blank`}
 										>
 											<div className="w-8 h-4 md:h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-4 flex items-center justify-end md:justify-center">
-												<svg
-													xmlns="http://www.w3.org/2000/svg"
-													className="icon icon-tabler icon-tabler-external-link"
-													width={18}
-													height={18}
-													viewBox="0 0 24 24"
-													strokeWidth="2"
-													stroke="#fff"
-													fill="none"
-													strokeLinecap="round"
-													strokeLinejoin="round"
-												>
-													<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-													<path d="M11 7h-5a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-5" />
-													<line x1={10} y1={14} x2={20} y2={4} />
-													<polyline points="15 4 20 4 20 9" />
-												</svg>
+												<IconShareActivity size={18} />
 											</div>
 										</a>
 									)}
@@ -634,19 +619,7 @@ const ActivityDetail = ({ activity, index }) => {
 									{timeAgo.format(
 										new Date(activity.issued_at ? activity.issued_at : 1636197684986)
 									)}
-									<svg
-										width="10"
-										height="10"
-										viewBox="0 0 21 19"
-										fill="none"
-										xmlns="http://www.w3.org/2000/svg"
-										className="ml-2 md:mt-0"
-									>
-										<path
-											d="M20.7846 0.392303L10.3923 18.3923L0 0.392304L20.7846 0.392303Z"
-											fill="white"
-										/>
-									</svg>
+									<IconTriangle size={10} />
 								</div>
 							</div>
 						</div>

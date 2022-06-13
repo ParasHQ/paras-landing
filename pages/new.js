@@ -23,7 +23,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import Scrollbars from 'react-custom-scrollbars'
 import getConfig from 'config/near'
 import Tooltip from 'components/Common/Tooltip'
-import { IconInfo, IconX } from 'components/Icons'
+import { IconInfo, IconSpin, IconX } from 'components/Icons'
 import WalletHelper from 'lib/WalletHelper'
 import AudioPlayer from 'components/Common/AudioPlayer'
 import { Canvas } from '@react-three/fiber'
@@ -66,16 +66,7 @@ const RoyaltyWatch = ({ control, append }) => {
 				onClick={() => append({ accountId: '', value: '' })}
 			>
 				<span className="text-sm pr-2">Add</span>
-				<svg
-					width="14"
-					height="14"
-					viewBox="0 0 16 16"
-					fill="none"
-					className="cursor-pointer"
-					xmlns="http://www.w3.org/2000/svg"
-				>
-					<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
-				</svg>
+				<IconX style={{ transform: 'rotate(45deg)' }} className="cursor-pointer" size={20} />
 			</button>
 		</div>
 	)
@@ -83,26 +74,7 @@ const RoyaltyWatch = ({ control, append }) => {
 
 const LoaderIcon = () => (
 	<div className="flex items-center justify-center">
-		<svg
-			className="animate-spin m h-5 w-5 text-white"
-			xmlns="http://www.w3.org/2000/svg"
-			fill="none"
-			viewBox="0 0 24 24"
-		>
-			<circle
-				className="opacity-25"
-				cx="12"
-				cy="12"
-				r="10"
-				stroke="currentColor"
-				strokeWidth="4"
-			></circle>
-			<path
-				className="opacity-75"
-				fill="currentColor"
-				d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-			></path>
-		</svg>
+		<IconSpin />
 	</div>
 )
 
@@ -1316,17 +1288,12 @@ const NewPage = () => {
 									<div className="mt-4">
 										<div className="flex items-center justify-between mb-1">
 											<label className="block text-sm">{localeLn('Attributes')}</label>
-											<svg
-												width="14"
-												height="14"
-												viewBox="0 0 16 16"
-												fill="none"
+											<IconX
 												className="cursor-pointer"
 												onClick={() => append({ trait_type: '', value: '' })}
-												xmlns="http://www.w3.org/2000/svg"
-											>
-												<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
-											</svg>
+												size={20}
+												style={{ transform: 'rotate(45deg)' }}
+											/>
 										</div>
 										<Scrollbars ref={scrollBar} autoHeight={false} style={{ height: '200px' }}>
 											{fields.map((attr, idx) => (
@@ -1354,17 +1321,7 @@ const NewPage = () => {
 														)}
 													/>
 													<div className="cursor-pointer self-center" onClick={() => remove(idx)}>
-														<svg
-															width="14"
-															height="14"
-															viewBox="0 0 16 16"
-															fill="none"
-															style={{ transform: 'rotate(45deg)' }}
-															className="relative z-10"
-															xmlns="http://www.w3.org/2000/svg"
-														>
-															<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
-														</svg>
+														<IconX className="relative z-10" size={20} />
 													</div>
 												</div>
 											))}
@@ -1408,17 +1365,7 @@ const NewPage = () => {
 														placeholder="Value (10, 20, 30)"
 													/>
 													<div className="cursor-pointer" onClick={() => royaltyRemove(idx)}>
-														<svg
-															width="14"
-															height="14"
-															viewBox="0 0 16 16"
-															fill="none"
-															style={{ transform: 'rotate(45deg)' }}
-															className="relative z-10"
-															xmlns="http://www.w3.org/2000/svg"
-														>
-															<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
-														</svg>
+														<IconX className="relative z-10" size={20} />
 													</div>
 												</div>
 											))}

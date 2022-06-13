@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import TokenSeriesDetail from './TokenSeriesDetail'
 import Modal from 'components/Modal'
 import { useIntl } from 'hooks/useIntl'
+import { IconArrow } from 'components/Icons'
 
 function TokenSeriesDetailModal({ tokens = [], isAuctionEnds }) {
 	const router = useRouter()
@@ -51,20 +52,7 @@ function TokenSeriesDetailModal({ tokens = [], isAuctionEnds }) {
 								className="cursor-pointer flex items-center select-none"
 								onClick={() => closeTokenSeriesDetail(null)}
 							>
-								<svg
-									width="16"
-									height="16"
-									viewBox="0 0 16 16"
-									fill="none"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path
-										fillRule="evenodd"
-										clipRule="evenodd"
-										d="M5.41412 7.00001H13.9999V9.00001H5.41412L8.70701 12.2929L7.2928 13.7071L1.58569 8.00001L7.2928 2.29291L8.70701 3.70712L5.41412 7.00001Z"
-										fill="white"
-									/>
-								</svg>
+								<IconArrow size={16} />
 								<p className="pl-2 text-gray-100 cursor-pointer relative z-50">
 									{localeLn('Back')}
 								</p>
