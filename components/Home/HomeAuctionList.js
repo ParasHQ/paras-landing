@@ -15,6 +15,7 @@ const HomeAuctionList = () => {
 	useEffect(() => {
 		const auctionParams = {
 			is_auction: true,
+			is_verified: true,
 			__sort: 'ended_at::1',
 			__limit: 4,
 		}
