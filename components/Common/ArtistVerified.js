@@ -19,7 +19,7 @@ const ArtistVerified = ({ token, collection }) => {
 
 	return (
 		<>
-			{showTooltip && <ReactTooltip place="right" type="dark" />}
+			{showTooltip && <ReactTooltip id="verified-tooltip" place="right" type="light" />}
 			<span className="font-semibold">
 				<Link
 					href={
@@ -34,7 +34,7 @@ const ArtistVerified = ({ token, collection }) => {
 				</Link>
 			</span>
 			{(artistData?.isCreator || collection?.isCreator) && (
-				<span data-tip="Verified Creator" className="ml-1">
+				<span data-for="verified-tooltip" data-tip="Verified Creator" className="ml-1">
 					<svg
 						width="18"
 						height="17"
