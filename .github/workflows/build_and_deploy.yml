@@ -1,0 +1,91 @@
+name: Build Image
+on:
+  workflow_call:
+    secrets:
+      IMAGE:
+        required: true
+
+      GKE_DEPLOYMENT_NAME:
+        required: true
+      GKE_NAMESPACE:
+        required: true
+      GKE_SA_KEY:
+        required: true
+      GKE_PROJECT_ID:
+        required: true
+      GKE_CLUSTER:
+        required: true
+      GKE_ZONE:
+        required: true
+
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+    name: build-image
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: google-github-actions/setup-gcloud@94337306dda8180d967a56932ceb4ddcf01edae7
+        with:
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+          project_id: ${{ secrets.GKE_PROJECT_ID }}
+
+      - uses: google-github-actions/get-gke-credentials@fb08709ba27618c31c09e014e1d8364b02e5042e
+        with:
+          cluster_name: ${{ secrets.GKE_CLUSTER }}
+          location: ${{ secrets.GKE_ZONE }}
+          credentials: ${{ secrets.GKE_SA_KEY }}
+
+      - name: Set up Kubectl
+        run: |-
+          curl -sfLo kubectl "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod u+x ./kubectl
+
+      - run: |-
+          gcloud --quiet auth configure-docker
+
+      - name: Get ENV from configmap
+        env:
+          GKE_DEPLOYMENT_NAME: ${{ secrets.GKE_DEPLOYMENT_NAME }}
+          GKE_NAMESPACE: ${{ secrets.GKE_NAMESPACE }}
+        run: |-
+          ./kubectl get configmap "config-${GKE_NAMESPACE}-${GKE_DEPLOYMENT_NAME}" -n $GKE_NAMESPACE -o go-template='{{range $k,$v := .data}}{{printf "%s=" $k}}{{if not $v}}{{$v}}{{else}}{{$v}}{{end}}{{"\n"}}{{end}}' > .env.temp
+
+      - name: Build
+        env:
+          GKE_PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
+          IMAGE: ${{ secrets.IMAGE }}
+        run: |-
+          docker build \
+            --tag "gcr.io/$GKE_PROJECT_ID/$IMAGE:$GITHUB_SHA" \
+            --build-arg GITHUB_SHA="$GITHUB_SHA" \
+            --build-arg GITHUB_REF="$GITHUB_REF" \
+            .
+          rm .env.temp
+
+      - name: Publish
+        env:
+          GKE_PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
+          IMAGE: ${{ secrets.IMAGE }}
+        run: |-
+          docker push "gcr.io/$GKE_PROJECT_ID/$IMAGE:$GITHUB_SHA"
+
+      - name: Clean docker build
+        env:
+          GKE_PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
+          IMAGE: ${{ secrets.IMAGE }}
+        run: |-
+          docker image rm "gcr.io/$GKE_PROJECT_ID/$IMAGE:$GITHUB_SHA" --force
+
+      - name: Deploy
+        env:
+          IMAGE: ${{ secrets.IMAGE }}
+          GKE_DEPLOYMENT_NAME: ${{ secrets.GKE_DEPLOYMENT_NAME }}
+          GKE_PROJECT_ID: ${{ secrets.GKE_PROJECT_ID }}
+          GKE_NAMESPACE: ${{ secrets.GKE_NAMESPACE }}
+
+        run: |-
+          ./kubectl set image deployment/$GKE_DEPLOYMENT_NAME $GKE_DEPLOYMENT_NAME="gcr.io/$GKE_PROJECT_ID/$IMAGE:$GITHUB_SHA" -n $GKE_NAMESPACE --record
+          ./kubectl rollout status deployment/$GKE_DEPLOYMENT_NAME -n $GKE_NAMESPACE
+          ./kubectl get deployment/$GKE_DEPLOYMENT_NAME -o wide -n $GKE_NAMESPACE
