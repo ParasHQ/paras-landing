@@ -45,6 +45,7 @@ const home = {
 	Featured: '特色',
 	Latest: '最新',
 	TopCollections: 'Top 收藏品',
+	LiveAuction: '现场拍卖',
 	TopBuyers: 'Top 买家',
 	TopSellers: 'Top 卖家',
 	NewestCards: '最新卡片',
