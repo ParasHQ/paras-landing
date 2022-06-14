@@ -13,6 +13,8 @@ import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { SHOW_TX_HASH_LINK } from 'constants/common'
 import { useRouter } from 'next/router'
 import useStore from 'lib/store'
+import useTokenOrTokenSeries from 'hooks/useTokenOrTokenSeries'
+import { useNonInitialEffect } from 'hooks/useNonInitialEffect'
 
 export const descriptionMaker = (activity, localToken, localTradedToken) => {
 	const type = activity.type
@@ -115,7 +117,6 @@ const ActivityDetail = ({ activity, index }) => {
 	const { localeLn } = useIntl()
 	const [showModal, setShowModal] = useState(null)
 	const [isCopied, setIsCopied] = useState(false)
-	const [localToken, setLocalToken] = useState(null)
 	const [showDetailActivity, setShowDetailActivity] = useState(-1)
 
 	const shareLink = `${process.env.BASE_URL}/activity/${activity._id}`
@@ -126,6 +127,23 @@ const ActivityDetail = ({ activity, index }) => {
 	const isTradeActivity = activity?.type?.includes('trade')
 	const router = useRouter()
 	const store = useStore()
+	const currentUser = useStore((state) => state.currentUser)
+
+	const { token: localToken, mutate } = useTokenOrTokenSeries({
+		key: `${activity.contract_id}::${activity.token_series_id}${
+			activity.token_id ? `/${activity.token_id}` : ''
+		}`,
+		params: {
+			lookup_likes: true,
+			liked_by: currentUser,
+		},
+	})
+
+	useNonInitialEffect(() => {
+		if (currentUser) {
+			mutate()
+		}
+	}, [currentUser])
 
 	const HEADERS = [
 		{
@@ -269,24 +287,6 @@ const ActivityDetail = ({ activity, index }) => {
 			fetchTradeToken()
 		}
 	}, [])
-
-	useEffect(() => {
-		if (activity) {
-			fetchData()
-		}
-	}, [activity])
-
-	const fetchData = async () => {
-		const url = activity.token_id
-			? `${process.env.V2_API_URL}/token?token_id=${activity.token_id}&contract_id=${activity.contract_id}`
-			: `${process.env.V2_API_URL}/token-series?token_series_id=${activity.token_series_id}&contract_id=${activity.contract_id}`
-
-		const resp = await cachios.get(url, {
-			ttl: 60,
-		})
-
-		setLocalToken(resp.data.data.results[0])
-	}
 
 	const handleAfterCopy = () => {
 		setIsCopied(true)

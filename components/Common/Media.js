@@ -117,7 +117,7 @@ const Media = ({
 
 	if (isLoading) {
 		return (
-			<div className={className}>
+			<div className={`h-full w-full ${className}`}>
 				<div className="flex items-center justify-center w-full h-full">
 					<svg
 						className="animate-spin m h-5 w-5 text-white"
