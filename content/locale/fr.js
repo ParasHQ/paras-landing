@@ -47,6 +47,7 @@ const home = {
 	TopBuyers: 'Top acheteurs',
 	TopSellers: 'Top vendeurs',
 	TopCollections: 'Top collections',
+	LiveAuction: 'Enchère en direct',
 	NewestCards: 'Dernières cartes',
 	HowWorks: 'Comment ça fonctionne',
 	ForCollectors: 'Pour les collectionneurs',

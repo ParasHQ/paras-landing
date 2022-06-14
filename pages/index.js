@@ -7,6 +7,7 @@ import { useIntl } from 'hooks/useIntl'
 import HomeCollectionList from 'components/Home/HomeCollectionList'
 import HomeFeaturedBanner from 'components/Home/HomeFeaturedBanner'
 import HomeBanner from 'components/Home/HomeBanner'
+import HomeAuctionList from 'components/Home/HomeAuctionList'
 
 export default function Home() {
 	const { localeLn } = useIntl()
@@ -74,6 +75,7 @@ export default function Home() {
 					<HomeFeaturedBanner />
 					<HomeCollectionList showDetails={false} />
 					<HomeTopUserList showToggle={false} className="my-8" />
+					<HomeAuctionList />
 					<HomeBanner />
 					<HomeCardList />
 					<HomeTopUserList activeType="top-buyers" showToggle={false} className="mt-12" />

@@ -1,5 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
-import axios from 'axios'
+import { Fragment } from 'react'
 import Link from 'next/link'
 
 import { parseImgUrl, prettyBalance } from 'utils/common'
@@ -11,40 +10,33 @@ import JSBI from 'jsbi'
 import { useIntl } from 'hooks/useIntl'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
+import useTokenOrTokenSeries from 'hooks/useTokenOrTokenSeries'
+import { useNonInitialEffect } from 'hooks/useNonInitialEffect'
 
 const EmbeddedCard = ({ tokenId }) => {
+	const currentUser = useStore((state) => state.currentUser)
+
+	const [contractTokenId, token_id] = tokenId.split('/')
+	const [contractId, tokenSeriesId] = contractTokenId.split('::')
+
+	const { token, mutate } = useTokenOrTokenSeries({
+		key: `${contractId}::${tokenSeriesId}${token_id ? `/${token_id}` : ''}`,
+		params: {
+			lookup_likes: true,
+			liked_by: currentUser,
+		},
+	})
+
+	useNonInitialEffect(() => {
+		if (currentUser) {
+			mutate()
+		}
+	}, [currentUser])
+
 	const store = useStore()
 	const router = useRouter()
-	const [token, setToken] = useState(null)
 	const { localeLn } = useIntl()
 	const price = token && (token.lowest_price || token.price)
-
-	useEffect(() => {
-		fetchToken()
-	}, [])
-
-	const fetchToken = async () => {
-		const [contractTokenId, token_id] = tokenId.split('/')
-		const [contractId, tokenSeriesId] = contractTokenId.split('::')
-
-		const url = process.env.V2_API_URL
-		const res = await axios({
-			url: url + (token_id ? `/token` : `/token-series`),
-			method: 'GET',
-			params: token_id
-				? {
-						token_id: token_id,
-						contract_id: contractId,
-				  }
-				: {
-						contract_id: contractId,
-						token_series_id: tokenSeriesId,
-				  },
-		})
-
-		const _token = (await res.data.data.results[0]) || null
-		setToken(_token)
-	}
 
 	if (!token) return null
 

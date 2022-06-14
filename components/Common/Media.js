@@ -71,7 +71,7 @@ const Media = ({
 
 	if (isLoading) {
 		return (
-			<div className={className}>
+			<div className={`h-full w-full ${className}`}>
 				<div className="flex items-center justify-center w-full h-full">
 					<IconSpin />
 				</div>

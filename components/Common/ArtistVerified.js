@@ -20,7 +20,7 @@ const ArtistVerified = ({ token, collection }) => {
 
 	return (
 		<>
-			{showTooltip && <ReactTooltip place="right" type="dark" />}
+			{showTooltip && <ReactTooltip id="verified-tooltip" place="right" type="light" />}
 			<span className="font-semibold">
 				<Link
 					href={
