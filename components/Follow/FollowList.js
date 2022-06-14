@@ -1,7 +1,6 @@
 import Avatar from 'components/Common/Avatar'
 import Button from 'components/Common/Button'
-// import { IconVerified } from 'components/Icons'
-import ActionFollowModal from 'components/Modal/ActionFollowModal'
+import { IconVerified } from 'components/Icons'
 import useStore from 'lib/store'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -17,12 +16,10 @@ const FollowList = ({
 	hasMore,
 	hasMoreCurrUser,
 	typeFollow,
-	fetchDataAction = () => {},
-	fetchDataUdate = () => {},
+	showAction = () => {},
+	dataAction = () => {},
 }) => {
 	const [buttonHover, setButtonHover] = useState()
-	const [showActionModal, setShowActionModal] = useState('')
-	const [dataActionModal, setDataActionModal] = useState()
 	const [newDataChecked, setNewDataChecked] = useState([])
 	const currentUser = useStore((state) => state.currentUser)
 
@@ -43,8 +40,8 @@ const FollowList = ({
 	}, [dataCurrentUser, data])
 
 	const followAction = (user, type) => {
-		setDataActionModal(user)
-		setShowActionModal(type)
+		dataAction(user)
+		showAction(type)
 	}
 
 	return (
@@ -86,7 +83,7 @@ const FollowList = ({
 										<Link href={`/${user.account_id}`}>
 											<a className="hover:opacity-80 mt-1">{prettyTruncate(user.account_id, 16)}</a>
 										</Link>
-										{/* {user?.isCreator && <IconVerified size={15} />} */}
+										{user?.isCreator && <IconVerified size={15} color="#0816B3" />}
 									</div>
 								</div>
 								<div
@@ -127,17 +124,6 @@ const FollowList = ({
 					})}
 				</div>
 			</InfiniteScroll>
-			{showActionModal && (
-				<ActionFollowModal
-					show={true}
-					data={dataActionModal}
-					currentUser={currentUser}
-					type={showActionModal}
-					onClose={() => setShowActionModal('')}
-					fetchDataAction={() => fetchDataAction()}
-					fetchDataUdate={() => fetchDataUdate()}
-				/>
-			)}
 		</div>
 	)
 }
