@@ -327,7 +327,6 @@ const TokenSingle = ({
 			else if (type === 'time') list.push(item.issued_at)
 			else if (type === 'amount') list.push(item.amount)
 		})
-
 		return list[list.length - 1]
 	}
 
@@ -488,7 +487,7 @@ const TokenSingle = ({
 										) : price && token?.has_price && !isEndedTime ? (
 											`${prettyBalance(
 												token?.is_auction && !isEndedTime && token?.bidder_list?.length !== 0
-													? token?.amount || price
+													? isCurrentBid('amount') || price
 													: price,
 												24,
 												4

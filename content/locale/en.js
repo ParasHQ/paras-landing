@@ -48,6 +48,7 @@ const home = {
 	TopBuyers: 'Top Buyers',
 	TopSellers: 'Top Sellers',
 	TopCollections: 'Top Collections',
+	LiveAuction: 'Live Auction',
 	NewestCards: 'Newest Cards',
 	HowWorks: 'How it Works',
 	ForCollectors: 'For Collectors',
@@ -583,6 +584,9 @@ const myBids = {
 	ReceivedBids: 'Received Bids',
 	NoActiveBid: 'You have no active bid',
 }
+const liveAuction = {
+	LiveAuction: 'Live Auction',
+}
 const news = {
 	CreateNewCardParas: 'Create New Card — Paras',
 	MarketData: 'Market Data',
@@ -680,6 +684,7 @@ const data = {
 	license,
 	languages,
 	myBids,
+	liveAuction,
 	news,
 	search,
 	newCollection,
