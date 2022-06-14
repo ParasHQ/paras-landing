@@ -22,10 +22,10 @@ const TokenSeriesTransferBuyer = ({ show, onClose, data }) => {
 	const { localeLn } = useIntl()
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	useEffect(() => {
-		if (data.token_series_id && store.currentUser) {
+		if (data.token_series_id && store.currentUser && show) {
 			fetchTokens()
 		}
-	}, [data, store])
+	}, [data, store, show])
 
 	const fetchTokens = async () => {
 		if (!hasMore || isFetching) {

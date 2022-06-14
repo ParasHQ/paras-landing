@@ -3,7 +3,7 @@ import Scrollbars from 'react-custom-scrollbars'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
 import Button from 'components/Common/Button'
-import { IconDots } from 'components/Icons'
+import { IconDots, IconLoader } from 'components/Icons'
 import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
@@ -51,8 +51,8 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
 	const [isEnableTrade, setIsEnableTrade] = useState(true)
 	const [threeDUrl, setThreeDUrl] = useState('')
-	const [threeDType, setThreeDType] = useState('')
 	const [showLove, setShowLove] = useState(false)
+	const [fileType, setFileType] = useState(token?.metadata?.mime_type)
 
 	useEffect(() => {
 		if (!process.env.WHITELIST_CONTRACT_ID.split(';').includes(token?.contract_id)) {
@@ -70,6 +70,12 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 		}
 		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('model')) {
 			get3DModel(token?.metadata?.animation_url)
+		}
+		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('audio')) {
+			getAudio(token?.metadata?.animation_url)
+		}
+		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('iframe')) {
+			getIframe()
 		}
 	}, [JSON.stringify(token)])
 
@@ -331,7 +337,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 			responseType: `blob`,
 		})
 		const fileType = await FileType.fromBlob(resp.data)
-		setThreeDType(fileType.mime)
+		setFileType(fileType.mime)
 		const objectUrl = URL.createObjectURL(resp.data)
 		setThreeDUrl(objectUrl)
 	}
@@ -342,6 +348,18 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 			!isLiked && likeToken(token.contract_id, token.token_series_id)
 			setTimeout(() => setShowLove(false), 1000)
 		}
+	}
+
+	const getAudio = async (url) => {
+		const resp = await axios.get(`${parseImgUrl(url, undefined)}`, {
+			responseType: `blob`,
+		})
+		const fileType = await FileType.fromBlob(resp.data)
+		setFileType(fileType?.mime)
+	}
+
+	const getIframe = () => {
+		setFileType(token?.metadata?.mime_type)
 	}
 
 	return (
@@ -365,7 +383,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 							<div className="relative w-full h-full" onDoubleClick={onDoubleClickDetail}>
 								{token?.metadata.animation_url ? (
 									<>
-										{threeDType.includes('audio') && (
+										{fileType.includes('audio') && (
 											<div className="max-h-80 md:max-h-72 lg:max-h-96 w-full mx-2 md:mx-0">
 												<div className="w-1/2 md:w-full h-full m-auto">
 													<Media
@@ -393,12 +411,24 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 												</div>
 											</div>
 										)}
-										{threeDType.includes('model') && threeDUrl && (
-											<Suspense fallback={null}>
+										{fileType.includes('model') && threeDUrl && (
+											<Suspense
+												fallback={
+													<div className="flex items-center justify-center w-full h-full">
+														<IconLoader />
+													</div>
+												}
+											>
 												<Canvas>
 													<Model1 threeDUrl={threeDUrl} />
 												</Canvas>
 											</Suspense>
+										)}
+										{fileType.includes('iframe') && (
+											<iframe
+												src={token?.metadata.animation_url}
+												className="object-contain w-full h-5/6 md:h-full"
+											/>
 										)}
 									</>
 								) : (
@@ -440,6 +470,11 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 									threeDUrl={
 										token.metadata.mime_type &&
 										token.metadata.mime_type.includes('model') &&
+										token.metadata.animation_url
+									}
+									iframeUrl={
+										token.metadata.mime_type &&
+										token.metadata.mime_type.includes('iframe') &&
 										token.metadata.animation_url
 									}
 									imgBlur={token.metadata.blurhash}
