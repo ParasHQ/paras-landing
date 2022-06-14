@@ -4,13 +4,14 @@ import Media from 'components/Common/Media'
 import { parseImgUrl } from 'utils/common'
 import { debounce } from 'debounce'
 import TimeAuction from 'components/Common/TimeAuction'
-import { IconAudio, IconThreeDimension } from 'components/Icons'
 import IconLove from 'components/Icons/component/IconLove'
+import { Icon3D, IconAudio, IconIframe } from 'components/Icons'
 
 const Card = ({
 	imgUrl,
 	audioUrl,
 	threeDUrl,
+	iframeUrl,
 	imgWidth = 640,
 	imgHeight = 890,
 	token,
@@ -165,20 +166,30 @@ const Card = ({
 								{audioUrl && token.mime_type?.includes('audio') && (
 									<div className="absolute top-1 right-2">
 										<div className="block md:hidden">
-											<IconAudio size={14} />
+											<IconAudio size={14} color={`#fff`} />
 										</div>
 										<div className="hidden md:block">
-											<IconAudio size={20} />
+											<IconAudio size={20} color={`#fff`} />
 										</div>
 									</div>
 								)}
 								{threeDUrl && token.mime_type?.includes('model') && (
 									<div className="absolute top-1 right-2">
 										<div className="block md:hidden">
-											<IconThreeDimension size={14} />{' '}
+											<Icon3D size={14} color={`#fff`} />
 										</div>
 										<div className="hidden md:block">
-											<IconThreeDimension size={20} />
+											<Icon3D size={20} color={`#fff`} />
+										</div>
+									</div>
+								)}
+								{iframeUrl && token.mime_type?.includes('iframe') && (
+									<div className="absolute top-1 right-2">
+										<div className="block md:hidden">
+											<IconIframe size={14} color={`#fff`} />
+										</div>
+										<div className="hidden md:block">
+											<IconIframe size={20} color={`#fff`} />
 										</div>
 									</div>
 								)}
