@@ -15,28 +15,36 @@ import near from 'lib/near'
 import transakSDK from '@transak/transak-sdk'
 import getConfigTransak from 'config/transak'
 
-export function openTransak() {
-	const transak = new transakSDK(getConfigTransak('staging'))
-
+export function openTransak(fetchNearBalance, toast) {
+	const transak = new transakSDK(
+		getConfigTransak(process.env.APP_ENV !== 'production' ? 'staging' : 'production')
+	)
 	transak.init()
-
-	transak.on(transak.ALL_EVENTS, (data) => {})
-
-	transak.on(transak.EVENTS.TRANSAK_WIDGET_OPEN, (eventData) => {})
-
-	transak.on(transak.EVENTS.TRANSAK_WIDGET_INITIALISED, (eventData) => {})
-
-	transak.on(transak.EVENTS.TRANSAK_WIDGET_CLOSE, (eventData) => {
+	transak.on(transak.EVENTS.TRANSAK_WIDGET_CLOSE, () => {
 		transak.close()
 	})
-
-	transak.on(transak.EVENTS.TRANSAK_ORDER_FAILED, (failedData) => {
-		window.alert('Payment Failed')
-		transak.close()
+	transak.on(transak.EVENTS.TRANSAK_ORDER_FAILED, () => {
+		toast.show({
+			text: <div className="font-semibold text-center text-sm">{`Transaction was failed`}</div>,
+			type: 'error',
+			duration: 2500,
+		})
 	})
-
-	transak.on(transak.EVENTS.TRANSAK_ORDER_SUCCESSFUL, (orderData) => {
-		window.alert('Payment Success')
+	transak.on(transak.EVENTS.TRANSAK_ORDER_SUCCESSFUL, (successData) => {
+		const fiatCurrency = successData?.status?.fiatCurrency
+		const fiatAmount = successData?.status?.fiatAmount
+		const cryptoCurrency = successData?.status?.cryptoCurrency
+		const cryptoAmount = successData?.status?.cryptoAmount
+		toast.show({
+			text: (
+				<div className="font-semibold text-center text-sm">
+					{`Buy from ${fiatAmount} ${fiatCurrency} to ${cryptoAmount} ${cryptoCurrency} was successfully`}
+				</div>
+			),
+			type: 'success',
+			duration: 2500,
+		})
+		fetchNearBalance()
 		transak.close()
 	})
 }
@@ -59,17 +67,6 @@ const User = () => {
 			}
 		}
 
-		const fetchUserBalance = async () => {
-			const nearbalance = await (await near.near.account(store.currentUser)).getAccountBalance()
-			const parasBalance = await WalletHelper.viewFunction({
-				methodName: 'ft_balance_of',
-				contractId: process.env.PARAS_TOKEN_CONTRACT,
-				args: { account_id: store.currentUser },
-			})
-			store.setUserBalance(nearbalance)
-			store.setParasBalance(parasBalance)
-		}
-
 		if (showAccountModal) {
 			fetchUserBalance()
 			document.body.addEventListener('click', onClickEv)
@@ -79,6 +76,17 @@ const User = () => {
 			document.body.removeEventListener('click', onClickEv)
 		}
 	}, [showAccountModal])
+
+	const fetchUserBalance = async () => {
+		const nearbalance = await (await near.near.account(store.currentUser)).getAccountBalance()
+		const parasBalance = await WalletHelper.viewFunction({
+			methodName: 'ft_balance_of',
+			contractId: process.env.PARAS_TOKEN_CONTRACT,
+			args: { account_id: store.currentUser },
+		})
+		store.setUserBalance(nearbalance)
+		store.setParasBalance(parasBalance)
+	}
 
 	const toggleAccountModal = () => {
 		setShowAccountModal(!showAccountModal)
@@ -249,11 +257,13 @@ const User = () => {
 										{localeLn('NavViewWallet')}
 									</a>
 									<button
-										className="bg-white rounded-md p-1 text-xs font-semibold text-primary flex items-center justify-center cursor-pointer shadow-md shadow-primary"
+										className="bg-white rounded-md p-1 text-sm font-semibold text-primary flex items-center justify-center cursor-pointer shadow-md shadow-primary"
 										style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
-										onClick={() => openTransak()}
+										onClick={() => openTransak(fetchUserBalance, toast)}
 									>
-										<p className="mt-1">Buy Ⓝ with</p>
+										<p>
+											Buy <span className="text-base">Ⓝ </span>with
+										</p>
 										<div className="w-24 h-7 flex items-center justify-center">
 											<img src="/transakLogo.png" className="object-contain" alt="" />
 										</div>
