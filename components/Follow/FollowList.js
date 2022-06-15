@@ -1,7 +1,10 @@
+import axios from 'axios'
 import Avatar from 'components/Common/Avatar'
 import Button from 'components/Common/Button'
 import { IconVerified } from 'components/Icons'
+import { useToast } from 'hooks/useToast'
 import useStore from 'lib/store'
+import WalletHelper from 'lib/WalletHelper'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -16,12 +19,13 @@ const FollowList = ({
 	hasMore,
 	hasMoreCurrUser,
 	typeFollow,
-	showAction = () => {},
-	dataAction = () => {},
+	fetchDataAction = () => {},
+	fetchDataUdate = () => {},
 }) => {
 	const [buttonHover, setButtonHover] = useState()
 	const [newDataChecked, setNewDataChecked] = useState([])
 	const currentUser = useStore((state) => state.currentUser)
+	const toast = useToast()
 
 	useEffect(() => {
 		let checkDataFollow = data
@@ -39,9 +43,45 @@ const FollowList = ({
 		setNewDataChecked(checkDataFollow)
 	}, [dataCurrentUser, data])
 
-	const followAction = (user, type) => {
-		dataAction(user)
-		showAction(type)
+	const actionButton = async (data, type) => {
+		const options = {
+			url: `${process.env.V2_API_URL}/${type === 'follow' ? 'follow' : 'unfollow'}`,
+			method: 'PUT',
+			headers: {
+				authorization: await WalletHelper.authToken(),
+			},
+			params: {
+				account_id: currentUser,
+				following_account_id: data.account_id,
+			},
+		}
+		try {
+			const resp = await axios.request(options)
+			if (resp) {
+				if (resp) {
+					toast.show({
+						text: (
+							<div className="font-semibold text-center text-sm">
+								Successfully {type === 'follow' ? 'Followed' : 'Unfollowed'}
+							</div>
+						),
+						type: 'success',
+						duration: 1000,
+					})
+					fetchDataAction()
+					fetchDataUdate()
+				}
+			}
+		} catch (err) {
+			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{msg}</div>,
+				type: 'error',
+				duration: 1000,
+			})
+			fetchDataAction()
+			fetchDataUdate()
+		}
 	}
 
 	return (
@@ -57,9 +97,9 @@ const FollowList = ({
 				dataLength={newDataChecked.length}
 				next={getMoreData}
 				hasMore={hasMore || hasMoreCurrUser}
-				loader={<FollowListLoader length={2} />}
+				loader={<FollowListLoader length={3} />}
 			>
-				<div>
+				<div className="ml-2">
 					{newDataChecked.map((user, idx) => {
 						return (
 							<div className="flex items-center gap-2 mt-2" key={idx}>
@@ -81,7 +121,7 @@ const FollowList = ({
 								<div>
 									<div className={`text-white flex gap-1 ${user?.flag && 'opacity-50'}`}>
 										<Link href={`/${user.account_id}`}>
-											<a className="hover:opacity-80 mt-1">{prettyTruncate(user.account_id, 16)}</a>
+											<a className="hover:opacity-80 mt-1">{prettyTruncate(user.account_id, 15)}</a>
 										</Link>
 										{user?.isCreator && <IconVerified size={15} color="#0816B3" />}
 									</div>
@@ -97,13 +137,13 @@ const FollowList = ({
 										<ButtonUnfollow
 											idx={idx}
 											buttonHover={buttonHover}
-											followAction={() => followAction(user, 'unfollow')}
+											followAction={() => actionButton(user, 'unfollow')}
 										/>
 									) : user?.isFollowed && currentUser !== user.account_id ? (
 										<ButtonUnfollow
 											idx={idx}
 											buttonHover={buttonHover}
-											followAction={() => followAction(user, 'unfollow')}
+											followAction={() => actionButton(user, 'unfollow')}
 										/>
 									) : (
 										currentUser !== user.account_id && (
@@ -112,7 +152,7 @@ const FollowList = ({
 												className="mt-1 px-2 w-20 bg-primary"
 												size="sm"
 												variant="primary"
-												onClick={() => followAction(user, 'follow')}
+												onClick={() => actionButton(user, 'follow')}
 											>
 												Follow
 											</Button>
@@ -134,7 +174,7 @@ const ButtonUnfollow = ({ idx, buttonHover, followAction = () => {} }) => {
 	return (
 		<Button
 			key={idx}
-			className={`mt-1 px-2 w-20 ${buttonHover === idx ? 'hover:bg-red-500' : 'bg-[#1B4FA7] '}`}
+			className={`mt-1 px-2 w-20 ${buttonHover === idx ? 'hover:bg-red-500' : 'bg-[#1B4FA7]'}`}
 			size="sm"
 			variant="error"
 			onClick={() => followAction()}

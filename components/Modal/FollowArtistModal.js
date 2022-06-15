@@ -5,7 +5,6 @@ import FollowListLoader from 'components/Follow/FollowListLoader'
 import { IconX } from 'components/Icons'
 import { useEffect, useState } from 'react'
 import Scrollbars from 'react-custom-scrollbars'
-import ActionFollowModal from './ActionFollowModal'
 
 const LIMIT = 10
 
@@ -27,8 +26,6 @@ const FollowArtistModal = ({
 	const [hasMoreCurrUser, setHasMoreCurrUser] = useState(false)
 	const [startPositionY, setStartPositionY] = useState(340.5)
 	const [endPositionY, setEndPositionY] = useState(404.5)
-	const [showActionModal, setShowActionModal] = useState('')
-	const [dataActionModal, setDataActionModal] = useState()
 
 	const followParams = (_page = 0, type, typeActionFollow) => {
 		const params = {
@@ -152,7 +149,7 @@ const FollowArtistModal = ({
 						</p>
 					</div>
 					<div className="mr-4">
-						<Scrollbars autoHeight autoHeightMax="40vh" onScrollFrame={(e) => scrollList(e)}>
+						<Scrollbars autoHeight autoHeightMax="35vh" onScrollFrame={(e) => scrollList(e)}>
 							<div>
 								{isRefreshing ? (
 									<FollowListLoader length={5} />
@@ -164,8 +161,8 @@ const FollowArtistModal = ({
 										getMoreData={getMoreData}
 										hasMore={hasMore}
 										hasMoreCurrUser={hasMoreCurrUser}
-										showAction={(e) => setShowActionModal(e)}
-										dataAction={(e) => setDataActionModal(e)}
+										fetchDataAction={() => fetchData('action-follow')}
+										fetchDataUdate={() => fetchDataUdate()}
 										typeFollow={typeFollow}
 									/>
 								)}
@@ -174,17 +171,6 @@ const FollowArtistModal = ({
 					</div>
 				</div>
 			</Modal>
-			{showActionModal && (
-				<ActionFollowModal
-					show={true}
-					data={dataActionModal}
-					currentUser={currentUser}
-					type={showActionModal}
-					onClose={() => setShowActionModal('')}
-					fetchDataAction={() => fetchData('action-follow')}
-					fetchDataUdate={() => fetchDataUdate()}
-				/>
-			)}
 		</>
 	)
 }

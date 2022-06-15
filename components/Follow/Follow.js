@@ -79,27 +79,33 @@ const Follow = ({
 				<div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 px-[1.5px] py-2 bg-white bg-opacity-50" />
 			</div>
 			{currentUser !== userProfile.accountId && data?.isFollowed ? (
-				<Button
-					className={`mt-4 mb-6 rounded-full w-3/6 ${buttonHover && 'bg-red-500'}`}
-					size="sm"
+				<div
+					className="mt-4 mb-6 w-3/6 mx-auto"
 					onMouseEnter={() => setButtonHover(true)}
 					onMouseLeave={() => setButtonHover(false)}
-					onClick={() => isLogin('unfollow')}
 				>
-					{buttonHover ? 'Unfollow' : 'Following'}
-				</Button>
+					<Button
+						className={`rounded-full w-full ${buttonHover ? 'bg-red-500' : 'bg-[#1B4FA7]'}`}
+						size="sm"
+						onClick={() => isLogin('unfollow')}
+					>
+						{buttonHover ? 'Unfollow' : 'Following'}
+					</Button>
+				</div>
 			) : (
 				currentUser !== userProfile.accountId &&
 				currentUser && (
-					<Button
-						className="mt-4 mb-6 rounded-full w-3/6 bg-primary"
-						size="sm"
-						onMouseEnter={() => setButtonHover(true)}
-						onMouseLeave={() => setButtonHover(false)}
-						onClick={() => isLogin('follow')}
-					>
-						Follow
-					</Button>
+					<div className="mt-4 mb-6 w-3/6 mx-auto">
+						<Button
+							className="rounded-full w-full bg-primary"
+							size="sm"
+							onMouseEnter={() => setButtonHover(true)}
+							onMouseLeave={() => setButtonHover(false)}
+							onClick={() => isLogin('follow')}
+						>
+							Follow
+						</Button>
+					</div>
 				)
 			)}
 		</div>
