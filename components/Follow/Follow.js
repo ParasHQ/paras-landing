@@ -25,43 +25,28 @@ const Follow = ({
 	}, [userProfile, currentUser, fetchDataUpdate])
 
 	const fetchData = async (type) => {
-		const res = await axios.get(`${process.env.V2_API_URL}/followings`, {
-			params: {
-				account_id: currentUser,
-			},
-		})
-		const resProfile = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+		const res = await axios.get(`${process.env.V2_API_URL}/profiles`, {
 			params: {
 				accountId: userProfile.accountId,
+				followed_by: currentUser,
 			},
 		})
-		const dataCurrentUser = res.data.data
-		const dataUserProfile = (await resProfile.data.data.results[0]) || null
+		const dataUserProfile = (await res.data.data.results[0]) || null
 
 		if (type === 'update-data') {
-			setData(dataCurrentUser)
+			setData(dataUserProfile)
 			setFollowing(dataUserProfile.following)
 			setFollowers(dataUserProfile.followers)
 			return
 		}
-		let checkData = dataCurrentUser
-		checkData.filter((user) => {
-			if (userProfile.accountId === user.account_id) {
-				Object.defineProperty(user, 'isFollowed', {
-					value: true,
-					writeable: true,
-					enumerable: true,
-				})
-				setData(user)
-			}
-		})
+		setData(dataUserProfile)
 		setFollowing(dataUserProfile.following)
 		setFollowers(dataUserProfile.followers)
 	}
 
 	return (
 		<div>
-			<div className="relative flex justify-between gap-32 text-white mt-2 mb-4">
+			<div className="relative flex justify-around gap-20 text-white mt-2 mb-4">
 				<div
 					className="cursor-pointer hover:text-gray-300"
 					onClick={() => showFollowModal('following')}
@@ -78,7 +63,7 @@ const Follow = ({
 				</div>
 				<div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 px-[1.5px] py-2 bg-white bg-opacity-50" />
 			</div>
-			{currentUser !== userProfile.accountId && data?.isFollowed ? (
+			{currentUser !== userProfile.accountId && data?.follows?.follower === currentUser ? (
 				<div
 					className="mt-4 mb-6 w-3/6 mx-auto"
 					onMouseEnter={() => setButtonHover(true)}
