@@ -92,68 +92,45 @@ export const readFileDimension = (file) => {
 	})
 }
 
-export const parseImgUrl = (url, defaultValue = '', opts = {}) => {
-	if (!url) {
+export const parseImgUrl = (imgUrl, defaultValue = '', opts = {}) => {
+	if (!imgUrl) {
 		return defaultValue
 	}
-	if (url.includes('://')) {
-		const [protocol, path] = url.split('://')
-		if (protocol === 'ipfs') {
-			const cid = new CID(path)
-			if (opts.useOriginal || process.env.APP_ENV !== 'production') {
-				if (cid.version === 0) {
-					return `https://ipfs-gateway.paras.id/ipfs/${path}`
-				} else {
-					return `https://ipfs.fleek.co/ipfs/${path}`
-				}
-			}
-
-			let transformationList = []
-			if (opts.width) {
-				transformationList.push(`w=${opts.width}`)
-				!opts.seeDetails && transformationList.push(`auto=format,compress`)
-			} else {
-				transformationList.push('w=800')
-				!opts.seeDetails && transformationList.push(`auto=format,compress`)
-			}
-			return `https://paras-cdn.imgix.net/${cid}?${transformationList.join('&')}`
-		} else if (opts.isMediaCdn) {
-			const sha1Url = sha1(url)
-			let transformationList = []
-			if (opts.width) {
-				transformationList.push(`w=${opts.width}`)
-				!opts.seeDetails && transformationList.push(`auto=format,compress`)
-			} else {
-				transformationList.push('w=800')
-				!opts.seeDetails && transformationList.push(`auto=format,compress`)
-			}
-			return `https://paras-cdn.imgix.net/${sha1Url}?${transformationList.join('&')}`
-		}
-		return url
+	let url = imgUrl.includes('://') ? imgUrl : `ipfs://${imgUrl}`
+	let schema = url.split('://')[0]
+	let transformationList = []
+	if (opts.width) {
+		transformationList.push(`w=${opts.width}`)
+		!opts.seeDetails && transformationList.push(`auto=format,compress`)
 	} else {
-		try {
-			const cid = new CID(url)
-			if (opts.useOriginal || process.env.APP_ENV !== 'production') {
-				if (cid.version === 0) {
-					return `https://ipfs-gateway.paras.id/ipfs/${cid}`
-				} else if (cid.version === 1) {
-					return `https://ipfs.fleek.co/ipfs/${cid}`
-				}
-			}
-
-			let transformationList = []
-			if (opts.width) {
-				transformationList.push(`w=${opts.width}`)
-				!opts.seeDetails && transformationList.push(`auto=format,compress`)
-			} else {
-				transformationList.push('w=800')
-				!opts.seeDetails && transformationList.push(`auto=format,compress`)
-			}
-			return `https://paras-cdn.imgix.net/${cid}?${transformationList.join('&')}`
-		} catch (err) {
-			return url
-		}
+		transformationList.push('w=800')
+		!opts.seeDetails && transformationList.push(`auto=format,compress`)
 	}
+	if (schema === 'ipfs') {
+		let parts = url.split('/')
+		let hash = parts[2]
+		let path = parts.length > 3 ? `/${parts.slice(3).join('/')}` : ''
+		let cid
+		try {
+			cid = new CID(hash)
+		} catch (e) {
+			console.error(`Unable to parse CID: ${hash}`, e)
+			return imgUrl
+		}
+
+		if (opts.useOriginal || process.env.APP_ENV !== 'production') {
+			if (cid.version === 0) {
+				return `https://ipfs-gateway.paras.id/ipfs/${cid}${path}`
+			} else {
+				return `https://ipfs.fleek.co/ipfs/${cid}${path}`
+			}
+		}
+		return `https://paras-cdn.imgix.net/${cid}${path}?${transformationList.join('&')}`
+	} else if (opts.isMediaCdn) {
+		const sha1Url = sha1(imgUrl)
+		return `https://paras-cdn.imgix.net/${sha1Url}?${transformationList.join('&')}`
+	}
+	return imgUrl
 }
 
 export const dataURLtoFile = (dataurl, filename) => {
@@ -227,6 +204,8 @@ export const parseSortQuery = (sort, defaultMinPrice = false) => {
 		return 'lowest_price::1'
 	} else if (sort === 'scoredesc') {
 		return 'metadata.score::-1'
+	} else if (sort === 'urgentAuction') {
+		return 'ended_at::1'
 	}
 }
 
@@ -241,6 +220,8 @@ export const parseSortTokenQuery = (sort) => {
 		return 'price::1'
 	} else if (sort === 'scoredesc') {
 		return 'metadata.score::-1'
+	} else if (sort === 'urgentAuction') {
+		return 'ended_at::1'
 	} else {
 		return '_id::-1'
 	}
@@ -290,4 +271,24 @@ export const getRandomInt = (min, max) => {
 	min = Math.ceil(min)
 	max = Math.floor(max)
 	return Math.floor(Math.random() * (max - min) + min)
+}
+
+export const abbrNum = (number, decPlaces) => {
+	decPlaces = Math.pow(10, decPlaces)
+	var abbrev = ['k', 'm', 'b', 't']
+
+	for (var i = abbrev.length - 1; i >= 0; i--) {
+		var size = Math.pow(10, (i + 1) * 3)
+		if (size <= number) {
+			number = Math.round((number * decPlaces) / size) / decPlaces
+			if (number == 1000 && i < abbrev.length - 1) {
+				number = 1
+				i++
+			}
+			number += abbrev[i]
+			break
+		}
+	}
+
+	return number
 }

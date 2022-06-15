@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { Blurhash } from 'react-blurhash'
 import Scrollbars from 'react-custom-scrollbars'
 import { useRouter } from 'next/router'
 
 import Button from 'components/Common/Button'
-import { IconDots } from 'components/Icons'
+import { IconDots, IconLoader, IconInfo } from 'components/Icons'
 import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
-import { capitalize, parseImgUrl, prettyBalance } from 'utils/common'
+import { capitalize, parseImgUrl, prettyBalance, abbrNum } from 'utils/common'
 import TokenMoreModal from '../Modal/TokenMoreModal'
 import TokenShareModal from '../Modal/TokenShareModal'
 import TokenUpdatePriceModal from '../Modal/TokenUpdatePriceModal'
@@ -30,6 +30,10 @@ import Card from 'components/Card/Card'
 import Tooltip from 'components/Common/Tooltip'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
+import axios from 'axios'
+import { Canvas } from '@react-three/fiber'
+import { Model1 } from 'components/Model3D/ThreeDModel'
+import FileType from 'file-type/browser'
 import TabAuction from 'components/Tabs/TabAuction'
 import TokenAuctionBidModal from 'components/Modal/TokenAuctionBidModal'
 import JSBI from 'jsbi'
@@ -38,17 +42,34 @@ import { useToast } from 'hooks/useToast'
 import CancelAuctionModal from 'components/Modal/CancelAuctionModal'
 import CancelBidModal from 'components/Modal/CancelBidModal'
 import { mutate } from 'swr'
+import IconLove from 'components/Icons/component/IconLove'
+import WalletHelper from 'lib/WalletHelper'
 
 const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState(null)
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
 	const [isEndedTime, setIsEndedTime] = useState(false)
+	const [isLiked, setIsLiked] = useState(false)
+	const [defaultLikes, setDefaultLikes] = useState(0)
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
 	const store = useStore()
 	const router = useRouter()
+	const [threeDUrl, setThreeDUrl] = useState('')
+	const [showLove, setShowLove] = useState(false)
+	const [fileType, setFileType] = useState(token?.metadata?.mime_type)
 	const toast = useToast()
+
+	useEffect(() => {
+		if (token?.total_likes) {
+			if (token.likes) {
+				setIsLiked(true)
+			}
+
+			setDefaultLikes(token?.total_likes)
+		}
+	}, [JSON.stringify(token)])
 
 	useEffect(() => {
 		setActiveTab('info')
@@ -71,6 +92,18 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	useEffect(() => {
 		TabNotification(router.query.tab)
 	}, [router.query.tab])
+
+	useEffect(() => {
+		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('model')) {
+			get3DModel(token?.metadata?.animation_url)
+		}
+		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('audio')) {
+			getAudio(token?.metadata?.animation_url)
+		}
+		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('iframe')) {
+			getIframe()
+		}
+	}, [])
 
 	const TabNotification = (tab) => {
 		switch (tab) {
@@ -198,6 +231,28 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 		return currentUser === token.owner_id
 	}
 
+	const get3DModel = async (url) => {
+		const resp = await axios.get(`${parseImgUrl(url, undefined)}`, {
+			responseType: `blob`,
+		})
+		const fileType = await FileType.fromBlob(resp.data)
+		setFileType(fileType?.mime)
+		const objectUrl = URL.createObjectURL(resp.data)
+		setThreeDUrl(objectUrl)
+	}
+
+	const getAudio = async (url) => {
+		const resp = await axios.get(`${parseImgUrl(url, undefined)}`, {
+			responseType: `blob`,
+		})
+		const fileType = await FileType.fromBlob(resp.data)
+		setFileType(fileType?.mime)
+	}
+
+	const getIframe = () => {
+		setFileType(token?.metadata?.mime_type)
+	}
+
 	const checkUserBid = () => {
 		let userBid = []
 		token?.bidder_list?.map((item) => {
@@ -229,7 +284,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			)
 			const multiplebid = JSBI.multiply(JSBI.divide(currentBid, JSBI.BigInt(100)), JSBI.BigInt(5))
 			const nextBid = JSBI.add(currentBid, multiplebid).toString()
-			const nextBidToNear = (nextBid / 10 ** 24).toFixed(1)
+			const nextBidToNear = (nextBid / 10 ** 24).toFixed(2)
 			const nextBidToUSD = parseNearAmount(nextBidToNear.toString())
 			if (type === 'near') {
 				return nextBidToNear
@@ -243,6 +298,74 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 				const price = token?.price || token?.lowest_price
 				return price.toString()
 			}
+		}
+	}
+
+	const likeToken = async (contract_id, token_series_id) => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+
+		setIsLiked(true)
+		setDefaultLikes(defaultLikes + 1)
+		const params = {
+			account_id: currentUser,
+		}
+
+		const res = await axios.put(
+			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
+			params,
+			{
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+			}
+		)
+
+		mutate(`${token.contract_id}::${token.token_series_id}`)
+		mutate(`${token.contract_id}::${token.token_series_id}/${token.token_id}`)
+		if (res.status !== 200) {
+			setIsLiked(false)
+			setDefaultLikes(defaultLikes - 1)
+		}
+	}
+
+	const unlikeToken = async (contract_id, token_series_id) => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+
+		setIsLiked(false)
+		setDefaultLikes(defaultLikes - 1)
+		const params = {
+			account_id: currentUser,
+		}
+
+		const res = await axios.put(
+			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
+			params,
+			{
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+			}
+		)
+
+		mutate(`${token.contract_id}::${token.token_series_id}`)
+		mutate(`${token.contract_id}::${token.token_series_id}/${token.token_id}`)
+		if (res.status !== 200) {
+			setIsLiked(true)
+			setDefaultLikes(defaultLikes + 1)
+		}
+	}
+
+	const onDoubleClickDetail = () => {
+		if (currentUser) {
+			setShowLove(true)
+			!isLiked && likeToken(token.contract_id, token.token_series_id)
+			setTimeout(() => setShowLove(false), 1000)
 		}
 	}
 
@@ -264,34 +387,57 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 					</div>
 					<div className="w-full h-full flex items-center justify-center p-2 lg:p-12 relative">
 						{tokenDisplay === 'detail' ? (
-							<>
+							<div className="relative h-full w-full" onDoubleClick={onDoubleClickDetail}>
 								{token?.metadata?.animation_url ? (
-									<div className="max-h-80 md:max-h-52 lg:max-h-96 w-full mx-2 md:mx-0">
-										<div className="w-1/2 md:w-full h-full m-auto">
-											<Media
-												className="rounded-lg overflow-hidden max-h-80 md:max-h-52 lg:max-h-96"
-												url={
-													token.metadata?.mime_type
-														? parseImgUrl(token.metadata.media)
-														: token.metadata.media
-												}
-												videoControls={true}
-												videoLoop={true}
-												videoMuted={true}
-												videoPadding={true}
-												mimeType={token?.metadata?.mime_type}
-												seeDetails={true}
-												isMediaCdn={token?.isMediaCdn}
-											/>
-										</div>
-										<div className="w-full m-auto">
-											<div className="my-3 flex items-center justify-center w-full">
-												<audio controls className="w-full">
-													<source src={parseImgUrl(token?.metadata.animation_url)}></source>
-												</audio>
+									<>
+										{fileType.includes('audio') && (
+											<div className="max-h-80 md:max-h-52 lg:max-h-96 w-full mx-2 md:mx-0">
+												<div className="w-1/2 md:w-full h-full m-auto">
+													<Media
+														className="rounded-lg overflow-hidden max-h-80 md:max-h-52 lg:max-h-96"
+														url={
+															token.metadata?.mime_type
+																? parseImgUrl(token.metadata.media)
+																: token.metadata.media
+														}
+														videoControls={true}
+														videoLoop={true}
+														videoMuted={true}
+														videoPadding={true}
+														mimeType={token?.metadata?.mime_type}
+														seeDetails={true}
+														isMediaCdn={token?.isMediaCdn}
+													/>
+												</div>
+												<div className="w-full m-auto">
+													<div className="my-3 flex items-center justify-center w-full">
+														<audio controls className="w-full">
+															<source src={parseImgUrl(token?.metadata.animation_url)}></source>
+														</audio>
+													</div>
+												</div>
 											</div>
-										</div>
-									</div>
+										)}
+										{fileType.includes(`model`) && threeDUrl && (
+											<Suspense
+												fallback={
+													<div className="flex h-full w-full items-center justify-center">
+														<IconLoader />
+													</div>
+												}
+											>
+												<Canvas>
+													<Model1 threeDUrl={threeDUrl} />
+												</Canvas>
+											</Suspense>
+										)}
+										{fileType.includes('iframe') && (
+											<iframe
+												src={token?.metadata.animation_url}
+												className="object-contain w-full h-full"
+											/>
+										)}
+									</>
 								) : (
 									<Media
 										className="rounded-lg overflow-hidden"
@@ -309,7 +455,12 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										isMediaCdn={token?.isMediaCdn}
 									/>
 								)}
-							</>
+								{showLove && (
+									<div className="absolute inset-0 flex items-center justify-center z-10">
+										<IconLove className="love-container" color="#ffffff" size="20%" />
+									</div>
+								)}
+							</div>
 						) : (
 							<div className="w-1/2 h-full md:w-full m-auto flex items-center">
 								<Card
@@ -318,7 +469,21 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										useOriginal: process.env.APP_ENV === 'production' ? false : true,
 										isMediaCdn: token.isMediaCdn,
 									})}
-									audioUrl={token.metadata?.animation_url}
+									audioUrl={
+										token.metadata.mime_type &&
+										token.metadata.mime_type.includes('audio') &&
+										token.metadata?.animation_url
+									}
+									threeDUrl={
+										token.metadata.mime_type &&
+										token.metadata.mime_type.includes('model') &&
+										token.metadata.animation_url
+									}
+									iframeUrl={
+										token.metadata.mime_type &&
+										token.metadata.mime_type.includes('iframe') &&
+										token.metadata.animation_url
+									}
 									imgBlur={token.metadata.blurhash}
 									token={{
 										title: token.metadata.title,
@@ -382,6 +547,25 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										className="cursor-pointer mb-1"
 										onClick={() => setShowModal('more')}
 									/>
+									<div className="w-full flex flex-col items-center justify-center">
+										<div
+											className="cursor-pointer"
+											onClick={() => {
+												isLiked
+													? unlikeToken(token.contract_id, token.token_series_id)
+													: likeToken(token.contract_id, token.token_series_id)
+											}}
+										>
+											<IconLove
+												size={17}
+												color={isLiked ? '#c51104' : 'transparent'}
+												stroke={isLiked ? 'none' : 'white'}
+											/>
+										</div>
+										<p className="text-white text-center text-sm">
+											{abbrNum(defaultLikes ?? 0, 1)}
+										</p>
+									</div>
 									{token.is_staked && (
 										<Tooltip
 											id="text-staked"
@@ -437,7 +621,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 														<div className="truncate text-white text-base font-bold">{`${prettyBalance(
 															checkNextPriceBid('near'),
 															0,
-															2
+															4
 														)} Ⓝ`}</div>
 														{token.price !== '0' && store.nearUsdPrice !== 0 && (
 															<div className="text-[9px] text-gray-400 truncate mt-1">
@@ -510,7 +694,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 														<div className="truncate text-white text-base font-bold">{`${prettyBalance(
 															checkNextPriceBid('near'),
 															0,
-															2
+															4
 														)} Ⓝ`}</div>
 														{token.price !== '0' && store.nearUsdPrice !== 0 && (
 															<div className="text-[9px] text-gray-400 truncate mt-1">
@@ -541,7 +725,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 									)
 								)}
 							</div>
-						) : token.is_staked ? (
+						) : token.is_staked && currentUser === token.owner_id ? (
 							<div className="flex flex-wrap flex-col">
 								<div className="w-full flex-1">
 									<Button
@@ -592,21 +776,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 								<div className="flex items-center">
 									<h4>Auction Ends..</h4>
 									<div className="pl-1" onClick={_showInfoUpdatingAuction}>
-										<svg
-											className="cursor-pointer hover:opacity-80 -mt-1"
-											width="16"
-											height="16"
-											viewBox="0 0 16 16"
-											fill="none"
-											xmlns="http://www.w3.org/2000/svg"
-										>
-											<path
-												fillRule="evenodd"
-												clipRule="evenodd"
-												d="M0 8C0 12.4183 3.58172 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8ZM14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8ZM7 10V9.5C7 8.28237 7.42356 7.68233 8.4 6.95C8.92356 6.55733 9 6.44904 9 6C9 5.44772 8.55229 5 8 5C7.44772 5 7 5.44772 7 6H5C5 4.34315 6.34315 3 8 3C9.65685 3 11 4.34315 11 6C11 7.21763 10.5764 7.81767 9.6 8.55C9.07644 8.94267 9 9.05096 9 9.5V10H7ZM9.00066 11.9983C9.00066 12.5506 8.55279 12.9983 8.00033 12.9983C7.44786 12.9983 7 12.5506 7 11.9983C7 11.4461 7.44786 10.9983 8.00033 10.9983C8.55279 10.9983 9.00066 11.4461 9.00066 11.9983Z"
-												fill="rgb(243, 244, 246)"
-											/>
-										</svg>
+										<IconInfo size={16} className="cursor-pointer hover:opacity-80 -mt-1" />
 									</div>
 								</div>
 							</div>

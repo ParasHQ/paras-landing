@@ -6,16 +6,33 @@ import TokenSeriesDetail from 'components/TokenSeries/TokenSeriesDetail'
 import Footer from 'components/Footer'
 import { parseImgUrl } from 'utils/common'
 import useTokenSeries from 'hooks/useTokenSeries'
+import useStore from 'lib/store'
+import { useEffect } from 'react'
 
 const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.creator_id || token.contract_id
 }
 
 const TokenSeriesPage = ({ errorCode, initial }) => {
-	const { token } = useTokenSeries({
+	const currentUser = useStore((state) => state.currentUser)
+	const { token, mutate } = useTokenSeries({
 		key: `${initial?.contract_id}::${initial?.token_series_id}`,
 		initialData: initial,
+		params: {
+			lookup_likes: true,
+			liked_by: currentUser,
+		},
 	})
+
+	const asyncMutate = async () => {
+		await mutate()
+	}
+
+	useEffect(() => {
+		if (currentUser) {
+			asyncMutate()
+		}
+	}, [currentUser])
 
 	if (errorCode) {
 		return <Error />

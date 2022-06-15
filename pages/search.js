@@ -18,6 +18,7 @@ import CollectionListLoader from 'components/Collection/CollectionListLoader'
 import ProfileListLoader from 'components/Profile/ProfileListLoader'
 import ProfileList from 'components/Profile/ProfileList'
 import { ScrollMenu, VisibilityContext } from 'react-horizontal-scrolling-menu'
+import { IconLeftArrowMenu, IconRightArrowMenu } from 'components/Icons'
 
 const LIMIT = 12
 
@@ -25,6 +26,7 @@ export default function SearchPage({ searchQuery }) {
 	const { localeLn } = useIntl()
 	const store = useStore()
 	const router = useRouter()
+	const currentUser = useStore((state) => state.currentUser)
 
 	const [tokens, setTokens] = useState([])
 	const [idNext, setIdNext] = useState(null)
@@ -53,82 +55,89 @@ export default function SearchPage({ searchQuery }) {
 
 	const { query } = router
 
+	useEffect(() => {
+		if (currentUser) {
+			_fetchData()
+		}
+	}, [currentUser])
+
 	useEffect(async () => {
-		setIsRefreshing(true)
-		window.scrollTo(0, 0)
+		const fetchingBulk = async () => {
+			setIsRefreshing(true)
+			window.scrollTo(0, 0)
+			/** Tokens */
+			query.lookup_likes = true
+			query.liked_by = currentUser
 
-		/** Tokens */
-		const params = tokensParams(query)
-		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
-			params: params,
-		})
-		if (res.data.data.results.length === LIMIT) {
-			setHasMore(true)
+			const params = tokensParams(query)
+			let res
+			res = await axios(`${process.env.V2_API_URL}/token-series`, {
+				params: params,
+			})
+			if (res.data.data.results.length === LIMIT) {
+				setHasMore(true)
 
-			const lastData = res.data.data.results[res.data.data.results.length - 1]
-			if (params.__sort) {
-				setIdNext(lastData._id)
-				params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
-				params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+				const lastData = res.data.data.results[res.data.data.results.length - 1]
+				if (params.__sort) {
+					setIdNext(lastData._id)
+					params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
+					params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+				}
+			} else {
+				setHasMore(false)
 			}
-		} else {
-			setHasMore(false)
+			setTokens(res.data.data.results)
+			let resPub /** Publication */
+			resPub = await axios(`${process.env.V2_API_URL}/publications`, {
+				params: {
+					search: query.q,
+					__view: 'simple',
+					__skip: 0,
+					__limit: LIMIT,
+				},
+			})
+			if (resPub.data.data.results.length === LIMIT) {
+				setPubPage(1)
+				setPubHasMore(true)
+			} else {
+				setPubHasMore(false)
+			}
+			setPublication(resPub.data.data.results)
+			let resColl // Collection
+			resColl = await axios(`${process.env.V2_API_URL}/collections`, {
+				params: {
+					collection_search: query.q,
+					__skip: 0,
+					__limit: LIMIT,
+					__sort: 'volume::-1',
+					__showEmpty: false,
+				},
+			})
+			if (resColl.data.data.results.length === LIMIT) {
+				setCollPage(1)
+				setCollHasMore(true)
+			} else {
+				setCollHasMore(false)
+			}
+			setCollections(resColl.data.data.results)
+			let resPro // Profile
+			resPro = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+				params: {
+					search: query.q,
+					__skip: 0,
+					__limit: LIMIT,
+				},
+			})
+			if (resPro.data.data.results.length === LIMIT) {
+				setProPage(1)
+				setProHasMore(true)
+			} else {
+				setProHasMore(false)
+			}
+			setProfiles(resPro.data.data.results)
+			setIsRefreshing(false)
 		}
-		setTokens(res.data.data.results)
-
-		/** Publication */
-		const resPub = await axios(`${process.env.V2_API_URL}/publications`, {
-			params: {
-				search: query.q,
-				__view: 'simple',
-				__skip: 0,
-				__limit: LIMIT,
-			},
-		})
-		if (resPub.data.data.results.length === LIMIT) {
-			setPubPage(1)
-			setPubHasMore(true)
-		} else {
-			setPubHasMore(false)
-		}
-		setPublication(resPub.data.data.results)
-
-		// Collection
-		const resColl = await axios(`${process.env.V2_API_URL}/collections`, {
-			params: {
-				collection_search: query.q,
-				__skip: 0,
-				__limit: LIMIT,
-				__sort: 'volume::-1',
-				__showEmpty: false,
-			},
-		})
-		if (resColl.data.data.results.length === LIMIT) {
-			setCollPage(1)
-			setCollHasMore(true)
-		} else {
-			setCollHasMore(false)
-		}
-		setCollections(resColl.data.data.results)
-
-		// Profile
-		const resPro = await axios.get(`${process.env.V2_API_URL}/profiles`, {
-			params: {
-				search: query.q,
-				__skip: 0,
-				__limit: LIMIT,
-			},
-		})
-
-		if (resPro.data.data.results.length === LIMIT) {
-			setProPage(1)
-			setProHasMore(true)
-		} else {
-			setProHasMore(false)
-		}
-		setProfiles(resPro.data.data.results)
-
-		setIsRefreshing(false)
+		fetchingBulk()
 	}, [
 		query.q,
 		query.sort,
@@ -137,6 +146,7 @@ export default function SearchPage({ searchQuery }) {
 		query.min_copies,
 		query.max_copies,
 		query.is_verified,
+		currentUser,
 	])
 
 	useEffect(() => {
@@ -364,6 +374,7 @@ export default function SearchPage({ searchQuery }) {
 									tokens={tokens}
 									fetchData={_fetchData}
 									hasMore={hasMore}
+									showLike={true}
 								/>
 							</div>
 						))}
@@ -457,18 +468,7 @@ const LeftArrow = () => {
 
 	return (
 		<div disabled={isFirstItemVisible} onClick={() => scrollPrev()}>
-			<svg
-				className="w-10 h-10 text-white cursor-pointer"
-				fill="currentColor"
-				viewBox="0 0 20 20"
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<path
-					fillRule="evenodd"
-					d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-					clipRule="evenodd"
-				></path>
-			</svg>
+			<IconLeftArrowMenu />
 		</div>
 	)
 }
@@ -478,18 +478,7 @@ const RightArrow = () => {
 
 	return (
 		<div disabled={isLastItemVisible} onClick={() => scrollNext()}>
-			<svg
-				className="w-10 h-10 text-white cursor-pointer"
-				fill="currentColor"
-				viewBox="0 0 20 20"
-				xmlns="http://www.w3.org/2000/svg"
-			>
-				<path
-					fillRule="evenodd"
-					d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-					clipRule="evenodd"
-				></path>
-			</svg>
+			<IconRightArrowMenu />
 		</div>
 	)
 }
@@ -504,6 +493,8 @@ const tokensParams = (query) => {
 		_id_next: query._id_next,
 		is_verified: typeof query.is_verified !== 'undefined' ? query.is_verified : true,
 		lookup_token: true,
+		lookup_likes: query.lookup_likes,
+		liked_by: query.liked_by,
 		...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 		...(query.lowest_price_next &&

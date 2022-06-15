@@ -13,10 +13,12 @@ import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import FilterDisplay from 'components/Filter/FilterDisplay'
 import FilterCollection from 'components/Filter/FilterCollection'
+import useStore from 'lib/store'
 
 const LIMIT = 12
 
 const Collection = ({ userProfile, accountId }) => {
+	const currentUser = useStore((state) => state.currentUser)
 	const router = useRouter()
 
 	const scrollCollection = `${router.query.id}::collection`
@@ -32,8 +34,8 @@ const Collection = ({ userProfile, accountId }) => {
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
 
-	useEffect(async () => {
-		await fetchOwnerTokens(true)
+	useEffect(() => {
+		fetchOwnerTokens(true)
 	}, [router.query.id])
 
 	const fetchOwnerTokens = async (initialFetch = false) => {
@@ -98,9 +100,12 @@ const Collection = ({ userProfile, accountId }) => {
 			collection_id: query.collections,
 			exclude_total_burn: true,
 			owner_id: accountId,
+			lookup_likes: true,
+			liked_by: currentUser,
 			__limit: LIMIT,
 			__sort: parsedSortQuery,
 			...(query.card_trade_type === 'notForSale' && { has_price: false }),
+			...(query.card_trade_type === 'onAuction' && { is_auction: true }),
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
@@ -206,6 +211,7 @@ const Collection = ({ userProfile, accountId }) => {
 							fetchData={fetchOwnerTokens}
 							hasMore={hasMore}
 							displayType={display}
+							showLike={true}
 						/>
 					)}
 				</div>

@@ -1,25 +1,15 @@
+import useProfileData from 'hooks/useProfileData'
 import Link from 'next/link'
-import cachios from 'cachios'
 import { useEffect, useState } from 'react'
 
 import ReactTooltip from 'react-tooltip'
 import { prettyTruncate } from 'utils/common'
 
 const ArtistVerified = ({ token, collection }) => {
-	const [artistData, setArtistData] = useState(null)
 	const [showTooltip, setShowTooltip] = useState(false)
+	const artistData = useProfileData(token?.metadata.creator_id)
 
-	useEffect(async () => {
-		if (token?.metadata.creator_id) {
-			const profileRes = await cachios.get(`${process.env.V2_API_URL}/profiles`, {
-				params: {
-					accountId: token?.metadata.creator_id,
-				},
-				ttl: 600,
-			})
-			const userProfile = profileRes.data.data.results[0]
-			setArtistData(userProfile)
-		}
+	useEffect(() => {
 		setShowTooltip(true)
 	}, [token])
 
@@ -29,7 +19,7 @@ const ArtistVerified = ({ token, collection }) => {
 
 	return (
 		<>
-			{showTooltip && <ReactTooltip place="right" type="dark" />}
+			{showTooltip && <ReactTooltip id="verified-tooltip" place="right" type="light" />}
 			<span className="font-semibold">
 				<Link
 					href={
@@ -44,7 +34,7 @@ const ArtistVerified = ({ token, collection }) => {
 				</Link>
 			</span>
 			{(artistData?.isCreator || collection?.isCreator) && (
-				<span data-tip="Verified Creator" className="ml-1">
+				<span data-for="verified-tooltip" data-tip="Verified Creator" className="ml-1">
 					<svg
 						width="18"
 						height="17"

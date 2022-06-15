@@ -1,3 +1,4 @@
+import { IconBackward, IconForward, IconPause, IconPlay } from 'components/Icons'
 import React, { useEffect, useRef, useState } from 'react'
 
 const BackwardIcon = ({ onClick }) => (
@@ -5,21 +6,7 @@ const BackwardIcon = ({ onClick }) => (
 		onClick={onClick}
 		className="w-7 h-7 p-1 flex items-center justify-center rounded-full bg-dark-primary-5 cursor-pointer hover:bg-dark-primary-7 transition-all"
 	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			className="icon icon-tabler icon-tabler-chevron-left"
-			width={20}
-			height={20}
-			viewBox="0 0 24 24"
-			strokeWidth="1.5"
-			stroke="#fff"
-			fill="none"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-		>
-			<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-			<polyline points="15 6 9 12 15 18" />
-		</svg>
+		<IconBackward size={20} />
 	</div>
 )
 
@@ -28,68 +15,7 @@ const ForwardIcon = ({ onClick }) => (
 		onClick={onClick}
 		className="w-7 h-7 p-1 flex items-center justify-center rounded-full bg-dark-primary-5 cursor-pointer hover:bg-dark-primary-7 transition-all"
 	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			className="icon icon-tabler icon-tabler-chevron-right"
-			width={20}
-			height={20}
-			viewBox="0 0 24 24"
-			strokeWidth="1.5"
-			stroke="#fff"
-			fill="none"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-		>
-			<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-			<polyline points="9 6 15 12 9 18" />
-		</svg>
-	</div>
-)
-
-const PlayIcon = ({ onClick }) => (
-	<div
-		onClick={onClick}
-		className="w-7 h-7 p-1 flex items-center justify-center rounded-full bg-dark-primary-5 cursor-pointer hover:bg-dark-primary-7 transition-all"
-	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			className="icon icon-tabler icon-tabler-player-play"
-			width={20}
-			height={20}
-			viewBox="0 0 24 24"
-			strokeWidth="1.5"
-			stroke="#fff"
-			fill="none"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-		>
-			<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-			<path d="M7 4v16l13 -8z" />
-		</svg>
-	</div>
-)
-
-const PauseIcon = ({ onClick }) => (
-	<div
-		onClick={onClick}
-		className="w-7 h-7 p-1 flex items-center justify-center rounded-full bg-dark-primary-5 cursor-pointer hover:bg-dark-primary-7 transition-all"
-	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			className="icon icon-tabler icon-tabler-player-pause"
-			width={20}
-			height={20}
-			viewBox="0 0 24 24"
-			strokeWidth="1.5"
-			stroke="#fff"
-			fill="none"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-		>
-			<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-			<rect x={6} y={5} width={4} height={14} rx={1} />
-			<rect x={14} y={5} width={4} height={14} rx={1} />
-		</svg>
+		<IconForward size={20} />
 	</div>
 )
 
@@ -105,7 +31,7 @@ const AudioPlayer = ({ audioSrc, showTime = true, showForwardBackward = false })
 		const nextToggleValue = type
 		if (nextToggleValue === 'play') {
 			setIsPlaying(false)
-			audioRef.current.pause()
+			audioRef?.current?.pause()
 			cancelAnimationFrame(animateRef.current)
 		} else {
 			setIsPlaying(true)
@@ -167,13 +93,23 @@ const AudioPlayer = ({ audioSrc, showTime = true, showForwardBackward = false })
 		progressRef.current.max = durationAudio
 	}, [audioRef?.current?.loadedmetadata, audioRef?.current?.readyState])
 
+	useEffect(() => {
+		return async () => {
+			togglePlayPause('play')
+		}
+	}, [])
+
 	return (
 		<div className="w-full">
 			<audio ref={audioRef} src={audioSrc}></audio>
-			<div className={`flex relative items-center justify-center`}>
+			<div
+				className={`flex relative items-center ${
+					showForwardBackward ? `justify-center` : `justify-end`
+				}`}
+			>
 				{showTime && (
 					<div className="absolute left-0 top-2">
-						<p className="pt-0 md:pt-1 text-xs text-white">
+						<p className="pt-1 text-xs text-white">
 							{calculateTime(currentTime)} /{' '}
 							{duration && !isNaN(duration) && calculateTime(duration)}
 						</p>
@@ -182,21 +118,27 @@ const AudioPlayer = ({ audioSrc, showTime = true, showForwardBackward = false })
 				<div className="flex items-center space-x-2">
 					{showForwardBackward && <BackwardIcon onClick={backwarding} />}
 					{isPlaying ? (
-						<PauseIcon
+						<div
+							className="w-7 h-7 p-1 flex items-center justify-center rounded-full bg-dark-primary-5 cursor-pointer hover:bg-dark-primary-7 transition-all"
 							onClick={(e) => {
 								e.preventDefault()
 								e.stopPropagation()
 								togglePlayPause('play')
 							}}
-						/>
+						>
+							<IconPause size={20} />
+						</div>
 					) : (
-						<PlayIcon
+						<div
+							className="w-7 h-7 p-1 flex items-center justify-center rounded-full bg-dark-primary-5 cursor-pointer hover:bg-dark-primary-7 transition-all"
 							onClick={(e) => {
 								e.preventDefault()
 								e.stopPropagation()
 								togglePlayPause('pause')
 							}}
-						/>
+						>
+							<IconPlay size={20} />
+						</div>
 					)}
 					{showForwardBackward && <ForwardIcon onClick={forwarding} />}
 				</div>

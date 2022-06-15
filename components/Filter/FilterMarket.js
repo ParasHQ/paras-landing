@@ -10,6 +10,7 @@ const FilterMarket = ({
 	defaultMinPrice = false,
 	isCollection = false,
 	isShowStaked = false,
+	isLikedTab = false,
 }) => {
 	const filterModalRef = useRef()
 	const router = useRouter()
@@ -131,7 +132,7 @@ const FilterMarket = ({
 			{
 				query: query,
 			},
-			{},
+			undefined,
 			{ shallow: true, scroll: false }
 		)
 		setShowFilterModal(false)
@@ -167,15 +168,15 @@ const FilterMarket = ({
 							{filter
 								.filter((item) => (isCollectibles ? item.key !== 'marketupdate' : item.key))
 								.filter((item) => (!isCollection ? item.key !== 'scoredesc' : item))
-								.map((item) => (
+								.map((item, index) => (
 									<button
 										key={item.key}
-										className={`rounded-md text-white px-3 py-1 inline-block mb-2 mr-2 border-2 border-gray-800 ${
-											sortBy === item.key && 'bg-gray-800'
+										className={`rounded-md text-white px-3 py-1 inline-block mb-2 mr-2 border-2 border-[#1B4FA7] border-opacity-[50%] ${
+											sortBy === item.key && 'bg-[#1B4FA7] bg-opacity-[50%]'
 										}`}
 										onClick={() => setSortBy(item.key)}
 									>
-										<p>{item.value}</p>
+										<p>{isLikedTab && index === 1 ? 'Card Liked' : item.value}</p>
 									</button>
 								))}
 						</div>
@@ -214,8 +215,8 @@ const FilterMarket = ({
 							filterCopies.map((item) => (
 								<button
 									key={item.key}
-									className={`rounded-md text-white px-3 py-1 inline-block mr-2 border-2 border-gray-800 ${
-										sortCopies === item.key && 'bg-gray-800'
+									className={`rounded-md text-white px-3 py-1 inline-block mr-2 border-2 border-[#1B4FA7] border-opacity-[50%] ${
+										sortCopies === item.key && 'bg-[#1B4FA7] bg-opacity-[50%]'
 									}`}
 									onClick={() => setSortCopies(item.key)}
 								>
@@ -247,6 +248,8 @@ const FilterMarket = ({
 											{ id: 'all', label: 'All' },
 											{ id: 'forSale', label: 'Sale Only' },
 											{ id: 'notForSale', label: 'Not for Sale' },
+											{ id: 'onAuction', label: 'On Auction' },
+											{ id: 'ownedByCreator', label: 'Owned by Creator' },
 										]}
 										defaultValue={cardTradeType}
 										selectItem={setCardTradeType}
@@ -310,6 +313,10 @@ const filter = [
 	{
 		key: 'scoredesc',
 		value: 'Highest Score',
+	},
+	{
+		key: 'urgentAuction',
+		value: 'Ended Soon Auction',
 	},
 ]
 

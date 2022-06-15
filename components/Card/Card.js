@@ -2,18 +2,26 @@ import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import Media from 'components/Common/Media'
 import { parseImgUrl } from 'utils/common'
+import { debounce } from 'debounce'
 import TimeAuction from 'components/Common/TimeAuction'
+import IconLove from 'components/Icons/component/IconLove'
+import { Icon3D, IconAudio, IconIframe } from 'components/Icons'
 
 const Card = ({
 	imgUrl,
 	audioUrl,
+	threeDUrl,
+	iframeUrl,
 	imgWidth = 640,
 	imgHeight = 890,
 	token,
 	profileCollection,
 	type,
+	displayType,
 	onClick = () => {},
 	flippable = false,
+	isAbleToLike = false,
+	onLike = () => {},
 }) => {
 	const initialRotate = {
 		x: 0,
@@ -23,6 +31,7 @@ const Card = ({
 	const cardRef = useRef()
 	const [dimension, setDimension] = useState({ width: 0, height: 0 })
 	const [rotate, setRotate] = useState(initialRotate)
+	const [showLove, setShowLove] = useState(false)
 	const [isShowFront, setIsShowFront] = useState(true)
 	const wrapperRef = useRef()
 	const descRef = useRef()
@@ -90,9 +99,13 @@ const Card = ({
 		}, 500)
 	}
 
-	const _flipCard = () => {
-		if (flippable) {
+	const _flipCard = (e) => {
+		if (e.detail === 1 && flippable && !showLove) {
 			setIsShowFront(!isShowFront)
+		} else if (e.detail === 2 && isShowFront && isAbleToLike) {
+			setShowLove(true)
+			onLike()
+			setTimeout(() => setShowLove(false), 1200)
 		}
 	}
 
@@ -106,7 +119,7 @@ const Card = ({
 	return (
 		<div
 			className="relative select-none m-auto outline-none"
-			onClick={_flipCard}
+			onClick={debounce(_flipCard, 350, !isAbleToLike)}
 			style={{
 				transition: `transform .6s .1s`,
 				transform: !isShowFront && `rotateY(180deg)`,
@@ -150,47 +163,33 @@ const Card = ({
 								<p className="text-white truncate" style={{ fontSize: `.6em` }}>
 									{token.collection}
 								</p>
-								{audioUrl && (
+								{audioUrl && token.mime_type?.includes('audio') && (
 									<div className="absolute top-1 right-2">
 										<div className="block md:hidden">
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												className="icon icon-tabler icon-tabler-music"
-												width={14}
-												height={14}
-												viewBox="0 0 24 24"
-												strokeWidth="1.5"
-												stroke="#fff"
-												fill="none"
-												strokeLinecap="round"
-												strokeLinejoin="round"
-											>
-												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-												<circle cx={6} cy={17} r={3} />
-												<circle cx={16} cy={17} r={3} />
-												<polyline points="9 17 9 4 19 4 19 17" />
-												<line x1={9} y1={8} x2={19} y2={8} />
-											</svg>
+											<IconAudio size={14} color={`#fff`} />
 										</div>
 										<div className="hidden md:block">
-											<svg
-												xmlns="http://www.w3.org/2000/svg"
-												className="icon icon-tabler icon-tabler-music"
-												width={20}
-												height={20}
-												viewBox="0 0 24 24"
-												strokeWidth="1.5"
-												stroke="#fff"
-												fill="none"
-												strokeLinecap="round"
-												strokeLinejoin="round"
-											>
-												<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-												<circle cx={6} cy={17} r={3} />
-												<circle cx={16} cy={17} r={3} />
-												<polyline points="9 17 9 4 19 4 19 17" />
-												<line x1={9} y1={8} x2={19} y2={8} />
-											</svg>
+											<IconAudio size={20} color={`#fff`} />
+										</div>
+									</div>
+								)}
+								{threeDUrl && token.mime_type?.includes('model') && (
+									<div className="absolute top-1 right-2">
+										<div className="block md:hidden">
+											<Icon3D size={14} color={`#fff`} />
+										</div>
+										<div className="hidden md:block">
+											<Icon3D size={20} color={`#fff`} />
+										</div>
+									</div>
+								)}
+								{iframeUrl && token.mime_type?.includes('iframe') && (
+									<div className="absolute top-1 right-2">
+										<div className="block md:hidden">
+											<IconIframe size={14} color={`#fff`} />
+										</div>
+										<div className="hidden md:block">
+											<IconIframe size={20} color={`#fff`} />
 										</div>
 									</div>
 								)}
@@ -227,7 +226,19 @@ const Card = ({
 											videoLoop={true}
 											mimeType={token?.mime_type}
 										/>
-										{token?.is_auction && <TimeAuction endedAt={token.ended_at} />}
+										{token?.is_auction ? (
+											<TimeAuction endedAt={token.ended_at} />
+										) : (
+											token?.has_auction && (
+												<div
+													className={`absolute text-xs text-center ${
+														displayType === 'large' ? 'w-2/3' : 'w-5/6'
+													} right-0 bottom-5 text-gray-100 px-1 py-2 rounded-l-md bg-primary bg-opacity-70 z-10`}
+												>
+													Some of this edition is being auctioned
+												</div>
+											)
+										)}
 									</>
 								)}
 							</div>
@@ -282,7 +293,6 @@ const Card = ({
 					</div>
 				</div>
 			</div>
-
 			{flippable && (
 				<div
 					className="card-back absolute inset-0 z-10"
@@ -385,6 +395,11 @@ const Card = ({
 							</div>
 						</div>
 					</div>
+				</div>
+			)}
+			{showLove && (
+				<div className="absolute inset-0 flex items-center justify-center z-10">
+					<IconLove className="love-container" color="#ffffff" size="25%" />
 				</div>
 			)}
 		</div>

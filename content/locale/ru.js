@@ -44,6 +44,7 @@ const home = {
 	Featured: 'Рекомендации',
 	Latest: 'Последнее',
 	TopCollections: 'Топовые Коллекции',
+	LiveAuction: 'Живой аукцион',
 	TopBuyers: 'Топовые Покупатели',
 	TopSellers: 'Топовые Продавцы',
 	NewestCards: 'Самые новые Карточки',

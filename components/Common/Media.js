@@ -2,53 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { parseImgUrl } from 'utils/common'
 import axios from 'axios'
 import FileType from 'file-type/browser'
-
-const PlayIcon = ({ onClick }) => (
-	<div
-		onClick={onClick}
-		className="w-9 h-9 p-1 flex items-center justify-center rounded-full bg-dark-primary-5 cursor-pointer hover:bg-dark-primary-7 transition-all"
-	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			className="icon icon-tabler icon-tabler-player-play"
-			width={26}
-			height={26}
-			viewBox="0 0 24 24"
-			strokeWidth="1.5"
-			stroke="#fff"
-			fill="none"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-		>
-			<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-			<path d="M7 4v16l13 -8z" />
-		</svg>
-	</div>
-)
-
-const PauseIcon = ({ onClick }) => (
-	<div
-		onClick={onClick}
-		className="w-9 h-9 p-1 flex items-center justify-center rounded-full bg-dark-primary-5 cursor-pointer hover:bg-dark-primary-7 transition-all"
-	>
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			className="icon icon-tabler icon-tabler-player-pause"
-			width={26}
-			height={26}
-			viewBox="0 0 24 24"
-			strokeWidth="1.5"
-			stroke="#fff"
-			fill="none"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-		>
-			<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-			<rect x={6} y={5} width={4} height={14} rx={1} />
-			<rect x={14} y={5} width={4} height={14} rx={1} />
-		</svg>
-	</div>
-)
+import { IconPause, IconPlay, IconSpin } from 'components/Icons'
 
 const Media = ({
 	className,
@@ -117,54 +71,41 @@ const Media = ({
 
 	if (isLoading) {
 		return (
-			<div className={className}>
+			<div className={`h-full w-full ${className}`}>
 				<div className="flex items-center justify-center w-full h-full">
-					<svg
-						className="animate-spin m h-5 w-5 text-white"
-						xmlns="http://www.w3.org/2000/svg"
-						fill="none"
-						viewBox="0 0 24 24"
-					>
-						<circle
-							className="opacity-25"
-							cx="12"
-							cy="12"
-							r="10"
-							stroke="currentColor"
-							strokeWidth="4"
-						></circle>
-						<path
-							className="opacity-75"
-							fill="currentColor"
-							d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-						></path>
-					</svg>
+					<IconSpin />
 				</div>
 			</div>
 		)
 	}
 
-	if (audioUrl) {
+	if (audioUrl && mimeType?.includes('audio')) {
 		return (
 			<div className="relative flex items-center justify-center w-full">
 				<img className={`object-contain w-full h-full`} src={media.url} />
 				<div className="absolute bottom-1 md:bottom-2 flex justify-end items-center w-11/12 z-10">
 					{isPlaying ? (
-						<PauseIcon
+						<div
+							className="w-9 h-9 p-1 flex items-center justify-center rounded-full bg-dark-primary-5 cursor-pointer hover:bg-dark-primary-7 transition-all"
 							onClick={(e) => {
 								e.preventDefault()
 								e.stopPropagation()
 								togglePlayPause('play')
 							}}
-						/>
+						>
+							<IconPause size={26} />
+						</div>
 					) : (
-						<PlayIcon
+						<div
+							className="w-9 h-9 p-1 flex items-center justify-center rounded-full bg-dark-primary-5 cursor-pointer hover:bg-dark-primary-7 transition-all"
 							onClick={(e) => {
 								e.preventDefault()
 								e.stopPropagation()
 								togglePlayPause('pause')
 							}}
-						/>
+						>
+							<IconPlay size={26} />
+						</div>
 					)}
 					<audio ref={audioRef}>
 						<source src={parseImgUrl(audioUrl, undefined, { seeDetails: seeDetails })} />

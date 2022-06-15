@@ -1,9 +1,10 @@
 import Head from 'next/head'
 import { useState } from 'react'
 
-const { default: Footer } = require('components/Footer')
-const { default: Nav } = require('components/Nav')
 import { useIntl } from 'hooks/useIntl'
+import Footer from 'components/Footer'
+import Nav from 'components/Nav'
+
 const LicenseOverview = () => {
 	const { localeLn } = useIntl()
 	return (

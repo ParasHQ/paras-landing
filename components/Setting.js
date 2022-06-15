@@ -5,6 +5,7 @@ import { useToast } from 'hooks/useToast'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import WalletHelper from 'lib/WalletHelper'
+import { IconX } from './Icons'
 
 const Setting = ({ close }) => {
 	const { localeLn } = useIntl()
@@ -93,21 +94,7 @@ const Setting = ({ close }) => {
 							{localeLn('Setting')}
 						</h1>
 						<div onClick={close}>
-							<svg
-								className="cursor-pointer"
-								width="16"
-								height="16"
-								viewBox="0 0 16 16"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-							>
-								<path
-									fillRule="evenodd"
-									clipRule="evenodd"
-									d="M8.00008 9.41423L3.70718 13.7071L2.29297 12.2929L6.58586 8.00001L2.29297 3.70712L3.70718 2.29291L8.00008 6.5858L12.293 2.29291L13.7072 3.70712L9.41429 8.00001L13.7072 12.2929L12.293 13.7071L8.00008 9.41423Z"
-									fill="white"
-								/>
-							</svg>
+							<IconX size={24} className="cursor-pointer" />
 						</div>
 					</div>
 					{!isLoading ? (

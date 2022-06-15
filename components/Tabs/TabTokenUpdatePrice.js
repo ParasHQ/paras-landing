@@ -52,27 +52,30 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 		}
 	}, [show])
 
-	useEffect(async () => {
+	useEffect(() => {
 		if (!data?.transaction_fee || !newPrice) return
 		const calcLockedTxFee = (data?.transaction_fee / 10000) * 100
 		setLockedTxFee(calcLockedTxFee.toString())
 	}, [show, newPrice])
 
-	useEffect(async () => {
-		const resp = await axios.get(`${process.env.V2_API_URL}/offers`, {
-			params: {
-				buyer_id: currentUser,
-			},
-		})
-		if (
-			resp.data.data.results.some(
-				(offer) => offer.type === 'trade' && offer.buyer_token_id === data?.token_id
-			)
-		) {
-			setIsAnyTradeOffer(true)
-		} else {
-			setIsAnyTradeOffer(false)
+	useEffect(() => {
+		const checkIsAnyTradeOffer = async () => {
+			const resp = await axios.get(`${process.env.V2_API_URL}/offers`, {
+				params: {
+					buyer_id: currentUser,
+				},
+			})
+			if (
+				resp.data.data.results.some(
+					(offer) => offer.type === 'trade' && offer.buyer_token_id === data?.token_id
+				)
+			) {
+				setIsAnyTradeOffer(true)
+			} else {
+				setIsAnyTradeOffer(false)
+			}
 		}
+		checkIsAnyTradeOffer()
 	}, [show])
 
 	useEffect(() => {

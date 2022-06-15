@@ -36,7 +36,8 @@ const HomeBanner = () => {
 		<div className="rounded-xl overflow-hidden mb-12 w-full">
 			<Carousel showStatus={false} showThumbs={false} autoPlay infiniteLoop className="w-full">
 				{data.map((item, idx) => (
-					<a key={idx} href={`${item.openLink}`} target="_blank" rel="noreferrer">
+					// eslint-disable-next-line react/jsx-no-target-blank
+					<a key={idx} href={`${item.openLink}`} target="_blank">
 						<div
 							ref={refDesktop}
 							className="hidden md:block w-full aspect-[2/1] md:aspect-[5/1]"

@@ -23,7 +23,7 @@ const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) =
 	}))
 
 	const { localeLn } = useIntl()
-	const [hasTraded, setHasTraded] = useState(fromUpdate ? true : false)
+	const [hasTraded] = useState(fromUpdate ? true : false)
 
 	useEffect(() => {
 		if (fromUpdate) {

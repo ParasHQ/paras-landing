@@ -14,7 +14,6 @@ const CollectionListLoader = (props) => (
 					uniqueKey="card-loader"
 					backgroundColor="#1D1D1D"
 					foregroundColor="#282828"
-					{...props}
 				>
 					<rect x="0" y="0" rx="11" ry="11" width="275" height="130" />
 					<rect x="0" y="140" rx="30" ry="30" width="50" height="50" />
