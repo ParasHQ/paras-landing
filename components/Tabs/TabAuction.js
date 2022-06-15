@@ -30,7 +30,7 @@ const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => 
 	})
 
 	useEffect(() => {
-		if (localToken.bidder_list && localToken.bidder_list.length > 0) {
+		if (localToken.extend_list && localToken.extend_list.length > 0) {
 			const bidderAndExtendList = localToken.bidder_list.concat(localToken.extend_list)
 			const sortedBidderAndExtendList = bidderAndExtendList.sort(
 				(a, b) => a.issued_at - b.issued_at
