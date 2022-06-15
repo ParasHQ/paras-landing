@@ -33,6 +33,7 @@ import { SHOW_TX_HASH_LINK } from 'constants/common'
 import DailyTracker from 'components/LineChart/DailyTracker'
 import Link from 'next/link'
 import LoadingTracker from 'components/Common/LoadingTracker'
+import { IconShareActivity, IconTwitter, IconWebsite } from 'components/Icons'
 
 const LIMIT = 12
 const LIMIT_ACTIVITY = 20
@@ -208,7 +209,6 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		router.query.max_copies,
 		router.query.attributes,
 		router.query.is_staked,
-		router.query.card_trade_type,
 		router.query.q,
 	])
 
@@ -268,6 +268,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			...(isItemActiveTab && { lookup_token: true }),
 			...(query.card_trade_type === 'notForSale' && { has_price: false }),
 			...(query.card_trade_type === 'onAuction' && { is_auction: true }),
+			...(query.card_trade_type === 'ownedByCreator' && { owned_by_creator: true }),
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
@@ -558,8 +559,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					<div className="absolute top-32 md:top-72 right-0 md:right-5 h-10 w-10">
 						{SHOW_TX_HASH_LINK && tokens[0]?.contract_id && (
 							<>
-								<ReactTooltip place="left" type="dark" />
+								<ReactTooltip id="view-contract-tooltip" place="left" type="dark" />
 								<a
+									data-for="view-contract-tooltip"
 									data-tip="View Contract"
 									href={`https://${
 										process.env.APP_ENV === 'production' ? `` : `testnet.`
@@ -567,23 +569,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 									target={`_blank`}
 									className="ml-1 mb-4"
 								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										className="icon icon-tabler icon-tabler-external-link"
-										width={mediaQueryMd.matches ? 30 : 25}
-										height={mediaQueryMd.matches ? 30 : 25}
-										viewBox="0 0 24 24"
-										strokeWidth="2"
-										stroke="#fff"
-										fill="none"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-									>
-										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-										<path d="M11 7h-5a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-5" />
-										<line x1={10} y1={14} x2={20} y2={4} />
-										<polyline points="15 4 20 4 20 9" />
-									</svg>
+									<IconShareActivity size={mediaQueryMd.matches ? 30 : 25} />
 								</a>
 							</>
 						)}
@@ -633,14 +619,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 								target="_blank"
 								rel="noreferrer"
 							>
-								<svg width="25" height="25" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
-									<path
-										fill="#cbd5e0"
-										fillRule="evenodd"
-										clipRule="evenodd"
-										d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"
-									/>
-								</svg>
+								<IconWebsite size={25} color="#cbd5e0" />
 							</a>
 						)}
 						{collection.socialMedia?.twitter && (
@@ -650,19 +629,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 								target="_blank"
 								rel="noreferrer"
 							>
-								<svg
-									height="25"
-									width="25"
-									viewBox="0 0 273.5 222.3"
-									xmlns="http://www.w3.org/2000/svg"
-								>
-									<path
-										fill="#cbd5e0"
-										fillRule="evenodd"
-										clipRule="evenodd"
-										d="M273.5 26.3a109.77 109.77 0 0 1-32.2 8.8 56.07 56.07 0 0 0 24.7-31 113.39 113.39 0 0 1-35.7 13.6 56.1 56.1 0 0 0-97 38.4 54 54 0 0 0 1.5 12.8A159.68 159.68 0 0 1 19.1 10.3a56.12 56.12 0 0 0 17.4 74.9 56.06 56.06 0 0 1-25.4-7v.7a56.11 56.11 0 0 0 45 55 55.65 55.65 0 0 1-14.8 2 62.39 62.39 0 0 1-10.6-1 56.24 56.24 0 0 0 52.4 39 112.87 112.87 0 0 1-69.7 24 119 119 0 0 1-13.4-.8 158.83 158.83 0 0 0 86 25.2c103.2 0 159.6-85.5 159.6-159.6 0-2.4-.1-4.9-.2-7.3a114.25 114.25 0 0 0 28.1-29.1"
-									></path>
-								</svg>
+								<IconTwitter size={25} color="#cbd5e0" />
 							</a>
 						)}
 						{collection.socialMedia?.discord && (
