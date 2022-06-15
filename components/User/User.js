@@ -26,7 +26,9 @@ export function openTransak(fetchNearBalance, toast) {
 	})
 	transak.on(transak.EVENTS.TRANSAK_ORDER_FAILED, () => {
 		toast.show({
-			text: <div className="font-semibold text-center text-sm">{`Transaction was failed`}</div>,
+			text: (
+				<div className="font-semibold text-center text-sm">{`Transaction order was failed`}</div>
+			),
 			type: 'error',
 			duration: 2500,
 		})
@@ -39,7 +41,7 @@ export function openTransak(fetchNearBalance, toast) {
 		toast.show({
 			text: (
 				<div className="font-semibold text-center text-sm">
-					{`Buy from ${fiatAmount} ${fiatCurrency} to ${cryptoAmount} ${cryptoCurrency} was successfully`}
+					{`Transaction order to buy from ${fiatAmount} ${fiatCurrency} to ${cryptoAmount} ${cryptoCurrency} was successfully, please wait for 1-3 minutes for completing the order`}
 				</div>
 			),
 			type: 'success',
