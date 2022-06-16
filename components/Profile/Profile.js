@@ -21,7 +21,6 @@ import {
 	IconInfo,
 } from 'components/Icons'
 import Tooltip from 'components/Common/Tooltip'
-import FollowArtistModal from 'components/Modal/FollowArtistModal'
 import Follow from 'components/Follow/Follow'
 
 const Profile = ({ userProfile, activeTab }) => {
@@ -30,7 +29,6 @@ const Profile = ({ userProfile, activeTab }) => {
 	const { localeLn } = useIntl()
 	const [isCopied, setIsCopied] = useState(false)
 	const [showModal, setShowModal] = useState(false)
-	const [followListModal, setFollowListModal] = useState('')
 	const [dataUpdate, setDataUpdate] = useState(false)
 
 	const [profileData, setProfileData] = useState(userProfile)
@@ -111,7 +109,7 @@ const Profile = ({ userProfile, activeTab }) => {
 						className="object-cover"
 					/>
 				</div>
-				<div className="mt-4 max-w-sm text-center overflow-hidden z-0">
+				<div className="mt-4 max-w-sm text-center overflow-hidden">
 					{profileData?.isCreator && (
 						<p className="text-white text-xs mb-2 mt-2 p-1 bg-primary bg-opacity-75 rounded-md font-bold w-40 mx-auto">
 							Verified Creator
@@ -187,13 +185,7 @@ const Profile = ({ userProfile, activeTab }) => {
 							</a>
 						)}
 					</div>
-					<Follow
-						userProfile={profileData}
-						currentUser={currentUser}
-						followingAmount={userProfile?.following}
-						followerAmount={userProfile?.followers}
-						showFollowListModal={(e) => setFollowListModal(e)}
-					/>
+					<Follow userProfile={profileData} currentUser={currentUser} />
 				</div>
 			</div>
 			{profileData?.flag && (
@@ -251,26 +243,6 @@ const Profile = ({ userProfile, activeTab }) => {
 			<div className="sm:hidden">
 				<TabProfileMobile activeTab={activeTab} />
 			</div>
-			{followListModal === 'following' && (
-				<FollowArtistModal
-					show={true}
-					userProfile={profileData}
-					currentUser={currentUser}
-					typeFollow="following"
-					fetchDataUdate={() => setDataUpdate(true)}
-					onClose={() => setFollowListModal('')}
-				/>
-			)}
-			{followListModal === 'followers' && (
-				<FollowArtistModal
-					show={true}
-					currentUser={currentUser}
-					userProfile={profileData}
-					typeFollow="followers"
-					fetchDataUdate={() => setDataUpdate(true)}
-					onClose={() => setFollowListModal('')}
-				/>
-			)}
 		</Fragment>
 	)
 }

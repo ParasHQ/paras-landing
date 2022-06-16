@@ -2,89 +2,51 @@ import axios from 'axios'
 import Avatar from 'components/Common/Avatar'
 import Button from 'components/Common/Button'
 import { IconVerified } from 'components/Icons'
-import { useToast } from 'hooks/useToast'
 import useStore from 'lib/store'
 import WalletHelper from 'lib/WalletHelper'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import useSWR from 'swr'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
 import FollowListLoader from './FollowListLoader'
 
 const FollowList = ({
 	data,
-	dataCurrentUser,
 	userProfile,
 	getMoreData,
 	hasMore,
-	hasMoreCurrUser,
 	typeFollow,
-	fetchDataAction = () => {},
-	fetchDataUdate = () => {},
+	fetchData = () => {},
 }) => {
-	const [buttonHover, setButtonHover] = useState()
-	const [newDataChecked, setNewDataChecked] = useState([])
+	const [buttonHover, setButtonHover] = useState('')
 	const currentUser = useStore((state) => state.currentUser)
-	const toast = useToast()
+	const [isLoading, setIsLoading] = useState(false)
+	const { mutate } = useSWR(userProfile.accountId)
 
-	useEffect(() => {
-		let checkDataFollow = data
-		dataCurrentUser.filter((currUser) => {
-			return checkDataFollow.some((user) => {
-				if (currUser.account_id === user.account_id) {
-					return Object.defineProperty(user, 'isFollowed', {
-						value: true,
-						writeable: true,
-						enumerable: true,
-					})
-				}
-			})
-		})
-		setNewDataChecked(checkDataFollow)
-	}, [dataCurrentUser, data])
+	const actionFollowUnfollow = async (userId, typeAction) => {
+		setIsLoading(userId)
 
-	const actionButton = async (data, type) => {
-		const options = {
-			url: `${process.env.V2_API_URL}/${type === 'follow' ? 'follow' : 'unfollow'}`,
+		await axios.request({
+			url: `${process.env.V2_API_URL}${typeAction === 'follow' ? '/follow' : '/unfollow'}`,
 			method: 'PUT',
 			headers: {
 				authorization: await WalletHelper.authToken(),
 			},
 			params: {
 				account_id: currentUser,
-				following_account_id: data.account_id,
+				following_account_id: userId,
 			},
-		}
-		try {
-			const resp = await axios.request(options)
-			if (resp) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							Successfully {type === 'follow' ? 'Followed' : 'Unfollowed'}
-						</div>
-					),
-					type: 'success',
-					duration: 1000,
-				})
-				fetchDataAction()
-				fetchDataUdate()
-			}
-		} catch (err) {
-			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
-			toast.show({
-				text: <div className="font-semibold text-center text-sm">{msg}</div>,
-				type: 'error',
-				duration: 1000,
-			})
-			fetchDataAction()
-			fetchDataUdate()
-		}
+		})
+
+		fetchData()
+		mutate()
+		setIsLoading('')
 	}
 
 	return (
 		<div className="rounded-md ml-1 md:ml-0">
-			{newDataChecked.length === 0 && !hasMore && (
+			{data.length === 0 && !hasMore && (
 				<div className="w-full">
 					<div className="m-auto text-2xl text-gray-600 font-semibold py-20 text-center">
 						{typeFollow === 'following' ? <p>No Following</p> : <p>No Followers</p>}
@@ -92,13 +54,13 @@ const FollowList = ({
 				</div>
 			)}
 			<InfiniteScroll
-				dataLength={newDataChecked.length}
+				dataLength={data.length}
 				next={getMoreData}
 				hasMore={hasMore}
 				loader={<FollowListLoader length={3} />}
 			>
-				<div className="ml-2">
-					{newDataChecked.map((user, idx) => {
+				<div className="ml-1">
+					{data.map((user, idx) => {
 						return (
 							<div className="flex items-center gap-2 mt-2" key={idx}>
 								<div className={`ml-1 md:ml-2 ${user?.flag && 'opacity-50'}`}>
@@ -124,33 +86,43 @@ const FollowList = ({
 										{user?.isCreator && <IconVerified size={15} color="#0816B3" />}
 									</div>
 								</div>
-								<div
-									className="absolute right-4"
-									onMouseEnter={() => setButtonHover(idx)}
-									onMouseLeave={() => setButtonHover(null)}
-								>
+								<div className="absolute right-4">
 									{currentUser === userProfile.accountId &&
 									currentUser !== user.account_id &&
 									user?.isFollowed ? (
-										<ButtonUnfollow
-											idx={idx}
-											buttonHover={buttonHover}
-											followAction={() => actionButton(user, 'unfollow')}
-										/>
+										<div
+											onMouseEnter={() => setButtonHover(idx)}
+											onMouseLeave={() => setButtonHover(null)}
+										>
+											<ButtonUnfollow
+												idx={idx}
+												buttonHover={buttonHover}
+												loading={isLoading === user.account_id ? true : false}
+												followAction={() => actionFollowUnfollow(user.account_id, 'unfollow')}
+											/>
+										</div>
 									) : user?.isFollowed && currentUser !== user.account_id ? (
-										<ButtonUnfollow
-											idx={idx}
-											buttonHover={buttonHover}
-											followAction={() => actionButton(user, 'unfollow')}
-										/>
+										<div
+											onMouseEnter={() => setButtonHover(idx)}
+											onMouseLeave={() => setButtonHover(null)}
+										>
+											<ButtonUnfollow
+												idx={idx}
+												buttonHover={buttonHover}
+												loading={isLoading === user.account_id ? true : false}
+												followAction={() => actionFollowUnfollow(user.account_id, 'unfollow')}
+											/>
+										</div>
 									) : (
 										currentUser !== user.account_id && (
 											<Button
 												key={idx}
-												className="mt-1 px-2 w-20 bg-primary"
+												className="mt-1 px-2 w-20 bg-primary h-9"
 												size="sm"
 												variant="primary"
-												onClick={() => actionButton(user, 'follow')}
+												isLoading={isLoading === user.account_id ? true : false}
+												loadingStyle="h-2"
+												onClick={() => actionFollowUnfollow(user.account_id, 'follow')}
 											>
 												Follow
 											</Button>
@@ -168,12 +140,14 @@ const FollowList = ({
 
 export default FollowList
 
-const ButtonUnfollow = ({ idx, buttonHover, followAction = () => {} }) => {
+const ButtonUnfollow = ({ idx, buttonHover, loading, followAction = () => {} }) => {
 	return (
 		<Button
 			key={idx}
-			className={`mt-1 px-2 w-20 ${buttonHover === idx ? 'hover:bg-red-500' : 'bg-[#1B4FA7]'}`}
+			className={`mt-1 px-2 w-20 ${buttonHover === idx ? 'hover:bg-red-500' : 'bg-[#1B4FA7]'} h-9`}
 			size="sm"
+			loadingStyle="h-2"
+			isLoading={loading}
 			variant="error"
 			onClick={() => followAction()}
 		>
