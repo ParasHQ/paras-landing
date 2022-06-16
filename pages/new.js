@@ -23,7 +23,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import Scrollbars from 'react-custom-scrollbars'
 import getConfig from 'config/near'
 import Tooltip from 'components/Common/Tooltip'
-import { IconInfo, IconX } from 'components/Icons'
+import { Icon3D, IconIframe, IconInfo, IconLoader, IconSpin, IconX } from 'components/Icons'
 import WalletHelper from 'lib/WalletHelper'
 import AudioPlayer from 'components/Common/AudioPlayer'
 import { Canvas } from '@react-three/fiber'
@@ -66,16 +66,7 @@ const RoyaltyWatch = ({ control, append }) => {
 				onClick={() => append({ accountId: '', value: '' })}
 			>
 				<span className="text-sm pr-2">Add</span>
-				<svg
-					width="14"
-					height="14"
-					viewBox="0 0 16 16"
-					fill="none"
-					className="cursor-pointer"
-					xmlns="http://www.w3.org/2000/svg"
-				>
-					<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
-				</svg>
+				<IconX style={{ transform: 'rotate(45deg)' }} className="cursor-pointer" size={20} />
 			</button>
 		</div>
 	)
@@ -83,26 +74,7 @@ const RoyaltyWatch = ({ control, append }) => {
 
 const LoaderIcon = () => (
 	<div className="flex items-center justify-center">
-		<svg
-			className="animate-spin m h-5 w-5 text-white"
-			xmlns="http://www.w3.org/2000/svg"
-			fill="none"
-			viewBox="0 0 24 24"
-		>
-			<circle
-				className="opacity-25"
-				cx="12"
-				cy="12"
-				r="10"
-				stroke="currentColor"
-				strokeWidth="4"
-			></circle>
-			<path
-				className="opacity-75"
-				fill="currentColor"
-				d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-			></path>
-		</svg>
+		<IconSpin />
 	</div>
 )
 
@@ -141,14 +113,14 @@ const NewPage = () => {
 	const [audioFile, setAudioFile] = useState('')
 	const [audioUrl, setAudioUrl] = useState('')
 	const uploadedAudioRef = useRef(null)
-	const [thumbnailAudioFile, setthumbnailAudioFile] = useState('')
-	const [thumbnailAudioUrl, setThumbnailAudioUrl] = useState('')
+	const [thumbnailFile, setThumbnailFile] = useState('')
+	const [thumbnailUrl, setThumbnailUrl] = useState('')
 	const [step, setStep] = useState(0)
 	const [isUploading, setIsUploading] = useState(false)
 	const [isCreating, setIsCreating] = useState(false)
 	const [showConfirmModal, setShowConfirmModal] = useState(false)
 	const [showCreatingModal, setShowCreatingModal] = useState(false)
-	const [showAudioThumbnailModal, setShowAudioThumbnailModal] = useState(false)
+	const [showThumbnailModal, setShowThumbnailModal] = useState(false)
 	const [showCreateColl, setShowCreateColl] = useState(false)
 
 	const [showAlertErr, setShowAlertErr] = useState(false)
@@ -168,6 +140,10 @@ const NewPage = () => {
 	const [attributeKey, setAttributeKey] = useState([])
 	const [attributeValue, setAttributeValue] = useState({})
 	const [txFee, setTxFee] = useState(null)
+	const [showMoreFile, setShowMoreFile] = useState(false)
+	const [iframeInput, setIframeInput] = useState('')
+	const [iframeUrl, setIframeUrl] = useState('')
+	const [showIframeFile, setShowIframeFile] = useState(false)
 
 	const watchRoyalties = watch(`royalties`)
 	const showTooltipTxFee = (txFee?.next_fee || 0) > (txFee?.current_fee || 0)
@@ -219,7 +195,11 @@ const NewPage = () => {
 			attributes: formInput.attributes,
 			blurhash: blurhash,
 			mime_type: fileType,
-			animation_url: uploadedAudioRef.current ? uploadedAudioRef.current : uploaded3DRef.current,
+			animation_url: uploadedAudioRef.current
+				? uploadedAudioRef.current
+				: uploaded3DRef.current
+				? uploaded3DRef.current
+				: iframeUrl,
 		})
 		const blob = new Blob([reference], { type: 'text/plain' })
 
@@ -466,14 +446,16 @@ const NewPage = () => {
 				setImgFile('')
 				setThreeDUrl('')
 				setThreeDFile('')
-				setthumbnailAudioFile('')
-				setThumbnailAudioUrl('')
+				setIframeInput('')
+				setIframeUrl('')
+				setThumbnailFile('')
+				setThumbnailUrl('')
 				if (e.target.files[0].type?.includes('audio')) {
 					const _audioUrl = URL.createObjectURL(e.target.files[0])
 					setAudioFile(e.target.files[0])
 					setAudioUrl(_audioUrl)
 					setFileType(e.target.files[0].type)
-					setShowAudioThumbnailModal(true)
+					setShowThumbnailModal(true)
 				} else if (e.target.files[0].name?.includes('glb')) {
 					setIsUpload3DFile(true)
 					const threeDUrl = URL.createObjectURL(e.target.files[0])
@@ -481,7 +463,7 @@ const NewPage = () => {
 					setThreeDFile(e.target.files[0])
 					const _fileType = await FileType.fromBlob(e.target.files[0])
 					setFileType(_fileType?.mime)
-					setShowAudioThumbnailModal(true)
+					setShowThumbnailModal(true)
 					setIsUpload3DFile(false)
 				} else {
 					const newImgUrl = await readFileAsUrl(e.target.files[0])
@@ -494,15 +476,32 @@ const NewPage = () => {
 		}
 	}
 
-	const _setThumbnailAudio = async (e) => {
+	const _setMoreFile = async () => {
+		setThumbnailFile('')
+		setThumbnailUrl('')
+		setImgFile('')
+		setImgUrl('')
+		setThreeDUrl('')
+		setThreeDFile('')
+		setAudioUrl('')
+		setAudioFile('')
+		if (iframeInput) {
+			setIframeUrl(iframeInput)
+			setShowThumbnailModal(true)
+			setFileType('iframe')
+		}
+	}
+
+	const _setThumbnailFile = async (e) => {
 		if (e.target.files[0]) {
 			if (e.target.files[0].size > MAX_FILE_SIZE) {
 				setShowAlertErr('Maximum file size is 30MB')
 				return
 			} else {
 				const newThumbUrl = URL.createObjectURL(e.target.files[0])
-				setthumbnailAudioFile(e.target.files[0])
-				setThumbnailAudioUrl(newThumbUrl)
+				setThumbnailFile(e.target.files[0])
+				setThumbnailUrl(newThumbUrl)
+				encodeBlurhash(newThumbUrl)
 			}
 		}
 	}
@@ -926,9 +925,9 @@ const NewPage = () => {
 					}}
 				/>
 			)}
-			{showAudioThumbnailModal && (
+			{showThumbnailModal && (
 				<Modal
-					close={() => setShowAudioThumbnailModal(false)}
+					close={() => setShowThumbnailModal(false)}
 					closeOnBgClick={false}
 					closeOnEscape={false}
 				>
@@ -941,29 +940,31 @@ const NewPage = () => {
 									setAudioUrl('')
 									setThreeDFile('')
 									setThreeDUrl('')
-									setThumbnailAudioUrl('')
-									setthumbnailAudioFile('')
+									setThumbnailUrl('')
+									setThumbnailFile('')
 									setImgFile('')
 									setImgUrl('')
-									setShowAudioThumbnailModal(false)
+									setIframeInput('')
+									setIframeUrl('')
+									setShowThumbnailModal(false)
 								}}
 							>
 								<IconX />
 							</div>
 						</div>
-						<h1 className="mt-4 text-xl font-bold text-white tracking-tight">
-							Thumbnail Image for Audio and 3D
+						<h1 className="mt-5 text-base font-bold text-white text-center tracking-tight">
+							Thumbnail Image for Audio, and 3D
 						</h1>
 						<div className="px-2 flex items-center justify-center mt-4">
-							{thumbnailAudioFile ? (
-								<img src={thumbnailAudioUrl} className="object-contain w-9/12 h-80" alt="" />
+							{thumbnailFile ? (
+								<img src={thumbnailUrl} className="object-contain w-9/12 h-80" alt="" />
 							) : (
 								<div className="bg-gray-500 bg-opacity-60 hover:bg-opacity-30 transition-all cursor-pointer rounded-md w-9/12 h-80 flex items-center justify-center relative">
 									<input
 										type="file"
 										accept="image/*"
 										className="cursor-pointer w-full opacity-0 absolute inset-0"
-										onChange={_setThumbnailAudio}
+										onChange={_setThumbnailFile}
 									/>
 									<div className="text-white">+ Add</div>
 								</div>
@@ -974,14 +975,14 @@ const NewPage = () => {
 								disabled={isUpload3DFile}
 								className="px-4 py-2 w-full rounded-md bg-primary text-white hover:bg-opacity-30 transition-all cursor-pointer text-center font-semibold"
 								onClick={async () => {
-									if (thumbnailAudioUrl) {
-										setImgUrl(thumbnailAudioUrl)
-										setImgFile(thumbnailAudioFile)
-										setShowAudioThumbnailModal(false)
+									if (thumbnailUrl) {
+										setImgUrl(thumbnailUrl)
+										setImgFile(thumbnailFile)
+										setShowThumbnailModal(false)
 									}
 								}}
 							>
-								{isUpload3DFile ? <LoaderIcon /> : `Submit`}
+								{isUpload3DFile ? <IconLoader /> : `Submit`}
 							</button>
 						</div>
 					</div>
@@ -1007,13 +1008,20 @@ const NewPage = () => {
 								height: `60vh`,
 							}}
 						>
-							{threeDUrl && show3dFile ? (
+							{(threeDUrl && show3dFile) || (iframeUrl && showIframeFile) ? (
 								<>
-									<Suspense fallback={null}>
-										<Canvas>
-											<Model1 threeDUrl={threeDUrl} />
-										</Canvas>
-									</Suspense>
+									{threeDUrl && show3dFile && (
+										<>
+											<Suspense fallback={null}>
+												<Canvas>
+													<Model1 threeDUrl={threeDUrl} />
+												</Canvas>
+											</Suspense>
+										</>
+									)}
+									{iframeUrl && showIframeFile && (
+										<iframe src={iframeUrl} className="object-contain w-full h-full" />
+									)}
 								</>
 							) : (
 								<>
@@ -1051,33 +1059,23 @@ const NewPage = () => {
 										setShow3dFile(!show3dFile)
 									}}
 								>
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										className="icon icon-tabler icon-tabler-3d-cube-sphere"
-										width={25}
-										height={25}
-										viewBox="0 0 24 24"
-										strokeWidth="1.5"
-										stroke="#fff"
-										fill="none"
-										strokeLinecap="round"
-										strokeLinejoin="round"
-									>
-										<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-										<path d="M6 17.6l-2 -1.1v-2.5" />
-										<path d="M4 10v-2.5l2 -1.1" />
-										<path d="M10 4.1l2 -1.1l2 1.1" />
-										<path d="M18 6.4l2 1.1v2.5" />
-										<path d="M20 14v2.5l-2 1.12" />
-										<path d="M14 19.9l-2 1.1l-2 -1.1" />
-										<line x1={12} y1={12} x2={14} y2="10.9" />
-										<line x1={18} y1="8.6" x2={20} y2="7.5" />
-										<line x1={12} y1={12} x2={12} y2="14.5" />
-										<line x1={12} y1="18.5" x2={12} y2={21} />
-										<path d="M12 12l-2 -1.12" />
-										<line x1={6} y1="8.6" x2={4} y2="7.5" />
-									</svg>
+									<Icon3D size={25} color={`#fff`} />
 									3D
+								</div>
+							</div>
+						)}
+						{iframeUrl && (
+							<div className="absolute top-5 right-5">
+								<div
+									className={`py-1 px-2 text-white rounded-full flex items-center bg-gray-700 hover:bg-gray-900 transition-all cursor-pointer ${
+										showIframeFile && `border border-white`
+									}`}
+									onClick={() => {
+										setShowIframeFile(!showIframeFile)
+									}}
+								>
+									<IconIframe size={25} color={`#fff`} />
+									Iframe
 								</div>
 							</div>
 						)}
@@ -1235,6 +1233,55 @@ const NewPage = () => {
 										)}
 									</div>
 								</div>
+								{/* <div
+									className="flex items-center cursor-pointer mt-3"
+									onClick={() => setShowMoreFile(!showMoreFile)}
+								>
+									<p className="text-gray-400 text-sm font-semibold mr-1 hover:text-gray-300">
+										More
+									</p>
+									<div>
+										<svg
+											viewBox="0 0 11 7"
+											fill="#9da3ae"
+											width="14"
+											height="14"
+											xlmns="http://www.w3.org/2000/svg"
+										>
+											<path
+												fillRule="evenodd"
+												clipRule="evenodd"
+												d="M5.00146 6.41431L9.70857 1.7072C10.0991 1.31668 10.0991 0.683511 9.70857 0.292986C9.31805 -0.097538 8.68488 -0.097538 8.29436 0.292986L5.00146 3.58588L1.70857 0.292986C1.31805 -0.097538 0.684882 -0.097538 0.294358 0.292986C-0.0961662 0.68351 -0.0961662 1.31668 0.294358 1.7072L5.00146 6.41431Z"
+												fill="#9da3ae"
+											></path>
+										</svg>
+									</div>
+								</div>
+								{showMoreFile && (
+									<div>
+										<div className="mt-2">
+											<label className="block text-sm text-gray-100 mb-1">Playable In-frame</label>
+											<div className="flex h-full space-x-1">
+												<div className={`${iframeUrl ? `w-full` : `w-10/12`}`}>
+													<input
+														type="text"
+														name="iframe"
+														value={iframeInput}
+														onChange={(e) => setIframeInput(e.target.value)}
+														className={`focus:border-gray-600 bg-white bg-opacity-10 text-xs focus:bg-white focus:bg-opacity-10`}
+														placeholder="Iframe URL"
+													/>
+												</div>
+												<div
+													className={`w-2/12 p-1 border-2 border-dashed border-gray-400 hover:text-opacity-30 transition-all text-white rounded-md text-xs cursor-pointer max-h-full flex items-center justify-center`}
+													onClick={_setMoreFile}
+												>
+													Submit
+												</div>
+											</div>
+										</div>
+									</div>
+								)} */}
 								<div>
 									<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
 										<button onClick={_handleBack}>{localeLn('Back')}</button>
@@ -1316,17 +1363,12 @@ const NewPage = () => {
 									<div className="mt-4">
 										<div className="flex items-center justify-between mb-1">
 											<label className="block text-sm">{localeLn('Attributes')}</label>
-											<svg
-												width="14"
-												height="14"
-												viewBox="0 0 16 16"
-												fill="none"
+											<IconX
 												className="cursor-pointer"
 												onClick={() => append({ trait_type: '', value: '' })}
-												xmlns="http://www.w3.org/2000/svg"
-											>
-												<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
-											</svg>
+												size={20}
+												style={{ transform: 'rotate(45deg)' }}
+											/>
 										</div>
 										<Scrollbars ref={scrollBar} autoHeight={false} style={{ height: '200px' }}>
 											{fields.map((attr, idx) => (
@@ -1354,17 +1396,7 @@ const NewPage = () => {
 														)}
 													/>
 													<div className="cursor-pointer self-center" onClick={() => remove(idx)}>
-														<svg
-															width="14"
-															height="14"
-															viewBox="0 0 16 16"
-															fill="none"
-															style={{ transform: 'rotate(45deg)' }}
-															className="relative z-10"
-															xmlns="http://www.w3.org/2000/svg"
-														>
-															<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
-														</svg>
+														<IconX className="relative z-10" size={20} />
 													</div>
 												</div>
 											))}
@@ -1408,17 +1440,7 @@ const NewPage = () => {
 														placeholder="Value (10, 20, 30)"
 													/>
 													<div className="cursor-pointer" onClick={() => royaltyRemove(idx)}>
-														<svg
-															width="14"
-															height="14"
-															viewBox="0 0 16 16"
-															fill="none"
-															style={{ transform: 'rotate(45deg)' }}
-															className="relative z-10"
-															xmlns="http://www.w3.org/2000/svg"
-														>
-															<path d="M9 7V0H7V7H0V9H7V16H9V9H16V7H9Z" fill="white" />
-														</svg>
+														<IconX className="relative z-10" size={20} />
 													</div>
 												</div>
 											))}

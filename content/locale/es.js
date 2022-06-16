@@ -45,6 +45,7 @@ const home = {
 	Featured: 'Destacada',
 	Latest: 'Más reciente',
 	TopCollections: 'Principales Colecciones',
+	LiveAuction: 'Subasta en vivo',
 	TopBuyers: 'Principales Compradores',
 	TopSellers: 'Principales Vendedores',
 	NewestCards: 'Nuevas Cartas',

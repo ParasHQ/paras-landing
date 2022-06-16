@@ -14,6 +14,7 @@ import User from './User/User'
 import SlowActivityInfo from './SlowActivityInfo'
 import axios from 'axios'
 import AutoCompleteList from './AutoComplete/AutoCompleteList'
+import { IconQuestion, IconSearch, IconX } from './Icons'
 
 const LIMIT = 5
 
@@ -177,25 +178,13 @@ const Nav = () => {
 								here
 							</span>
 						</div>
-
-						<svg
+						<IconX
+							size={20}
 							className={`absolute right-0 z-50 mr-2 cursor-pointer ${
 								!store.showEmailWarning && 'hidden'
 							}`}
 							onClick={hideEmailNotVerified}
-							width="16"
-							height="16"
-							viewBox="0 0 16 16"
-							fill="none"
-							xmlns="http://www.w3.org/2000/svg"
-						>
-							<path
-								fillRule="evenodd"
-								clipRule="evenodd"
-								d="M8.00008 9.41423L3.70718 13.7071L2.29297 12.2929L6.58586 8.00001L2.29297 3.70712L3.70718 2.29291L8.00008 6.5858L12.293 2.29291L13.7072 3.70712L9.41429 8.00001L13.7072 12.2929L12.293 13.7071L8.00008 9.41423Z"
-								fill="white"
-							/>
-						</svg>
+						/>
 					</div>
 				)}
 
@@ -230,22 +219,11 @@ const Nav = () => {
 							>
 								Mainnet
 							</a>
-							<svg
-								width="16"
-								height="16"
-								viewBox="0 0 16 16"
-								fill="none"
-								xmlns="http://www.w3.org/2000/svg"
-								className="inline	ml-2 cursor-pointer opacity-75"
+							<IconQuestion
+								size={16}
+								className="inline ml-2 cursor-pointer opacity-75"
 								onClick={_showTestnetInfo}
-							>
-								<path
-									fillRule="evenodd"
-									clipRule="evenodd"
-									d="M0 8C0 12.4183 3.58172 16 8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8ZM14 8C14 11.3137 11.3137 14 8 14C4.68629 14 2 11.3137 2 8C2 4.68629 4.68629 2 8 2C11.3137 2 14 4.68629 14 8ZM7 10V9.5C7 8.28237 7.42356 7.68233 8.4 6.95C8.92356 6.55733 9 6.44904 9 6C9 5.44772 8.55229 5 8 5C7.44772 5 7 5.44772 7 6H5C5 4.34315 6.34315 3 8 3C9.65685 3 11 4.34315 11 6C11 7.21763 10.5764 7.81767 9.6 8.55C9.07644 8.94267 9 9.05096 9 9.5V10H7ZM9.00066 11.9983C9.00066 12.5506 8.55279 12.9983 8.00033 12.9983C7.44786 12.9983 7 12.5506 7 11.9983C7 11.4461 7.44786 10.9983 8.00033 10.9983C8.55279 10.9983 9.00066 11.4461 9.00066 11.9983Z"
-									fill="white"
-								/>
-							</svg>
+							/>
 						</p>
 					</div>
 				)}
@@ -302,20 +280,7 @@ const Nav = () => {
 									className="flex border-dark-primary-1 border-2 rounded-lg bg-dark-primary-1"
 									onClick={toggleAutoComplete}
 								>
-									<svg
-										width="36"
-										height="36"
-										viewBox="0 0 32 32"
-										fill="none"
-										xmlns="http://www.w3.org/2000/svg"
-									>
-										<path
-											fillRule="evenodd"
-											clipRule="evenodd"
-											d="M10.6667 15.1667C10.6667 12.6814 12.6814 10.6667 15.1667 10.6667C17.6519 10.6667 19.6667 12.6814 19.6667 15.1667C19.6667 17.6519 17.6519 19.6667 15.1667 19.6667C12.6814 19.6667 10.6667 17.6519 10.6667 15.1667ZM15.1667 8C11.2086 8 8 11.2086 8 15.1667C8 19.1247 11.2086 22.3333 15.1667 22.3333C16.6639 22.3333 18.0538 21.8742 19.2035 21.0891L21.7239 23.6095C22.2446 24.1302 23.0888 24.1302 23.6095 23.6095C24.1302 23.0888 24.1302 22.2446 23.6095 21.7239L21.0891 19.2035C21.8742 18.0538 22.3333 16.6639 22.3333 15.1667C22.3333 11.2086 19.1247 8 15.1667 8Z"
-											fill="white"
-										></path>
-									</svg>
+									<IconSearch size={36} />
 									<input
 										id="search"
 										name="q"
