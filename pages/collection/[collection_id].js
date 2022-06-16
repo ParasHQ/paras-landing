@@ -317,6 +317,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const updateFilter = async (query) => {
 		let params, res
 		setIsFiltering(true)
+
+		_fetchCollectionStats(true)
 		if (isItemActiveTab) {
 			params = tokensParams(query || serverQuery)
 			res = await axios(`${process.env.V2_API_URL}/token-series`, {
