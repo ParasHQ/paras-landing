@@ -30,15 +30,17 @@ const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => 
 	})
 
 	useEffect(() => {
-		if (localToken.extend_list && localToken.extend_list.length > 0) {
-			const bidderAndExtendList = localToken.bidder_list.concat(localToken.extend_list)
-			const sortedBidderAndExtendList = bidderAndExtendList.sort(
-				(a, b) => a.issued_at - b.issued_at
-			)
-			setHistoryBid(sortedBidderAndExtendList)
-		} else {
-			setHistoryBid(localToken.bidder_list)
+		let histBid = []
+		if (localToken.bidder_list && localToken.bidder_list.length > 0) {
+			histBid = [...histBid, localToken.bidder_list]
 		}
+
+		if (localToken.extend_list && localToken.extend_list.length > 0) {
+			histBid = [...histBid, localToken.extend_list]
+		}
+
+		const sortedHistoryBid = histBid.sort((a, b) => a.issued_at - b.issued_at)
+		setHistoryBid(sortedHistoryBid)
 	}, [localToken])
 
 	useEffect(() => {
