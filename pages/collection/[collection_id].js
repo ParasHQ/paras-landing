@@ -210,6 +210,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		router.query.is_staked,
 		router.query.card_trade_type,
 		router.query.q,
+		router.query.collection_id,
 	])
 
 	useEffect(() => {
