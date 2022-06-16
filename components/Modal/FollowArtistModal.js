@@ -23,7 +23,7 @@ const FollowArtistModal = ({
 	const [isFetching, setIsFetching] = useState(false)
 	const [isRefreshing, setIsRefreshing] = useState(false)
 	const [hasMore, setHasMore] = useState(false)
-	const [hasMoreCurrUser, setHasMoreCurrUser] = useState(false)
+	// const [hasMoreCurrUser, setHasMoreCurrUser] = useState(false)
 	const [startPositionY, setStartPositionY] = useState(340.5)
 	const [endPositionY, setEndPositionY] = useState(404.5)
 
@@ -68,7 +68,7 @@ const FollowArtistModal = ({
 		}
 		if (resFollowCurrentUser.data.data.length === LIMIT) {
 			setPageCurrUser(1)
-			setHasMoreCurrUser(true)
+			// setHasMoreCurrUser(true)
 		}
 
 		setFollows(resFollowProfile.data.data)
@@ -116,11 +116,11 @@ const FollowArtistModal = ({
 			setHasMore(true)
 		}
 
-		if (newDataCurrUser.length < LIMIT) {
-			setHasMoreCurrUser(false)
-		} else {
-			setHasMoreCurrUser(true)
-		}
+		// if (newDataCurrUser.length < LIMIT) {
+		// 	setHasMoreCurrUser(false)
+		// } else {
+		// 	setHasMoreCurrUser(true)
+		// }
 		setIsFetching(false)
 	}
 
@@ -160,7 +160,7 @@ const FollowArtistModal = ({
 										userProfile={userProfile}
 										getMoreData={getMoreData}
 										hasMore={hasMore}
-										hasMoreCurrUser={hasMoreCurrUser}
+										// hasMoreCurrUser={hasMoreCurrUser}
 										fetchDataAction={() => fetchData('action-follow')}
 										fetchDataUdate={() => fetchDataUdate()}
 										typeFollow={typeFollow}

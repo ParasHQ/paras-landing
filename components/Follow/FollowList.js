@@ -58,19 +58,17 @@ const FollowList = ({
 		try {
 			const resp = await axios.request(options)
 			if (resp) {
-				if (resp) {
-					toast.show({
-						text: (
-							<div className="font-semibold text-center text-sm">
-								Successfully {type === 'follow' ? 'Followed' : 'Unfollowed'}
-							</div>
-						),
-						type: 'success',
-						duration: 1000,
-					})
-					fetchDataAction()
-					fetchDataUdate()
-				}
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">
+							Successfully {type === 'follow' ? 'Followed' : 'Unfollowed'}
+						</div>
+					),
+					type: 'success',
+					duration: 1000,
+				})
+				fetchDataAction()
+				fetchDataUdate()
 			}
 		} catch (err) {
 			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
@@ -96,7 +94,7 @@ const FollowList = ({
 			<InfiniteScroll
 				dataLength={newDataChecked.length}
 				next={getMoreData}
-				hasMore={hasMore || hasMoreCurrUser}
+				hasMore={hasMore}
 				loader={<FollowListLoader length={3} />}
 			>
 				<div className="ml-2">

@@ -23,20 +23,14 @@ import {
 import Tooltip from 'components/Common/Tooltip'
 import FollowArtistModal from 'components/Modal/FollowArtistModal'
 import Follow from 'components/Follow/Follow'
-import LoginModal from 'components/Modal/LoginModal'
-import WalletHelper from 'lib/WalletHelper'
-import axios from 'axios'
-import { useToast } from 'hooks/useToast'
 
 const Profile = ({ userProfile, activeTab }) => {
 	const currentUser = useStore((store) => store.currentUser)
 	const router = useRouter()
 	const { localeLn } = useIntl()
-	const toast = useToast()
 	const [isCopied, setIsCopied] = useState(false)
 	const [showModal, setShowModal] = useState(false)
-	const [showFollowModal, setShowFollowModal] = useState('')
-	const [showLogin, setShowLogin] = useState(false)
+	const [followListModal, setFollowListModal] = useState('')
 	const [dataUpdate, setDataUpdate] = useState(false)
 
 	const [profileData, setProfileData] = useState(userProfile)
@@ -63,61 +57,8 @@ const Profile = ({ userProfile, activeTab }) => {
 		setDataUpdate(false)
 	}, [dataUpdate])
 
-	const followAction = (e) => {
-		if (!currentUser) {
-			setShowLogin(true)
-			return
-		}
-		setShowFollowModal(e)
-	}
-
-	const buttonFollow = async (type) => {
-		if (!currentUser) {
-			setShowLogin(true)
-			return
-		}
-		const options = {
-			url: `${process.env.V2_API_URL}/${type === 'follow' ? 'follow' : 'unfollow'}`,
-			method: 'PUT',
-			headers: {
-				authorization: await WalletHelper.authToken(),
-			},
-			params: {
-				account_id: currentUser,
-				following_account_id: profileData.accountId,
-			},
-		}
-		try {
-			const resp = await axios.request(options)
-			if (resp) {
-				if (resp) {
-					toast.show({
-						text: (
-							<div className="font-semibold text-center text-sm">
-								successfully {type === 'follow' ? 'followed' : 'unfollowed'}
-							</div>
-						),
-						type: 'success',
-						duration: 1000,
-					})
-					setDataUpdate(true)
-				}
-			}
-		} catch (err) {
-			const msg = err.response?.data?.message || 'Something went wrong, try again later.'
-			toast.show({
-				text: <div className="font-semibold text-center text-sm">{msg}</div>,
-				type: 'error',
-				duration: 1000,
-			})
-			setDataUpdate(true)
-		}
-		setDataUpdate(false)
-	}
-
 	return (
 		<Fragment>
-			{showLogin && <LoginModal onClose={() => setShowLogin(false)} show={showLogin} />}
 			{showModal && (
 				<Modal close={dismissUserModal} closeOnBgClick={false} closeOnEscape={false}>
 					<div className="w-full max-w-sm p-4 m-auto bg-dark-primary-2 rounded-md overflow-hidden">
@@ -247,13 +188,11 @@ const Profile = ({ userProfile, activeTab }) => {
 						)}
 					</div>
 					<Follow
-						followingAmount={userProfile?.following}
-						followerAmount={userProfile?.followers}
 						userProfile={profileData}
 						currentUser={currentUser}
-						fetchDataUpdate={dataUpdate}
-						isLogin={(e) => buttonFollow(e)}
-						showFollowModal={(e) => followAction(e)}
+						followingAmount={userProfile?.following}
+						followerAmount={userProfile?.followers}
+						showFollowListModal={(e) => setFollowListModal(e)}
 					/>
 				</div>
 			</div>
@@ -312,24 +251,24 @@ const Profile = ({ userProfile, activeTab }) => {
 			<div className="sm:hidden">
 				<TabProfileMobile activeTab={activeTab} />
 			</div>
-			{showFollowModal === 'following' && (
+			{followListModal === 'following' && (
 				<FollowArtistModal
 					show={true}
 					userProfile={profileData}
 					currentUser={currentUser}
 					typeFollow="following"
 					fetchDataUdate={() => setDataUpdate(true)}
-					onClose={() => setShowFollowModal('')}
+					onClose={() => setFollowListModal('')}
 				/>
 			)}
-			{showFollowModal === 'followers' && (
+			{followListModal === 'followers' && (
 				<FollowArtistModal
 					show={true}
 					currentUser={currentUser}
 					userProfile={profileData}
 					typeFollow="followers"
 					fetchDataUdate={() => setDataUpdate(true)}
-					onClose={() => setShowFollowModal('')}
+					onClose={() => setFollowListModal('')}
 				/>
 			)}
 		</Fragment>

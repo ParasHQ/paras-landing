@@ -1,64 +1,93 @@
 import axios from 'axios'
 import Button from 'components/Common/Button'
+import LoginModal from 'components/Modal/LoginModal'
+import WalletHelper from 'lib/WalletHelper'
 import { useEffect, useState } from 'react'
+import useSWR from 'swr'
 
 const Follow = ({
-	followingAmount,
-	followerAmount,
 	userProfile,
 	currentUser,
-	fetchDataUpdate,
-	isLogin = () => {},
-	showFollowModal = () => {},
+	followingAmount,
+	followerAmount,
+	showFollowListModal = () => {},
 }) => {
 	const [buttonHover, setButtonHover] = useState(false)
-	const [data, setData] = useState([])
+	const [showLogin, setShowLogin] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
 	const [following, setFollowing] = useState(followingAmount)
 	const [followers, setFollowers] = useState(followerAmount)
 
-	useEffect(() => {
-		if (fetchDataUpdate) {
-			fetchData('update-data')
-			return
-		}
-		fetchData()
-	}, [userProfile, currentUser, fetchDataUpdate])
-
-	const fetchData = async (type) => {
+	const fetchProfile = async () => {
 		const res = await axios.get(`${process.env.V2_API_URL}/profiles`, {
 			params: {
 				accountId: userProfile.accountId,
 				followed_by: currentUser,
 			},
 		})
-		const dataUserProfile = (await res.data.data.results[0]) || null
+		const resProfile = (await res.data.data.results[0]) || null
+		setFollowing(resProfile.following)
+		setFollowers(resProfile.followers)
+		return resProfile
+	}
 
-		if (type === 'update-data') {
-			setData(dataUserProfile)
-			setFollowing(dataUserProfile.following)
-			setFollowers(dataUserProfile.followers)
+	const { data, mutate } = useSWR(userProfile.accountId, fetchProfile)
+
+	useEffect(() => {
+		mutate()
+	}, [currentUser, mutate])
+
+	const actionFollowUnfollow = async () => {
+		if (!currentUser) {
+			setShowLogin(true)
 			return
 		}
-		setData(dataUserProfile)
-		setFollowing(dataUserProfile.following)
-		setFollowers(dataUserProfile.followers)
+
+		setIsLoading(true)
+
+		await axios.request({
+			url: `${process.env.V2_API_URL}${data.follows ? '/unfollow' : '/follow'}`,
+			method: 'PUT',
+			headers: {
+				authorization: await WalletHelper.authToken(),
+			},
+			params: {
+				account_id: currentUser,
+				following_account_id: userProfile.accountId,
+			},
+		})
+
+		mutate()
+
+		setIsLoading(false)
+		setButtonHover(false)
+	}
+
+	const followListModal = (typeList) => {
+		if (!currentUser) {
+			setShowLogin(true)
+			return
+		}
+
+		showFollowListModal(typeList)
 	}
 
 	return (
 		<div>
+			{showLogin && <LoginModal onClose={() => setShowLogin(false)} show={showLogin} />}
 			<div className="relative flex justify-around gap-20 text-white mt-2 mb-4">
 				<div
 					className="cursor-pointer hover:text-gray-300"
-					onClick={() => showFollowModal('following')}
+					onClick={() => followListModal('following')}
 				>
-					<p className="-mb-1">{following ? following : 0}</p>
+					<p className="-mb-1">{following || 0}</p>
 					<p>Following</p>
 				</div>
 				<div
 					className="cursor-pointer hover:text-gray-300"
-					onClick={() => showFollowModal('followers')}
+					onClick={() => followListModal('followers')}
 				>
-					<p className="-mb-1">{followers ? followers : 0}</p>
+					<p className="-mb-1">{followers || 0}</p>
 					<p>Followers</p>
 				</div>
 				<div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 px-[1.5px] py-2 bg-white bg-opacity-50" />
@@ -68,11 +97,14 @@ const Follow = ({
 					className="mt-4 mb-6 w-3/6 mx-auto"
 					onMouseEnter={() => setButtonHover(true)}
 					onMouseLeave={() => setButtonHover(false)}
+					onmo
 				>
 					<Button
-						className={`rounded-full w-full ${buttonHover ? 'bg-red-500' : 'bg-[#1B4FA7]'}`}
+						className={`rounded-full w-full ${buttonHover ? 'bg-red-500' : 'bg-[#1B4FA7]'} h-9`}
 						size="sm"
-						onClick={() => isLogin('unfollow')}
+						isLoading={isLoading}
+						loadingStyle="h-4"
+						onClick={() => actionFollowUnfollow()}
 					>
 						{buttonHover ? 'Unfollow' : 'Following'}
 					</Button>
@@ -82,11 +114,13 @@ const Follow = ({
 				currentUser && (
 					<div className="mt-4 mb-6 w-3/6 mx-auto">
 						<Button
-							className="rounded-full w-full bg-primary"
+							className="rounded-full w-full bg-primary h-9"
 							size="sm"
+							isLoading={isLoading}
+							loadingStyle="h-4"
 							onMouseEnter={() => setButtonHover(true)}
 							onMouseLeave={() => setButtonHover(false)}
-							onClick={() => isLogin('follow')}
+							onClick={() => actionFollowUnfollow()}
 						>
 							Follow
 						</Button>
