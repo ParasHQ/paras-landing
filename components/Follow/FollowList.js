@@ -11,23 +11,16 @@ import useSWR from 'swr'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
 import FollowListLoader from './FollowListLoader'
 
-const FollowList = ({
-	data,
-	userProfile,
-	getMoreData,
-	hasMore,
-	typeFollow,
-	fetchData = () => {},
-}) => {
+const FollowList = ({ data, userProfile, getMoreData, hasMore, typeFollow }) => {
 	const [buttonHover, setButtonHover] = useState('')
 	const currentUser = useStore((state) => state.currentUser)
-	const [isLoading, setIsLoading] = useState(false)
+	const [isLoading, setIsLoading] = useState('')
 	const { mutate } = useSWR(userProfile.accountId)
 
-	const actionFollowUnfollow = async (userId, typeAction) => {
-		setIsLoading(userId)
+	const actionFollowUnfollow = async (user, typeAction) => {
+		setIsLoading(user.account_id)
 
-		await axios.request({
+		const res = await axios.request({
 			url: `${process.env.V2_API_URL}${typeAction === 'follow' ? '/follow' : '/unfollow'}`,
 			method: 'PUT',
 			headers: {
@@ -35,11 +28,18 @@ const FollowList = ({
 			},
 			params: {
 				account_id: currentUser,
-				following_account_id: userId,
+				following_account_id: user.account_id,
 			},
 		})
 
-		fetchData()
+		if (res.status === 200) {
+			Object.defineProperty(user, 'isFollowed', {
+				value: !user?.isFollowed,
+				writable: true,
+				enumerable: true,
+			})
+		}
+
 		mutate()
 		setIsLoading('')
 	}
@@ -98,7 +98,7 @@ const FollowList = ({
 												idx={idx}
 												buttonHover={buttonHover}
 												loading={isLoading === user.account_id ? true : false}
-												followAction={() => actionFollowUnfollow(user.account_id, 'unfollow')}
+												followAction={() => actionFollowUnfollow(user, 'unfollow')}
 											/>
 										</div>
 									) : user?.isFollowed && currentUser !== user.account_id ? (
@@ -110,7 +110,7 @@ const FollowList = ({
 												idx={idx}
 												buttonHover={buttonHover}
 												loading={isLoading === user.account_id ? true : false}
-												followAction={() => actionFollowUnfollow(user.account_id, 'unfollow')}
+												followAction={() => actionFollowUnfollow(user, 'unfollow')}
 											/>
 										</div>
 									) : (
@@ -122,7 +122,7 @@ const FollowList = ({
 												variant="primary"
 												isLoading={isLoading === user.account_id ? true : false}
 												loadingStyle="h-2"
-												onClick={() => actionFollowUnfollow(user.account_id, 'follow')}
+												onClick={() => actionFollowUnfollow(user, 'follow')}
 											>
 												Follow
 											</Button>

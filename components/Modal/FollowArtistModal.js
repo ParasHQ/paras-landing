@@ -17,12 +17,12 @@ const FollowArtistModal = ({ show, onClose, userProfile, currentUser, typeFollow
 	const [startPositionY, setStartPositionY] = useState(340.5)
 	const [endPositionY, setEndPositionY] = useState(404.5)
 
-	const followParams = (_page = 0, typeActionFollow) => {
+	const followParams = (_page = 0) => {
 		const params = {
 			account_id: userProfile.accountId,
 			followed_by: currentUser,
-			__skip: typeActionFollow !== 'action-follow' ? _page * LIMIT : 0,
-			__limit: typeActionFollow !== 'action-follow' ? LIMIT : LIMIT * _page,
+			__skip: _page * LIMIT,
+			__limit: LIMIT,
 		}
 		return params
 	}
@@ -31,7 +31,7 @@ const FollowArtistModal = ({ show, onClose, userProfile, currentUser, typeFollow
 		fetchData()
 	}, [])
 
-	const fetchData = async (typeActionFollow) => {
+	const fetchData = async () => {
 		setIsRefreshing(true)
 
 		const res = await axios(
@@ -39,10 +39,7 @@ const FollowArtistModal = ({ show, onClose, userProfile, currentUser, typeFollow
 				? `${process.env.V2_API_URL}/followings`
 				: `${process.env.V2_API_URL}/followers`,
 			{
-				params:
-					typeActionFollow !== 'action-follow'
-						? followParams(page)
-						: followParams(page, 'action-follow'),
+				params: followParams(page),
 			}
 		)
 
@@ -69,14 +66,13 @@ const FollowArtistModal = ({ show, onClose, userProfile, currentUser, typeFollow
 				params: followParams(page),
 			}
 		)
-		const newData = await res.data.data
+		const dataRes = await res.data.data
+		const newData = [...data, ...dataRes]
 
-		const newFollows = [...data, ...newData]
-
-		setData(newFollows)
+		setData(newData)
 		setPage(page + 1)
 
-		if (newData.length < LIMIT) {
+		if (dataRes.length < LIMIT) {
 			setHasMore(false)
 		} else {
 			setHasMore(true)
@@ -119,7 +115,6 @@ const FollowArtistModal = ({ show, onClose, userProfile, currentUser, typeFollow
 										userProfile={userProfile}
 										getMoreData={getMoreData}
 										hasMore={hasMore}
-										fetchData={() => fetchData('action-follow')}
 										typeFollow={typeFollowListModal}
 									/>
 								)}
