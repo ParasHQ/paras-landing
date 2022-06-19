@@ -37,6 +37,7 @@ import { mutate } from 'swr'
 import { Canvas } from '@react-three/fiber'
 import { Model1 } from 'components/Model3D/ThreeDModel'
 import FileType from 'file-type/browser'
+import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 
 const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -300,7 +301,10 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 		if (res.status !== 200) {
 			setIsLiked(false)
 			setDefaultLikes(defaultLikes - 1)
+			return
 		}
+
+		trackLikeToken(token_series_id)
 	}
 
 	const unlikeToken = async (contract_id, token_series_id) => {
@@ -329,7 +333,10 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 		if (res.status !== 200) {
 			setIsLiked(true)
 			setDefaultLikes(defaultLikes + 1)
+			return
 		}
+
+		trackUnlikeToken(token_series_id)
 	}
 
 	const get3DModel = async (url) => {
