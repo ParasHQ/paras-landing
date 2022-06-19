@@ -953,7 +953,7 @@ const NewPage = () => {
 							</div>
 						</div>
 						<h1 className="mt-5 text-base font-bold text-white text-center tracking-tight">
-							Thumbnail Image for Audio, 3D, and Iframe
+							Thumbnail Image for Audio, and 3D
 						</h1>
 						<div className="px-2 flex items-center justify-center mt-4">
 							{thumbnailFile ? (
@@ -1233,7 +1233,7 @@ const NewPage = () => {
 										)}
 									</div>
 								</div>
-								<div
+								{/* <div
 									className="flex items-center cursor-pointer mt-3"
 									onClick={() => setShowMoreFile(!showMoreFile)}
 								>
@@ -1281,7 +1281,7 @@ const NewPage = () => {
 											</div>
 										</div>
 									</div>
-								)}
+								)} */}
 								<div>
 									<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
 										<button onClick={_handleBack}>{localeLn('Back')}</button>

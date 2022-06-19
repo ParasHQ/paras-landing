@@ -59,10 +59,10 @@ const HomeAuctionList = () => {
 				{!isLoading ? (
 					<>
 						<div className="block md:hidden">
-							<TokenList tokens={auctionToken} displayType="small" />
+							<TokenList tokens={auctionToken} showLike={true} displayType="small" />
 						</div>
 						<div className="hidden md:block">
-							<TokenList tokens={auctionToken} />
+							<TokenList tokens={auctionToken} showLike={true} />
 						</div>
 					</>
 				) : (
