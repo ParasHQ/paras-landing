@@ -14,8 +14,6 @@ const FollowArtistModal = ({ show, onClose, userProfile, currentUser, typeFollow
 	const [isFetching, setIsFetching] = useState(false)
 	const [isRefreshing, setIsRefreshing] = useState(false)
 	const [hasMore, setHasMore] = useState(false)
-	const [startPositionY, setStartPositionY] = useState(340.5)
-	const [endPositionY, setEndPositionY] = useState(404.5)
 
 	const followParams = (_page = 0) => {
 		const params = {
@@ -80,16 +78,6 @@ const FollowArtistModal = ({ show, onClose, userProfile, currentUser, typeFollow
 		setIsFetching(false)
 	}
 
-	const scrollList = (e) => {
-		const startPY = 540.5
-		const endPY = 604.5
-		if (e.scrollTop >= startPositionY && e.scrollTop <= endPositionY) {
-			getMoreData()
-			setStartPositionY(startPositionY + startPY)
-			setEndPositionY(endPositionY + endPY)
-		}
-	}
-
 	return (
 		<>
 			<Modal isShow={show} closeOnBgClick={true} closeOnEscape={true} close={onClose}>
@@ -105,7 +93,11 @@ const FollowArtistModal = ({ show, onClose, userProfile, currentUser, typeFollow
 						</p>
 					</div>
 					<div>
-						<Scrollbars autoHeight autoHeightMax="35vh" onScrollFrame={(e) => scrollList(e)}>
+						<Scrollbars
+							autoHeight
+							autoHeightMax="35vh"
+							renderView={(props) => <div {...props} id="follow-scroll" />}
+						>
 							<div>
 								{isRefreshing ? (
 									<FollowListLoader length={5} />

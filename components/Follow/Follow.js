@@ -4,7 +4,7 @@ import FollowArtistModal from 'components/Modal/FollowArtistModal'
 import LoginModal from 'components/Modal/LoginModal'
 import WalletHelper from 'lib/WalletHelper'
 import { useEffect, useState } from 'react'
-import useSWR, { SWRConfig } from 'swr'
+import useSWR from 'swr'
 
 const Follow = ({ userProfile, currentUser }) => {
 	const [buttonHover, setButtonHover] = useState(false)
@@ -118,15 +118,13 @@ const Follow = ({ userProfile, currentUser }) => {
 				)
 			)}
 			{followListModal && (
-				<SWRConfig>
-					<FollowArtistModal
-						show={true}
-						userProfile={data}
-						currentUser={currentUser}
-						typeFollowListModal={followListModal}
-						onClose={() => setFollowListModal('')}
-					/>
-				</SWRConfig>
+				<FollowArtistModal
+					show={true}
+					userProfile={data}
+					currentUser={currentUser}
+					typeFollowListModal={followListModal}
+					onClose={() => setFollowListModal('')}
+				/>
 			)}
 		</div>
 	)

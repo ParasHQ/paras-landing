@@ -7,7 +7,7 @@ import WalletHelper from 'lib/WalletHelper'
 import Link from 'next/link'
 import { useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import useSWR from 'swr'
+import { mutate } from 'swr'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
 import FollowListLoader from './FollowListLoader'
 
@@ -15,7 +15,6 @@ const FollowList = ({ data, userProfile, getMoreData, hasMore, typeFollow }) => 
 	const [buttonHover, setButtonHover] = useState('')
 	const currentUser = useStore((state) => state.currentUser)
 	const [isLoading, setIsLoading] = useState('')
-	const { mutate } = useSWR(userProfile.accountId)
 
 	const actionFollowUnfollow = async (user, typeAction) => {
 		setIsLoading(user.account_id)
@@ -38,9 +37,10 @@ const FollowList = ({ data, userProfile, getMoreData, hasMore, typeFollow }) => 
 				writable: true,
 				enumerable: true,
 			})
+			setButtonHover(null)
 		}
 
-		mutate()
+		mutate(userProfile.accountId)
 		setIsLoading('')
 	}
 
@@ -58,6 +58,7 @@ const FollowList = ({ data, userProfile, getMoreData, hasMore, typeFollow }) => 
 				next={getMoreData}
 				hasMore={hasMore}
 				loader={<FollowListLoader length={3} />}
+				scrollableTarget="follow-scroll"
 			>
 				<div className="ml-1">
 					{data.map((user, idx) => {
@@ -87,21 +88,7 @@ const FollowList = ({ data, userProfile, getMoreData, hasMore, typeFollow }) => 
 									</div>
 								</div>
 								<div className="absolute right-4">
-									{currentUser === userProfile.accountId &&
-									currentUser !== user.account_id &&
-									user?.isFollowed ? (
-										<div
-											onMouseEnter={() => setButtonHover(idx)}
-											onMouseLeave={() => setButtonHover(null)}
-										>
-											<ButtonUnfollow
-												idx={idx}
-												buttonHover={buttonHover}
-												loading={isLoading === user.account_id ? true : false}
-												followAction={() => actionFollowUnfollow(user, 'unfollow')}
-											/>
-										</div>
-									) : user?.isFollowed && currentUser !== user.account_id ? (
+									{user?.isFollowed && currentUser !== user.account_id ? (
 										<div
 											onMouseEnter={() => setButtonHover(idx)}
 											onMouseLeave={() => setButtonHover(null)}

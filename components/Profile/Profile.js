@@ -29,7 +29,6 @@ const Profile = ({ userProfile, activeTab }) => {
 	const { localeLn } = useIntl()
 	const [isCopied, setIsCopied] = useState(false)
 	const [showModal, setShowModal] = useState(false)
-	const [dataUpdate, setDataUpdate] = useState(false)
 
 	const [profileData, setProfileData] = useState(userProfile)
 	const userProfileStore = useStore((state) => state.userProfile)
@@ -50,10 +49,6 @@ const Profile = ({ userProfile, activeTab }) => {
 	const dismissUserModal = () => {
 		setShowModal(false)
 	}
-
-	useEffect(() => {
-		setDataUpdate(false)
-	}, [dataUpdate])
 
 	return (
 		<Fragment>
