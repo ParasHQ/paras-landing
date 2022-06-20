@@ -132,7 +132,7 @@ const SuccessTransactionModal = () => {
 					setToken(res.data.data.results[0])
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
-				} else if (FunctionCall.method_name === 'accept_bid') {
+				} else if (FunctionCall.method_name === 'end_auction') {
 					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
 						params: {
 							contract_id: args.nft_contract_id,
@@ -286,8 +286,8 @@ const SuccessTransactionModal = () => {
 			return 'Place Bid Success'
 		} else if (txDetail.method_name === 'cancel_bid') {
 			return 'Success Remove Bid'
-		} else if (txDetail.method_name === 'accept_bid') {
-			return 'Accept Bid Success'
+		} else if (txDetail.method_name === 'end_auction') {
+			return 'End Auction Success'
 		} else if (txDetail.method_name === 'nft_buy' || txDetail.method_name === 'buy') {
 			return 'Purchase Success'
 		} else if (txDetail.method_name === 'nft_set_series_price') {
@@ -343,10 +343,10 @@ const SuccessTransactionModal = () => {
 					{formatNearAmount(txDetail.args.amount)} Ⓝ
 				</>
 			)
-		} else if (txDetail.method_name === 'accept_bid') {
+		} else if (txDetail.method_name === 'end_auction') {
 			return (
 				<>
-					You successfully accept bid auction <b>{token.metadata.title}</b>
+					You successfully end auction <b>{token.metadata.title}</b>
 				</>
 			)
 		} else if (txDetail.method_name === 'cancel_auction') {

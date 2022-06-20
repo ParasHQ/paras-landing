@@ -90,7 +90,7 @@ const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess }) => {
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{
-							methodName: 'accept_bid',
+							methodName: 'end_auction',
 							args: params,
 							deposit: '1',
 							gas: GAS_FEE_150,
@@ -108,7 +108,7 @@ const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess }) => {
 							gas: GAS_FEE_150,
 						},
 						{
-							methodName: 'accept_bid',
+							methodName: 'end_auction',
 							args: params,
 							deposit: '1',
 							gas: GAS_FEE_150,
