@@ -19,6 +19,7 @@ import axios from 'axios'
 import WalletHelper from 'lib/WalletHelper'
 import IconLove from 'components/Icons/component/IconLove'
 import LoginModal from 'components/Modal/LoginModal'
+import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 
 const TokenList = ({
 	name = 'default',
@@ -362,7 +363,10 @@ const TokenSingle = ({
 		if (res.status !== 200) {
 			setIsLiked(false)
 			setDefaultLikes(defaultLikes - 1)
+			return
 		}
+
+		trackLikeToken(token_series_id)
 	}
 
 	const unlikeToken = async (contract_id, token_series_id) => {
@@ -397,7 +401,10 @@ const TokenSingle = ({
 		if (res.status !== 200) {
 			setIsLiked(true)
 			setDefaultLikes(defaultLikes + 1)
+			return
 		}
+
+		trackUnlikeToken(token_series_id)
 	}
 
 	return (
