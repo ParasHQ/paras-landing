@@ -11,6 +11,7 @@ import senderWallet from 'lib/senderWallet'
 import { isChromeBrowser } from 'utils/common'
 import { useToast } from 'hooks/useToast'
 import { IconNear } from 'components/Icons'
+import IconSender from 'components/Icons/component/IconSender'
 
 const LoginPage = () => {
 	const { currentUser, setActiveWallet } = useStore()
@@ -39,10 +40,9 @@ const LoginPage = () => {
 			toast.show({
 				text: (
 					<div className="text-sm text-gray-900 flex items-center gap-4">
-						<img
-							src="https://paras-cdn.imgix.net/bafkreihjoi6la3yv2aj7whhilevkbwteyrcrjjmxwn2axvhrgghhuleqn4"
-							className="rounded-full h-24 w-24"
-						/>
+						<div className="h-24 w-24 flex items-center justify-center">
+							<IconSender size={81} />
+						</div>
 						<div>
 							<p className="mb-2">{localeLn('Sender Wallet is not installed. Install here:')}</p>
 							<Button size="sm" isFullWidth onClick={() => window.open('https://senderwallet.io/')}>
@@ -134,10 +134,9 @@ const LoginPage = () => {
 						{isChromeBrowser && (
 							<div className="mt-4 hidden md:block">
 								<Button className="h-16" variant="white" isFullWidth onClick={loginSenderWallet}>
-									<img
-										src="https://paras-cdn.imgix.net/bafkreihjoi6la3yv2aj7whhilevkbwteyrcrjjmxwn2axvhrgghhuleqn4"
-										className="rounded-full absolute h-8 w-8 top-0 bottom-0 left-4 m-auto"
-									/>
+									<div className="absolute h-8 w-8 top-0 bottom-0 left-4 m-auto flex items-center justify-center">
+										<IconSender size={36} />
+									</div>
 									Login with Sender Wallet
 									<span
 										className="bg-white text-primary font-bold rounded-full px-3 text-sm absolute right-4"
