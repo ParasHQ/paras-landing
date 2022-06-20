@@ -16,6 +16,7 @@ const Media = ({
 	mimeType,
 	seeDetails,
 	isMediaCdn,
+	isAuction,
 }) => {
 	const [media, setMedia] = useState(null)
 	const [isLoading, setIsLoading] = useState(true)
@@ -143,7 +144,9 @@ const Media = ({
 			<div className="relative w-full mx-auto h-full">
 				{!videoControls && playVideoButton && (
 					<div
-						className=" absolute bg-gray-200 p-2 rounded-full right-3 md:right-5 z-30 bottom-1/10"
+						className={`absolute bg-gray-200 p-2 rounded-full ${
+							isAuction ? 'top-0 md: left-3 md:left-5' : 'right-3 md:right-5 bottom-1/10'
+						} z-30`}
 						onClick={async (e) => {
 							e.preventDefault()
 							e.stopPropagation()

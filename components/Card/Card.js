@@ -225,6 +225,7 @@ const Card = ({
 											videoMuted={true}
 											videoLoop={true}
 											mimeType={token?.mime_type}
+											isAuction={token?.is_auction}
 										/>
 										{token?.is_auction ? (
 											<TimeAuction endedAt={token.ended_at} />
