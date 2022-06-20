@@ -953,7 +953,7 @@ const NewPage = () => {
 							</div>
 						</div>
 						<h1 className="mt-5 text-base font-bold text-white text-center tracking-tight">
-							Thumbnail Image for Audio, 3D, and Iframe
+							Thumbnail Image for Audio, and 3D
 						</h1>
 						<div className="px-2 flex items-center justify-center mt-4">
 							{thumbnailFile ? (
@@ -1105,7 +1105,10 @@ const NewPage = () => {
 						{step === 0 && (
 							<div className="h-60">
 								<div className="text-sm mt-2">Choose Collection</div>
-								<div id="collection::user" className="max-h-40 md:max-h-72 overflow-auto">
+								<div
+									className="max-h-36 lg:max-h-72 overflow-y-scroll new-card-scroll"
+									id="collection::user"
+								>
 									<InfiniteScroll
 										dataLength={collectionList.length}
 										next={fetchCollectionUser}
@@ -1147,9 +1150,9 @@ const NewPage = () => {
 									</InfiniteScroll>
 								</div>
 								{category_id && category_name && (
-									<div className="text-sm mt-3 mb-1 text-opacity-30 flex justify-between items-center">
+									<div className="text-xs lg:text-sm mt-3 mb-1 text-opacity-30 flex justify-between items-center">
 										<p className="font-semibold">Choosen category:</p>
-										<div className="p-2 bg-gray-800 bg-opacity-80 rounded-md font-thin border border-white">
+										<div className="p-1 lg:p-2 bg-gray-800 bg-opacity-80 rounded-md font-thin border border-white">
 											{category_name}
 										</div>
 									</div>
@@ -1233,7 +1236,7 @@ const NewPage = () => {
 										)}
 									</div>
 								</div>
-								<div
+								{/* <div
 									className="flex items-center cursor-pointer mt-3"
 									onClick={() => setShowMoreFile(!showMoreFile)}
 								>
@@ -1281,7 +1284,7 @@ const NewPage = () => {
 											</div>
 										</div>
 									</div>
-								)}
+								)} */}
 								<div>
 									<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
 										<button onClick={_handleBack}>{localeLn('Back')}</button>

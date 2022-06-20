@@ -20,6 +20,7 @@ import { useToast } from 'hooks/useToast'
 
 import IconLove from 'components/Icons/component/IconLove'
 import LoginModal from 'components/Modal/LoginModal'
+import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 
 const CardList = ({
 	name = 'default',
@@ -369,7 +370,10 @@ const TokenSeriesSingle = ({
 		if (res.status !== 200) {
 			setIsLiked(false)
 			setDefaultLikes(defaultLikes - 1)
+			return
 		}
+
+		trackLikeToken(token_series_id)
 	}
 
 	const unlikeToken = async (contract_id, token_series_id) => {
@@ -397,7 +401,10 @@ const TokenSeriesSingle = ({
 		if (res.status !== 200) {
 			setIsLiked(true)
 			setDefaultLikes(defaultLikes + 1)
+			return
 		}
+
+		trackUnlikeToken(token_series_id)
 	}
 
 	return (

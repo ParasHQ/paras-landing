@@ -30,8 +30,17 @@ const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => 
 	})
 
 	useEffect(() => {
-		const bidderList = localToken.bidder_list
-		setHistoryBid(bidderList)
+		let histBid = []
+		if (localToken.bidder_list && localToken.bidder_list.length > 0) {
+			histBid = [...histBid, localToken.bidder_list]
+		}
+
+		if (localToken.extend_list && localToken.extend_list.length > 0) {
+			histBid = [...histBid, localToken.extend_list]
+		}
+
+		const sortedHistoryBid = histBid.sort((a, b) => a.issued_at - b.issued_at)
+		setHistoryBid(sortedHistoryBid)
 	}, [localToken])
 
 	useEffect(() => {
@@ -118,16 +127,27 @@ const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => 
 					.reverse()
 					.map((x) => (
 						<div key={x._id}>
-							<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
-								<p>
-									<LinkToProfile accountId={x.bidder} />
-									<span>
-										{' '}
-										{localeLn('On Bid')} {prettyBalance(x.amount, 24, 2)} Ⓝ
-									</span>
-								</p>
-								<p className="mt-1 text-xs">{startedAtDate(x.issued_at)} UTC</p>
-							</div>
+							{x.bidder && (
+								<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
+									<p>
+										<LinkToProfile accountId={x.bidder} />
+										<span>
+											{' '}
+											{localeLn('On Bid')} {prettyBalance(x.amount, 24, 2)} Ⓝ
+										</span>
+									</p>
+									<p className="mt-1 text-xs">{startedAtDate(x.issued_at)} UTC</p>
+								</div>
+							)}
+
+							{x.ended_at && (
+								<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md text-sm">
+									<p>
+										<span> {localeLn('Auction Extended by 5 minutes')}</span>
+									</p>
+									<p className="mt-1 text-xs">{startedAtDate(x.issued_at)} UTC</p>
+								</div>
+							)}
 						</div>
 					))
 			) : (
