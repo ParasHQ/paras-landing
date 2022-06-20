@@ -11,6 +11,7 @@ const Button = ({
 	className,
 	style,
 	isLoading,
+	loadingStyle,
 	onClick,
 }) => {
 	const buttonBaseStyle =
@@ -76,7 +77,7 @@ const Button = ({
 			style={style}
 			onClick={onClick}
 		>
-			{isLoading ? <LoaderIcon /> : children}
+			{isLoading ? <LoaderIcon className={loadingStyle} /> : children}
 		</button>
 	)
 }
@@ -99,8 +100,8 @@ Button.propTypes = {
 
 export default Button
 
-const LoaderIcon = () => (
-	<div className="flex items-center justify-center">
+const LoaderIcon = ({ className }) => (
+	<div className={`${className} flex items-center justify-center`}>
 		<IconSpin />
 	</div>
 )
