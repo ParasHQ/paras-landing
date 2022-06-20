@@ -1,6 +1,7 @@
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import { IconNear, IconXCircle } from 'components/Icons'
+import IconSender from 'components/Icons/component/IconSender'
 import { useIntl } from 'hooks/useIntl'
 import near from 'lib/near'
 import senderWallet from 'lib/senderWallet'
@@ -59,10 +60,9 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 							isFullWidth
 							onClick={loginSenderWallet}
 						>
-							<img
-								src="https://paras-cdn.imgix.net/bafkreihjoi6la3yv2aj7whhilevkbwteyrcrjjmxwn2axvhrgghhuleqn4"
-								className="rounded-full absolute h-7 w-7 top-0 bottom-0 left-2 m-auto"
-							/>
+							<div className="absolute h-7 w-7 top-0 bottom-0 left-2 m-auto flex items-center justify-center">
+								<IconSender size={24} />
+							</div>
 							{localeLn('Login with Sender Wallet')}
 							<span
 								className="bg-white text-primary font-bold rounded-full px-2 text-sm absolute right-2"
