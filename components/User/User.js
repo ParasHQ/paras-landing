@@ -249,14 +249,35 @@ const User = () => {
 										{localeLn('NavViewWallet')}
 									</a>
 									<button
-										className="bg-white rounded-md p-1 text-sm font-semibold text-primary flex items-center justify-center cursor-pointer shadow-md shadow-primary"
+										className="bg-white rounded-md p-1 text-xs font-semibold text-primary flex items-center justify-center cursor-pointer shadow-md shadow-primary"
 										style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
 										onClick={() => openTransak(fetchUserBalance, toast)}
 									>
-										<p>
-											Buy <span className="text-base">Ⓝ </span>with
+										<p className="flex items-center justify-center">
+											Buy{' '}
+											<svg
+												className="mx-1 flex"
+												width="12"
+												height="12"
+												viewBox="0 0 24 24"
+												fill="none"
+												xmlns="http://www.w3.org/2000/svg"
+											>
+												<g clipPath="url(#clip0)">
+													<path
+														className="fill-current"
+														d="M19.1736 1.21319L14.2154 8.57143C13.8725 9.07253 14.5318 9.67912 15.0066 9.25714L19.8857 5.01099C20.0175 4.90549 20.2022 4.98462 20.2022 5.16923V18.4352C20.2022 18.6198 19.9648 18.6989 19.8593 18.567L5.09008 0.896703C4.61535 0.316484 3.92964 0 3.1648 0H2.63733C1.2659 0 0.131836 1.13407 0.131836 2.53187V21.2044C0.131836 22.6022 1.2659 23.7363 2.6637 23.7363C3.53403 23.7363 4.35162 23.2879 4.82634 22.5231L9.78458 15.1648C10.1274 14.6637 9.4681 14.0571 8.99337 14.4791L4.11425 18.6989C3.98239 18.8044 3.79777 18.7253 3.79777 18.5407V5.3011C3.79777 5.11648 4.03513 5.03736 4.14063 5.16923L18.9099 22.8396C19.3846 23.4198 20.0967 23.7363 20.8351 23.7363H21.3626C22.7604 23.7363 23.8945 22.6022 23.8945 21.2044V2.53187C23.8945 1.13407 22.7604 0 21.3626 0C20.4659 0 19.6483 0.448352 19.1736 1.21319V1.21319Z"
+													/>
+												</g>
+												<defs>
+													<clipPath id="clip0">
+														<rect width="24" height="23.7363" fill="white" />
+													</clipPath>
+												</defs>
+											</svg>
+											{` `}with
 										</p>
-										<div className="w-24 h-7 flex items-center justify-center">
+										<div className="w-20 h-6 flex items-center justify-center">
 											<img src="/transakLogo.png" className="object-contain" alt="" />
 										</div>
 									</button>
