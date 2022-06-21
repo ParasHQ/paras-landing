@@ -6,6 +6,7 @@ import { debounce } from 'debounce'
 import TimeAuction from 'components/Common/TimeAuction'
 import IconLove from 'components/Icons/component/IconLove'
 import { Icon3D, IconAudio, IconIframe } from 'components/Icons'
+import { trackFlipCard } from 'lib/ga'
 
 const Card = ({
 	imgUrl,
@@ -102,6 +103,7 @@ const Card = ({
 	const _flipCard = (e) => {
 		if (e.detail === 1 && flippable && !showLove) {
 			setIsShowFront(!isShowFront)
+			trackFlipCard()
 		} else if (e.detail === 2 && isShowFront && isAbleToLike) {
 			setShowLove(true)
 			onLike()

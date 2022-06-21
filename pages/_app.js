@@ -74,7 +74,7 @@ function MyApp({ Component, pageProps }) {
 	useEffect(() => {
 		const handleRouteChange = (url) => {
 			if (window && window.gtag) {
-				gtag.pageview(url)
+				gtag.pageview({ url, userId: store.currentUser })
 			}
 			if (window) {
 				counter(url)
@@ -89,7 +89,7 @@ function MyApp({ Component, pageProps }) {
 		return () => {
 			router.events.off('routeChangeComplete', handleRouteChange)
 		}
-	}, [router.events])
+	}, [router.events, store.currentUser])
 
 	useEffect(() => storePathValues, [router.asPath])
 
@@ -138,7 +138,7 @@ function MyApp({ Component, pageProps }) {
 			const url = router.asPath
 
 			if (window && window.gtag) {
-				gtag.pageview(url)
+				gtag.pageview({ url, userId: store.currentUser })
 			}
 			if (window) {
 				counter(url)
