@@ -28,6 +28,8 @@ const moduleExports = {
 		GOOGLE_TAG_MANAGER_ID: process.env.GOOGLE_TAG_MANAGER_ID,
 		RECAPTCHA_SITE_KEY: process.env.RECAPTCHA_SITE_KEY,
 		FARM_CONTRACT_ID: process.env.FARM_CONTRACT_ID,
+		TRANSAK_API_KEY: process.env.TRANSAK_API_KEY,
+		TRANSAK_API_SECRET: process.env.TRANSAK_API_SECRET,
 	},
 	async redirects() {
 		return [
