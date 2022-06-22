@@ -337,6 +337,7 @@ const Activity = ({ activity }) => {
 							className="text-gray-100 hover:border-gray-100"
 							accountId={activity.from}
 						/>{' '}
+						{activity?.is_auction && 'with auction'}
 						<span>
 							{' '}
 							{localeLn('for')} {formatNearAmount(activity.msg.params.price)} Ⓝ
