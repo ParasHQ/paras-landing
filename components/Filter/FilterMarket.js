@@ -314,6 +314,10 @@ const filter = [
 		key: 'scoredesc',
 		value: 'Rare to Common',
 	},
+	{
+		key: 'urgentAuction',
+		value: 'Ended Soonest Auction',
+	},
 ]
 
 const filterCopies = [
