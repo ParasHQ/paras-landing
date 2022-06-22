@@ -366,7 +366,7 @@ const TokenSingle = ({
 			return
 		}
 
-		trackLikeToken(token_series_id, source)
+		trackLikeToken(`${contract_id}::${token_series_id}`, source)
 	}
 
 	const unlikeToken = async (contract_id, token_series_id, source) => {
@@ -404,7 +404,7 @@ const TokenSingle = ({
 			return
 		}
 
-		trackUnlikeToken(token_series_id, source)
+		trackUnlikeToken(`${contract_id}::${token_series_id}`, source)
 	}
 
 	return (
@@ -466,7 +466,7 @@ const TokenSingle = ({
 								isAbleToLike
 								onLike={() =>
 									!isLiked &&
-									likeToken(token.contract_id, token.token_series_id, 'double-click-likes')
+									likeToken(token.contract_id, token.token_series_id, 'double_click_likes')
 								}
 							/>
 						</div>

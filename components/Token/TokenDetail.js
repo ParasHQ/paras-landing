@@ -332,7 +332,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			return
 		}
 
-		trackLikeToken(token_series_id, source)
+		trackLikeToken(`${contract_id}::${token_series_id}`, source)
 	}
 
 	const unlikeToken = async (contract_id, token_series_id, source) => {
@@ -365,13 +365,13 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			return
 		}
 
-		trackUnlikeToken(token_series_id, source)
+		trackUnlikeToken(`${contract_id}::${token_series_id}`, source)
 	}
 
 	const onDoubleClickDetail = () => {
 		if (currentUser) {
 			setShowLove(true)
-			!isLiked && likeToken(token.contract_id, token.token_series_id, 'double-click-detail')
+			!isLiked && likeToken(token.contract_id, token.token_series_id, 'double_click_detail')
 			setTimeout(() => setShowLove(false), 1000)
 		}
 	}
