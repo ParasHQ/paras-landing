@@ -302,7 +302,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 		}
 	}
 
-	const likeToken = async (contract_id, token_series_id) => {
+	const likeToken = async (contract_id, token_series_id, source) => {
 		if (!currentUser) {
 			setShowModal('notLogin')
 			return
@@ -332,10 +332,10 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			return
 		}
 
-		trackLikeToken(token_series_id)
+		trackLikeToken(token_series_id, source)
 	}
 
-	const unlikeToken = async (contract_id, token_series_id) => {
+	const unlikeToken = async (contract_id, token_series_id, source) => {
 		if (!currentUser) {
 			setShowModal('notLogin')
 			return
@@ -365,13 +365,13 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			return
 		}
 
-		trackUnlikeToken(token_series_id)
+		trackUnlikeToken(token_series_id, source)
 	}
 
 	const onDoubleClickDetail = () => {
 		if (currentUser) {
 			setShowLove(true)
-			!isLiked && likeToken(token.contract_id, token.token_series_id)
+			!isLiked && likeToken(token.contract_id, token.token_series_id, 'double-click-detail')
 			setTimeout(() => setShowLove(false), 1000)
 		}
 	}
@@ -559,8 +559,8 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 											className="cursor-pointer"
 											onClick={() => {
 												isLiked
-													? unlikeToken(token.contract_id, token.token_series_id)
-													: likeToken(token.contract_id, token.token_series_id)
+													? unlikeToken(token.contract_id, token.token_series_id, 'detail')
+													: likeToken(token.contract_id, token.token_series_id, 'detail')
 											}}
 										>
 											<IconLove
