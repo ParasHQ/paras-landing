@@ -143,7 +143,7 @@ const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => 
 							{x.ended_at && (
 								<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md text-sm">
 									<p>
-										<span> {localeLn('Auction Extended by 5 minutes')}</span>
+										<span> {localeLn(`Auction Extended by ${x.bidder} 5 minutes`)}</span>
 									</p>
 									<p className="mt-1 text-xs">{startedAtDate(x.issued_at)} UTC</p>
 								</div>
