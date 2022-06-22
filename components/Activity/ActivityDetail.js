@@ -16,6 +16,7 @@ import useStore from 'lib/store'
 import { IconShareActivity, IconTriangle } from 'components/Icons'
 import useTokenOrTokenSeries from 'hooks/useTokenOrTokenSeries'
 import { useNonInitialEffect } from 'hooks/useNonInitialEffect'
+import ActivityListLoader from './ActivityListLoader'
 
 export const descriptionMaker = (activity, localToken, localTradedToken) => {
 	const type = activity.type
@@ -114,7 +115,7 @@ export const descriptionMaker = (activity, localToken, localTradedToken) => {
 	return ``
 }
 
-const ActivityDetail = ({ activity, index }) => {
+const ActivityDetail = ({ activity, index, isLoading }) => {
 	const { localeLn } = useIntl()
 	const [showModal, setShowModal] = useState(null)
 	const [isCopied, setIsCopied] = useState(false)
@@ -385,62 +386,17 @@ const ActivityDetail = ({ activity, index }) => {
 						</div>
 					</div>
 
-					<div className="flex flex-row items-center justify-between w-full cursor-pointer sm:cursor-default md:inline-flex md:w-full md:h-19 md:hover:bg-gray-800 md:hover:bg-opacity-50">
-						<div className="flex items-center md:cursor-pointer md:w-3/12">
-							<div className="w-8 my-2 mr-8 ml-2 bg-transparent rounded-lg z-20 relative">
-								<div
-									className={`${
-										isTradeActivity
-											? `absolute w-14 cursor-pointer ${
-													isFlipped
-														? `transition-all ${topCardPositionStyle}`
-														: `transition-all ${bottomCardPositionStyle}`
-											  }`
-											: `w-16 h-16 mx-auto`
-									}`}
-									onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
-								>
-									<Link
-										href={{
-											pathname: router.pathname,
-											query: {
-												...router.query,
-												...(activity.token_id
-													? { tokenId: localToken?.token_id }
-													: { tokenSeriesId: localToken?.token_series_id }),
-												contractId: localToken?.contract_id,
-											},
-										}}
-										as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
-											activity.token_id ? `/${localToken?.token_id}` : ''
-										}`}
-										scroll={false}
-										shallow
-									>
-										<a onClick={(e) => isTradeActivity && e.preventDefault()}>
-											<Media
-												className="rounded-lg overflow-hidden"
-												url={parseImgUrl(localToken?.metadata.media, null, {
-													width: `300`,
-													useOriginal: process.env.APP_ENV === 'production' ? false : true,
-													isMediaCdn: localToken?.isMediaCdn,
-												})}
-												videoControls={false}
-												videoLoop={true}
-												videoMuted={true}
-												autoPlay={false}
-												playVideoButton={false}
-											/>
-										</a>
-									</Link>
-								</div>
-
-								{isTradeActivity && (
+					{isLoading ? (
+						<ActivityListLoader />
+					) : (
+						<div className="flex flex-row items-center justify-between w-full cursor-pointer sm:cursor-default md:inline-flex md:w-full md:h-19 md:hover:bg-gray-800 md:hover:bg-opacity-50">
+							<div className="flex items-center md:cursor-pointer md:w-3/12">
+								<div className="w-8 my-2 mr-8 ml-2 bg-transparent rounded-lg z-20 relative">
 									<div
 										className={`${
 											isTradeActivity
 												? `absolute w-14 cursor-pointer ${
-														!isFlipped
+														isFlipped
 															? `transition-all ${topCardPositionStyle}`
 															: `transition-all ${bottomCardPositionStyle}`
 												  }`
@@ -467,11 +423,11 @@ const ActivityDetail = ({ activity, index }) => {
 										>
 											<a onClick={(e) => isTradeActivity && e.preventDefault()}>
 												<Media
-													className="rounded-lg overflow-hidden object-cover"
-													url={parseImgUrl(localTradedToken?.metadata.media, null, {
+													className="rounded-lg overflow-hidden"
+													url={parseImgUrl(localToken?.metadata.media, null, {
 														width: `300`,
 														useOriginal: process.env.APP_ENV === 'production' ? false : true,
-														isMediaCdn: localTradedToken?.isMediaCdn,
+														isMediaCdn: localToken?.isMediaCdn,
 													})}
 													videoControls={false}
 													videoLoop={true}
@@ -482,159 +438,208 @@ const ActivityDetail = ({ activity, index }) => {
 											</a>
 										</Link>
 									</div>
-								)}
-							</div>
-							<div className="pl-4 overflow-hidden cursor-pointer w-40">
-								<Link
-									href={`/collection/${
-										localToken?.metadata?.collection_id || localToken?.contract_id
-									}`}
-								>
-									<a>
-										<p className="opacity-80 truncate text-xs py-1 font-thin border-b-2 border-transparent hover:opacity-50 cursor-pointer">
-											{localToken?.metadata?.collection_id
-												? isTradeActivity
-													? localTradedToken?.metadata?.collection
-													: localToken?.metadata.collection
-												: isTradeActivity
-												? localTradedToken?.metadata?.contract_id
-												: localToken?.contract_id}
+
+									{isTradeActivity && (
+										<div
+											className={`${
+												isTradeActivity
+													? `absolute w-14 cursor-pointer ${
+															!isFlipped
+																? `transition-all ${topCardPositionStyle}`
+																: `transition-all ${bottomCardPositionStyle}`
+													  }`
+													: `w-16 h-16 mx-auto`
+											}`}
+											onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
+										>
+											<Link
+												href={{
+													pathname: router.pathname,
+													query: {
+														...router.query,
+														...(activity.token_id
+															? { tokenId: localToken?.token_id }
+															: { tokenSeriesId: localToken?.token_series_id }),
+														contractId: localToken?.contract_id,
+													},
+												}}
+												as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+													activity.token_id ? `/${localToken?.token_id}` : ''
+												}`}
+												scroll={false}
+												shallow
+											>
+												<a onClick={(e) => isTradeActivity && e.preventDefault()}>
+													<Media
+														className="rounded-lg overflow-hidden object-cover"
+														url={parseImgUrl(localTradedToken?.metadata.media, null, {
+															width: `300`,
+															useOriginal: process.env.APP_ENV === 'production' ? false : true,
+															isMediaCdn: localTradedToken?.isMediaCdn,
+														})}
+														videoControls={false}
+														videoLoop={true}
+														videoMuted={true}
+														autoPlay={false}
+														playVideoButton={false}
+													/>
+												</a>
+											</Link>
+										</div>
+									)}
+								</div>
+								<div className="pl-4 overflow-hidden cursor-pointer w-40">
+									<Link
+										href={`/collection/${
+											localToken?.metadata?.collection_id || localToken?.contract_id
+										}`}
+									>
+										<a>
+											<p className="opacity-80 truncate text-xs py-1 font-thin border-b-2 border-transparent hover:opacity-50 cursor-pointer">
+												{localToken?.metadata?.collection_id
+													? isTradeActivity
+														? localTradedToken?.metadata?.collection
+														: localToken?.metadata.collection
+													: isTradeActivity
+													? localTradedToken?.metadata?.contract_id
+													: localToken?.contract_id}
+											</p>
+										</a>
+									</Link>
+									<Link
+										href={{
+											pathname: router.pathname,
+											query: {
+												...router.query,
+												...(activity.token_id
+													? { tokenId: localToken?.token_id }
+													: { tokenSeriesId: localToken?.token_series_id }),
+												contractId: localToken?.contract_id,
+											},
+										}}
+										as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+											activity.token_id ? `/${localToken?.token_id}` : ''
+										}`}
+										scroll={false}
+										shallow
+									>
+										<a className="font-semibold z-20 text-sm md:text-md hover:text-gray-300">
+											{prettyTruncate(localToken?.metadata.title, 25)}
+										</a>
+									</Link>
+									<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
+										<p className="w-min md:hidden font-semibold truncate z-20">
+											{activity.msg.params.price !== null
+												? `${prettyBalance(activity.msg.params.price, 24, 4)} Ⓝ `
+												: '---'}
 										</p>
+									</Link>
+								</div>
+							</div>
+							<div
+								className={`${HEADERS[1].className} hidden md:flex md:text-sm lg:text-base font-bold justify-center`}
+							>
+								{activity.msg.params.price !== null
+									? `${prettyBalance(activity.msg.params.price, 24, 4)} Ⓝ `
+									: '---'}
+							</div>
+							<div
+								className={`${HEADERS[2].className} hidden md:flex md:text-sm lg:text-base justify-start`}
+							>
+								<Link href={`/${activity.from}`}>
+									<a className="font-thin border-b-2 border-transparent hover:border-gray-100 cursor-pointer">
+										{activity.from ? prettyTruncate(activity.from, 12, 'address') : '---'}
 									</a>
-								</Link>
-								<Link
-									href={{
-										pathname: router.pathname,
-										query: {
-											...router.query,
-											...(activity.token_id
-												? { tokenId: localToken?.token_id }
-												: { tokenSeriesId: localToken?.token_series_id }),
-											contractId: localToken?.contract_id,
-										},
-									}}
-									as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
-										activity.token_id ? `/${localToken?.token_id}` : ''
-									}`}
-									scroll={false}
-									shallow
-								>
-									<a className="font-semibold z-20 text-sm md:text-md hover:text-gray-300">
-										{prettyTruncate(localToken?.metadata.title, 25)}
-									</a>
-								</Link>
-								<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
-									<p className="w-min md:hidden font-semibold truncate z-20">
-										{activity.msg.params.price !== null
-											? `${prettyBalance(activity.msg.params.price, 24, 4)} Ⓝ `
-											: '---'}
-									</p>
 								</Link>
 							</div>
-						</div>
-						<div
-							className={`${HEADERS[1].className} hidden md:flex md:text-sm lg:text-base font-bold justify-center`}
-						>
-							{activity.msg.params.price !== null
-								? `${prettyBalance(activity.msg.params.price, 24, 4)} Ⓝ `
-								: '---'}
-						</div>
-						<div
-							className={`${HEADERS[2].className} hidden md:flex md:text-sm lg:text-base justify-start`}
-						>
-							<Link href={`/${activity.from}`}>
-								<a className="font-thin border-b-2 border-transparent hover:border-gray-100 cursor-pointer">
-									{activity.from ? prettyTruncate(activity.from, 12, 'address') : '---'}
-								</a>
-							</Link>
-						</div>
-						<div
-							className={`${HEADERS[3].className} hidden md:flex md:text-sm lg:text-base justify-start`}
-						>
-							<Link href={`/${activity.to}`}>
-								<a className="font-thin border-b-2 border-transparent hover:border-gray-100 cursor-pointer">
-									{activity.to ? prettyTruncate(activity.to, 12, 'address') : '---'}
-								</a>
-							</Link>
-						</div>
-						<div
-							className={`${HEADERS[4].className} text-xs text-right sm:text-base md:text-sm font-thin`}
-						>
-							<div className="flex flex-col md:flex-col justify-center items-end md:items-center">
-								<div className="flex flex-col relative top-1 items-center justify-center pb-1 md:hidden">
-									<div className="font-bold text-gray-300">
-										{parseType(
-											activity.creator_id,
-											activity.price,
-											activity.from,
-											activity.to,
-											activity.type
+							<div
+								className={`${HEADERS[3].className} hidden md:flex md:text-sm lg:text-base justify-start`}
+							>
+								<Link href={`/${activity.to}`}>
+									<a className="font-thin border-b-2 border-transparent hover:border-gray-100 cursor-pointer">
+										{activity.to ? prettyTruncate(activity.to, 12, 'address') : '---'}
+									</a>
+								</Link>
+							</div>
+							<div
+								className={`${HEADERS[4].className} text-xs text-right sm:text-base md:text-sm font-thin`}
+							>
+								<div className="flex flex-col md:flex-col justify-center items-end md:items-center">
+									<div className="flex flex-col relative top-1 items-center justify-center pb-1 md:hidden">
+										<div className="font-bold text-gray-300">
+											{parseType(
+												activity.creator_id,
+												activity.price,
+												activity.from,
+												activity.to,
+												activity.type
+											)}
+										</div>
+									</div>
+									<div className="hidden md:flex md:flex-row text-gray-50 opacity-50">
+										{timeAgo.format(
+											new Date(activity.issued_at ? activity.issued_at : 1636197684986)
 										)}
 									</div>
-								</div>
-								<div className="hidden md:flex md:flex-row text-gray-50 opacity-50">
-									{timeAgo.format(
-										new Date(activity.issued_at ? activity.issued_at : 1636197684986)
-									)}
-								</div>
-								<div className="flex flex-row md:flex-row mt-1 text-gray-50 opacity-50">
-									<div
-										onClick={() => setShowModal('options')}
-										className="cursor-pointer w-8 h-4 md:h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-4 flex items-center justify-end md:justify-center"
-									>
-										<svg
-											width="18"
-											height="18"
-											viewBox="0 0 24 24"
-											fill="none"
-											xmlns="http://www.w3.org/2000/svg"
+									<div className="flex flex-row md:flex-row mt-1 text-gray-50 opacity-50">
+										<div
+											onClick={() => setShowModal('options')}
+											className="cursor-pointer w-8 h-4 md:h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-4 flex items-center justify-end md:justify-center"
 										>
-											<path
-												fillRule="evenodd"
-												clipRule="evenodd"
-												d="M12 2.79623V8.02302C5.45134 8.33141 2 11.7345 2 18V20.4142L3.70711 18.7071C5.95393 16.4603 8.69021 15.5189 12 15.8718V21.2038L22.5186 12L12 2.79623ZM14 10V7.20377L19.4814 12L14 16.7962V14.1529L13.1644 14.0136C9.74982 13.4445 6.74443 14.0145 4.20125 15.7165C4.94953 11.851 7.79936 10 13 10H14Z"
-												fill="white"
-											/>
-										</svg>
+											<svg
+												width="18"
+												height="18"
+												viewBox="0 0 24 24"
+												fill="none"
+												xmlns="http://www.w3.org/2000/svg"
+											>
+												<path
+													fillRule="evenodd"
+													clipRule="evenodd"
+													d="M12 2.79623V8.02302C5.45134 8.33141 2 11.7345 2 18V20.4142L3.70711 18.7071C5.95393 16.4603 8.69021 15.5189 12 15.8718V21.2038L22.5186 12L12 2.79623ZM14 10V7.20377L19.4814 12L14 16.7962V14.1529L13.1644 14.0136C9.74982 13.4445 6.74443 14.0145 4.20125 15.7165C4.94953 11.851 7.79936 10 13 10H14Z"
+													fill="white"
+												/>
+											</svg>
+										</div>
+										{SHOW_TX_HASH_LINK && activity.transaction_hash && (
+											<a
+												href={`https://${
+													process.env.APP_ENV === 'production' ? `` : `testnet.`
+												}nearblocks.io/txns/${activity.transaction_hash}${
+													activity.msg?.receipt_id && `#${activity.msg?.receipt_id}`
+												}`}
+												target={`_blank`}
+											>
+												<div className="w-8 h-4 md:h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-4 flex items-center justify-end md:justify-center">
+													<IconShareActivity size={18} />
+												</div>
+											</a>
+										)}
 									</div>
-									{SHOW_TX_HASH_LINK && activity.transaction_hash && (
-										<a
-											href={`https://${
-												process.env.APP_ENV === 'production' ? `` : `testnet.`
-											}nearblocks.io/txns/${activity.transaction_hash}${
-												activity.msg?.receipt_id && `#${activity.msg?.receipt_id}`
-											}`}
-											target={`_blank`}
-										>
-											<div className="w-8 h-4 md:h-8 rounded-full transition-all duration-200 hover:bg-dark-primary-4 flex items-center justify-end md:justify-center">
-												<IconShareActivity size={18} />
-											</div>
-										</a>
-									)}
-								</div>
-								<div
-									className="flex md:hidden flex-row text-right items-center mt-2 text-gray-50 opacity-50"
-									onClick={() => showDetail(index)}
-								>
-									{timeAgo.format(
-										new Date(activity.issued_at ? activity.issued_at : 1636197684986)
-									)}
-									<IconTriangle size={10} />
+									<div
+										className="flex md:hidden flex-row text-right items-center mt-2 text-gray-50 opacity-50"
+										onClick={() => showDetail(index)}
+									>
+										{timeAgo.format(
+											new Date(activity.issued_at ? activity.issued_at : 1636197684986)
+										)}
+										<IconTriangle size={10} />
+									</div>
 								</div>
 							</div>
+							<div
+								className={`${HEADERS[4].className} font-thin hidden md:flex md:text-sm lg:text-base justify-start`}
+							>
+								{parseType(
+									activity.creator_id,
+									activity.price,
+									activity.from,
+									activity.to,
+									activity.type
+								)}
+							</div>
 						</div>
-						<div
-							className={`${HEADERS[4].className} font-thin hidden md:flex md:text-sm lg:text-base justify-start`}
-						>
-							{parseType(
-								activity.creator_id,
-								activity.price,
-								activity.from,
-								activity.to,
-								activity.type
-							)}
-						</div>
-					</div>
+					)}
 				</div>
 
 				{showDetailActivity == index && (
