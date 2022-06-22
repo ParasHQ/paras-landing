@@ -35,7 +35,7 @@ const HomeAuctionList = () => {
 		<div className="my-8 w-full">
 			<div className="flex w-full items-center justify-between gap-2">
 				<h1 className="text-white font-semibold text-3xl capitalize">{_title}</h1>
-				<Link href={`/market?is_verified=true&card_trade_type=onAuction`}>
+				<Link href={`/market?is_verified=true&card_trade_type=onAuction&sort=urgentAuction`}>
 					<a className="text-gray-400 hover:text-white cursor-pointer font-semibold flex items-center">
 						<span>{localeLn('More')}</span>
 						<svg
