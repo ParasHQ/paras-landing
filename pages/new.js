@@ -1105,7 +1105,10 @@ const NewPage = () => {
 						{step === 0 && (
 							<div className="h-60">
 								<div className="text-sm mt-2">Choose Collection</div>
-								<div id="collection::user" className="max-h-40 md:max-h-72 overflow-auto">
+								<div
+									className="max-h-36 lg:max-h-72 overflow-y-scroll new-card-scroll"
+									id="collection::user"
+								>
 									<InfiniteScroll
 										dataLength={collectionList.length}
 										next={fetchCollectionUser}
@@ -1147,9 +1150,9 @@ const NewPage = () => {
 									</InfiniteScroll>
 								</div>
 								{category_id && category_name && (
-									<div className="text-sm mt-3 mb-1 text-opacity-30 flex justify-between items-center">
+									<div className="text-xs lg:text-sm mt-3 mb-1 text-opacity-30 flex justify-between items-center">
 										<p className="font-semibold">Choosen category:</p>
-										<div className="p-2 bg-gray-800 bg-opacity-80 rounded-md font-thin border border-white">
+										<div className="p-1 lg:p-2 bg-gray-800 bg-opacity-80 rounded-md font-thin border border-white">
 											{category_name}
 										</div>
 									</div>

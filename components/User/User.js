@@ -12,7 +12,45 @@ import ChooseAccountModal from 'components/Modal/ChooseAccountModal'
 import Scrollbars from 'react-custom-scrollbars'
 import WalletHelper, { walletType } from 'lib/WalletHelper'
 import near from 'lib/near'
+import transakSDK from '@transak/transak-sdk'
+import getConfigTransak from 'config/transak'
 import { IconTriangle } from 'components/Icons'
+
+export function openTransak(fetchNearBalance, toast) {
+	const transak = new transakSDK(
+		getConfigTransak(process.env.APP_ENV !== 'production' ? 'staging' : 'production')
+	)
+	transak.init()
+	transak.on(transak.EVENTS.TRANSAK_WIDGET_CLOSE, () => {
+		transak.close()
+	})
+	transak.on(transak.EVENTS.TRANSAK_ORDER_FAILED, () => {
+		toast.show({
+			text: (
+				<div className="font-semibold text-center text-sm">{`Transaction order was failed`}</div>
+			),
+			type: 'error',
+			duration: 2500,
+		})
+	})
+	transak.on(transak.EVENTS.TRANSAK_ORDER_SUCCESSFUL, (successData) => {
+		const fiatCurrency = successData?.status?.fiatCurrency
+		const fiatAmount = successData?.status?.fiatAmount
+		const cryptoCurrency = successData?.status?.cryptoCurrency
+		const cryptoAmount = successData?.status?.cryptoAmount
+		toast.show({
+			text: (
+				<div className="font-semibold text-center text-sm">
+					{`Transaction order to buy from ${fiatAmount} ${fiatCurrency} to ${cryptoAmount} ${cryptoCurrency} was successfully, please wait for 1-3 minutes for completing the order`}
+				</div>
+			),
+			type: 'success',
+			duration: 2500,
+		})
+		fetchNearBalance()
+		transak.close()
+	})
+}
 
 const User = () => {
 	const store = useStore()
@@ -32,17 +70,6 @@ const User = () => {
 			}
 		}
 
-		const fetchUserBalance = async () => {
-			const nearbalance = await (await near.near.account(store.currentUser)).getAccountBalance()
-			const parasBalance = await WalletHelper.viewFunction({
-				methodName: 'ft_balance_of',
-				contractId: process.env.PARAS_TOKEN_CONTRACT,
-				args: { account_id: store.currentUser },
-			})
-			store.setUserBalance(nearbalance)
-			store.setParasBalance(parasBalance)
-		}
-
 		if (showAccountModal) {
 			fetchUserBalance()
 			document.body.addEventListener('click', onClickEv)
@@ -52,6 +79,17 @@ const User = () => {
 			document.body.removeEventListener('click', onClickEv)
 		}
 	}, [showAccountModal])
+
+	const fetchUserBalance = async () => {
+		const nearbalance = await (await near.near.account(store.currentUser)).getAccountBalance()
+		const parasBalance = await WalletHelper.viewFunction({
+			methodName: 'ft_balance_of',
+			contractId: process.env.PARAS_TOKEN_CONTRACT,
+			args: { account_id: store.currentUser },
+		})
+		store.setUserBalance(nearbalance)
+		store.setParasBalance(parasBalance)
+	}
 
 	const toggleAccountModal = () => {
 		setShowAccountModal(!showAccountModal)
@@ -210,6 +248,18 @@ const User = () => {
 									>
 										{localeLn('NavViewWallet')}
 									</a>
+									<button
+										className="bg-white rounded-md p-1 text-sm font-semibold text-primary flex items-center justify-center cursor-pointer shadow-md shadow-primary"
+										style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
+										onClick={() => openTransak(fetchUserBalance, toast)}
+									>
+										<p>
+											Buy <span className="text-base">Ⓝ </span>with
+										</p>
+										<div className="w-24 h-7 flex items-center justify-center">
+											<img src="/transakLogo.png" className="object-contain" alt="" />
+										</div>
+									</button>
 								</div>
 							</div>
 							<hr className="my-2" />
