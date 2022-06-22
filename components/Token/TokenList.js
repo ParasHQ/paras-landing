@@ -462,6 +462,7 @@ const TokenSingle = ({
 									is_auction: token?.is_auction,
 									started_at: token?.started_at,
 									ended_at: token?.ended_at,
+									animation_url: token?.animation_url,
 								}}
 								isAbleToLike
 								onLike={() => !isLiked && likeToken(token.contract_id, token.token_series_id)}
