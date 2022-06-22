@@ -103,7 +103,7 @@ const Card = ({
 	const _flipCard = (e) => {
 		if (e.detail === 1 && flippable && !showLove) {
 			setIsShowFront(!isShowFront)
-			trackFlipCard()
+			trackFlipCard(token.title)
 		} else if (e.detail === 2 && isShowFront && isAbleToLike) {
 			setShowLove(true)
 			onLike()
