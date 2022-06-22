@@ -397,7 +397,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 							<div className="relative h-full w-full" onDoubleClick={onDoubleClickDetail}>
 								{token?.metadata?.animation_url ? (
 									<>
-										{fileType.includes('audio') && (
+										{fileType?.includes('audio') && (
 											<div className="max-h-80 md:max-h-52 lg:max-h-96 w-full mx-2 md:mx-0">
 												<div className="w-1/2 md:w-full h-full m-auto">
 													<Media
@@ -425,7 +425,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 												</div>
 											</div>
 										)}
-										{fileType.includes(`model`) && threeDUrl && (
+										{fileType?.includes(`model`) && threeDUrl && (
 											<Suspense
 												fallback={
 													<div className="flex h-full w-full items-center justify-center">
@@ -438,10 +438,28 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 												</Canvas>
 											</Suspense>
 										)}
-										{fileType.includes('iframe') && (
+										{fileType?.includes('iframe') && (
 											<iframe
 												src={token?.metadata.animation_url}
 												className="object-contain w-full h-full"
+											/>
+										)}
+										{!fileType && (
+											<Media
+												className="rounded-lg overflow-hidden"
+												url={
+													token.metadata?.mime_type
+														? parseImgUrl(token.metadata.media)
+														: token.metadata.media
+												}
+												videoControls={true}
+												videoLoop={true}
+												videoMuted={true}
+												videoPadding={true}
+												mimeType={token?.metadata?.mime_type}
+												seeDetails={true}
+												isMediaCdn={token?.isMediaCdn}
+												animationUrlforVideo={token?.metadata?.animation_url}
 											/>
 										)}
 									</>
@@ -460,6 +478,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										mimeType={token?.metadata?.mime_type}
 										seeDetails={true}
 										isMediaCdn={token?.isMediaCdn}
+										animationUrlforVideo={token?.metadata?.animation_url}
 									/>
 								)}
 								{showLove && (
