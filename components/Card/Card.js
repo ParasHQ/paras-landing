@@ -223,6 +223,7 @@ const Card = ({
 											className="mx-auto h-full object-contain relative z-10"
 											url={imgUrl}
 											audioUrl={audioUrl}
+											animationUrlforVideo={token?.animation_url}
 											videoControls={false}
 											videoMuted={true}
 											videoLoop={true}
