@@ -56,7 +56,7 @@ const CollectionStats = ({ stats }) => {
 				</div>
 				<div
 					data-for={randomID}
-					data-tip="The sales in the last 30 days."
+					data-tip="Total volume all time."
 					className="text-center block w-32 p-1 sm:w-auto sm:p-5"
 				>
 					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
@@ -80,7 +80,7 @@ const CollectionStats = ({ stats }) => {
 				</div>
 				<div
 					data-for={randomID}
-					data-tip="The average price in the last 30 days."
+					data-tip="Average price all time."
 					className="text-center rounded-r block p-3 sm:p-5"
 				>
 					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">

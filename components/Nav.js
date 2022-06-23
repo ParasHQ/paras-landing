@@ -189,21 +189,22 @@ const Nav = () => {
 				)}
 
 				{/* Banner for special event */}
-				{/* <div
+				<div
 					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
 				>
 					<div className="px-10 py-1 md:p-0 ">
-						{`Deadline EXTENDED to June 5th! Win a total of 2,000 USD & submit your oceanvironment art `}
+						{`Congratulations to all `}
 						<a
-							href="https://paras.id/market/art-competition"
+							href="https://twitter.com/parashq/status/1535260855142694914?s=21&t=HQF9pQqIetPcHpSH1QEV4g"
 							target="_blank"
 							className="font-bold cursor-pointer hover:underline"
 							rel="noreferrer"
 						>
-							here!
+							the winners of Paras Art Competition
 						</a>
+						!
 					</div>
-				</div> */}
+				</div>
 
 				{process.env.APP_ENV !== 'production' && (
 					<div
