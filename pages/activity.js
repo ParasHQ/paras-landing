@@ -36,6 +36,7 @@ const ActivityLog = ({ query }) => {
 	const [topUser, setTopUser] = useState([])
 	const [showModal, setShowModal] = useState(false)
 	const [activityType, setActivityType] = useState('activity')
+	const [isLoading, setIsLoading] = useState(false)
 	const { localeLn } = useIntl()
 	useEffect(() => {
 		const onClick = (e) => {
@@ -113,6 +114,8 @@ const ActivityLog = ({ query }) => {
 			return
 		}
 
+		if (initial) setIsLoading(true)
+
 		setIsFetching(true)
 		try {
 			const _filter =
@@ -150,6 +153,7 @@ const ActivityLog = ({ query }) => {
 			sentryCaptureException(err)
 		}
 		setIsFetching(false)
+		setIsLoading(false)
 	}
 
 	const _fetchDataWrapper = async () => {
@@ -326,7 +330,7 @@ const ActivityLog = ({ query }) => {
 										{activityList.map((act, index) => {
 											return (
 												<div key={act._id} className="mt-6">
-													<ActivityDetail activity={act} index={index} />
+													<ActivityDetail activity={act} index={index} isLoading={isLoading} />
 												</div>
 											)
 										})}
