@@ -13,6 +13,7 @@ const Media = ({
 	videoLoop = false,
 	videoPadding = false,
 	playVideoButton = true,
+	animationUrlforVideo,
 	mimeType,
 	seeDetails,
 	isMediaCdn,
@@ -177,7 +178,7 @@ const Media = ({
 					controls={videoControls}
 					muted={videoMuted}
 				>
-					<source type="video/mp4" src={media.url}></source>
+					<source type="video/mp4" src={animationUrlforVideo || media.url}></source>
 				</video>
 				{playVideo && (
 					<video
@@ -195,7 +196,7 @@ const Media = ({
 							}
 						}}
 					>
-						<source type="video/mp4" src={media.url}></source>
+						<source type="video/mp4" src={animationUrlforVideo || media.url}></source>
 					</video>
 				)}
 			</div>

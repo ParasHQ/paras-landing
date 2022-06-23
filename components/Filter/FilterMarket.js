@@ -312,11 +312,11 @@ const filter = [
 	},
 	{
 		key: 'scoredesc',
-		value: 'Highest Score',
+		value: 'Rare to Common',
 	},
 	{
 		key: 'urgentAuction',
-		value: 'Ended Soon Auction',
+		value: 'Ended Soonest Auction',
 	},
 ]
 

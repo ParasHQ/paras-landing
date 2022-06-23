@@ -19,6 +19,7 @@ import axios from 'axios'
 import WalletHelper from 'lib/WalletHelper'
 import IconLove from 'components/Icons/component/IconLove'
 import LoginModal from 'components/Modal/LoginModal'
+import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 
 const TokenList = ({
 	name = 'default',
@@ -330,7 +331,7 @@ const TokenSingle = ({
 		return list[list.length - 1]
 	}
 
-	const likeToken = async (contract_id, token_series_id) => {
+	const likeToken = async (contract_id, token_series_id, source) => {
 		if (!currentUser) {
 			setShowLogin(true)
 			return
@@ -362,10 +363,13 @@ const TokenSingle = ({
 		if (res.status !== 200) {
 			setIsLiked(false)
 			setDefaultLikes(defaultLikes - 1)
+			return
 		}
+
+		trackLikeToken(`${contract_id}::${token_series_id}`, source)
 	}
 
-	const unlikeToken = async (contract_id, token_series_id) => {
+	const unlikeToken = async (contract_id, token_series_id, source) => {
 		if (!currentUser) {
 			setShowLogin(true)
 			return
@@ -397,7 +401,10 @@ const TokenSingle = ({
 		if (res.status !== 200) {
 			setIsLiked(true)
 			setDefaultLikes(defaultLikes + 1)
+			return
 		}
+
+		trackUnlikeToken(`${contract_id}::${token_series_id}`, source)
 	}
 
 	return (
@@ -455,9 +462,13 @@ const TokenSingle = ({
 									is_auction: token?.is_auction,
 									started_at: token?.started_at,
 									ended_at: token?.ended_at,
+									animation_url: token?.animation_url,
 								}}
 								isAbleToLike
-								onLike={() => !isLiked && likeToken(token.contract_id, token.token_series_id)}
+								onLike={() =>
+									!isLiked &&
+									likeToken(token.contract_id, token.token_series_id, 'double_click_likes')
+								}
 							/>
 						</div>
 					</a>
@@ -540,8 +551,8 @@ const TokenSingle = ({
 									className="cursor-pointer"
 									onClick={() => {
 										isLiked
-											? unlikeToken(token.contract_id, token.token_series_id)
-											: likeToken(token.contract_id, token.token_series_id)
+											? unlikeToken(token.contract_id, token.token_series_id, 'list')
+											: likeToken(token.contract_id, token.token_series_id, 'list')
 									}}
 								>
 									<IconLove

@@ -7,6 +7,7 @@ import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
 import Avatar from 'components/Common/Avatar'
 import Link from 'next/link'
 import useToken from 'hooks/useToken'
+import { useRouter } from 'next/router'
 
 const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => {
 	const [historyBid, setHistoryBid] = useState([])
@@ -16,6 +17,7 @@ const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => 
 	const [secs, setSecs] = useState('-')
 	const [isEndedTime, setIsEndedTime] = useState(false)
 	const { localeLn } = useIntl()
+	const router = useRouter()
 
 	const { token: localToken } = useToken({
 		key: `${initialToken.contract_id}::${initialToken.token_series_id}/${initialToken.token_id}`,
@@ -30,19 +32,24 @@ const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => 
 	})
 
 	useEffect(() => {
-		if (localToken.extend_list && localToken.extend_list.length > 0) {
-			if (localToken.bidder_list && localToken.bidder_list.length > 0) {
-				const bidderAndExtendList = localToken.bidder_list.concat(localToken.extend_list)
-				const sortedBidderAndExtendList = bidderAndExtendList.sort(
-					(a, b) => a.issued_at - b.issued_at
-				)
-				setHistoryBid(sortedBidderAndExtendList)
-			} else {
-				setHistoryBid(localToken.extend_list)
-			}
-		} else {
-			setHistoryBid(localToken.bidder_list)
+		if (!localToken.is_auction) {
+			delete router.query.tab
+			router.push(router)
 		}
+	}, [localToken])
+
+	useEffect(() => {
+		let histBid = []
+		if (localToken.bidder_list && localToken.bidder_list.length > 0) {
+			histBid = [...histBid, localToken.bidder_list]
+		}
+
+		if (localToken.extend_list && localToken.extend_list.length > 0) {
+			histBid = [...histBid, localToken.extend_list]
+		}
+
+		const sortedHistoryBid = histBid.sort((a, b) => a.issued_at - b.issued_at)
+		setHistoryBid(sortedHistoryBid)
 	}, [localToken])
 
 	useEffect(() => {
@@ -145,7 +152,7 @@ const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => 
 							{x.ended_at && (
 								<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md text-sm">
 									<p>
-										<span> {localeLn('Auction Extended by 5 minutes')}</span>
+										<span> {localeLn(`Auction Extended by ${x.bidder} 5 minutes`)}</span>
 									</p>
 									<p className="mt-1 text-xs">{startedAtDate(x.issued_at)} UTC</p>
 								</div>

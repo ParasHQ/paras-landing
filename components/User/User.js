@@ -12,7 +12,46 @@ import ChooseAccountModal from 'components/Modal/ChooseAccountModal'
 import Scrollbars from 'react-custom-scrollbars'
 import WalletHelper, { walletType } from 'lib/WalletHelper'
 import near from 'lib/near'
+import transakSDK from '@transak/transak-sdk'
+import getConfigTransak from 'config/transak'
 import { IconTriangle } from 'components/Icons'
+import { trackTransakButton } from 'lib/ga'
+
+export function openTransak(fetchNearBalance, toast) {
+	const transak = new transakSDK(
+		getConfigTransak(process.env.APP_ENV !== 'production' ? 'staging' : 'production')
+	)
+	transak.init()
+	transak.on(transak.EVENTS.TRANSAK_WIDGET_CLOSE, () => {
+		transak.close()
+	})
+	transak.on(transak.EVENTS.TRANSAK_ORDER_FAILED, () => {
+		toast.show({
+			text: (
+				<div className="font-semibold text-center text-sm">{`Transaction order was failed`}</div>
+			),
+			type: 'error',
+			duration: 2500,
+		})
+	})
+	transak.on(transak.EVENTS.TRANSAK_ORDER_SUCCESSFUL, (successData) => {
+		const fiatCurrency = successData?.status?.fiatCurrency
+		const fiatAmount = successData?.status?.fiatAmount
+		const cryptoCurrency = successData?.status?.cryptoCurrency
+		const cryptoAmount = successData?.status?.cryptoAmount
+		toast.show({
+			text: (
+				<div className="font-semibold text-center text-sm">
+					{`Transaction order to buy from ${fiatAmount} ${fiatCurrency} to ${cryptoAmount} ${cryptoCurrency} was successfully, please wait for 1-3 minutes for completing the order`}
+				</div>
+			),
+			type: 'success',
+			duration: 2500,
+		})
+		fetchNearBalance()
+		transak.close()
+	})
+}
 
 const User = () => {
 	const store = useStore()
@@ -32,17 +71,6 @@ const User = () => {
 			}
 		}
 
-		const fetchUserBalance = async () => {
-			const nearbalance = await (await near.near.account(store.currentUser)).getAccountBalance()
-			const parasBalance = await WalletHelper.viewFunction({
-				methodName: 'ft_balance_of',
-				contractId: process.env.PARAS_TOKEN_CONTRACT,
-				args: { account_id: store.currentUser },
-			})
-			store.setUserBalance(nearbalance)
-			store.setParasBalance(parasBalance)
-		}
-
 		if (showAccountModal) {
 			fetchUserBalance()
 			document.body.addEventListener('click', onClickEv)
@@ -52,6 +80,21 @@ const User = () => {
 			document.body.removeEventListener('click', onClickEv)
 		}
 	}, [showAccountModal])
+
+	const onTransakButtonClick = () => {
+		trackTransakButton(near.currentUser?.accountId)
+	}
+
+	const fetchUserBalance = async () => {
+		const nearbalance = await (await near.near.account(store.currentUser)).getAccountBalance()
+		const parasBalance = await WalletHelper.viewFunction({
+			methodName: 'ft_balance_of',
+			contractId: process.env.PARAS_TOKEN_CONTRACT,
+			args: { account_id: store.currentUser },
+		})
+		store.setUserBalance(nearbalance)
+		store.setParasBalance(parasBalance)
+	}
 
 	const toggleAccountModal = () => {
 		setShowAccountModal(!showAccountModal)
@@ -182,7 +225,14 @@ const User = () => {
 								<div className="w-6 bg-white mb-1" style={{ height: '0.10rem' }} />
 								<div>
 									<div className="flex justify-between items-end">
-										<p className="font-medium text-sm opacity-80">NEAR</p>
+										<a
+											href="https://wallet.near.org/"
+											className="font-medium text-sm opacity-80 hover:opacity-95"
+											target="_blank"
+											rel="noreferrer"
+										>
+											<p>NEAR</p>
+										</a>
 										<p className="font-medium">
 											{prettyBalance(store.userBalance.available, 24, 4)} Ⓝ
 										</p>
@@ -202,16 +252,43 @@ const User = () => {
 											<p className="font-medium">{prettyBalance(store.parasBalance, 18, 4)} ℗</p>
 										)}
 									</div>
-									<a
-										className="text-sm text-gray-100 hover:opacity-75"
-										href="https://wallet.near.org/"
-										target="_blank"
-										rel="noreferrer"
-									>
-										{localeLn('NavViewWallet')}
-									</a>
 								</div>
 							</div>
+							<button
+								className="flex items-center justify-center button-wrapper rounded-md p-2 px-4 text-white bg-gray-100 bg-opacity-15 hover:bg-opacity-10 transition-all mt-1"
+								onClick={() => {
+									openTransak(fetchUserBalance, toast)
+									onTransakButtonClick()
+								}}
+							>
+								<p className="flex items-center justify-center text-sm mt-1">
+									Buy{' '}
+									<svg
+										className="mx-1 flex"
+										width="12"
+										height="12"
+										viewBox="0 0 24 24"
+										fill="none"
+										xmlns="http://www.w3.org/2000/svg"
+									>
+										<g clipPath="url(#clip0)">
+											<path
+												className="fill-current"
+												d="M19.1736 1.21319L14.2154 8.57143C13.8725 9.07253 14.5318 9.67912 15.0066 9.25714L19.8857 5.01099C20.0175 4.90549 20.2022 4.98462 20.2022 5.16923V18.4352C20.2022 18.6198 19.9648 18.6989 19.8593 18.567L5.09008 0.896703C4.61535 0.316484 3.92964 0 3.1648 0H2.63733C1.2659 0 0.131836 1.13407 0.131836 2.53187V21.2044C0.131836 22.6022 1.2659 23.7363 2.6637 23.7363C3.53403 23.7363 4.35162 23.2879 4.82634 22.5231L9.78458 15.1648C10.1274 14.6637 9.4681 14.0571 8.99337 14.4791L4.11425 18.6989C3.98239 18.8044 3.79777 18.7253 3.79777 18.5407V5.3011C3.79777 5.11648 4.03513 5.03736 4.14063 5.16923L18.9099 22.8396C19.3846 23.4198 20.0967 23.7363 20.8351 23.7363H21.3626C22.7604 23.7363 23.8945 22.6022 23.8945 21.2044V2.53187C23.8945 1.13407 22.7604 0 21.3626 0C20.4659 0 19.6483 0.448352 19.1736 1.21319V1.21319Z"
+											/>
+										</g>
+										<defs>
+											<clipPath id="clip0">
+												<rect width="24" height="23.7363" fill="white" />
+											</clipPath>
+										</defs>
+									</svg>
+									{` `}with
+								</p>
+								<div className="w-20 h-6 flex items-center justify-center">
+									<img src="/transakLogo.png" className="object-contain" alt="" />
+								</div>
+							</button>
 							<hr className="my-2" />
 							<div onClick={_createCard}>
 								<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">

@@ -132,9 +132,9 @@ const ActivityDetail = ({ activity, index, isLoading }) => {
 	const currentUser = useStore((state) => state.currentUser)
 
 	const { token: localToken, mutate } = useTokenOrTokenSeries({
-		key: `${activity.contract_id}::${activity.token_series_id}${
-			activity.token_id ? `/${activity.token_id}` : ''
-		}`,
+		key: `${activity.contract_id}::${
+			activity.token_series_id ? activity.token_series_id : activity.token_id.split(':')[0]
+		}${activity.token_id ? `/${activity.token_id}` : ''}`,
 		params: {
 			lookup_likes: true,
 			liked_by: currentUser,
@@ -530,7 +530,11 @@ const ActivityDetail = ({ activity, index, isLoading }) => {
 									<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
 										<p className="w-min md:hidden font-semibold truncate z-20">
 											{activity.msg.params.price !== null
-												? `${prettyBalance(activity.msg.params.price, 24, 4)} Ⓝ `
+												? `${prettyBalance(
+														activity.msg.params.price || activity.msg.params.amount,
+														24,
+														4
+												  )} Ⓝ `
 												: '---'}
 										</p>
 									</Link>
@@ -540,7 +544,11 @@ const ActivityDetail = ({ activity, index, isLoading }) => {
 								className={`${HEADERS[1].className} hidden md:flex md:text-sm lg:text-base font-bold justify-center`}
 							>
 								{activity.msg.params.price !== null
-									? `${prettyBalance(activity.msg.params.price, 24, 4)} Ⓝ `
+									? `${prettyBalance(
+											activity.msg.params.price || activity.msg.params.amount,
+											24,
+											4
+									  )} Ⓝ `
 									: '---'}
 							</div>
 							<div

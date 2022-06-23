@@ -21,6 +21,7 @@ import {
 	IconInfo,
 } from 'components/Icons'
 import Tooltip from 'components/Common/Tooltip'
+// import Follow from 'components/Follow/Follow'
 
 const Profile = ({ userProfile, activeTab }) => {
 	const currentUser = useStore((store) => store.currentUser)
@@ -103,7 +104,7 @@ const Profile = ({ userProfile, activeTab }) => {
 						className="object-cover"
 					/>
 				</div>
-				<div className="mt-4 max-w-sm text-center overflow-hidden z-0">
+				<div className="mt-4 max-w-sm text-center overflow-hidden">
 					{profileData?.isCreator && (
 						<p className="text-white text-xs mb-2 mt-2 p-1 bg-primary bg-opacity-75 rounded-md font-bold w-40 mx-auto">
 							Verified Creator
@@ -179,6 +180,7 @@ const Profile = ({ userProfile, activeTab }) => {
 							</a>
 						)}
 					</div>
+					{/* <Follow userProfile={profileData} currentUser={currentUser} /> */}
 				</div>
 			</div>
 			{profileData?.flag && (
