@@ -15,6 +15,7 @@ import near from 'lib/near'
 import transakSDK from '@transak/transak-sdk'
 import getConfigTransak from 'config/transak'
 import { IconTriangle } from 'components/Icons'
+import { trackTransakButton } from 'lib/ga'
 
 export function openTransak(fetchNearBalance, toast) {
 	const transak = new transakSDK(
@@ -79,6 +80,10 @@ const User = () => {
 			document.body.removeEventListener('click', onClickEv)
 		}
 	}, [showAccountModal])
+
+	const onTransakButtonClick = () => {
+		trackTransakButton(near.currentUser?.accountId)
+	}
 
 	const fetchUserBalance = async () => {
 		const nearbalance = await (await near.near.account(store.currentUser)).getAccountBalance()
@@ -251,7 +256,10 @@ const User = () => {
 							</div>
 							<button
 								className="flex items-center justify-center button-wrapper rounded-md p-2 px-4 text-white bg-gray-100 bg-opacity-15 hover:bg-opacity-10 transition-all mt-1"
-								onClick={() => openTransak(fetchUserBalance, toast)}
+								onClick={() => {
+									openTransak(fetchUserBalance, toast)
+									onTransakButtonClick()
+								}}
 							>
 								<p className="flex items-center justify-center text-sm">
 									Buy{' '}
