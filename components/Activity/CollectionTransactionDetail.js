@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import Scrollbars from 'react-custom-scrollbars'
 
-import { parseImgUrl } from 'utils/common'
+import { parseImgUrl, prettyBalance } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import TopTransactionCard, { renderThumb } from './TopTransactionCard'
@@ -12,6 +12,7 @@ const CollectionTransactionDetail = ({ data, idx, setLocalToken }) => {
 	const { localeLn } = useIntl()
 
 	const [colDetail, setColDetail] = useState({})
+	const [remainStats, setRemainStats] = useState({})
 
 	useEffect(() => {
 		const fetchCollection = async () => {
@@ -22,7 +23,16 @@ const CollectionTransactionDetail = ({ data, idx, setLocalToken }) => {
 			})
 			setColDetail(res.data.data.results[0])
 		}
+		const fetchRemainStats = async () => {
+			const stat = await axios(`${process.env.V2_API_URL}/collection-stats`, {
+				params: {
+					collection_id: data.collection_id,
+				},
+			})
+			setRemainStats(stat.data.data.results)
+		}
 		fetchCollection()
+		fetchRemainStats()
 	}, [])
 
 	return (
@@ -55,6 +65,10 @@ const CollectionTransactionDetail = ({ data, idx, setLocalToken }) => {
 						</p>
 						<p className="text-base text-gray-400">
 							{localeLn('Card')} sold: {data.contract_token_ids.length}
+						</p>
+						<p className="text-base text-gray-400">
+							Floor Price:{' '}
+							{remainStats.floor_price ? prettyBalance(remainStats.floor_price, 24, 4) : '--'} Ⓝ
 						</p>
 					</div>
 				</div>
