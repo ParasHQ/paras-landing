@@ -7,6 +7,7 @@ import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
 import Avatar from 'components/Common/Avatar'
 import Link from 'next/link'
 import useToken from 'hooks/useToken'
+import { useRouter } from 'next/router'
 
 const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => {
 	const [historyBid, setHistoryBid] = useState([])
@@ -16,6 +17,7 @@ const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => 
 	const [secs, setSecs] = useState('-')
 	const [isEndedTime, setIsEndedTime] = useState(false)
 	const { localeLn } = useIntl()
+	const router = useRouter()
 
 	const { token: localToken } = useToken({
 		key: `${initialToken.contract_id}::${initialToken.token_series_id}/${initialToken.token_id}`,
@@ -28,6 +30,13 @@ const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => 
 			refreshInterval: 15000,
 		},
 	})
+
+	useEffect(() => {
+		if (!localToken.is_auction) {
+			delete router.query.tab
+			router.push(router)
+		}
+	}, [localToken])
 
 	useEffect(() => {
 		let histBid = []
