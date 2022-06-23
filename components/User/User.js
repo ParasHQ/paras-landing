@@ -261,7 +261,7 @@ const User = () => {
 									onTransakButtonClick()
 								}}
 							>
-								<p className="flex items-center justify-center text-sm">
+								<p className="flex items-center justify-center text-sm mt-1">
 									Buy{' '}
 									<svg
 										className="mx-1 flex"
