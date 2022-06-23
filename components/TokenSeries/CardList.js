@@ -345,7 +345,7 @@ const TokenSeriesSingle = ({
 		return currentBid[0]
 	}
 
-	const likeToken = async (contract_id, token_series_id) => {
+	const likeToken = async (contract_id, token_series_id, source) => {
 		if (!currentUser) {
 			setShowLogin(true)
 			return
@@ -373,10 +373,10 @@ const TokenSeriesSingle = ({
 			return
 		}
 
-		trackLikeToken(token_series_id)
+		trackLikeToken(`${contract_id}::${token_series_id}`, source)
 	}
 
-	const unlikeToken = async (contract_id, token_series_id) => {
+	const unlikeToken = async (contract_id, token_series_id, source) => {
 		if (!currentUser) {
 			setShowLogin(true)
 			return
@@ -404,7 +404,7 @@ const TokenSeriesSingle = ({
 			return
 		}
 
-		trackUnlikeToken(token_series_id)
+		trackUnlikeToken(`${contract_id}::${token_series_id}`, source)
 	}
 
 	return (
@@ -468,7 +468,10 @@ const TokenSeriesSingle = ({
 								type={type}
 								displayType={displayType}
 								isAbleToLike
-								onLike={() => !isLiked && likeToken(token.contract_id, token.token_series_id)}
+								onLike={() =>
+									!isLiked &&
+									likeToken(token.contract_id, token.token_series_id, 'double_click_list')
+								}
 							/>
 						</div>
 					</a>
@@ -552,8 +555,8 @@ const TokenSeriesSingle = ({
 									className="cursor-pointer"
 									onClick={() => {
 										isLiked
-											? unlikeToken(token.contract_id, token.token_series_id)
-											: likeToken(token.contract_id, token.token_series_id)
+											? unlikeToken(token.contract_id, token.token_series_id, 'list')
+											: likeToken(token.contract_id, token.token_series_id, 'list')
 									}}
 								>
 									<IconLove
