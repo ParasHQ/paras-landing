@@ -193,14 +193,14 @@ const Nav = () => {
 					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
 				>
 					<div className="px-10 py-1 md:p-0 ">
-						{`Congratulations to all `}
+						{`Win US$4000 by joining June's Card4Card `}
 						<a
-							href="https://twitter.com/parashq/status/1535260855142694914?s=21&t=HQF9pQqIetPcHpSH1QEV4g"
+							href="https://paras.id/market/card4card-jun-22"
 							target="_blank"
 							className="font-bold cursor-pointer hover:underline"
 							rel="noreferrer"
 						>
-							the winners of Paras Art Competition
+							here
 						</a>
 						!
 					</div>
