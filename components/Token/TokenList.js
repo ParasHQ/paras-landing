@@ -178,10 +178,6 @@ const TokenSingle = ({
 	}, [isEndedTime])
 
 	useEffect(() => {
-		asyncMutate()
-	}, [currentUser])
-
-	useEffect(() => {
 		if (token?.total_likes !== undefined) {
 			if (token.likes) {
 				setIsLiked(true)
@@ -204,10 +200,6 @@ const TokenSingle = ({
 			return
 		}
 	}, [tokenIsLiked])
-
-	const asyncMutate = async () => {
-		await mutate()
-	}
 
 	const convertTimeOfAuction = (date) => {
 		const sliceNanoSec = String(date).slice(0, 13)
