@@ -21,7 +21,7 @@ import {
 	IconInfo,
 } from 'components/Icons'
 import Tooltip from 'components/Common/Tooltip'
-// import Follow from 'components/Follow/Follow'
+import Follow from 'components/Follow/Follow'
 
 const Profile = ({ userProfile, activeTab }) => {
 	const currentUser = useStore((store) => store.currentUser)
@@ -180,7 +180,7 @@ const Profile = ({ userProfile, activeTab }) => {
 							</a>
 						)}
 					</div>
-					{/* <Follow userProfile={profileData} currentUser={currentUser} /> */}
+					<Follow userProfile={profileData} currentUser={currentUser} />
 				</div>
 			</div>
 			{profileData?.flag && (
