@@ -42,9 +42,11 @@ const FollowList = ({ data, userProfile, getMoreData, hasMore, typeFollow }) => 
 
 		setIsLoading('')
 
-		setTimeout(() => {
-			mutate(userProfile.accountId)
-		}, 200)
+		if (currentUser === userProfile.accountId) {
+			setTimeout(() => {
+				mutate(userProfile.accountId)
+			}, 200)
+		}
 	}
 
 	return (
