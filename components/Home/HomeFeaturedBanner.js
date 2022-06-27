@@ -224,7 +224,7 @@ const FeaturedCommunity = ({ list, idx }) => {
 					className="pt-4 px-2 cursor-pointer"
 					onClick={() => onFeatureBannerCommunity(list[idx + 1].url)}
 				>
-					<a href={list[idx].url} onClick={(e) => e.preventDefault()}>
+					<a href={list[idx + 1].url} onClick={(e) => e.preventDefault()}>
 						<div className="rounded-md overflow-hidden shadow-xl drop-shadow-xl">
 							<div className="w-full aspect-[2/1]" style={{ height }}>
 								<img
