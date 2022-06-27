@@ -40,8 +40,11 @@ const FollowList = ({ data, userProfile, getMoreData, hasMore, typeFollow }) => 
 			setButtonHover(null)
 		}
 
-		mutate(userProfile.accountId)
 		setIsLoading('')
+
+		setTimeout(() => {
+			mutate(userProfile.accountId)
+		}, 200)
 	}
 
 	return (
