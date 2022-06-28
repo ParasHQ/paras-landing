@@ -95,7 +95,7 @@ const TabOwners = ({ localToken, isAuctionEnds }) => {
 	}
 
 	return (
-		<div>
+		<div className="lg:w-full lg:h-full lg:mt-4 lg:overflow-y-scroll">
 			{!isFetching && tokens.length === 0 ? (
 				<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 					<div className="text-white">{localeLn('NoOwnersBecome')}</div>

@@ -118,7 +118,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 			<div
 				className={`cursor-pointer relative text-center ${
 					activeTab === tab
-						? 'text-gray-100 border-b-2 border-white font-semibold'
+						? 'text-gray-100 border-b-2 border-white font-semibold pb-2'
 						: 'hover:bg-opacity-15 text-gray-100'
 				}`}
 				onClick={() => changeActiveTab(tab)}
@@ -534,7 +534,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 				</div>
 				<div className="h-1/2 lg:h-full flex flex-col w-full lg:w-2/5 lg:max-w-2xl bg-gray-700">
 					<Scrollbars
-						className="h-full"
+						className="h-full block lg:hidden"
 						universal={true}
 						renderView={(props) => <div {...props} id="TokenScroll" className="p-4" />}
 					>
@@ -601,7 +601,65 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 							{activeTab === 'publication' && <TabPublication localToken={token} />}
 						</div>
 					</Scrollbars>
-					<div className="p-3">{tokenSeriesButton()}</div>
+					<div className="hidden lg:flex lg:flex-col lg:p-4 lg:w-full lg:h-5/6">
+						<div className="flex justify-between">
+							<div>
+								<div className="flex justify-between items-center">
+									<p className="text-gray-300">
+										{localeLn('SERIES')} {'// '}
+										{token.metadata.copies ? `Edition of ${token.metadata.copies}` : `Open Edition`}
+									</p>
+								</div>
+
+								<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
+									{token.metadata.title}
+								</h1>
+								<div className="mt-1 text-white flex">
+									<p className="mr-1">by</p>
+									<ArtistVerified token={token} />
+								</div>
+							</div>
+							<div>
+								<IconDots
+									color="#ffffff"
+									className="cursor-pointer"
+									onClick={() => setShowModal('more')}
+								/>
+								<div className="w-full flex flex-col items-center justify-center">
+									<div
+										className="cursor-pointer"
+										onClick={() => {
+											isLiked
+												? unlikeToken(token.contract_id, token.token_series_id, 'detail')
+												: likeToken(token.contract_id, token.token_series_id, 'detail')
+										}}
+									>
+										<IconLove
+											size={17}
+											color={isLiked ? '#c51104' : 'transparent'}
+											stroke={isLiked ? 'none' : 'white'}
+										/>
+									</div>
+									<p className="text-white text-center text-sm">{abbrNum(defaultLikes ?? 0, 1)}</p>
+								</div>
+							</div>
+						</div>
+						<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative flex-nowrap disable-scrollbars md:-mb-4">
+							{tabDetail('info')}
+							{tabDetail('owners')}
+							{tabDetail('offers')}
+							{tabDetail('history')}
+							{tabDetail('publication')}
+						</div>
+						{activeTab === 'info' && <TabInfo localToken={token} />}
+						{activeTab === 'owners' && (
+							<TabOwners localToken={token} isAuctionEnds={isAuctionEnds} />
+						)}
+						{activeTab === 'offers' && <TabOffers localToken={token} />}
+						{activeTab === 'history' && <TabHistory localToken={token} />}
+						{activeTab === 'publication' && <TabPublication localToken={token} />}
+					</div>
+					<div className="p-3 lg:h-1/6 flex flex-col justify-center">{tokenSeriesButton()}</div>
 				</div>
 			</div>
 			<TokenSeriesBuyModal

@@ -49,7 +49,7 @@ const TabPublication = ({ localToken }) => {
 	}
 
 	return (
-		<div>
+		<div className="lg:w-full lg:h-full lg:mt-4 lg:overflow-y-scroll">
 			{publicationList.length === 0 && !hasMore && (
 				<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 					<p className="text-white text-center">

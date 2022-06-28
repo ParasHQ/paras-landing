@@ -53,7 +53,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 	}, [localToken.transaction_fee])
 
 	return (
-		<div>
+		<div className="lg:w-full lg:h-full lg:mt-4 lg:overflow-y-scroll">
 			{typeof localToken._is_the_reference_merged !== 'undefined' &&
 				!localToken._is_the_reference_merged && (
 					<div className="flex justify-center gap-2 text-white text-center mt-2 rounded-md p-2">

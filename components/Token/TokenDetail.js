@@ -137,7 +137,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			<div
 				className={`cursor-pointer relative text-center ${
 					activeTab === tab
-						? 'text-gray-100 border-b-2 border-white font-semibold'
+						? 'text-gray-100 border-b-2 border-white font-semibold pb-1'
 						: 'hover:bg-opacity-15 text-gray-100'
 				}`}
 				onClick={() => {
@@ -542,7 +542,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 				</div>
 				<div className="h-1/2 lg:h-full flex flex-col w-full lg:w-2/5 lg:max-w-2xl bg-gray-700">
 					<Scrollbars
-						className="h-full"
+						className="h-full block lg:hidden"
 						universal={true}
 						renderView={(props) => <div {...props} id="activityListScroll" className="p-4" />}
 					>
@@ -630,7 +630,88 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 							{activeTab === 'publication' && <TabPublication localToken={token} />}
 						</div>
 					</Scrollbars>
-					<div className="p-3">
+					<div className="hidden lg:flex lg:flex-col lg:p-4 lg:w-full lg:h-5/6">
+						<div className="flex justify-between">
+							<div className="overflow-x-hidden">
+								<div className="flex justify-between items-center">
+									<p className="text-gray-300 truncate">
+										NFT //{' '}
+										{token.contract_id === process.env.NFT_CONTRACT_ID
+											? `#${token.edition_id} of ${token.metadata.copies}`
+											: `#${token.token_id}`}
+									</p>
+								</div>
+
+								<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
+									{token.metadata.title}
+								</h1>
+								<div className="mt-1 text-white flex">
+									<p className="mr-1">{localeLn('by')}</p>
+									<ArtistVerified token={token} />
+								</div>
+							</div>
+
+							<div className="flex flex-col items-end">
+								<IconDots
+									color="#ffffff"
+									className="cursor-pointer mb-1"
+									onClick={() => setShowModal('more')}
+								/>
+								<div className="w-full flex flex-col items-center justify-center">
+									<div
+										className="cursor-pointer"
+										onClick={() => {
+											isLiked
+												? unlikeToken(token.contract_id, token.token_series_id, 'detail')
+												: likeToken(token.contract_id, token.token_series_id, 'detail')
+										}}
+									>
+										<IconLove
+											size={17}
+											color={isLiked ? '#c51104' : 'transparent'}
+											stroke={isLiked ? 'none' : 'white'}
+										/>
+									</div>
+									<p className="text-white text-center text-sm">{abbrNum(defaultLikes ?? 0, 1)}</p>
+								</div>
+								{token.is_staked && (
+									<Tooltip
+										id="text-staked"
+										show={true}
+										text={'The NFT is being staked by the owner'}
+										className="font-bold bg-gray-800 text-white"
+									>
+										<span
+											className="bg-white text-primary font-bold rounded-full px-3 py-1 text-sm"
+											style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
+										>
+											staked
+										</span>
+									</Tooltip>
+								)}
+							</div>
+						</div>
+						<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
+							{tabDetail('info')}
+							{token.is_auction && !isAuctionEnds && tabDetail('auction')}
+							{tabDetail('owners')}
+							{(!token.is_auction || isAuctionEnds) && tabDetail('offers')}
+							{tabDetail('history')}
+							{tabDetail('publication')}
+						</div>
+
+						{activeTab === 'info' && <TabInfo localToken={token} isNFT={true} />}
+						{activeTab === 'auction' && (
+							<TabAuction localToken={token} setAuctionEnds={() => setIsEndedTime(true)} />
+						)}
+						{activeTab === 'owners' && (
+							<TabOwners localToken={token} isAuctionEnds={isAuctionEnds} />
+						)}
+						{activeTab === 'offers' && <TabOffers localToken={token} />}
+						{activeTab === 'history' && <TabHistory localToken={token} />}
+						{activeTab === 'publication' && <TabPublication localToken={token} />}
+					</div>
+					<div className="p-3 lg:h-1/6 flex flex-col justify-center">
 						{token?.is_auction ? (
 							<div>
 								{token.owner_id === currentUser && !isAuctionEnds && !isEndedTime ? (

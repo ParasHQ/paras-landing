@@ -66,7 +66,7 @@ const TabHistory = ({ localToken }) => {
 	}
 
 	return (
-		<div className="text-white">
+		<div className="text-white lg:w-full lg:h-full lg:mt-4 lg:overflow-y-scroll">
 			<InfiniteScroll
 				dataLength={history.length}
 				next={fetchHistory}
