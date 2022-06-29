@@ -292,3 +292,7 @@ export const abbrNum = (number, decPlaces) => {
 
 	return number
 }
+
+export const isEmptyObject = (obj) => {
+	return obj && Object.keys(obj).length === 0 && Object.getPrototypeOf(obj) === Object.prototype
+}
