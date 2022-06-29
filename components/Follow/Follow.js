@@ -2,6 +2,7 @@ import axios from 'axios'
 import Button from 'components/Common/Button'
 import FollowArtistModal from 'components/Modal/FollowArtistModal'
 import LoginModal from 'components/Modal/LoginModal'
+import { trackFollowButton, trackUnfollowButton } from 'lib/ga'
 import WalletHelper from 'lib/WalletHelper'
 import { useEffect, useState } from 'react'
 import useSWR from 'swr'
@@ -54,6 +55,13 @@ const Follow = ({ userProfile, currentUser }) => {
 
 		setIsLoading(false)
 		setButtonHover(false)
+
+		if (data.follows) {
+			trackUnfollowButton(data.accountId)
+			return
+		}
+
+		trackFollowButton(data.accountId)
 	}
 
 	const handleFollowModal = (typeList) => {
