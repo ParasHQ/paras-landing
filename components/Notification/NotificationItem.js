@@ -449,7 +449,23 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 			</div>
 		)
 	}
-
+	if (notif.type === 'notification_nft_sold_for_bidder') {
+		return (
+			<div>
+				<Link href={url}>
+					<a>
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={token.metadata?.media} />
+							<div className="pl-2 text-gray-300">{`item sold by owner`}</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
 	return null
 }
 
