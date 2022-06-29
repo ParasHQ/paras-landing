@@ -118,7 +118,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 			<div
 				className={`cursor-pointer relative text-center ${
 					activeTab === tab
-						? 'text-gray-100 border-b-2 border-white font-semibold pb-2'
+						? 'text-gray-100 border-b-2 border-white font-semibold pb-1'
 						: 'hover:bg-opacity-15 text-gray-100'
 				}`}
 				onClick={() => changeActiveTab(tab)}

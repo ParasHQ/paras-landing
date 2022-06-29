@@ -103,7 +103,7 @@ const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => 
 	}
 
 	return (
-		<div className="text-white">
+		<div className="text-white lg:w-full lg:h-full lg:mt-4 lg:overflow-y-scroll">
 			<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 				<p className="text-xs">Auction ends in:</p>
 				<div className="text-center">
