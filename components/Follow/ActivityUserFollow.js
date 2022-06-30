@@ -1,56 +1,96 @@
 import Card from 'components/Card/Card'
 import Button from 'components/Common/Button'
+import TokenDetailModal from 'components/Token/TokenDetailModal'
+import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
+import useTokenOrTokenSeries from 'hooks/useTokenOrTokenSeries'
+import useStore from 'lib/store'
+import { useRouter } from 'next/router'
 import { parseImgUrl } from 'utils/common'
 
 const ActivityUserFollow = () => {
+	const currentUser = useStore((state) => state.currentUser)
+	const router = useRouter()
+	const { token, mutate } = useTokenOrTokenSeries({
+		key: `${activity.contract_id}::${
+			activity.token_series_id ? activity.token_series_id : activity.token_id.split(':')[0]
+		}${activity.token_id ? `/${activity.token_id}` : ''}`,
+		params: {
+			lookup_likes: true,
+			liked_by: currentUser,
+		},
+	})
+
 	return (
-		<div className="border border-gray-600 rounded-xl">
-			<div className="flex space-x-6 p-4">
-				<div className="w-2/5 h-full">
+		<div className="border border-gray-600 rounded-xl mb-8">
+			<TokenSeriesDetailModal tokens={[token]} />
+			<TokenDetailModal tokens={[token]} />
+			<div className="md:flex md:space-x-6 p-4">
+				<div className="w-2/5 m-auto mb-4 md:mb-0 h-full">
 					<div>
 						<Card
-							imgUrl={parseImgUrl(token.metadata.media, null, {
+							imgUrl={parseImgUrl(token?.metadata.media, null, {
 								width: `600`,
 								useOriginal: process.env.APP_ENV === 'production' ? false : true,
-								isMediaCdn: token.isMediaCdn,
+								isMediaCdn: token?.isMediaCdn,
 							})}
 							audioUrl={
-								token.metadata.mime_type &&
-								token.metadata.mime_type.includes('audio') &&
-								token.metadata.animation_url
+								token?.metadata.mime_type &&
+								token?.metadata.mime_type.includes('audio') &&
+								token?.metadata.animation_url
 							}
 							threeDUrl={
-								token.metadata.mime_type &&
-								token.metadata.mime_type.includes('model') &&
-								token.metadata.animation_url
+								token?.metadata.mime_type &&
+								token?.metadata.mime_type.includes('model') &&
+								token?.metadata.animation_url
 							}
 							iframeUrl={
-								token.metadata.mime_type &&
-								token.metadata.mime_type.includes('iframe') &&
-								token.metadata.animation_url
+								token?.metadata.mime_type &&
+								token?.metadata.mime_type.includes('iframe') &&
+								token?.metadata.animation_url
 							}
-							imgBlur={token.metadata.blurhash}
+							imgBlur={token?.metadata.blurhash}
 							token={{
-								title: token.metadata.title,
-								collection: token.metadata.collection || token.contract_id,
-								copies: token.metadata.copies,
-								creatorId: token.metadata.creator_id || token.contract_id,
-								is_creator: token.is_creator,
-								description: token.metadata.description,
-								royalty: token.royalty,
-								attributes: token.metadata.attributes,
-								_is_the_reference_merged: token._is_the_reference_merged,
-								mime_type: token.metadata.mime_type,
-								is_auction: token.token?.is_auction,
-								started_at: token.token?.started_at,
-								ended_at: token.token?.ended_at,
+								title: token?.metadata.title,
+								collection: token?.metadata.collection || token?.contract_id,
+								copies: token?.metadata.copies,
+								creatorId: token?.metadata.creator_id || token?.contract_id,
+								is_creator: token?.is_creator,
+								description: token?.metadata.description,
+								royalty: token?.royalty,
+								attributes: token?.metadata.attributes,
+								_is_the_reference_merged: token?._is_the_reference_merged,
+								mime_type: token?.metadata.mime_type,
+								is_auction: token?.is_auction,
+								started_at: token?.started_at,
+								ended_at: token?.ended_at,
 								has_auction: token?.has_auction,
 								animation_url: token?.animation_url,
+							}}
+							onClick={() => {
+								router.push(
+									{
+										pathname: router.pathname,
+										query: {
+											...router.query,
+											...(activity.token_id
+												? { tokenId: token?.token_id }
+												: { tokenSeriesId: token?.token_series_id }),
+											contractId: token?.contract_id,
+										},
+									},
+									`/token/${token?.contract_id}::${token?.token_series_id}${
+										activity.token_id ? `/${token?.token_id}` : ''
+									}`,
+									{
+										shallow: true,
+										scroll: false,
+									}
+								)
 							}}
 						/>
 					</div>
 				</div>
-				<div className="flex flex-col justify-between w-full">
+				<div className="flex flex-col space-y-4 justify-between w-full">
 					<div className="flex space-x-2">
 						<div className="rounded-full bg-white h-10 w-10"></div>
 						<div>
@@ -58,7 +98,7 @@ const ActivityUserFollow = () => {
 								<p className="text-white text-sm">einherjars.near</p>
 								<p className="text-gray-400 text-xs">Jun 26</p>
 							</div>
-							<p className="text-white text-sm font-bold">{token.metadata.title} for 80 Ⓝ</p>
+							<p className="text-white text-sm font-bold">{token?.metadata.title} for 80 Ⓝ</p>
 						</div>
 					</div>
 					<div>
@@ -89,72 +129,37 @@ const ActivityUserFollow = () => {
 
 export default ActivityUserFollow
 
-const token = {
-	_id: '62ac77ffc3ac0e7bc191d5bd',
-	contract_id: 'nearrobotics.near',
-	token_id: '1029',
-	edition_id: null,
-	metadata: {
-		title: 'NEAR Robotics #1030',
-		media:
-			'https://bafybeiafi3h3ntcyrnbahffsueh6gu6pg4b2lrdkxrjxrobilwv3in53n4.ipfs.dweb.link//1029.png',
-		media_hash: null,
-		copies: null,
-		issued_at: '1655054230081385043',
-		expires_at: null,
-		starts_at: null,
-		updated_at: null,
-		extra: null,
-		reference: '1029.json',
-		reference_hash: null,
-		symbol: 'ROBOT',
-		description:
-			'A collection of 3333 uniquely generated robots sent to protect the NEAR blockchain.',
-		attributes: [
-			{
-				trait_type: 'Background',
-				value: 'Retro Pink',
-			},
-			{
-				trait_type: 'Core',
-				value: 'V8 PI',
-			},
-			{
-				trait_type: 'Pauldron',
-				value: 'Shell Ys',
-			},
-			{
-				trait_type: 'Helmet',
-				value: 'Scout Fs 0X',
-			},
-			{
-				trait_type: 'Faceplate',
-				value: 'Ghast',
-			},
-			{
-				trait_type: 'Reactor',
-				value: 'Funkazan',
-			},
-		],
-		creator_id: 'nearrobotics.near',
-		score: 100.80967581108031,
+const activity = {
+	_id: '62ab38968e207d09cef5e38d',
+	contract_id: 'x.paras.near',
+	type: 'resolve_purchase',
+	from: 'eeedo.near',
+	to: 'myself_art.near',
+	token_id: '157370:31',
+	token_series_id: '157370',
+	price: {
+		$numberDecimal: '110000000000000000000000',
 	},
-	owner_id: 'f21327ac1e45bfafed30572ff876412c8b4c91262694784ac0bbc299d5dc4e58',
-	royalty: {
-		'roboticgang.near': 210,
-		'nrone.near': 210,
-		'roboticgrowth.near': 280,
+	ft_token_id: 'near',
+	is_offer: false,
+	is_auction: true,
+	issued_at: 1655388306818,
+	msg: {
+		contract_id: 'marketplace.paras.near',
+		block_height: 67849841,
+		datetime: '2022-06-16T14:05:06.818436989+00:00',
+		event_type: 'resolve_purchase',
+		receipt_id: '8WBS3GAq339NNKPmdKYpRKNcfjv74jNEYbGe8DPLdZhM',
+		params: {
+			buyer_id: 'myself_art.near',
+			ft_token_id: 'near',
+			nft_contract_id: 'x.paras.near',
+			owner_id: 'eeedo.near',
+			price: '110000000000000000000000',
+			token_id: '157370:31',
+		},
 	},
-	token_series_id: '1029',
-	isMediaCdn: true,
-	approval_id: null,
-	ft_token_id: null,
-	has_price: null,
-	price: null,
-	transaction_fee: '200',
+	transaction_hash: 'HUv8xr61Dn4WrHQTpFcphzqeEBvHncEFQ716no5VT4sh',
+	creator_id: 'illustratuar.near',
 	is_creator: true,
-	total_likes: 2,
-	likes: null,
-	categories: [],
-	view: 26,
 }

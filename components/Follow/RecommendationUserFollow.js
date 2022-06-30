@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Button from 'components/Common/Button'
+import { IconVerified } from 'components/Icons'
 import { useNonInitialEffect } from 'hooks/useNonInitialEffect'
 import useProfileSWR from 'hooks/useProfileSWR'
 import useStore from 'lib/store'
@@ -54,7 +55,7 @@ const RecommendationUserFollow = ({ data }) => {
 			<Link href={`/${data.account_id}`}>
 				<a>
 					<div
-						className={`object-cover w-full h-20 p-1 rounded-xl ${
+						className={`object-cover w-full h-20 p-1 rounded-t-xl ${
 							!profile?.coverUrl ? 'bg-primary' : 'bg-dark-primary-2'
 						}`}
 						style={{
@@ -82,12 +83,13 @@ const RecommendationUserFollow = ({ data }) => {
 						</a>
 					</Link>
 				</div>
-				<div className="text-right">
+				<div className="text-right flex justify-end gap-1">
 					<Link href={`/${data.account_id}`}>
 						<a className="text-white font-bold text-right">
 							{prettyTruncate(data.account_id, 15, 'address')}
 						</a>
 					</Link>
+					{profile?.isCreator && <IconVerified size={15} color="#0816B3" />}
 				</div>
 			</div>
 			<div className="flex justify-between items-end gap-2 mx-2 mt-1 mb-2">

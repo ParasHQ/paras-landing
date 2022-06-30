@@ -3,6 +3,9 @@ import useSWR from 'swr'
 
 const useProfileSWR = ({ key, initialData, args = {}, params = {} }) => {
 	const fetchData = async (key) => {
+		if (!key) {
+			return
+		}
 		return axios
 			.get(`${process.env.V2_API_URL}/profiles`, {
 				params: {
