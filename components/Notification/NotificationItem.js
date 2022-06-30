@@ -449,7 +449,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 			</div>
 		)
 	}
-	if (notif.type === 'notification_nft_sold_for_bidder') {
+	if (notif.type === 'notification_nft_sold_for_offer') {
 		return (
 			<div>
 				<Link href={url}>
