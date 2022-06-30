@@ -1,65 +1,116 @@
+import axios from 'axios'
 import Button from 'components/Common/Button'
-import { parseImgUrl } from 'utils/common'
+import { useNonInitialEffect } from 'hooks/useNonInitialEffect'
+import useProfileSWR from 'hooks/useProfileSWR'
+import useStore from 'lib/store'
+import WalletHelper from 'lib/WalletHelper'
+import Link from 'next/link'
+import { useState } from 'react'
+import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
 
-const dataProfile = {
-	_id: '61dead9e29f70266b43c7b5b',
-	accountId: 'kenzeroart.near',
-	bio: 'Creator of Near Doodle\r\nhttps://discord.com/invite/E5T7HvRGfJ',
-	createdAt: 1641983390501,
-	instagramId: 'kenzeroart',
-	twitterId: 'kenzero14',
-	website: 'https://kenzeroart.editorx.io/neardoodle',
-	weiboUrl: '',
-	imgUrl: 'ipfs://bafybeif7hnppq5k5c55tjp3ukeplkw6wuf2z3dopes5bj7vjbys6vxwbei',
-	isEmailVerified: true,
-	has_notification: true,
-	isCreator: true,
-	coverUrl: 'ipfs://bafybeihchw35bckquvm5yexwc3v3nag2las3i3cn6fl5bfhsjfcmus7x7a',
-	followers: 5,
-	following: 2,
-}
+const RecommendationUserFollow = ({ data }) => {
+	const currentUser = useStore((state) => state.currentUser)
+	const { profile, mutate } = useProfileSWR({
+		key: data.account_id,
+		params: { followed_by: currentUser },
+	})
+	const [isLoading, setIsLoading] = useState(false)
 
-const RecommendationUserFollow = () => {
+	useNonInitialEffect(() => {
+		if (currentUser) {
+			mutate()
+		}
+	}, currentUser)
+
+	const onClickFollowUnfollow = async () => {
+		if (!currentUser) {
+			return
+		}
+
+		setIsLoading(true)
+		try {
+			await axios.request({
+				url: `${process.env.V2_API_URL}${profile.follows ? '/unfollow' : '/follow'}`,
+				method: 'PUT',
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+				params: {
+					account_id: currentUser,
+					following_account_id: profile.accountId,
+				},
+			})
+		} catch (error) {
+			null
+		}
+
+		setTimeout(() => {
+			mutate()
+			setIsLoading(false)
+		}, 300)
+	}
 	return (
-		<div className="border-[0.5px] border-gray-600 rounded-xl">
-			<div
-				className={`object-cover w-full md:h-20 h-full p-1 rounded-xl ${
-					!dataProfile?.coverUrl ? 'bg-primary' : 'bg-dark-primary-2'
-				}`}
-				style={{
-					backgroundImage: `url(${parseImgUrl(dataProfile?.coverUrl, null)})`,
-					backgroundPosition: 'center',
-					backgroundSize: 'cover',
-				}}
-			/>
+		<div className="border-[0.5px] border-gray-600 rounded-xl h-full">
+			<Link href={`/${data.account_id}`}>
+				<a>
+					<div
+						className={`object-cover w-full h-20 p-1 rounded-xl ${
+							!profile?.coverUrl ? 'bg-primary' : 'bg-dark-primary-2'
+						}`}
+						style={{
+							backgroundImage: `url(${parseImgUrl(profile?.coverUrl, null)})`,
+							backgroundPosition: 'center',
+							backgroundSize: 'cover',
+						}}
+					/>
+				</a>
+			</Link>
 			<div className="mt-2 mx-2">
 				<div className="relative">
-					<div
-						className={`absolute w-12 h-12 -top-6 overflow-hidden border-4 border-black ${
-							!dataProfile.imgUrl ? 'bg-primary' : 'bg-dark-primary-2'
-						} rounded-full`}
-					>
-						<img
-							src={parseImgUrl(dataProfile?.imgUrl, null, {
-								width: `300`,
-							})}
-							className="w-full object-cover rounded-full"
-						/>
-					</div>
+					<Link href={`/${data.account_id}`}>
+						<a
+							className={`absolute w-12 h-12 -top-6 overflow-hidden border-4 border-black ${
+								!profile?.imgUrl ? 'bg-primary' : 'bg-dark-primary-2'
+							} rounded-full cursor-pointer`}
+						>
+							<img
+								src={parseImgUrl(profile?.imgUrl, null, {
+									width: `300`,
+								})}
+								className="w-full object-cover rounded-full cursor-pointer"
+							/>
+						</a>
+					</Link>
 				</div>
-				<p className="text-white font-bold text-right">ahnaf.near</p>
+				<div className="text-right">
+					<Link href={`/${data.account_id}`}>
+						<a className="text-white font-bold text-right">
+							{prettyTruncate(data.account_id, 15, 'address')}
+						</a>
+					</Link>
+				</div>
 			</div>
 			<div className="flex justify-between items-end gap-2 mx-2 mt-1 mb-2">
 				<div>
 					<p className="text-gray-400 text-[0.6rem]">Last 7 days volume</p>
-					<p className="text-white font-bold">18,0324 N</p>
+					<p className="text-white font-bold">{prettyBalance(data.total_sum, 24)} Ⓝ</p>
 				</div>
 				<div>
 					<p className="text-gray-400 text-[0.6rem]">Followers</p>
-					<p className="text-white font-bold">500</p>
+					<p className="text-white font-bold">{profile?.followers || 0}</p>
 				</div>
-				<div>
-					<Button size="sm">Follow</Button>
+				<div className="flex-1 w-full">
+					<Button
+						size="sm"
+						isLoading={isLoading}
+						loadingStyle="h-4"
+						className={`rounded-full float-right w-[4.5rem] text-[0.55rem] ${
+							profile?.follows ? 'bg-[#1B4FA7]' : ''
+						}`}
+						onClick={onClickFollowUnfollow}
+					>
+						{profile?.follows ? 'Followed' : 'Follow'}
+					</Button>
 				</div>
 			</div>
 		</div>
