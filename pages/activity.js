@@ -258,6 +258,17 @@ const ActivityLog = ({ query }) => {
 										>
 											{localeLn('TopUsers')}
 										</p>
+										<p
+											className={`opacity-50 cursor-pointer select-none my-1
+										${activityType === 'following' && 'font-semibold opacity-100'}
+									`}
+											onClick={() => {
+												setShowModal(false)
+												router.push('/activity/following')
+											}}
+										>
+											{localeLn('Following')}
+										</p>
 									</div>
 								)}
 							</div>

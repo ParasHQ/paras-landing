@@ -1,5 +1,6 @@
 import axios from 'axios'
 import ActivityUserFollow from 'components/Follow/ActivityUserFollow'
+import ActivityUserFollowLoader from 'components/Follow/ActivityUserFollowLoader'
 import RecommendationUserFollow from 'components/Follow/RecommendationUserFollow'
 import Footer from 'components/Footer'
 import Nav from 'components/Nav'
@@ -75,11 +76,11 @@ const Following = () => {
 			<Nav />
 			<div className="max-w-6xl m-auto">
 				<div className="relative px-4 pb-24">
-					<div className="max-w-5xl m-auto py-12 md:flex md:flex-col">
+					<div className="max-w-5xl m-auto py-12 md:py-16 md:flex md:flex-col">
 						<div className="w-full relative">
 							<p className="text-4xl font-bold text-gray-100 mb-8 mr-2 capitalize">Following</p>
 						</div>
-						{profile.following >= 1 ? <ActivityFollowingList /> : <RecommendationUserFollowList />}
+						{profile.following >= 10 ? <ActivityFollowingList /> : <RecommendationUserFollowList />}
 					</div>
 				</div>
 			</div>
@@ -133,7 +134,7 @@ const ActivityFollowingList = () => {
 				{activities.map((activity) => (
 					<ActivityUserFollow key={activity._id} activity={activity} />
 				))}
-				{isValidating && <button className="text-white">Loadinggg more</button>}
+				{isValidating && <ActivityUserFollowLoader />}
 			</InfiniteScroll>
 		</div>
 	)

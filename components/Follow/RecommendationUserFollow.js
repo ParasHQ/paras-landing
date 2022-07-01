@@ -8,10 +8,11 @@ import WalletHelper from 'lib/WalletHelper'
 import Link from 'next/link'
 import { useState } from 'react'
 import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
+import { mutate } from 'swr'
 
 const RecommendationUserFollow = ({ data }) => {
 	const currentUser = useStore((state) => state.currentUser)
-	const { profile, mutate } = useProfileSWR({
+	const { profile, mutate: mutateUserRecomm } = useProfileSWR({
 		key: data.account_id,
 		params: { followed_by: currentUser },
 	})
@@ -46,7 +47,8 @@ const RecommendationUserFollow = ({ data }) => {
 		}
 
 		setTimeout(() => {
-			mutate()
+			mutateUserRecomm()
+			mutate(currentUser)
 			setIsLoading(false)
 		}, 300)
 	}
