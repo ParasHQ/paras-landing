@@ -1,5 +1,4 @@
 import axios from 'axios'
-// import { InputText } from 'components/Common/form'
 import ActivityUserFollow from 'components/Follow/ActivityUserFollow'
 import RecommendationUserFollow from 'components/Follow/RecommendationUserFollow'
 import Footer from 'components/Footer'
@@ -9,6 +8,8 @@ import useStore from 'lib/store'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import useSWRInfinite from 'swr/infinite'
 
 const Following = () => {
 	const userProfile = useStore((state) => state.userProfile)
@@ -78,7 +79,7 @@ const Following = () => {
 						<div className="w-full relative">
 							<p className="text-4xl font-bold text-gray-100 mb-8 mr-2 capitalize">Following</p>
 						</div>
-						{profile.following >= 5 ? <ActivityFollowingList /> : <RecommendationUserFollowList />}
+						{profile.following >= 1 ? <ActivityFollowingList /> : <RecommendationUserFollowList />}
 					</div>
 				</div>
 			</div>
@@ -90,13 +91,50 @@ const Following = () => {
 
 export default Following
 
+const FETCH_LIMIT = 10
+
 const ActivityFollowingList = () => {
+	const currentUser = useStore((state) => state.currentUser)
+	const getKey = (pageIndex, previousPageData) => {
+		if (previousPageData && previousPageData.length < FETCH_LIMIT) {
+			return null
+		}
+		if (pageIndex === 0) {
+			return `/activities?type=following_user&followed_by=${currentUser}&limit=${FETCH_LIMIT}`
+		}
+		return `/activities?type=following_user&followed_by=${currentUser}&limit=${FETCH_LIMIT}&_id_before=${
+			previousPageData[previousPageData.length - 1]._id
+		}`
+	}
+
+	const fetchData = async (key) => {
+		return axios.get(`${process.env.V2_API_URL}${key}`).then((res) => res.data.data.results)
+	}
+
+	const { data, size, setSize, isValidating } = useSWRInfinite(getKey, fetchData, {
+		revalidateFirstPage: false,
+		revalidateOnFocus: false,
+		revalidateIfStale: false,
+		revalidateOnReconnect: false,
+	})
+
+	const activities = data ? [].concat(...data) : []
+	const isEmpty = data?.[0]?.length === 0
+	const isReachingEnd = isEmpty || (data && data[data.length - 1]?.length < FETCH_LIMIT)
+
 	return (
-		<div className="mt-8 max-w-4xl w-full m-auto">
-			<ActivityUserFollow />
-			<ActivityUserFollow />
-			<ActivityUserFollow />
-			<ActivityUserFollow />
+		<div className="mt-8 max-w-4xl w-full md:m-auto">
+			<InfiniteScroll
+				dataLength={activities.length}
+				next={() => !isValidating && setSize(size + 1)}
+				hasMore={!isReachingEnd}
+				className="-mx-4"
+			>
+				{activities.map((activity) => (
+					<ActivityUserFollow key={activity._id} activity={activity} />
+				))}
+				{isValidating && <button className="text-white">Loadinggg more</button>}
+			</InfiniteScroll>
 		</div>
 	)
 }
@@ -125,14 +163,16 @@ const RecommendationUserFollowList = () => {
 					Follow at least total 10 of seller or buyer to build your Following page...
 				</p>
 			</div>
-			<div className="flex items-center justify-center">
+
+			{/* Commented for next iteration adding search functionality */}
+			{/* <div className="flex items-center justify-center">
 				<div className="w-full mx-4 md:mx-0 md:w-2/3">
 					<input
 						placeholder="Search artist by their name or their collections"
 						className="bg-transparent border-gray-600 border border-opacity-40 focus:bg-transparent text-white px-4 py-2.5 text-sm placeholder:text-gray-600"
 					/>
 				</div>
-			</div>
+			</div> */}
 
 			{topUsers && (
 				<div className="mt-8">

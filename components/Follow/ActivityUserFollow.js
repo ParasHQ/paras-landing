@@ -1,13 +1,17 @@
 import Card from 'components/Card/Card'
 import Button from 'components/Common/Button'
+import CountdownSimple from 'components/Common/CountdownSimple'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
+import useProfileData from 'hooks/useProfileData'
 import useTokenOrTokenSeries from 'hooks/useTokenOrTokenSeries'
 import useStore from 'lib/store'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { parseImgUrl } from 'utils/common'
+import { parseImgUrl, prettyTruncate, timeAgo } from 'utils/common'
 
-const ActivityUserFollow = () => {
+const ActivityUserFollow = ({ activity }) => {
 	const currentUser = useStore((state) => state.currentUser)
 	const router = useRouter()
 	const { token, mutate } = useTokenOrTokenSeries({
@@ -19,9 +23,107 @@ const ActivityUserFollow = () => {
 			liked_by: currentUser,
 		},
 	})
+	const accountId = activity.msg?.params?.owner_id || activity.msg?.params?.creator_id
+	const profile = useProfileData(accountId)
+
+	const onClickToSeeDetails = () => {
+		mutate()
+		router.push(
+			{
+				pathname: router.pathname,
+				query: {
+					...router.query,
+					...(activity.token_id
+						? { tokenId: token?.token_id }
+						: { tokenSeriesId: token?.token_series_id }),
+					contractId: token?.contract_id,
+				},
+			},
+			`/token/${token?.contract_id}::${token?.token_series_id}${
+				activity.token_id ? `/${token?.token_id}` : ''
+			}`,
+			{
+				shallow: true,
+				scroll: false,
+			}
+		)
+	}
+
+	const descriptionTop = () => {
+		if (activity.type === 'add_market_data' || activity.type === 'update_market_data') {
+			return (
+				<>
+					<span>{activity.msg.params.is_auction ? 'Auctioned ' : 'Listed '} </span>
+					<span className="font-bold cursor-pointer hover:underline" onClick={onClickToSeeDetails}>
+						{token?.metadata.title}
+					</span>
+					<span> for </span>
+					<span className="font-bold">{formatNearAmount(activity.msg.params.price)} Ⓝ</span>
+				</>
+			)
+		} else if (activity.type === 'nft_create_series') {
+			return (
+				<>
+					<span>Created </span>
+					<span className="font-bold cursor-pointer hover:underline" onClick={onClickToSeeDetails}>
+						{token?.metadata.title}
+					</span>
+					<span> series</span>
+				</>
+			)
+		}
+		return null
+	}
+
+	const descriptionCenter = () => {
+		if (activity.type === 'add_market_data') {
+			return (
+				<div>
+					<p className="text-gray-300 text-xs">
+						{activity.msg.params.is_auction ? 'Starting Price' : 'Current Price'}
+					</p>
+					<p className="text-white text-2xl font-bold">
+						{formatNearAmount(activity.msg.params.price)} Ⓝ
+					</p>
+				</div>
+			)
+		} else if (activity.type === 'nft_create_series' && activity.msg.params.price) {
+			return (
+				<div>
+					<p className="text-gray-300 text-xs">Current Price</p>
+					<p className="text-white text-2xl font-bold">
+						{formatNearAmount(activity.msg.params.price)} Ⓝ
+					</p>
+				</div>
+			)
+		}
+		return null
+	}
+
+	const descriptionBottom = () => {
+		if (
+			(activity.type === 'add_market_data' || activity.type === 'update_market_data') &&
+			!activity.msg.params.is_auction
+		) {
+			return (
+				<div>
+					<p className="text-xs text-gray-400">
+						Minted {timeAgo.format(new Date(activity.msg.datetime))}
+					</p>
+				</div>
+			)
+		} else if (activity.type === 'add_market_data' && activity.msg.params.is_auction) {
+			return (
+				<div>
+					<CountdownSimple endedDate={activity.msg.params.ended_at} />
+				</div>
+			)
+		}
+		return null
+	}
 
 	return (
-		<div className="border border-gray-600 rounded-xl mb-8">
+		<div className="border border-gray-600 rounded-xl mb-8 mx-4">
 			<TokenSeriesDetailModal tokens={[token]} />
 			<TokenDetailModal tokens={[token]} />
 			<div className="md:flex md:space-x-6 p-4">
@@ -66,59 +168,46 @@ const ActivityUserFollow = () => {
 								has_auction: token?.has_auction,
 								animation_url: token?.animation_url,
 							}}
-							onClick={() => {
-								router.push(
-									{
-										pathname: router.pathname,
-										query: {
-											...router.query,
-											...(activity.token_id
-												? { tokenId: token?.token_id }
-												: { tokenSeriesId: token?.token_series_id }),
-											contractId: token?.contract_id,
-										},
-									},
-									`/token/${token?.contract_id}::${token?.token_series_id}${
-										activity.token_id ? `/${token?.token_id}` : ''
-									}`,
-									{
-										shallow: true,
-										scroll: false,
-									}
-								)
-							}}
+							onClick={onClickToSeeDetails}
 						/>
 					</div>
 				</div>
 				<div className="flex flex-col space-y-4 justify-between w-full">
 					<div className="flex space-x-2">
-						<div className="rounded-full bg-white h-10 w-10"></div>
+						<Link href={`/${accountId}`}>
+							<a
+								className={`w-10 h-10 overflow-hidden ${
+									!profile?.imgUrl ? 'bg-primary' : 'bg-dark-primary-2'
+								} rounded-full cursor-pointer`}
+							>
+								<img
+									src={parseImgUrl(profile?.imgUrl, null, { width: `300` })}
+									className="w-full object-cover rounded-full cursor-pointer"
+								/>
+							</a>
+						</Link>
 						<div>
 							<div className="flex gap-3 items-baseline">
-								<p className="text-white text-sm">einherjars.near</p>
-								<p className="text-gray-400 text-xs">Jun 26</p>
+								<Link href={`/${accountId}`}>
+									<a className="text-white text-sm hover:underline">
+										{prettyTruncate(accountId, 15, 'address')}
+									</a>
+								</Link>
+								<p className="text-gray-400 text-xs">
+									{timeAgo.format(new Date(activity.msg.datetime))}
+								</p>
 							</div>
-							<p className="text-white text-sm font-bold">{token?.metadata.title} for 80 Ⓝ</p>
+							<p className="text-white text-sm">{descriptionTop()}</p>
 						</div>
 					</div>
-					<div>
-						<p className="text-gray-300 text-xs">Current Price</p>
-						<p className="text-white text-2xl font-bold">100 Ⓝ</p>
-						<div className="flex items-center space-x-2">
-							<div className="rounded-full w-8 h-8 bg-white"></div>
-							<p className="text-gray-300 text-xs">ahnaf.near</p>
-						</div>
-					</div>
+					{descriptionCenter()}
 					<div>
 						<hr className="border-gray-600 mb-3" />
-						<div className="flex items-center justify-between">
-							<div>
-								<p className="text-xs text-gray-400">Auction ends in</p>
-								<p className="text-white text-xl">23h 54m 5s</p>
-							</div>
-							<Button size="md" className="px-12">
-								Buy now
+						<div className="flex items-end justify-between flex-row-reverse">
+							<Button size="md" className="px-8" onClick={onClickToSeeDetails}>
+								See Details
 							</Button>
+							{descriptionBottom()}
 						</div>
 					</div>
 				</div>
@@ -128,38 +217,3 @@ const ActivityUserFollow = () => {
 }
 
 export default ActivityUserFollow
-
-const activity = {
-	_id: '62ab38968e207d09cef5e38d',
-	contract_id: 'x.paras.near',
-	type: 'resolve_purchase',
-	from: 'eeedo.near',
-	to: 'myself_art.near',
-	token_id: '157370:31',
-	token_series_id: '157370',
-	price: {
-		$numberDecimal: '110000000000000000000000',
-	},
-	ft_token_id: 'near',
-	is_offer: false,
-	is_auction: true,
-	issued_at: 1655388306818,
-	msg: {
-		contract_id: 'marketplace.paras.near',
-		block_height: 67849841,
-		datetime: '2022-06-16T14:05:06.818436989+00:00',
-		event_type: 'resolve_purchase',
-		receipt_id: '8WBS3GAq339NNKPmdKYpRKNcfjv74jNEYbGe8DPLdZhM',
-		params: {
-			buyer_id: 'myself_art.near',
-			ft_token_id: 'near',
-			nft_contract_id: 'x.paras.near',
-			owner_id: 'eeedo.near',
-			price: '110000000000000000000000',
-			token_id: '157370:31',
-		},
-	},
-	transaction_hash: 'HUv8xr61Dn4WrHQTpFcphzqeEBvHncEFQ716no5VT4sh',
-	creator_id: 'illustratuar.near',
-	is_creator: true,
-}

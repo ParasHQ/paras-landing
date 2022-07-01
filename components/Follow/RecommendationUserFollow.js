@@ -70,7 +70,7 @@ const RecommendationUserFollow = ({ data }) => {
 				<div className="relative">
 					<Link href={`/${data.account_id}`}>
 						<a
-							className={`absolute w-12 h-12 -top-6 overflow-hidden border-4 border-black ${
+							className={`absolute w-12 h-12 -top-6 overflow-hidden border-2 border-black ${
 								!profile?.imgUrl ? 'bg-primary' : 'bg-dark-primary-2'
 							} rounded-full cursor-pointer`}
 						>
