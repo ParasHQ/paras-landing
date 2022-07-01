@@ -459,7 +459,13 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={token.metadata?.media} />
-							<div className="pl-2 text-gray-300">{`item sold by owner`}</div>
+							<div className="pl-2 text-gray-300">
+								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
+								{' that you offered was sold to '}
+								<span className="font-semibold">
+									{prettyTruncate(token.owner_id, 14, 'address')}
+								</span>
+							</div>
 						</div>
 					</a>
 				</Link>
