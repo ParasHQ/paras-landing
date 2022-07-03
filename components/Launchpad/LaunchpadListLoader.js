@@ -1,7 +1,7 @@
 import React from 'react'
 import ContentLoader from 'react-content-loader'
 
-const ProjectListLoader = (props) =>
+const LaunchpadListLoader = (props) =>
 	props.uniqueKey === 'big-project-loader' ? (
 		<div className="flex flex-wrap mb-14">
 			{[...Array(props.contentLength || 4).keys()].map((k) => (
@@ -50,4 +50,4 @@ const ProjectListLoader = (props) =>
 		</div>
 	)
 
-export default ProjectListLoader
+export default LaunchpadListLoader
