@@ -12,7 +12,7 @@ const TimeLaunchpad = ({ date, timeType, isEnded = () => {} }) => {
 	}, [isEndedTime])
 
 	const countDownTimer = () => {
-		const firstDate = date * 1000
+		const firstDate = date
 
 		const timer = setInterval(() => {
 			const secondDate = new Date().getTime()

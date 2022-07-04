@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import ReactTooltip from 'react-tooltip'
-import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { projectStatus } from './LaunchpadItem'
 import TimeLaunchpad from './TimeLaunchpad'
 
@@ -15,8 +14,8 @@ const LaunchpadStats = ({ project, isEnded }) => {
 	}, [project])
 
 	const getMintDuration = () => {
-		const startDate = new Date(project.started_at * 1000)
-		const endedDate = new Date(project.ended_at * 1000)
+		const startDate = new Date(project.mint_details[0].started_at)
+		const endedDate = new Date(project.mint_details[0].ended_at)
 		const diff = endedDate.getTime() - startDate.getTime()
 		setMintDuration(Math.floor(diff / 1000 / 60 / 60))
 	}
@@ -24,7 +23,13 @@ const LaunchpadStats = ({ project, isEnded }) => {
 	const mintDurationType = (status) => {
 		switch (status) {
 			case 'live':
-				return <TimeLaunchpad date={project.ended_at} timeType="live" isEnded={(e) => isEnded(e)} />
+				return (
+					<TimeLaunchpad
+						date={project.mint_details[0].ended_at}
+						timeType="live"
+						isEnded={(e) => isEnded(e)}
+					/>
+				)
 			case 'upcoming':
 				if (mintDuration === 0) {
 					return `None`
@@ -55,7 +60,7 @@ const LaunchpadStats = ({ project, isEnded }) => {
 				</div>
 				<div className="text-center" data-for={randomID} data-tip="Mint price">
 					<p className="text-2xl font-bold">
-						{project.price ? formatNearAmount(project.price, 2)` Ⓝ` : `None`}
+						{project.mint_details[0].price ? `${project.mint_details[0].price} Ⓝ` : `None`}
 					</p>
 					<p>Starting Price</p>
 				</div>

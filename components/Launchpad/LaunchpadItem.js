@@ -1,7 +1,6 @@
 import { parseImgUrl } from 'utils/common'
 import { generateFromString } from 'generate-avatar'
 import router from 'next/router'
-import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import TimeLaunchpad from './TimeLaunchpad'
 import { useState } from 'react'
 
@@ -59,7 +58,7 @@ const LaunchpadItem = ({ project, className }) => {
 					<div className="flex my-1 text-center gap-1">
 						<p className="font-light text-xs text-white text-opacity-70 mb-1">Price</p>
 						<p className="font-bold text-xs">
-							{project.price ? formatNearAmount(project.price, 2)` Ⓝ` : `None`}
+							{project.mint_details[0].price ? `${project.mint_details[0].price} Ⓝ` : `None`}
 						</p>
 					</div>
 				</div>

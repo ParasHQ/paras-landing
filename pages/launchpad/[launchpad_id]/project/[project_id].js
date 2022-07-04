@@ -88,7 +88,7 @@ const ProjectPage = ({ project }) => {
 				</h1>
 				<LaunchpadStats project={project} isEnded={(e) => setIsEndedTime(e)} />
 				<div className="max-w-3xl mx-auto md:flex md:justify-start">
-					<div className="mx-4 mb-6 md:mb-0 md:w-4/12 h-full">
+					<div className="mx-4 mb-6 md:mb-0 md:w-4/12 h-full relative">
 						<Card
 							imgUrl={parseImgUrl(
 								project.nft_image !== 'https://cms.enleap.app/storage/'
@@ -106,20 +106,22 @@ const ProjectPage = ({ project }) => {
 								royalty: {},
 							}}
 						/>
-					</div>
-					<div className="mx-6 md:ml-10 md:w-8/12">
-						<LaunchpadContent
-							project={project}
-							tabActive={tabActive}
-							setTabActive={(e) => setTabActive(e)}
-						/>
-						<div className="relative md:flex justify-between items-center mt-10 text-center">
+						<div className="absolute mt-6 left-1/2 md:-left-1 md:transform-none transform -translate-x-1/2 md:-right-1">
 							{project.mint_url && project.status === 'live' && !isEndedTime && (
 								<a href={project.mint_url} rel="noreferrer" target="_blank">
 									<Button>Mint here</Button>
 								</a>
 							)}
 							{project.status === 'upcoming' && <Button isDisabled>Upcoming</Button>}
+						</div>
+					</div>
+					<div className="mx-6 mt-28 md:mt-0 md:ml-10 md:w-8/12">
+						<LaunchpadContent
+							project={project}
+							tabActive={tabActive}
+							setTabActive={(e) => setTabActive(e)}
+						/>
+						<div className="relative md:flex justify-between items-center mt-10 text-center">
 							<div className="absolute right-0">
 								<SocialMediaLaunchpad socialUrl={project.social_urls} />
 							</div>
