@@ -49,7 +49,7 @@ const TabPublication = ({ localToken }) => {
 	}
 
 	return (
-		<div className="lg:w-full lg:h-full lg:mt-4 lg:overflow-y-scroll">
+		<div className="lg:w-full lg:h-full lg:mt-4 lg:overflow-y-scroll" id="publicationListScroll">
 			{publicationList.length === 0 && !hasMore && (
 				<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 					<p className="text-white text-center">
@@ -66,7 +66,8 @@ const TabPublication = ({ localToken }) => {
 						<p className="text-white text-center">{localeLn('Loading...')}</p>
 					</div>
 				}
-				scrollableTarget="publicationListScroll"
+				scrollableTarget="#publicationListScroll"
+				scrollThreshold={0.4}
 			>
 				{publicationList.map((pub) => (
 					<div key={pub._id} className="m-auto bg-gray-800 mt-3 p-3 rounded-md shadow-md">

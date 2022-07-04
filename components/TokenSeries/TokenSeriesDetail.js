@@ -601,7 +601,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 							{activeTab === 'publication' && <TabPublication localToken={token} />}
 						</div>
 					</Scrollbars>
-					<div className="hidden lg:flex lg:flex-col lg:p-4 lg:w-full lg:h-5/6">
+					<div className="hidden lg:flex lg:flex-col lg:p-4 lg:w-full lg:h-7/8">
 						<div className="flex justify-between">
 							<div>
 								<div className="flex justify-between items-center">

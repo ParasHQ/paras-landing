@@ -586,12 +586,13 @@ const TabOffers = ({ localToken }) => {
 	}
 
 	return (
-		<div className="text-white lg:w-full lg:h-full lg:mt-4 lg:overflow-y-scroll">
+		<div className="text-white lg:w-full lg:h-full lg:mt-4 lg:overflow-y-scroll" id="TokenScroll">
 			<InfiniteScroll
 				dataLength={offers.length}
 				next={fetchOffers}
 				hasMore={hasMore}
-				scrollableTarget="TokenScroll"
+				scrollableTarget="#TokenScroll"
+				scrollThreshold={0.4}
 				loader={
 					<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 						<div className="text-white text-center">{localeLn('Loading...')}</div>
