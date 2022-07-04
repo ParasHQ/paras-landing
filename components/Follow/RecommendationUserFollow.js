@@ -20,9 +20,9 @@ const RecommendationUserFollow = ({ data }) => {
 
 	useNonInitialEffect(() => {
 		if (currentUser) {
-			mutate()
+			mutateUserRecomm()
 		}
-	}, currentUser)
+	}, [currentUser])
 
 	const onClickFollowUnfollow = async () => {
 		if (!currentUser) {

@@ -26,7 +26,7 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => 
 		if (currentUser) {
 			mutate()
 		}
-	}, currentUser)
+	}, [currentUser])
 
 	const onClickFollowUnfollow = async () => {
 		if (!currentUser) {
