@@ -1,8 +1,10 @@
-const LaunchpadContent = ({ project, tabActive, setTabActive }) => {
+import LaunchpadContentLoader from './LaunchpadContentLoader'
+
+const LaunchpadContent = ({ project, tabActive, setTabActive, isValidating }) => {
 	return (
 		<>
 			<div className="flex justify-center md:justify-start gap-10 mb-6 text-gray-200">
-				{project.content.story && (
+				{project?.content.story && (
 					<div className="text-2xl">
 						<span className="cursor-pointer" onClick={() => setTabActive('story')}>
 							Story
@@ -10,7 +12,7 @@ const LaunchpadContent = ({ project, tabActive, setTabActive }) => {
 						</span>
 					</div>
 				)}
-				{project.content.roadmap && (
+				{project?.content.roadmap && (
 					<div className="text-2xl">
 						<span className="cursor-pointer" onClick={() => setTabActive('roadmap')}>
 							Roadmap
@@ -18,7 +20,7 @@ const LaunchpadContent = ({ project, tabActive, setTabActive }) => {
 						</span>
 					</div>
 				)}
-				{project.content.team && (
+				{project?.content.team && (
 					<div className="text-2xl">
 						<span className="cursor-pointer" onClick={() => setTabActive('team')}>
 							Team
@@ -28,24 +30,66 @@ const LaunchpadContent = ({ project, tabActive, setTabActive }) => {
 				)}
 			</div>
 			<div className="text-gray-200 text-justify">
-				{tabActive === 'story' &&
-					(project.content.story ? (
-						<div dangerouslySetInnerHTML={{ __html: project.content.story }} />
-					) : (
-						<div className="text-center my-20">No Story</div>
-					))}
-				{tabActive === 'roadmap' &&
-					(project.content.roadmap ? (
-						<div dangerouslySetInnerHTML={{ __html: project.content.roadmap }} />
-					) : (
-						<div className="text-center my-20">No Roadmap</div>
-					))}
-				{tabActive === 'team' &&
-					(project.content.team ? (
-						<div dangerouslySetInnerHTML={{ __html: project.content.team }} />
-					) : (
-						<div className="text-center my-20">No Team</div>
-					))}
+				{tabActive === 'story' && !isValidating ? (
+					<div dangerouslySetInnerHTML={{ __html: project.content.story }} />
+				) : (
+					project?.content.story && (
+						<>
+							<div className="hidden md:block">
+								<LaunchpadContentLoader
+									uniqueKey="big-launchpad-content-loader"
+									contentLength={1}
+								/>
+							</div>
+							<div className="md:hidden">
+								<LaunchpadContentLoader
+									uniqueKey="small-launchpad-content-loader"
+									contentLength={1}
+								/>
+							</div>
+						</>
+					)
+				)}
+				{tabActive === 'roadmap' && !isValidating ? (
+					<div dangerouslySetInnerHTML={{ __html: project.content.roadmap }} />
+				) : (
+					project?.content.roadmap && (
+						<>
+							<div className="hidden md:block">
+								<LaunchpadContentLoader
+									uniqueKey="big-launchpad-content-loader"
+									contentLength={1}
+								/>
+							</div>
+							<div className="md:hidden">
+								<LaunchpadContentLoader
+									uniqueKey="small-launchpad-content-loader"
+									contentLength={1}
+								/>
+							</div>
+						</>
+					)
+				)}
+				{tabActive === 'team' && !isValidating ? (
+					<div dangerouslySetInnerHTML={{ __html: project.content.team }} />
+				) : (
+					project.content.team && (
+						<>
+							<div className="hidden md:block">
+								<LaunchpadContentLoader
+									uniqueKey="big-launchpad-content-loader"
+									contentLength={1}
+								/>
+							</div>
+							<div className="md:hidden">
+								<LaunchpadContentLoader
+									uniqueKey="small-launchpad-content-loader"
+									contentLength={1}
+								/>
+							</div>
+						</>
+					)
+				)}
 			</div>
 		</>
 	)

@@ -8,12 +8,22 @@ import SocialMediaLaunchpad from 'components/Launchpad/SocialMediaLaunchpad'
 import Nav from 'components/Nav'
 import { generateFromString } from 'generate-avatar'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
+import useSWR from 'swr'
 import { parseImgUrl } from 'utils/common'
 
 const ProjectPage = ({ project }) => {
 	const [tabActive, setTabActive] = useState('story')
 	const [isEndedTime, setIsEndedTime] = useState(false)
+	const router = useRouter()
+
+	const fetchData = (url) => axios(url).then((res) => res.data)
+
+	const { data, isValidating } = useSWR(
+		`${process.env.V2_API_URL}/launchpad/${router.query.launchpad_id}/project/${router.query.project_id}`,
+		fetchData
+	)
 
 	const headMeta = {
 		title: project.title,
@@ -86,7 +96,11 @@ const ProjectPage = ({ project }) => {
 				<h1 className="text-4xl font-bold text-gray-100 text-center break-words mb-10">
 					{project?.title}
 				</h1>
-				<LaunchpadStats project={project} isEnded={(e) => setIsEndedTime(e)} />
+				<LaunchpadStats
+					project={data}
+					isEnded={(e) => setIsEndedTime(e)}
+					isValidating={isValidating}
+				/>
 				<div className="max-w-3xl mx-auto md:flex md:justify-start">
 					<div className="mx-4 mb-6 md:mb-0 md:w-4/12 h-full relative">
 						<Card
@@ -117,7 +131,8 @@ const ProjectPage = ({ project }) => {
 					</div>
 					<div className="mx-6 mt-28 md:mt-0 md:ml-10 md:w-8/12">
 						<LaunchpadContent
-							project={project}
+							project={data}
+							isValidating={isValidating}
 							tabActive={tabActive}
 							setTabActive={(e) => setTabActive(e)}
 						/>

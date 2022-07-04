@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import ReactTooltip from 'react-tooltip'
 import { projectStatus } from './LaunchpadItem'
+import LaunchpadStatsLoader from './LaunchpadStatsLoader'
 import TimeLaunchpad from './TimeLaunchpad'
 
-const LaunchpadStats = ({ project, isEnded }) => {
+const LaunchpadStats = ({ project, isEnded, isValidating }) => {
 	const [showTooltip, setShowTooltip] = useState(false)
 	const [mintDuration, setMintDuration] = useState()
+	const [isEndedTime, setIsEndedTime] = useState(false)
 	const randomID = 'launchpad-stats'
 
 	useEffect(() => {
@@ -14,8 +16,8 @@ const LaunchpadStats = ({ project, isEnded }) => {
 	}, [project])
 
 	const getMintDuration = () => {
-		const startDate = new Date(project.mint_details[0].started_at)
-		const endedDate = new Date(project.mint_details[0].ended_at)
+		const startDate = new Date(project?.mint_details[0].started_at)
+		const endedDate = new Date(project?.mint_details[0].ended_at)
 		const diff = endedDate.getTime() - startDate.getTime()
 		setMintDuration(Math.floor(diff / 1000 / 60 / 60))
 	}
@@ -27,7 +29,10 @@ const LaunchpadStats = ({ project, isEnded }) => {
 					<TimeLaunchpad
 						date={project.mint_details[0].ended_at}
 						timeType="live"
-						isEnded={(e) => isEnded(e)}
+						isEnded={(e) => {
+							isEnded(e)
+							setIsEndedTime(e)
+						}}
 					/>
 				)
 			case 'upcoming':
@@ -40,7 +45,16 @@ const LaunchpadStats = ({ project, isEnded }) => {
 		}
 	}
 
-	return (
+	return isValidating ? (
+		<div className="">
+			<div className="hidden md:block">
+				<LaunchpadStatsLoader uniqueKey="big-launchpad-stats-loader" contentLength={4} />
+			</div>
+			<div className="md:hidden">
+				<LaunchpadStatsLoader uniqueKey="small-launchpad-stats-loader" contentLength={4} />
+			</div>
+		</div>
+	) : (
 		<>
 			{showTooltip && <ReactTooltip id={randomID} place="top" type="dark" />}
 			<div className="max-w-3xl mx-auto mb-16 grid grid-cols-2 md:flex md:flex-wrap md:items-center md:justify-between text-gray-200">
@@ -49,13 +63,21 @@ const LaunchpadStats = ({ project, isEnded }) => {
 					data-for={randomID}
 					data-tip="Project status consists of 3 status, Live, Upcoming, and Ended"
 				>
-					<p className={`text-2xl font-bold ${projectStatus(project.status, true)}`}>
-						{projectStatus(project.status)}
+					<p
+						className={`text-2xl font-bold ${
+							isEndedTime ? `text-red-500` : projectStatus(project.status, true)
+						}`}
+					>
+						{isEndedTime ? 'Ended' : projectStatus(project.status)}
 					</p>
 					<p>Mint Start</p>
 				</div>
-				<div className="text-center" data-for={randomID} data-tip="Mint time duration">
-					<p className="text-2xl font-bold">{mintDurationType(project.status)}</p>
+				<div
+					className="text-center md:-mx-24 md:w-1/2"
+					data-for={randomID}
+					data-tip="Mint time duration"
+				>
+					<p className="text-lg md:text-2xl font-bold">{mintDurationType(project.status)}</p>
 					<p>Mint Duration</p>
 				</div>
 				<div className="text-center" data-for={randomID} data-tip="Mint price">
