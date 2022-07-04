@@ -22,7 +22,7 @@ import ArtistVerified from '../Common/ArtistVerified'
 import ArtistBanned from '../Common/ArtistBanned'
 import { useIntl } from 'hooks/useIntl'
 import TabOffers from 'components/Tabs/TabOffers'
-import PlaceBidModal from 'components/Modal/PlaceBidModal'
+import PlaceOfferModal from 'components/Modal/PlaceOfferModal'
 import TabPublication from 'components/Tabs/TabPublication'
 import Media from 'components/Common/Media'
 import ReportModal from 'components/Modal/ReportModal'
@@ -865,7 +865,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 				onClose={onDismissModal}
 				setShowModal={setShowModal}
 			/>
-			<PlaceBidModal
+			<PlaceOfferModal
 				show={showModal === 'placeoffer'}
 				data={token}
 				onClose={onDismissModal}

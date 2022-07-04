@@ -24,7 +24,7 @@ import ArtistBanned from '../Common/ArtistBanned'
 import Media from '../Common/Media'
 import { useIntl } from 'hooks/useIntl'
 import TabOffers from 'components/Tabs/TabOffers'
-import PlaceBidModal from 'components/Modal/PlaceBidModal'
+import PlaceOfferModal from 'components/Modal/PlaceOfferModal'
 import TabPublication from 'components/Tabs/TabPublication'
 import ReportModal from 'components/Modal/ReportModal'
 import Card from 'components/Card/Card'
@@ -644,7 +644,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 				].filter((x) => x)}
 			/>
 			<TokenShareModal show={showModal === 'share'} onClose={onDismissModal} tokenData={token} />
-			<PlaceBidModal
+			<PlaceOfferModal
 				show={showModal === 'placeoffer'}
 				data={token}
 				onClose={onDismissModal}

@@ -80,7 +80,7 @@ const ActivityUserFollow = ({ activity }) => {
 			return (
 				<div>
 					<p className="text-gray-300 text-xs">
-						{activity.msg.params.is_auction ? 'Starting Price' : 'Current Price'}
+						{activity.msg.params.is_auction ? 'Starting Price' : 'Listed Price'}
 					</p>
 					<p className="text-white text-2xl font-bold">
 						{formatNearAmount(activity.msg.params.price)} Ⓝ
@@ -107,9 +107,7 @@ const ActivityUserFollow = ({ activity }) => {
 		) {
 			return (
 				<div>
-					<p className="text-xs text-gray-400">
-						Minted {timeAgo.format(new Date(activity.msg.datetime))}
-					</p>
+					<p className="text-xs text-gray-400">{timeAgo.format(new Date(activity.msg.datetime))}</p>
 				</div>
 			)
 		} else if (activity.type === 'add_market_data' && activity.msg.params.is_auction) {
