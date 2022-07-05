@@ -65,10 +65,10 @@ const LaunchpadStats = ({ project, isEnded, isValidating }) => {
 				>
 					<p
 						className={`text-2xl font-bold ${
-							isEndedTime ? `text-red-500` : projectStatus(project.status, true)
+							isEndedTime ? `text-red-500` : projectStatus(project.status, 'launchpadstats', true)
 						}`}
 					>
-						{isEndedTime ? 'Ended' : projectStatus(project.status)}
+						{isEndedTime ? 'Ended' : projectStatus(project.status, 'launchpadstats')}
 					</p>
 					<p>Mint Start</p>
 				</div>
