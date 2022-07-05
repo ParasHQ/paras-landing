@@ -73,7 +73,7 @@ const LaunchpadContent = ({ project, tabActive, setTabActive, isValidating }) =>
 				{tabActive === 'team' && !isValidating ? (
 					<div dangerouslySetInnerHTML={{ __html: project.content.team }} />
 				) : (
-					project.content.team && (
+					project?.content.team && (
 						<>
 							<div className="hidden md:block">
 								<LaunchpadContentLoader
