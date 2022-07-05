@@ -1,5 +1,5 @@
 import { useIntl } from 'hooks/useIntl'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import cachios from 'cachios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
@@ -10,6 +10,12 @@ const TabPublication = ({ localToken }) => {
 	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(true)
+	const wrapRef = useRef()
+	const [heightTab, setHeightTab] = useState('0px')
+
+	useEffect(() => {
+		setHeightTab(`${wrapRef.current.clientHeight}px`)
+	}, [wrapRef.current])
 
 	useEffect(() => {
 		if (publicationList.length === 0 && hasMore) {
@@ -49,7 +55,11 @@ const TabPublication = ({ localToken }) => {
 	}
 
 	return (
-		<div className="lg:w-full lg:h-full lg:mt-4 lg:overflow-y-scroll" id="publicationListScroll">
+		<div
+			className="lg:w-full lg:h-full lg:mt-4 lg:overflow-auto"
+			id="publicationListScroll"
+			ref={wrapRef}
+		>
 			{publicationList.length === 0 && !hasMore && (
 				<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 					<p className="text-white text-center">
@@ -61,13 +71,14 @@ const TabPublication = ({ localToken }) => {
 				dataLength={publicationList.length}
 				next={_fetchData}
 				hasMore={hasMore}
+				scrollThreshold={0.6}
+				height={heightTab}
 				loader={
 					<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 						<p className="text-white text-center">{localeLn('Loading...')}</p>
 					</div>
 				}
 				scrollableTarget="#publicationListScroll"
-				scrollThreshold={0.4}
 			>
 				{publicationList.map((pub) => (
 					<div key={pub._id} className="m-auto bg-gray-800 mt-3 p-3 rounded-md shadow-md">

@@ -10,6 +10,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { SHOW_TX_HASH_LINK } from 'constants/common'
 import { IconShareActivity } from 'components/Icons'
+import { useRef } from 'react'
 const FETCH_TOKENS_LIMIT = 12
 
 const TabHistory = ({ localToken }) => {
@@ -18,12 +19,18 @@ const TabHistory = ({ localToken }) => {
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 	const { localeLn } = useIntl()
+	const wrapRef = useRef()
+	const [heightTab, setHeightTab] = useState('0px')
 
 	useEffect(() => {
 		if (localToken.token_series_id) {
 			fetchHistory(true)
 		}
 	}, [localToken])
+
+	useEffect(() => {
+		setHeightTab(`${wrapRef.current.clientHeight}px`)
+	}, [wrapRef.current])
 
 	const fetchHistory = async (fromStart = false) => {
 		const _hasMore = fromStart ? true : hasMore
@@ -66,13 +73,13 @@ const TabHistory = ({ localToken }) => {
 	}
 
 	return (
-		<div className="text-white lg:w-full lg:h-full lg:mt-4 lg:overflow-y-scroll" id="TokenScroll">
+		<div className="text-white lg:w-full lg:h-full lg:mt-4 lg:overflow-auto" ref={wrapRef}>
 			<InfiniteScroll
 				dataLength={history.length}
 				next={fetchHistory}
 				hasMore={hasMore}
-				scrollableTarget="#TokenScroll"
-				scrollThreshold={0.4}
+				scrollThreshold={0.6}
+				height={heightTab}
 				loader={
 					<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 						<div className="text-white text-center">{localeLn('LoadingLoading')}</div>

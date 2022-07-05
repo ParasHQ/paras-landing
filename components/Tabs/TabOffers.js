@@ -1,7 +1,7 @@
 import cachios from 'cachios'
 import LinkToProfile from 'components/Common/LinkToProfile'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useIntl } from 'hooks/useIntl'
 import useStore from 'lib/store'
@@ -352,6 +352,12 @@ const TabOffers = ({ localToken }) => {
 	const [offerBuyerData, setOfferBuyerData] = useState(null)
 	const toast = useToast()
 	const { localeLn } = useIntl()
+	const wrapRef = useRef()
+	const [heightTab, setHeightTab] = useState('0px')
+
+	useEffect(() => {
+		setHeightTab(`${wrapRef.current.clientHeight}px`)
+	}, [wrapRef.current])
 
 	useEffect(() => {
 		if (localToken.token_series_id) {
@@ -586,13 +592,13 @@ const TabOffers = ({ localToken }) => {
 	}
 
 	return (
-		<div className="text-white lg:w-full lg:h-full lg:mt-4 lg:overflow-y-scroll" id="TokenScroll">
+		<div className="text-white lg:w-full lg:h-full lg:mt-4 lg:overflow-auto" ref={wrapRef}>
 			<InfiniteScroll
 				dataLength={offers.length}
 				next={fetchOffers}
 				hasMore={hasMore}
-				scrollableTarget="#TokenScroll"
-				scrollThreshold={0.4}
+				scrollThreshold={0.6}
+				height={heightTab}
 				loader={
 					<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 						<div className="text-white text-center">{localeLn('Loading...')}</div>
