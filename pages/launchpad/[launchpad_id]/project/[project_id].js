@@ -2,6 +2,7 @@ import axios from 'axios'
 import Card from 'components/Card/Card'
 import Button from 'components/Common/Button'
 import Footer from 'components/Footer'
+import LaunchpadButtonLoader from 'components/Launchpad/LaunchpadButtonLoader'
 import LaunchpadContent from 'components/Launchpad/LaunchpadContent'
 import LaunchpadStats from 'components/Launchpad/LaunchpadStats'
 import SocialMediaLaunchpad from 'components/Launchpad/SocialMediaLaunchpad'
@@ -121,12 +122,31 @@ const ProjectPage = ({ project }) => {
 							}}
 						/>
 						<div className="absolute mt-6 left-1/2 md:-left-1 md:transform-none transform -translate-x-1/2 md:-right-1">
-							{project.mint_url && project.status === 'live' && !isEndedTime && (
-								<a href={project.mint_url} rel="noreferrer" target="_blank">
-									<Button>Mint here</Button>
-								</a>
+							{isValidating ? (
+								<>
+									<div className="hidden md:block">
+										<LaunchpadButtonLoader
+											uniqueKey="big-launchpad-button-loader"
+											contentLength={1}
+										/>
+									</div>
+									<div className="md:hidden">
+										<LaunchpadButtonLoader
+											uniqueKey="small-launchpad-button-loader"
+											contentLength={1}
+										/>
+									</div>
+								</>
+							) : (
+								<>
+									{data.mint_url && data.status === 'live' && !isEndedTime && (
+										<a href={data.mint_url} rel="noreferrer" target="_blank">
+											<Button>Mint here</Button>
+										</a>
+									)}
+									{data.status === 'upcoming' && <Button isDisabled>Upcoming</Button>}
+								</>
 							)}
-							{project.status === 'upcoming' && <Button isDisabled>Upcoming</Button>}
 						</div>
 					</div>
 					<div className="mx-6 mt-28 md:mt-0 md:ml-10 md:w-8/12">
