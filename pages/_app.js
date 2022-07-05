@@ -25,6 +25,7 @@ import { GTM_ID, pageview } from 'lib/gtm'
 import SuccessTransactionModal from 'components/Modal/SuccessTransactionModal'
 import WalletHelper from 'lib/WalletHelper'
 import cachios from 'cachios'
+import RPCStatus from 'components/Common/RPCStatus'
 
 const MAX_ACTIVITY_DELAY = 5
 
@@ -35,6 +36,10 @@ function MyApp({ Component, pageProps }) {
 
 	let localeCopy = locales[locale]
 	const defaultLocaleCopy = locales[defaultLocale]
+
+	// For checking RPC status
+	// eslint-disable-next-line no-unused-vars
+	const rpc = RPCStatus()
 
 	const messages = localeCopy[pathname]
 		? {
@@ -74,7 +79,7 @@ function MyApp({ Component, pageProps }) {
 	useEffect(() => {
 		const handleRouteChange = (url) => {
 			if (window && window.gtag) {
-				gtag.pageview(url)
+				gtag.pageview({ url, userId: store.currentUser })
 			}
 			if (window) {
 				counter(url)
@@ -89,7 +94,7 @@ function MyApp({ Component, pageProps }) {
 		return () => {
 			router.events.off('routeChangeComplete', handleRouteChange)
 		}
-	}, [router.events])
+	}, [router.events, store.currentUser])
 
 	useEffect(() => storePathValues, [router.asPath])
 
@@ -138,7 +143,7 @@ function MyApp({ Component, pageProps }) {
 			const url = router.asPath
 
 			if (window && window.gtag) {
-				gtag.pageview(url)
+				gtag.pageview({ url, userId: store.currentUser })
 			}
 			if (window) {
 				counter(url)

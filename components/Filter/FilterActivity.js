@@ -69,8 +69,8 @@ const FilterActivity = ({ onClickFilter }) => {
 							{filter.map((item) => (
 								<button
 									key={item.key}
-									className={`rounded-md text-white px-2 py-1 inline-block mb-2 mr-2 border-2 border-gray-800 ${
-										filterBy === item.key && 'bg-gray-800'
+									className={`rounded-md text-white px-2 py-1 inline-block mb-2 mr-2 border-2 border-[#1B4FA7] border-opacity-[50%] ${
+										filterBy === item.key && 'bg-[#1B4FA7] bg-opacity-[50%]'
 									}`}
 									onClick={() => setFilterBy(item.key)}
 								>
@@ -102,18 +102,18 @@ const FilterActivity = ({ onClickFilter }) => {
 							</div>
 							<input type="submit" className="hidden" />
 						</form>
-						<div className="mt-2 flex items-center justify-between">
-							<h1 className="text-white font-semibold text-xl mt-2">Verified Only</h1>
-							<input
-								id="put-marketplace"
-								className="w-auto"
-								type="checkbox"
-								defaultChecked={isVerified}
-								onChange={() => {
-									setIsVerified(!isVerified)
-								}}
-							/>
-						</div>
+						<label htmlFor="put-verified-only">
+							<div className="mt-2 flex items-center justify-between">
+								<h1 className="text-white font-semibold text-xl mt-2">Verified Only</h1>
+								<input
+									id="put-verified-only"
+									className="w-auto"
+									type="checkbox"
+									defaultChecked={isVerified}
+									onChange={() => setIsVerified(!isVerified)}
+								/>
+							</div>
+						</label>
 						<button
 							onClick={onClickApply}
 							className="w-full outline-none mt-4 rounded-md bg-transparent text-sm font-semibold py-2 bg-primary text-gray-100"

@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import cachios from 'cachios'
 import Link from 'next/link'
-import { parseImgUrl } from 'utils/common'
+import { parseImgUrl, prettyTruncate } from 'utils/common'
 import LinkToProfile from 'components/LinkToProfile'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import HomeTopUsersLoader from 'components/Home/Loaders/TopUsers'
@@ -56,7 +56,7 @@ const TopCollection = ({ collection, idx }) => {
 							onClick={(e) => e.preventDefault()}
 							className="text-gray-100 border-b-2 border-transparent hover:border-gray-100 font-semibold overflow-hidden text-ellipsis truncate"
 						>
-							{colDetail?.collection}
+							{prettyTruncate(colDetail?.collection, 20)}
 						</a>
 					</div>
 				)}

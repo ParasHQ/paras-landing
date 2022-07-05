@@ -18,7 +18,7 @@ import WalletHelper from 'lib/WalletHelper'
 import TradeNFTModal from './TradeNFTModal'
 import { trackOfferToken, trackOfferTokenImpression } from 'lib/ga'
 
-const PlaceBidModal = ({
+const PlaceOfferModal = ({
 	data,
 	show,
 	onClose,
@@ -306,4 +306,4 @@ const PlaceBidModal = ({
 	)
 }
 
-export default PlaceBidModal
+export default PlaceOfferModal

@@ -283,7 +283,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		)
 	}
 
-	if (notif.type === 'add_bid') {
+	if (notif.type === 'notification_add_bid') {
 		return (
 			<div>
 				<Link href={`${url}?tab=auction`}>
@@ -420,6 +420,28 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								</span>{' '}
 								accepted trade{' '}
 								<span className="font-semibold text-gray-100">{tradedToken.metadata?.title}</span>
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_out_bid') {
+		return (
+			<div>
+				<Link href={`${url}?tab=auction`}>
+					<a>
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={token.metadata?.media} />
+							<div className="pl-2 text-gray-100">
+								<span className="font-semibold">{prettyTruncate(notif.from, 14, 'address')}</span>{' '}
+								outbid <span className="font-semibold text-gray-100">{token.metadata?.title}</span>{' '}
+								for {formatNearAmount(notif.msg.params.amount)} Ⓝ
 							</div>
 						</div>
 					</a>

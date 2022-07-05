@@ -24,7 +24,7 @@ import ArtistBanned from '../Common/ArtistBanned'
 import Media from '../Common/Media'
 import { useIntl } from 'hooks/useIntl'
 import TabOffers from 'components/Tabs/TabOffers'
-import PlaceBidModal from 'components/Modal/PlaceBidModal'
+import PlaceOfferModal from 'components/Modal/PlaceOfferModal'
 import TabPublication from 'components/Tabs/TabPublication'
 import ReportModal from 'components/Modal/ReportModal'
 import Card from 'components/Card/Card'
@@ -69,13 +69,13 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 
 			setDefaultLikes(token?.total_likes)
 		}
-		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('model')) {
+		if (token?.metadata?.animation_url && token.metadata?.mime_type?.includes('model')) {
 			get3DModel(token?.metadata?.animation_url)
 		}
-		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('audio')) {
+		if (token?.metadata?.animation_url && token.metadata?.mime_type?.includes('audio')) {
 			getAudio(token?.metadata?.animation_url)
 		}
-		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('iframe')) {
+		if (token?.metadata?.animation_url && token.metadata?.mime_type?.includes('iframe')) {
 			getIframe()
 		}
 	}, [JSON.stringify(token)])
@@ -275,7 +275,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 		}
 	}
 
-	const likeToken = async (contract_id, token_series_id) => {
+	const likeToken = async (contract_id, token_series_id, source) => {
 		if (!currentUser) {
 			setShowModal('notLogin')
 			return
@@ -304,10 +304,10 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 			return
 		}
 
-		trackLikeToken(token_series_id)
+		trackLikeToken(`${contract_id}::${token_series_id}`, source)
 	}
 
-	const unlikeToken = async (contract_id, token_series_id) => {
+	const unlikeToken = async (contract_id, token_series_id, source) => {
 		if (!currentUser) {
 			setShowModal('notLogin')
 			return
@@ -336,7 +336,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 			return
 		}
 
-		trackUnlikeToken(token_series_id)
+		trackUnlikeToken(`${contract_id}::${token_series_id}`, source)
 	}
 
 	const get3DModel = async (url) => {
@@ -352,7 +352,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	const onDoubleClickDetail = () => {
 		if (currentUser) {
 			setShowLove(true)
-			!isLiked && likeToken(token.contract_id, token.token_series_id)
+			!isLiked && likeToken(token.contract_id, token.token_series_id, 'double_click_detail')
 			setTimeout(() => setShowLove(false), 1000)
 		}
 	}
@@ -390,7 +390,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 							<div className="relative w-full h-full" onDoubleClick={onDoubleClickDetail}>
 								{token?.metadata.animation_url ? (
 									<>
-										{fileType.includes('audio') && (
+										{fileType && fileType.includes('audio') && (
 											<div className="max-h-80 md:max-h-72 lg:max-h-96 w-full mx-2 md:mx-0">
 												<div className="w-1/2 md:w-full h-full m-auto">
 													<Media
@@ -418,7 +418,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 												</div>
 											</div>
 										)}
-										{fileType.includes('model') && threeDUrl && (
+										{fileType && fileType.includes('model') && threeDUrl && (
 											<Suspense
 												fallback={
 													<div className="flex items-center justify-center w-full h-full">
@@ -431,10 +431,28 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 												</Canvas>
 											</Suspense>
 										)}
-										{fileType.includes('iframe') && (
+										{fileType && fileType.includes('iframe') && (
 											<iframe
 												src={token?.metadata.animation_url}
 												className="object-contain w-full h-5/6 md:h-full"
+											/>
+										)}
+										{!fileType && (
+											<Media
+												className="rounded-lg overflow-hidden"
+												url={
+													token.metadata?.mime_type
+														? parseImgUrl(token.metadata.media)
+														: token.metadata.media
+												}
+												videoControls={true}
+												videoLoop={true}
+												videoMuted={true}
+												videoPadding={true}
+												mimeType={token?.metadata?.mime_type}
+												seeDetails={true}
+												isMediaCdn={token?.isMediaCdn}
+												animationUrlforVideo={token?.metadata?.animation_url}
 											/>
 										)}
 									</>
@@ -551,8 +569,8 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 											className="cursor-pointer"
 											onClick={() => {
 												isLiked
-													? unlikeToken(token.contract_id, token.token_series_id)
-													: likeToken(token.contract_id, token.token_series_id)
+													? unlikeToken(token.contract_id, token.token_series_id, 'detail')
+													: likeToken(token.contract_id, token.token_series_id, 'detail')
 											}}
 										>
 											<IconLove
@@ -626,7 +644,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 				].filter((x) => x)}
 			/>
 			<TokenShareModal show={showModal === 'share'} onClose={onDismissModal} tokenData={token} />
-			<PlaceBidModal
+			<PlaceOfferModal
 				show={showModal === 'placeoffer'}
 				data={token}
 				onClose={onDismissModal}

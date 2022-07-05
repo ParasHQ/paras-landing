@@ -250,6 +250,16 @@ const Footer = () => {
 							<p className="text-sm mb-1 text-white font-bold">Community</p>
 							<div>
 								<a
+									href="https://linktr.ee/paraspartnership"
+									target="_blank"
+									rel="noreferrer"
+									className="text-xs inline hover:text-gray-300"
+								>
+									Partnership
+								</a>
+							</div>
+							<div>
+								<a
 									href="https://guide.paras.id/"
 									target="_blank"
 									rel="noreferrer"

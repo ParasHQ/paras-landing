@@ -1,12 +1,56 @@
 const CONTRACT_NAME = process.env.MARKETPLACE_CONTRACT_ID
 
-function getConfig(env) {
+export function getRPC(env) {
+	switch (env) {
+		case 'production':
+		case 'mainnet':
+			return {
+				defaultRpc: {
+					url: 'https://rpc.mainnet.near.org',
+					simpleName: 'official rpc',
+				},
+				publicRpc: {
+					url: 'https://public-rpc.blockpi.io/http/near',
+					simpleName: 'blockpi rpc',
+				},
+			}
+
+		case 'development':
+		case 'testnet':
+			return {
+				defaultRpc: {
+					url: 'https://rpc.testnet.near.org',
+					simpleName: 'official rpc',
+				},
+				publicRpc: {
+					url: 'https://public-rpc.blockpi.io/http/near-testnet',
+					simpleName: 'blockpi rpc',
+				},
+			}
+
+		default:
+			return {
+				defaultRpc: {
+					url: 'https://rpc.mainnet.near.org',
+					simpleName: 'official rpc',
+				},
+				publicRpc: {
+					url: 'https://public-rpc.blockpi.io/http/near',
+					simpleName: 'blockpi rpc',
+				},
+			}
+	}
+}
+
+export default function getConfig(env) {
+	const choosenRPC = window.localStorage.getItem('choosenRPC') || 'defaultRpc'
+	const nodeURL = getRPC(env)[choosenRPC].url
 	switch (env) {
 		case 'production':
 		case 'mainnet':
 			return {
 				networkId: 'mainnet',
-				nodeUrl: 'https://rpc.mainnet.near.org',
+				nodeUrl: nodeURL,
 				contractName: CONTRACT_NAME,
 				walletUrl: 'https://wallet.near.org',
 				helperUrl: 'https://helper.mainnet.near.org',
@@ -16,7 +60,7 @@ function getConfig(env) {
 		case 'testnet':
 			return {
 				networkId: 'default',
-				nodeUrl: 'https://rpc.testnet.near.org',
+				nodeUrl: nodeURL,
 				contractName: CONTRACT_NAME,
 				walletUrl: 'https://wallet.testnet.near.org',
 				helperUrl: 'https://helper.testnet.near.org',
@@ -25,7 +69,7 @@ function getConfig(env) {
 		case 'devnet':
 			return {
 				networkId: 'devnet',
-				nodeUrl: 'https://rpc.devnet.near.org',
+				nodeUrl: nodeURL,
 				contractName: CONTRACT_NAME,
 				walletUrl: 'https://wallet.devnet.near.org',
 				helperUrl: 'https://helper.devnet.near.org',
@@ -33,7 +77,7 @@ function getConfig(env) {
 		case 'betanet':
 			return {
 				networkId: 'betanet',
-				nodeUrl: 'https://rpc.betanet.near.org',
+				nodeUrl: nodeURL,
 				contractName: CONTRACT_NAME,
 				walletUrl: 'https://wallet.betanet.near.org',
 				helperUrl: 'https://helper.betanet.near.org',
@@ -65,5 +109,3 @@ function getConfig(env) {
 			throw Error(`Unconfigured environment '${env}'. Can be configured in src/config.js.`)
 	}
 }
-
-module.exports = getConfig

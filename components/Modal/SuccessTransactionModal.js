@@ -164,6 +164,16 @@ const SuccessTransactionModal = () => {
 					setShowModal(true)
 				} else if (FunctionCall.method_name === 'nft_approve') {
 					const msgParse = JSON.parse(args?.msg)
+					let logs = []
+					receipts_outcome
+						.filter((receipt) => receipt.outcome.logs.length !== 0)
+						.forEach((receipt) => (logs = [...logs, ...receipt.outcome.logs]))
+
+					if (logs.some((log) => log.includes('Insufficient storage paid'))) {
+						processTransactionError('Insufficient storage paid')
+						return
+					}
+
 					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
 						params: {
 							contract_id:
@@ -381,7 +391,9 @@ const SuccessTransactionModal = () => {
 				return (
 					<>
 						You successfully {msg.is_auction ? 'create auction' : 'update'}{' '}
-						<b>{token.metadata.title}</b> with starting price {formatNearAmount(msg.price || 0)} Ⓝ
+						<b>{token.metadata.title}</b>{' '}
+						{msg.is_auction ? 'with starting price ' : 'update price to'}{' '}
+						{formatNearAmount(msg.price || 0)} Ⓝ
 					</>
 				)
 			} else if (msg.market_type === 'accept_offer') {
