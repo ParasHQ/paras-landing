@@ -122,7 +122,7 @@ const ProjectPage = ({ project }) => {
 							}}
 						/>
 						<div className="absolute mt-6 left-1/2 md:-left-1 md:transform-none transform -translate-x-1/2 md:-right-1">
-							{isValidating ? (
+							{!data && isValidating ? (
 								<>
 									<div className="hidden md:block">
 										<LaunchpadButtonLoader

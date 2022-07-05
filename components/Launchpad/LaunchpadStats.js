@@ -7,7 +7,6 @@ import TimeLaunchpad from './TimeLaunchpad'
 const LaunchpadStats = ({ project, isEnded, isValidating }) => {
 	const [showTooltip, setShowTooltip] = useState(false)
 	const [mintDuration, setMintDuration] = useState()
-	const [isEndedTime, setIsEndedTime] = useState(false)
 	const randomID = 'launchpad-stats'
 
 	useEffect(() => {
@@ -31,7 +30,6 @@ const LaunchpadStats = ({ project, isEnded, isValidating }) => {
 						timeType="live"
 						isEnded={(e) => {
 							isEnded(e)
-							setIsEndedTime(e)
 						}}
 					/>
 				)
@@ -45,7 +43,7 @@ const LaunchpadStats = ({ project, isEnded, isValidating }) => {
 		}
 	}
 
-	return isValidating ? (
+	return !project && isValidating ? (
 		<div className="">
 			<div className="hidden md:block">
 				<LaunchpadStatsLoader uniqueKey="big-launchpad-stats-loader" contentLength={4} />
@@ -65,10 +63,10 @@ const LaunchpadStats = ({ project, isEnded, isValidating }) => {
 				>
 					<p
 						className={`text-2xl font-bold ${
-							isEndedTime ? `text-red-500` : projectStatus(project.status, 'launchpadstats', true)
+							!isEnded ? `text-red-500` : projectStatus(project.status, 'launchpadstats', true)
 						}`}
 					>
-						{isEndedTime ? 'Ended' : projectStatus(project.status, 'launchpadstats')}
+						{!isEnded ? 'Ended' : projectStatus(project.status, 'launchpadstats')}
 					</p>
 					<p>Mint Start</p>
 				</div>
