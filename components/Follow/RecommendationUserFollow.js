@@ -9,6 +9,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
 import { mutate } from 'swr'
+import LoginModal from 'components/Modal/LoginModal'
 
 const RecommendationUserFollow = ({ data }) => {
 	const currentUser = useStore((state) => state.currentUser)
@@ -17,6 +18,7 @@ const RecommendationUserFollow = ({ data }) => {
 		params: { followed_by: currentUser },
 	})
 	const [isLoading, setIsLoading] = useState(false)
+	const [showLogin, setShowLogin] = useState(false)
 
 	useNonInitialEffect(() => {
 		if (currentUser) {
@@ -26,6 +28,7 @@ const RecommendationUserFollow = ({ data }) => {
 
 	const onClickFollowUnfollow = async () => {
 		if (!currentUser) {
+			setShowLogin(true)
 			return
 		}
 
@@ -54,6 +57,7 @@ const RecommendationUserFollow = ({ data }) => {
 	}
 	return (
 		<div className="border-[0.5px] border-gray-600 rounded-xl h-full">
+			<LoginModal onClose={() => setShowLogin(false)} show={showLogin} />
 			<Link href={`/${data.account_id}`}>
 				<a>
 					<div
