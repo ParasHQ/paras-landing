@@ -12,6 +12,7 @@ import useProfileSWR from 'hooks/useProfileSWR'
 import useStore from 'lib/store'
 import { useNonInitialEffect } from 'hooks/useNonInitialEffect'
 import { useState } from 'react'
+import LoginModal from 'components/Modal/LoginModal'
 
 const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => {
 	const currentUser = useStore((state) => state.currentUser)
@@ -21,6 +22,7 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => 
 	})
 	const { localeLn } = useIntl()
 	const [isLoading, setIsLoading] = useState(false)
+	const [showLogin, setShowLogin] = useState(false)
 
 	useNonInitialEffect(() => {
 		if (currentUser) {
@@ -30,6 +32,7 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => 
 
 	const onClickFollowUnfollow = async () => {
 		if (!currentUser) {
+			setShowLogin(true)
 			return
 		}
 
@@ -58,6 +61,7 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => 
 
 	return (
 		<div key={idx} className="md:flex border-2 border-dashed border-gray-800 rounded-md my-4">
+			<LoginModal show={showLogin} onClose={() => setShowLogin(false)} />
 			<div className="flex items-center md:w-2/5 p-4">
 				<p className="text-base text-gray-100 opacity-50 mr-3 self-start">{idx + 1}</p>
 				<div className="flex self-start">
