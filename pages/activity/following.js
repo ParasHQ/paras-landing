@@ -3,6 +3,7 @@ import ActivityUserFollow from 'components/Follow/ActivityUserFollow'
 import ActivityUserFollowLoader from 'components/Follow/ActivityUserFollowLoader'
 import RecommendationUserFollow from 'components/Follow/RecommendationUserFollow'
 import Footer from 'components/Footer'
+import IconV from 'components/Icons/component/IconV'
 import Nav from 'components/Nav'
 import { useIntl } from 'hooks/useIntl'
 import useProfileSWR from 'hooks/useProfileSWR'
@@ -101,20 +102,7 @@ const Following = () => {
 								className="text-4xl font-bold text-gray-100 capitalize flex items-baseline cursor-pointer hover:opacity-90"
 							>
 								Following
-								<svg
-									viewBox="0 0 11 7"
-									fill="whites"
-									width="18"
-									height="18"
-									xlmns="http://www.w3.org/2000/svg"
-								>
-									<path
-										fillRule="evenodd"
-										clipRule="evenodd"
-										d="M5.00146 6.41431L9.70857 1.7072C10.0991 1.31668 10.0991 0.683511 9.70857 0.292986C9.31805 -0.097538 8.68488 -0.097538 8.29436 0.292986L5.00146 3.58588L1.70857 0.292986C1.31805 -0.097538 0.684882 -0.097538 0.294358 0.292986C-0.0961662 0.68351 -0.0961662 1.31668 0.294358 1.7072L5.00146 6.41431Z"
-										fill="white"
-									></path>
-								</svg>
+								<IconV size={18} />
 							</p>
 							{showModal && (
 								<div className="absolute max-w-full z-30 bg-dark-primary-1 px-5 py-2 rounded-md text-lg text-gray-100 w-44">
