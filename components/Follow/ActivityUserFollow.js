@@ -105,9 +105,14 @@ const ActivityUserFollow = ({ activity }) => {
 			(activity.type === 'add_market_data' || activity.type === 'update_market_data') &&
 			!activity.msg.params.is_auction
 		) {
+			const issuedAt = token?.metadata?.issued_at
 			return (
 				<div>
-					<p className="text-xs text-gray-400">{timeAgo.format(new Date(activity.msg.datetime))}</p>
+					{issuedAt &&
+						issuedAt instanceof Date &&
+						!isNaN(issuedAt)(
+							<p className="text-xs text-gray-400">Minted {timeAgo.format(new Date(issuedAt))}</p>
+						)}
 				</div>
 			)
 		} else if (activity.type === 'add_market_data' && activity.msg.params.is_auction) {
@@ -156,7 +161,7 @@ const ActivityUserFollow = ({ activity }) => {
 								creatorId: token?.metadata.creator_id || token?.contract_id,
 								is_creator: token?.is_creator,
 								description: token?.metadata.description,
-								royalty: token?.royalty,
+								royalty: token?.royalty || {},
 								attributes: token?.metadata.attributes,
 								_is_the_reference_merged: token?._is_the_reference_merged,
 								mime_type: token?.metadata.mime_type,
@@ -166,7 +171,7 @@ const ActivityUserFollow = ({ activity }) => {
 								has_auction: token?.has_auction,
 								animation_url: token?.animation_url,
 							}}
-							onClick={onClickToSeeDetails}
+							flippable
 						/>
 					</div>
 				</div>

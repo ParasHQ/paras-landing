@@ -35,7 +35,7 @@ const ActivityLog = ({ query }) => {
 	const [isFetchingTop, setIsFetchingTop] = useState(false)
 	const [topUser, setTopUser] = useState([])
 	const [showModal, setShowModal] = useState(false)
-	const [activityType, setActivityType] = useState('activity')
+	const [activityType, setActivityType] = useState(router.query.tab ? router.query.tab : 'activity')
 	const [isLoading, setIsLoading] = useState(false)
 	const { localeLn } = useIntl()
 	useEffect(() => {
