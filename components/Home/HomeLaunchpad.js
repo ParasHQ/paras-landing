@@ -28,7 +28,7 @@ const HomeLaunchpad = ({ showDetails }) => {
 	return (
 		<div className="mb-8 relative">
 			<div className="text-white md:flex justify-start items-center gap-4 mb-8">
-				<h1 className="font-semibold text-3xl capitalize">Upcoming Drops</h1>
+				<h1 className="font-semibold text-3xl capitalize">Mint Calendar</h1>
 				<LaunchpadTab isActive={isActive} setIsActive={(e) => setIsActive(e)} />
 			</div>
 			{isActive === 'date_next_7_days' && (

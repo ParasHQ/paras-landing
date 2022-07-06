@@ -9,7 +9,7 @@ const LaunchpadItem = ({ project, className }) => {
 	const defaultAvatar = `data:image/svg+xml;utf8,${generateFromString(project._id)}`
 
 	const onToProject = () => {
-		router.push(`/launchpad/${project.launchpad_id}/project/${project._id}`, undefined, {
+		router.push(`/mint-calendar/${project.launchpad_id}/project/${project._id}`, undefined, {
 			shallow: true,
 		})
 	}
@@ -18,7 +18,7 @@ const LaunchpadItem = ({ project, className }) => {
 		<div className={`${className}`}>
 			<div onClick={onToProject}>
 				<a
-					href={`/launchpad/${project.launchpad_id}/project/${project._id}`}
+					href={`/mint-calendar/${project.launchpad_id}/project/${project._id}`}
 					onClick={(e) => e.preventDefault()}
 					className="cursor-pointer"
 				>
@@ -39,7 +39,7 @@ const LaunchpadItem = ({ project, className }) => {
 					<div>
 						<div onClick={onToProject}>
 							<a
-								href={`/launchpad/${project.launchpad_id}/project/${project._id}`}
+								href={`/mint-calendar/${project.launchpad_id}/project/${project._id}`}
 								onClick={(e) => e.preventDefault()}
 								className="cursor-pointer"
 							>
