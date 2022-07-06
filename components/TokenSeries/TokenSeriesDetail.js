@@ -536,7 +536,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 					<Scrollbars
 						className="h-full block lg:hidden"
 						universal={true}
-						renderView={(props) => <div {...props} id="TokenScroll" className="p-4" />}
+						renderView={(props) => <div {...props} id="TokenSmallScroll" className="p-4" />}
 					>
 						<div>
 							<div className="flex justify-between">
@@ -596,12 +596,14 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 							{activeTab === 'owners' && (
 								<TabOwners localToken={token} isAuctionEnds={isAuctionEnds} />
 							)}
-							{activeTab === 'offers' && <TabOffers localToken={token} />}
-							{activeTab === 'history' && <TabHistory localToken={token} />}
-							{activeTab === 'publication' && <TabPublication localToken={token} />}
+							{activeTab === 'offers' && <TabOffers screen={`small`} localToken={token} />}
+							{activeTab === 'history' && <TabHistory screen={`small`} localToken={token} />}
+							{activeTab === 'publication' && (
+								<TabPublication screen={`small`} localToken={token} />
+							)}
 						</div>
 					</Scrollbars>
-					<div className="hidden lg:flex lg:flex-col lg:p-4 lg:w-full lg:h-7/8">
+					<div className="p-4 h-full hidden lg:block">
 						<div className="flex justify-between">
 							<div>
 								<div className="flex justify-between items-center">
@@ -644,22 +646,28 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 								</div>
 							</div>
 						</div>
-						<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative flex-nowrap disable-scrollbars md:-mb-4">
+						<div className="flex overflow-x-scroll space-x-4 flex-grow flex-nowrap disable-scrollbars">
 							{tabDetail('info')}
 							{tabDetail('owners')}
 							{tabDetail('offers')}
 							{tabDetail('history')}
 							{tabDetail('publication')}
 						</div>
-						{activeTab === 'info' && <TabInfo localToken={token} />}
-						{activeTab === 'owners' && (
-							<TabOwners localToken={token} isAuctionEnds={isAuctionEnds} />
-						)}
-						{activeTab === 'offers' && <TabOffers localToken={token} />}
-						{activeTab === 'history' && <TabHistory localToken={token} />}
-						{activeTab === 'publication' && <TabPublication localToken={token} />}
+						<Scrollbars
+							universal={true}
+							style={{ height: `78%` }}
+							renderView={(props) => <div {...props} id="TokenScroll" />}
+						>
+							{activeTab === 'info' && <TabInfo localToken={token} />}
+							{activeTab === 'owners' && (
+								<TabOwners localToken={token} isAuctionEnds={isAuctionEnds} />
+							)}
+							{activeTab === 'offers' && <TabOffers localToken={token} />}
+							{activeTab === 'history' && <TabHistory localToken={token} />}
+							{activeTab === 'publication' && <TabPublication localToken={token} />}
+						</Scrollbars>
 					</div>
-					<div className="p-3 lg:h-1/6 flex flex-col justify-center">{tokenSeriesButton()}</div>
+					<div className="p-3">{tokenSeriesButton()}</div>
 				</div>
 			</div>
 			<TokenSeriesBuyModal

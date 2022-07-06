@@ -544,7 +544,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 					<Scrollbars
 						className="h-full block lg:hidden"
 						universal={true}
-						renderView={(props) => <div {...props} id="activityListScroll" className="p-4" />}
+						renderView={(props) => <div {...props} id="TokenSmallScroll" className="p-4" />}
 					>
 						<div>
 							<div className="flex justify-between">
@@ -625,20 +625,20 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 							{activeTab === 'owners' && (
 								<TabOwners localToken={token} isAuctionEnds={isAuctionEnds} />
 							)}
-							{activeTab === 'offers' && <TabOffers localToken={token} />}
-							{activeTab === 'history' && <TabHistory localToken={token} />}
-							{activeTab === 'publication' && <TabPublication localToken={token} />}
+							{activeTab === 'offers' && <TabOffers screen={`small`} localToken={token} />}
+							{activeTab === 'history' && <TabHistory screen={`small`} localToken={token} />}
+							{activeTab === 'publication' && (
+								<TabPublication screen={`small`} localToken={token} />
+							)}
 						</div>
 					</Scrollbars>
-					<div className="hidden lg:flex lg:flex-col lg:p-4 lg:w-full lg:h-7/8">
+					<div className="p-4 h-full hidden lg:block">
 						<div className="flex justify-between">
-							<div className="overflow-x-hidden">
+							<div>
 								<div className="flex justify-between items-center">
-									<p className="text-gray-300 truncate">
-										NFT //{' '}
-										{token.contract_id === process.env.NFT_CONTRACT_ID
-											? `#${token.edition_id} of ${token.metadata.copies}`
-											: `#${token.token_id}`}
+									<p className="text-gray-300">
+										{localeLn('SERIES')} {'// '}
+										{token.metadata.copies ? `Edition of ${token.metadata.copies}` : `Open Edition`}
 									</p>
 								</div>
 
@@ -646,15 +646,14 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 									{token.metadata.title}
 								</h1>
 								<div className="mt-1 text-white flex">
-									<p className="mr-1">{localeLn('by')}</p>
+									<p className="mr-1">by</p>
 									<ArtistVerified token={token} />
 								</div>
 							</div>
-
-							<div className="flex flex-col items-end">
+							<div>
 								<IconDots
 									color="#ffffff"
-									className="cursor-pointer mb-1"
+									className="cursor-pointer"
 									onClick={() => setShowModal('more')}
 								/>
 								<div className="w-full flex flex-col items-center justify-center">
@@ -674,44 +673,30 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 									</div>
 									<p className="text-white text-center text-sm">{abbrNum(defaultLikes ?? 0, 1)}</p>
 								</div>
-								{token.is_staked && (
-									<Tooltip
-										id="text-staked"
-										show={true}
-										text={'The NFT is being staked by the owner'}
-										className="font-bold bg-gray-800 text-white"
-									>
-										<span
-											className="bg-white text-primary font-bold rounded-full px-3 py-1 text-sm"
-											style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
-										>
-											staked
-										</span>
-									</Tooltip>
-								)}
 							</div>
 						</div>
-						<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
+						<div className="flex overflow-x-scroll space-x-4 flex-grow flex-nowrap disable-scrollbars">
 							{tabDetail('info')}
-							{token.is_auction && !isAuctionEnds && tabDetail('auction')}
 							{tabDetail('owners')}
-							{(!token.is_auction || isAuctionEnds) && tabDetail('offers')}
+							{tabDetail('offers')}
 							{tabDetail('history')}
 							{tabDetail('publication')}
 						</div>
-
-						{activeTab === 'info' && <TabInfo localToken={token} isNFT={true} />}
-						{activeTab === 'auction' && (
-							<TabAuction localToken={token} setAuctionEnds={() => setIsEndedTime(true)} />
-						)}
-						{activeTab === 'owners' && (
-							<TabOwners localToken={token} isAuctionEnds={isAuctionEnds} />
-						)}
-						{activeTab === 'offers' && <TabOffers localToken={token} />}
-						{activeTab === 'history' && <TabHistory localToken={token} />}
-						{activeTab === 'publication' && <TabPublication localToken={token} />}
+						<Scrollbars
+							universal={true}
+							style={{ height: `78%` }}
+							renderView={(props) => <div {...props} id="TokenScroll" />}
+						>
+							{activeTab === 'info' && <TabInfo localToken={token} />}
+							{activeTab === 'owners' && (
+								<TabOwners localToken={token} isAuctionEnds={isAuctionEnds} />
+							)}
+							{activeTab === 'offers' && <TabOffers localToken={token} />}
+							{activeTab === 'history' && <TabHistory localToken={token} />}
+							{activeTab === 'publication' && <TabPublication localToken={token} />}
+						</Scrollbars>
 					</div>
-					<div className="p-3 lg:h-1/6 flex flex-col justify-center">
+					<div className="p-3">
 						{token?.is_auction ? (
 							<div>
 								{token.owner_id === currentUser && !isAuctionEnds && !isEndedTime ? (

@@ -338,7 +338,7 @@ const Offer = ({
 	)
 }
 
-const TabOffers = ({ localToken }) => {
+const TabOffers = ({ screen = 'large', localToken }) => {
 	const store = useStore()
 	const [offers, setOffers] = useState([])
 	const [page, setPage] = useState(0)
@@ -597,8 +597,7 @@ const TabOffers = ({ localToken }) => {
 				dataLength={offers.length}
 				next={fetchOffers}
 				hasMore={hasMore}
-				scrollThreshold={0.6}
-				height={heightTab}
+				scrollableTarget={`${screen === 'large' ? `TokenScroll` : `TokenSmallScroll`}`}
 				loader={
 					<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 						<div className="text-white text-center">{localeLn('Loading...')}</div>

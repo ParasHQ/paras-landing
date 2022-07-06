@@ -13,7 +13,7 @@ import { IconShareActivity } from 'components/Icons'
 import { useRef } from 'react'
 const FETCH_TOKENS_LIMIT = 12
 
-const TabHistory = ({ localToken }) => {
+const TabHistory = ({ screen = 'large', localToken }) => {
 	const [history, setHistory] = useState([])
 	const [idBefore, setIdBefore] = useState(null)
 	const [hasMore, setHasMore] = useState(true)
@@ -78,8 +78,7 @@ const TabHistory = ({ localToken }) => {
 				dataLength={history.length}
 				next={fetchHistory}
 				hasMore={hasMore}
-				scrollThreshold={0.6}
-				height={heightTab}
+				scrollableTarget={`${screen === 'large' ? `TokenScroll` : `TokenSmallScroll`}`}
 				loader={
 					<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
 						<div className="text-white text-center">{localeLn('LoadingLoading')}</div>

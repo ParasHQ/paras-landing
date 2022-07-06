@@ -4,7 +4,7 @@ import cachios from 'cachios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
 
-const TabPublication = ({ localToken }) => {
+const TabPublication = ({ screen = 'large', localToken }) => {
 	const { localeLn } = useIntl()
 	const [publicationList, setPublicationList] = useState([])
 	const [page, setPage] = useState(0)
@@ -78,7 +78,9 @@ const TabPublication = ({ localToken }) => {
 						<p className="text-white text-center">{localeLn('Loading...')}</p>
 					</div>
 				}
-				scrollableTarget="#publicationListScroll"
+				scrollableTarget={`${
+					screen === 'large' ? `PublicationListScroll` : `PublicationListSmallScroll`
+				}`}
 			>
 				{publicationList.map((pub) => (
 					<div key={pub._id} className="m-auto bg-gray-800 mt-3 p-3 rounded-md shadow-md">
