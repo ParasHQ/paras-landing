@@ -3,18 +3,37 @@ import ActivityUserFollow from 'components/Follow/ActivityUserFollow'
 import ActivityUserFollowLoader from 'components/Follow/ActivityUserFollowLoader'
 import RecommendationUserFollow from 'components/Follow/RecommendationUserFollow'
 import Footer from 'components/Footer'
+import IconV from 'components/Icons/component/IconV'
 import Nav from 'components/Nav'
+import { useIntl } from 'hooks/useIntl'
 import useProfileSWR from 'hooks/useProfileSWR'
 import useStore from 'lib/store'
 import Head from 'next/head'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import { useEffect, useRef, useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import useSWRInfinite from 'swr/infinite'
 
 const Following = () => {
 	const userProfile = useStore((state) => state.userProfile)
 	const { profile } = useProfileSWR({ key: userProfile.accountId, initialData: userProfile })
+	const router = useRouter()
+	const [showModal, setShowModal] = useState(false)
+	const { localeLn } = useIntl()
+	const modalRef = useRef()
+
+	useEffect(() => {
+		const onClick = (e) => {
+			if (!modalRef.current.contains(e.target)) {
+				setShowModal(false)
+			}
+		}
+		if (showModal) document.body.addEventListener('click', onClick)
+		return () => {
+			document.body.removeEventListener('click', onClick)
+		}
+	})
 
 	return (
 		<div className="min-h-screen relative bg-black">
@@ -77,10 +96,38 @@ const Following = () => {
 			<div className="max-w-6xl m-auto">
 				<div className="relative px-4 pb-24">
 					<div className="max-w-5xl m-auto py-12 md:py-16 md:flex md:flex-col">
-						<div className="w-full relative">
-							<p className="text-4xl font-bold text-gray-100 mb-8 mr-2 capitalize">Following</p>
+						<div ref={modalRef} className="w-full relative mb-8 md:mx-4 mr-2">
+							<p
+								onClick={() => setShowModal(!showModal)}
+								className="text-4xl font-bold text-gray-100 capitalize flex items-baseline cursor-pointer hover:opacity-90"
+							>
+								Following
+								<IconV size={18} />
+							</p>
+							{showModal && (
+								<div className="absolute max-w-full z-30 bg-dark-primary-1 px-5 py-2 rounded-md text-lg text-gray-100 w-44">
+									<p
+										className="opacity-50 cursor-pointer select-none my-1"
+										onClick={() => router.push('/activity?tab=activity')}
+									>
+										{localeLn('Activity')}
+									</p>
+									<p
+										className="opacity-50 cursor-pointer select-none my-1"
+										onClick={() => router.push('/activity?tab=top-users')}
+									>
+										{localeLn('Top Users')}
+									</p>
+									<p
+										className="cursor-pointer select-none my-1 font-semibold opacity-100"
+										onClick={() => setShowModal(false)}
+									>
+										{localeLn('Following')}
+									</p>
+								</div>
+							)}
 						</div>
-						{profile.following >= 10 ? <ActivityFollowingList /> : <RecommendationUserFollowList />}
+						{profile.following >= 5 ? <ActivityFollowingList /> : <RecommendationUserFollowList />}
 					</div>
 				</div>
 			</div>
@@ -161,7 +208,7 @@ const RecommendationUserFollowList = () => {
 		<div>
 			<div className="flex items-center justify-center">
 				<p className="text-gray-200 text-center font-bold mb-8 md:w-1/3">
-					Follow at least total 10 of seller or buyer to build your Following page...
+					Follow at least total 5 of seller or buyer to build your Following page...
 				</p>
 			</div>
 

@@ -30,6 +30,7 @@ import { Canvas } from '@react-three/fiber'
 import { Model1 } from 'components/Model3D/ThreeDModel'
 import FileType from 'file-type/browser'
 import retry from 'async-retry'
+import IconV from 'components/Icons/component/IconV'
 
 const LIMIT = 16
 
@@ -1244,20 +1245,7 @@ const NewPage = () => {
 										More
 									</p>
 									<div>
-										<svg
-											viewBox="0 0 11 7"
-											fill="#9da3ae"
-											width="14"
-											height="14"
-											xlmns="http://www.w3.org/2000/svg"
-										>
-											<path
-												fillRule="evenodd"
-												clipRule="evenodd"
-												d="M5.00146 6.41431L9.70857 1.7072C10.0991 1.31668 10.0991 0.683511 9.70857 0.292986C9.31805 -0.097538 8.68488 -0.097538 8.29436 0.292986L5.00146 3.58588L1.70857 0.292986C1.31805 -0.097538 0.684882 -0.097538 0.294358 0.292986C-0.0961662 0.68351 -0.0961662 1.31668 0.294358 1.7072L5.00146 6.41431Z"
-												fill="#9da3ae"
-											></path>
-										</svg>
+										<IconV size={18} />
 									</div>
 								</div>
 								{showMoreFile && (
