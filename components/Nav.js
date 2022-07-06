@@ -193,7 +193,7 @@ const Nav = () => {
 					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
 				>
 					<div className="px-10 py-1 md:p-0 ">
-						{`Win US$4000 by joining June's Card4Card `}
+						{`Congratulations to all `}
 						<a
 							href="https://twitter.com/parashq/status/1544335392174112768?s=21&t=HkTljoa4kFLASLqnhZdjwg"
 							target="_blank"
