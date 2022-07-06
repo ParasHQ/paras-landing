@@ -62,7 +62,7 @@ const LaunchpadItem = ({ project, className }) => {
 						</p>
 					</div>
 				</div>
-				<p className={`text-center ${projectStatus(project.status, 'launchpaditem', true)}`}>
+				<p className={`text-center ${projectStatus(project.status)}`}>
 					{project.status === 'upcoming' && project.started_at !== 0 && !isEndedTime ? (
 						<TimeLaunchpad
 							date={project.started_at}
@@ -70,7 +70,11 @@ const LaunchpadItem = ({ project, className }) => {
 							isEnded={(e) => setIsEndedTime(e)}
 						/>
 					) : (
-						projectStatus(project.status, 'launchpaditem')
+						<>
+							{project.status === 'live' && `Live`}
+							{project.status === 'upcoming' && `Live`}
+							{project.status === 'end' && `Ended`}
+						</>
 					)}
 				</p>
 			</div>
@@ -80,26 +84,12 @@ const LaunchpadItem = ({ project, className }) => {
 
 export default LaunchpadItem
 
-export const projectStatus = (status, type, style = false) => {
+export const projectStatus = (status) => {
 	if (status === 'live') {
-		if (style) {
-			return 'text-green-500'
-		}
-		return 'Live'
-	} else if (status === 'upcoming' && type === 'launchpaditem') {
-		if (style) {
-			return 'text-green-500'
-		}
-		return 'Live'
+		return 'text-green-500'
 	} else if (status === 'upcoming') {
-		if (style) {
-			return 'text-amber-500'
-		}
-		return 'Coming Soon'
+		return 'text-green-500'
 	} else if (status === 'end') {
-		if (style) {
-			return 'text-red-500'
-		}
-		return 'Ended'
+		return 'text-red-500'
 	}
 }

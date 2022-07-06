@@ -4,9 +4,10 @@ import { projectStatus } from './LaunchpadItem'
 import LaunchpadStatsLoader from './LaunchpadStatsLoader'
 import TimeLaunchpad from './TimeLaunchpad'
 
-const LaunchpadStats = ({ project, isEnded, isValidating }) => {
+const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 	const [showTooltip, setShowTooltip] = useState(false)
 	const [mintDuration, setMintDuration] = useState()
+	const [isEndedUpcoming, setIsEndedUpcoming] = useState(false)
 	const randomID = 'launchpad-stats'
 
 	useEffect(() => {
@@ -57,25 +58,60 @@ const LaunchpadStats = ({ project, isEnded, isValidating }) => {
 			{showTooltip && <ReactTooltip id={randomID} place="top" type="dark" />}
 			<div className="max-w-3xl mx-auto mb-16 grid grid-cols-2 md:flex md:flex-wrap md:items-center md:justify-between text-gray-200">
 				<div
-					className="text-center mb-5 md:mb-0"
+					className={`text-center mb-5 md:mb-0 ${
+						project.status === 'upcoming' && `md:-mx-24 md:w-1/2`
+					}`}
 					data-for={randomID}
-					data-tip="Project status consists of 3 status, Live, Upcoming, and Ended"
+					data-tip={
+						project.status !== 'live'
+							? `Minting time starts on ${new Date(project.started_at).toUTCString()}`
+							: null
+					}
 				>
 					<p
 						className={`text-2xl font-bold ${
-							!isEnded ? `text-red-500` : projectStatus(project.status, 'launchpadstats', true)
+							!isEnded ? `text-red-500` : projectStatus(project.status)
 						}`}
 					>
-						{!isEnded ? 'Ended' : projectStatus(project.status, 'launchpadstats')}
+						{!isEnded ? (
+							'Ended'
+						) : (
+							<>
+								{project.status === 'live' && 'Live'}
+								{project.status === 'upcoming' && (
+									<TimeLaunchpad
+										date={project.started_at}
+										timeType="mint-start"
+										isEnded={(e) => {
+											setIsEndedUpcoming(e)
+											isEndedComing(e)
+										}}
+									/>
+								)}
+								{project.status === 'end' && 'Ended'}
+							</>
+						)}
 					</p>
 					<p>Mint Start</p>
 				</div>
 				<div
-					className="text-center md:-mx-24 md:w-1/2"
+					className={`text-center ${project.status === 'live' && `md:-mx-24 md:w-1/2`}`}
 					data-for={randomID}
 					data-tip="Mint time duration"
 				>
-					<p className="text-lg md:text-2xl font-bold">{mintDurationType(project.status)}</p>
+					<p className="text-2xl font-bold">
+						{isEndedUpcoming ? (
+							<TimeLaunchpad
+								date={project.mint_details[0].ended_at}
+								timeType="live"
+								isEnded={(e) => {
+									isEnded(e)
+								}}
+							/>
+						) : (
+							mintDurationType(project.status)
+						)}
+					</p>
 					<p>Mint Duration</p>
 				</div>
 				<div className="text-center" data-for={randomID} data-tip="Mint price">

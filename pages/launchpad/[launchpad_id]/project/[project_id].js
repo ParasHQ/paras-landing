@@ -16,7 +16,8 @@ import { parseImgUrl } from 'utils/common'
 
 const ProjectPage = ({ project }) => {
 	const [tabActive, setTabActive] = useState('story')
-	const [isEndedTime, setIsEndedTime] = useState(false)
+	const [isEndedLive, setIsEndedLive] = useState(false)
+	const [isEndedComing, setIsEndedComing] = useState(false)
 	const router = useRouter()
 
 	const fetchData = (url) => axios(url).then((res) => res.data)
@@ -99,7 +100,8 @@ const ProjectPage = ({ project }) => {
 				</h1>
 				<LaunchpadStats
 					project={data}
-					isEnded={(e) => setIsEndedTime(e)}
+					isEnded={(e) => setIsEndedLive(e)}
+					isEndedComing={(e) => setIsEndedComing(e)}
 					isValidating={isValidating}
 				/>
 				<div className="max-w-3xl mx-auto md:flex md:justify-start">
@@ -139,12 +141,19 @@ const ProjectPage = ({ project }) => {
 								</>
 							) : (
 								<>
-									{data.mint_url && data.status === 'live' && !isEndedTime && (
+									{data.mint_url && data.status === 'live' && (!isEndedLive || !isEndedComing) && (
 										<a href={data.mint_url} rel="noreferrer" target="_blank">
 											<Button>Mint here</Button>
 										</a>
 									)}
-									{data.status === 'upcoming' && <Button isDisabled>Upcoming</Button>}
+									{data.mint_url && data.status === 'upcoming' && isEndedComing && (
+										<a href={data.mint_url} rel="noreferrer" target="_blank">
+											<Button>Mint here</Button>
+										</a>
+									)}
+									{data.status === 'upcoming' && !isEndedComing && (
+										<Button isDisabled>Upcoming</Button>
+									)}
 								</>
 							)}
 						</div>

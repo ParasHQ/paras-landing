@@ -53,7 +53,7 @@ const TimeLaunchpad = ({ date, timeType, isEnded = () => {} }) => {
 				</p>
 			) : (
 				<p className={`${timeType === 'upcoming' && `text-green-500`}`}>
-					{timeType === 'upcoming' ? `Live` : 'Ended'}
+					{timeType === 'upcoming' || timeType === 'mint-start' ? `Live` : 'Ended'}
 				</p>
 			)}
 		</>
