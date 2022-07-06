@@ -24,7 +24,10 @@ const ProjectPage = ({ project }) => {
 
 	const { data, isValidating } = useSWR(
 		`${process.env.V2_API_URL}/launchpad/${router.query.launchpad_id}/project/${router.query.project_id}`,
-		fetchData
+		fetchData,
+		{
+			fallbackData: project,
+		}
 	)
 
 	const headMeta = {
@@ -181,7 +184,10 @@ const ProjectPage = ({ project }) => {
 export default ProjectPage
 
 export async function getServerSideProps({ params }) {
-	if (params.project_id === 'x.paras.near') {
+	const resp = await axios.get(
+		`${process.env.V2_API_URL}/launchpad/${params.launchpad_id}/project/${params.project_id}`
+	)
+	if (!resp.data) {
 		return {
 			redirect: {
 				destination: '/',
@@ -189,17 +195,6 @@ export async function getServerSideProps({ params }) {
 			},
 		}
 	}
-
-	const resp = await axios.get(
-		`${process.env.V2_API_URL}/launchpad/${params.launchpad_id}/project/${params.project_id}`
-	)
-
-	if (!resp.data) {
-		return {
-			notFound: true,
-		}
-	}
-
 	return {
 		props: {
 			project: resp.data,

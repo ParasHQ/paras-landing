@@ -1,55 +1,60 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const TimeLaunchpad = ({ date, timeType, isEnded = () => {} }) => {
-	const [days, setDays] = useState('-')
-	const [hours, setHours] = useState('-')
-	const [minutes, setMinutes] = useState('-')
-	const [seconds, setSeconds] = useState('-')
-	const [isEndedTime, setIsEndedTime] = useState(false)
+	const [count, setCount] = useState()
+	let intervalRef = useRef()
+
+	const decreaseNum = () => {
+		const firstDate = date
+		const secondDate = new Date().getTime()
+
+		const distance = firstDate - secondDate
+
+		if (distance >= 0) {
+			setCount(Math.max(0, distance))
+		} else {
+			isEnded(true)
+			setCount(0)
+			clearInterval(intervalRef.current)
+		}
+	}
 
 	useEffect(() => {
-		countDownTimer()
-	}, [isEndedTime])
+		intervalRef.current = setInterval(decreaseNum, 1000)
+		return () => clearInterval(intervalRef.current)
+	}, [])
 
-	const countDownTimer = () => {
-		const firstDate = date
+	const days = Math.floor(count / (1000 * 60 * 60 * 24))
+	const hours = Math.floor((count % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
+	const minutes = Math.floor((count % (1000 * 60 * 60)) / (1000 * 60))
+	const seconds = Math.floor((count % (1000 * 60)) / 1000)
 
-		const timer = setInterval(() => {
-			const secondDate = new Date().getTime()
+	const daysText = `${days}d `
+	const hoursText = `${hours}h `
+	const minutesText = `${minutes}m `
+	const secondsText = `${seconds}s`
 
-			if (!isEndedTime) {
-				let distance = firstDate - secondDate
-
-				const days = Math.floor(distance / (1000 * 60 * 60 * 24))
-				const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-				const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))
-				const seconds = Math.floor((distance % (1000 * 60)) / 1000)
-
-				if (distance <= 0) {
-					clearInterval(timer)
-					setIsEndedTime(true)
-					isEnded(true)
-					return
-				}
-
-				setDays(days)
-				setHours(hours)
-				setMinutes(minutes)
-				setSeconds(seconds)
-			}
-
-			return
-		})
+	if (count === undefined) {
+		return (
+			<p
+				className={`text-white ${
+					timeType === 'upcoming' && `text-sm bg-gray-800 rounded-xl`
+				} mx-6 md:mx-[72px] -mt-0.5 pt-0.5`}
+			>
+				-
+			</p>
+		)
 	}
+
 	return (
 		<>
-			{!isEndedTime ? (
+			{count !== 0 ? (
 				<p
 					className={`text-white ${
 						timeType === 'upcoming' && `text-sm bg-gray-800 rounded-xl`
 					} mx-6 md:mx-[72px] -mt-0.5 pt-0.5`}
 				>
-					{days + 'd ' + hours + 'h ' + minutes + 'm ' + seconds + 's'}
+					{daysText + hoursText + minutesText + secondsText}
 				</p>
 			) : (
 				<p className={`${timeType === 'upcoming' && `text-green-500`}`}>
