@@ -73,12 +73,6 @@ const RoyaltyWatch = ({ control, append }) => {
 	)
 }
 
-const LoaderIcon = () => (
-	<div className="flex items-center justify-center">
-		<IconSpin />
-	</div>
-)
-
 const NewPage = () => {
 	const { localeLn } = useIntl()
 	const scrollBar = useRef()

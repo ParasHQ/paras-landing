@@ -9,7 +9,6 @@ const HomeAuctionList = () => {
 	const { localeLn } = useIntl()
 	const _title = localeLn('LiveAuction')
 	const [auctionToken, setAuctionToken] = useState([])
-	const [_, setVolume] = useState([])
 	const [isLoading, setIsLoading] = useState(true)
 
 	useEffect(() => {
@@ -25,7 +24,6 @@ const HomeAuctionList = () => {
 				params: auctionParams,
 			})
 			setAuctionToken(resp.data.data.results)
-			setVolume(resp.data.data.results.map((data) => ({ volume: data.volume })))
 			setIsLoading(false)
 		}
 		fetchAuctionToken()
