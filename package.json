@@ -24,6 +24,7 @@
 		"@draft-js-plugins/linkify": "^4.1.0",
 		"@draft-js-plugins/static-toolbar": "^4.0.0",
 		"@draft-js-plugins/video": "^4.1.0",
+		"@near-wallet-selector/core": "^5.0.0",
 		"@react-three/drei": "8.20.2",
 		"@react-three/fiber": "7.0.27",
 		"@sentry/nextjs": "^6.12.0",
