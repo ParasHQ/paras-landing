@@ -5,6 +5,7 @@ import TokenDetailModal from 'components/Token/TokenDetailModal'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 import useProfileData from 'hooks/useProfileData'
 import useTokenOrTokenSeries from 'hooks/useTokenOrTokenSeries'
+import { trackFollowingClick } from 'lib/ga'
 import useStore from 'lib/store'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Link from 'next/link'
@@ -28,6 +29,7 @@ const ActivityUserFollow = ({ activity }) => {
 
 	const onClickToSeeDetails = () => {
 		mutate()
+		trackFollowingClick('Following_click_see_details')
 		router.push(
 			{
 				pathname: router.pathname,
@@ -172,6 +174,7 @@ const ActivityUserFollow = ({ activity }) => {
 								animation_url: token?.animation_url,
 							}}
 							flippable
+							onClick={() => trackFollowingClick('Following_click_card')}
 						/>
 					</div>
 				</div>
@@ -179,6 +182,7 @@ const ActivityUserFollow = ({ activity }) => {
 					<div className="flex space-x-2">
 						<Link href={`/${accountId}`}>
 							<a
+								onClick={() => trackFollowingClick('Following_click_artist')}
 								className={`w-10 h-10 overflow-hidden ${
 									!profile?.imgUrl ? 'bg-primary' : 'bg-dark-primary-2'
 								} rounded-full cursor-pointer`}
@@ -192,7 +196,10 @@ const ActivityUserFollow = ({ activity }) => {
 						<div>
 							<div className="flex gap-3 items-baseline">
 								<Link href={`/${accountId}`}>
-									<a className="text-white text-sm hover:underline">
+									<a
+										className="text-white text-sm hover:underline"
+										onClick={() => trackFollowingClick('Following_click_artist')}
+									>
 										{prettyTruncate(accountId, 15, 'address')}
 									</a>
 								</Link>
