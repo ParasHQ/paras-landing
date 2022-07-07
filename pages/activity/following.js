@@ -193,7 +193,7 @@ const RecommendationUserFollowList = () => {
 	useEffect(() => {
 		let ignore = false
 		const fetchTopUsers = async () => {
-			const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=8`)
+			const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=9`)
 			if (!ignore) {
 				setTopUsers(res.data.data)
 			}
@@ -223,14 +223,14 @@ const RecommendationUserFollowList = () => {
 			</div> */}
 
 			{topUsers && (
-				<div className="mt-8">
+				<div className="mx-4 mt-8">
 					<div className="flex justify-between items-end mb-2">
 						<p className="text-white font-bold text-2xl">Top Seller</p>
 						<Link href="/activity/top-sellers">
 							<a className="text-gray-200 text-sm">See more</a>
 						</Link>
 					</div>
-					<div className="w-full grid md:grid-cols-4 gap-4">
+					<div className="w-full grid md:grid-cols-3 gap-6">
 						{topUsers?.sellers?.map((user) => (
 							<RecommendationUserFollow key={user.account_id} data={user} />
 						))}
@@ -239,14 +239,14 @@ const RecommendationUserFollowList = () => {
 			)}
 
 			{topUsers && (
-				<div className="mt-8">
+				<div className="mx-4 mt-8">
 					<div className="flex justify-between items-end mb-2">
 						<p className="text-white font-bold text-2xl">Top Buyer</p>
 						<Link href="/activity/top-buyers">
 							<a className="text-gray-200 text-sm">See more</a>
 						</Link>
 					</div>
-					<div className="w-full grid md:grid-cols-4 gap-4">
+					<div className="w-full grid md:grid-cols-3 gap-6">
 						{topUsers?.buyers?.map((user) => (
 							<RecommendationUserFollow key={user.account_id} data={user} />
 						))}
