@@ -450,6 +450,26 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		)
 	}
 
+	if (notif.type === 'notification_nft_delist') {
+		return (
+			<div>
+				<Link href={url}>
+					<a>
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={notif.msg.image} />
+							<div className="pl-2 text-gray-300">
+								<span className="font-medium text-gray-100">{notif.msg.title}</span> has been delisted
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
 	return null
 }
 
