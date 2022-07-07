@@ -61,7 +61,7 @@ const RecommendationUserFollow = ({ data }) => {
 			<Link href={`/${data.account_id}`}>
 				<a>
 					<div
-						className={`object-cover w-full h-20 p-1 rounded-t-xl ${
+						className={`object-cover w-full h-28 p-1 rounded-t-xl ${
 							!profile?.coverUrl ? 'bg-primary' : 'bg-dark-primary-2'
 						}`}
 						style={{
@@ -76,7 +76,7 @@ const RecommendationUserFollow = ({ data }) => {
 				<div className="relative">
 					<Link href={`/${data.account_id}`}>
 						<a
-							className={`absolute w-12 h-12 -top-6 overflow-hidden border-2 border-black ${
+							className={`absolute w-16 h-16 -top-10 overflow-hidden border-2 border-black ${
 								!profile?.imgUrl ? 'bg-primary' : 'bg-dark-primary-2'
 							} rounded-full cursor-pointer`}
 						>
@@ -98,7 +98,7 @@ const RecommendationUserFollow = ({ data }) => {
 					{profile?.isCreator && <IconVerified size={15} color="#0816B3" />}
 				</div>
 			</div>
-			<div className="flex justify-between items-end gap-2 mx-2 mt-1 mb-2">
+			<div className="flex justify-between items-end gap-2 mx-3 mt-1 mb-3">
 				<div>
 					<p className="text-gray-400 text-[0.6rem]">Last 7 days volume</p>
 					<p className="text-white font-bold">{prettyBalance(data.total_sum, 24)} Ⓝ</p>
