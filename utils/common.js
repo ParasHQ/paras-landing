@@ -203,7 +203,7 @@ export const parseSortQuery = (sort, defaultMinPrice = false) => {
 	} else if (sort === 'priceasc') {
 		return 'lowest_price::1'
 	} else if (sort === 'scoredesc') {
-		return 'metadata.score::-1'
+		return 'metadata.rank::1'
 	} else if (sort === 'urgentAuction') {
 		return 'ended_at::1'
 	}

@@ -134,7 +134,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			const lastData = newData.results[newData.results.length - 1]
 			setIdNextOwned(lastData._id)
 			params.__sort.includes('price') && setLowestPriceNextOwned(lastData.price)
-			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
+			params.__sort.includes('metadata.rank') && setScoreNext(lastData.metadata.rank)
 		}
 		setIsFetchingOwned(false)
 	}
@@ -178,7 +178,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			setIdNext(lastData._id)
 			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
-			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
+			params.__sort.includes('metadata.rank') && setScoreNext(lastData.metadata.rank)
 		}
 		setIsFetching(false)
 	}
@@ -278,7 +278,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			...(query.updated_at_next &&
 				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
 			...(query.score_next &&
-				parsedSortQuery.includes('metadata.score') && { score_next: query.score_next }),
+				parsedSortQuery.includes('metadata.rank') && { score_next: query.score_next }),
 			...(query.min_copies && { min_copies: query.min_copies }),
 			...(query.max_copies && { max_copies: query.max_copies }),
 			...(query.price_next &&
@@ -336,7 +336,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				setIdNext(lastData._id)
 				params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 				params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
-				params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
+				params.__sort.includes('metadata.rank') && setScoreNext(lastData.metadata.rank)
 			}
 		} else if (query.tab === 'owned' && currentUser !== null) {
 			params = tokensParams({
