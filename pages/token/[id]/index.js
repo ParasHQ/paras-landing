@@ -8,6 +8,7 @@ import { parseImgUrl } from 'utils/common'
 import useTokenSeries from 'hooks/useTokenSeries'
 import useStore from 'lib/store'
 import { useEffect } from 'react'
+import TokenSeriesDetailNew from 'components/TokenSeries/TokenSeriesDetailNew'
 
 const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.creator_id || token.contract_id
@@ -91,7 +92,8 @@ const TokenSeriesPage = ({ errorCode, initial }) => {
 			</Head>
 			<Nav />
 			<div className="relative max-w-6xl m-auto pt-16 px-4">
-				<TokenSeriesDetail token={token} />
+				{/* <TokenSeriesDetail token={token} /> */}
+				<TokenSeriesDetailNew />
 			</div>
 			<Footer />
 		</div>

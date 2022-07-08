@@ -9,6 +9,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import useToken from 'hooks/useToken'
 import { useEffect, useState } from 'react'
 import useStore from 'lib/store'
+import TokenDetailNew from 'components/Token/TokenDetailNew'
 
 const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.contract_id
@@ -114,7 +115,8 @@ const TokenPage = ({ errorCode, initial }) => {
 			</Head>
 			<Nav />
 			<div className="relative max-w-6xl m-auto pt-16 px-4">
-				<TokenDetail token={token} isAuctionEnds={isEndedTime} />
+				{/* <TokenDetail token={token} isAuctionEnds={isEndedTime} /> */}
+				<TokenDetailNew token={token} />
 			</div>
 			<Footer />
 		</div>

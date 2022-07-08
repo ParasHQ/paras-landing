@@ -220,22 +220,25 @@ const TokenSeriesSingle = ({
 			return
 		}
 		router.push(
-			{
-				pathname: router.pathname,
-				query: {
-					...router.query,
-					...additionalQuery,
-					contractId: token.contract_id,
-					tokenSeriesId: token.token_series_id,
-					tokenId: lookupToken?.token_id || '',
-				},
-			},
-			`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`,
-			{
-				shallow: true,
-				scroll: false,
-			}
+			`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`
 		)
+		// router.push(
+		// 	{
+		// 		pathname: router.pathname,
+		// 		query: {
+		// 			...router.query,
+		// 			...additionalQuery,
+		// 			contractId: token.contract_id,
+		// 			tokenSeriesId: token.token_series_id,
+		// 			tokenId: lookupToken?.token_id || '',
+		// 		},
+		// 	},
+		// 	`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`,
+		// 	{
+		// 		shallow: true,
+		// 		scroll: false,
+		// 	}
+		// )
 	}
 
 	const onCloseModal = () => {

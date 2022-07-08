@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import ReactTooltip from 'react-tooltip'
 import { prettyTruncate } from 'utils/common'
 
-const ArtistVerified = ({ token, collection }) => {
+const ArtistVerified = ({ token, collection, type }) => {
 	const [showTooltip, setShowTooltip] = useState(false)
 	const artistData = useProfileData(token?.metadata.creator_id)
 
@@ -15,6 +15,9 @@ const ArtistVerified = ({ token, collection }) => {
 	}, [token])
 
 	const getCreatorId = () => {
+		if (type === 'token-detail') {
+			return token?.owner_id || token?.contract_id
+		}
 		return token?.metadata.creator_id || token?.contract_id
 	}
 
