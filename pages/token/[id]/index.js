@@ -93,7 +93,7 @@ const TokenSeriesPage = ({ errorCode, initial }) => {
 			<Nav />
 			<div className="relative max-w-6xl m-auto pt-16 px-4">
 				{/* <TokenSeriesDetail token={token} /> */}
-				<TokenSeriesDetailNew />
+				<TokenSeriesDetailNew token={token} />
 			</div>
 			<Footer />
 		</div>

@@ -15,7 +15,7 @@ import { IconDownArrow } from 'components/Icons'
 
 const FETCH_TOKENS_LIMIT = 100
 
-const TokenOwners = ({ token, className }) => {
+const TokenOwners = ({ localToken, className }) => {
 	const [tokens, setTokens] = useState([])
 	const [isFetching, setIsFetching] = useState(false)
 	const [activeToken, setActiveToken] = useState(null)
@@ -25,7 +25,7 @@ const TokenOwners = ({ token, className }) => {
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
-		if (token.token_series_id) {
+		if (localToken.token_series_id) {
 			fetchTokens([], null)
 		}
 	}, [])
@@ -41,8 +41,8 @@ const TokenOwners = ({ token, className }) => {
 
 		const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
 			params: {
-				token_series_id: token.token_series_id,
-				contract_id: token.contract_id,
+				token_series_id: localToken.token_series_id,
+				contract_id: localToken.contract_id,
 				_id_next: _id_next,
 				__limit: FETCH_TOKENS_LIMIT,
 				__sort: 'price::1',
@@ -114,7 +114,7 @@ const TokenOwners = ({ token, className }) => {
 			{isDropDown && (
 				<div>
 					{!isFetching && tokens.length === 0 ? (
-						<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
+						<div className="text-white bg-cyan-blue-2 rounded-b-xl px-6 text-center py-32">
 							<div className="text-white">{localeLn('NoOwnersBecome')}</div>
 						</div>
 					) : (

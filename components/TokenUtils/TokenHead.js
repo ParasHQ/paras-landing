@@ -10,7 +10,7 @@ import ArtistVerified from 'components/Common/ArtistVerified'
 import IconLove from 'components/Icons/component/IconLove'
 import { Tooltip } from 'recharts'
 
-const TokenHead = ({ token, setShowModal }) => {
+const TokenHead = ({ localToken, setShowModal }) => {
 	const [defaultLikes, setDefaultLikes] = useState(0)
 	const [isLiked, setIsLiked] = useState(false)
 	const currentUser = useStore((state) => state.currentUser)
@@ -18,14 +18,14 @@ const TokenHead = ({ token, setShowModal }) => {
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
-		if (token?.total_likes) {
-			if (token.likes) {
+		if (localToken?.total_likes) {
+			if (localToken.likes) {
 				setIsLiked(true)
 			}
 
-			setDefaultLikes(token?.total_likes)
+			setDefaultLikes(localToken?.total_likes)
 		}
-	}, [JSON.stringify(token)])
+	}, [JSON.stringify(localToken)])
 
 	const likeToken = async (contract_id, token_series_id, source) => {
 		if (!currentUser) {
@@ -49,8 +49,8 @@ const TokenHead = ({ token, setShowModal }) => {
 			}
 		)
 
-		mutate(`${token.contract_id}::${token.token_series_id}`)
-		mutate(`${token.contract_id}::${token.token_series_id}/${token.token_id}`)
+		mutate(`${localToken.contract_id}::${localToken.token_series_id}`)
+		mutate(`${localToken.contract_id}::${localToken.token_series_id}/${localToken.token_id}`)
 		if (res.status !== 200) {
 			setIsLiked(false)
 			setDefaultLikes(defaultLikes - 1)
@@ -82,8 +82,8 @@ const TokenHead = ({ token, setShowModal }) => {
 			}
 		)
 
-		mutate(`${token.contract_id}::${token.token_series_id}`)
-		mutate(`${token.contract_id}::${token.token_series_id}/${token.token_id}`)
+		mutate(`${localToken.contract_id}::${localToken.token_series_id}`)
+		mutate(`${localToken.contract_id}::${localToken.token_series_id}/${localToken.token_id}`)
 		if (res.status !== 200) {
 			setIsLiked(true)
 			setDefaultLikes(defaultLikes + 1)
@@ -100,17 +100,17 @@ const TokenHead = ({ token, setShowModal }) => {
 					<div className="flex justify-between items-center">
 						<p className="text-gray-300 text-xl truncate">
 							NFT //{' '}
-							{token.contract_id === process.env.NFT_CONTRACT_ID
-								? `#${token.edition_id} of ${token.metadata.copies}`
-								: `#${token.token_id}`}
+							{localToken.contract_id === process.env.NFT_CONTRACT_ID
+								? `#${localToken.edition_id} of ${localToken.metadata.copies}`
+								: `#${localToken.token_id}`}
 						</p>
 					</div>
 					<h1 className="mt-2 text-xl md:text-4xl font-bold text-white tracking-tight pr-4 break-all">
-						{token.metadata.title}
+						{localToken.metadata.title}
 					</h1>
 					<div className="mt-1 text-white text-lg flex">
 						<p className="mr-1">{localeLn('owned by')}</p>
-						<ArtistVerified token={token} type={'token-detail'} />
+						<ArtistVerified token={localToken} type={'token-detail'} />
 					</div>
 				</div>
 			</div>
@@ -120,8 +120,8 @@ const TokenHead = ({ token, setShowModal }) => {
 						className="cursor-pointer"
 						onClick={() => {
 							isLiked
-								? unlikeToken(token.contract_id, token.token_series_id, 'detail')
-								: likeToken(token.contract_id, token.token_series_id, 'detail')
+								? unlikeToken(localToken.contract_id, localToken.token_series_id, 'detail')
+								: likeToken(localToken.contract_id, localToken.token_series_id, 'detail')
 						}}
 					>
 						<IconLove
@@ -154,12 +154,12 @@ const TokenHead = ({ token, setShowModal }) => {
 								d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
 							></path>
 						</svg>
-						<p>{!token.view ? '0' : token.view}</p>
+						<p>{!localToken.view ? '0' : localToken.view}</p>
 						<p>{localeLn('Views')}</p>
 					</div>
 				</div>
 				<div className="absolute right-0">
-					{token.is_staked && (
+					{localToken.is_staked && (
 						<Tooltip
 							id="text-staked"
 							show={true}

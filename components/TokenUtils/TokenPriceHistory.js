@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { IconDownArrow } from 'components/Icons'
 
-const TokenPriceHistory = ({ token, setShowModal, className }) => {
+const TokenPriceHistory = ({ localToken, setShowModal, className }) => {
 	const [isDropDown, setIsDropDown] = useState(true)
 
 	return (

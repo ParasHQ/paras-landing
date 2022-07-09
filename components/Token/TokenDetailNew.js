@@ -8,6 +8,7 @@ import TokenHead from 'components/TokenUtils/TokenHead'
 import TokenCurrentPrice from 'components/TokenUtils/TokenCurrentPrice'
 import TokenPriceHistory from 'components/TokenUtils/TokenPriceHistory'
 import TokenOwners from 'components/TokenUtils/TokenOwners'
+import TokenOffers from 'components/TokenUtils/TokenOffers'
 
 const TokenDetailNew = ({ token }) => {
 	const [showModal, setShowModal] = useState(null)
@@ -55,14 +56,19 @@ const TokenDetailNew = ({ token }) => {
 					}}
 				/>
 			</div>
-			<TokenHead token={token} setShowModal={(e) => setShowModal(e)} />
+			<TokenHead localToken={token} setShowModal={(e) => setShowModal(e)} />
 			<TokenCurrentPrice
-				token={token}
+				localToken={token}
 				setShowModal={(e) => setShowModal(e)}
 				className="col-start-2 mb-10"
 			/>
-			<TokenPriceHistory token={token} setShowModal={(e) => setShowModal(e)} className="mb-10" />
-			<TokenOwners token={token} className="mb-10" />
+			<TokenPriceHistory
+				localToken={token}
+				setShowModal={(e) => setShowModal(e)}
+				className="mb-10"
+			/>
+			<TokenOwners localToken={token} className="mb-10" />
+			<TokenOffers localToken={token} className="mb-10" />
 			<TokenBuyModal show={showModal === 'buy'} onClose={onDismissModal} data={token} />
 			<PlaceOfferModal
 				show={showModal === 'placeoffer'}

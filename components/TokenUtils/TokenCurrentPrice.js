@@ -4,7 +4,7 @@ import JSBI from 'jsbi'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import useStore from 'lib/store'
 
-const TokenCurrentPrice = ({ token, setShowModal, className }) => {
+const TokenCurrentPrice = ({ localToken, setShowModal, className }) => {
 	const currentUser = useStore((state) => state.currentUser)
 	const store = useStore()
 
@@ -33,13 +33,13 @@ const TokenCurrentPrice = ({ token, setShowModal, className }) => {
 			</div>
 			<div className="text-white bg-cyan-blue-2 rounded-b-xl px-6">
 				<p className="flex items-center gap-1 text-4xl font-bold py-8">
-					{formatNearAmount(token.price)} <span className="text-2xl">Ⓝ</span>
+					{formatNearAmount(localToken.price)} <span className="text-2xl">Ⓝ</span>
 					<span className="text-[10px] font-normal text-gray-400 pt-2">
-						(${prettyBalance(JSBI.BigInt(token.price * store.nearUsdPrice), 24, 4)})
+						(${prettyBalance(JSBI.BigInt(localToken.price * store.nearUsdPrice), 24, 4)})
 					</span>
 				</p>
 				<div className="pb-8">
-					{token.owner_id !== currentUser && token.price && (
+					{localToken.owner_id !== currentUser && localToken.price && (
 						<div className="flex justify-between gap-6">
 							<Button size="lg" className="truncate" onClick={onClickBuy} isFullWidth>
 								Buy
