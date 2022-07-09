@@ -112,8 +112,16 @@ function MyApp({ Component, pageProps }) {
 		}
 	}
 
+	const fetchSmallBanner = async () => {
+		const smallBannerResp = await axios.get(`${process.env.V2_API_URL}/small-banner`)
+		const smallBanner = smallBannerResp.data.result
+
+		store.setSmallBanner(smallBanner[0].bannerText)
+	}
+
 	useEffect(() => {
 		fetchActivities()
+		fetchSmallBanner()
 		setInterval(() => {
 			fetchActivities()
 		}, 1000 * 60 * 5)
