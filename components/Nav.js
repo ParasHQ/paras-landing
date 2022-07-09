@@ -202,7 +202,6 @@ const Nav = () => {
 						>
 							{`the winners of June's Card4Card!`}
 						</a>
-						!
 					</div>
 				</div>
 
