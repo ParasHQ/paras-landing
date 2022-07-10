@@ -195,14 +195,13 @@ const Nav = () => {
 					<div className="px-10 py-1 md:p-0 ">
 						{`Congratulations to all `}
 						<a
-							href="https://twitter.com/parashq/status/1535260855142694914?s=21&t=HQF9pQqIetPcHpSH1QEV4g"
+							href="https://twitter.com/parashq/status/1544335392174112768?s=21&t=HkTljoa4kFLASLqnhZdjwg"
 							target="_blank"
 							className="font-bold cursor-pointer hover:underline"
 							rel="noreferrer"
 						>
-							the winners of Paras Art Competition
+							{`the winners of June's Card4Card!`}
 						</a>
-						!
 					</div>
 				</div>
 

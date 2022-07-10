@@ -47,8 +47,13 @@ const FollowList = ({ data, userProfile, getMoreData, hasMore, typeFollow }) => 
 			trackUnfollowButton(user.account_id)
 		}
 
-		mutate(userProfile.accountId)
 		setIsLoading('')
+
+		if (currentUser === userProfile.accountId) {
+			setTimeout(() => {
+				mutate(userProfile.accountId)
+			}, 200)
+		}
 	}
 
 	return (
