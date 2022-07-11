@@ -26,6 +26,7 @@ import SuccessTransactionModal from 'components/Modal/SuccessTransactionModal'
 import WalletHelper from 'lib/WalletHelper'
 import cachios from 'cachios'
 import RPCStatus from 'components/Common/RPCStatus'
+import { WalletSelectorContextProvider } from 'components/Common/WalletSelector'
 
 const MAX_ACTIVITY_DELAY = 5
 
@@ -292,8 +293,10 @@ function MyApp({ Component, pageProps }) {
 				>
 					<SWRConfig value={{}}>
 						<ToastProvider>
+							{/* <WalletSelectorContextProvider> */}
 							<Component {...pageProps} />
 							<SuccessTransactionModal />
+							{/* </WalletSelectorContextProvider> */}
 						</ToastProvider>
 					</SWRConfig>
 				</IntlProvider>

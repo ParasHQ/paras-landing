@@ -42,9 +42,9 @@ const FollowList = ({ data, userProfile, getMoreData, hasMore, typeFollow }) => 
 
 			if (typeAction === 'follow') {
 				trackFollowButton(user.account_id)
-				return
+			} else {
+				trackUnfollowButton(user.account_id)
 			}
-			trackUnfollowButton(user.account_id)
 		}
 
 		mutate(userProfile.accountId)
