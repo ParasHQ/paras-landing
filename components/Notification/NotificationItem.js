@@ -461,7 +461,8 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 						>
 							<NotificationImage media={notif.msg.image} />
 							<div className="pl-2 text-gray-300">
-								<span className="font-medium text-gray-100">{notif.msg.title}</span> has been delisted
+								<span className="font-medium text-gray-100">{notif.msg.title}</span> has been
+								delisted
 							</div>
 						</div>
 					</a>
