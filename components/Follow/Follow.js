@@ -58,18 +58,17 @@ const Follow = ({ userProfile, currentUser }) => {
 			null
 		}
 
+		if (data.follows) {
+			trackUnfollowButton(data.accountId)
+		} else {
+			trackFollowButton(data.accountId)
+		}
+
 		setTimeout(() => {
 			mutate()
 			setIsLoading(false)
 			setButtonHover(false)
 		}, 500)
-
-		if (data.follows) {
-			trackUnfollowButton(data.accountId)
-			return
-		}
-
-		trackFollowButton(data.accountId)
 	}
 
 	const handleFollowModal = (typeList) => {
