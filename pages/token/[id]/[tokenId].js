@@ -15,7 +15,7 @@ const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.contract_id
 }
 
-const TokenPage = ({ errorCode, initial }) => {
+const TokenPage = ({ errorCode, initial, tokenId }) => {
 	const currentUser = useStore((state) => state.currentUser)
 	const { token, mutate } = useToken({
 		key: `${initial?.contract_id}::${initial?.token_series_id}/${initial?.token_id}`,
@@ -116,7 +116,7 @@ const TokenPage = ({ errorCode, initial }) => {
 			<Nav />
 			<div className="relative max-w-6xl m-auto pt-16 px-4">
 				{/* <TokenDetail token={token} isAuctionEnds={isEndedTime} /> */}
-				<TokenDetailNew token={token} />
+				<TokenDetailNew token={token} tokenId={tokenId} />
 			</div>
 			<Footer />
 		</div>
@@ -136,7 +136,13 @@ export async function getServerSideProps({ params }) {
 
 		const token = res.data.data.results[0] || null
 
-		return { props: { initial: token, errorCode: token ? null : 404 } }
+		return {
+			props: {
+				initial: token,
+				errorCode: token ? null : 404,
+				tokenId: `${contractId}::${params.tokenId}`,
+			},
+		}
 	} catch (err) {
 		sentryCaptureException(err)
 		const errorCode = 404

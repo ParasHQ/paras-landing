@@ -215,7 +215,7 @@ const Offer = ({
 
 	return (
 		<>
-			<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
+			<div className="bg-cyan-blue-2 mt-3 p-3 rounded-md shadow-md">
 				<div className="flex items-center">
 					<div className="w-2/3 flex items-center">
 						<div className="hidden md:block">
@@ -609,12 +609,12 @@ const TokenOffers = ({ localToken, className }) => {
 					hasMore={hasMore}
 					scrollableTarget="TokenScroll"
 					loader={
-						<div className="text-white bg-cyan-blue-2 rounded-b-xl px-6 text-center py-32">
+						<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center py-32">
 							<div className="text-white text-center">{localeLn('Loading...')}</div>
 						</div>
 					}
 				>
-					<div className="text-white bg-cyan-blue-2 rounded-b-xl px-6 text-center pt-4 pb-8">
+					<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center pt-4 pb-8">
 						{offers.length !== 0 ? (
 							offers.map((x) => (
 								<div key={x._id}>
@@ -630,7 +630,7 @@ const TokenOffers = ({ localToken, className }) => {
 								</div>
 							))
 						) : (
-							<div className="text-white bg-cyan-blue-2 rounded-b-xl px-6 text-center py-32">
+							<div className="text-white px-6 text-center py-32">
 								<div className="text-white text-center">{'No offer at the moment'}</div>
 							</div>
 						)}

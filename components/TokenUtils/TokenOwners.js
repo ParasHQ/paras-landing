@@ -114,15 +114,15 @@ const TokenOwners = ({ localToken, className }) => {
 			{isDropDown && (
 				<div>
 					{!isFetching && tokens.length === 0 ? (
-						<div className="text-white bg-cyan-blue-2 rounded-b-xl px-6 text-center py-32">
+						<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center py-32">
 							<div className="text-white">{localeLn('NoOwnersBecome')}</div>
 						</div>
 					) : (
-						<div className="text-white bg-cyan-blue-2 rounded-b-xl px-6 text-center pt-4 pb-28">
-							<div className="flex justify-between bg-gray-800 mt-3 p-3 rounded-md shadow-md">
+						<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center pt-4 pb-28">
+							<div className="flex justify-between bg-cyan-blue-2 mt-3 p-3 rounded-md shadow-md">
 								<p className="text-sm my-auto text-white font-medium">Sort By</p>
 								<select
-									className="py-1 rounded-md bg-gray-800 text-white focus:outline-none outline-none text-right"
+									className="py-1 rounded-md bg-cyan-blue-2 text-white focus:outline-none outline-none text-right"
 									onChange={(e) => setSortBy(e.target.value)}
 									defaultValue="priceasc"
 									value={sortBy}
@@ -262,7 +262,7 @@ const Owner = ({ initial = {}, onBuy, onUpdateListing }) => {
 	}
 
 	return (
-		<div className="bg-gray-800 mt-3 p-3 rounded-md shadow-md">
+		<div className="bg-cyan-blue-2 mt-3 p-3 rounded-md shadow-md">
 			<div className="flex items-center justify-between">
 				<div className="flex items-center">
 					<Link href={`/${token.owner_id}`}>

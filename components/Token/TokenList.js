@@ -23,6 +23,7 @@ import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 
 const TokenList = ({
 	name = 'default',
+	typeTokenList,
 	tokens,
 	fetchData,
 	hasMore,
@@ -102,11 +103,16 @@ const TokenList = ({
 				}
 				className="-mx-4"
 			>
-				<div className="flex flex-wrap select-none">
+				<div
+					className={`flex ${
+						typeTokenList === 'top-rarity-token' ? 'flex-nowrap' : 'flex-wrap'
+					} select-none`}
+				>
 					{tokens.map((token, idx) => (
 						<TokenSingle
 							key={`${token.contract_id}::${token.token_series_id}/${token.token_id}-${displayType}-${idx}`}
 							initialData={token}
+							typeTokenList={typeTokenList}
 							displayType={displayType}
 							volume={token.volume || volume?.[idx]}
 							showRarityScore={showRarityScore}
@@ -126,6 +132,7 @@ export default TokenList
 const TokenSingle = ({
 	initialData,
 	displayType = 'large',
+	typeTokenList,
 	volume,
 	showRarityScore,
 	showLike,
@@ -424,7 +431,12 @@ const TokenSingle = ({
 				} flex-shrink-0 relative`}
 			>
 				<Link href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}>
-					<a onClick={(e) => e.preventDefault()}>
+					<a
+						onClick={(e) => {
+							e.preventDefault()
+							if (typeTokenList === 'top-rarity-token') onClickSeeDetails(token)
+						}}
+					>
 						<div className="w-full m-auto">
 							<Card
 								imgUrl={parseImgUrl(token.metadata.media, null, {
@@ -448,7 +460,7 @@ const TokenSingle = ({
 									token.metadata.animation_url
 								}
 								imgBlur={token.metadata.blurhash}
-								flippable
+								flippable={typeTokenList === 'top-rarity-token' ? false : true}
 								token={{
 									title: token.metadata.title,
 									edition_id: token.edition_id,
@@ -470,186 +482,193 @@ const TokenSingle = ({
 									!isLiked &&
 									likeToken(token.contract_id, token.token_series_id, 'double_click_likes')
 								}
+								typeCardList={typeTokenList}
 							/>
 						</div>
 					</a>
 				</Link>
-				<div className={`px-1 relative ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
-					<div className="block">
-						<p className="text-gray-400 text-xs">{typeSale()}</p>
-						{token?.is_auction && !isEndedTime && (
-							<p className="text-gray-100 text-[9px] font-bold">{checkBidder()}</p>
-						)}
-						<div
-							className={`text-gray-100 ${
-								(displayType === 'large' && !token?.is_auction) || isEndedTime
-									? `text-2xl`
-									: displayType !== 'small' && token?.is_auction && !isEndedTime
-									? 'text-lg -mt-.5 -mb-2'
-									: displayType === 'small' && token?.is_auction && !isEndedTime
-									? `text-base`
-									: 'text-lg'
-							}`}
-						>
-							{price || (token?.is_auction && !isEndedTime) ? (
-								<div className="flex items-baseline space-x-1">
-									<div className="truncate">
-										{price === '0' && !token?.is_auction ? (
-											localeLn('Free')
-										) : price && token?.has_price && !isEndedTime ? (
-											`${prettyBalance(
-												token?.is_auction && !isEndedTime && token?.bidder_list?.length !== 0
-													? isCurrentBid('amount') || price
-													: price,
-												24,
-												4
-											)} Ⓝ`
-										) : (
-											<div className="line-through text-red-600">
-												<span className="text-gray-100">{localeLn('SALE')}</span>
+				{typeTokenList !== 'top-rarity-token' && (
+					<div className={`px-1 relative ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
+						<div className="block">
+							<p className="text-gray-400 text-xs">{typeSale()}</p>
+							{token?.is_auction && !isEndedTime && (
+								<p className="text-gray-100 text-[9px] font-bold">{checkBidder()}</p>
+							)}
+							<div
+								className={`text-gray-100 ${
+									(displayType === 'large' && !token?.is_auction) || isEndedTime
+										? `text-2xl`
+										: displayType !== 'small' && token?.is_auction && !isEndedTime
+										? 'text-lg -mt-.5 -mb-2'
+										: displayType === 'small' && token?.is_auction && !isEndedTime
+										? `text-base`
+										: 'text-lg'
+								}`}
+							>
+								{price || (token?.is_auction && !isEndedTime) ? (
+									<div className="flex items-baseline space-x-1">
+										<div className="truncate">
+											{price === '0' && !token?.is_auction ? (
+												localeLn('Free')
+											) : price && token?.has_price && !isEndedTime ? (
+												`${prettyBalance(
+													token?.is_auction && !isEndedTime && token?.bidder_list?.length !== 0
+														? isCurrentBid('amount') || price
+														: price,
+													24,
+													4
+												)} Ⓝ`
+											) : (
+												<div className="line-through text-red-600">
+													<span className="text-gray-100">{localeLn('SALE')}</span>
+												</div>
+											)}
+										</div>
+										{price && !isEndedTime && (
+											<div
+												className={`${
+													token?.is_auction ? 'text-[9px]' : 'text-xs'
+												} text-gray-400 truncate`}
+											>
+												~ $
+												{prettyBalance(
+													JSBI.BigInt(
+														token?.is_auction && token?.bidder_list?.length !== 0
+															? isCurrentBid('amount') || price
+															: price
+													) * store.nearUsdPrice,
+													24,
+													2
+												)}
 											</div>
 										)}
 									</div>
-									{price && !isEndedTime && (
-										<div
-											className={`${
-												token?.is_auction ? 'text-[9px]' : 'text-xs'
-											} text-gray-400 truncate`}
-										>
-											~ $
-											{prettyBalance(
-												JSBI.BigInt(
-													token?.is_auction && token?.bidder_list?.length !== 0
-														? isCurrentBid('amount') || price
-														: price
-												) * store.nearUsdPrice,
-												24,
-												2
-											)}
-										</div>
-									)}
-								</div>
-							) : (
-								<div className="line-through text-red-600">
-									<span className="text-gray-100">{localeLn('SALE')}</span>
+								) : (
+									<div className="line-through text-red-600">
+										<span className="text-gray-100">{localeLn('SALE')}</span>
+									</div>
+								)}
+							</div>
+						</div>
+						<div
+							className={`${
+								displayType === 'large' ? `block` : `flex gap-1`
+							} text-right absolute top-0 right-0`}
+						>
+							{showRarityScore && !!token.metadata.score && (
+								<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
+									Rarity Score {token.metadata?.score?.toFixed(2)}
+								</p>
+							)}
+							{showLike && (
+								<div className="inline-flex items-center">
+									<div
+										className="cursor-pointer"
+										onClick={() => {
+											isLiked
+												? unlikeToken(token.contract_id, token.token_series_id, 'list')
+												: likeToken(token.contract_id, token.token_series_id, 'list')
+										}}
+									>
+										<IconLove
+											size={displayType === 'large' ? 18 : 16}
+											color={isLiked ? '#c51104' : 'transparent'}
+											stroke={isLiked ? 'none' : 'white'}
+										/>
+									</div>
+									<p
+										className={`text-white ml-2 ${displayType === 'large' ? 'text-sm' : 'text-xs'}`}
+									>
+										{abbrNum(defaultLikes || 0, 1)}
+									</p>
 								</div>
 							)}
 						</div>
-					</div>
-					<div
-						className={`${
-							displayType === 'large' ? `block` : `flex gap-1`
-						} text-right absolute top-0 right-0`}
-					>
-						{showRarityScore && !!token.metadata.score && (
-							<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
-								Rarity Score {token.metadata?.score?.toFixed(2)}
-							</p>
-						)}
-						{showLike && (
-							<div className="inline-flex items-center">
-								<div
-									className="cursor-pointer"
-									onClick={() => {
-										isLiked
-											? unlikeToken(token.contract_id, token.token_series_id, 'list')
-											: likeToken(token.contract_id, token.token_series_id, 'list')
-									}}
+
+						{volume && (
+							<div
+								className={`${
+									displayType === 'large' ? `block` : `flex flex-col`
+								} text-right absolute top-0 right-0`}
+							>
+								<p
+									className={`${
+										displayType === 'large' ? `block` : `hidden`
+									} text-white opacity-80 md:text-sm`}
+									style={{ fontSize: 11 }}
 								>
-									<IconLove
-										size={displayType === 'large' ? 18 : 16}
-										color={isLiked ? '#c51104' : 'transparent'}
-										stroke={isLiked ? 'none' : 'white'}
-									/>
-								</div>
-								<p className={`text-white ml-2 ${displayType === 'large' ? 'text-sm' : 'text-xs'}`}>
-									{abbrNum(defaultLikes || 0, 1)}
+									Volume Total
 								</p>
+								<p
+									className={`${
+										displayType === 'large' ? `hidden` : `block`
+									} text-white opacity-80 md:text-sm`}
+									style={{ fontSize: 11 }}
+								>
+									Volume Total
+								</p>
+								<p className="text-white opacity-80 md:text-base">{formatNearAmount(volume)} Ⓝ</p>
 							</div>
 						)}
-					</div>
-
-					{volume && (
-						<div
-							className={`${
-								displayType === 'large' ? `block` : `flex flex-col`
-							} text-right absolute top-0 right-0`}
-						>
-							<p
-								className={`${
-									displayType === 'large' ? `block` : `hidden`
-								} text-white opacity-80 md:text-sm`}
-								style={{ fontSize: 11 }}
+						<div className="flex justify-between md:items-baseline">
+							{!token?.is_auction ||
+							(currentUser !== token?.owner_id && isCurrentBid('bidder') !== currentUser) ? (
+								<p
+									className={`font-bold text-white ${
+										isEndedTime && 'text-opacity-40'
+									} cursor-pointer hover:opacity-80 ${
+										displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+									} mb-1 md:mb-0`}
+									onClick={() =>
+										isEndedTime ? _showInfoUpdatingAuction() : actionButtonClick(token)
+									}
+								>
+									{actionButtonText(token)}
+								</p>
+							) : isCurrentBid('bidder') === currentUser ? (
+								<p
+									className={`font-bold text-white text-opacity-40 ${
+										displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+									} mb-1 md:mb-0`}
+								>
+									{`You're currently bid`}
+								</p>
+							) : !isEndedTime ? (
+								<p
+									className={`font-bold text-white text-opacity-40 ${
+										displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+									} mb-1 md:mb-0`}
+								>
+									Auction on going
+								</p>
+							) : (
+								<p
+									className={`font-bold text-white text-opacity-40 hover:text-opacity-60 cursor-pointer ${
+										displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+									} mb-1 md:mb-0`}
+									onClick={_showInfoUpdatingAuction}
+								>
+									Auction Ends
+								</p>
+							)}
+							<Link
+								href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
 							>
-								Volume Total
-							</p>
-							<p
-								className={`${
-									displayType === 'large' ? `hidden` : `block`
-								} text-white opacity-80 md:text-sm`}
-								style={{ fontSize: 11 }}
-							>
-								Volume Total
-							</p>
-							<p className="text-white opacity-80 md:text-base">{formatNearAmount(volume)} Ⓝ</p>
+								<a
+									onClick={(e) => {
+										e.preventDefault()
+										onClickSeeDetails(token)
+									}}
+									className={`text-gray-300 underline ${
+										displayType === 'large' ? `text-sm md:text-sm` : `text-xs md:text-xs`
+									}`}
+								>
+									{displayType === 'large' ? 'See Details' : 'More'}
+								</a>
+							</Link>
 						</div>
-					)}
-					<div className="flex justify-between md:items-baseline">
-						{!token?.is_auction ||
-						(currentUser !== token?.owner_id && isCurrentBid('bidder') !== currentUser) ? (
-							<p
-								className={`font-bold text-white ${
-									isEndedTime && 'text-opacity-40'
-								} cursor-pointer hover:opacity-80 ${
-									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
-								} mb-1 md:mb-0`}
-								onClick={() =>
-									isEndedTime ? _showInfoUpdatingAuction() : actionButtonClick(token)
-								}
-							>
-								{actionButtonText(token)}
-							</p>
-						) : isCurrentBid('bidder') === currentUser ? (
-							<p
-								className={`font-bold text-white text-opacity-40 ${
-									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
-								} mb-1 md:mb-0`}
-							>
-								{`You're currently bid`}
-							</p>
-						) : !isEndedTime ? (
-							<p
-								className={`font-bold text-white text-opacity-40 ${
-									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
-								} mb-1 md:mb-0`}
-							>
-								Auction on going
-							</p>
-						) : (
-							<p
-								className={`font-bold text-white text-opacity-40 hover:text-opacity-60 cursor-pointer ${
-									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
-								} mb-1 md:mb-0`}
-								onClick={_showInfoUpdatingAuction}
-							>
-								Auction Ends
-							</p>
-						)}
-						<Link href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}>
-							<a
-								onClick={(e) => {
-									e.preventDefault()
-									onClickSeeDetails(token)
-								}}
-								className={`text-gray-300 underline ${
-									displayType === 'large' ? `text-sm md:text-sm` : `text-xs md:text-xs`
-								}`}
-							>
-								{displayType === 'large' ? 'See Details' : 'More'}
-							</a>
-						</Link>
 					</div>
-				</div>
+				)}
 			</div>
 			<LoginModal onClose={() => setShowLogin(false)} show={showLogin} />
 		</>

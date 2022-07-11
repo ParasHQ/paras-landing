@@ -23,6 +23,7 @@ const Card = ({
 	flippable = false,
 	isAbleToLike = false,
 	onLike = () => {},
+	typeCardList,
 }) => {
 	const initialRotate = {
 		x: 0,
@@ -150,7 +151,9 @@ const Card = ({
 					}}
 				>
 					<div
-						className="card bg-black w-full h-full"
+						className={`card ${
+							typeCardList === 'top-rarity-token' ? 'bg-transparent' : 'bg-black'
+						} w-full h-full`}
 						style={{
 							fontSize: `${dimension.width / 14}px`,
 							transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)`,
