@@ -37,7 +37,7 @@ const InputDropdown = ({ data, defaultValue = '', selectItem = () => null }) => 
 			</div>
 			{modal && (
 				<div className="right-0 w-52 py-2 mt-2 bg-[#302D36] shadow-lg rounded-lg absolute z-20 overflow-hidden">
-					<div className="overflow-y-scroll max-h-60">
+					<div className="overflow-y-auto max-h-60">
 						<ul className="text-white w-full">
 							{data.map((item, index) => {
 								return (
@@ -45,13 +45,25 @@ const InputDropdown = ({ data, defaultValue = '', selectItem = () => null }) => 
 										key={index}
 										className={`${
 											item.label === select ? 'text-white bg-gray-900 bg-opacity-30' : ''
-										} px-3 py-2 cursor-pointer hover:bg-opacity-5 hover:bg-white`}
+										} px-3 py-2 cursor-pointer hover:bg-opacity-5 hover:bg-white flex items-center justify-between`}
 										onClick={() => {
 											setSelect(item.label)
 											selectItem(item.id)
 										}}
 									>
-										{item.label}
+										<p>{item.label}</p>
+										{item.ping && (
+											<div className="text-xs flex items-center justify-between">
+												<div
+													className={`w-1.5 h-1.5 rounded-full ${
+														item.ping > 0 ? 'bg-green-400' : 'bg-red-500'
+													} mr-1.5`}
+												/>
+												<div className="text-white text-xs">
+													{item.ping > 0 ? `${item.ping}ms` : item.ping}
+												</div>
+											</div>
+										)}
 									</li>
 								)
 							})}

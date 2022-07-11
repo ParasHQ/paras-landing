@@ -472,7 +472,8 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 			</div>
 		)
 	}
-	if (notif.type === 'notification_nft_delist') {
+  
+  if (notif.type === 'notification_nft_delist') {
 		return (
 			<div>
 				<Link href={url}>
@@ -492,7 +493,6 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 			</div>
 		)
 	}
-
 	return null
 }
 

@@ -222,7 +222,7 @@ const Offer = ({
 						</div>
 						<div className="pl-2">
 							<div className="overflow-hidden truncate">
-								<LinkToProfile accountId={data.buyer_id} />
+								<LinkToProfile accountId={data.buyer_id} len={20} />
 							</div>
 						</div>
 					</div>

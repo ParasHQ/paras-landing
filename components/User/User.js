@@ -286,6 +286,14 @@ const User = () => {
 									Get Verified
 								</a>
 							</Link>
+							<a
+								className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+								href="https://launchpad.enleap.app/"
+								target={'_blank'}
+								rel="noreferrer"
+							>
+								Apply for Launchpad
+							</a>
 
 							<hr className="my-2" />
 							<Link href={`/${store.currentUser}`}>
@@ -304,14 +312,12 @@ const User = () => {
 							>
 								{localeLn('EditProfile')}
 							</button>
-							{process.env.APP_ENV !== 'testnet' && (
-								<button
-									onClick={onClickSetting}
-									className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
-								>
-									{localeLn('NavSettings')}
-								</button>
-							)}
+							<button
+								onClick={onClickSetting}
+								className="w-full text-left cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+							>
+								{localeLn('NavSettings')}
+							</button>
 							<hr className="my-2" />
 							{WalletHelper.activeWallet === walletType.web && (
 								<div

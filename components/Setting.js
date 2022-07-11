@@ -6,19 +6,42 @@ import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import WalletHelper from 'lib/WalletHelper'
 import { IconX } from './Icons'
+import InputDropdown from './Common/form/components/InputDropdown'
+import { InputText } from './Common/form'
+import { ping } from './Common/RPCStatus'
+import { getRPC } from 'config/near'
 
 const Setting = ({ close }) => {
 	const { localeLn } = useIntl()
 	const toast = useToast()
+	const RPC_LIST = getRPC(process.env.APP_ENV)
 	const [email, setEmail] = useState('')
 	const [minPriceOffer, setMinPriceOffer] = useState('0')
 	const [preferences, setPreferences] = useState(['nft-drops', 'newsletter', 'notification'])
 	const [initialSetting, setInitialSetting] = useState(null)
 	const [isUpdating, setIsUpdating] = useState(false)
 	const [isLoading, setIsLoading] = useState(true)
+	const [rpcList, setRpcList] = useState([])
 
 	useEffect(() => {
 		fetchEmail()
+	}, [])
+
+	useEffect(() => {
+		const fetchPingRPC = async () => {
+			const pingRes = await Promise.all(
+				Object.entries(RPC_LIST).map(async ([key, data]) => {
+					const time = await ping(data.url, key)
+					return {
+						id: key,
+						label: data.simpleName,
+						ping: time > 0 ? time : 'timeout',
+					}
+				})
+			)
+			setRpcList(pingRes)
+		}
+		fetchPingRPC()
 	}, [])
 
 	const fetchEmail = async () => {
@@ -85,9 +108,14 @@ const Setting = ({ close }) => {
 		)
 	}
 
+	const chooseRPC = (id) => {
+		localStorage.setItem('choosenRPC', id)
+		window.location.reload()
+	}
+
 	return (
 		<>
-			<div className="max-w-md w-full m-auto bg-dark-primary-2 rounded-md overflow-hidden p-4">
+			<div className="max-w-md w-full m-auto bg-dark-primary-2 rounded-md p-4">
 				<div className="m-auto">
 					<div className="flex justify-between">
 						<h1 className="text-3xl font-bold text-gray-100 tracking-tight mb-4">
@@ -99,76 +127,92 @@ const Setting = ({ close }) => {
 					</div>
 					{!isLoading ? (
 						<>
-							<div>
-								<label className="font-bold text-xl my-2 text-gray-100">
-									{localeLn('AddEmail')}
-								</label>
-								<input
-									type="text"
-									name="email"
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
-									className={`resize-none h-auto focus:border-gray-100`}
-									placeholder="Email"
-								/>
-							</div>
-							<div className="text-gray-100 font-bold text-xl mt-4 my-2">
-								{localeLn('NotificationPreferences')}
-							</div>
-							<div className="text-gray-100 flex justify-between items-center my-2">
-								<div>
-									<div className="text-lg">{localeLn('Newsletters')}</div>
-									<div className="text-gray-100 opacity-75 text-sm">
-										{localeLn('FirstNotifiedFor')}
+							{process.env.APP_ENV !== 'testnet' && (
+								<>
+									<div>
+										<label className="font-bold text-xl my-2 text-gray-100">
+											{localeLn('AddEmail')}
+										</label>
+										<InputText
+											type="text"
+											name="email"
+											value={email}
+											onChange={(e) => setEmail(e.target.value)}
+											placeholder="Email"
+										/>
 									</div>
-								</div>
-								<Toggle
-									id="newsletter"
-									value={preferences.includes('newsletter')}
-									onChange={() => updatePreferences('newsletter')}
-								/>
-							</div>
-							<div className="text-gray-100 flex justify-between items-center my-2">
-								<div>
-									<div className="text-lg">{localeLn('NFTDrops')}</div>
-									<div className="text-gray-100 opacity-75 text-sm">
-										{localeLn('GetFirstNotifiedFor')}
+									<div className="text-gray-100 font-bold text-xl mt-4 my-2">
+										{localeLn('NotificationPreferences')}
 									</div>
-								</div>
-								<Toggle
-									id="nft-drops"
-									value={preferences.includes('nft-drops')}
-									onChange={() => updatePreferences('nft-drops')}
-								/>
-							</div>
-							<div className="text-gray-100 flex justify-between items-center my-2">
-								<div>
-									<div className="text-lg">{localeLn('Notification')}</div>
-									<div className="text-gray-100 opacity-75 text-sm">
-										{localeLn('GetNotifiedForTransaction')}
+									<div className="text-gray-100 flex justify-between items-center my-2">
+										<div>
+											<div className="text-lg">{localeLn('Newsletters')}</div>
+											<div className="text-gray-100 opacity-75 text-sm">
+												{localeLn('FirstNotifiedFor')}
+											</div>
+										</div>
+										<Toggle
+											id="newsletter"
+											value={preferences.includes('newsletter')}
+											onChange={() => updatePreferences('newsletter')}
+										/>
 									</div>
-								</div>
-								<Toggle
-									id="notification"
-									value={preferences.includes('notification')}
-									onChange={() => updatePreferences('notification')}
-								/>
-							</div>
+									<div className="text-gray-100 flex justify-between items-center my-2">
+										<div>
+											<div className="text-lg">{localeLn('NFTDrops')}</div>
+											<div className="text-gray-100 opacity-75 text-sm">
+												{localeLn('GetFirstNotifiedFor')}
+											</div>
+										</div>
+										<Toggle
+											id="nft-drops"
+											value={preferences.includes('nft-drops')}
+											onChange={() => updatePreferences('nft-drops')}
+										/>
+									</div>
+									<div className="text-gray-100 flex justify-between items-center my-2">
+										<div>
+											<div className="text-lg">{localeLn('Notification')}</div>
+											<div className="text-gray-100 opacity-75 text-sm">
+												{localeLn('GetNotifiedForTransaction')}
+											</div>
+										</div>
+										<Toggle
+											id="notification"
+											value={preferences.includes('notification')}
+											onChange={() => updatePreferences('notification')}
+										/>
+									</div>
+									<div className="text-gray-100 flex justify-between items-center gap-2 my-2">
+										<div>
+											<div className="text-lg">{localeLn('MinPriceOffer')}</div>
+											<div className="text-gray-100 opacity-75 text-sm">
+												Set the minimum offer you want for your collectibles
+											</div>
+										</div>
+										<div className="flex w-6/12 text-white mt-0.5 mb-2 relative">
+											<InputText
+												type="number"
+												value={minPriceOffer}
+												onChange={(e) => setMinPriceOffer(e.target.value)}
+											/>
+											<div className="absolute right-0 top-0 bottom-0 flex items-center justify-center mr-3">
+												Ⓝ
+											</div>
+										</div>
+									</div>
+								</>
+							)}
 							<div className="text-gray-100 flex justify-between items-center gap-2 my-2">
-								<div>
-									<div className="text-lg">{localeLn('MinPriceOffer')}</div>
-									<div className="text-gray-100 opacity-75 text-sm">
-										Set the minimum offer you want for your collectibles
-									</div>
-								</div>
-								<div className="flex w-6/12 text-black bg-gray-300 p-2 rounded-md focus:bg-gray-100 mt-0.5 mb-2">
-									<input
-										type="number"
-										value={minPriceOffer}
-										onChange={(e) => setMinPriceOffer(e.target.value)}
-										className="clear pr-2"
-									/>
-									<div className="inline-block">Ⓝ</div>
+								<div className="text-xl font-bold">{localeLn('RPC URL')}</div>
+								<div className="flex mt-0.5 mb-2">
+									{rpcList.length !== 0 && (
+										<InputDropdown
+											data={rpcList}
+											selectItem={chooseRPC}
+											defaultValue={window.localStorage.getItem('choosenRPC') || 'defaultRpc'}
+										/>
+									)}
 								</div>
 							</div>
 						</>

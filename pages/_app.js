@@ -25,6 +25,7 @@ import { GTM_ID, pageview } from 'lib/gtm'
 import SuccessTransactionModal from 'components/Modal/SuccessTransactionModal'
 import WalletHelper from 'lib/WalletHelper'
 import cachios from 'cachios'
+import RPCStatus from 'components/Common/RPCStatus'
 
 const MAX_ACTIVITY_DELAY = 5
 
@@ -35,6 +36,10 @@ function MyApp({ Component, pageProps }) {
 
 	let localeCopy = locales[locale]
 	const defaultLocaleCopy = locales[defaultLocale]
+
+	// For checking RPC status
+	// eslint-disable-next-line no-unused-vars
+	const rpc = RPCStatus()
 
 	const messages = localeCopy[pathname]
 		? {
@@ -269,6 +274,22 @@ function MyApp({ Component, pageProps }) {
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
             })(window,document,'script','dataLayer', '${GTM_ID}');
+          `,
+				}}
+			/>
+			<Script
+				strategy="afterInteractive"
+				dangerouslySetInnerHTML={{
+					__html: `
+            (function(w,d,s,r,k,h,m){
+              if(w.performance && w.performance.timing && w.performance.navigation) {
+                w[r] = w[r] || function(){(w[r].q = w[r].q || []).push(arguments)};
+                h=d.createElement('script');h.async=true;h.setAttribute('src',s+k);
+                d.getElementsByTagName('head')[0].appendChild(h);
+                (m = window.onerror),(window.onerror = function (b, c, d, f, g) {
+                m && m(b, c, d, f, g),g || (g = new Error(b)),(w[r].q = w[r].q || []).push(["captureException",g]);})
+              }
+            })(window,document,'//static.site24x7rum.com/beacon/site24x7rum-min.js?appKey=','s247r','47149c3273e596e4b9c4f61e3136a75f');
           `,
 				}}
 			/>
