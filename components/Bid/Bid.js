@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import AcceptBidModal from 'components/Modal/AcceptBidModal'
 import Card from 'components/Card/Card'
 
-import PlaceBidModal from 'components/Modal/PlaceBidModal'
+import PlaceOfferModal from 'components/Modal/PlaceOfferModal'
 import useStore from 'lib/store'
 import { parseImgUrl, prettyBalance, prettyTruncate, timeAgo } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
@@ -463,7 +463,7 @@ const Bid = ({ data, type, freshFetch }) => {
 				/>
 			)}
 			{showModal === 'updateBid' && (
-				<PlaceBidModal
+				<PlaceOfferModal
 					show={showModal === 'updateBid'}
 					data={token}
 					onSuccess={() => setTimeout(freshFetch, 2500)}
