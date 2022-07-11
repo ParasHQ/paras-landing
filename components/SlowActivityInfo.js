@@ -12,10 +12,11 @@ const SlowActivityInfo = ({ refresh = false }) => {
 			>
 				<div className="relative w-full h-full">
 					<div className="px-4 md:px-0 py-2 w-11/12 md:w-8/12 mx-auto">
-						Our server is still catching with latest activity, please be aware that recent
-						transactions may be delayed,{` `}
+						Our server is still catching up with the latest activity. The recent transaction may be
+						delayed.{` `}
 						{refresh && (
 							<span>
+								Please{' '}
 								<span
 									onClick={() => {
 										router.reload()
@@ -24,7 +25,7 @@ const SlowActivityInfo = ({ refresh = false }) => {
 								>
 									refresh
 								</span>{' '}
-								page to get the latest
+								the page to see updated transactions.
 							</span>
 						)}
 					</div>

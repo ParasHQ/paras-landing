@@ -8,6 +8,7 @@ import HomeCollectionList from 'components/Home/HomeCollectionList'
 import HomeFeaturedBanner from 'components/Home/HomeFeaturedBanner'
 import HomeBanner from 'components/Home/HomeBanner'
 import HomeAuctionList from 'components/Home/HomeAuctionList'
+// import HomeLaunchpad from 'components/Home/HomeLaunchpad'
 
 export default function Home() {
 	const { localeLn } = useIntl()
@@ -73,6 +74,7 @@ export default function Home() {
 			<div className="max-w-6xl m-auto">
 				<div className="relative px-4 pb-24">
 					<HomeFeaturedBanner />
+					{/* <HomeLaunchpad /> */}
 					<HomeCollectionList showDetails={false} />
 					<HomeTopUserList showToggle={false} className="my-8" />
 					<HomeAuctionList />

@@ -2,6 +2,7 @@ import axios from 'axios'
 import Avatar from 'components/Common/Avatar'
 import Button from 'components/Common/Button'
 import { IconVerified } from 'components/Icons'
+import { trackFollowButton, trackUnfollowButton } from 'lib/ga'
 import useStore from 'lib/store'
 import WalletHelper from 'lib/WalletHelper'
 import Link from 'next/link'
@@ -38,6 +39,12 @@ const FollowList = ({ data, userProfile, getMoreData, hasMore, typeFollow }) => 
 				enumerable: true,
 			})
 			setButtonHover(null)
+
+			if (typeAction === 'follow') {
+				trackFollowButton(user.account_id)
+			} else {
+				trackUnfollowButton(user.account_id)
+			}
 		}
 
 		setIsLoading('')
@@ -140,7 +147,6 @@ const ButtonUnfollow = ({ idx, buttonHover, loading, followAction = () => {} }) 
 			size="sm"
 			loadingStyle="h-2"
 			isLoading={loading}
-			variant="error"
 			onClick={() => followAction()}
 		>
 			{buttonHover === idx ? 'Unfollow' : 'Following'}
