@@ -540,9 +540,9 @@ const TokenSingle = ({
 							displayType === 'large' ? `block` : `flex gap-1`
 						} text-right absolute top-0 right-0`}
 					>
-						{showRarityScore && !!token.metadata.score && (
+						{showRarityScore && !!token.metadata.rank && (
 							<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
-								Rarity Score {token.metadata?.score?.toFixed(2)}
+								Rank {token.metadata?.rank}
 							</p>
 						)}
 						{showLike && (
