@@ -31,7 +31,11 @@ const SocialMediaLaunchpad = ({ socialUrl }) => {
 				)}
 				{socialUrl.discord && (
 					<a
-						href={'https://discord.gg/' + socialUrl?.discord}
+						href={
+							!/^https?:\/\//i.test(socialUrl?.discord)
+								? 'http://' + socialUrl?.discord
+								: socialUrl?.discord
+						}
 						target="_blank"
 						rel="noreferrer"
 						data-for={randomID}
@@ -42,7 +46,11 @@ const SocialMediaLaunchpad = ({ socialUrl }) => {
 				)}
 				{socialUrl.twitter && (
 					<a
-						href={'https://twitter.com/' + socialUrl?.twitter}
+						href={
+							!/^https?:\/\//i.test(socialUrl?.twitter)
+								? 'http://' + socialUrl?.twitter
+								: socialUrl?.twitter
+						}
 						target="_blank"
 						rel="noreferrer"
 						data-for={randomID}
