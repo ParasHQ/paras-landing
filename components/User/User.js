@@ -286,6 +286,14 @@ const User = () => {
 									Get Verified
 								</a>
 							</Link>
+							<a
+								className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+								href="https://launchpad.enleap.app/"
+								target={'_blank'}
+								rel="noreferrer"
+							>
+								Apply for Launchpad
+							</a>
 
 							<hr className="my-2" />
 							<Link href={`/${store.currentUser}`}>

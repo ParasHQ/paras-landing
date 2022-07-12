@@ -153,7 +153,15 @@ export async function getServerSideProps({ params }) {
 		},
 	})
 
-	const activity = (await activityResp.data.data.results[0]) || null
+	const activity = (await activityResp.data?.data?.results[0]) || null
+
+	if (!activity) {
+		return {
+			props: {
+				errorCode: 404,
+			},
+		}
+	}
 
 	const query = activity.token_id
 		? {
