@@ -3,6 +3,7 @@ import ReactTooltip from 'react-tooltip'
 import { projectStatus } from './LaunchpadItem'
 import LaunchpadStatsLoader from './LaunchpadStatsLoader'
 import TimeLaunchpad from './TimeLaunchpad'
+import { IconWarning } from 'components/Icons'
 
 const getMintDuration = (startDateTime, endDateTime) => {
 	const startDate = new Date(startDateTime)
@@ -59,6 +60,13 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 	) : (
 		<>
 			{showTooltip && <ReactTooltip id={randomID} place="top" type="dark" />}
+			<div className="max-w-3xl md:mx-auto flex justify-between items-center gap-2 border-2 border-orange-300 rounded-md text-white text-justify md:text-left mb-10 p-2 pl-4 mx-4">
+				<IconWarning />
+				<p>
+					This project is not an endorsement from Paras of a guarantee of listing on Paras
+					post-mint. Dates may be subject to change. Please DYOR
+				</p>
+			</div>
 			<div className="max-w-3xl mx-auto mb-16 grid grid-cols-2 md:flex md:flex-wrap md:items-center md:justify-between text-gray-200">
 				<div
 					className={`text-center mb-5 md:mb-0 ${
