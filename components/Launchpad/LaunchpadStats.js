@@ -4,6 +4,7 @@ import { projectStatus } from './LaunchpadItem'
 import LaunchpadStatsLoader from './LaunchpadStatsLoader'
 import TimeLaunchpad from './TimeLaunchpad'
 import { IconWarning } from 'components/Icons'
+import { checkPriceMintCalendar } from 'components/Home/HomeLaunchpad'
 
 const getMintDuration = (startDateTime, endDateTime) => {
 	const startDate = new Date(startDateTime)
@@ -40,7 +41,7 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 				)
 			case 'upcoming':
 				if (mintDuration === 0) {
-					return `None`
+					return project.mint_details[0].duration_in_hour
 				}
 				return `${mintDuration} Hours`
 			case 'end':
@@ -130,8 +131,8 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 					<p>Mint Duration</p>
 				</div>
 				<div className="text-center" data-for={randomID} data-tip="Mint price">
-					<p className="text-2xl font-bold">
-						{project.mint_details[0].price ? `${project.mint_details[0].price} Ⓝ` : `None`}
+					<p className="text-xl font-bold">
+						{project.mint_details[0].price ? checkPriceMintCalendar(project) : `None`}
 					</p>
 					<p>Starting Price</p>
 				</div>
