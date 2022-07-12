@@ -28,7 +28,7 @@ const TokenList = ({
 	hasMore,
 	displayType = 'large',
 	volume,
-	showRarityScore = false,
+	showRank = false,
 	showLike = false,
 }) => {
 	const store = useStore()
@@ -109,7 +109,7 @@ const TokenList = ({
 							initialData={token}
 							displayType={displayType}
 							volume={token.volume || volume?.[idx]}
-							showRarityScore={showRarityScore}
+							showRank={showRank}
 							showLike={showLike}
 							tokenIsLiked={tokenIsLiked}
 							setTokenIsLiked={setTokenIsLiked}
@@ -127,7 +127,7 @@ const TokenSingle = ({
 	initialData,
 	displayType = 'large',
 	volume,
-	showRarityScore,
+	showRank,
 	showLike,
 	tokenIsLiked,
 	setTokenIsLiked,
@@ -540,7 +540,7 @@ const TokenSingle = ({
 							displayType === 'large' ? `block` : `flex gap-1`
 						} text-right absolute top-0 right-0`}
 					>
-						{showRarityScore && !!token.metadata.rank && (
+						{showRank && !!token.metadata.rank && (
 							<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
 								Rank {token.metadata?.rank}
 							</p>
