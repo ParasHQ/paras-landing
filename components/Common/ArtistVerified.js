@@ -33,7 +33,7 @@ const ArtistVerified = ({ token, collection, type }) => {
 					}
 				>
 					<a className="text-white font-semibold border-b-2 border-transparent hover:border-white">
-						{prettyTruncate(getCreatorId(), 30, 'address')}
+						{prettyTruncate(getCreatorId(), 18, 'address')}
 					</a>
 				</Link>
 			</span>

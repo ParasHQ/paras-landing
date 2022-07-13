@@ -3,6 +3,8 @@ import axios from 'axios'
 import { IconDownArrow } from 'components/Icons'
 import TokenList from 'components/Token/TokenList'
 import CardTopRarityListLoader from 'components/Card/CardTopRarityListLoader'
+import Button from 'components/Common/Button'
+import router from 'next/router'
 
 const LIMIT = 7
 
@@ -56,19 +58,30 @@ const TokenMoreCollection = ({ localToken, className, tokenId }) => {
 				</div>
 			</div>
 			{isDropDown && (
-				<div className="text-white text-lg bg-cyan-blue-1 px-6 pt-4 rounded-b-xl overflow-auto">
+				<div className="text-white text-lg bg-cyan-blue-1 px-6 pt-4 rounded-b-xl overflow-x-auto">
 					{!isLoading ? (
 						<>
-							<div className="block md:hidden">
-								<TokenList
-									tokens={topRarity}
-									displayType="small"
-									typeTokenList="top-rarity-token"
-								/>
-							</div>
-							<div className="hidden md:block">
-								<TokenList tokens={topRarity} typeTokenList="top-rarity-token" />
-							</div>
+							{topRarity.length !== 0 ? (
+								<>
+									<div className="block md:hidden">
+										<TokenList
+											tokens={topRarity}
+											displayType="large"
+											typeTokenList="top-rarity-token"
+										/>
+									</div>
+									<div className="hidden md:block">
+										<TokenList tokens={topRarity} typeTokenList="top-rarity-token" />
+									</div>
+								</>
+							) : (
+								<div className="text-center py-28">
+									<p className="mb-8">Oops, there{`'`}s nothing else to see from this collection</p>
+									<Button size="md" onClick={() => router.push('/market')}>
+										Explore Market
+									</Button>
+								</div>
+							)}
 						</>
 					) : (
 						<CardTopRarityListLoader length={4} />

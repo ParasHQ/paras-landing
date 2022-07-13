@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import { prettyBalance } from 'utils/common'
 import useToken from 'hooks/useToken'
-import { useRouter } from 'next/router'
 import JSBI from 'jsbi'
 import useStore from 'lib/store'
 import Button from 'components/Common/Button'
@@ -12,6 +11,9 @@ import { mutate } from 'swr'
 import LoginModal from 'components/Modal/LoginModal'
 import TokenAuctionBidModal from 'components/Modal/TokenAuctionBidModal'
 import CancelBidModal from 'components/Modal/CancelBidModal'
+import AcceptBidAuctionModal from 'components/Modal/AcceptBidAuctionModal'
+import { IconInfo } from 'components/Icons'
+import { useToast } from 'hooks/useToast'
 
 const TokenAuction = ({ localToken: initialToken, className }) => {
 	const [days, setDays] = useState('-')
@@ -20,7 +22,7 @@ const TokenAuction = ({ localToken: initialToken, className }) => {
 	const [secs, setSecs] = useState('-')
 	const [isEndedTime, setIsEndedTime] = useState(false)
 	const [showModal, setShowModal] = useState('')
-	const router = useRouter()
+	const toast = useToast()
 
 	const { token: localToken } = useToken({
 		key: `${initialToken.contract_id}::${initialToken.token_series_id}/${initialToken.token_id}`,
@@ -33,13 +35,6 @@ const TokenAuction = ({ localToken: initialToken, className }) => {
 			refreshInterval: 15000,
 		},
 	})
-
-	useEffect(() => {
-		if (!localToken.is_auction) {
-			delete router.query.tab
-			router.push(router)
-		}
-	}, [localToken])
 
 	useEffect(() => {
 		countDownTimeAuction(localToken.ended_at)
@@ -84,6 +79,20 @@ const TokenAuction = ({ localToken: initialToken, className }) => {
 		setShowModal(null)
 	}
 
+	const _showInfoUpdatingAuction = () => {
+		toast.show({
+			text: (
+				<div className="text-sm text-white text-justify">
+					<p>
+						This auction data is being updated, please refresh the page periodically each minute.
+					</p>
+				</div>
+			),
+			type: 'updatingAuction',
+			duration: null,
+		})
+	}
+
 	return (
 		<div className={`text-white ${className}`}>
 			<div className="text-white bg-cyan-blue-3 rounded-t-xl mt-3 pb-2">
@@ -102,16 +111,24 @@ const TokenAuction = ({ localToken: initialToken, className }) => {
 							</p>{' '}
 						</>
 					) : (
-						<p className="text-base">Auction is over.</p>
+						<div
+							className="flex justify-center items-center gap-1 pl-1"
+							onClick={_showInfoUpdatingAuction}
+						>
+							<p className="text-base">Auction is over.</p>
+							<IconInfo size={16} className="cursor-pointer hover:opacity-80 -mt-1" />
+						</div>
 					)}
 				</div>
 			</div>
 			<div className="text-white bg-cyan-blue-1 rounded-b-xl px-4 pt-4">
-				<CurrentBid
-					initial={localToken}
-					endedAuction={isEndedTime}
-					setShowModal={(e) => setShowModal(e)}
-				/>
+				{localToken.is_auction && (
+					<CurrentBid
+						initial={localToken}
+						endedAuction={isEndedTime}
+						setShowModal={(e) => setShowModal(e)}
+					/>
+				)}
 			</div>
 			<TokenAuctionBidModal
 				show={showModal === 'placeauction'}
@@ -121,6 +138,12 @@ const TokenAuction = ({ localToken: initialToken, className }) => {
 			/>
 			<CancelAuctionModal
 				show={showModal === 'removeauction'}
+				data={localToken}
+				onClose={onDismissModal}
+				setShowModal={setShowModal}
+			/>
+			<AcceptBidAuctionModal
+				show={showModal === 'acceptbidauction'}
 				data={localToken}
 				onClose={onDismissModal}
 				setShowModal={setShowModal}
@@ -207,6 +230,10 @@ const CurrentBid = ({ initial = {}, endedAuction, setShowModal }) => {
 		setShowModal('placeauction')
 	}
 
+	const onClickAcceptBidAuction = () => {
+		setShowModal('acceptbidauction')
+	}
+
 	const onCancelBid = () => {
 		setShowModal('cancelbid')
 	}
@@ -215,15 +242,15 @@ const CurrentBid = ({ initial = {}, endedAuction, setShowModal }) => {
 		<div className="p-3">
 			<div className="flex items-center justify-between -mt-2 pb-2">
 				<div>
-					{!token.amount || (token?.bidder_list && token?.bidder_list.length === 0) ? (
+					{!token?.amount || (token?.bidder_list && token?.bidder_list.length === 0) ? (
 						<div>
 							<p className="text-lg">{localeLn('Starting Bid')}</p>
 							<div className="flex items-center gap-1">
 								<p className="text-white text-3xl font-bold">
-									{prettyBalance(token.price?.$numberDecimal || token.price, 24, 2)} Ⓝ
+									{prettyBalance(token?.price?.$numberDecimal || token?.price, 24, 2)} Ⓝ
 								</p>
 								<span className="text-[13px] font-normal text-gray-400 pt-2">
-									(${prettyBalance(JSBI.BigInt(token.price * store.nearUsdPrice), 24, 4)})
+									(${prettyBalance(JSBI.BigInt(token?.price * store.nearUsdPrice), 24, 4)})
 								</span>
 							</div>
 						</div>
@@ -242,7 +269,7 @@ const CurrentBid = ({ initial = {}, endedAuction, setShowModal }) => {
 									Ⓝ
 								</p>
 								<span className="text-[13px] font-normal text-gray-400 pt-2">
-									(${prettyBalance(JSBI.BigInt(token.price * store.nearUsdPrice), 24, 4)})
+									(${prettyBalance(JSBI.BigInt(token?.price * store.nearUsdPrice), 24, 4)})
 								</span>
 							</div>
 						</div>
@@ -258,7 +285,7 @@ const CurrentBid = ({ initial = {}, endedAuction, setShowModal }) => {
 									0,
 									4
 								)} Ⓝ`}</div>
-								{token.price !== '0' && store.nearUsdPrice !== 0 && (
+								{token?.price !== '0' && store.nearUsdPrice !== 0 && (
 									<div className="text-[10px] text-gray-400 truncate">
 										($
 										{prettyBalance(
@@ -269,11 +296,12 @@ const CurrentBid = ({ initial = {}, endedAuction, setShowModal }) => {
 										)
 									</div>
 								)}
-								{token.price === '0' && token?.is_auction && !endedAuction && (
+								{token?.price === '0' && token?.is_auction && !endedAuction && (
 									<div className="text-[9px] text-gray-400 truncate mt-1">
 										~ $
 										{prettyBalance(
-											JSBI.BigInt(token?.amount ? token?.amount : token.price) * store.nearUsdPrice,
+											JSBI.BigInt(token?.amount ? token?.amount : token?.price) *
+												store.nearUsdPrice,
 											24,
 											2
 										)}
@@ -302,7 +330,7 @@ const CurrentBid = ({ initial = {}, endedAuction, setShowModal }) => {
 							!endedAuction ? (
 								<div className="flex">
 									{token?.bidder_list.length !== 0 && (
-										<Button size="md" className="px-4 mr-2" onClick={'onClickAcceptBidAuction'}>
+										<Button size="md" className="px-4 mr-2" onClick={onClickAcceptBidAuction}>
 											Accept Bid
 										</Button>
 									)}

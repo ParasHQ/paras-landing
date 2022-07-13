@@ -28,7 +28,7 @@ const TokenOwners = ({ localToken, className }) => {
 		if (localToken.token_series_id) {
 			fetchTokens([], null)
 		}
-	}, [])
+	}, [localToken])
 
 	useEffect(() => {
 		if (!isFetching) {
@@ -97,7 +97,7 @@ const TokenOwners = ({ localToken, className }) => {
 	}
 
 	return (
-		<div className={className}>
+		<div id="owner-section" className={className}>
 			<div
 				className={`text-white bg-cyan-blue-3 ${
 					isDropDown ? 'rounded-t-xl' : 'rounded-xl'
@@ -114,11 +114,11 @@ const TokenOwners = ({ localToken, className }) => {
 			{isDropDown && (
 				<div>
 					{!isFetching && tokens.length === 0 ? (
-						<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center py-32">
-							<div className="text-white">{localeLn('NoOwnersBecome')}</div>
+						<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center h-80">
+							<div className="text-white py-36">{localeLn('NoOwnersBecome')}</div>
 						</div>
 					) : (
-						<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center pt-4 pb-28">
+						<div className="text-white bg-cyan-blue-1 rounded-b-xl border-b-8 border-cyan-blue-1 px-6 text-center pt-4 h-80 overflow-y-auto">
 							<div className="flex justify-between bg-cyan-blue-2 mt-3 p-3 rounded-md shadow-md">
 								<p className="text-sm my-auto text-white font-medium">Sort By</p>
 								<select

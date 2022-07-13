@@ -20,7 +20,7 @@ const TokenPriceHistory = ({ localToken, setShowModal, className }) => {
 				</div>
 			</div>
 			{isDropDown && (
-				<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center py-40">Content</div>
+				<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center py-32">Content</div>
 			)}
 		</div>
 	)

@@ -48,8 +48,8 @@ const TokenInfo = ({ localToken, className }) => {
 				</div>
 			</div>
 			{isDropDown && (
-				<div className="text-white text-lg bg-cyan-blue-1 rounded-b-xl border-b-[14px] border-cyan-blue-1 px-6 py-4 h-56">
-					<div className="flex justify-between text-lg">
+				<div className="text-white text-sm md:text-lg bg-cyan-blue-1 rounded-b-xl border-b-[14px] border-cyan-blue-1 px-6 py-4 h-56 md:overflow-y-auto">
+					<div className="flex justify-between mb-2 md:mb-0">
 						<p>Collection</p>
 						<Link href={`/collection/${collection.id}`}>
 							<a className="text-gray-100 font-semibold hover:opacity-80">
@@ -57,7 +57,7 @@ const TokenInfo = ({ localToken, className }) => {
 							</a>
 						</Link>
 					</div>
-					<div className="flex justify-between text-lg">
+					<div className="flex justify-between mb-2 md:mb-0">
 						<p>Royalty</p>
 						{localToken.royalty && Object.keys(localToken.royalty).length > 0 ? (
 							<div
@@ -79,11 +79,14 @@ const TokenInfo = ({ localToken, className }) => {
 							<p className="text-gray-100 font-semibold">None</p>
 						)}
 					</div>
-					<div className="flex justify-between text-lg">
+					<div className="flex justify-between mb-2 md:mb-0">
 						<p>Mint Address</p>
-						<p>{prettyTruncate(localToken.token_id, 30, 'address')}</p>
+						<p>
+							{prettyTruncate(localToken.token_id, 25, 'address') ||
+								prettyTruncate(localToken.token_series_id, 25, 'address')}
+						</p>
 					</div>
-					<div className="flex justify-between text-lg">
+					<div className="flex justify-between mb-2 md:mb-0">
 						<p>Transactions</p>
 						<div
 							className="flex items-center cursor-pointer hover:opacity-80"
@@ -95,21 +98,21 @@ const TokenInfo = ({ localToken, className }) => {
 							</div>
 						</div>
 					</div>
-					<div className="flex justify-between">
-						<p className="text-lg">Smart Contract</p>
-						<TokenInfoCopy text={localToken.contract_id} size="lg" />
+					<div className="flex justify-between mb-2 md:mb-0">
+						<p>Smart Contract</p>
+						<TokenInfoCopy text={localToken.contract_id} size="md" />
 					</div>
-					<div className="flex justify-between overflow-hidden">
-						<p className="text-lg">{localeLn('ImageLink')}</p>
+					<div className="flex justify-between mb-2 md:mb-0 overflow-hidden">
+						<p>{localeLn('ImageLink')}</p>
 						<TokenInfoCopy
 							text={parseImgUrl(localToken.metadata.media, null, {
 								useOriginal: process.env.APP_ENV === 'production' ? true : false,
 							})}
-							size="lg"
+							size="md"
 						/>
 					</div>
 					{localToken.transaction_fee && (
-						<div className="flex items-center justify-between relative z-10 text-white text-lg">
+						<div className="flex items-center mb-2 md:mb-0 justify-between relative z-10 text-white">
 							<p>{localeLn('LockedFee')} </p>
 							<div className="flex items-center gap-2">
 								<p>{lockedTxFee} %</p>

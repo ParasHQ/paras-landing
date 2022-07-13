@@ -1,9 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { parseImgUrl } from 'utils/common'
 import Card from 'components/Card/Card'
 import LoginModal from 'components/Modal/LoginModal'
-import TokenBuyModal from 'components/Modal/TokenBuyModal'
-import PlaceOfferModal from 'components/Modal/PlaceOfferModal'
 import TokenHead from 'components/TokenUtils/TokenHead'
 import TokenCurrentPrice from 'components/TokenUtils/TokenCurrentPrice'
 import TokenPriceHistory from 'components/TokenUtils/TokenPriceHistory'
@@ -13,20 +11,18 @@ import TokenDescription from 'components/TokenUtils/TokenDescription'
 import TokenAttributes from 'components/TokenUtils/TokenAttributes'
 import TokenInfo from 'components/TokenUtils/TokenInfo'
 import TokenMoreCollection from 'components/TokenUtils/TokenMoreCollection'
+import TokenAuction from 'components/TokenUtils/TokenAuction'
+import TokenBidHistory from 'components/TokenUtils/TokenBidHistory'
 
-const TokenSeriesDetailNew = ({ token }) => {
+const TokenSeriesDetailNew = ({ token, tokenId }) => {
 	const [showModal, setShowModal] = useState(null)
-
-	useEffect(() => {
-		console.log('token-series-detail-new', token)
-	}, [])
 
 	const onDismissModal = () => {
 		setShowModal(null)
 	}
 
 	return (
-		<div className="grid auto-rows-auto grid-cols-2 gap-x-10">
+		<div className="md:grid auto-rows-auto grid-cols-2 gap-x-10">
 			<div className="row-span-6">
 				<div className="w-full h-auto mb-10">
 					<Card
@@ -61,30 +57,72 @@ const TokenSeriesDetailNew = ({ token }) => {
 						}}
 					/>
 				</div>
-				<TokenDescription localToken={token} className="mb-10" />
-				<TokenAttributes localToken={token} className="mb-10" />
-				<TokenInfo localToken={token} />
+				<div className="block md:hidden">
+					<TokenHead
+						localToken={token}
+						typeToken="token-series"
+						setShowModal={(e) => setShowModal(e)}
+					/>
+					{token.is_auction ? (
+						<div>
+							<TokenAuction localToken={token} className="mb-10" />
+							<TokenBidHistory localToken={token} className="mb-10" />
+						</div>
+					) : (
+						<TokenCurrentPrice
+							localToken={token}
+							typeCurrentPrice="token-series"
+							className="col-start-2 mb-10"
+						/>
+					)}
+					<TokenDescription localToken={token} className="mb-10" />
+					<TokenPriceHistory
+						localToken={token}
+						setShowModal={(e) => setShowModal(e)}
+						className="mb-10"
+					/>
+					<TokenAttributes localToken={token} className="mb-10" />
+					<TokenOwners localToken={token} className="mb-10" />
+					<TokenOffers localToken={token} className="mb-10" />
+					<TokenInfo localToken={token} />
+					<TokenMoreCollection localToken={token} tokenId={tokenId} className="col-span-2 mb-10" />
+				</div>
+				<div className="hidden md:block">
+					<TokenDescription localToken={token} className="mb-10" />
+					<TokenAttributes localToken={token} className="mb-10" />
+					<TokenInfo localToken={token} />
+				</div>
 			</div>
-			<TokenHead localToken={token} setShowModal={(e) => setShowModal(e)} tokenSeriesDetail />
-			<TokenCurrentPrice
+			<div className="hidden md:block">
+				<TokenHead
+					localToken={token}
+					typeToken="token-series"
+					setShowModal={(e) => setShowModal(e)}
+				/>
+				{token.is_auction ? (
+					<div>
+						<TokenAuction localToken={token} className="mb-10" />
+						<TokenBidHistory localToken={token} className="mb-10" />
+					</div>
+				) : (
+					<TokenCurrentPrice
+						localToken={token}
+						typeCurrentPrice="token-series"
+						className="col-start-2 mb-10"
+					/>
+				)}
+				<TokenPriceHistory
+					localToken={token}
+					setShowModal={(e) => setShowModal(e)}
+					className="mb-10"
+				/>
+				<TokenOwners localToken={token} className="mb-10" />
+				<TokenOffers localToken={token} />
+			</div>
+			<TokenMoreCollection
 				localToken={token}
-				setShowModal={(e) => setShowModal(e)}
-				className="col-start-2 mb-10"
-			/>
-			<TokenPriceHistory
-				localToken={token}
-				setShowModal={(e) => setShowModal(e)}
-				className="mb-10"
-			/>
-			<TokenOwners localToken={token} className="mb-10" />
-			<TokenOffers localToken={token} />
-			<TokenMoreCollection localToken={token} className="col-span-2 mb-10" />
-			<TokenBuyModal show={showModal === 'buy'} onClose={onDismissModal} data={token} />
-			<PlaceOfferModal
-				show={showModal === 'placeoffer'}
-				data={token}
-				onClose={onDismissModal}
-				setShowModal={setShowModal}
+				tokenId={tokenId}
+				className="col-span-2 mb-10 hidden md:block"
 			/>
 			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>

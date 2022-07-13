@@ -44,7 +44,7 @@ const TokenDescription = ({ localToken, className }) => {
 							</ReactLinkify>
 						</div>
 					) : (
-						<div className="text-white bg-cyan-blue-2 rounded-b-xl px-6 text-center py-20">
+						<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center py-20">
 							<div className="text-white">{localeLn('NoTokenDescription')}</div>
 						</div>
 					)}

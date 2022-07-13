@@ -2,7 +2,7 @@ import cachios from 'cachios'
 import LinkToProfile from 'components/Common/LinkToProfile'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
-import { parseImgUrl, prettyBalance, timeAgo } from 'utils/common'
+import { parseImgUrl, prettyBalance, prettyTruncate, timeAgo } from 'utils/common'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useIntl } from 'hooks/useIntl'
 import Media from 'components/Common/Media'
@@ -216,7 +216,9 @@ const Activity = ({ activity }) => {
 			return (
 				<div>
 					<p className=" mb-2">
-						<span className="font-bold">{activity.msg.params.sender_id}</span>
+						<span className="font-bold">
+							{prettyTruncate(activity.msg.params.sender_id, 18, 'address')}
+						</span>
 						<span>
 							{` `}
 							accepted NFT trade{' '}

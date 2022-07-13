@@ -12,6 +12,8 @@ import TokenAttributes from 'components/TokenUtils/TokenAttributes'
 import TokenInfo from 'components/TokenUtils/TokenInfo'
 import TokenMoreCollection from 'components/TokenUtils/TokenMoreCollection'
 import TokenAuction from 'components/TokenUtils/TokenAuction'
+import TokenBidHistory from 'components/TokenUtils/TokenBidHistory'
+import ArtistBanned from 'components/Common/ArtistBanned'
 
 const TokenDetailNew = ({ token, tokenId }) => {
 	const [showModal, setShowModal] = useState(null)
@@ -21,7 +23,7 @@ const TokenDetailNew = ({ token, tokenId }) => {
 	}
 
 	return (
-		<div className="grid auto-rows-auto grid-cols-2 gap-x-10">
+		<div className="md:grid auto-rows-auto grid-cols-2 gap-x-10">
 			<div className="row-span-6">
 				<div className="w-full h-auto mb-10">
 					<Card
@@ -56,24 +58,58 @@ const TokenDetailNew = ({ token, tokenId }) => {
 						}}
 					/>
 				</div>
-				<TokenDescription localToken={token} className="mb-10" />
-				<TokenAttributes localToken={token} className="mb-10" />
-				<TokenInfo localToken={token} />
+				<ArtistBanned creatorId={token.metadata.creator_id} />
+				<div className="block md:hidden">
+					<TokenHead localToken={token} setShowModal={(e) => setShowModal(e)} />
+					{token.is_auction ? (
+						<div>
+							<TokenAuction localToken={token} className="mb-10" />
+							<TokenBidHistory localToken={token} className="mb-10" />
+						</div>
+					) : (
+						<TokenCurrentPrice localToken={token} className="col-start-2 mb-10" />
+					)}
+					<TokenDescription localToken={token} className="mb-10" />
+					<TokenPriceHistory
+						localToken={token}
+						setShowModal={(e) => setShowModal(e)}
+						className="mb-10"
+					/>
+					<TokenAttributes localToken={token} className="mb-10" />
+					<TokenOwners localToken={token} className="mb-10" />
+					<TokenOffers localToken={token} className="mb-10" />
+					<TokenInfo localToken={token} />
+					<TokenMoreCollection localToken={token} tokenId={tokenId} className="col-span-2 mb-10" />
+				</div>
+				<div className="hidden md:block">
+					<TokenDescription localToken={token} className="mb-10" />
+					<TokenAttributes localToken={token} className="mb-10" />
+					<TokenInfo localToken={token} />
+				</div>
 			</div>
-			<TokenHead localToken={token} setShowModal={(e) => setShowModal(e)} />
-			{token.is_auction ? (
-				<TokenAuction localToken={token} className="mb-10" />
-			) : (
-				<TokenCurrentPrice localToken={token} className="col-start-2 mb-10" />
-			)}
-			<TokenPriceHistory
+			<div className="hidden md:block">
+				<TokenHead localToken={token} setShowModal={(e) => setShowModal(e)} />
+				{token.is_auction ? (
+					<div>
+						<TokenAuction localToken={token} className="mb-10" />
+						<TokenBidHistory localToken={token} className="mb-10" />
+					</div>
+				) : (
+					<TokenCurrentPrice localToken={token} className="col-start-2 mb-10" />
+				)}
+				<TokenPriceHistory
+					localToken={token}
+					setShowModal={(e) => setShowModal(e)}
+					className="mb-10"
+				/>
+				<TokenOwners localToken={token} className="mb-10" />
+				<TokenOffers localToken={token} />
+			</div>
+			<TokenMoreCollection
 				localToken={token}
-				setShowModal={(e) => setShowModal(e)}
-				className="mb-10"
+				tokenId={tokenId}
+				className="col-span-2 mb-10 hidden md:block"
 			/>
-			<TokenOwners localToken={token} className="mb-10" />
-			<TokenOffers localToken={token} />
-			<TokenMoreCollection localToken={token} tokenId={tokenId} className="col-span-2 mb-10" />
 			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>
 	)

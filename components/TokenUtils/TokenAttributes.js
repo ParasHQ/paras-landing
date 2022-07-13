@@ -22,7 +22,7 @@ const TokenAttributes = ({ localToken, className }) => {
 		if (localToken.metadata.attributes && attributeRarity.length === 0) {
 			getRarity(localToken.metadata.attributes)
 		}
-	}, [attributeRarity])
+	}, [localToken])
 
 	const getRarity = async (attributes) => {
 		const res = await cachios.post(`${process.env.V2_API_URL}/rarity`, {
