@@ -116,7 +116,7 @@ function MyApp({ Component, pageProps }) {
 		const smallBannerResp = await axios.get(`${process.env.V2_API_URL}/small-banner`)
 		const smallBanner = smallBannerResp.data.result
 
-		store.setSmallBanner(smallBanner[0].bannerText)
+		store.setSmallBanner(smallBanner[0])
 	}
 
 	useEffect(() => {

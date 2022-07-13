@@ -189,11 +189,14 @@ const Nav = () => {
 				)}
 
 				{/* Banner for special event */}
-				<div
-					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
-				>
-					<div dangerouslySetInnerHTML={{ __html: store.smallBanner }}></div>
-				</div>
+				{console.log(store.smallBanner)}
+				{store.smallBanner && store.smallBanner.is_active && (
+					<div
+						className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
+					>
+						<div dangerouslySetInnerHTML={{ __html: store.smallBanner.bannerText }}></div>
+					</div>
+				)}
 
 				{process.env.APP_ENV !== 'production' && (
 					<div
