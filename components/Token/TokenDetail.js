@@ -95,13 +95,13 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	}, [router.query.tab])
 
 	useEffect(() => {
-		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('model')) {
+		if (token?.metadata?.animation_url && token.metadata?.mime_type?.includes('model')) {
 			get3DModel(token?.metadata?.animation_url)
 		}
-		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('audio')) {
+		if (token?.metadata?.animation_url && token.metadata?.mime_type?.includes('audio')) {
 			getAudio(token?.metadata?.animation_url)
 		}
-		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('iframe')) {
+		if (token?.metadata?.animation_url && token.metadata?.mime_type?.includes('iframe')) {
 			getIframe()
 		}
 	}, [])

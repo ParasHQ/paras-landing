@@ -329,7 +329,7 @@ const token = {
 	Mint: 'Изготовить',
 	UpdatePrice: 'Обновить Цену',
 	CreateAuction: 'Создать аукцион',
-	'BuyFor{price}On': 'Купить за {цена} во  вторичном Магазине',
+	'BuyFor{price}On': 'Купить за {price} во  вторичном Магазине',
 	SeeTokenSeries: 'Просмотреть серии токенов',
 	Notifications: 'Уведомления',
 	NoNotifications: 'Уведомления отсутствуют',

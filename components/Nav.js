@@ -189,7 +189,6 @@ const Nav = () => {
 				)}
 
 				{/* Banner for special event */}
-				{console.log(store.smallBanner)}
 				{store.smallBanner && store.smallBanner.is_active && (
 					<div
 						className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
