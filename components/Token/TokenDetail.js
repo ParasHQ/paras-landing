@@ -441,6 +441,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										{fileType?.includes('iframe') && (
 											<iframe
 												src={token?.metadata.animation_url}
+												sandbox="allow-scripts"
 												className="object-contain w-full h-full"
 											/>
 										)}
