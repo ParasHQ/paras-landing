@@ -16,6 +16,7 @@ import 'draft-js/dist/Draft.css'
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import 'croppie/croppie.css'
+import '@near-wallet-selector/modal-ui/styles.css'
 
 import ToastProvider from 'hooks/useToast'
 import { SWRConfig } from 'swr'
@@ -26,7 +27,7 @@ import SuccessTransactionModal from 'components/Modal/SuccessTransactionModal'
 import WalletHelper from 'lib/WalletHelper'
 import cachios from 'cachios'
 import RPCStatus from 'components/Common/RPCStatus'
-import { WalletSelectorContextProvider } from 'components/Common/WalletSelector'
+import { useWalletSelector, WalletSelectorContextProvider } from 'components/Common/WalletSelector'
 
 const MAX_ACTIVITY_DELAY = 5
 
@@ -158,13 +159,13 @@ function MyApp({ Component, pageProps }) {
 	}, [])
 
 	useEffect(() => {
-		removeQueryTransactionFromNear()
+		// removeQueryTransactionFromNear()
 	}, [router.isReady])
 
 	useEffect(() => {
 		if (store.activeWallet === 'senderWallet') {
 			const currentUser = WalletHelper.currentUser
-			setupUser(currentUser)
+			// setupUser(currentUser)
 		}
 	}, [store.activeWallet])
 
@@ -174,7 +175,7 @@ function MyApp({ Component, pageProps }) {
 		const currentUser = WalletHelper.currentUser
 
 		if (currentUser) {
-			setupUser(currentUser)
+			// setupUser(currentUser)
 		}
 		getNearUsdPrice()
 		store.setInitialized(true)
@@ -293,10 +294,10 @@ function MyApp({ Component, pageProps }) {
 				>
 					<SWRConfig value={{}}>
 						<ToastProvider>
-							{/* <WalletSelectorContextProvider> */}
-							<Component {...pageProps} />
-							<SuccessTransactionModal />
-							{/* </WalletSelectorContextProvider> */}
+							<WalletSelectorContextProvider>
+								<Component {...pageProps} />
+								<SuccessTransactionModal />
+							</WalletSelectorContextProvider>
 						</ToastProvider>
 					</SWRConfig>
 				</IntlProvider>

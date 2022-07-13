@@ -12,12 +12,15 @@ import { isChromeBrowser } from 'utils/common'
 import { useToast } from 'hooks/useToast'
 import { IconNear } from 'components/Icons'
 import IconSender from 'components/Icons/component/IconSender'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const LoginPage = () => {
 	const { currentUser, setActiveWallet } = useStore()
 	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
 	const toast = useToast()
+
+	const { selector, modal } = useWalletSelector()
 
 	const { localeLn } = useIntl()
 
@@ -27,9 +30,17 @@ const LoginPage = () => {
 		}
 	}, [currentUser])
 
-	const _signIn = () => {
+	const _signIn = async () => {
 		setIsLoading(true)
-		near.login()
+		// const wallet = await selector.wallet('sender')
+		// const accounts = await wallet.signIn({ contractId: process.env.MARKETPLACE_CONTRACT_ID })
+
+		console.log('modal', modal)
+		modal.show()
+
+		// console.log('accounts', accounts)
+		// console.log('selector', selector)
+		// near.login()
 	}
 
 	const loginSenderWallet = async () => {

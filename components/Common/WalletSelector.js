@@ -7,6 +7,8 @@ import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet'
 import { setupSender } from '@near-wallet-selector/sender'
 import getConfig from 'config/near'
 import { providers } from 'near-api-js'
+import useStore from 'lib/store'
+import axios from 'axios'
 
 const WalletSelectorContext = React.createContext(null)
 
@@ -14,9 +16,10 @@ export const WalletSelectorContextProvider = ({ children }) => {
 	const [selector, setSelector] = useState(null)
 	const [modal, setModal] = useState(null)
 	const [accounts, setAccounts] = useState([])
-	const nearConfig = getConfig(process.env.APP_ENV || 'development')
+	const store = useStore()
 
 	const init = useCallback(async () => {
+		const nearConfig = getConfig(process.env.APP_ENV || 'development')
 		const _selector = await setupWalletSelector({
 			network: nearConfig.networkId,
 			debug: process.env.NODE_ENV !== 'production',
@@ -53,16 +56,16 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			)
 			.subscribe((nextAccounts) => {
 				console.log('Accounts Update', nextAccounts)
+				setupUser({
+					accountId: nextAccounts?.[0]?.accountId,
+					balance: '1000000000000000000',
+				})
 
 				setAccounts(nextAccounts)
 			})
 
 		return () => subscription.unsubscribe()
 	}, [selector])
-
-	if (!selector || !modal) {
-		return null
-	}
 
 	const accountId = accounts.find((account) => account.active)?.accountId || null
 
@@ -76,7 +79,56 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		await wallet.signAndSendTransaction({ actions })
 	}
 
+	const setupUser = async (currentUser) => {
+		console.log('currentuser', currentUser)
+		if (!currentUser) return
+
+		store.setCurrentUser(currentUser.accountId)
+		store.setUserBalance(currentUser.balance)
+
+		// Sentry.configureScope((scope) => {
+		// 	const user = currentUser ? { id: currentUser.accountId } : null
+		// 	scope.setUser(user)
+		// 	scope.setTag('environment', process.env.APP_ENV)
+		// })
+
+		const userProfileResp = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+			params: {
+				accountId: currentUser.accountId,
+			},
+		})
+		const userProfileResults = userProfileResp.data.data.results
+
+		if (userProfileResults.length === 0) {
+			const formData = new FormData()
+			formData.append('bio', 'Citizen of Paras')
+			formData.append('accountId', currentUser.accountId)
+
+			// try {
+			// 	const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
+			// 		headers: {
+			// 			'Content-Type': 'multipart/form-data',
+			// 			authorization: await WalletHelper.authToken(),
+			// 		},
+			// 	})
+			// 	store.setUserProfile(resp.data.data)
+			// } catch (err) {
+			// 	sentryCaptureException(err)
+			// 	store.setUserProfile({})
+			// }
+		} else {
+			const userProfile = userProfileResults[0]
+			store.setUserProfile(userProfile)
+
+			const { isEmailVerified = false } = userProfile
+			// if (!isEmailVerified && !cookie.get('hideEmailNotVerified')) {
+			// 	store.setShowEmailWarning(true)
+			// }
+		}
+	}
+
 	const viewFunction = async ({ receiverId, methodName, args }) => {
+		const nearConfig = getConfig(process.env.APP_ENV || 'development')
 		return new providers.JsonRpcProvider({ url: nearConfig.nodeUrl })
 			.query({
 				request_type: 'call_function',

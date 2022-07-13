@@ -16,6 +16,7 @@ import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
 import { mutate } from 'swr'
 import axios from 'axios'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
@@ -30,6 +31,7 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 	const [lockedTxFee, setLockedTxFee] = useState('')
 	const { localeLn } = useIntl()
 	const toast = useToast()
+	const { selector } = useWalletSelector()
 
 	const showTooltipTxFee = (txFee?.next_fee || 0) > (txFee?.current_fee || 0)
 	const tooltipTxFeeText = localeLn('DynamicTxFee', {
@@ -123,19 +125,24 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 
 		trackUpdateListingToken(data.token_id)
 
+		const wallet = await selector.wallet()
+
 		try {
 			const txs = []
 
 			if (needDeposit) {
 				txs.push({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
-					functionCalls: [
+					actions: [
 						{
-							methodName: 'storage_deposit',
-							contractId: process.env.MARKETPLACE_CONTRACT_ID,
-							args: { receiver_id: currentUser },
-							attachedDeposit: STORAGE_ADD_MARKET_FEE,
-							gas: GAS_FEE,
+							type: 'FunctionCall',
+							params: {
+								methodName: 'storage_deposit',
+								contractId: process.env.MARKETPLACE_CONTRACT_ID,
+								args: { receiver_id: currentUser },
+								deposit: STORAGE_ADD_MARKET_FEE,
+								gas: GAS_FEE,
+							},
 						},
 					],
 				})
@@ -152,22 +159,25 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 			}
 			txs.push({
 				receiverId: data.contract_id,
-				functionCalls: [
+				actions: [
 					{
-						methodName: 'nft_approve',
-						contractId: data.contract_id,
-						args: params,
-						attachedDeposit: data.approval_id ? `1` : STORAGE_APPROVE_FEE,
-						gas: GAS_FEE_200,
+						type: 'FunctionCall',
+						params: {
+							methodName: 'nft_approve',
+							contractId: data.contract_id,
+							args: params,
+							deposit: data.approval_id ? `1` : STORAGE_APPROVE_FEE,
+							gas: GAS_FEE_200,
+						},
 					},
 				],
 			})
 
-			const res = await WalletHelper.multipleCallFunction(txs)
+			const res = await wallet.signAndSendTransactions({ transactions: txs })
 
-			if (res?.response) {
+			if (res) {
 				onClose()
-				setTransactionRes(res?.response)
+				setTransactionRes(res)
 			}
 			setIsUpdatingPrice(false)
 		} catch (err) {
@@ -185,41 +195,48 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 
 		trackRemoveListingToken(data.token_id)
 
+		const wallet = await selector.wallet()
 		const txs = []
 		try {
 			txs.push({
 				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
-				functionCalls: [
+				actions: [
 					{
-						methodName: 'delete_market_data',
-						contractId: process.env.MARKETPLACE_CONTRACT_ID,
-						args: {
-							token_id: data.token_id,
-							nft_contract_id: data.contract_id,
+						type: 'FunctionCall',
+						params: {
+							methodName: 'delete_market_data',
+							contractId: process.env.MARKETPLACE_CONTRACT_ID,
+							args: {
+								token_id: data.token_id,
+								nft_contract_id: data.contract_id,
+							},
+							deposit: `1`,
+							gas: GAS_FEE,
 						},
-						attachedDeposit: `1`,
-						gas: GAS_FEE,
 					},
 				],
 			})
 			!isAnyTradeOffer &&
 				txs.push({
 					receiverId: data.contract_id,
-					functionCalls: [
+					actions: [
 						{
-							methodName: 'nft_revoke',
-							contractId: data.contract_id,
-							args: {
-								token_id: data.token_id,
-								account_id: process.env.MARKETPLACE_CONTRACT_ID,
+							type: 'FunctionCall',
+							params: {
+								methodName: 'nft_revoke',
+								contractId: data.contract_id,
+								args: {
+									token_id: data.token_id,
+									account_id: process.env.MARKETPLACE_CONTRACT_ID,
+								},
+								deposit: `1`,
+								gas: GAS_FEE,
 							},
-							attachedDeposit: `1`,
-							gas: GAS_FEE,
 						},
 					],
 				})
 
-			const res = await WalletHelper.multipleCallFunction(txs)
+			const res = await wallet.signAndSendTransactions({ transactions: txs })
 
 			if (res?.response.error) {
 				toast.show({
