@@ -106,6 +106,11 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 		}
 	}, [])
 
+	useEffect(() => {
+		setActiveTab('info')
+		setTokenDisplay('detail')
+	}, [router.query])
+
 	const TabNotification = (tab) => {
 		switch (tab) {
 			case 'auction':
@@ -671,7 +676,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 									)}
 								</div>
 							</div>
-							<div className="bg-gray-700 md:sticky flex md:top-0 z-20 overflow-x-scroll space-x-4 flex-grow overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
+							<div className="bg-gray-700 md:sticky flex md:top-0 z-30 overflow-x-scroll space-x-4 flex-grow overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
 								{tabDetail('info')}
 								{token.is_auction && !isAuctionEnds && tabDetail('auction')}
 								{tabDetail('owners')}
