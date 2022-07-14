@@ -64,7 +64,7 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 			<div className="max-w-3xl md:mx-auto flex justify-between items-center gap-2 border-2 border-orange-300 rounded-md text-white text-justify md:text-left mb-10 p-2 pl-4 mx-4">
 				<IconWarning />
 				<p>
-					This project is not an endorsement from Paras of a guarantee of listing on Paras
+					This project is not an endorsement from Paras or a guarantee of listing on Paras
 					post-mint. Dates may be subject to change. Please DYOR
 				</p>
 			</div>

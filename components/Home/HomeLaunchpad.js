@@ -12,13 +12,14 @@ const HomeLaunchpad = ({ showDetails }) => {
 	}
 
 	const { data, isValidating } = useSWR('/launchpad/all', fetchData)
+	const results = data?.filter((project) => project.status !== 'end')
 
 	return (
 		<div className="mb-8 relative">
 			<div className="text-white md:flex justify-start items-center gap-4 mb-8">
 				<h1 className="font-semibold text-3xl capitalize">Mint Calendar</h1>
 			</div>
-			<LaunchpadList showDetails={showDetails} data={data} isValidating={isValidating} />
+			<LaunchpadList showDetails={showDetails} data={results} isValidating={isValidating} />
 		</div>
 	)
 }
