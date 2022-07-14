@@ -64,11 +64,9 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	}, [])
 
 	useEffect(() => {
-		if (`${token.contract_id}::${token.token_series_id}` !== prevTokenSeriesId) {
-			setActiveTab('info')
-			setTokenDisplay('detail')
-		}
-	}, [router.query])
+		setActiveTab('info')
+		setTokenDisplay('detail')
+	}, [router.query.id])
 
 	useEffect(() => {
 		if (token?.total_likes) {

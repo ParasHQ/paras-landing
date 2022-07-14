@@ -110,11 +110,9 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	}, [])
 
 	useEffect(() => {
-		if (`${token.contract_id}::${token.token_series_id}::${token.token_id}` !== prevTokenId) {
-			setActiveTab('info')
-			setTokenDisplay('detail')
-		}
-	}, [router.query.tokenId])
+		setActiveTab('info')
+		setTokenDisplay('detail')
+	}, [router.query.id])
 
 	const TabNotification = (tab) => {
 		switch (tab) {
