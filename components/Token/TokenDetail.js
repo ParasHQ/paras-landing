@@ -109,7 +109,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	useEffect(() => {
 		setActiveTab('info')
 		setTokenDisplay('detail')
-	}, [router.query.id])
+	}, [router.query.tokenId])
 
 	const TabNotification = (tab) => {
 		switch (tab) {
