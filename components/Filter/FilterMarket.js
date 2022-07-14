@@ -128,6 +128,10 @@ const FilterMarket = ({
 			delete query.pmax
 		}
 
+		if (query.sort === 'urgentAuction') {
+			query.card_trade_type = 'onAuction'
+		}
+
 		router.push(
 			{
 				query: query,
