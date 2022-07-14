@@ -57,6 +57,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [lowestPriceNext, setLowestPriceNext] = useState(null)
 	const [lowestPriceNextOwned, setLowestPriceNextOwned] = useState(null)
 	const [rankNext, setRankNext] = useState(null)
+	const [scoreNext, setScoreNext] = useState(null)
 	const [endedSoonestNext, setEndedSoonestNext] = useState(null)
 	const [endedSoonestNextOwned, setEndedSoonestNextOwned] = useState(null)
 	const [updatedAtNext, setUpdatedAtNext] = useState(null)
@@ -79,7 +80,6 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [display, setDisplay] = useState(
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
-	const [scoreNext, setScoreNext] = useState('')
 	const [mediaQueryMd] = useState(
 		typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)')
 	)
@@ -307,8 +307,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 			...(query.updated_at_next &&
 				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
-			...(query.score_next &&
-				parsedSortQuery.includes('metadata.score') && { score_next: query.score_next }),
+			...(query.rank_next &&
+				parsedSortQuery.includes('metadata.rank') && { rank_next: query.rank_next }),
 			...(query.min_copies && { min_copies: query.min_copies }),
 			...(query.max_copies && { max_copies: query.max_copies }),
 			...(query.price_next &&
@@ -910,7 +910,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							fetchData={fetchDataOwned}
 							hasMore={hasMoreOwned}
 							displayType={display}
-							showRarityScore={true}
+							showRank={true}
 							showLike={true}
 						/>
 					) : router.query.tab == 'tracker' ? (
