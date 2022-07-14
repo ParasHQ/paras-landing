@@ -583,9 +583,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 					<Scrollbars
 						className="h-full"
 						universal={true}
-						renderView={(props) => (
-							<div {...props} id="TokenScroll" className="p-4 pt-0 relative" />
-						)}
+						renderView={(props) => <div {...props} id="TokenScroll" className="p-4 relative" />}
 					>
 						<div>
 							<div className="justify-between py-2 flex md:hidden">
