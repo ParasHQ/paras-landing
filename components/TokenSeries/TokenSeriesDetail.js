@@ -41,7 +41,6 @@ import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 
 const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	const router = useRouter()
-	const [prevTokenSeriesId] = useState(`${token.contract_id}::${token.token_series_id}`)
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
 	const [isLiked, setIsLiked] = useState(false)

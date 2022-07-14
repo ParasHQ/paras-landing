@@ -47,9 +47,6 @@ import WalletHelper from 'lib/WalletHelper'
 import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 
 const TokenDetail = ({ token, className, isAuctionEnds }) => {
-	const [prevTokenId] = useState(
-		`${token.contract_id}::${token.token_series_id}::${token.token_id}`
-	)
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState(null)
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
