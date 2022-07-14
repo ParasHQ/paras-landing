@@ -40,6 +40,8 @@ import FileType from 'file-type/browser'
 import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 
 const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
+	const router = useRouter()
+	const [prevTokenSeriesId] = useState(`${token.contract_id}::${token.token_series_id}`)
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
 	const [isLiked, setIsLiked] = useState(false)
@@ -62,9 +64,11 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	}, [])
 
 	useEffect(() => {
-		setActiveTab('info')
-		setTokenDisplay('detail')
-	}, [])
+		if (`${token.contract_id}::${token.token_series_id}` !== prevTokenSeriesId) {
+			setActiveTab('info')
+			setTokenDisplay('detail')
+		}
+	}, [router.query])
 
 	useEffect(() => {
 		if (token?.total_likes) {
@@ -84,8 +88,6 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 			getIframe()
 		}
 	}, [JSON.stringify(token)])
-
-	const router = useRouter()
 
 	const isShowButton =
 		token.contract_id === process.env.NFT_CONTRACT_ID ||
@@ -583,7 +585,9 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 					<Scrollbars
 						className="h-full"
 						universal={true}
-						renderView={(props) => <div {...props} id="TokenScroll" className="p-4 relative" />}
+						renderView={(props) => (
+							<div {...props} id="TokenScroll" className="p-4 pt-4 md:pt-0 relative" />
+						)}
 					>
 						<div>
 							<div className="justify-between py-2 flex md:hidden">

@@ -47,6 +47,9 @@ import WalletHelper from 'lib/WalletHelper'
 import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 
 const TokenDetail = ({ token, className, isAuctionEnds }) => {
+	const [prevTokenId] = useState(
+		`${token.contract_id}::${token.token_series_id}::${token.token_id}`
+	)
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState(null)
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
@@ -107,9 +110,11 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	}, [])
 
 	useEffect(() => {
-		setActiveTab('info')
-		setTokenDisplay('detail')
-	}, [router.query])
+		if (`${token.contract_id}::${token.token_series_id}::${token.token_id}` !== prevTokenId) {
+			setActiveTab('info')
+			setTokenDisplay('detail')
+		}
+	}, [router.query.tokenId])
 
 	const TabNotification = (tab) => {
 		switch (tab) {
@@ -546,7 +551,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 					<ArtistBanned creatorId={token.metadata.creator_id} />
 				</div>
 				<div className="h-1/2 lg:h-full flex flex-col w-full lg:w-2/5 lg:max-w-2xl bg-gray-700">
-					<div className="hidden justify-between md:p-4 md:pb-2 md:flex">
+					<div className="hidden justify-between md:p-4 md:pb-2 md:flex z-20">
 						<div className="overflow-x-hidden">
 							<div className="flex justify-between items-center">
 								<p className="text-gray-300 truncate">
@@ -609,7 +614,9 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 					<Scrollbars
 						className="h-full"
 						universal={true}
-						renderView={(props) => <div {...props} id="TokenScroll" className="p-4 relative" />}
+						renderView={(props) => (
+							<div {...props} id="TokenScroll" className="p-4 pt-4 md:pt-0 relative" />
+						)}
 					>
 						<div>
 							<div className="flex justify-between md:hidden">
