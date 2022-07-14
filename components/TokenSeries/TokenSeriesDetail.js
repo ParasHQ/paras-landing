@@ -62,6 +62,11 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	}, [])
 
 	useEffect(() => {
+		setActiveTab('info')
+		setTokenDisplay('detail')
+	}, [])
+
+	useEffect(() => {
 		if (token?.total_likes) {
 			if (token.likes) {
 				setIsLiked(true)
@@ -629,7 +634,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 									</div>
 								</div>
 							</div>
-							<div className="bg-gray-700 flex md:sticky md:top-0 overflow-x-scroll space-x-4 flex-grow z-20 flex-nowrap disable-scrollbars md:-mb-4">
+							<div className="bg-gray-700 flex md:sticky md:top-0 overflow-x-scroll space-x-4 flex-grow z-30 flex-nowrap disable-scrollbars md:-mb-4">
 								{tabDetail('info')}
 								{tabDetail('owners')}
 								{tabDetail('offers')}
