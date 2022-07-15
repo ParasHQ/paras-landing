@@ -50,7 +50,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			if (!currentUser.accountId) return
 
 			store.setCurrentUser(currentUser.accountId)
-			console.log('setcurrentuser', currentUser)
+
 			// Sentry.configureScope((scope) => {
 			// 	const user = currentUser ? { id: currentUser.accountId } : null
 			// 	scope.setUser(user)
