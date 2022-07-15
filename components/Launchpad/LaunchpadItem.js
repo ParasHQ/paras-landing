@@ -62,7 +62,7 @@ const LaunchpadItem = ({ project, className }) => {
 						</p>
 					</div>
 				</div>
-				<p className={`text-center ${projectStatus(project.status)}`}>
+				<div className={`text-center ${projectStatus(project.status)}`}>
 					{project.status === 'upcoming' && project.started_at !== 0 && !isEndedTime ? (
 						<TimeLaunchpad
 							date={project.started_at}
@@ -76,7 +76,7 @@ const LaunchpadItem = ({ project, className }) => {
 							{project.status === 'end' && `Ended`}
 						</>
 					)}
-				</p>
+				</div>
 			</div>
 		</div>
 	)

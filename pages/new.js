@@ -23,7 +23,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import Scrollbars from 'react-custom-scrollbars'
 import getConfig from 'config/near'
 import Tooltip from 'components/Common/Tooltip'
-import { Icon3D, IconIframe, IconInfo, IconLoader, IconSpin, IconX } from 'components/Icons'
+import { Icon3D, IconIframe, IconInfo, IconLoader, IconX } from 'components/Icons'
 import WalletHelper from 'lib/WalletHelper'
 import AudioPlayer from 'components/Common/AudioPlayer'
 import { Canvas } from '@react-three/fiber'
@@ -31,6 +31,7 @@ import { Model1 } from 'components/Model3D/ThreeDModel'
 import FileType from 'file-type/browser'
 import retry from 'async-retry'
 import IconV from 'components/Icons/component/IconV'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const LIMIT = 16
 
@@ -81,6 +82,7 @@ const NewPage = () => {
 	const router = useRouter()
 	const toast = useToast()
 	const [formInput, setFormInput] = useState({})
+	const { selector } = useWalletSelector()
 	const { errors, control, register, handleSubmit, watch, setValue, getValues } = useForm()
 	const { fields, append, remove } = useFieldArray({
 		control,
@@ -258,22 +260,35 @@ const NewPage = () => {
 				}
 			}
 
-			const res = await WalletHelper.callFunction({
-				contractId: process.env.NFT_CONTRACT_ID,
-				methodName: `nft_create_series`,
-				args: params,
-				gas: GAS_FEE,
-				deposit: STORAGE_CREATE_SERIES_FEE,
+			const wallet = await selector.wallet()
+
+			const res = await wallet.signAndSendTransactions({
+				transactions: [
+					{
+						receiverId: process.env.NFT_CONTRACT_ID,
+						actions: [
+							{
+								type: 'FunctionCall',
+								params: {
+									methodName: 'nft_create_series',
+									args: params,
+									gas: GAS_FEE,
+									deposit: STORAGE_CREATE_SERIES_FEE,
+								},
+							},
+						],
+					},
+				],
 			})
 
 			setIsCreating(false)
-			if (res?.response) {
+			if (res) {
 				if (store.selectedCategory !== '') {
 					await submitCategoryCard(res)
 				}
 				setTimeout(() => {
 					router.push('/market')
-					store.setTransactionRes(res?.response)
+					store.setTransactionRes(res)
 				}, 2000)
 			}
 		} catch (err) {

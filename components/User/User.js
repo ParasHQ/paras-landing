@@ -16,6 +16,7 @@ import transakSDK from '@transak/transak-sdk'
 import getConfigTransak from 'config/transak'
 import { IconTriangle } from 'components/Icons'
 import { trackTransakButton } from 'lib/ga'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 export function openTransak(fetchNearBalance, toast) {
 	const transak = new transakSDK(
@@ -62,6 +63,8 @@ const User = () => {
 	const [showAccountModal, setShowAccountModal] = useState(false)
 	const [showUserModal, setShowUserModal] = useState(null)
 
+	const { getAccountBalance, viewFunction } = useWalletSelector()
+
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
@@ -86,10 +89,10 @@ const User = () => {
 	}
 
 	const fetchUserBalance = async () => {
-		const nearbalance = await (await near.near.account(store.currentUser)).getAccountBalance()
-		const parasBalance = await WalletHelper.viewFunction({
+		const nearbalance = await getAccountBalance(store.currentUser)
+		const parasBalance = await viewFunction({
 			methodName: 'ft_balance_of',
-			contractId: process.env.PARAS_TOKEN_CONTRACT,
+			receiverId: process.env.PARAS_TOKEN_CONTRACT,
 			args: { account_id: store.currentUser },
 		})
 		store.setUserBalance(nearbalance)

@@ -9,6 +9,7 @@ import getConfig from 'config/near'
 import { providers } from 'near-api-js'
 import useStore from 'lib/store'
 import axios from 'axios'
+import JSBI from 'jsbi'
 
 const WalletSelectorContext = React.createContext(null)
 
@@ -55,12 +56,8 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				distinctUntilChanged()
 			)
 			.subscribe((nextAccounts) => {
-				console.log('Accounts Update', nextAccounts)
-				setupUser({
-					accountId: nextAccounts?.[0]?.accountId,
-					balance: '1000000000000000000',
-				})
-
+				const accountId = accounts.find((account) => account.active)?.accountId || null
+				setupUser({ accountId: accountId })
 				setAccounts(nextAccounts)
 			})
 
@@ -80,17 +77,18 @@ export const WalletSelectorContextProvider = ({ children }) => {
 	}
 
 	const setupUser = async (currentUser) => {
-		console.log('currentuser', currentUser)
-		if (!currentUser) return
+		if (!currentUser.accountId) return
 
 		store.setCurrentUser(currentUser.accountId)
-		store.setUserBalance(currentUser.balance)
 
 		// Sentry.configureScope((scope) => {
 		// 	const user = currentUser ? { id: currentUser.accountId } : null
 		// 	scope.setUser(user)
 		// 	scope.setTag('environment', process.env.APP_ENV)
 		// })
+
+		const userNearBalance = await getAccountBalance(accountId)
+		store.setUserBalance(userNearBalance)
 
 		const userProfileResp = await axios.get(`${process.env.V2_API_URL}/profiles`, {
 			params: {
@@ -140,6 +138,35 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			.then((res) => JSON.parse(Buffer.from(res.result).toString()))
 	}
 
+	const getAccountBalance = async (accountId) => {
+		const nearConfig = getConfig(process.env.APP_ENV || 'development')
+		const provider = new providers.JsonRpcProvider({ url: nearConfig.nodeUrl })
+		const state = await provider.query({
+			request_type: 'view_account',
+			account_id: accountId,
+			finality: 'final',
+		})
+		const protocolConfig = await provider.experimental_protocolConfig({
+			finality: 'final',
+		})
+
+		const costPerByte = JSBI.BigInt(protocolConfig.runtime_config.storage_amount_per_byte)
+		const stateStaked = JSBI.multiply(JSBI.BigInt(state.storage_usage), costPerByte)
+		const staked = JSBI.BigInt(state.locked)
+		const totalBalance = JSBI.add(JSBI.BigInt(state.amount), staked)
+		const availableBalance = JSBI.subtract(
+			totalBalance,
+			JSBI.greaterThan(staked, stateStaked) ? staked : stateStaked
+		)
+
+		return {
+			total: totalBalance.toString(),
+			stateStaked: stateStaked.toString(),
+			staked: staked.toString(),
+			available: availableBalance.toString(),
+		}
+	}
+
 	return (
 		<WalletSelectorContext.Provider
 			value={{
@@ -149,6 +176,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				accountId,
 				signAndSendTransactions,
 				signAndSendTransaction,
+				getAccountBalance,
 				viewFunction,
 			}}
 		>

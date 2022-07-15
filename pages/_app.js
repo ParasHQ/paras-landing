@@ -27,7 +27,7 @@ import SuccessTransactionModal from 'components/Modal/SuccessTransactionModal'
 import WalletHelper from 'lib/WalletHelper'
 import cachios from 'cachios'
 import RPCStatus from 'components/Common/RPCStatus'
-import { useWalletSelector, WalletSelectorContextProvider } from 'components/Common/WalletSelector'
+import { WalletSelectorContextProvider } from 'components/Common/WalletSelector'
 
 const MAX_ACTIVITY_DELAY = 5
 
@@ -170,7 +170,7 @@ function MyApp({ Component, pageProps }) {
 	}, [store.activeWallet])
 
 	const _init = async () => {
-		await WalletHelper.initialize({ onChangeUser: setupUser })
+		// await WalletHelper.initialize({ onChangeUser: setupUser })
 
 		const currentUser = WalletHelper.currentUser
 
