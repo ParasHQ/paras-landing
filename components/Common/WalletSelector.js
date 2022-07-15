@@ -96,7 +96,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				// }
 			}
 
-			authSession.current = setInterval(() => generateAuthToken(currentUser.accountId), 1000)
+			authSession.current = setInterval(() => generateAuthToken(currentUser.accountId), 1000 * 3600)
 		}
 
 		const subscription = selector.store.observable
