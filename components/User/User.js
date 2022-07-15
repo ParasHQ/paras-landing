@@ -62,7 +62,7 @@ const User = () => {
 	const [showAccountModal, setShowAccountModal] = useState(false)
 	const [showUserModal, setShowUserModal] = useState(null)
 
-	const { selector, getAccountBalance, viewFunction } = useWalletSelector()
+	const { selector, modal, getAccountBalance, viewFunction } = useWalletSelector()
 
 	const { localeLn } = useIntl()
 
@@ -152,6 +152,11 @@ const User = () => {
 
 	const onClickSetting = () => {
 		setShowUserModal('setting')
+		toggleAccountModal()
+	}
+
+	const onClickSwitchAccount = () => {
+		modal.show()
 		toggleAccountModal()
 	}
 
@@ -319,6 +324,12 @@ const User = () => {
 								{localeLn('NavSettings')}
 							</button>
 							<hr className="my-2" />
+							<div
+								className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+								onClick={onClickSwitchAccount}
+							>
+								{localeLn('NavSwitchAccount')}
+							</div>
 							<p
 								onClick={_signOut}
 								className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"

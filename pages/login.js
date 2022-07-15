@@ -17,10 +17,9 @@ import { useWalletSelector } from 'components/Common/WalletSelector'
 const LoginPage = () => {
 	const { currentUser, setActiveWallet } = useStore()
 	const router = useRouter()
-	const [isLoading, setIsLoading] = useState(false)
 	const toast = useToast()
 
-	const { selector, modal } = useWalletSelector()
+	const { modal } = useWalletSelector()
 
 	const { localeLn } = useIntl()
 
@@ -31,16 +30,7 @@ const LoginPage = () => {
 	}, [currentUser])
 
 	const _signIn = async () => {
-		setIsLoading(true)
-		// const wallet = await selector.wallet('sender')
-		// const accounts = await wallet.signIn({ contractId: process.env.MARKETPLACE_CONTRACT_ID })
-
-		console.log('modal', modal)
 		modal.show()
-
-		// console.log('accounts', accounts)
-		// console.log('selector', selector)
-		// near.login()
 	}
 
 	const loginSenderWallet = async () => {
@@ -137,9 +127,8 @@ const LoginPage = () => {
 							</div>
 						</div>
 						<div className="mt-4">
-							<Button className="h-16" onClick={() => _signIn()} isFullWidth isDisabled={isLoading}>
-								<IconNear className="rounded-full absolute h-8 w-8 top-0 bottom-0 left-4 m-auto" />
-								{isLoading ? localeLn('LoadingLoading') : localeLn('LoginWithNEAR')}
+							<Button className="h-16" onClick={() => _signIn()} isFullWidth>
+								Login Wallet
 							</Button>
 						</div>
 						{isChromeBrowser && (
