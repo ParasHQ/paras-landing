@@ -8,7 +8,6 @@ import { useIntl } from 'hooks/useIntl'
 import { useToast } from 'hooks/useToast'
 import { sentryCaptureException } from 'lib/sentry'
 import useStore from 'lib/store'
-import WalletHelper from 'lib/WalletHelper'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -136,7 +135,6 @@ const CollectionPageEdit = ({ collectionId }) => {
 			const resp = await axios.put(`${process.env.V2_API_URL}/collections`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
-					authorization: await WalletHelper.authToken(),
 				},
 			})
 			if (resp) {

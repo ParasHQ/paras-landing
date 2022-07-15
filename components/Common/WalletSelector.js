@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { map, distinctUntilChanged } from 'rxjs'
 import { setupWalletSelector } from '@near-wallet-selector/core'
 import { setupModal } from '@near-wallet-selector/modal-ui'
@@ -10,14 +10,16 @@ import { providers } from 'near-api-js'
 import useStore from 'lib/store'
 import axios from 'axios'
 import JSBI from 'jsbi'
+import { Base64 } from 'js-base64'
 
 const WalletSelectorContext = React.createContext(null)
 
 export const WalletSelectorContextProvider = ({ children }) => {
 	const [selector, setSelector] = useState(null)
 	const [modal, setModal] = useState(null)
-	const [accounts, setAccounts] = useState([])
+	const [authToken, setAuthToken] = useState(null)
 	const store = useStore()
+	const authSession = useRef()
 
 	const init = useCallback(async () => {
 		const nearConfig = getConfig(process.env.APP_ENV || 'development')
@@ -27,9 +29,6 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			modules: [setupNearWallet(), setupMyNearWallet(), setupSender()],
 		})
 		const _modal = setupModal(_selector, { contractId: nearConfig.contractName })
-		const state = _selector.store.getState()
-
-		setAccounts(state.accounts)
 
 		window.selector = _selector
 		window.modal = _modal
@@ -39,15 +38,65 @@ export const WalletSelectorContextProvider = ({ children }) => {
 	}, [])
 
 	useEffect(() => {
-		init().catch((err) => {
-			console.error(err)
-			alert('Failed to initialise wallet selector')
-		})
+		init()
 	}, [init])
 
 	useEffect(() => {
 		if (!selector) {
 			return
+		}
+
+		const setupUser = async (currentUser) => {
+			if (!currentUser.accountId) return
+
+			store.setCurrentUser(currentUser.accountId)
+			console.log('setcurrentuser', currentUser)
+			// Sentry.configureScope((scope) => {
+			// 	const user = currentUser ? { id: currentUser.accountId } : null
+			// 	scope.setUser(user)
+			// 	scope.setTag('environment', process.env.APP_ENV)
+			// })
+
+			const userNearBalance = await getAccountBalance(currentUser.accountId)
+			store.setUserBalance(userNearBalance)
+
+			await generateAuthToken(currentUser.accountId)
+
+			const userProfileResp = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+				params: {
+					accountId: currentUser.accountId,
+				},
+			})
+			const userProfileResults = userProfileResp.data.data.results
+
+			if (userProfileResults.length === 0) {
+				const formData = new FormData()
+				formData.append('bio', 'Citizen of Paras')
+				formData.append('accountId', currentUser.accountId)
+
+				// try {
+				// 	const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
+				// 		headers: {
+				// 			'Content-Type': 'multipart/form-data',
+				// 			authorization: await WalletHelper.authToken(),
+				// 		},
+				// 	})
+				// 	store.setUserProfile(resp.data.data)
+				// } catch (err) {
+				// 	sentryCaptureException(err)
+				// 	store.setUserProfile({})
+				// }
+			} else {
+				const userProfile = userProfileResults[0]
+				store.setUserProfile(userProfile)
+
+				const { isEmailVerified = false } = userProfile
+				// if (!isEmailVerified && !cookie.get('hideEmailNotVerified')) {
+				// 	store.setShowEmailWarning(true)
+				// }
+			}
+
+			authSession.current = setInterval(() => generateAuthToken(currentUser.accountId), 1000)
 		}
 
 		const subscription = selector.store.observable
@@ -56,76 +105,17 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				distinctUntilChanged()
 			)
 			.subscribe((nextAccounts) => {
-				const accountId = accounts.find((account) => account.active)?.accountId || null
+				const accountId = nextAccounts.find((account) => account.active)?.accountId || null
 				setupUser({ accountId: accountId })
-				setAccounts(nextAccounts)
 			})
 
-		return () => subscription.unsubscribe()
+		return () => {
+			subscription.unsubscribe()
+			clearInterval(authSession.current)
+		}
 	}, [selector])
 
-	const accountId = accounts.find((account) => account.active)?.accountId || null
-
-	const signAndSendTransactions = async (transactions) => {
-		const wallet = await selector.wallet()
-		return wallet.signAndSendTransactions({ transactions })
-	}
-
-	const signAndSendTransaction = async (actions) => {
-		const wallet = await selector.wallet()
-		await wallet.signAndSendTransaction({ actions })
-	}
-
-	const setupUser = async (currentUser) => {
-		if (!currentUser.accountId) return
-
-		store.setCurrentUser(currentUser.accountId)
-
-		// Sentry.configureScope((scope) => {
-		// 	const user = currentUser ? { id: currentUser.accountId } : null
-		// 	scope.setUser(user)
-		// 	scope.setTag('environment', process.env.APP_ENV)
-		// })
-
-		const userNearBalance = await getAccountBalance(accountId)
-		store.setUserBalance(userNearBalance)
-
-		const userProfileResp = await axios.get(`${process.env.V2_API_URL}/profiles`, {
-			params: {
-				accountId: currentUser.accountId,
-			},
-		})
-		const userProfileResults = userProfileResp.data.data.results
-
-		if (userProfileResults.length === 0) {
-			const formData = new FormData()
-			formData.append('bio', 'Citizen of Paras')
-			formData.append('accountId', currentUser.accountId)
-
-			// try {
-			// 	const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
-			// 		headers: {
-			// 			'Content-Type': 'multipart/form-data',
-			// 			authorization: await WalletHelper.authToken(),
-			// 		},
-			// 	})
-			// 	store.setUserProfile(resp.data.data)
-			// } catch (err) {
-			// 	sentryCaptureException(err)
-			// 	store.setUserProfile({})
-			// }
-		} else {
-			const userProfile = userProfileResults[0]
-			store.setUserProfile(userProfile)
-
-			const { isEmailVerified = false } = userProfile
-			// if (!isEmailVerified && !cookie.get('hideEmailNotVerified')) {
-			// 	store.setShowEmailWarning(true)
-			// }
-		}
-	}
-
-	const viewFunction = async ({ receiverId, methodName, args }) => {
+	const viewFunction = async ({ receiverId, methodName, args = '' }) => {
 		const nearConfig = getConfig(process.env.APP_ENV || 'development')
 		return new providers.JsonRpcProvider({ url: nearConfig.nodeUrl })
 			.query({
@@ -149,7 +139,6 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		const protocolConfig = await provider.experimental_protocolConfig({
 			finality: 'final',
 		})
-
 		const costPerByte = JSBI.BigInt(protocolConfig.runtime_config.storage_amount_per_byte)
 		const stateStaked = JSBI.multiply(JSBI.BigInt(state.storage_usage), costPerByte)
 		const staked = JSBI.BigInt(state.locked)
@@ -167,15 +156,30 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		}
 	}
 
+	const generateAuthToken = async (accountId) => {
+		const wallet = await selector.wallet()
+		const arr = new Array(accountId)
+		for (var i = 0; i < accountId.length; i++) {
+			arr[i] = accountId.charCodeAt(i)
+		}
+		const msgBuf = new Uint8Array(arr)
+		const signedMsg = await wallet.signMessage({ message: msgBuf })
+		const pubKey = Buffer.from(signedMsg.publicKey.data).toString('hex')
+		const signature = Buffer.from(signedMsg.signature).toString('hex')
+		const payload = [accountId, pubKey, signature]
+		const _authToken = Base64.encode(payload.join('&'))
+
+		setAuthToken(_authToken)
+
+		axios.defaults.headers.common['Authorization'] = _authToken
+	}
+
 	return (
 		<WalletSelectorContext.Provider
 			value={{
 				selector,
 				modal,
-				accounts,
-				accountId,
-				signAndSendTransactions,
-				signAndSendTransaction,
+				authToken,
 				getAccountBalance,
 				viewFunction,
 			}}

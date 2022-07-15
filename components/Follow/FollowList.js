@@ -4,7 +4,6 @@ import Button from 'components/Common/Button'
 import { IconVerified } from 'components/Icons'
 import { trackFollowButton, trackUnfollowButton } from 'lib/ga'
 import useStore from 'lib/store'
-import WalletHelper from 'lib/WalletHelper'
 import Link from 'next/link'
 import { useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
@@ -23,9 +22,6 @@ const FollowList = ({ data, userProfile, getMoreData, hasMore, typeFollow }) => 
 		const res = await axios.request({
 			url: `${process.env.V2_API_URL}${typeAction === 'follow' ? '/follow' : '/unfollow'}`,
 			method: 'PUT',
-			headers: {
-				authorization: await WalletHelper.authToken(),
-			},
 			params: {
 				account_id: currentUser,
 				following_account_id: user.account_id,

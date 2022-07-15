@@ -16,7 +16,6 @@ import useToken from 'hooks/useToken'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useToast } from 'hooks/useToast'
 import axios from 'axios'
-import WalletHelper from 'lib/WalletHelper'
 import IconLove from 'components/Icons/component/IconLove'
 import LoginModal from 'components/Modal/LoginModal'
 import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
@@ -352,12 +351,7 @@ const TokenSingle = ({
 
 		const res = await axios.put(
 			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
-			params,
-			{
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			}
+			params
 		)
 
 		if (res.status !== 200) {
@@ -390,12 +384,7 @@ const TokenSingle = ({
 
 		const res = await axios.put(
 			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
-			params,
-			{
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			}
+			params
 		)
 
 		if (res.status !== 200) {

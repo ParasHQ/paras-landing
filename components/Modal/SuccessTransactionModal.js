@@ -244,21 +244,13 @@ const SuccessTransactionModal = () => {
 		const resOutcome = await JSON.parse(`${resFromTxLast}`)
 		await retry(
 			async () => {
-				const res = await axios.post(
-					`${process.env.V2_API_URL}/categories/tokens`,
-					{
-						account_id: currentUser,
-						contract_id: txLast?.transaction?.receiver_id,
-						token_series_id: resOutcome?.params?.token_series_id,
-						category_id: _categoryId,
-						storeToSheet: _categoryId === 'art-competition' ? `true` : `false`,
-					},
-					{
-						headers: {
-							authorization: await WalletHelper.authToken(),
-						},
-					}
-				)
+				const res = await axios.post(`${process.env.V2_API_URL}/categories/tokens`, {
+					account_id: currentUser,
+					contract_id: txLast?.transaction?.receiver_id,
+					token_series_id: resOutcome?.params?.token_series_id,
+					category_id: _categoryId,
+					storeToSheet: _categoryId === 'art-competition' ? `true` : `false`,
+				})
 				if (res.status === 403 || res.status === 400) {
 					sentryCaptureException(res.data?.message || `Token series still haven't exist`)
 					return

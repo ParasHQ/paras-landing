@@ -18,7 +18,6 @@ import useStore from 'lib/store'
 import EmbeddedCard from 'components/Publication/EmbeddedCard'
 import { useToast } from 'hooks/useToast'
 import { sentryCaptureException } from 'lib/sentry'
-import WalletHelper from 'lib/WalletHelper'
 import { IconDots } from 'components/Icons'
 
 const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
@@ -69,11 +68,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const _deletePublication = async () => {
 		setIsDeleting(true)
 		try {
-			await axios.delete(`${process.env.V2_API_URL}/publications/${pubDetail._id}`, {
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			})
+			await axios.delete(`${process.env.V2_API_URL}/publications/${pubDetail._id}`)
 			setTimeout(() => {
 				router.push('/publication')
 			}, 1000)

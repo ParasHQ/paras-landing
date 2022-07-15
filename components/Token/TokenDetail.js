@@ -43,7 +43,6 @@ import CancelAuctionModal from 'components/Modal/CancelAuctionModal'
 import CancelBidModal from 'components/Modal/CancelBidModal'
 import { mutate } from 'swr'
 import IconLove from 'components/Icons/component/IconLove'
-import WalletHelper from 'lib/WalletHelper'
 import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 
 const TokenDetail = ({ token, className, isAuctionEnds }) => {
@@ -316,12 +315,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 
 		const res = await axios.put(
 			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
-			params,
-			{
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			}
+			params
 		)
 
 		mutate(`${token.contract_id}::${token.token_series_id}`)
@@ -349,12 +343,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 
 		const res = await axios.put(
 			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
-			params,
-			{
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			}
+			params
 		)
 
 		mutate(`${token.contract_id}::${token.token_series_id}`)

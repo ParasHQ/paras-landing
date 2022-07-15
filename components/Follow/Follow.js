@@ -3,7 +3,6 @@ import Button from 'components/Common/Button'
 import FollowArtistModal from 'components/Modal/FollowArtistModal'
 import LoginModal from 'components/Modal/LoginModal'
 import { trackFollowButton, trackUnfollowButton } from 'lib/ga'
-import WalletHelper from 'lib/WalletHelper'
 import { useEffect, useState } from 'react'
 import useSWR from 'swr'
 
@@ -42,9 +41,6 @@ const Follow = ({ userProfile, currentUser }) => {
 		await axios.request({
 			url: `${process.env.V2_API_URL}${data.follows ? '/unfollow' : '/follow'}`,
 			method: 'PUT',
-			headers: {
-				authorization: await WalletHelper.authToken(),
-			},
 			params: {
 				account_id: currentUser,
 				following_account_id: userProfile.accountId,

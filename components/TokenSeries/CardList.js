@@ -7,7 +7,6 @@ import { useRouter } from 'next/router'
 import JSBI from 'jsbi'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import axios from 'axios'
-import WalletHelper from 'lib/WalletHelper'
 
 import { useIntl } from 'hooks/useIntl'
 import TokenSeriesDetailModal from './TokenSeriesDetailModal'
@@ -359,12 +358,7 @@ const TokenSeriesSingle = ({
 
 		const res = await axios.put(
 			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
-			params,
-			{
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			}
+			params
 		)
 
 		if (res.status !== 200) {
@@ -390,12 +384,7 @@ const TokenSeriesSingle = ({
 
 		const res = await axios.put(
 			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
-			params,
-			{
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			}
+			params
 		)
 
 		if (res.status !== 200) {

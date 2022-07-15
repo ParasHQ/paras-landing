@@ -63,19 +63,10 @@ function MyApp({ Component, pageProps }) {
 				expires: 30,
 			})
 		}
-		const authHeader = await WalletHelper.authToken()
-		await axios.post(
-			`${process.env.V2_API_URL}/analytics`,
-			{
-				uid: uid,
-				page: url,
-			},
-			{
-				headers: {
-					authorization: authHeader,
-				},
-			}
-		)
+		await axios.post(`${process.env.V2_API_URL}/analytics`, {
+			uid: uid,
+			page: url,
+		})
 	}
 
 	useEffect(() => {
@@ -267,18 +258,20 @@ function MyApp({ Component, pageProps }) {
 		<>
 			{/* Google Tag Manager - Global base code */}
 			{/* eslint-disable @next/next/inline-script-id */}
-			<Script
-				strategy="afterInteractive"
-				dangerouslySetInnerHTML={{
-					__html: `
+			{process.env.NODE_ENV === 'production' && GTM_ID && (
+				<Script
+					strategy="afterInteractive"
+					dangerouslySetInnerHTML={{
+						__html: `
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
             })(window,document,'script','dataLayer', '${GTM_ID}');
           `,
-				}}
-			/>
+					}}
+				/>
+			)}
 			<div>
 				<IntlProvider
 					locale={locale}

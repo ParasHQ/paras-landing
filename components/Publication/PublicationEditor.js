@@ -288,17 +288,11 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 							url: url,
 							method: 'post',
 							data: data,
-							headers: {
-								authorization: await WalletHelper.authToken(),
-							},
 					  }
 					: {
 							url: isEdit ? url + `/${pubDetail._id}` : url,
 							method: isEdit ? 'put' : 'post',
 							data: data,
-							headers: {
-								authorization: await WalletHelper.authToken(),
-							},
 					  }
 			)
 			if (!isPubDetail && draftDetail.length > 0) deleteDraft(draftDetail[0]._id)
@@ -399,7 +393,6 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 		const resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
 			headers: {
 				'Content-Type': 'multipart/form-data',
-				authorization: await WalletHelper.authToken(),
 			},
 		})
 
@@ -428,7 +421,6 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 			const resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
-					authorization: await WalletHelper.authToken(),
 				},
 			})
 			return resp.data.data[0]

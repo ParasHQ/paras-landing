@@ -7,7 +7,6 @@ import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import TopTransactionCard, { renderThumb } from './TopTransactionCard'
 import Button from 'components/Common/Button'
 import axios from 'axios'
-import WalletHelper from 'lib/WalletHelper'
 import useProfileSWR from 'hooks/useProfileSWR'
 import useStore from 'lib/store'
 import { useNonInitialEffect } from 'hooks/useNonInitialEffect'
@@ -41,9 +40,6 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => 
 			await axios.request({
 				url: `${process.env.V2_API_URL}${profile.follows ? '/unfollow' : '/follow'}`,
 				method: 'PUT',
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
 				params: {
 					account_id: currentUser,
 					following_account_id: profile.accountId,

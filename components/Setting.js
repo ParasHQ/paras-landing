@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 import { useToast } from 'hooks/useToast'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
-import WalletHelper from 'lib/WalletHelper'
 import { IconX } from './Icons'
 import InputDropdown from './Common/form/components/InputDropdown'
 import { InputText } from './Common/form'
@@ -45,11 +44,7 @@ const Setting = ({ close }) => {
 	}, [])
 
 	const fetchEmail = async () => {
-		const resp = await Axios.get(`${process.env.V2_API_URL}/credentials/mail`, {
-			headers: {
-				authorization: await WalletHelper.authToken(),
-			},
-		})
+		const resp = await Axios.get(`${process.env.V2_API_URL}/credentials/mail`)
 		const data = await resp.data.data.results[0]
 		if (data) {
 			setEmail(data.email)
@@ -63,11 +58,11 @@ const Setting = ({ close }) => {
 	const updateEmail = async () => {
 		setIsUpdating(true)
 		try {
-			const resp = await Axios.put(
-				`${process.env.V2_API_URL}/credentials/mail`,
-				{ email, preferences, minPriceOffer: parseNearAmount(minPriceOffer) },
-				{ headers: { authorization: await WalletHelper.authToken() } }
-			)
+			const resp = await Axios.put(`${process.env.V2_API_URL}/credentials/mail`, {
+				email,
+				preferences,
+				minPriceOffer: parseNearAmount(minPriceOffer),
+			})
 			const message = resp.data.data
 			const toastMessage =
 				message === 'verify-email'

@@ -82,7 +82,7 @@ const NewPage = () => {
 	const router = useRouter()
 	const toast = useToast()
 	const [formInput, setFormInput] = useState({})
-	const { selector } = useWalletSelector()
+	const { selector, viewFunction } = useWalletSelector()
 	const { errors, control, register, handleSubmit, watch, setValue, getValues } = useForm()
 	const { fields, append, remove } = useFieldArray({
 		control,
@@ -155,7 +155,6 @@ const NewPage = () => {
 		const respAudioUpload = await axios.post(`${process.env.V2_API_URL}/uploads`, formDataAudio, {
 			headers: {
 				'Content-Type': 'multipart/form-data',
-				authorization: await WalletHelper.authToken(),
 			},
 		})
 		uploadedAudioRef.current = respAudioUpload.data.data[0]?.split('://')[1]
@@ -167,7 +166,6 @@ const NewPage = () => {
 		const resp3DUpload = await axios.post(`${process.env.V2_API_URL}/uploads`, formData3D, {
 			headers: {
 				'Content-Type': 'multipart/form-data',
-				authorization: await WalletHelper.authToken(),
 			},
 		})
 		uploaded3DRef.current = resp3DUpload.data.data[0]?.split('://')[1]
@@ -209,7 +207,6 @@ const NewPage = () => {
 			resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
-					authorization: await WalletHelper.authToken(),
 				},
 			})
 			setMediaHash(resp.data.data[0].split('://')[1])
@@ -525,13 +522,13 @@ const NewPage = () => {
 		if (store.initialized && store.currentUser) {
 			fetchCollectionUser()
 		}
-	}, [store.initialized])
+	}, [store.initialized, store.currentUser])
 
 	useEffect(() => {
 		const getTxFee = async () => {
-			const txFeeContract = await WalletHelper.viewFunction({
+			const txFeeContract = await viewFunction({
 				methodName: 'get_transaction_fee',
-				contractId: process.env.NFT_CONTRACT_ID,
+				receiverId: process.env.NFT_CONTRACT_ID,
 			})
 			setTxFee(txFeeContract)
 		}
@@ -581,21 +578,13 @@ const NewPage = () => {
 		const resOutcome = await JSON.parse(`${resFromTxLast}`)
 		await retry(
 			async () => {
-				const res = await axios.post(
-					`${process.env.V2_API_URL}/categories/tokens`,
-					{
-						account_id: store.currentUser,
-						contract_id: txLast?.transaction?.receiver_id,
-						token_series_id: resOutcome?.params?.token_series_id,
-						category_id: store.selectedCategory,
-						storeToSheet: store.selectedCategory === 'art-competition' ? 'true' : 'false',
-					},
-					{
-						headers: {
-							authorization: await WalletHelper.authToken(),
-						},
-					}
-				)
+				const res = await axios.post(`${process.env.V2_API_URL}/categories/tokens`, {
+					account_id: store.currentUser,
+					contract_id: txLast?.transaction?.receiver_id,
+					token_series_id: resOutcome?.params?.token_series_id,
+					category_id: store.selectedCategory,
+					storeToSheet: store.selectedCategory === 'art-competition' ? 'true' : 'false',
+				})
 				if (res.status === 403 || res.status === 400) {
 					sentryCaptureException(res.data?.message || `Token series still haven't exist`)
 					return

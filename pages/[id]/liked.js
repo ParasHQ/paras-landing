@@ -13,7 +13,6 @@ import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import FilterDisplay from 'components/Filter/FilterDisplay'
 import useStore from 'lib/store'
-import WalletHelper from 'lib/WalletHelper'
 
 const LIMIT = 12
 
@@ -65,9 +64,6 @@ const Liked = ({ userProfile, accountId }) => {
 
 		const res = await axios.get(`${process.env.V2_API_URL}/liked-token`, {
 			params: params,
-			headers: {
-				authorization: await WalletHelper.authToken(),
-			},
 		})
 		const newData = await res.data.data.results
 
@@ -126,9 +122,6 @@ const Liked = ({ userProfile, accountId }) => {
 		const params = tokensParams(query)
 		const res = await axios.get(`${process.env.V2_API_URL}/liked-token`, {
 			params: params,
-			headers: {
-				authorization: await WalletHelper.authToken(),
-			},
 		})
 
 		const newData = res.data.data.results

@@ -32,7 +32,6 @@ import { useRouter } from 'next/router'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
 import IconLove from 'components/Icons/component/IconLove'
 import axios from 'axios'
-import WalletHelper from 'lib/WalletHelper'
 import { mutate } from 'swr'
 import { Canvas } from '@react-three/fiber'
 import { Model1 } from 'components/Model3D/ThreeDModel'
@@ -289,12 +288,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 
 		const res = await axios.put(
 			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
-			params,
-			{
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			}
+			params
 		)
 
 		mutate(`${token.contract_id}::${token.token_series_id}`)
@@ -321,12 +315,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 
 		const res = await axios.put(
 			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
-			params,
-			{
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			}
+			params
 		)
 
 		mutate(`${token.contract_id}::${token.token_series_id}`)

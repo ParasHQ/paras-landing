@@ -6,7 +6,6 @@ import Scrollbars from 'react-custom-scrollbars'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import NotificationItem from './NotificationItem'
-import WalletHelper from 'lib/WalletHelper'
 
 const LIMIT = 30
 
@@ -92,9 +91,6 @@ const NotificationList = () => {
 					account_id: currentUser,
 					_id_before: notificationListIdBefore,
 					__limit: LIMIT,
-				},
-				headers: {
-					authorization: await WalletHelper.authToken(),
 				},
 			})
 			const newData = await res.data.data

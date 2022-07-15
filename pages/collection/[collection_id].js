@@ -25,7 +25,6 @@ import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import ArtistBanned from 'components/Common/ArtistBanned'
 import cachios from 'cachios'
 import FilterDisplay from 'components/Filter/FilterDisplay'
-import WalletHelper from 'lib/WalletHelper'
 import ReactTooltip from 'react-tooltip'
 import TokenList from 'components/Token/TokenList'
 import CollectionSearch from 'components/Collection/CollectionSearch'
@@ -474,7 +473,6 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			url: `${process.env.V2_API_URL}/collections`,
 			headers: {
 				'Content-Type': 'multipart/form-data',
-				Authorization: await WalletHelper.authToken(),
 			},
 			data: formData,
 		}

@@ -13,7 +13,6 @@ import { parseImgUrl } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
-import WalletHelper from 'lib/WalletHelper'
 import { IconSpin } from 'components/Icons'
 
 const CategorySubmission = () => {
@@ -35,7 +34,6 @@ const CategorySubmission = () => {
 	}, [categoryId, currentUser])
 
 	const getCategorySubmission = async () => {
-		const auth = await WalletHelper.authToken()
 		setIsLoading(true)
 		if (categoryId) {
 			try {
@@ -47,7 +45,6 @@ const CategorySubmission = () => {
 					},
 					headers: {
 						'Content-Type': 'application/x-www-form-urlencoded',
-						authorization: auth,
 					},
 				})
 				const results = response.data.data.results
@@ -165,11 +162,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 		setIsLoading(true)
 
 		try {
-			await axios.put(`${process.env.V2_API_URL}/categories/tokens/${type}`, params, {
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			})
+			await axios.put(`${process.env.V2_API_URL}/categories/tokens/${type}`, params)
 			setShowModal('')
 			updateData(submission._id)
 		} catch (error) {
