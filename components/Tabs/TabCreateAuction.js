@@ -14,6 +14,7 @@ import WalletHelper from 'lib/WalletHelper'
 import { trackUpdateListingToken } from 'lib/ga'
 import { useToast } from 'hooks/useToast'
 import { prettyBalance } from 'utils/common'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const TabCreateAuction = ({ data, onClose }) => {
 	const [needDeposit, setNeedDeposit] = useState(false)
@@ -28,6 +29,7 @@ const TabCreateAuction = ({ data, onClose }) => {
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const [isGreaterTime, setIsGreaterTime] = useState(false)
+	const { viewFunction } = useWalletSelector()
 	const toast = useToast()
 
 	useEffect(() => {
@@ -51,15 +53,15 @@ const TabCreateAuction = ({ data, onClose }) => {
 
 	const checkStorageBalance = async () => {
 		try {
-			const currentStorage = await WalletHelper.viewFunction({
+			const currentStorage = await viewFunction({
 				methodName: 'storage_balance_of',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 
-			const supplyPerOwner = await WalletHelper.viewFunction({
+			const supplyPerOwner = await viewFunction({
 				methodName: 'get_supply_by_owner_id',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 

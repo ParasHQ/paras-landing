@@ -12,6 +12,7 @@ import WalletHelper from 'lib/WalletHelper'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Tooltip from 'components/Common/Tooltip'
 import { useToast } from 'hooks/useToast'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess }) => {
 	const { localeLn } = useIntl()
@@ -28,13 +29,14 @@ const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess }) => {
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const toast = useToast()
+	const { viewFunction, selector } = useWalletSelector()
 
 	useEffect(() => {
 		const getTxFee = async () => {
 			if (show) {
-				const txFeeContract = await WalletHelper.viewFunction({
+				const txFeeContract = await viewFunction({
 					methodName: 'get_transaction_fee',
-					contractId: process.env.MARKETPLACE_CONTRACT_ID,
+					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				})
 				setTxFee(txFeeContract)
 			}
@@ -45,15 +47,15 @@ const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess }) => {
 
 	const hasStorageBalance = async () => {
 		try {
-			const currentStorage = await WalletHelper.viewFunction({
+			const currentStorage = await viewFunction({
 				methodName: 'storage_balance_of',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 
-			const supplyPerOwner = await WalletHelper.viewFunction({
+			const supplyPerOwner = await viewFunction({
 				methodName: 'get_supply_by_owner_id',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 

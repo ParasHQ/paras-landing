@@ -11,6 +11,7 @@ import { GAS_FEE, STORAGE_ADD_MARKET_FEE, STORAGE_APPROVE_FEE } from 'config/con
 import JSBI from 'jsbi'
 import { useEffect } from 'react'
 import WalletHelper from 'lib/WalletHelper'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) => {
 	const [showAddURLModal, setShowAddURLModal] = useState(false)
@@ -23,6 +24,7 @@ const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) =
 	}))
 
 	const { localeLn } = useIntl()
+	const { viewFunction } = useWalletSelector()
 	const [hasTraded] = useState(fromUpdate ? true : false)
 
 	useEffect(() => {
@@ -35,20 +37,20 @@ const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) =
 
 	const hasStorageBalance = async () => {
 		try {
-			const currentStorage = await WalletHelper.viewFunction({
+			const currentStorage = await viewFunction({
 				methodName: `storage_balance_of`,
 				args: {
 					account_id: currentUser,
 				},
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 			})
 
-			const supplyPerOwner = await WalletHelper.viewFunction({
+			const supplyPerOwner = await viewFunction({
 				methodName: `get_supply_by_owner_id`,
 				args: {
 					account_id: currentUser,
 				},
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 			})
 
 			const usedStorage = JSBI.multiply(

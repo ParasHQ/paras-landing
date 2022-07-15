@@ -14,6 +14,7 @@ import Tooltip from 'components/Common/Tooltip'
 import { parseDate } from 'utils/common'
 import WalletHelper from 'lib/WalletHelper'
 import useStore from 'lib/store'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 	const [txFee, setTxFee] = useState(null)
@@ -31,6 +32,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 	})
 	const tooltipLockedFeeText = `This is the current locked transaction fee. Every update to the NFT price will also update the value according to the global transaction fee.`
 	const { currentUser, setTransactionRes } = useStore()
+	const { viewFunction } = useWalletSelector()
 
 	useEffect(() => {
 		const getTxFee = async () => {
@@ -38,9 +40,9 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 				process.env.NFT_CONTRACT_ID === data.contract_id
 					? data.contract_id
 					: process.env.MARKETPLACE_CONTRACT_ID
-			const txFeeContract = await WalletHelper.viewFunction({
+			const txFeeContract = await viewFunction({
 				methodName: 'get_transaction_fee',
-				contractId: contractForCall,
+				receiverId: contractForCall,
 			})
 			setTxFee(txFeeContract)
 		}

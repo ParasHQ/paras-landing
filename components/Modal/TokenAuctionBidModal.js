@@ -16,6 +16,7 @@ import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
 import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const TokenAuctionBidModal = ({ data, show, onClose, onSuccess }) => {
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
@@ -28,6 +29,7 @@ const TokenAuctionBidModal = ({ data, show, onClose, onSuccess }) => {
 		userBalance: state.userBalance,
 		setTransactionRes: state.setTransactionRes,
 	}))
+	const { viewFunction } = useWalletSelector()
 	const toast = useToast()
 
 	useEffect(() => {
@@ -38,15 +40,15 @@ const TokenAuctionBidModal = ({ data, show, onClose, onSuccess }) => {
 
 	const hasStorageBalance = async () => {
 		try {
-			const currentStorage = await WalletHelper.viewFunction({
+			const currentStorage = await viewFunction({
 				methodName: 'storage_balance_of',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 
-			const supplyPerOwner = await WalletHelper.viewFunction({
+			const supplyPerOwner = await viewFunction({
 				methodName: 'get_supply_by_owner_id',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 

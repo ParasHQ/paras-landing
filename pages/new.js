@@ -24,7 +24,6 @@ import Scrollbars from 'react-custom-scrollbars'
 import getConfig from 'config/near'
 import Tooltip from 'components/Common/Tooltip'
 import { Icon3D, IconIframe, IconInfo, IconLoader, IconX } from 'components/Icons'
-import WalletHelper from 'lib/WalletHelper'
 import AudioPlayer from 'components/Common/AudioPlayer'
 import { Canvas } from '@react-three/fiber'
 import { Model1 } from 'components/Model3D/ThreeDModel'
@@ -214,7 +213,9 @@ const NewPage = () => {
 
 			setIsUploading('success')
 
-			if (store.selectedCategory !== '' && WalletHelper.activeWallet !== 'sender') {
+			const wallet = await selector.wallet()
+
+			if (store.selectedCategory !== '' && wallet.id !== 'sender') {
 				window.sessionStorage.setItem(`categoryToken`, store.selectedCategory)
 			}
 		} catch (err) {

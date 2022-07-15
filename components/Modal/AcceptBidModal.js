@@ -7,8 +7,8 @@ import Button from 'components/Common/Button'
 import { useEffect, useState } from 'react'
 import Tooltip from 'components/Common/Tooltip'
 import { IconInfo } from 'components/Icons'
-import WalletHelper from 'lib/WalletHelper'
 import useStore from 'lib/store'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitForm }) => {
 	const { localeLn } = useIntl()
@@ -20,12 +20,13 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 		date: parseDate((txFee?.start_time || 0) * 1000),
 		fee: (txFee?.current_fee || 0) / 100,
 	})
+	const { viewFunction } = useWalletSelector()
 
 	useEffect(() => {
 		const getTxFee = async () => {
-			const txFeeContract = await WalletHelper.viewFunction({
+			const txFeeContract = await viewFunction({
 				methodName: 'get_transaction_fee',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 			})
 			setTxFee(txFeeContract)
 		}

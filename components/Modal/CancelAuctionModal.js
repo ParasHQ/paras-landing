@@ -9,6 +9,7 @@ import { IconX } from 'components/Icons'
 import { useState } from 'react'
 import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const CancelAuctionModal = ({ data, show, onClose, onSuccess }) => {
 	const { localeLn } = useIntl()
@@ -18,18 +19,19 @@ const CancelAuctionModal = ({ data, show, onClose, onSuccess }) => {
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const toast = useToast()
+	const { viewFunction } = useWalletSelector()
 
 	const hasStorageBalance = async () => {
 		try {
-			const currentStorage = await WalletHelper.viewFunction({
+			const currentStorage = await viewFunction({
 				methodName: 'storage_balance_of',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 
-			const supplyPerOwner = await WalletHelper.viewFunction({
+			const supplyPerOwner = await viewFunction({
 				methodName: 'get_supply_by_owner_id',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 

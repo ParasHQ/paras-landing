@@ -17,6 +17,7 @@ import BannedConfirmModal from './BannedConfirmModal'
 import WalletHelper from 'lib/WalletHelper'
 import TradeNFTModal from './TradeNFTModal'
 import { trackOfferToken, trackOfferTokenImpression } from 'lib/ga'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const PlaceOfferModal = ({
 	data,
@@ -47,6 +48,7 @@ const PlaceOfferModal = ({
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const [isEnableTrade, setIsEnableTrade] = useState(true)
+	const { viewFunction } = useWalletSelector()
 
 	useEffect(() => {
 		if (show) {
@@ -74,9 +76,9 @@ const PlaceOfferModal = ({
 							? { token_id: data.token_id }
 							: { token_series_id: data.token_series_id }),
 					}
-					const bidData = await WalletHelper.viewFunction({
+					const bidData = await viewFunction({
 						methodName: 'get_offer',
-						contractId: process.env.MARKETPLACE_CONTRACT_ID,
+						receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 						args: params,
 					})
 					setHasBid(true)
@@ -91,15 +93,15 @@ const PlaceOfferModal = ({
 
 	const hasStorageBalance = async () => {
 		try {
-			const currentStorage = await WalletHelper.viewFunction({
+			const currentStorage = await viewFunction({
 				methodName: 'storage_balance_of',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 
-			const supplyPerOwner = await WalletHelper.viewFunction({
+			const supplyPerOwner = await viewFunction({
 				methodName: 'get_supply_by_owner_id',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 
