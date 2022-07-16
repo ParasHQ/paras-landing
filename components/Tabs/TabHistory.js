@@ -436,7 +436,11 @@ const Activity = ({ activity }) => {
 		return null
 	}
 
-	if (activity.type === 'resolve_purchase_fail' || activity.type === 'notification_add_offer') {
+	if (
+		activity.type === 'resolve_purchase_fail' ||
+		activity.type === 'notification_add_offer' ||
+		activity.type === 'notification_nft_sold_for_offer'
+	) {
 		return null
 	}
 
