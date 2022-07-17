@@ -11,7 +11,7 @@ import CopyLink from 'components/Common/CopyLink'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { SHOW_TX_HASH_LINK } from 'constants/common'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 import useStore from 'lib/store'
 import { IconShareActivity, IconTriangle } from 'components/Icons'
 import useTokenOrTokenSeries from 'hooks/useTokenOrTokenSeries'
@@ -127,7 +127,7 @@ const ActivityDetail = ({ activity, index, isLoading }) => {
 	const topCardPositionStyle = `-top-10 left-0 md:left-0 z-30`
 	const bottomCardPositionStyle = `-top-8 left-2 md:left-2 z-20`
 	const isTradeActivity = activity?.type?.includes('trade')
-	const router = useRouter()
+	// const router = useRouter()
 	const store = useStore()
 	const currentUser = useStore((state) => state.currentUser)
 
@@ -405,20 +405,23 @@ const ActivityDetail = ({ activity, index, isLoading }) => {
 										onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
 									>
 										<Link
-											href={{
-												pathname: router.pathname,
-												query: {
-													...router.query,
-													...(activity.token_id
-														? { tokenId: localToken?.token_id }
-														: { tokenSeriesId: localToken?.token_series_id }),
-													contractId: localToken?.contract_id,
-												},
-											}}
-											as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+											href={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
 												activity.token_id ? `/${localToken?.token_id}` : ''
 											}`}
-											scroll={false}
+											// href={{
+											// 	pathname: router.pathname,
+											// 	query: {
+											// 		...router.query,
+											// 		...(activity.token_id
+											// 			? { tokenId: localToken?.token_id }
+											// 			: { tokenSeriesId: localToken?.token_series_id }),
+											// 		contractId: localToken?.contract_id,
+											// 	},
+											// }}
+											// as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+											// 	activity.token_id ? `/${localToken?.token_id}` : ''
+											// }`}
+											// scroll={false}
 											shallow
 										>
 											<a onClick={(e) => isTradeActivity && e.preventDefault()}>
@@ -453,20 +456,23 @@ const ActivityDetail = ({ activity, index, isLoading }) => {
 											onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
 										>
 											<Link
-												href={{
-													pathname: router.pathname,
-													query: {
-														...router.query,
-														...(activity.token_id
-															? { tokenId: localToken?.token_id }
-															: { tokenSeriesId: localToken?.token_series_id }),
-														contractId: localToken?.contract_id,
-													},
-												}}
-												as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+												href={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
 													activity.token_id ? `/${localToken?.token_id}` : ''
 												}`}
-												scroll={false}
+												// href={{
+												// 	pathname: router.pathname,
+												// 	query: {
+												// 		...router.query,
+												// 		...(activity.token_id
+												// 			? { tokenId: localToken?.token_id }
+												// 			: { tokenSeriesId: localToken?.token_series_id }),
+												// 		contractId: localToken?.contract_id,
+												// 	},
+												// }}
+												// as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+												// 	activity.token_id ? `/${localToken?.token_id}` : ''
+												// }`}
+												// scroll={false}
 												shallow
 											>
 												<a onClick={(e) => isTradeActivity && e.preventDefault()}>
@@ -507,20 +513,23 @@ const ActivityDetail = ({ activity, index, isLoading }) => {
 										</a>
 									</Link>
 									<Link
-										href={{
-											pathname: router.pathname,
-											query: {
-												...router.query,
-												...(activity.token_id
-													? { tokenId: localToken?.token_id }
-													: { tokenSeriesId: localToken?.token_series_id }),
-												contractId: localToken?.contract_id,
-											},
-										}}
-										as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+										href={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
 											activity.token_id ? `/${localToken?.token_id}` : ''
 										}`}
-										scroll={false}
+										// href={{
+										// 	pathname: router.pathname,
+										// 	query: {
+										// 		...router.query,
+										// 		...(activity.token_id
+										// 			? { tokenId: localToken?.token_id }
+										// 			: { tokenSeriesId: localToken?.token_series_id }),
+										// 		contractId: localToken?.contract_id,
+										// 	},
+										// }}
+										// as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+										// 	activity.token_id ? `/${localToken?.token_id}` : ''
+										// }`}
+										// scroll={false}
 										shallow
 									>
 										<a className="font-semibold z-20 text-sm md:text-md hover:text-gray-300">

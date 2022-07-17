@@ -43,21 +43,22 @@ const TopTransactionCard = ({ contract_token_id, setLocalToken }) => {
 						isMediaCdn: token.isMediaCdn,
 					})}
 					onClick={() => {
-						router.push(
-							{
-								pathname: router.pathname,
-								query: {
-									...router.query,
-									tokenId: token.token_id,
-									contractId: token.contract_id,
-								},
-							},
-							`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`,
-							{
-								shallow: true,
-								scroll: false,
-							}
-						)
+						router.push(`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`)
+						// router.push(
+						// 	{
+						// 		pathname: router.pathname,
+						// 		query: {
+						// 			...router.query,
+						// 			tokenId: token.token_id,
+						// 			contractId: token.contract_id,
+						// 		},
+						// 	},
+						// 	`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`,
+						// 	{
+						// 		shallow: true,
+						// 		scroll: false,
+						// 	}
+						// )
 					}}
 					imgBlur={token.metadata.blurhash}
 					token={{

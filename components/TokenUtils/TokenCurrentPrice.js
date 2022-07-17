@@ -81,15 +81,6 @@ const TokenCurrentPrice = ({ localToken, className, typeCurrentPrice }) => {
 		setShowModal('updatePriceSeries')
 	}
 
-	const handleScroll = () => {
-		const scrollDiv = document.getElementById('owner-section').offsetTop
-		if (window.innerWidth < 720) {
-			window.scrollTo({ top: scrollDiv, behavior: 'smooth' })
-		} else {
-			window.scrollTo({ top: scrollDiv + 800, behavior: 'smooth' })
-		}
-	}
-
 	const isCreator = () => {
 		if (!currentUser) {
 			return false
@@ -168,7 +159,7 @@ const TokenCurrentPrice = ({ localToken, className, typeCurrentPrice }) => {
 			)
 		} else {
 			return (
-				<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
+				<Button size="md" onClick={onClickOffer} isFullWidth variant="ghost">
 					{`Place an offer`}
 				</Button>
 			)
@@ -300,3 +291,12 @@ const TokenCurrentPrice = ({ localToken, className, typeCurrentPrice }) => {
 }
 
 export default TokenCurrentPrice
+
+export const handleScroll = () => {
+	const scrollDiv = document.getElementById('owner-section').offsetTop
+	if (window.innerWidth < 720) {
+		window.scrollTo({ top: scrollDiv, behavior: 'smooth' })
+	} else {
+		window.scrollTo({ top: scrollDiv + 800, behavior: 'smooth' })
+	}
+}

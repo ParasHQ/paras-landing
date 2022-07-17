@@ -13,6 +13,7 @@ import TokenInfo from 'components/TokenUtils/TokenInfo'
 import TokenMoreCollection from 'components/TokenUtils/TokenMoreCollection'
 import TokenAuction from 'components/TokenUtils/TokenAuction'
 import TokenBidHistory from 'components/TokenUtils/TokenBidHistory'
+import { IconArrow } from 'components/Icons'
 
 const TokenSeriesDetailNew = ({ token, tokenId }) => {
 	const [showModal, setShowModal] = useState(null)
@@ -24,6 +25,11 @@ const TokenSeriesDetailNew = ({ token, tokenId }) => {
 	return (
 		<div className="md:grid auto-rows-auto grid-cols-2 gap-x-10">
 			<div className="row-span-6">
+				<div className="mb-4">
+					<a onClick={() => history.back()}>
+						<IconArrow className="hover:cursor-pointer" size={40} />
+					</a>
+				</div>
 				<div className="w-full h-auto mb-10">
 					<Card
 						imgUrl={parseImgUrl(token.metadata.media, null, {
@@ -76,11 +82,7 @@ const TokenSeriesDetailNew = ({ token, tokenId }) => {
 						/>
 					)}
 					<TokenDescription localToken={token} className="mb-10" />
-					<TokenPriceHistory
-						localToken={token}
-						setShowModal={(e) => setShowModal(e)}
-						className="mb-10"
-					/>
+					<TokenPriceHistory localToken={token} typePriceHistory="token-series" className="mb-10" />
 					<TokenAttributes localToken={token} className="mb-10" />
 					<TokenOwners localToken={token} className="mb-10" />
 					<TokenOffers localToken={token} className="mb-10" />
@@ -111,11 +113,7 @@ const TokenSeriesDetailNew = ({ token, tokenId }) => {
 						className="col-start-2 mb-10"
 					/>
 				)}
-				<TokenPriceHistory
-					localToken={token}
-					setShowModal={(e) => setShowModal(e)}
-					className="mb-10"
-				/>
+				<TokenPriceHistory localToken={token} typePriceHistory="token-series" className="mb-10" />
 				<TokenOwners localToken={token} className="mb-10" />
 				<TokenOffers localToken={token} />
 			</div>
