@@ -13,8 +13,6 @@ import Script from 'next/script'
 import '../styles/font.css'
 import '../styles/tailwind.css'
 import 'draft-js/dist/Draft.css'
-import 'slick-carousel/slick/slick.css'
-import 'slick-carousel/slick/slick-theme.css'
 import 'croppie/croppie.css'
 
 import ToastProvider from 'hooks/useToast'
