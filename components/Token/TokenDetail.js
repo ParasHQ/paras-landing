@@ -9,7 +9,7 @@ import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
-import { capitalize, parseImgUrl, prettyBalance, abbrNum } from 'utils/common'
+import { capitalize, parseImgUrl, prettyBalance, abbrNum, prettyTruncate } from 'utils/common'
 import TokenMoreModal from '../Modal/TokenMoreModal'
 import TokenShareModal from '../Modal/TokenShareModal'
 import TokenUpdatePriceModal from '../Modal/TokenUpdatePriceModal'
@@ -554,7 +554,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 							</div>
 
 							<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
-								{token.metadata.title}
+								{prettyTruncate(token.metadata.title, 28)}
 							</h1>
 							<div className="mt-1 text-white flex">
 								<p className="mr-1">{localeLn('by')}</p>
@@ -622,7 +622,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 									</div>
 
 									<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
-										{token.metadata.title}
+										{prettyTruncate(token.metadata.title, 26)}
 									</h1>
 									<div className="mt-1 text-white flex">
 										<p className="mr-1">{localeLn('by')}</p>

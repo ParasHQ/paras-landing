@@ -7,7 +7,7 @@ import { IconDots, IconLoader } from 'components/Icons'
 import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
-import { capitalize, parseImgUrl, abbrNum } from 'utils/common'
+import { capitalize, parseImgUrl, abbrNum, prettyTruncate } from 'utils/common'
 import TokenSeriesTransferBuyer from '../Modal/TokenSeriesTransferBuyer'
 import TokenSeriesUpdatePriceModal from '../Modal/TokenSeriesUpdatePriceModal'
 import TokenSeriesBuyModal from '../Modal/TokenSeriesBuyModal'
@@ -544,7 +544,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 							</div>
 
 							<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
-								{token.metadata.title}
+								{prettyTruncate(token.metadata.title, 28)}
 							</h1>
 							<div className="mt-1 text-white flex">
 								<p className="mr-1">by</p>
@@ -596,7 +596,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 									</div>
 
 									<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
-										{token.metadata.title}
+										{prettyTruncate(token.metadata.title, 26)}
 									</h1>
 									<div className="mt-1 text-white flex">
 										<p className="mr-1">by</p>
