@@ -15,6 +15,7 @@ import { useIntl } from 'hooks/useIntl'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import FilterMarket from 'components/Filter/FilterMarket'
 import FilterDisplay from 'components/Filter/FilterDisplay'
+import sanitize from 'sanitize-html'
 
 const LIMIT = 12
 
@@ -45,6 +46,13 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 	)
 
 	const { categoryId } = router.query
+
+	const sanitizeHTML = (content) =>
+		sanitize(content, {
+			allowedAttributes: {
+				'*': ['style', 'href', 'target'],
+			},
+		})
 
 	useEffect(() => {
 		if (categoryList) {
@@ -264,7 +272,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 								<div
 									className="category-description text-gray-200 max-w-lg"
 									dangerouslySetInnerHTML={{
-										__html: categoryDetail.description,
+										__html: sanitizeHTML(categoryDetail.description),
 									}}
 								></div>
 							</div>

@@ -1,6 +1,14 @@
+import sanitize from 'sanitize-html'
 import LaunchpadContentLoader from './LaunchpadContentLoader'
 
 const LaunchpadContent = ({ project, tabActive, setTabActive, isValidating }) => {
+	const sanitizeHTML = (content) =>
+		sanitize(content, {
+			allowedAttributes: {
+				'*': ['style', 'href', 'target'],
+			},
+		})
+
 	return (
 		<>
 			<div className="flex justify-center md:justify-start gap-10 mb-6 text-gray-200">
@@ -31,7 +39,7 @@ const LaunchpadContent = ({ project, tabActive, setTabActive, isValidating }) =>
 			</div>
 			<div className="text-gray-200 text-justify">
 				{tabActive === 'story' && !isValidating ? (
-					<div dangerouslySetInnerHTML={{ __html: project.content.story }} />
+					<div dangerouslySetInnerHTML={{ __html: sanitizeHTML(project.content.story) }} />
 				) : (
 					project?.content.story && (
 						<>
@@ -51,7 +59,7 @@ const LaunchpadContent = ({ project, tabActive, setTabActive, isValidating }) =>
 					)
 				)}
 				{tabActive === 'roadmap' && !isValidating ? (
-					<div dangerouslySetInnerHTML={{ __html: project.content.roadmap }} />
+					<div dangerouslySetInnerHTML={{ __html: sanitizeHTML(project.content.roadmap) }} />
 				) : (
 					project?.content.roadmap && (
 						<>
@@ -71,7 +79,7 @@ const LaunchpadContent = ({ project, tabActive, setTabActive, isValidating }) =>
 					)
 				)}
 				{tabActive === 'team' && !isValidating ? (
-					<div dangerouslySetInnerHTML={{ __html: project.content.team }} />
+					<div dangerouslySetInnerHTML={{ __html: sanitizeHTML(project.content.team) }} />
 				) : (
 					project?.content.team && (
 						<>
