@@ -3,6 +3,7 @@ import Compressor from 'compressorjs'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import crypto from 'crypto'
+import sanitize from 'sanitize-html'
 
 TimeAgo.addLocale(en)
 export const timeAgo = new TimeAgo('en-US')
@@ -296,3 +297,10 @@ export const abbrNum = (number, decPlaces) => {
 export const isEmptyObject = (obj) => {
 	return obj && Object.keys(obj).length === 0 && Object.getPrototypeOf(obj) === Object.prototype
 }
+
+export const sanitizeHTML = (content) =>
+	sanitize(content, {
+		allowedAttributes: {
+			'*': ['style', 'href', 'target'],
+		},
+	})

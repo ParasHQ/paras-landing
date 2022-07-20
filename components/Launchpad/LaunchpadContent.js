@@ -1,14 +1,7 @@
-import sanitize from 'sanitize-html'
+import { sanitizeHTML } from 'utils/common'
 import LaunchpadContentLoader from './LaunchpadContentLoader'
 
 const LaunchpadContent = ({ project, tabActive, setTabActive, isValidating }) => {
-	const sanitizeHTML = (content) =>
-		sanitize(content, {
-			allowedAttributes: {
-				'*': ['style', 'href', 'target'],
-			},
-		})
-
 	return (
 		<>
 			<div className="flex justify-center md:justify-start gap-10 mb-6 text-gray-200">

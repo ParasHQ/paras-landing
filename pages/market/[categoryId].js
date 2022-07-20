@@ -7,7 +7,7 @@ import Footer from 'components/Footer'
 import useStore from 'lib/store'
 import CardList from 'components/TokenSeries/CardList'
 import CardListLoader from 'components/Card/CardListLoader'
-import { parseImgUrl, parseSortQuery, setDataLocalStorage } from 'utils/common'
+import { parseImgUrl, parseSortQuery, sanitizeHTML, setDataLocalStorage } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CategoryList from 'components/CategoryList'
 import AddCategoryModal from 'components/Modal/AddCategoryModal'
@@ -15,7 +15,6 @@ import { useIntl } from 'hooks/useIntl'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import FilterMarket from 'components/Filter/FilterMarket'
 import FilterDisplay from 'components/Filter/FilterDisplay'
-import sanitize from 'sanitize-html'
 
 const LIMIT = 12
 
@@ -46,13 +45,6 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 	)
 
 	const { categoryId } = router.query
-
-	const sanitizeHTML = (content) =>
-		sanitize(content, {
-			allowedAttributes: {
-				'*': ['style', 'href', 'target'],
-			},
-		})
 
 	useEffect(() => {
 		if (categoryList) {
