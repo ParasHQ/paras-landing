@@ -14,6 +14,8 @@ export default function CountdownSimple({ endedDate = 1656657390000 }) {
 		if (distance <= 0) {
 			setNum(Math.max(0, distance))
 			clearInterval(intervalRef.current)
+		} else {
+			setNum(Math.max(0, distance))
 		}
 	}
 

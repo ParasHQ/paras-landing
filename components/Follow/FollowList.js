@@ -43,8 +43,13 @@ const FollowList = ({ data, userProfile, getMoreData, hasMore, typeFollow }) => 
 			}
 		}
 
-		mutate(userProfile.accountId)
 		setIsLoading('')
+
+		if (currentUser === userProfile.accountId) {
+			setTimeout(() => {
+				mutate(userProfile.accountId)
+			}, 200)
+		}
 	}
 
 	return (
@@ -138,7 +143,6 @@ const ButtonUnfollow = ({ idx, buttonHover, loading, followAction = () => {} }) 
 			size="sm"
 			loadingStyle="h-2"
 			isLoading={loading}
-			variant="error"
 			onClick={() => followAction()}
 		>
 			{buttonHover === idx ? 'Unfollow' : 'Following'}

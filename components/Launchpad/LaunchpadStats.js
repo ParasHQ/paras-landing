@@ -3,6 +3,8 @@ import ReactTooltip from 'react-tooltip'
 import { projectStatus } from './LaunchpadItem'
 import LaunchpadStatsLoader from './LaunchpadStatsLoader'
 import TimeLaunchpad from './TimeLaunchpad'
+import { IconWarning } from 'components/Icons'
+import { checkPriceMintCalendar } from 'components/Home/HomeLaunchpad'
 
 const getMintDuration = (startDateTime, endDateTime) => {
 	const startDate = new Date(startDateTime)
@@ -39,7 +41,7 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 				)
 			case 'upcoming':
 				if (mintDuration === 0) {
-					return `None`
+					return project.mint_details[0].duration_in_hour
 				}
 				return `${mintDuration} Hours`
 			case 'end':
@@ -59,6 +61,13 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 	) : (
 		<>
 			{showTooltip && <ReactTooltip id={randomID} place="top" type="dark" />}
+			<div className="max-w-3xl md:mx-auto flex justify-between items-center gap-2 border-2 border-orange-300 rounded-md text-white text-justify md:text-left mb-10 p-2 pl-4 mx-4">
+				<IconWarning />
+				<p>
+					This project is not an endorsement from Paras or a guarantee of listing on Paras
+					post-mint. Dates may be subject to change. Please DYOR
+				</p>
+			</div>
 			<div className="max-w-3xl mx-auto mb-16 grid grid-cols-2 md:flex md:flex-wrap md:items-center md:justify-between text-gray-200">
 				<div
 					className={`text-center mb-5 md:mb-0 ${
@@ -122,8 +131,8 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 					<p>Mint Duration</p>
 				</div>
 				<div className="text-center" data-for={randomID} data-tip="Mint price">
-					<p className="text-2xl font-bold">
-						{project.mint_details[0].price ? `${project.mint_details[0].price} Ⓝ` : `None`}
+					<p className="text-xl font-bold">
+						{project.mint_details[0].price ? checkPriceMintCalendar(project) : `None`}
 					</p>
 					<p>Starting Price</p>
 				</div>

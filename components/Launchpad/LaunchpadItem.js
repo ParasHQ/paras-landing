@@ -1,8 +1,9 @@
-import { parseImgUrl } from 'utils/common'
+import { parseImgUrl, prettyTruncate } from 'utils/common'
 import { generateFromString } from 'generate-avatar'
 import router from 'next/router'
 import TimeLaunchpad from './TimeLaunchpad'
 import { useState } from 'react'
+import { checkPriceMintCalendar } from 'components/Home/HomeLaunchpad'
 
 const LaunchpadItem = ({ project, className }) => {
 	const [isEndedTime, setIsEndedTime] = useState(false)
@@ -58,7 +59,10 @@ const LaunchpadItem = ({ project, className }) => {
 					<div className="flex my-1 text-center gap-1">
 						<p className="font-light text-xs text-white text-opacity-70 mb-1">Price</p>
 						<p className="font-bold text-xs">
-							{project.mint_details[0].price ? `${project.mint_details[0].price} Ⓝ` : `None`}
+							{prettyTruncate(
+								project.mint_details[0].price ? checkPriceMintCalendar(project) : `None`,
+								7
+							)}
 						</p>
 					</div>
 				</div>

@@ -16,6 +16,7 @@
 		"jsx-a11y/alt-text": "off",
 		"no-unused-vars": "warn",
 		"no-useless-catch": "warn",
-		"no-console": "warn"
+		"no-console": "warn",
+		"@next/next/no-document-import-in-page": "off"
 	}
 }

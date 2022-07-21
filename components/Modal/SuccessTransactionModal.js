@@ -20,7 +20,7 @@ import {
 	TwitterShareButton,
 } from 'react-share'
 import { mutate } from 'swr'
-import { decodeBase64, prettyBalance } from 'utils/common'
+import { decodeBase64, prettyBalance, prettyTruncate } from 'utils/common'
 import retry from 'async-retry'
 
 const SuccessTransactionModal = () => {
@@ -323,54 +323,54 @@ const SuccessTransactionModal = () => {
 		if (txDetail.method_name === 'add_offer') {
 			return (
 				<>
-					You successfully offer <b>{token.metadata.title}</b> for{' '}
+					You successfully offer <b>{prettyTruncate(token.metadata.title, 30)}</b> for{' '}
 					{formatNearAmount(txDetail.args.price)} Ⓝ
 				</>
 			)
 		} else if (txDetail.method_name === 'add_bid') {
 			return (
 				<>
-					You successfully bid of auction <b>{token.metadata.title}</b> for{' '}
+					You successfully bid of auction <b>{prettyTruncate(token.metadata.title, 30)}</b> for{' '}
 					{prettyBalance(txDetail.args.amount, 24, 2)} Ⓝ
 				</>
 			)
 		} else if (txDetail.method_name === 'cancel_bid') {
 			return (
 				<>
-					You successfully remove bid auction <b>{token.metadata.title}</b> for{' '}
+					You successfully remove bid auction <b>{prettyTruncate(token.metadata.title, 30)}</b> for{' '}
 					{formatNearAmount(txDetail.args.amount)} Ⓝ
 				</>
 			)
 		} else if (txDetail.method_name === 'accept_bid') {
 			return (
 				<>
-					You successfully accept bid auction <b>{token.metadata.title}</b>
+					You successfully accept bid auction <b>{prettyTruncate(token.metadata.title, 30)}</b>
 				</>
 			)
 		} else if (txDetail.method_name === 'cancel_auction') {
 			return (
 				<>
-					You successfully remove auction <b>{token.metadata.title}</b>
+					You successfully remove auction <b>{prettyTruncate(token.metadata.title, 30)}</b>
 				</>
 			)
 		} else if (txDetail.method_name === 'nft_buy' || txDetail.method_name === 'buy') {
 			return (
 				<>
-					You successfully purchase <b>{token.metadata.title}</b>
+					You successfully purchase <b>{prettyTruncate(token.metadata.title, 30)}</b>
 				</>
 			)
 		} else if (txDetail.method_name === 'nft_set_series_price') {
 			if (txDetail.args.price) {
 				return (
 					<>
-						You successfully update <b>{token.metadata.title}</b> price to{' '}
+						You successfully update <b>{prettyTruncate(token.metadata.title, 30)}</b> price to{' '}
 						{formatNearAmount(txDetail.args.price)} Ⓝ
 					</>
 				)
 			}
 			return (
 				<>
-					You successfully remove the listing <b>{token.metadata.title}</b>
+					You successfully remove the listing <b>{prettyTruncate(token.metadata.title, 30)}</b>
 				</>
 			)
 		} else if (txDetail.method_name === 'nft_approve') {
@@ -379,7 +379,7 @@ const SuccessTransactionModal = () => {
 				return (
 					<>
 						You successfully {msg.is_auction ? 'create auction' : 'update'}{' '}
-						<b>{token.metadata.title}</b>{' '}
+						<b>{prettyTruncate(token.metadata.title, 30)}</b>{' '}
 						{msg.is_auction ? 'with starting price ' : 'update price to'}{' '}
 						{formatNearAmount(msg.price || 0)} Ⓝ
 					</>
@@ -387,13 +387,13 @@ const SuccessTransactionModal = () => {
 			} else if (msg.market_type === 'accept_offer') {
 				return (
 					<>
-						You successfully accept offer <b>{token.metadata.title}</b>
+						You successfully accept offer <b>{prettyTruncate(token.metadata.title, 30)}</b>
 					</>
 				)
 			} else if (msg.market_type === 'add_trade') {
 				return (
 					<>
-						You successfully trade your NFT <b>{token.metadata.title}</b>
+						You successfully trade your NFT <b>{prettyTruncate(token.metadata.title, 30)}</b>
 					</>
 				)
 			} else if (
@@ -402,20 +402,20 @@ const SuccessTransactionModal = () => {
 			) {
 				return (
 					<>
-						You successfully accept NFT <b>{token.metadata.title}</b>
+						You successfully accept NFT <b>{prettyTruncate(token.metadata.title, 30)}</b>
 					</>
 				)
 			}
 		} else if (txDetail.method_name === 'delete_market_data') {
 			return (
 				<>
-					You successfully remove the listing <b>{token.metadata.title}</b>
+					You successfully remove the listing <b>{prettyTruncate(token.metadata.title, 30)}</b>
 				</>
 			)
 		} else if (txDetail.method_name === 'nft_create_series') {
 			return (
 				<>
-					You successfully create <b>{token.metadata.title}</b>
+					You successfully create <b>{prettyTruncate(token.metadata.title, 30)}</b>
 				</>
 			)
 		}

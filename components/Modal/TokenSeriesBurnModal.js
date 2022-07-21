@@ -152,6 +152,7 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 								onClick={onBurnToken}
 								isDisabled={
 									!burnCopies ||
+									burnCopies === '0' ||
 									burnCopies > data.metadata.copies - (data.total_mint || 0) ||
 									isBurning
 								}

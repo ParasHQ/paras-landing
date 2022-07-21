@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import Button from 'components/Common/Button'
+import { prettyTruncate } from 'utils/common'
 
 const FilterAttribute = ({ attributes, onClearAll }) => {
 	const [attributeFilter, setAttributeFilter] = useState([])
@@ -145,7 +146,7 @@ const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attribu
 				onClick={() => setIsOpen(!isOpen)}
 				className="flex flex-row justify-between items-center w-full text-white p-2"
 			>
-				<p className="font-medium text-lg">{attribute}</p>
+				<p className="font-medium text-lg text-left">{prettyTruncate(attribute, 38)}</p>
 				<div className="flex flex-col items-center justify-center text-center">
 					<p className="text-opacity-15 text-white text-xs">
 						{Object.keys(attributes[attribute]).length}
@@ -176,7 +177,9 @@ const AttributeItem = ({ attributeFilter, setAttributeFilter, attribute, attribu
 										onChange={() => addAttribute({ [attribute]: value })}
 										checked={checkIfObjectExist({ [attribute]: value })}
 									/>
-									<p className="font-thin text-white text-sm py-1 md:py-2">{value}</p>
+									<p className="font-thin text-white text-sm py-1 md:py-2">
+										{prettyTruncate(value, 30)}
+									</p>
 									<p className="font-thin text-right flex-grow text-gray-500 text-sm py-1 md:py-2">
 										{attributes[attribute][value].count} (
 										{attributes[attribute][value].rarity?.rarity > 1

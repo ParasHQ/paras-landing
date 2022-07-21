@@ -452,7 +452,7 @@ const TokenSeriesSingle = ({
 									started_at: token.token?.started_at,
 									ended_at: token.token?.ended_at,
 									has_auction: token?.has_auction,
-									animation_url: token?.animation_url,
+									animation_url: token?.metadata?.animation_url,
 								}}
 								profileCollection={profileCollection}
 								type={type}
@@ -534,9 +534,9 @@ const TokenSeriesSingle = ({
 							displayType === 'large' ? `flex gap-1` : `flex gap-1`
 						} text-right absolute top-0 right-0 flex-col items-end`}
 					>
-						{type === 'collection' && !!token.metadata.score && (
+						{type === 'collection' && !!token.metadata.rank && (
 							<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
-								Rarity Score {token.metadata?.score?.toFixed(2)}
+								Rank {token.metadata?.rank}
 							</p>
 						)}
 						{showLike && (

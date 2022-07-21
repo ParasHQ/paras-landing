@@ -293,7 +293,7 @@ const User = () => {
 							</Link>
 							<a
 								className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
-								href="https://launchpad.enleap.app/"
+								href="http://enleap.app/"
 								target={'_blank'}
 								rel="noreferrer"
 							>
