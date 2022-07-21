@@ -8,10 +8,10 @@ import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackBurnTokenSeries } from 'lib/ga'
-import WalletHelper from 'lib/WalletHelper'
 import useStore from 'lib/store'
 import { useToast } from 'hooks/useToast'
 import { mutate } from 'swr'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
@@ -20,6 +20,7 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 	const { localeLn } = useIntl()
 	const { currentUser } = useStore()
 	const toast = useToast()
+	const { selector } = useWalletSelector()
 
 	const onBurnToken = async () => {
 		if (!currentUser) {
@@ -33,25 +34,22 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 				token_series_id: data.token_series_id,
 				decrease_copies: burnCopies,
 			}
-			const res = await WalletHelper.callFunction({
-				contractId: data.contract_id,
-				methodName: `nft_decrease_series_copies`,
-				args: params,
-				gas: GAS_FEE,
-				deposit: `1`,
+			const wallet = await selector.wallet()
+			const res = await wallet.signAndSendTransaction({
+				receiverId: data.contract_id,
+				actions: [
+					{
+						type: 'FunctionCall',
+						params: {
+							methodName: `nft_decrease_series_copies`,
+							args: params,
+							gas: GAS_FEE,
+							deposit: `1`,
+						},
+					},
+				],
 			})
-			if (res?.response.error) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							{res?.response.error.kind.ExecutionError}
-						</div>
-					),
-					type: 'error',
-					duration: 2500,
-				})
-				return
-			} else if (res) {
+			if (res) {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
@@ -72,6 +70,15 @@ const TokenSeriesBurnModal = ({ show, onClose, data }) => {
 			}
 			setIsBurning(false)
 		} catch (err) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{err.message || localeLn('SomethingWentWrong')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 			sentryCaptureException(err)
 			setIsBurning(false)
 		}

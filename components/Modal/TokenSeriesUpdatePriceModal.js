@@ -12,7 +12,6 @@ import { trackRemoveListingTokenSeries, trackUpdateListingTokenSeries } from 'li
 import { useForm } from 'react-hook-form'
 import Tooltip from 'components/Common/Tooltip'
 import { parseDate } from 'utils/common'
-import WalletHelper from 'lib/WalletHelper'
 import useStore from 'lib/store'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 
@@ -32,7 +31,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 	})
 	const tooltipLockedFeeText = `This is the current locked transaction fee. Every update to the NFT price will also update the value according to the global transaction fee.`
 	const { currentUser, setTransactionRes } = useStore()
-	const { viewFunction } = useWalletSelector()
+	const { selector, viewFunction } = useWalletSelector()
 
 	useEffect(() => {
 		const getTxFee = async () => {
@@ -73,17 +72,25 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 		trackUpdateListingTokenSeries(data.token_series_id)
 
 		try {
-			const res = await WalletHelper.callFunction({
-				contractId: data.contract_id,
-				methodName: `nft_set_series_price`,
-				args: params,
-				gas: GAS_FEE,
-				deposit: `1`,
+			const wallet = await selector.wallet()
+			const res = await wallet.signAndSendTransaction({
+				receiverId: data.contract_id,
+				actions: [
+					{
+						type: 'FunctionCall',
+						params: {
+							methodName: `nft_set_series_price`,
+							args: params,
+							gas: GAS_FEE,
+							deposit: `1`,
+						},
+					},
+				],
 			})
 
-			if (res?.response) {
+			if (res) {
 				onClose()
-				setTransactionRes(res?.response)
+				setTransactionRes([res])
 			}
 			setIsUpdatingPrice(false)
 		} catch (err) {
@@ -103,17 +110,25 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 			const params = {
 				token_series_id: data.token_series_id,
 			}
-			const res = await WalletHelper.callFunction({
-				contractId: data.contract_id,
-				methodName: `nft_set_series_price`,
-				args: params,
-				gas: GAS_FEE,
-				deposit: `1`,
+			const wallet = await selector.wallet()
+			const res = await wallet.signAndSendTransaction({
+				receiverId: data.contract_id,
+				actions: [
+					{
+						type: 'FunctionCall',
+						params: {
+							methodName: `nft_set_series_price`,
+							args: params,
+							gas: GAS_FEE,
+							deposit: `1`,
+						},
+					},
+				],
 			})
 
-			if (res?.response) {
+			if (res) {
 				onClose()
-				setTransactionRes(res?.response)
+				setTransactionRes([res])
 			}
 			setIsRemovingPrice(false)
 		} catch (err) {

@@ -13,7 +13,7 @@ import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
 import useStore from 'lib/store'
-import WalletHelper from 'lib/WalletHelper'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
@@ -21,6 +21,7 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 	const [isBuying, setIsBuying] = useState(false)
 	const { currentUser, setTransactionRes } = useStore()
 	const creatorData = useProfileData(data.metadata.creator_id)
+	const { selector } = useWalletSelector()
 
 	const { localeLn } = useIntl()
 
@@ -46,16 +47,24 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 		trackBuyTokenSeries(data.token_series_id)
 
 		try {
-			const res = await WalletHelper.callFunction({
-				contractId: data.contract_id,
-				methodName: `nft_buy`,
-				args: params,
-				gas: GAS_FEE,
-				deposit: attachedDeposit.toString(),
+			const wallet = await selector.wallet()
+			const res = await wallet.signAndSendTransaction({
+				receiverId: data.contract_id,
+				actions: [
+					{
+						type: 'FunctionCall',
+						params: {
+							methodName: `nft_buy`,
+							args: params,
+							gas: GAS_FEE,
+							deposit: attachedDeposit.toString(),
+						},
+					},
+				],
 			})
-			if (res?.response) {
+			if (res) {
 				onClose()
-				setTransactionRes(res?.response)
+				setTransactionRes([res])
 			}
 			setIsBuying(false)
 		} catch (err) {

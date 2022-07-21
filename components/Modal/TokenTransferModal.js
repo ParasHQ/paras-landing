@@ -12,7 +12,7 @@ import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import { trackTransferToken } from 'lib/ga'
 import useStore from 'lib/store'
-import WalletHelper from 'lib/WalletHelper'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const TokenTransferModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
@@ -21,6 +21,7 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 	const { currentUser } = useStore()
 	const toast = useToast()
 	const { localeLn } = useIntl()
+	const { selector } = useWalletSelector()
 
 	const onTransfer = async () => {
 		if (!currentUser) {
@@ -66,25 +67,22 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 		trackTransferToken(data.token_id)
 
 		try {
-			const res = await WalletHelper.callFunction({
-				contractId: data.contract_id,
-				methodName: `nft_transfer`,
-				args: params,
-				gas: GAS_FEE,
-				deposit: `1`,
+			const wallet = await selector.wallet()
+			const res = await wallet.signAndSendTransaction({
+				receiverId: data.contract_id,
+				actions: [
+					{
+						type: 'FunctionCall',
+						params: {
+							methodName: `nft_transfer`,
+							args: params,
+							gas: GAS_FEE,
+							deposit: `1`,
+						},
+					},
+				],
 			})
-			if (res?.response.error) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							{res?.response.error.kind.ExecutionError}
-						</div>
-					),
-					type: 'error',
-					duration: 2500,
-				})
-				return
-			} else if (res) {
+			if (res) {
 				onClose()
 				setReceiverId('')
 				toast.show({
@@ -99,6 +97,15 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 			}
 			setIsTransferring(false)
 		} catch (err) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{err.message || localeLn('SomethingWentWrong')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 			sentryCaptureException(err)
 			setIsTransferring(false)
 		}

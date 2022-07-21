@@ -12,7 +12,6 @@ import { useForm } from 'react-hook-form'
 import useStore from 'lib/store'
 import Tooltip from 'components/Common/Tooltip'
 import { parseDate } from 'utils/common'
-import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
 import { mutate } from 'swr'
 import axios from 'axios'
@@ -238,18 +237,7 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 
 			const res = await wallet.signAndSendTransactions({ transactions: txs })
 
-			if (res?.response.error) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							{res?.response.error.kind.ExecutionError}
-						</div>
-					),
-					type: 'error',
-					duration: 2500,
-				})
-				return
-			} else if (res) {
+			if (res) {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
@@ -264,11 +252,17 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 					onClose()
 				}, 2500)
 			}
-
-			setIsRemovingPrice(false)
 		} catch (err) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">{localeLn('SomethingWentWrong')}</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 			sentryCaptureException(err)
 		}
+		setIsRemovingPrice(false)
 	}
 
 	const calculatePriceDistribution = () => {
