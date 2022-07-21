@@ -5,7 +5,6 @@ import Modal from 'components/Common/Modal'
 import { IconX } from 'components/Icons'
 import getConfig from 'config/near'
 import { useToast } from 'hooks/useToast'
-import near from 'lib/near'
 import useStore from 'lib/store'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useRouter } from 'next/router'
@@ -22,6 +21,7 @@ import {
 import { mutate } from 'swr'
 import { decodeBase64, prettyBalance, prettyTruncate } from 'utils/common'
 import retry from 'async-retry'
+import { providers } from 'near-api-js'
 
 const SuccessTransactionModal = () => {
 	const [showModal, setShowModal] = useState(false)
@@ -34,8 +34,8 @@ const SuccessTransactionModal = () => {
 	useEffect(() => {
 		const checkTxStatus = async () => {
 			const txHash = router.query.transactionHashes.split(',')
-			const txStatus = await near.getTransactionStatus({
-				accountId: near.currentUser.accountId,
+			const txStatus = await getTransactionStatus({
+				accountId: currentUser,
 				txHash: txHash[txHash.length - 1],
 			})
 			if (window.sessionStorage.getItem('categoryToken')) {
@@ -59,6 +59,11 @@ const SuccessTransactionModal = () => {
 			}
 		}
 	}, [transactionRes])
+
+	const getTransactionStatus = ({ accountId, txHash }) => {
+		const nearConfig = getConfig(process.env.APP_ENV || 'development')
+		return new providers.JsonRpcProvider({ url: nearConfig.nodeUrl }).txStatus(txHash, accountId)
+	}
 
 	const processTransactionError = (err) => {
 		toast.show({

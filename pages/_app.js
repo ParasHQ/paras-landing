@@ -18,11 +18,9 @@ import '@near-wallet-selector/modal-ui/styles.css'
 
 import ToastProvider from 'hooks/useToast'
 import { SWRConfig } from 'swr'
-import * as Sentry from '@sentry/nextjs'
 import { sentryCaptureException } from 'lib/sentry'
 import { GTM_ID, pageview } from 'lib/gtm'
 import SuccessTransactionModal from 'components/Modal/SuccessTransactionModal'
-import WalletHelper from 'lib/WalletHelper'
 import cachios from 'cachios'
 import RPCStatus from 'components/Common/RPCStatus'
 import { WalletSelectorContextProvider } from 'components/Common/WalletSelector'
@@ -135,7 +133,6 @@ function MyApp({ Component, pageProps }) {
 			router.push('/' + lang + router.asPath)
 			return
 		}
-		_init()
 
 		if (process.env.APP_ENV === 'production') {
 			// initial route analytics
@@ -149,7 +146,7 @@ function MyApp({ Component, pageProps }) {
 			}
 			pageview(url)
 		}
-
+		getNearUsdPrice()
 		const storage = globalThis?.sessionStorage
 		if (!storage) return
 		storage.setItem('currentPath', `${globalThis?.location.pathname}${globalThis?.location.search}`)
@@ -158,93 +155,6 @@ function MyApp({ Component, pageProps }) {
 	useEffect(() => {
 		// removeQueryTransactionFromNear()
 	}, [router.isReady])
-
-	useEffect(() => {
-		if (store.activeWallet === 'senderWallet') {
-			const currentUser = WalletHelper.currentUser
-			// setupUser(currentUser)
-		}
-	}, [store.activeWallet])
-
-	const _init = async () => {
-		// await WalletHelper.initialize({ onChangeUser: setupUser })
-
-		const currentUser = WalletHelper.currentUser
-
-		if (currentUser) {
-			// setupUser(currentUser)
-		}
-		getNearUsdPrice()
-		store.setInitialized(true)
-	}
-
-	const setupUser = async (currentUser) => {
-		if (!currentUser) return
-
-		store.setCurrentUser(currentUser.accountId)
-		store.setUserBalance(currentUser.balance)
-
-		Sentry.configureScope((scope) => {
-			const user = currentUser ? { id: currentUser.accountId } : null
-			scope.setUser(user)
-			scope.setTag('environment', process.env.APP_ENV)
-		})
-
-		const userProfileResp = await axios.get(`${process.env.V2_API_URL}/profiles`, {
-			params: {
-				accountId: currentUser.accountId,
-			},
-		})
-		const userProfileResults = userProfileResp.data.data.results
-
-		if (userProfileResults.length === 0) {
-			const formData = new FormData()
-			formData.append('bio', 'Citizen of Paras')
-			formData.append('accountId', currentUser.accountId)
-
-			try {
-				const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
-					headers: {
-						'Content-Type': 'multipart/form-data',
-						authorization: await WalletHelper.authToken(),
-					},
-				})
-				store.setUserProfile(resp.data.data)
-			} catch (err) {
-				sentryCaptureException(err)
-				store.setUserProfile({})
-			}
-		} else {
-			const userProfile = userProfileResults[0]
-			store.setUserProfile(userProfile)
-
-			const { isEmailVerified = false } = userProfile
-			if (!isEmailVerified && !cookie.get('hideEmailNotVerified')) {
-				store.setShowEmailWarning(true)
-			}
-		}
-
-		const parasBalance = await WalletHelper.viewFunction({
-			methodName: 'ft_balance_of',
-			contractId: process.env.PARAS_TOKEN_CONTRACT,
-			args: { account_id: currentUser.accountId },
-		})
-		store.setParasBalance(parasBalance)
-	}
-
-	const removeQueryTransactionFromNear = () => {
-		const query = router.query
-
-		if (query.successLogin || query.public_key || query.all_keys) {
-			delete query.account_id
-			delete query.public_key
-			delete query.transactionHashes
-			delete query.all_keys
-			delete query.successLogin
-
-			router.replace({ pathname: router.pathname, query }, undefined, { shallow: true })
-		}
-	}
 
 	const getNearUsdPrice = async () => {
 		try {

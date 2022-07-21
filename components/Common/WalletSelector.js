@@ -11,6 +11,8 @@ import useStore from 'lib/store'
 import axios from 'axios'
 import JSBI from 'jsbi'
 import { Base64 } from 'js-base64'
+import * as Sentry from '@sentry/nextjs'
+import cookie from 'lib/cookie'
 
 const WalletSelectorContext = React.createContext(null)
 
@@ -51,11 +53,11 @@ export const WalletSelectorContextProvider = ({ children }) => {
 
 			store.setCurrentUser(currentUser.accountId)
 
-			// Sentry.configureScope((scope) => {
-			// 	const user = currentUser ? { id: currentUser.accountId } : null
-			// 	scope.setUser(user)
-			// 	scope.setTag('environment', process.env.APP_ENV)
-			// })
+			Sentry.configureScope((scope) => {
+				const user = currentUser ? { id: currentUser.accountId } : null
+				scope.setUser(user)
+				scope.setTag('environment', process.env.APP_ENV)
+			})
 
 			const userNearBalance = await getAccountBalance(currentUser.accountId)
 			store.setUserBalance(userNearBalance)
@@ -74,29 +76,35 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				formData.append('bio', 'Citizen of Paras')
 				formData.append('accountId', currentUser.accountId)
 
-				// try {
-				// 	const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
-				// 		headers: {
-				// 			'Content-Type': 'multipart/form-data',
-				// 			authorization: await WalletHelper.authToken(),
-				// 		},
-				// 	})
-				// 	store.setUserProfile(resp.data.data)
-				// } catch (err) {
-				// 	sentryCaptureException(err)
-				// 	store.setUserProfile({})
-				// }
+				try {
+					const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
+						headers: {
+							'Content-Type': 'multipart/form-data',
+							authorization: authToken,
+						},
+					})
+					store.setUserProfile(resp.data.data)
+				} catch (err) {
+					store.setUserProfile({})
+				}
 			} else {
 				const userProfile = userProfileResults[0]
 				store.setUserProfile(userProfile)
 
 				const { isEmailVerified = false } = userProfile
-				// if (!isEmailVerified && !cookie.get('hideEmailNotVerified')) {
-				// 	store.setShowEmailWarning(true)
-				// }
+				if (!isEmailVerified && !cookie.get('hideEmailNotVerified')) {
+					store.setShowEmailWarning(true)
+				}
 			}
 
 			authSession.current = setInterval(() => generateAuthToken(currentUser.accountId), 1000 * 3600)
+
+			const parasBalance = await viewFunction({
+				methodName: 'ft_balance_of',
+				receiverId: process.env.PARAS_TOKEN_CONTRACT,
+				args: { account_id: currentUser.accountId },
+			})
+			store.setParasBalance(parasBalance)
 		}
 
 		const subscription = selector.store.observable
@@ -172,6 +180,8 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		setAuthToken(_authToken)
 
 		axios.defaults.headers.common['Authorization'] = _authToken
+
+		return _authToken
 	}
 
 	return (
