@@ -10,7 +10,6 @@ import useStore from 'lib/store'
 import { GAS_FEE, STORAGE_ADD_MARKET_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
 import JSBI from 'jsbi'
 import { useEffect } from 'react'
-import WalletHelper from 'lib/WalletHelper'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) => {
@@ -24,7 +23,7 @@ const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) =
 	}))
 
 	const { localeLn } = useIntl()
-	const { viewFunction } = useWalletSelector()
+	const { selector, viewFunction } = useWalletSelector()
 	const [hasTraded] = useState(fromUpdate ? true : false)
 
 	useEffect(() => {
@@ -95,53 +94,62 @@ const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) =
 					seller_token_series_id: data.token_series_id,
 				})
 			}
+
+			const wallet = await selector.wallet()
 			let res
 			if (hasDepositStorage) {
-				res = await WalletHelper.signAndSendTransaction({
+				res = await wallet.signAndSendTransaction({
 					receiverId: tradedToken[0].split('::')[0],
 					actions: [
 						{
-							methodName: `nft_approve`,
-							args: params,
-							gas: GAS_FEE,
-							deposit: STORAGE_APPROVE_FEE,
+							type: 'FunctionCall',
+							params: {
+								methodName: `nft_approve`,
+								args: params,
+								gas: GAS_FEE,
+								deposit: STORAGE_APPROVE_FEE,
+							},
 						},
 					],
 				})
-				if (res.error && res.error.includes('reject')) {
-					setIsTrading(false)
-				} else if (res.response) {
+				if (res) {
 					setIsTrading(false)
 					onClose()
-					setTransactionRes(res?.response)
+					setTransactionRes([res])
 				}
 			} else {
 				const txs = []
 				txs.push({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
-					functionCalls: [
+					actions: [
 						{
-							methodName: 'storage_deposit',
-							contractId: process.env.MARKETPLACE_CONTRACT_ID,
-							args: depositParams,
-							attachedDeposit: STORAGE_ADD_MARKET_FEE,
-							gas: GAS_FEE,
+							type: 'FunctionCall',
+							params: {
+								methodName: 'storage_deposit',
+								contractId: process.env.MARKETPLACE_CONTRACT_ID,
+								args: depositParams,
+								attachedDeposit: STORAGE_ADD_MARKET_FEE,
+								gas: GAS_FEE,
+							},
 						},
 					],
 				})
 				txs.push({
 					receiverId: tradedToken[0].split('::')[0],
-					functionCalls: [
+					actions: [
 						{
-							methodName: 'nft_approve',
-							contractId: tradedToken[0].split('::')[0],
-							args: params,
-							attachedDeposit: STORAGE_APPROVE_FEE,
-							gas: GAS_FEE,
+							type: 'FunctionCall',
+							params: {
+								methodName: 'nft_approve',
+								contractId: tradedToken[0].split('::')[0],
+								args: params,
+								attachedDeposit: STORAGE_APPROVE_FEE,
+								gas: GAS_FEE,
+							},
 						},
 					],
 				})
-				const res = await WalletHelper.multipleCallFunction(txs)
+				const res = await wallet.signAndSendTransactions({ transactions: txs })
 				if (res.error && res.error.includes('reject')) {
 					setIsTrading(false)
 				} else if (res.response) {

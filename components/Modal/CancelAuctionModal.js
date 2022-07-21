@@ -3,112 +3,50 @@ import { useIntl } from 'hooks/useIntl'
 import Modal from 'components/Common/Modal'
 import Button from 'components/Common/Button'
 import { sentryCaptureException } from 'lib/sentry'
-import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
-import JSBI from 'jsbi'
+import { GAS_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { useState } from 'react'
-import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 
-const CancelAuctionModal = ({ data, show, onClose, onSuccess }) => {
+const CancelAuctionModal = ({ data, show, onClose }) => {
 	const { localeLn } = useIntl()
 	const [isCancelAuction, setIsCancelAuction] = useState(false)
-	const { currentUser, setTransactionRes } = useStore((state) => ({
+	const { setTransactionRes } = useStore((state) => ({
 		currentUser: state.currentUser,
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const toast = useToast()
-	const { viewFunction } = useWalletSelector()
-
-	const hasStorageBalance = async () => {
-		try {
-			const currentStorage = await viewFunction({
-				methodName: 'storage_balance_of',
-				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
-				args: { account_id: currentUser },
-			})
-
-			const supplyPerOwner = await viewFunction({
-				methodName: 'get_supply_by_owner_id',
-				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
-				args: { account_id: currentUser },
-			})
-
-			const usedStorage = JSBI.multiply(
-				JSBI.BigInt(parseInt(supplyPerOwner) + 1),
-				JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
-			)
-
-			if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
-				return true
-			}
-			return false
-		} catch (err) {
-			sentryCaptureException(err)
-		}
-	}
+	const { selector } = useWalletSelector()
 
 	const onCancelAuction = async () => {
 		setIsCancelAuction(true)
 
-		const hasDepositStorage = await hasStorageBalance()
-
 		try {
-			const depositParams = { receiver_id: currentUser }
-
 			const params = {
 				nft_contract_id: data.contract_id,
 				token_id: data.token_id,
 				is_auction: true,
 			}
 
-			let res
-			if (hasDepositStorage) {
-				res = await WalletHelper.signAndSendTransaction({
-					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
-					actions: [
-						{
+			const wallet = await selector.wallet()
+			const res = await wallet.signAndSendTransaction({
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
+				actions: [
+					{
+						type: 'FunctionCall',
+						params: {
 							methodName: 'delete_market_data',
 							args: params,
 							gas: GAS_FEE,
 							deposit: '1',
 						},
-					],
-				})
-			} else {
-				res = await WalletHelper.signAndSendTransaction({
-					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
-					actions: [
-						{
-							methodName: 'storage_deposit',
-							args: depositParams,
-							gas: GAS_FEE,
-							deposit: STORAGE_ADD_MARKET_FEE,
-						},
-						{
-							methodName: 'delete_market_data',
-							args: params,
-							gas: GAS_FEE,
-							deposit: '1',
-						},
-					],
-				})
-			}
-			if (res?.response.error) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							{res?.response.error.kind.ExecutionError}
-						</div>
-					),
-					type: 'error',
-					duration: 2500,
-				})
-			} else if (res) {
+					},
+				],
+			})
+			if (res) {
 				onClose()
-				setTransactionRes(res?.response)
-				onSuccess && onSuccess()
+				setTransactionRes([res])
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">{`Successfully remove auction`}</div>
@@ -119,6 +57,15 @@ const CancelAuctionModal = ({ data, show, onClose, onSuccess }) => {
 			}
 			setIsCancelAuction(false)
 		} catch (err) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{err.message || localeLn('SomethingWentWrong')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 			sentryCaptureException(err)
 			setIsCancelAuction(false)
 		}

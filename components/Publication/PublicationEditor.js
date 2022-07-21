@@ -21,8 +21,8 @@ import { sentryCaptureException } from 'lib/sentry'
 import { v4 as uuidv4 } from 'uuid'
 import DraftPublication from 'components/Draft/DraftPublication'
 import { generateFromString } from 'generate-avatar'
-import WalletHelper from 'lib/WalletHelper'
 import { IconX } from 'components/Icons'
+import useStore from 'lib/store'
 
 let redirectUrl = null
 
@@ -59,7 +59,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 	const [searchToken, setSearchToken] = useState('')
 	const [searchCollection, setSearchCollection] = useState('')
 	const [currentDraftStorage, setCurrentDraftStorage] = useState()
-	const currentUser = WalletHelper.currentUser
+	const currentUser = useStore((state) => state.currentUser)
 	const uid = uuidv4()
 
 	useEffect(() => {
@@ -68,11 +68,9 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 
 	useEffect(() => {
 		const draftStorage = JSON.parse(localStorage.getItem('draft-publication'))
-		const currentUserDraft = draftStorage?.filter(
-			(item) => item.author_id === currentUser?.accountId
-		)
+		const currentUserDraft = draftStorage?.filter((item) => item.author_id === currentUser)
 		setCurrentDraftStorage(currentUserDraft)
-	}, [])
+	}, [currentUser])
 
 	useEffect(() => {
 		if (isEdit) {

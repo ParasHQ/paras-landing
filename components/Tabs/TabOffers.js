@@ -19,7 +19,6 @@ import JSBI from 'jsbi'
 import { parseImgUrl, prettyBalance, timeAgo } from 'utils/common'
 import Avatar from 'components/Common/Avatar'
 import AcceptBidModal from 'components/Modal/AcceptBidModal'
-import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
 import Media from 'components/Common/Media'
 import { useRouter } from 'next/router'
@@ -485,36 +484,36 @@ const TabOffers = ({ localToken }) => {
 			buyer_token_id: offerBuyerData.buyer_token_id,
 		})
 
-		const res = await WalletHelper.signAndSendTransaction({
-			receiverId: offerBuyerData.contract_id,
-			actions: [
-				{
-					methodName: `nft_approve`,
-					args: params,
-					gas: ACCEPT_GAS_FEE,
-					deposit: STORAGE_APPROVE_FEE,
-				},
-			],
-		})
-		if (res.error && res.error.includes('reject')) {
-			return
-		} else {
-			if (res.response.error) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							{res.response.error.kind.ExecutionError}
-						</div>
-					),
-					type: 'error',
-					duration: 2500,
-				})
-			} else {
-				if (res.response) {
-					store.setTransactionRes(res?.response)
-				}
-				setTimeout(fetchOffers, 2500)
+		const wallet = await selector.wallet()
+		try {
+			const res = await wallet.signAndSendTransaction({
+				receiverId: offerBuyerData.contract_id,
+				actions: [
+					{
+						type: 'FunctionCall',
+						params: {
+							methodName: `nft_approve`,
+							args: params,
+							gas: ACCEPT_GAS_FEE,
+							deposit: STORAGE_APPROVE_FEE,
+						},
+					},
+				],
+			})
+			if (res) {
+				store.setTransactionRes([res])
 			}
+			setTimeout(fetchOffers, 2500)
+		} catch (err) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{err.message || localeLn('SomethingWentWrong')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 		}
 	}
 

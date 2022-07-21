@@ -14,7 +14,6 @@ import { useEffect, useState } from 'react'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
-import WalletHelper from 'lib/WalletHelper'
 import TradeNFTModal from './TradeNFTModal'
 import { trackOfferToken, trackOfferTokenImpression } from 'lib/ga'
 import { useWalletSelector } from 'components/Common/WalletSelector'
@@ -48,7 +47,7 @@ const PlaceOfferModal = ({
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const [isEnableTrade, setIsEnableTrade] = useState(true)
-	const { viewFunction } = useWalletSelector()
+	const { selector, viewFunction } = useWalletSelector()
 
 	useEffect(() => {
 		if (show) {
@@ -136,42 +135,52 @@ const PlaceOfferModal = ({
 				ft_token_id: 'near',
 				price: parseNearAmount(bidAmount),
 			}
+			const wallet = await selector.wallet()
 
 			let res
 			if (hasDepositStorage) {
-				res = await WalletHelper.signAndSendTransaction({
+				res = await wallet.signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{
-							methodName: 'add_offer',
-							args: params,
-							deposit: parseNearAmount(bidAmount),
-							gas: GAS_FEE,
+							type: 'FunctionCall',
+							params: {
+								methodName: 'add_offer',
+								args: params,
+								deposit: parseNearAmount(bidAmount),
+								gas: GAS_FEE,
+							},
 						},
 					],
 				})
 			} else {
-				res = await WalletHelper.signAndSendTransaction({
+				res = await wallet.signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{
-							methodName: 'storage_deposit',
-							args: depositParams,
-							deposit: STORAGE_ADD_MARKET_FEE,
-							gas: GAS_FEE,
+							type: 'FunctionCall',
+							params: {
+								methodName: 'storage_deposit',
+								args: depositParams,
+								deposit: STORAGE_ADD_MARKET_FEE,
+								gas: GAS_FEE,
+							},
 						},
 						{
-							methodName: 'add_offer',
-							args: params,
-							deposit: parseNearAmount(bidAmount),
-							gas: GAS_FEE,
+							type: 'FunctionCall',
+							params: {
+								methodName: 'add_offer',
+								args: params,
+								deposit: parseNearAmount(bidAmount),
+								gas: GAS_FEE,
+							},
 						},
 					],
 				})
 			}
-			if (res?.response) {
+			if (res) {
 				onClose()
-				setTransactionRes(res?.response)
+				setTransactionRes([res])
 				onSuccess && onSuccess()
 			}
 			setIsBidding(false)

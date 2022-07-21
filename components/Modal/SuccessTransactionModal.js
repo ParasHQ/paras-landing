@@ -7,7 +7,6 @@ import getConfig from 'config/near'
 import { useToast } from 'hooks/useToast'
 import near from 'lib/near'
 import useStore from 'lib/store'
-import WalletHelper, { walletType } from 'lib/WalletHelper'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -224,11 +223,8 @@ const SuccessTransactionModal = () => {
 		mutate(key)
 		setShowModal(false)
 		setToken(null)
-		if (WalletHelper.activeWallet === walletType.sender) {
-			setTransactionRes(null)
-		} else {
-			removeTxHash()
-		}
+		setTransactionRes(null)
+		removeTxHash()
 	}
 
 	const removeTxHash = () => {
