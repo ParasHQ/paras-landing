@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import cachios from 'cachios'
 import { IconDownArrow } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
+import { trackClickAttributes } from 'lib/ga'
 
 const TokenAttributes = ({ localToken, className }) => {
 	const [isDropDown, setIsDropDown] = useState(true)
@@ -47,7 +48,9 @@ const TokenAttributes = ({ localToken, className }) => {
 					onClick={() => setIsDropDown(!isDropDown)}
 				>
 					<p className="text-xl py-3">Attributes</p>
-					<IconDownArrow size={30} />
+					<div className={`${!isDropDown && 'rotate-180'}`}>
+						<IconDownArrow size={30} />
+					</div>
 				</div>
 			</div>
 			{isDropDown && (
@@ -60,6 +63,13 @@ const TokenAttributes = ({ localToken, className }) => {
 										<div
 											key={idx}
 											className="p-2 rounded-md border-2 text-center border-cyan-blue-2 space-x-1 overflow-x-visible hover:border-gray-400"
+											onClick={() =>
+												trackClickAttributes(
+													localToken.token_id || localToken.token_series_id,
+													attr.trait_type,
+													attr.value
+												)
+											}
 										>
 											<a
 												href={`/collection/${collection.id}/?attributes=[${JSON.stringify({

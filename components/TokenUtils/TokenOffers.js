@@ -26,6 +26,7 @@ import { useRouter } from 'next/router'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from 'components/Modal/BannedConfirmModal'
 import { IconDownArrow } from 'components/Icons'
+import { trackClickOffers } from 'lib/ga'
 
 const FETCH_TOKENS_LIMIT = 12
 
@@ -382,6 +383,7 @@ const TokenOffers = ({ localToken, className }) => {
 				account_id: process.env.MARKETPLACE_CONTRACT_ID,
 			}
 			setIsAcceptingOffer(true)
+			trackClickOffers(localToken.token_id || localToken.token_series_id)
 			const [userType, offerType, tokenId] = isOwned.split('::')
 
 			if (offerType === 'token') {
@@ -599,7 +601,9 @@ const TokenOffers = ({ localToken, className }) => {
 					onClick={() => setIsDropDown(!isDropDown)}
 				>
 					<p className="text-xl py-3">Offers</p>
-					<IconDownArrow size={30} />
+					<div className={`${!isDropDown && 'rotate-180'}`}>
+						<IconDownArrow size={30} />
+					</div>
 				</div>
 			</div>
 			{isDropDown && (

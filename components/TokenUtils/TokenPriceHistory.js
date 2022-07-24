@@ -14,6 +14,7 @@ import {
 	XAxis,
 	YAxis,
 } from 'recharts'
+import { trackClosePriceHistory, trackOpenPriceHistory } from 'lib/ga'
 
 const dataHistory = [
 	{ id: 'last-7-days', label: 'Last 7 days' },
@@ -107,6 +108,15 @@ const TokenPriceHistory = ({ localToken, className }) => {
 		setActivities(results)
 	}
 
+	const onCLickDropdown = () => {
+		setIsDropDown(!isDropDown)
+		if (isDropDown) {
+			trackOpenPriceHistory(localToken.token_id || localToken.token_series_id)
+			return
+		}
+		trackClosePriceHistory(localToken.token_id || localToken.token_series_id)
+	}
+
 	return (
 		<div className={className}>
 			<div
@@ -116,10 +126,12 @@ const TokenPriceHistory = ({ localToken, className }) => {
 			>
 				<div
 					className="flex justify-between items-center pr-2 pl-6 hover:cursor-pointer"
-					onClick={() => setIsDropDown(!isDropDown)}
+					onClick={() => onCLickDropdown()}
 				>
 					<p className="text-xl py-3">Price History</p>
-					<IconDownArrow size={30} />
+					<div className={`${!isDropDown && 'rotate-180'}`}>
+						<IconDownArrow size={30} />
+					</div>
 				</div>
 			</div>
 			{isDropDown && (

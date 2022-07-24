@@ -2,10 +2,20 @@ import { useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import { IconDownArrow } from 'components/Icons'
 import ReactLinkify from 'react-linkify'
+import { trackCloseDescription, trackOpenDescription } from 'lib/ga'
 
 const TokenDescription = ({ localToken, className }) => {
 	const { localeLn } = useIntl()
 	const [isDropDown, setIsDropDown] = useState(true)
+
+	const onClickDropdown = () => {
+		setIsDropDown(!isDropDown)
+		if (isDropDown) {
+			trackOpenDescription(localToken.token_id || localToken.token_series_id)
+			return
+		}
+		trackCloseDescription(localToken.token_id || localToken.token_series_id)
+	}
 
 	return (
 		<div className={className}>
@@ -16,10 +26,12 @@ const TokenDescription = ({ localToken, className }) => {
 			>
 				<div
 					className="flex justify-between items-center pr-2 pl-6 hover:cursor-pointer"
-					onClick={() => setIsDropDown(!isDropDown)}
+					onClick={() => onClickDropdown()}
 				>
 					<p className="text-xl py-3">Description</p>
-					<IconDownArrow size={30} />
+					<div className={`${!isDropDown && 'rotate-180'}`}>
+						<IconDownArrow size={30} />
+					</div>
 				</div>
 			</div>
 			{isDropDown && (

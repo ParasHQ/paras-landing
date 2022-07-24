@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { parseImgUrl } from 'utils/common'
 import Card from 'components/Card/Card'
 import LoginModal from 'components/Modal/LoginModal'
@@ -13,9 +13,14 @@ import TokenMoreCollection from 'components/TokenUtils/TokenMoreCollection'
 import TokenAuction from 'components/TokenUtils/TokenAuction'
 import TokenBidHistory from 'components/TokenUtils/TokenBidHistory'
 import ArtistBanned from 'components/Common/ArtistBanned'
+import { trackTokenSeriesDetailPage } from 'lib/ga'
 
 const TokenSeriesDetailNew = ({ token }) => {
 	const [showModal, setShowModal] = useState(null)
+
+	useEffect(() => {
+		trackTokenSeriesDetailPage(`${token.contract_id}::${token.token_series_id}`)
+	}, [token.contract_id, token.token_series_id])
 
 	const onDismissModal = () => {
 		setShowModal(null)

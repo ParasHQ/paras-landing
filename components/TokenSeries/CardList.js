@@ -20,7 +20,7 @@ import { useToast } from 'hooks/useToast'
 
 import IconLove from 'components/Icons/component/IconLove'
 import LoginModal from 'components/Modal/LoginModal'
-import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
+import { trackClickMoreCollection, trackLikeToken, trackUnlikeToken } from 'lib/ga'
 
 const CardList = ({
 	name = 'default',
@@ -223,11 +223,13 @@ const TokenSeriesSingle = ({
 	const onClickSeeDetails = async (choosenToken, additionalQuery) => {
 		const token = (await mutate()) || choosenToken
 		const lookupToken = token?.token
-		let platform = navigator.userAgent.includes('iPhone')
-		if (platform) {
-			router.push(`/token/${token.contract_id}::${token.token_series_id}`)
-			return
-		}
+		if (typeCardList === 'top-rarity-token')
+			trackClickMoreCollection(lookupToken?.token_id || token.token_series_id)
+		// let platform = navigator.userAgent.includes('iPhone')
+		// if (platform) {
+		// 	router.push(`/token/${token.contract_id}::${token.token_series_id}`)
+		// 	return
+		// }
 		saveScrollPosition(tokens)
 		router.push(
 			`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`
