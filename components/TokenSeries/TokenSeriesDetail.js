@@ -7,7 +7,7 @@ import { IconDots, IconLoader } from 'components/Icons'
 import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
-import { capitalize, parseImgUrl, abbrNum } from 'utils/common'
+import { capitalize, parseImgUrl, abbrNum, prettyTruncate } from 'utils/common'
 import TokenSeriesTransferBuyer from '../Modal/TokenSeriesTransferBuyer'
 import TokenSeriesUpdatePriceModal from '../Modal/TokenSeriesUpdatePriceModal'
 import TokenSeriesBuyModal from '../Modal/TokenSeriesBuyModal'
@@ -40,6 +40,7 @@ import FileType from 'file-type/browser'
 import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 
 const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
+	const router = useRouter()
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
 	const [isLiked, setIsLiked] = useState(false)
@@ -62,6 +63,11 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	}, [])
 
 	useEffect(() => {
+		setActiveTab('info')
+		setTokenDisplay('detail')
+	}, [router.query.id])
+
+	useEffect(() => {
 		if (token?.total_likes) {
 			if (token.likes) {
 				setIsLiked(true)
@@ -79,8 +85,6 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 			getIframe()
 		}
 	}, [JSON.stringify(token)])
-
-	const router = useRouter()
 
 	const isShowButton =
 		token.contract_id === process.env.NFT_CONTRACT_ID ||
@@ -434,6 +438,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 										{fileType && fileType.includes('iframe') && (
 											<iframe
 												src={token?.metadata.animation_url}
+												sandbox="allow-scripts"
 												className="object-contain w-full h-5/6 md:h-full"
 											/>
 										)}
@@ -543,7 +548,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 							</div>
 
 							<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
-								{token.metadata.title}
+								{prettyTruncate(token.metadata.title, 28)}
 							</h1>
 							<div className="mt-1 text-white flex">
 								<p className="mr-1">by</p>
@@ -579,7 +584,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 						className="h-full"
 						universal={true}
 						renderView={(props) => (
-							<div {...props} id="TokenScroll" className="p-4 pt-0 relative" />
+							<div {...props} id="TokenScroll" className="p-4 pt-4 md:pt-0 relative" />
 						)}
 					>
 						<div>
@@ -595,7 +600,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 									</div>
 
 									<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
-										{token.metadata.title}
+										{prettyTruncate(token.metadata.title, 26)}
 									</h1>
 									<div className="mt-1 text-white flex">
 										<p className="mr-1">by</p>
@@ -629,7 +634,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 									</div>
 								</div>
 							</div>
-							<div className="bg-gray-700 flex md:sticky md:top-0 overflow-x-scroll space-x-4 flex-grow z-20 flex-nowrap disable-scrollbars md:-mb-4">
+							<div className="bg-gray-700 flex md:sticky md:top-0 overflow-x-scroll space-x-4 flex-grow z-30 flex-nowrap disable-scrollbars md:-mb-4">
 								{tabDetail('info')}
 								{tabDetail('owners')}
 								{tabDetail('offers')}

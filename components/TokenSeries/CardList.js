@@ -481,7 +481,7 @@ const TokenSeriesSingle = ({
 									started_at: token.token?.started_at,
 									ended_at: token.token?.ended_at,
 									has_auction: token?.has_auction,
-									animation_url: token?.animation_url,
+									animation_url: token?.metadata?.animation_url,
 								}}
 								profileCollection={profileCollection}
 								type={type}

@@ -42,13 +42,18 @@ const FollowList = ({ data, userProfile, getMoreData, hasMore, typeFollow }) => 
 
 			if (typeAction === 'follow') {
 				trackFollowButton(user.account_id)
-				return
+			} else {
+				trackUnfollowButton(user.account_id)
 			}
-			trackUnfollowButton(user.account_id)
 		}
 
-		mutate(userProfile.accountId)
 		setIsLoading('')
+
+		if (currentUser === userProfile.accountId) {
+			setTimeout(() => {
+				mutate(userProfile.accountId)
+			}, 200)
+		}
 	}
 
 	return (
@@ -142,7 +147,6 @@ const ButtonUnfollow = ({ idx, buttonHover, loading, followAction = () => {} }) 
 			size="sm"
 			loadingStyle="h-2"
 			isLoading={loading}
-			variant="error"
 			onClick={() => followAction()}
 		>
 			{buttonHover === idx ? 'Unfollow' : 'Following'}

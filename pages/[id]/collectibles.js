@@ -47,10 +47,11 @@ const Collection = ({ userProfile, accountId }) => {
 
 	useEffect(() => {
 		fetchOwnerTokens(true)
-	}, [router.query.id])
+	}, [currentUser, router.query.id])
 
 	const fetchOwnerTokens = async (initialFetch = false) => {
 		const _hasMore = initialFetch ? true : hasMore
+		const _tokens = initialFetch ? [] : tokens
 
 		if (!_hasMore || isFetching) {
 			return
@@ -59,17 +60,19 @@ const Collection = ({ userProfile, accountId }) => {
 		setIsFetching(true)
 		const params = tokensParams({
 			...router.query,
-			...{
-				_id_next: idNext,
-				price_next: priceNext,
-			},
+			...(initialFetch
+				? {}
+				: {
+						_id_next: idNext,
+						price_next: priceNext,
+				  }),
 		})
 		const res = await axios.get(`${process.env.V2_API_URL}/token`, {
 			params: params,
 		})
 		const newData = await res.data.data
 
-		const newTokens = [...(tokens || []), ...newData.results]
+		const newTokens = [..._tokens, ...newData.results]
 		setTokens(newTokens)
 
 		if (initialFetch) {

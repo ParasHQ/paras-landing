@@ -349,6 +349,7 @@ const Card = ({
 											videoMuted={true}
 											videoLoop={true}
 											mimeType={token?.mime_type}
+											animationUrlforVideo={token?.animation_url}
 										/>
 										{token?.is_auction && <TimeAuction endedAt={token.ended_at} />}
 									</>

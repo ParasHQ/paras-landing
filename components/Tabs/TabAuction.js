@@ -41,11 +41,11 @@ const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => 
 	useEffect(() => {
 		let histBid = []
 		if (localToken.bidder_list && localToken.bidder_list.length > 0) {
-			histBid = [...histBid, localToken.bidder_list]
+			histBid = [...histBid, ...localToken.bidder_list]
 		}
 
 		if (localToken.extend_list && localToken.extend_list.length > 0) {
-			histBid = [...histBid, localToken.extend_list]
+			histBid = [...histBid, ...localToken.extend_list]
 		}
 
 		const sortedHistoryBid = histBid.sort((a, b) => a.issued_at - b.issued_at)

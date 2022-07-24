@@ -29,7 +29,7 @@ const TokenList = ({
 	hasMore,
 	displayType = 'large',
 	volume,
-	showRarityScore = false,
+	showRank = false,
 	showLike = false,
 }) => {
 	const store = useStore()
@@ -115,7 +115,7 @@ const TokenList = ({
 							typeTokenList={typeTokenList}
 							displayType={displayType}
 							volume={token.volume || volume?.[idx]}
-							showRarityScore={showRarityScore}
+							showRank={showRank}
 							showLike={showLike}
 							tokenIsLiked={tokenIsLiked}
 							setTokenIsLiked={setTokenIsLiked}
@@ -135,7 +135,7 @@ const TokenSingle = ({
 	displayType = 'large',
 	typeTokenList,
 	volume,
-	showRarityScore,
+	showRank,
 	showLike,
 	tokenIsLiked,
 	setTokenIsLiked,
@@ -187,10 +187,6 @@ const TokenSingle = ({
 	}, [isEndedTime])
 
 	useEffect(() => {
-		asyncMutate()
-	}, [currentUser])
-
-	useEffect(() => {
 		if (token?.total_likes !== undefined) {
 			if (token.likes) {
 				setIsLiked(true)
@@ -213,10 +209,6 @@ const TokenSingle = ({
 			return
 		}
 	}, [tokenIsLiked])
-
-	const asyncMutate = async () => {
-		await mutate()
-	}
 
 	const convertTimeOfAuction = (date) => {
 		const sliceNanoSec = String(date).slice(0, 13)
@@ -478,7 +470,7 @@ const TokenSingle = ({
 									is_auction: token?.is_auction,
 									started_at: token?.started_at,
 									ended_at: token?.ended_at,
-									animation_url: token?.animation_url,
+									animation_url: token?.metadata?.animation_url,
 								}}
 								isAbleToLike
 								onLike={() =>

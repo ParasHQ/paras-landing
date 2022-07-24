@@ -15,6 +15,7 @@ import {
 	setDataLocalStorage,
 	parseSortTokenQuery,
 	prevPagePositionY,
+	prettyTruncate,
 } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useIntl } from 'hooks/useIntl'
@@ -76,7 +77,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [display, setDisplay] = useState(
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
-	const [scoreNext, setScoreNext] = useState('')
+	const [rankNext, setRankNext] = useState('')
 	const [mediaQueryMd] = useState(
 		typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)')
 	)
@@ -151,7 +152,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			const lastData = newData.results[newData.results.length - 1]
 			setIdNextOwned(lastData._id)
 			params.__sort.includes('price') && setLowestPriceNextOwned(lastData.price)
-			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
+			params.__sort.includes('metadata.rank') && setRankNext(lastData.metadata.rank)
 		}
 		setIsFetchingOwned(false)
 	}
@@ -172,7 +173,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						_id_next: idNext,
 						lowest_price_next: lowestPriceNext,
 						updated_at_next: updatedAtNext,
-						score_next: scoreNext,
+						rank_next: rankNext,
 				  }),
 		})
 
@@ -195,7 +196,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			setIdNext(lastData._id)
 			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
-			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
+			params.__sort.includes('metadata.rank') && setRankNext(lastData.metadata.rank)
 		}
 		setIsFetching(false)
 	}
@@ -294,8 +295,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 			...(query.updated_at_next &&
 				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
-			...(query.score_next &&
-				parsedSortQuery.includes('metadata.score') && { score_next: query.score_next }),
+			...(query.rank_next &&
+				parsedSortQuery.includes('metadata.rank') && { rank_next: query.rank_next }),
 			...(query.min_copies && { min_copies: query.min_copies }),
 			...(query.max_copies && { max_copies: query.max_copies }),
 			...(query.price_next &&
@@ -353,7 +354,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				setIdNext(lastData._id)
 				params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 				params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
-				params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
+				params.__sort.includes('metadata.rank') && setRankNext(lastData.metadata.rank)
 			}
 		} else if (query.tab === 'owned' && currentUser !== null) {
 			params = tokensParams({
@@ -851,8 +852,13 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 										onClick={() => removeAttributeFilter(index)}
 										className="flex-grow rounded-md px-4 py-1 mr-2 my-1 border-2 border-gray-800 bg-blue-400 bg-opacity-10 text-sm cursor-pointer group hover:border-gray-700"
 									>
-										<span className=" text-gray-500 font-bold">{Object.keys(type)[0] + ' : '}</span>{' '}
-										<span className=" text-gray-200">{Object.values(type)[0]}</span>{' '}
+										<span className=" text-gray-500 font-bold">
+											{
+                      (Object.keys(type)[0], 30) + ' : '}
+										</span>{' '}
+										<span className=" text-gray-200">
+											{prettyTruncate(Object.values(type)[0], 30)}
+										</span>{' '}
 										<span className="font-extralight text-gray-600 text-lg ml-1 group-hover:text-gray-500">
 											x
 										</span>
@@ -888,7 +894,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							fetchData={fetchDataOwned}
 							hasMore={hasMoreOwned}
 							displayType={display}
-							showRarityScore={true}
+							showRank={true}
 							showLike={true}
 						/>
 					) : router.query.tab == 'tracker' ? (

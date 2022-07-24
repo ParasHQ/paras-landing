@@ -128,6 +128,10 @@ const FilterMarket = ({
 			delete query.pmax
 		}
 
+		if (query.sort === 'urgentAuction') {
+			query.card_trade_type = 'onAuction'
+		}
+
 		router.push(
 			{
 				query: query,
@@ -167,7 +171,7 @@ const FilterMarket = ({
 						<div>
 							{filter
 								.filter((item) => (isCollectibles ? item.key !== 'marketupdate' : item.key))
-								.filter((item) => (!isCollection ? item.key !== 'scoredesc' : item))
+								.filter((item) => (!isCollection ? item.key !== 'rankasc' : item))
 								.map((item, index) => (
 									<button
 										key={item.key}
@@ -311,7 +315,7 @@ const filter = [
 		value: 'Lowest Price',
 	},
 	{
-		key: 'scoredesc',
+		key: 'rankasc',
 		value: 'Rare to Common',
 	},
 	{

@@ -25,6 +25,9 @@ const Follow = ({ userProfile, currentUser }) => {
 
 	const { data, mutate } = useSWR(userProfile?.accountId, fetchProfile, {
 		fallbackData: userProfile,
+		revalidateOnFocus: false,
+		revalidateIfStale: false,
+		revalidateOnReconnect: false,
 	})
 
 	useEffect(() => {
@@ -39,29 +42,33 @@ const Follow = ({ userProfile, currentUser }) => {
 
 		setIsLoading(true)
 
-		await axios.request({
-			url: `${process.env.V2_API_URL}${data.follows ? '/unfollow' : '/follow'}`,
-			method: 'PUT',
-			headers: {
-				authorization: await WalletHelper.authToken(),
-			},
-			params: {
-				account_id: currentUser,
-				following_account_id: userProfile.accountId,
-			},
-		})
-
-		mutate()
-
-		setIsLoading(false)
-		setButtonHover(false)
+		try {
+			await axios.request({
+				url: `${process.env.V2_API_URL}${data.follows ? '/unfollow' : '/follow'}`,
+				method: 'PUT',
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+				params: {
+					account_id: currentUser,
+					following_account_id: userProfile.accountId,
+				},
+			})
+		} catch (error) {
+			null
+		}
 
 		if (data.follows) {
 			trackUnfollowButton(data.accountId)
-			return
+		} else {
+			trackFollowButton(data.accountId)
 		}
 
-		trackFollowButton(data.accountId)
+		setTimeout(() => {
+			mutate()
+			setIsLoading(false)
+			setButtonHover(false)
+		}, 500)
 	}
 
 	const handleFollowModal = (typeList) => {
