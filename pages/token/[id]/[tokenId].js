@@ -15,7 +15,7 @@ const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.contract_id
 }
 
-const TokenPage = ({ errorCode, initial, tokenId }) => {
+const TokenPage = ({ errorCode, initial }) => {
 	const currentUser = useStore((state) => state.currentUser)
 	const { token, mutate } = useToken({
 		key: `${initial?.contract_id}::${initial?.token_series_id}/${initial?.token_id}`,
@@ -116,7 +116,7 @@ const TokenPage = ({ errorCode, initial, tokenId }) => {
 			<Nav />
 			<div className="relative max-w-6xl m-auto pt-16 px-4">
 				{/* <TokenDetail token={token} isAuctionEnds={isEndedTime} /> */}
-				<TokenDetailNew token={token} tokenId={tokenId} />
+				<TokenDetailNew token={token} />
 			</div>
 			<Footer />
 		</div>
@@ -140,7 +140,6 @@ export async function getServerSideProps({ params }) {
 			props: {
 				initial: token,
 				errorCode: token ? null : 404,
-				tokenId: `${contractId}::${params.tokenId}`,
 			},
 		}
 	} catch (err) {

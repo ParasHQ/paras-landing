@@ -25,15 +25,15 @@ const TokenBidHistory = ({ localToken: initialToken, className }) => {
 	useEffect(() => {
 		let histBid = []
 		if (localToken.bidder_list && localToken.bidder_list.length > 0) {
-			histBid = [...histBid, localToken.bidder_list]
+			histBid = [...histBid, ...localToken.bidder_list]
 		}
 
 		if (localToken.extend_list && localToken.extend_list.length > 0) {
-			histBid = [...histBid, localToken.extend_list]
+			histBid = [...histBid, ...localToken.extend_list]
 		}
 
 		const sortedHistoryBid = histBid.sort((a, b) => a.issued_at - b.issued_at)
-		setHistoryBid(sortedHistoryBid[0])
+		setHistoryBid(sortedHistoryBid)
 	}, [localToken])
 
 	const startedAtDate = (startedAt) => {
@@ -62,13 +62,13 @@ const TokenBidHistory = ({ localToken: initialToken, className }) => {
 				</div>
 			</div>
 			{isDropDown && (
-				<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 h-48 overflow-y-auto">
+				<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 h-48 overflow-y-auto pt-4 pb-4">
 					{historyBid && historyBid?.length !== 0 ? (
 						historyBid
 							?.slice(0)
 							.reverse()
 							.map((x) => (
-								<div key={x._id} className="pt-3">
+								<div key={x._id}>
 									{x.bidder && (
 										<div className="bg-cyan-blue-2 p-3 rounded-md shadow-md">
 											<p>
@@ -85,7 +85,7 @@ const TokenBidHistory = ({ localToken: initialToken, className }) => {
 									{x.ended_at && (
 										<div className="bg-cyan-blue-2 p-3 rounded-md shadow-md text-sm my-2">
 											<p>
-												<span> {localeLn(`Auction Extended by ${x.bidder} 5 minutes`)}</span>
+												<span> {localeLn(`Auction Extended by 5 minutes`)}</span>
 											</p>
 											<p className="mt-1 text-xs">{startedAtDate(x.issued_at)} UTC</p>
 										</div>

@@ -9,7 +9,13 @@ import useStore from 'lib/store'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { parseImgUrl, parseSortQuery, setDataLocalStorage, parseSortTokenQuery } from 'utils/common'
+import {
+	parseImgUrl,
+	parseSortQuery,
+	setDataLocalStorage,
+	parseSortTokenQuery,
+	prevPagePositionY,
+} from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useIntl } from 'hooks/useIntl'
 import CollectionStats from 'components/Collection/CollectionStats'
@@ -75,8 +81,19 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)')
 	)
 	const isItemActiveTab = router.query.tab === 'items' || router.query.tab === undefined
+	const prevY =
+		typeof window !== 'undefined' &&
+		parseInt(sessionStorage.getItem('scrollPosition' + router.pathname + router.asPath))
 
 	const toast = useToast()
+
+	useEffect(() => {
+		if (prevY) {
+			let prevData = setInterval(() => fetchData, 1000)
+			setTimeout(() => clearInterval(prevData), 2000)
+		}
+		prevPagePositionY(router, window.scrollY, tokens)
+	}, [tokens])
 
 	const _fetchCollectionStats = async (initialFetch) => {
 		if (initialFetch) {

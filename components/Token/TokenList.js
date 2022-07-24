@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Card from 'components/Card/Card'
-import { parseImgUrl, prettyBalance, abbrNum } from 'utils/common'
+import { parseImgUrl, prettyBalance, abbrNum, saveScrollPosition } from 'utils/common'
 import Link from 'next/link'
 import useStore from 'lib/store'
 import { useRouter } from 'next/router'
@@ -119,6 +119,7 @@ const TokenList = ({
 							showLike={showLike}
 							tokenIsLiked={tokenIsLiked}
 							setTokenIsLiked={setTokenIsLiked}
+							tokens={tokens}
 						/>
 					))}
 				</div>
@@ -138,6 +139,7 @@ const TokenSingle = ({
 	showLike,
 	tokenIsLiked,
 	setTokenIsLiked,
+	tokens,
 }) => {
 	const currentUser = useStore((state) => state.currentUser)
 	const { token, mutate } = useToken({
@@ -250,6 +252,7 @@ const TokenSingle = ({
 			router.push(`/token/${token.contract_id}::${token.token_series_id}`)
 			return
 		}
+		saveScrollPosition(tokens)
 		router.push(`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`)
 		// router.push(
 		// 	{

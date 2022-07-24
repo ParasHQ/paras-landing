@@ -14,8 +14,6 @@ import {
 	XAxis,
 	YAxis,
 } from 'recharts'
-import Button from 'components/Common/Button'
-import { handleScroll } from './TokenCurrentPrice'
 
 const dataHistory = [
 	{ id: 'last-7-days', label: 'Last 7 days' },
@@ -24,7 +22,7 @@ const dataHistory = [
 	{ id: 'all-time', label: 'All Time' },
 ]
 
-const TokenPriceHistory = ({ localToken, typePriceHistory, className }) => {
+const TokenPriceHistory = ({ localToken, className }) => {
 	const [isDropDown, setIsDropDown] = useState(true)
 	const [activities, setActivities] = useState([])
 	const [avgPrice, setAvgPrice] = useState()
@@ -106,7 +104,7 @@ const TokenPriceHistory = ({ localToken, typePriceHistory, className }) => {
 			})
 
 		filterAvgPrice(results)
-		setActivities(results.reverse())
+		setActivities(results)
 	}
 
 	return (
@@ -126,47 +124,36 @@ const TokenPriceHistory = ({ localToken, typePriceHistory, className }) => {
 			</div>
 			{isDropDown && (
 				<>
-					{typePriceHistory === 'token-series' ? (
-						<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center py-20">
-							<p className="text-sm mb-2">
-								To view price history, you can check on the owners of each NFT
-							</p>
-							<Button size="sm" onClick={() => handleScroll()}>
-								Check Owners
-							</Button>
-						</div>
-					) : (
-						<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center py-20">
-							<div className="flex gap-4 -mt-16 md:px-2">
-								<InputDropdown
-									data={dataHistory}
-									defaultValue="all-time"
-									selectItem={setSelectPriceHistory}
-									bgColor="bg-cyan-blue-1"
-								/>
-								{activities.length !== 0 && (
-									<div className="text-left">
-										<p className="text-xs md:text-sm">
-											{selectPriceHistory.split('-').map(capitalize).join(' ')} avg. price
-										</p>
-										<p className="font-bold">{prettyBalance(avgPrice / 10 ** 24, 0)} Ⓝ</p>
-									</div>
-								)}
-							</div>
-							{activities.length !== 0 ? (
-								<div className="mt-28">
-									<TokenPriceTracker data={activities} value="price.$numberDecimal" />
-								</div>
-							) : (
-								<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center pt-[26px] md:pt-[27px]">
-									<div className="text-center">
-										<IconChart size={70} />
-									</div>
-									No item activity yet.
+					<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center py-20">
+						<div className="flex gap-4 -mt-16 md:px-2">
+							<InputDropdown
+								data={dataHistory}
+								defaultValue="all-time"
+								selectItem={setSelectPriceHistory}
+								bgColor="bg-cyan-blue-1"
+							/>
+							{activities.length !== 0 && (
+								<div className="text-left">
+									<p className="text-xs md:text-sm">
+										{selectPriceHistory.split('-').map(capitalize).join(' ')} avg. price
+									</p>
+									<p className="font-bold">{prettyBalance(avgPrice / 10 ** 24, 0)} Ⓝ</p>
 								</div>
 							)}
 						</div>
-					)}
+						{activities.length !== 0 ? (
+							<div className="mt-28">
+								<TokenPriceTracker data={activities} />
+							</div>
+						) : (
+							<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center pt-[26px] md:pt-[27px]">
+								<div className="text-center">
+									<IconChart size={70} />
+								</div>
+								No item activity yet.
+							</div>
+						)}
+					</div>
 				</>
 			)}
 		</div>
@@ -209,13 +196,13 @@ const CustomTooltip = ({ active, payload }) => {
 	return null
 }
 
-const TokenPriceTracker = ({ data, value }) => {
+const TokenPriceTracker = ({ data }) => {
 	return (
 		<div>
 			{data.length > 0 && (
 				<div className="h-80 -ml-10 -my-20 -mb-60">
-					<ResponsiveContainer width="100%" height="50%">
-						<AreaChart data={data} margin={{ top: 5, right: 20, left: 25, bottom: 35 }}>
+					<ResponsiveContainer width="100%" height="50%" aspect={3}>
+						<AreaChart data={data} margin={{ top: 5, right: 20, left: 35, bottom: 35 }}>
 							<defs>
 								<linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
 									<stop offset="0%" stopColor="#9996bc" stopOpacity={0.5} />
@@ -226,7 +213,7 @@ const TokenPriceTracker = ({ data, value }) => {
 							</defs>
 							<CartesianGrid strokeDasharray="4 8" horizontal={false} />
 							<YAxis
-								dataKey={value}
+								domain={[0, 2]}
 								axisLine={false}
 								tickLine={false}
 								tickMargin={8}

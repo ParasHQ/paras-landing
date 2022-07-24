@@ -7,7 +7,7 @@ import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import Profile from 'components/Profile/Profile'
 import FilterMarket from 'components/Filter/FilterMarket'
-import { parseSortTokenQuery, setDataLocalStorage } from 'utils/common'
+import { parseSortTokenQuery, prevPagePositionY, setDataLocalStorage } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
@@ -33,6 +33,17 @@ const Collection = ({ userProfile, accountId }) => {
 	const [display, setDisplay] = useState(
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
+	const prevY =
+		typeof window !== 'undefined' &&
+		parseInt(sessionStorage.getItem('scrollPosition' + router.pathname + router.asPath))
+
+	useEffect(() => {
+		if (prevY) {
+			let prevData = setInterval(() => fetchOwnerTokens, 1000)
+			setTimeout(() => clearInterval(prevData), 2000)
+		}
+		prevPagePositionY(router, window.scrollY, tokens)
+	}, [tokens])
 
 	useEffect(() => {
 		fetchOwnerTokens(true)

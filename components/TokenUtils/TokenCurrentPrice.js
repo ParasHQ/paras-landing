@@ -103,15 +103,17 @@ const TokenCurrentPrice = ({ localToken, className, typeCurrentPrice }) => {
 
 		if (localToken.is_non_mintable || localToken.total_mint === localToken.metadata.copies) {
 			return (
-				<div className="flex space-x-2">
-					<Button size="md" onClick={() => handleScroll()} isFullWidth>
-						{localeLn('CheckOwners')}
-					</Button>
-					{!disableOfferContract && (
-						<Button size="md" onClick={onClickOffer} isFullWidth variant="ghost">
-							{`Place an offer`}
+				<div>
+					<div className="flex space-x-4">
+						<Button size="md" onClick={() => handleScroll()} isFullWidth>
+							{localeLn('CheckOwners')}
 						</Button>
-					)}
+						{!disableOfferContract && (
+							<Button size="md" onClick={onClickOffer} isFullWidth variant="ghost">
+								{`Place an offer`}
+							</Button>
+						)}
+					</div>
 				</div>
 			)
 		} else if (isCreator()) {
@@ -132,15 +134,19 @@ const TokenCurrentPrice = ({ localToken, className, typeCurrentPrice }) => {
 		} else if (localToken.price) {
 			return (
 				<>
-					<div className="flex space-x-2">
-						<Button size="md" onClick={onClickBuySeries} isFullWidth>
-							{localToken.price === '0' ? 'Free' : 'Buy'}
-						</Button>
-						{!disableOfferContract && (
-							<Button size="md" onClick={onClickOffer} isFullWidth variant="ghost">
-								{`Place an offer`}
+					<div className="flex">
+						<div className="w-full flex-1 mr-4">
+							<Button size="md" onClick={onClickBuySeries} isFullWidth>
+								{localToken.price === '0' ? 'Free' : 'Buy'}
 							</Button>
-						)}
+						</div>
+						<div className="w-full flex-1">
+							{!disableOfferContract && (
+								<Button size="md" onClick={onClickOffer} isFullWidth variant="ghost">
+									{`Place an offer`}
+								</Button>
+							)}
+						</div>
 					</div>
 					{localToken.lowest_price &&
 						parseFloat(formatNearAmount(localToken.price)) >
@@ -174,10 +180,10 @@ const TokenCurrentPrice = ({ localToken, className, typeCurrentPrice }) => {
 				</div>
 			</div>
 			<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 pb-8">
-				<p className="flex items-center gap-1 text-4xl font-bold py-8">
-					{localToken.price ? (
-						<div className="flex">
-							<div className="truncate">
+				<div>
+					<p className="flex items-center gap-1 text-4xl font-bold py-8">
+						{localToken.price ? (
+							<div className="flex">
 								{localToken.price === '0'
 									? localeLn('Free')
 									: localToken.price && (
@@ -192,19 +198,19 @@ const TokenCurrentPrice = ({ localToken, className, typeCurrentPrice }) => {
 											</p>
 									  )}
 							</div>
-						</div>
-					) : (
-						<div>
-							<div className="line-through text-red-600">
-								<span className="text-gray-100">{localeLn('SALE')}</span>
+						) : (
+							<div>
+								<div className="line-through text-red-600">
+									<span className="text-gray-100">{localeLn('SALE')}</span>
+								</div>
 							</div>
-						</div>
-					)}
-				</p>
+						)}
+					</p>
+				</div>
 				{typeCurrentPrice === 'token-series' ? (
 					tokenSeriesButton()
 				) : (
-					<div>
+					<>
 						{localToken.is_staked && currentUser === localToken.owner_id ? (
 							<div className="flex flex-wrap flex-col">
 								<div className="w-full flex-1">
@@ -237,7 +243,7 @@ const TokenCurrentPrice = ({ localToken, className, typeCurrentPrice }) => {
 						)}
 						{localToken.owner_id !== currentUser && localToken.price && (
 							<div className="flex space-x-2">
-								<Button size="md" className="truncate" onClick={onClickBuy} isFullWidth>
+								<Button size="md" className="mr-4" onClick={onClickBuy} isFullWidth>
 									{`Buy`}
 								</Button>
 								<Button size="md" onClick={onClickOffer} isFullWidth variant="ghost">
@@ -250,7 +256,7 @@ const TokenCurrentPrice = ({ localToken, className, typeCurrentPrice }) => {
 								{`Place an offer`}
 							</Button>
 						)}
-					</div>
+					</>
 				)}
 			</div>
 			<TokenUpdatePriceModal
@@ -297,6 +303,6 @@ export const handleScroll = () => {
 	if (window.innerWidth < 720) {
 		window.scrollTo({ top: scrollDiv, behavior: 'smooth' })
 	} else {
-		window.scrollTo({ top: scrollDiv + 800, behavior: 'smooth' })
+		window.scrollTo({ top: scrollDiv + 400, behavior: 'smooth' })
 	}
 }
