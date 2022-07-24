@@ -853,8 +853,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 										className="flex-grow rounded-md px-4 py-1 mr-2 my-1 border-2 border-gray-800 bg-blue-400 bg-opacity-10 text-sm cursor-pointer group hover:border-gray-700"
 									>
 										<span className=" text-gray-500 font-bold">
-											{
-                      (Object.keys(type)[0], 30) + ' : '}
+											{(Object.keys(type)[0], 30) + ' : '}
 										</span>{' '}
 										<span className=" text-gray-200">
 											{prettyTruncate(Object.values(type)[0], 30)}
