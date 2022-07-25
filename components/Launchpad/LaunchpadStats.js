@@ -18,7 +18,7 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 	const [showTooltip, setShowTooltip] = useState(false)
 	const [isEndedUpcoming, setIsEndedUpcoming] = useState(false)
 	const randomID = 'launchpad-stats'
-	const battleBoarsID = '62d818706e2cdf40c37fbcf7'
+	const whitelistProject = ['62d818706e2cdf40c37fbcf7']
 	const mintDuration = getMintDuration(
 		project?.mint_details[0].started_at,
 		project?.mint_details[0].ended_at
@@ -62,15 +62,19 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 	) : (
 		<>
 			{showTooltip && <ReactTooltip id={randomID} place="top" type="dark" />}
-			{project._id !== battleBoarsID && (
-				<div className="max-w-3xl md:mx-auto flex justify-between items-center gap-2 border-2 border-orange-300 rounded-md text-white text-justify md:text-left mb-10 p-2 pl-4 mx-4">
-					<IconWarning />
-					<p>
-						This project is not an endorsement from Paras or a guarantee of listing on Paras
-						post-mint. Dates may be subject to change. Please DYOR
-					</p>
-				</div>
-			)}
+			{whitelistProject.map((wlpro) => {
+				return (
+					wlpro !== project._id && (
+						<div className="max-w-3xl md:mx-auto flex justify-between items-center gap-2 border-2 border-orange-300 rounded-md text-white text-justify md:text-left mb-10 p-2 pl-4 mx-4">
+							<IconWarning />
+							<p>
+								This project is not an endorsement from Paras or a guarantee of listing on Paras
+								post-mint. Dates may be subject to change. Please DYOR
+							</p>
+						</div>
+					)
+				)
+			})}
 			<div className="max-w-3xl mx-auto mb-16 grid grid-cols-2 md:flex md:flex-wrap md:items-center md:justify-between text-gray-200">
 				<div
 					className={`text-center mb-5 md:mb-0 ${
