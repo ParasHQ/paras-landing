@@ -7,6 +7,38 @@ const { withSentryConfig } = require('@sentry/nextjs')
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
 	enabled: process.env.ANALYZE === 'true',
 })
+const ContentSecurityPolicy = `
+  default-src 'self' paras.id *.paras.id;
+  media-src *;
+  img-src *;
+  
+`
+const securityHeaders = [
+	{
+		key: 'X-DNS-Prefetch-Control',
+		value: 'on',
+	},
+	{
+		key: 'Strict-Transport-Security',
+		value: 'max-age=31536000; includeSubDomains; preload',
+	},
+	{
+		key: 'X-XSS-Protection',
+		value: '1; mode=block',
+	},
+	{
+		key: 'X-Frame-Options',
+		value: 'SAMEORIGIN',
+	},
+	{
+		key: 'Referrer-Policy',
+		value: 'origin-when-cross-origin',
+	},
+	{
+		key: 'Content-Security-Policy',
+		value: ContentSecurityPolicy.replace(/\s{2,}/g, ' ').trim(),
+	},
+]
 
 const moduleExports = {
 	experimental: {
@@ -30,6 +62,14 @@ const moduleExports = {
 		FARM_CONTRACT_ID: process.env.FARM_CONTRACT_ID,
 		TRANSAK_API_KEY: process.env.TRANSAK_API_KEY,
 		TRANSAK_API_SECRET: process.env.TRANSAK_API_SECRET,
+	},
+	async headers() {
+		return [
+			{
+				source: '/:path*',
+				headers: securityHeaders,
+			},
+		]
 	},
 	async redirects() {
 		return [
