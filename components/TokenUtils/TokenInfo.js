@@ -56,13 +56,14 @@ const TokenInfo = ({ localToken, className }) => {
 						<p>Collection</p>
 						<Link href={`/collection/${collection.id}`}>
 							<a
-								onClick={() =>
+								onClick={() => {
 									trackClickInfo(
 										localToken.token_id || localToken.token_series_id,
 										'collection_info',
 										collection.name
 									)
-								}
+									sessionStorage.clear()
+								}}
 								className="text-gray-100 font-semibold hover:opacity-80"
 							>
 								{prettyTruncate(collection.name, 30, 'address')}

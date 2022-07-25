@@ -81,7 +81,7 @@ const TokenDetailNew = ({ token }) => {
 					<TokenPriceHistory localToken={token} className="mb-10" />
 					<TokenAttributes localToken={token} className="mb-10" />
 					<TokenOwners localToken={token} className="mb-10" />
-					<TokenOffers localToken={token} className="mb-10" />
+					{!token.is_auction && <TokenOffers localToken={token} className="mb-10" />}
 					<TokenInfo localToken={token} />
 					<TokenMoreCollection localToken={token} className="col-span-2 mb-10" />
 				</div>
@@ -103,7 +103,7 @@ const TokenDetailNew = ({ token }) => {
 				)}
 				<TokenPriceHistory localToken={token} className="mb-10" />
 				<TokenOwners localToken={token} className="mb-10" />
-				<TokenOffers localToken={token} />
+				{!token.is_auction && <TokenOffers localToken={token} />}
 			</div>
 			<TokenMoreCollection localToken={token} className="col-span-2 mb-10 hidden md:block" />
 			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />

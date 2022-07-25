@@ -58,11 +58,13 @@ const TokenBidHistory = ({ localToken: initialToken, className }) => {
 					onClick={() => setIsDropDown(!isDropDown)}
 				>
 					<CurrentBid initial={localToken} key={localToken.token_id} />
-					<IconDownArrow size={30} />
+					<div className={`${!isDropDown && 'rotate-180'}`}>
+						<IconDownArrow size={30} />
+					</div>
 				</div>
 			</div>
 			{isDropDown && (
-				<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 h-48 overflow-y-auto pt-4 pb-4">
+				<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 h-64 border-b-8 border-cyan-blue-1 overflow-y-auto pt-4 pb-4">
 					{historyBid && historyBid?.length !== 0 ? (
 						historyBid
 							?.slice(0)
@@ -135,7 +137,7 @@ const CurrentBid = ({ initial = {} }) => {
 
 	return (
 		<div className="text-white bg-cyan-blue-3 rounded-t-xl py-4">
-			<div className="md:flex items-center justify-between">
+			<div className="lg:flex items-center justify-between">
 				{!token.amount || (token?.bidder_list && token?.bidder_list.length === 0) ? (
 					<p className="text-white">
 						{localeLn('Starting Bid')}{' '}
@@ -167,14 +169,16 @@ const CurrentBid = ({ initial = {} }) => {
 						</span>
 					</p>
 				)}
-				<p className="md:text-right text-xs md:absolute right-14">
-					{startedAtDate(
-						token?.bidder_list && token?.bidder_list.length !== 0
-							? isCurrentBid('time')
-							: token.started_at
-					)}{' '}
-					UTC
-				</p>
+				<div>
+					<p className="lg:text-right text-xs lg:absolute mt-1 md:mt-1 lg:-mt-[7px] md:right-14">
+						{startedAtDate(
+							token?.bidder_list && token?.bidder_list.length !== 0
+								? isCurrentBid('time')
+								: token.started_at
+						)}{' '}
+						UTC
+					</p>
+				</div>
 			</div>
 		</div>
 	)
