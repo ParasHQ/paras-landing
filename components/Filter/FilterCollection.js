@@ -95,21 +95,19 @@ const FilterCollection = ({ collections, onClearAll }) => {
 			{showFilterModal && (
 				<div className="absolute mr-4 md:mr-0 z-20 mt-2 right-0 bg-dark-primary-2 rounded-md w-80">
 					<div className=" p-3">
-						<form action="/search" method="get" onSubmit={'_handleSubmit'} autoComplete="off">
-							<div className="flex border-dark-primary-1 border-2 rounded-lg bg-dark-primary-1 mb-2">
-								<IconSearch size={36} />
-								<input
-									id="search"
-									name="q"
-									type="search"
-									value={router.query.search}
-									onChange={(e) => debounceOnChange(e.target)}
-									placeholder={localeLn('Search in collections')}
-									className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-base md:text-sm font-medium"
-									style={{ WebkitAppearance: 'none' }}
-								/>
-							</div>
-						</form>
+						<div className="flex border-dark-primary-1 border-2 rounded-lg bg-dark-primary-1 mb-2">
+							<IconSearch size={36} />
+							<input
+								id="search"
+								name="q"
+								type="search"
+								value={router.query.search}
+								onChange={(e) => debounceOnChange(e.target)}
+								placeholder={localeLn('Search in collections')}
+								className="p-1 pl-0 m-auto bg-transparent focus:bg-transparent border-none text-white text-base md:text-sm font-medium"
+								style={{ WebkitAppearance: 'none' }}
+							/>
+						</div>
 						<Scrollbars
 							autoHeight
 							autoHeightMax={`15rem`}
