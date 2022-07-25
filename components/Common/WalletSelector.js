@@ -1,10 +1,10 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { map, distinctUntilChanged } from 'rxjs'
-import { setupWalletSelector } from '@near-wallet-selector/core'
-import { setupModal } from '@near-wallet-selector/modal-ui'
-import { setupNearWallet } from '@near-wallet-selector/near-wallet'
-import { setupMyNearWallet } from '@near-wallet-selector/my-near-wallet'
-import { setupSender } from '@near-wallet-selector/sender'
+import { setupWalletSelector } from '@paras-wallet-selector/core'
+import { setupModal } from '@paras-wallet-selector/modal-ui'
+import { setupNearWallet } from '@paras-wallet-selector/near-wallet'
+import { setupMyNearWallet } from '@paras-wallet-selector/my-near-wallet'
+import { setupSender } from '@paras-wallet-selector/sender'
 import getConfig from 'config/near'
 import { providers } from 'near-api-js'
 import useStore from 'lib/store'
@@ -28,7 +28,11 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		const _selector = await setupWalletSelector({
 			network: nearConfig.networkId,
 			debug: process.env.NODE_ENV !== 'production',
-			modules: [setupNearWallet(), setupMyNearWallet(), setupSender()],
+			modules: [
+				setupNearWallet({ iconUrl: window.location.origin + '/assets/near-wallet-icon.png' }),
+				setupMyNearWallet({ iconUrl: window.location.origin + '/assets/my-near-wallet-icon.png' }),
+				setupSender({ iconUrl: window.location.origin + '/assets/sender-icon.png' }),
+			],
 		})
 		const _modal = setupModal(_selector, { contractId: nearConfig.contractName })
 

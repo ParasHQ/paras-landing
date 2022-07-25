@@ -346,68 +346,6 @@
   resolved "https://registry.yarnpkg.com/@napi-rs/triples/-/triples-1.1.0.tgz#88c35b72e79a20b79bb4c9b3e2817241a1c9f4f9"
   integrity sha512-XQr74QaLeMiqhStEhLn1im9EOMnkypp7MZOwQhGzqp2Weu5eQJbpPxWxixxlYRKWPOmJjsk6qYfYH9kq43yc2w==
 
-"@near-wallet-selector/core@5.0.0", "@near-wallet-selector/core@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@near-wallet-selector/core/-/core-5.0.0.tgz#76dd0c683b6daa01f3f20db3c4b5b707fb924937"
-  integrity sha512-xklVLDcV1/8FHrmZ9RtwHbTWgZFIoy68a/5mhXDnzFdN1ypTRkThRRdhJ/PvQbqsvl6h+fFV6sa0EQzSLJ297Q==
-  dependencies:
-    near-api-js "0.44.2"
-    rxjs "~7.4.0"
-
-"@near-wallet-selector/modal-ui@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@near-wallet-selector/modal-ui/-/modal-ui-5.0.0.tgz#9cda18f0d45bac4b393392a8426572ba4d06b570"
-  integrity sha512-TeFMMKpn6gOc+u/bjhr1rHiCHuK0TOgtGbvDS3WKsqhoiYtZMqo4AdfWmqTOjlBKyetiIGJpxqsSZINDAxovaw==
-  dependencies:
-    "@near-wallet-selector/core" "5.0.0"
-    near-api-js "0.44.2"
-    react "^17.0.2"
-    react-dom "^17.0.2"
-    rxjs "~7.4.0"
-
-"@near-wallet-selector/my-near-wallet@5.0.0", "@near-wallet-selector/my-near-wallet@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@near-wallet-selector/my-near-wallet/-/my-near-wallet-5.0.0.tgz#e6d6038ec7c86026335ae2e4a3c14be6d0cc2792"
-  integrity sha512-0sM7NVfLnuk4n5cB/IcLYB+St4GzWsR+hk4oXkqucsyV4ozjbCUE37SGBadLFv0bFKLOVfANsAuzJajjREH0yA==
-  dependencies:
-    "@near-wallet-selector/core" "5.0.0"
-    "@near-wallet-selector/wallet-utils" "5.0.0"
-    bn.js "^5.2.0"
-    near-api-js "0.44.2"
-    rxjs "~7.4.0"
-
-"@near-wallet-selector/near-wallet@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@near-wallet-selector/near-wallet/-/near-wallet-5.0.0.tgz#9e2d8863e2ca302185d8f0f600ce902fe6ccbafa"
-  integrity sha512-0m3fhCuVS8crPHkvIoWLQU/pAmGJisi9t7X9WBAJO+vzSj4LO0d5i9+ijPoKBftu46G5YPf6QVl7XA1MQGoddg==
-  dependencies:
-    "@near-wallet-selector/core" "5.0.0"
-    "@near-wallet-selector/my-near-wallet" "5.0.0"
-    "@near-wallet-selector/wallet-utils" "5.0.0"
-    bn.js "^5.2.0"
-    near-api-js "0.44.2"
-    rxjs "~7.4.0"
-
-"@near-wallet-selector/sender@^5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@near-wallet-selector/sender/-/sender-5.0.0.tgz#9b38a40db4a482c2c774a918682eee8cf9edbb50"
-  integrity sha512-OXoW9oiJx64gVIgc34/qVzjQ/XAG4HGI6HayB90SeKt5YlmgwdOT0ubJtxRzk75jdvWgOipyjeHBbZCXYceF/g==
-  dependencies:
-    "@near-wallet-selector/core" "5.0.0"
-    is-mobile "^3.0.0"
-    near-api-js "0.44.2"
-    rxjs "~7.4.0"
-
-"@near-wallet-selector/wallet-utils@5.0.0":
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/@near-wallet-selector/wallet-utils/-/wallet-utils-5.0.0.tgz#7d38c0c0f7d435eefd6ff74b4e8baf77a498a335"
-  integrity sha512-ZiXPFTEhog0N8Pdhbg6HB75QvLBFtKdk6Wvql/ZZAiebOmUcYFNKFywxQLK0DTRJc46RSxdsk+fXqB2trKZLBA==
-  dependencies:
-    "@near-wallet-selector/core" "5.0.0"
-    bn.js "^5.2.0"
-    near-api-js "0.44.2"
-    rxjs "~7.4.0"
-
 "@next/bundle-analyzer@^12.1.4":
   version "12.1.4"
   resolved "https://registry.yarnpkg.com/@next/bundle-analyzer/-/bundle-analyzer-12.1.4.tgz#22afb920b769a54a8da118af0786df0a1f4fca47"
@@ -501,6 +439,68 @@
   dependencies:
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
+
+"@paras-wallet-selector/core@5.0.0-beta", "@paras-wallet-selector/core@^5.0.0-beta":
+  version "5.0.0-beta"
+  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/core/-/core-5.0.0-beta.tgz#7c8e5e13f0adf3d79c8032ede78e3b4142f28ec8"
+  integrity sha512-aNOWSQKQCEEPxDvzv1d6ovI0dunSH+ltgXfDbozSgPdrzb7nLVqsQ5GbsPdWFQ1MO2nyBNeRnoBQLXaUPOe4Ig==
+  dependencies:
+    near-api-js "0.44.2"
+    rxjs "~7.4.0"
+
+"@paras-wallet-selector/modal-ui@^5.0.0-beta":
+  version "5.0.0-beta"
+  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/modal-ui/-/modal-ui-5.0.0-beta.tgz#aab4ef6ae76c27b391a165c5b937fed31cd6f522"
+  integrity sha512-t2/ZsVdkwuDXaS349hr40FaN5pxfSCZ1N+9PheyBaIbCseXHFOCOipf9VOb68td8pV0HPfRfyPvxMGQxm46l1g==
+  dependencies:
+    "@paras-wallet-selector/core" "5.0.0-beta"
+    near-api-js "0.44.2"
+    react "^17.0.2"
+    react-dom "^17.0.2"
+    rxjs "~7.4.0"
+
+"@paras-wallet-selector/my-near-wallet@5.0.0-beta", "@paras-wallet-selector/my-near-wallet@^5.0.0-beta":
+  version "5.0.0-beta"
+  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/my-near-wallet/-/my-near-wallet-5.0.0-beta.tgz#2cb1414e98af77c9d435170eff3630d85ab7d8bd"
+  integrity sha512-yDKpMa16n048FqzNRFAnNQ96lEXBD1505VGKbEXwP/u2hpr1LCeaXuo8cc9lLEkljXygdfb0V86NZvp5P5CfJQ==
+  dependencies:
+    "@paras-wallet-selector/core" "5.0.0-beta"
+    "@paras-wallet-selector/wallet-utils" "5.0.0-beta"
+    bn.js "^5.2.0"
+    near-api-js "0.44.2"
+    rxjs "~7.4.0"
+
+"@paras-wallet-selector/near-wallet@^5.0.0-beta":
+  version "5.0.0-beta"
+  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/near-wallet/-/near-wallet-5.0.0-beta.tgz#7928175fb1fb4fa4df5e364ae2e9a5219f89b19a"
+  integrity sha512-HmHRYbK83+CtPD1qq69JbXY5v+glKauJebbsbJK6JxBJEoeTA7RgOAJM8HNvKoZRokWlYYSZ4Z1IbEmzC4bNNQ==
+  dependencies:
+    "@paras-wallet-selector/core" "5.0.0-beta"
+    "@paras-wallet-selector/my-near-wallet" "5.0.0-beta"
+    "@paras-wallet-selector/wallet-utils" "5.0.0-beta"
+    bn.js "^5.2.0"
+    near-api-js "0.44.2"
+    rxjs "~7.4.0"
+
+"@paras-wallet-selector/sender@^5.0.0-beta":
+  version "5.0.0-beta"
+  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/sender/-/sender-5.0.0-beta.tgz#4e7c56f323776e04e45992c58faaafe1e7353e3a"
+  integrity sha512-KUaAXWCD8IJK+O/HQn/y/rIPTrj8umyfE/VzIqzCRnB2Y+9BaLJ14xsbwiprhFc8zhbeC8vxA1SlSjMZ5WrHBw==
+  dependencies:
+    "@paras-wallet-selector/core" "5.0.0-beta"
+    is-mobile "^3.0.0"
+    near-api-js "0.44.2"
+    rxjs "~7.4.0"
+
+"@paras-wallet-selector/wallet-utils@5.0.0-beta":
+  version "5.0.0-beta"
+  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/wallet-utils/-/wallet-utils-5.0.0-beta.tgz#17bab8aa3d71d768b4d38e8c521abeced5c1223e"
+  integrity sha512-FIp0EWIF9EN6+9CuWjhBh+C6mxUEkQ75F45p6b/wG98pdkPzuxGuSEjM82yOfGC+IPN9NUg9O1dTz7K9cNOyIA==
+  dependencies:
+    "@paras-wallet-selector/core" "5.0.0-beta"
+    bn.js "^5.2.0"
+    near-api-js "0.44.2"
+    rxjs "~7.4.0"
 
 "@polka/url@^1.0.0-next.20":
   version "1.0.0-next.21"

@@ -14,7 +14,7 @@ import '../styles/font.css'
 import '../styles/tailwind.css'
 import 'draft-js/dist/Draft.css'
 import 'croppie/croppie.css'
-import '@near-wallet-selector/modal-ui/styles.css'
+import '@paras-wallet-selector/modal-ui/styles.css'
 
 import ToastProvider from 'hooks/useToast'
 import { SWRConfig } from 'swr'
