@@ -7,7 +7,7 @@ import Footer from 'components/Footer'
 import useStore from 'lib/store'
 import CardList from 'components/TokenSeries/CardList'
 import CardListLoader from 'components/Card/CardListLoader'
-import { parseImgUrl, parseSortQuery, setDataLocalStorage } from 'utils/common'
+import { parseImgUrl, parseSortQuery, sanitizeHTML, setDataLocalStorage } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CategoryList from 'components/CategoryList'
 import AddCategoryModal from 'components/Modal/AddCategoryModal'
@@ -264,7 +264,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 								<div
 									className="category-description text-gray-200 max-w-lg"
 									dangerouslySetInnerHTML={{
-										__html: categoryDetail.description,
+										__html: sanitizeHTML(categoryDetail.description),
 									}}
 								></div>
 							</div>
