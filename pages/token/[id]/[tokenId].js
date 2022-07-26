@@ -28,6 +28,7 @@ const TokenPage = ({ errorCode, initial }) => {
 		},
 	})
 	const [isEndedTime, setIsEndedTime] = useState(false)
+
 	useEffect(() => {
 		const variant = localStorage.getItem('variant') || 0
 		setVariant(variant)
@@ -39,6 +40,7 @@ const TokenPage = ({ errorCode, initial }) => {
 			})
 		}
 	})
+
 	useEffect(() => {
 		checkAuctionTime()
 	}, [isEndedTime])
@@ -73,7 +75,7 @@ const TokenPage = ({ errorCode, initial }) => {
 	if (errorCode) {
 		return <Error />
 	}
-	console.log(currentVariant)
+
 	return (
 		<div className="min-h-screen bg-black">
 			<div
@@ -158,7 +160,6 @@ export async function getServerSideProps({ params }) {
 			},
 		}
 	} catch (err) {
-		console.log(err)
 		sentryCaptureException(err)
 		const errorCode = 404
 		return { props: { errorCode } }
