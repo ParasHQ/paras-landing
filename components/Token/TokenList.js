@@ -158,6 +158,7 @@ const TokenSingle = ({
 	const [isLiked, setIsLiked] = useState(false)
 	const [defaultLikes, setDefaultLikes] = useState(0)
 	const [showLogin, setShowLogin] = useState(false)
+	const [currentVariant, setVariant] = useState(0)
 	const { localeLn } = useIntl()
 	const toast = useToast()
 	const contractIdTokenSeriesId = `${token.contract_id}::${token.token_series_id}`
@@ -167,6 +168,11 @@ const TokenSingle = ({
 			? token.token?.amount
 			: token.lowest_price || token.price
 	const [isEndedTime, setIsEndedTime] = useState(false)
+
+	useEffect(() => {
+		const variant = localStorage.getItem('variant') || 0
+		setVariant(variant)
+	})
 
 	const _showInfoUpdatingAuction = () => {
 		toast.show({
@@ -239,28 +245,31 @@ const TokenSingle = ({
 
 	const onClickSeeDetails = async (choosenToken) => {
 		const token = (await mutate()) || choosenToken
-		// let platform = navigator.userAgent.includes('iPhone')
-		// if (platform) {
-		// 	router.push(`/token/${token.contract_id}::${token.token_series_id}`)
-		// 	return
-		// }
+		if (currentVariant == 0) {
+			let platform = navigator.userAgent.includes('iPhone')
+			if (platform) {
+				router.push(`/token/${token.contract_id}::${token.token_series_id}`)
+				return
+			}
+			router.push(
+				{
+					pathname: router.pathname,
+					query: {
+						...router.query,
+						tokenId: token.token_id,
+						contractId: token.contract_id,
+					},
+				},
+				`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`,
+				{
+					shallow: true,
+					scroll: false,
+				}
+			)
+			return
+		}
 		saveScrollPosition(tokens)
 		router.push(`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`)
-		// router.push(
-		// 	{
-		// 		pathname: router.pathname,
-		// 		query: {
-		// 			...router.query,
-		// 			tokenId: token.token_id,
-		// 			contractId: token.contract_id,
-		// 		},
-		// 	},
-		// 	`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`,
-		// 	{
-		// 		shallow: true,
-		// 		scroll: false,
-		// 	}
-		// )
 	}
 
 	const onCloseModal = () => {
