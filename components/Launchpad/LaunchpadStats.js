@@ -65,7 +65,16 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 				<IconWarning />
 				<p>
 					This project is not an endorsement from Paras or a guarantee of listing on Paras
-					post-mint. Dates may be subject to change. Please DYOR
+					post-mint. Dates may be subject to change. Please{' '}
+					<a
+						href="https://guide.paras.id/collectors-guide/how-to-do-your-own-research-dyor"
+						target="_blank"
+						rel="noreferrer"
+						className="cursor-pointer underline"
+					>
+						DYOR
+					</a>
+					.
 				</p>
 			</div>
 			<div className="max-w-3xl mx-auto mb-16 grid grid-cols-2 md:flex md:flex-wrap md:items-center md:justify-between text-gray-200">
