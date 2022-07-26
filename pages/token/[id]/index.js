@@ -7,7 +7,7 @@ import Footer from 'components/Footer'
 import { parseImgUrl } from 'utils/common'
 import useTokenSeries from 'hooks/useTokenSeries'
 import useStore from 'lib/store'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import TokenSeriesDetailNew from 'components/TokenSeries/TokenSeriesDetailNew'
 
 const getCreatorId = (token) => {
@@ -16,6 +16,7 @@ const getCreatorId = (token) => {
 
 const TokenSeriesPage = ({ errorCode, initial }) => {
 	const currentUser = useStore((state) => state.currentUser)
+	const [currentVariant, setVariant] = useState(0)
 	const { token, mutate } = useTokenSeries({
 		key: `${initial?.contract_id}::${initial?.token_series_id}`,
 		initialData: initial,
@@ -28,7 +29,10 @@ const TokenSeriesPage = ({ errorCode, initial }) => {
 	const asyncMutate = async () => {
 		await mutate()
 	}
-
+	useEffect(() => {
+		const variant = localStorage.getItem('variant') || 0
+		setVariant(variant)
+	})
 	useEffect(() => {
 		if (currentUser) {
 			asyncMutate()
@@ -38,7 +42,7 @@ const TokenSeriesPage = ({ errorCode, initial }) => {
 	if (errorCode) {
 		return <Error />
 	}
-
+	console.log(currentVariant)
 	return (
 		<div className="min-h-screen bg-black">
 			<div
@@ -92,8 +96,11 @@ const TokenSeriesPage = ({ errorCode, initial }) => {
 			</Head>
 			<Nav />
 			<div className="relative max-w-6xl m-auto pt-16 px-4">
-				{/* <TokenSeriesDetail token={token} /> */}
-				<TokenSeriesDetailNew token={token} />
+				{currentVariant == 0 ? (
+					<TokenSeriesDetail token={token} />
+				) : (
+					<TokenSeriesDetailNew token={token} />
+				)}
 			</div>
 			<Footer />
 		</div>
