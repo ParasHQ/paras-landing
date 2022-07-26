@@ -49,7 +49,7 @@
 		"js-base64": "^3.5.2",
 		"js-cookie": "^2.2.1",
 		"jsbi": "^3.1.4",
-		"near-api-js": "^0.42.0",
+		"near-api-js": "^0.45.1",
 		"next": "^11.0.1",
 		"postcss": "^8.4.12",
 		"query-string": "^7.0.1",
