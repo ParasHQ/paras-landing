@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import useStore from 'lib/store'
 import axios from 'axios'
@@ -30,6 +30,8 @@ const MAX_ACTIVITY_DELAY = 5
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
 	const router = useRouter()
+	const [currentVariant, setVariant] = useState(0)
+
 	const { locale, defaultLocale, pathname } = router
 
 	let localeCopy = locales[locale]
@@ -48,7 +50,11 @@ function MyApp({ Component, pageProps }) {
 				...defaultLocaleCopy['defaultAll'],
 				...localeCopy['defaultAll'],
 		  }
-
+	const getvariant = (variant, experiment_id) => {
+		console.log('get variant = ' + variant)
+		setVariant(variant)
+		localStorage.setItem('variant', variant)
+	}
 	const counter = async (url) => {
 		// check cookie uid
 		let uid = cookie.get('uid')
@@ -143,7 +149,12 @@ function MyApp({ Component, pageProps }) {
 			return
 		}
 		_init()
-
+		if (window && window.gtag) {
+			window.gtag('event', 'optimize.callback', {
+				name: gtag.EXPERIMENT_ID,
+				callback: getvariant,
+			})
+		}
 		if (process.env.APP_ENV === 'production') {
 			// initial route analytics
 			const url = router.asPath
