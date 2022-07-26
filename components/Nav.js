@@ -361,6 +361,16 @@ const Nav = () => {
 								{localeLn('Comics')}
 							</a>
 						</div>
+						<div className="px-3 text-gray-100 hidden md:block text-sm fireTextRed">
+							<a
+								href="https://guide.paras.id/collectors-guide/how-to-do-your-own-research-dyor"
+								target="_blank"
+								className="flex cursor-pointer"
+								rel="noreferrer"
+							>
+								DYOR
+							</a>
+						</div>
 						<div className="px-3">
 							{store.currentUser ? (
 								<div className="flex items-center -mx-2">
@@ -471,6 +481,16 @@ const Nav = () => {
 									rel="noreferrer"
 								>
 									{localeLn('Comics')}
+								</a>
+							</div>
+							<div className="text-gray-400">
+								<a
+									href="https://guide.paras.id/collectors-guide/how-to-do-your-own-research-dyor"
+									target="_blank"
+									className="p-4 block w-full fireTextRed"
+									rel="noreferrer"
+								>
+									DYOR
 								</a>
 							</div>
 						</div>
