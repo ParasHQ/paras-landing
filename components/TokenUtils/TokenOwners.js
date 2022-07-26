@@ -12,6 +12,7 @@ import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import useToken from 'hooks/useToken'
 import { IconDownArrow } from 'components/Icons'
+import { trackClickOwners } from 'lib/ga'
 
 const FETCH_TOKENS_LIMIT = 100
 
@@ -108,7 +109,9 @@ const TokenOwners = ({ localToken, className }) => {
 					onClick={() => setIsDropDown(!isDropDown)}
 				>
 					<p className="text-xl py-3">Owners</p>
-					<IconDownArrow size={30} />
+					<div className={`${!isDropDown && 'rotate-180'}`}>
+						<IconDownArrow size={30} />
+					</div>
 				</div>
 			</div>
 			{isDropDown && (
@@ -286,7 +289,7 @@ const Owner = ({ initial = {}, onBuy, onUpdateListing }) => {
 				</div>
 				<div className="pl-4 overflow-hidden">
 					<Link href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}>
-						<a className="hover:opacity-80">
+						<a onClick={() => trackClickOwners(token.token_id)} className="hover:opacity-80">
 							<p className="text-white font-semibold truncate">
 								{token.contract_id === process.env.NFT_CONTRACT_ID
 									? `${localeLn('Edition')} #${token.edition_id}`

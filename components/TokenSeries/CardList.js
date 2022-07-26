@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Card from 'components/Card/Card'
-import { parseImgUrl, prettyBalance, abbrNum } from 'utils/common'
+import { parseImgUrl, prettyBalance, abbrNum, saveScrollPosition } from 'utils/common'
 import Link from 'next/link'
 import useStore from 'lib/store'
 import { useRouter } from 'next/router'
@@ -20,7 +20,7 @@ import { useToast } from 'hooks/useToast'
 
 import IconLove from 'components/Icons/component/IconLove'
 import LoginModal from 'components/Modal/LoginModal'
-import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
+import { trackClickMoreCollection, trackLikeToken, trackUnlikeToken } from 'lib/ga'
 
 const CardList = ({
 	name = 'default',
@@ -31,6 +31,7 @@ const CardList = ({
 	type,
 	displayType = 'large',
 	showLike = false,
+	typeCardList,
 }) => {
 	const store = useStore()
 	const containerRef = useRef()
@@ -102,7 +103,11 @@ const CardList = ({
 				}
 				className="-mx-4"
 			>
-				<div className="flex flex-wrap select-none">
+				<div
+					className={`flex ${
+						typeCardList === 'top-rarity-token' ? 'flex-nowrap' : 'flex-wrap'
+					} select-none`}
+				>
 					{tokens.map((_token, idx) => (
 						<TokenSeriesSingle
 							key={`${_token.contract_id}::${_token.token_series_id}-${displayType}-${idx}`}
@@ -111,6 +116,8 @@ const CardList = ({
 							displayType={displayType}
 							type={type}
 							showLike={showLike}
+							tokens={tokens}
+							typeCardList={typeCardList}
 						/>
 					))}
 				</div>
@@ -127,6 +134,8 @@ const TokenSeriesSingle = ({
 	type,
 	displayType = 'large',
 	showLike,
+	tokens,
+	typeCardList,
 }) => {
 	const currentUser = useStore((state) => state.currentUser)
 	const { token, mutate } = useTokenSeries({
@@ -214,11 +223,14 @@ const TokenSeriesSingle = ({
 	const onClickSeeDetails = async (choosenToken, additionalQuery) => {
 		const token = (await mutate()) || choosenToken
 		const lookupToken = token?.token
-		let platform = navigator.userAgent.includes('iPhone')
-		if (platform) {
-			router.push(`/token/${token.contract_id}::${token.token_series_id}`)
-			return
-		}
+		if (typeCardList === 'top-rarity-token')
+			trackClickMoreCollection(lookupToken?.token_id || token.token_series_id)
+		// let platform = navigator.userAgent.includes('iPhone')
+		// if (platform) {
+		// 	router.push(`/token/${token.contract_id}::${token.token_series_id}`)
+		// 	return
+		// }
+		saveScrollPosition(tokens)
 		router.push(
 			`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`
 		)
@@ -426,7 +438,12 @@ const TokenSeriesSingle = ({
 				} flex-shrink-0 relative`}
 			>
 				<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
-					<a onClick={(e) => e.preventDefault()}>
+					<a
+						onClick={(e) => {
+							e.preventDefault()
+							if (typeCardList === 'top-rarity-token') onClickSeeDetails(token)
+						}}
+					>
 						<div className="w-full m-auto">
 							<Card
 								imgUrl={parseImgUrl(token.metadata.media, null, {
@@ -450,7 +467,7 @@ const TokenSeriesSingle = ({
 									token.metadata.animation_url
 								}
 								imgBlur={token.metadata.blurhash}
-								flippable
+								flippable={typeCardList === 'top-rarity-token' ? false : true}
 								token={{
 									title: token.metadata.title,
 									collection: token.metadata.collection || token.contract_id,
@@ -466,7 +483,7 @@ const TokenSeriesSingle = ({
 									started_at: token.token?.started_at,
 									ended_at: token.token?.ended_at,
 									has_auction: token?.has_auction,
-									animation_url: token?.animation_url,
+									animation_url: token?.metadata?.animation_url,
 								}}
 								profileCollection={profileCollection}
 								type={type}
@@ -476,161 +493,166 @@ const TokenSeriesSingle = ({
 									!isLiked &&
 									likeToken(token.contract_id, token.token_series_id, 'double_click_list')
 								}
+								typeCardList={typeCardList}
 							/>
 						</div>
 					</a>
 				</Link>
-				<div className={`px-1 relative ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
-					<div className="block">
-						<p className="text-gray-400 text-xs">{typeSale()}</p>
-						{token.token?.is_auction && !isEndedTime && (
-							<p className="text-gray-100 text-[9px] font-bold">{checkBidder()}</p>
-						)}
-						<div
-							className={`text-gray-100 ${
-								(displayType === 'large' && !token.token?.is_auction) || isEndedTime
-									? `text-2xl`
-									: displayType !== 'small' && token.token?.is_auction && !isEndedTime
-									? 'text-lg -mt-.5 -mb-2'
-									: displayType === 'small' && token.token?.is_auction && !isEndedTime
-									? `text-base`
-									: 'text-lg'
-							}`}
-						>
-							{price || (token.token?.is_auction && !isEndedTime) ? (
-								<div className="flex items-baseline space-x-1">
-									<div className="truncate">
-										{price === '0' && !token.token?.is_auction ? (
-											localeLn('Free')
-										) : (price && token.token?.has_price && !isEndedTime) ||
-										  (token.lowest_price && !isEndedTime) ? (
-											`${prettyBalance(
-												token.token?.is_auction && token.token?.bidder_list?.length !== 0
-													? isCurrentBid('amount') || price
-													: price,
-												24,
-												4
-											)} Ⓝ`
-										) : (
-											<div className="line-through text-red-600">
-												<span className="text-gray-100">{localeLn('SALE')}</span>
+				{typeCardList !== 'top-rarity-token' && (
+					<div className={`px-1 relative ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
+						<div className="block">
+							<p className="text-grray-400 text-xs">{typeSale()}</p>
+							{token.token?.is_auction && !isEndedTime && (
+								<p className="text-gray-100 text-[9px] font-bold">{checkBidder()}</p>
+							)}
+							<div
+								className={`text-gray-100 ${
+									(displayType === 'large' && !token.token?.is_auction) || isEndedTime
+										? `text-2xl`
+										: displayType !== 'small' && token.token?.is_auction && !isEndedTime
+										? 'text-lg -mt-.5 -mb-2'
+										: displayType === 'small' && token.token?.is_auction && !isEndedTime
+										? `text-base`
+										: 'text-lg'
+								}`}
+							>
+								{price || (token.token?.is_auction && !isEndedTime) ? (
+									<div className="flex items-baseline space-x-1">
+										<div className="truncate">
+											{price === '0' && !token.token?.is_auction ? (
+												localeLn('Free')
+											) : (price && token.token?.has_price && !isEndedTime) ||
+											  (token.lowest_price && !isEndedTime) ? (
+												`${prettyBalance(
+													token.token?.is_auction && token.token?.bidder_list?.length !== 0
+														? isCurrentBid('amount') || price
+														: price,
+													24,
+													4
+												)} Ⓝ`
+											) : (
+												<div className="line-through text-red-600">
+													<span className="text-gray-100">{localeLn('SALE')}</span>
+												</div>
+											)}
+										</div>
+										{price && !isEndedTime && (
+											<div
+												className={`${
+													token.token?.is_auction ? 'text-[9px]' : 'text-xs'
+												} text-gray-400 truncate`}
+											>
+												~ $
+												{prettyBalance(
+													JSBI.BigInt(
+														token.token?.is_auction && token.token?.bidder_list?.length !== 0
+															? isCurrentBid('amount') || price
+															: price
+													) * store.nearUsdPrice,
+													24,
+													2
+												)}
 											</div>
 										)}
 									</div>
-									{price && !isEndedTime && (
-										<div
-											className={`${
-												token.token?.is_auction ? 'text-[9px]' : 'text-xs'
-											} text-gray-400 truncate`}
-										>
-											~ $
-											{prettyBalance(
-												JSBI.BigInt(
-													token.token?.is_auction && token.token?.bidder_list?.length !== 0
-														? isCurrentBid('amount') || price
-														: price
-												) * store.nearUsdPrice,
-												24,
-												2
-											)}
-										</div>
-									)}
-								</div>
-							) : (
-								<div className="line-through text-red-600">
-									<span className="text-gray-100">{localeLn('SALE')}</span>
+								) : (
+									<div className="line-through text-red-600">
+										<span className="text-gray-100">{localeLn('SALE')}</span>
+									</div>
+								)}
+							</div>
+						</div>
+						<div
+							className={`${
+								displayType === 'large' ? `flex gap-1` : `flex gap-1`
+							} text-right absolute top-0 right-0 flex-col items-end`}
+						>
+							{type === 'collection' && !!token.metadata.score && (
+								<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
+									Rarity Score {token.metadata?.score?.toFixed(2)}
+								</p>
+							)}
+							{showLike && (
+								<div className="inline-flex items-center">
+									<div
+										className="cursor-pointer"
+										onClick={() => {
+											isLiked
+												? unlikeToken(token.contract_id, token.token_series_id, 'list')
+												: likeToken(token.contract_id, token.token_series_id, 'list')
+										}}
+									>
+										<IconLove
+											size={displayType === 'large' ? 18 : 16}
+											color={isLiked ? '#c51104' : 'transparent'}
+											stroke={isLiked ? 'none' : 'white'}
+										/>
+									</div>
+									<p
+										className={`text-white ml-1 ${displayType === 'large' ? 'text-sm' : 'text-xs'}`}
+									>
+										{abbrNum(defaultLikes || 0, 1)}
+									</p>
 								</div>
 							)}
 						</div>
-					</div>
-					<div
-						className={`${
-							displayType === 'large' ? `flex gap-1` : `flex gap-1`
-						} text-right absolute top-0 right-0 flex-col items-end`}
-					>
-						{type === 'collection' && !!token.metadata.score && (
-							<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
-								Rarity Score {token.metadata?.score?.toFixed(2)}
-							</p>
-						)}
-						{showLike && (
-							<div className="inline-flex items-center">
-								<div
-									className="cursor-pointer"
-									onClick={() => {
-										isLiked
-											? unlikeToken(token.contract_id, token.token_series_id, 'list')
-											: likeToken(token.contract_id, token.token_series_id, 'list')
-									}}
+						<div className="flex justify-between md:items-baseline">
+							{!token.token?.is_auction ||
+							(currentUser !== token.token?.owner_id && isCurrentBid('bidder') !== currentUser) ? (
+								<p
+									className={`font-bold text-white ${
+										isEndedTime && 'text-opacity-40'
+									} cursor-pointer hover:opacity-80 ${
+										displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+									} mb-1 md:mb-0`}
+									onClick={() =>
+										isEndedTime ? _showInfoUpdatingAuction() : actionButtonClick(token)
+									}
 								>
-									<IconLove
-										size={displayType === 'large' ? 18 : 16}
-										color={isLiked ? '#c51104' : 'transparent'}
-										stroke={isLiked ? 'none' : 'white'}
-									/>
-								</div>
-								<p className={`text-white ml-1 ${displayType === 'large' ? 'text-sm' : 'text-xs'}`}>
-									{abbrNum(defaultLikes || 0, 1)}
+									{actionButtonText(token)}
 								</p>
-							</div>
-						)}
+							) : isCurrentBid('bidder') === currentUser && !isEndedTime ? (
+								<p
+									className={`font-bold text-white text-opacity-40 ${
+										displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+									} mb-1 md:mb-0`}
+								>
+									{`You're currently bid`}
+								</p>
+							) : !isEndedTime ? (
+								<p
+									className={`font-bold text-white text-opacity-40 ${
+										displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+									} mb-1 md:mb-0`}
+								>
+									Auction on going
+								</p>
+							) : (
+								<p
+									className={`font-bold text-white text-opacity-40 hover:opacity-80 cursor-pointer ${
+										displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
+									} mb-1 md:mb-0`}
+									onClick={_showInfoUpdatingAuction}
+								>
+									Auction Ends
+								</p>
+							)}
+							<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
+								<a
+									onClick={(e) => {
+										e.preventDefault()
+										onClickSeeDetails(token)
+									}}
+									className={`text-gray-300 underline ${
+										displayType === 'large' ? `text-sm md:text-sm` : `text-xs md:text-xs`
+									}`}
+								>
+									{displayType === 'large' ? 'See Details' : 'More'}
+								</a>
+							</Link>
+						</div>
 					</div>
-					<div className="flex justify-between md:items-baseline">
-						{!token.token?.is_auction ||
-						(currentUser !== token.token?.owner_id && isCurrentBid('bidder') !== currentUser) ? (
-							<p
-								className={`font-bold text-white ${
-									isEndedTime && 'text-opacity-40'
-								} cursor-pointer hover:opacity-80 ${
-									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
-								} mb-1 md:mb-0`}
-								onClick={() =>
-									isEndedTime ? _showInfoUpdatingAuction() : actionButtonClick(token)
-								}
-							>
-								{actionButtonText(token)}
-							</p>
-						) : isCurrentBid('bidder') === currentUser && !isEndedTime ? (
-							<p
-								className={`font-bold text-white text-opacity-40 ${
-									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
-								} mb-1 md:mb-0`}
-							>
-								{`You're currently bid`}
-							</p>
-						) : !isEndedTime ? (
-							<p
-								className={`font-bold text-white text-opacity-40 ${
-									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
-								} mb-1 md:mb-0`}
-							>
-								Auction on going
-							</p>
-						) : (
-							<p
-								className={`font-bold text-white text-opacity-40 hover:opacity-80 cursor-pointer ${
-									displayType === 'large' ? `text-base md:text-base` : `text-sm md:text-sm`
-								} mb-1 md:mb-0`}
-								onClick={_showInfoUpdatingAuction}
-							>
-								Auction Ends
-							</p>
-						)}
-						<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
-							<a
-								onClick={(e) => {
-									e.preventDefault()
-									onClickSeeDetails(token)
-								}}
-								className={`text-gray-300 underline ${
-									displayType === 'large' ? `text-sm md:text-sm` : `text-xs md:text-xs`
-								}`}
-							>
-								{displayType === 'large' ? 'See Details' : 'More'}
-							</a>
-						</Link>
-					</div>
-				</div>
+				)}
 			</div>
 			<LoginModal onClose={() => setShowLogin(false)} show={showLogin} />
 		</>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Card from 'components/Card/Card'
-import { parseImgUrl, prettyBalance, abbrNum } from 'utils/common'
+import { parseImgUrl, prettyBalance, abbrNum, saveScrollPosition } from 'utils/common'
 import Link from 'next/link'
 import useStore from 'lib/store'
 import { useRouter } from 'next/router'
@@ -29,7 +29,7 @@ const TokenList = ({
 	hasMore,
 	displayType = 'large',
 	volume,
-	showRarityScore = false,
+	showRank = false,
 	showLike = false,
 }) => {
 	const store = useStore()
@@ -115,10 +115,11 @@ const TokenList = ({
 							typeTokenList={typeTokenList}
 							displayType={displayType}
 							volume={token.volume || volume?.[idx]}
-							showRarityScore={showRarityScore}
+							showRank={showRank}
 							showLike={showLike}
 							tokenIsLiked={tokenIsLiked}
 							setTokenIsLiked={setTokenIsLiked}
+							tokens={tokens}
 						/>
 					))}
 				</div>
@@ -134,10 +135,11 @@ const TokenSingle = ({
 	displayType = 'large',
 	typeTokenList,
 	volume,
-	showRarityScore,
+	showRank,
 	showLike,
 	tokenIsLiked,
 	setTokenIsLiked,
+	tokens,
 }) => {
 	const currentUser = useStore((state) => state.currentUser)
 	const { token, mutate } = useToken({
@@ -185,10 +187,6 @@ const TokenSingle = ({
 	}, [isEndedTime])
 
 	useEffect(() => {
-		asyncMutate()
-	}, [currentUser])
-
-	useEffect(() => {
 		if (token?.total_likes !== undefined) {
 			if (token.likes) {
 				setIsLiked(true)
@@ -211,10 +209,6 @@ const TokenSingle = ({
 			return
 		}
 	}, [tokenIsLiked])
-
-	const asyncMutate = async () => {
-		await mutate()
-	}
 
 	const convertTimeOfAuction = (date) => {
 		const sliceNanoSec = String(date).slice(0, 13)
@@ -245,11 +239,12 @@ const TokenSingle = ({
 
 	const onClickSeeDetails = async (choosenToken) => {
 		const token = (await mutate()) || choosenToken
-		let platform = navigator.userAgent.includes('iPhone')
-		if (platform) {
-			router.push(`/token/${token.contract_id}::${token.token_series_id}`)
-			return
-		}
+		// let platform = navigator.userAgent.includes('iPhone')
+		// if (platform) {
+		// 	router.push(`/token/${token.contract_id}::${token.token_series_id}`)
+		// 	return
+		// }
+		saveScrollPosition(tokens)
 		router.push(`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`)
 		// router.push(
 		// 	{
@@ -475,7 +470,7 @@ const TokenSingle = ({
 									is_auction: token?.is_auction,
 									started_at: token?.started_at,
 									ended_at: token?.ended_at,
-									animation_url: token?.animation_url,
+									animation_url: token?.metadata?.animation_url,
 								}}
 								isAbleToLike
 								onLike={() =>
@@ -555,7 +550,7 @@ const TokenSingle = ({
 								displayType === 'large' ? `block` : `flex gap-1`
 							} text-right absolute top-0 right-0`}
 						>
-							{showRarityScore && !!token.metadata.score && (
+							{showRank && !!token.metadata.score && (
 								<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
 									Rarity Score {token.metadata?.score?.toFixed(2)}
 								</p>

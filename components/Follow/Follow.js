@@ -23,8 +23,11 @@ const Follow = ({ userProfile, currentUser }) => {
 		return (await res.data.data.results[0]) || null
 	}
 
-	const { data, mutate } = useSWR(userProfile.accountId, fetchProfile, {
+	const { data, mutate } = useSWR(userProfile?.accountId, fetchProfile, {
 		fallbackData: userProfile,
+		revalidateOnFocus: false,
+		revalidateIfStale: false,
+		revalidateOnReconnect: false,
 	})
 
 	useEffect(() => {
@@ -39,29 +42,33 @@ const Follow = ({ userProfile, currentUser }) => {
 
 		setIsLoading(true)
 
-		await axios.request({
-			url: `${process.env.V2_API_URL}${data.follows ? '/unfollow' : '/follow'}`,
-			method: 'PUT',
-			headers: {
-				authorization: await WalletHelper.authToken(),
-			},
-			params: {
-				account_id: currentUser,
-				following_account_id: userProfile.accountId,
-			},
-		})
-
-		mutate()
-
-		setIsLoading(false)
-		setButtonHover(false)
+		try {
+			await axios.request({
+				url: `${process.env.V2_API_URL}${data.follows ? '/unfollow' : '/follow'}`,
+				method: 'PUT',
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+				params: {
+					account_id: currentUser,
+					following_account_id: userProfile.accountId,
+				},
+			})
+		} catch (error) {
+			null
+		}
 
 		if (data.follows) {
 			trackUnfollowButton(data.accountId)
-			return
+		} else {
+			trackFollowButton(data.accountId)
 		}
 
-		trackFollowButton(data.accountId)
+		setTimeout(() => {
+			mutate()
+			setIsLoading(false)
+			setButtonHover(false)
+		}, 500)
 	}
 
 	const handleFollowModal = (typeList) => {
@@ -93,7 +100,7 @@ const Follow = ({ userProfile, currentUser }) => {
 				</div>
 				<div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 px-[1.5px] py-2 bg-white bg-opacity-50" />
 			</div>
-			{currentUser !== userProfile.accountId && data?.follows?.follower === currentUser ? (
+			{currentUser !== userProfile?.accountId && data?.follows?.follower === currentUser ? (
 				<div
 					className="mt-4 mb-6 w-3/6 mx-auto"
 					onMouseEnter={() => setButtonHover(true)}
@@ -110,7 +117,7 @@ const Follow = ({ userProfile, currentUser }) => {
 					</Button>
 				</div>
 			) : (
-				currentUser !== userProfile.accountId &&
+				currentUser !== userProfile?.accountId &&
 				currentUser && (
 					<div className="mt-4 mb-6 w-3/6 mx-auto">
 						<Button

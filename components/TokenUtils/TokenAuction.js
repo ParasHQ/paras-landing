@@ -37,19 +37,7 @@ const TokenAuction = ({ localToken: initialToken, className }) => {
 	})
 
 	useEffect(() => {
-		countDownTimeAuction(localToken.ended_at)
-	}, [isEndedTime])
-
-	const convertTimeOfAuction = (date) => {
-		const sliceNanoSec = String(date).slice(0, 13)
-
-		if (sliceNanoSec !== 'undefined') {
-			return sliceNanoSec
-		}
-	}
-
-	const countDownTimeAuction = (endedAt) => {
-		const endedDate = convertTimeOfAuction(endedAt)
+		const endedDate = convertTimeOfAuction(localToken.ended_at)
 
 		const timer = setInterval(() => {
 			const startedDate = new Date().getTime()
@@ -72,7 +60,17 @@ const TokenAuction = ({ localToken: initialToken, className }) => {
 					setIsEndedTime(true)
 				}
 			}
-		})
+		}, 1000)
+
+		return () => clearInterval(timer)
+	}, [localToken])
+
+	const convertTimeOfAuction = (date) => {
+		const sliceNanoSec = String(date).slice(0, 13)
+
+		if (sliceNanoSec !== 'undefined') {
+			return sliceNanoSec
+		}
 	}
 
 	const onDismissModal = () => {

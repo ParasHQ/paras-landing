@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { IconDownArrow } from 'components/Icons'
-import TokenList from 'components/Token/TokenList'
 import CardTopRarityListLoader from 'components/Card/CardTopRarityListLoader'
 import Button from 'components/Common/Button'
 import router from 'next/router'
+import CardList from 'components/TokenSeries/CardList'
 
 const LIMIT = 7
 
-const TokenMoreCollection = ({ localToken, className, tokenId }) => {
+const TokenMoreCollection = ({ localToken, className }) => {
 	const [isDropDown, setIsDropDown] = useState(true)
 	const [topRarity, setTopRarity] = useState([])
 	const [isLoading, setIsLoading] = useState(true)
@@ -23,16 +23,18 @@ const TokenMoreCollection = ({ localToken, className, tokenId }) => {
 		}
 		const fetchTopRarityToken = async () => {
 			setIsLoading(true)
-			const resp = await axios.get(`${process.env.V2_API_URL}/token`, {
+			const resp = await axios.get(`${process.env.V2_API_URL}/token-series`, {
 				params: auctionParams,
 			})
 			const dataTopRarity = resp.data.data.results
 			const results = dataTopRarity.filter(
-				(token) => tokenId !== `${token.contract_id}::${token.token_id}`
+				(token) =>
+					`${localToken.contract_id}::${localToken.token_series_id}` !==
+					`${token.contract_id}::${token.token_series_id}`
 			)
 			if (results.length === LIMIT) {
 				results.pop()
-				setTopRarity(dataTopRarity)
+				setTopRarity(results)
 				setIsLoading(false)
 				return
 			}
@@ -54,7 +56,9 @@ const TokenMoreCollection = ({ localToken, className, tokenId }) => {
 					onClick={() => setIsDropDown(!isDropDown)}
 				>
 					<p className="text-xl py-3">More from this Collection</p>
-					<IconDownArrow size={30} />
+					<div className={`${!isDropDown && 'rotate-180'}`}>
+						<IconDownArrow size={30} />
+					</div>
 				</div>
 			</div>
 			{isDropDown && (
@@ -64,14 +68,18 @@ const TokenMoreCollection = ({ localToken, className, tokenId }) => {
 							{topRarity.length !== 0 ? (
 								<>
 									<div className="block md:hidden">
-										<TokenList
+										<CardList
 											tokens={topRarity}
 											displayType="large"
-											typeTokenList="top-rarity-token"
+											typeCardList="top-rarity-token"
 										/>
 									</div>
 									<div className="hidden md:block">
-										<TokenList tokens={topRarity} typeTokenList="top-rarity-token" />
+										<CardList
+											tokens={topRarity}
+											displayType="large"
+											typeCardList="top-rarity-token"
+										/>
 									</div>
 								</>
 							) : (

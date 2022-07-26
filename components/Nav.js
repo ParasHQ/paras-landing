@@ -189,22 +189,13 @@ const Nav = () => {
 				)}
 
 				{/* Banner for special event */}
-				<div
-					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
-				>
-					<div className="px-10 py-1 md:p-0 ">
-						{`Congratulations to all `}
-						<a
-							href="https://twitter.com/parashq/status/1535260855142694914?s=21&t=HQF9pQqIetPcHpSH1QEV4g"
-							target="_blank"
-							className="font-bold cursor-pointer hover:underline"
-							rel="noreferrer"
-						>
-							the winners of Paras Art Competition
-						</a>
-						!
+				{store.smallBanner && store.smallBanner.is_active && (
+					<div
+						className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
+					>
+						<div dangerouslySetInnerHTML={{ __html: store.smallBanner.bannerText }}></div>
 					</div>
-				</div>
+				)}
 
 				{process.env.APP_ENV !== 'production' && (
 					<div

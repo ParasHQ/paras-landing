@@ -7,7 +7,7 @@ import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import Profile from 'components/Profile/Profile'
 import FilterMarket from 'components/Filter/FilterMarket'
-import { parseSortTokenQuery, setDataLocalStorage } from 'utils/common'
+import { parseSortTokenQuery, prevPagePositionY, setDataLocalStorage } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
@@ -33,13 +33,25 @@ const Collection = ({ userProfile, accountId }) => {
 	const [display, setDisplay] = useState(
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
+	const prevY =
+		typeof window !== 'undefined' &&
+		parseInt(sessionStorage.getItem('scrollPosition' + router.pathname + router.asPath))
+
+	useEffect(() => {
+		if (prevY) {
+			let prevData = setInterval(() => fetchOwnerTokens, 1000)
+			setTimeout(() => clearInterval(prevData), 2000)
+		}
+		prevPagePositionY(router, window.scrollY, tokens)
+	}, [tokens])
 
 	useEffect(() => {
 		fetchOwnerTokens(true)
-	}, [router.query.id])
+	}, [currentUser, router.query.id])
 
 	const fetchOwnerTokens = async (initialFetch = false) => {
 		const _hasMore = initialFetch ? true : hasMore
+		const _tokens = initialFetch ? [] : tokens
 
 		if (!_hasMore || isFetching) {
 			return
@@ -48,17 +60,19 @@ const Collection = ({ userProfile, accountId }) => {
 		setIsFetching(true)
 		const params = tokensParams({
 			...router.query,
-			...{
-				_id_next: idNext,
-				price_next: priceNext,
-			},
+			...(initialFetch
+				? {}
+				: {
+						_id_next: idNext,
+						price_next: priceNext,
+				  }),
 		})
 		const res = await axios.get(`${process.env.V2_API_URL}/token`, {
 			params: params,
 		})
 		const newData = await res.data.data
 
-		const newTokens = [...(tokens || []), ...newData.results]
+		const newTokens = [..._tokens, ...newData.results]
 		setTokens(newTokens)
 
 		if (initialFetch) {

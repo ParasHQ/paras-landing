@@ -7,6 +7,7 @@ import TokenInfoCopy from 'components/TokenInfoCopy'
 import TokenRoyaltyModal from 'components/Modal/TokenRoyaltyModal'
 import Tooltip from 'components/Common/Tooltip'
 import TokenHistoryModal from 'components/Modal/TokenHistoryModal'
+import { trackClickInfo } from 'lib/ga'
 
 const TokenInfo = ({ localToken, className }) => {
 	const [isDropDown, setIsDropDown] = useState(true)
@@ -44,7 +45,9 @@ const TokenInfo = ({ localToken, className }) => {
 					onClick={() => setIsDropDown(!isDropDown)}
 				>
 					<p className="text-xl py-3">Info</p>
-					<IconDownArrow size={30} />
+					<div className={`${!isDropDown && 'rotate-180'}`}>
+						<IconDownArrow size={30} />
+					</div>
 				</div>
 			</div>
 			{isDropDown && (
@@ -52,7 +55,17 @@ const TokenInfo = ({ localToken, className }) => {
 					<div className="flex justify-between mb-2 md:mb-0">
 						<p>Collection</p>
 						<Link href={`/collection/${collection.id}`}>
-							<a className="text-gray-100 font-semibold hover:opacity-80">
+							<a
+								onClick={() => {
+									trackClickInfo(
+										localToken.token_id || localToken.token_series_id,
+										'collection_info',
+										collection.name
+									)
+									sessionStorage.clear()
+								}}
+								className="text-gray-100 font-semibold hover:opacity-80"
+							>
 								{prettyTruncate(collection.name, 30, 'address')}
 							</a>
 						</Link>
@@ -62,7 +75,20 @@ const TokenInfo = ({ localToken, className }) => {
 						{localToken.royalty && Object.keys(localToken.royalty).length > 0 ? (
 							<div
 								className="flex items-center cursor-pointer hover:opacity-80"
-								onClick={() => setShowModal('royalty')}
+								onClick={() => {
+									setShowModal('royalty')
+									trackClickInfo(
+										localToken.token_id || localToken.token_series_id,
+										'royalty_info',
+										`${
+											Object.values(localToken.royalty).reduce(
+												(a, b) => parseInt(a) + parseInt(b),
+												0
+											) / 100
+										}
+                    %}`
+									)
+								}}
 							>
 								<p className="text-gray-100 font-semibold">
 									{Object.values(localToken.royalty).reduce(
@@ -90,7 +116,14 @@ const TokenInfo = ({ localToken, className }) => {
 						<p>Transactions</p>
 						<div
 							className="flex items-center cursor-pointer hover:opacity-80"
-							onClick={() => setShowModal('history')}
+							onClick={() => {
+								setShowModal('history')
+								trackClickInfo(
+									localToken.token_id || localToken.token_series_id,
+									'history_info',
+									true
+								)
+							}}
 						>
 							<p>History</p>
 							<div className="pl-2 pb-0.5">
@@ -100,16 +133,36 @@ const TokenInfo = ({ localToken, className }) => {
 					</div>
 					<div className="flex justify-between mb-2 md:mb-0">
 						<p>Smart Contract</p>
-						<TokenInfoCopy text={localToken.contract_id} size="md" />
+						<div
+							onClick={() =>
+								trackClickInfo(
+									localToken.token_id || localToken.token_series_id,
+									'smartcontract_info',
+									true
+								)
+							}
+						>
+							<TokenInfoCopy text={localToken.contract_id} size="md" />
+						</div>
 					</div>
 					<div className="flex justify-between mb-2 md:mb-0 overflow-hidden">
 						<p>{localeLn('ImageLink')}</p>
-						<TokenInfoCopy
-							text={parseImgUrl(localToken.metadata.media, null, {
-								useOriginal: process.env.APP_ENV === 'production' ? true : false,
-							})}
-							size="md"
-						/>
+						<div
+							onClick={() =>
+								trackClickInfo(
+									localToken.token_id || localToken.token_series_id,
+									'imagelink_info',
+									true
+								)
+							}
+						>
+							<TokenInfoCopy
+								text={parseImgUrl(localToken.metadata.media, null, {
+									useOriginal: process.env.APP_ENV === 'production' ? true : false,
+								})}
+								size="md"
+							/>
+						</div>
 					</div>
 					{localToken.transaction_fee && (
 						<div className="flex items-center mb-2 md:mb-0 justify-between relative z-10 text-white">

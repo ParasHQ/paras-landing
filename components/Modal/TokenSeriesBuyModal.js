@@ -8,7 +8,7 @@ import { GAS_FEE, STORAGE_MINT_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
-import { trackBuyTokenSeries, trackBuyTokenSeriesImpression } from 'lib/ga'
+import { trackBuyTokenSeries, trackBuyTokenSeriesImpression, trackClickBuyButton } from 'lib/ga'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
@@ -44,6 +44,7 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 		const attachedDeposit = JSBI.add(JSBI.BigInt(data.price), JSBI.BigInt(STORAGE_MINT_FEE))
 
 		trackBuyTokenSeries(data.token_series_id)
+		trackClickBuyButton(data.token_series_id)
 
 		try {
 			const res = await WalletHelper.callFunction({
