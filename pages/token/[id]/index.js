@@ -9,6 +9,7 @@ import useTokenSeries from 'hooks/useTokenSeries'
 import useStore from 'lib/store'
 import { useEffect, useState } from 'react'
 import TokenSeriesDetailNew from 'components/TokenSeries/TokenSeriesDetailNew'
+import { EXPERIMENT_ID, GA_TRACKING_ID } from 'lib/gtag'
 
 const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.creator_id || token.contract_id
@@ -32,6 +33,13 @@ const TokenSeriesPage = ({ errorCode, initial }) => {
 	useEffect(() => {
 		const variant = localStorage.getItem('variant') || 0
 		setVariant(variant)
+		if (window && window.gtag) {
+			window.gtag('event', 'experiment_impression', {
+				experiment_id: EXPERIMENT_ID,
+				variant_id: EXPERIMENT_ID + '.' + variant,
+				send_to: GA_TRACKING_ID,
+			})
+		}
 	})
 	useEffect(() => {
 		if (currentUser) {
