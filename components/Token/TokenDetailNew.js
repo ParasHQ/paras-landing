@@ -61,6 +61,7 @@ const TokenDetailNew = ({ token }) => {
 							is_creator: token.is_creator,
 							mime_type: token.metadata.mime_type,
 						}}
+						type="new-card-detail"
 					/>
 				</div>
 				<ArtistBanned
