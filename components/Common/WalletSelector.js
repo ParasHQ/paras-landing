@@ -3,7 +3,6 @@ import { map, distinctUntilChanged } from 'rxjs'
 import { setupWalletSelector } from '@paras-wallet-selector/core'
 import { setupModal } from '@paras-wallet-selector/modal-ui'
 import { setupNearWallet } from '@paras-wallet-selector/near-wallet'
-import { setupMyNearWallet } from '@paras-wallet-selector/my-near-wallet'
 import { setupSender } from '@paras-wallet-selector/sender'
 import getConfig from 'config/near'
 import { providers } from 'near-api-js'
@@ -30,7 +29,6 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			debug: process.env.NODE_ENV !== 'production',
 			modules: [
 				setupNearWallet({ iconUrl: window.location.origin + '/assets/near-wallet-icon.png' }),
-				setupMyNearWallet({ iconUrl: window.location.origin + '/assets/my-near-wallet-icon.png' }),
 				setupSender({ iconUrl: window.location.origin + '/assets/sender-icon.png' }),
 			],
 		})
