@@ -39,6 +39,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 
 		setSelector(_selector)
 		setModal(_modal)
+		store.setInitialized(true)
 	}, [])
 
 	useEffect(() => {
