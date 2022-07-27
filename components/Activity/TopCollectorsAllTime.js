@@ -13,7 +13,12 @@ const TopCollectorsAllTime = ({ className }) => {
 	useEffect(() => {
 		const fetchCollectors = async () => {
 			try {
-				const res = await axios('https://whales.apollo42.app/api/paras')
+				const res = await axios('https://whales.apollo42.app/api/paras', {
+					transformRequest: (data, headers) => {
+						delete headers.common['Authorization']
+						return data
+					},
+				})
 				setData(res.data.data)
 			} catch (error) {
 				sentryCaptureException(error)

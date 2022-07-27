@@ -39,16 +39,25 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 				throw new Error(`Cannot transfer to self`)
 			}
 			const nearConfig = getConfig(process.env.APP_ENV || 'development')
-			const resp = await Axios.post(nearConfig.nodeUrl, {
-				jsonrpc: '2.0',
-				id: 'dontcare',
-				method: 'query',
-				params: {
-					request_type: 'view_account',
-					finality: 'final',
-					account_id: receiverId,
+			const resp = await Axios.post(
+				nearConfig.nodeUrl,
+				{
+					jsonrpc: '2.0',
+					id: 'dontcare',
+					method: 'query',
+					params: {
+						request_type: 'view_account',
+						finality: 'final',
+						account_id: receiverId,
+					},
 				},
-			})
+				{
+					transformRequest: (data, headers) => {
+						delete headers.common['Authorization']
+						return data
+					},
+				}
+			)
 			if (resp.data.error) {
 				throw new Error(`Account ${receiverId} not exist`)
 			}

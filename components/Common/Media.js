@@ -51,6 +51,10 @@ const Media = ({
 		try {
 			const resp = await axios.get(`${parseImgUrl(url, undefined, { seeDetails, isMediaCdn })}`, {
 				responseType: 'blob',
+				transformRequest: (data, headers) => {
+					delete headers.common['Authorization']
+					return data
+				},
 			})
 
 			const fileType = await FileType.fromBlob(resp.data)

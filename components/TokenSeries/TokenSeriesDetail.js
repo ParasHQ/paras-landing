@@ -335,6 +335,10 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	const get3DModel = async (url) => {
 		const resp = await axios.get(`${parseImgUrl(url, undefined)}`, {
 			responseType: `blob`,
+			transformRequest: (data, headers) => {
+				delete headers.common['Authorization']
+				return data
+			},
 		})
 		const fileType = await FileType.fromBlob(resp.data)
 		setFileType(fileType.mime)
@@ -353,6 +357,10 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	const getAudio = async (url) => {
 		const resp = await axios.get(`${parseImgUrl(url, undefined)}`, {
 			responseType: `blob`,
+			transformRequest: (data, headers) => {
+				delete headers.common['Authorization']
+				return data
+			},
 		})
 		const fileType = await FileType.fromBlob(resp.data)
 		setFileType(fileType?.mime)
