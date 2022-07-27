@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Modal from 'components/Common/Modal'
 import FollowList from 'components/Follow/FollowList'
 import FollowListLoader from 'components/Follow/FollowListLoader'
@@ -32,7 +32,7 @@ const FollowArtistModal = ({ show, onClose, userProfile, currentUser, typeFollow
 	const fetchData = async () => {
 		setIsRefreshing(true)
 
-		const res = await axios(
+		const res = await ParasRequest(
 			typeFollowListModal === 'following'
 				? `${process.env.V2_API_URL}/followings`
 				: `${process.env.V2_API_URL}/followers`,
@@ -56,7 +56,7 @@ const FollowArtistModal = ({ show, onClose, userProfile, currentUser, typeFollow
 		}
 
 		setIsFetching(true)
-		const res = await axios(
+		const res = await ParasRequest(
 			typeFollowListModal === 'following'
 				? `${process.env.V2_API_URL}/followings`
 				: `${process.env.V2_API_URL}/followers`,

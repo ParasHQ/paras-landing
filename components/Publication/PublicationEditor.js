@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState } from 'react'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { convertFromRaw, convertToRaw, EditorState } from 'draft-js'
 import { useRouter } from 'next/router'
 
@@ -86,7 +86,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 			const [contractId, tokenSeriesId] = contractTokenId.split('::')
 
 			const url = process.env.V2_API_URL
-			const res = await axios({
+			const res = await ParasRequest({
 				url: url + (token_id ? `/token` : `/token-series`),
 				method: 'GET',
 				params: token_id
@@ -110,7 +110,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 			let comic = []
 			pubDetail?.collection_ids?.map(async (comicId) => {
 				const url = process.env.COMIC_API_URL
-				const res = await axios({
+				const res = await ParasRequest({
 					url: url + `/comics`,
 					method: 'GET',
 					params: {
@@ -125,7 +125,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 			let collection = []
 			pubDetail?.collection_ids?.map(async (collectionId) => {
 				const url = process.env.V2_API_URL
-				const res = await axios({
+				const res = await ParasRequest({
 					url: url + `/collections`,
 					method: 'GET',
 					params: {
@@ -144,7 +144,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 		const { token_id, token_series_id } = parseGetTokenIdfromUrl(searchToken)
 
 		if (token_id) {
-			const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+			const res = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
 				params: {
 					token_id: token_id,
 					contract_id: token_series_id.split('::')[0],
@@ -164,7 +164,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 		}
 
 		if (token_series_id.split('::')[1]) {
-			const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+			const res = await ParasRequest.get(`${process.env.V2_API_URL}/token-series`, {
 				params: {
 					token_series_id: token_series_id.split('::')[1],
 					contract_id: token_series_id.split('::')[0],
@@ -194,7 +194,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 			return
 		}
 
-		const res = await axios.get(`${process.env.V2_API_URL}/collections`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/collections`, {
 			params: {
 				collection_id: collection_id,
 			},
@@ -280,7 +280,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 
 		try {
 			const url = `${process.env.V2_API_URL}/publications`
-			const res = await axios(
+			const res = await ParasRequest(
 				!isPubDetail && draftDetail.length > 0
 					? {
 							url: url,
@@ -388,7 +388,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 			}
 		}
 
-		const resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
+		const resp = await ParasRequest.post(`${process.env.V2_API_URL}/uploads`, formData, {
 			headers: {
 				'Content-Type': 'multipart/form-data',
 			},
@@ -416,7 +416,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 			const formData = new FormData()
 			formData.append('files', dataURLtoFile(thumbnail), 'thumbnail')
 
-			const resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
+			const resp = await ParasRequest.post(`${process.env.V2_API_URL}/uploads`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},

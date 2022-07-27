@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Link from 'next/link'
 import router, { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -33,15 +33,18 @@ const CategorySubmission = () => {
 	const getCategorySubmission = async () => {
 		if (categoryId) {
 			try {
-				const res = await axios.get(`${process.env.V2_API_URL}/categories/tokens/submission`, {
-					params: {
-						category_id: categoryId,
-						status: 'pending',
-					},
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-					},
-				})
+				const res = await ParasRequest.get(
+					`${process.env.V2_API_URL}/categories/tokens/submission`,
+					{
+						params: {
+							category_id: categoryId,
+							status: 'pending',
+						},
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded',
+						},
+					}
+				)
 				setSubmissions(res.data.data.results)
 			} catch (error) {
 				sentryCaptureException(error)
@@ -117,7 +120,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 	}, [submission])
 
 	const fetchTokenSeries = async () => {
-		const resp = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+		const resp = await ParasRequest.get(`${process.env.V2_API_URL}/token-series`, {
 			params: {
 				token_series_id: submission.token_series_id,
 				contract_id: submission.contract_id,
@@ -141,7 +144,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 		setIsLoading(true)
 
 		try {
-			await axios.put(`${process.env.V2_API_URL}/categories/tokens/${type}`, params)
+			await ParasRequest.put(`${process.env.V2_API_URL}/categories/tokens/${type}`, params)
 			setShowModal('')
 			updateData(submission._id)
 		} catch (error) {

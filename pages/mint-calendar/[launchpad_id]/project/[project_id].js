@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Card from 'components/Card/Card'
 import Button from 'components/Common/Button'
 import Footer from 'components/Footer'
@@ -20,7 +20,7 @@ const ProjectPage = ({ project }) => {
 	const [isEndedComing, setIsEndedComing] = useState(false)
 	const router = useRouter()
 
-	const fetchData = (url) => axios(url).then((res) => res.data)
+	const fetchData = (url) => ParasRequest(url).then((res) => res.data)
 
 	const { data, isValidating } = useSWR(
 		`${process.env.V2_API_URL}/mint-calendar/${router.query.launchpad_id}/project/${router.query.project_id}`,
@@ -184,7 +184,7 @@ const ProjectPage = ({ project }) => {
 export default ProjectPage
 
 export async function getServerSideProps({ params }) {
-	const resp = await axios.get(
+	const resp = await ParasRequest.get(
 		`${process.env.V2_API_URL}/launchpad/${params.launchpad_id}/project/${params.project_id}`
 	)
 	if (!resp.data) {

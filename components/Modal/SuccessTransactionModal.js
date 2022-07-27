@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Button from 'components/Common/Button'
 import Media from 'components/Common/Media'
 import Modal from 'components/Common/Modal'
@@ -83,7 +83,7 @@ const SuccessTransactionModal = () => {
 				const args = JSON.parse(decodeBase64(FunctionCall.args))
 
 				if (FunctionCall.method_name === 'nft_buy') {
-					const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+					const res = await ParasRequest.get(`${process.env.V2_API_URL}/token-series`, {
 						params: {
 							contract_id: receiver_id,
 							token_series_id: args.token_series_id,
@@ -93,7 +93,7 @@ const SuccessTransactionModal = () => {
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
 				} else if (FunctionCall.method_name === 'buy') {
-					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+					const res = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
 						params: {
 							contract_id: args.nft_contract_id,
 							token_id: args.token_id,
@@ -103,7 +103,7 @@ const SuccessTransactionModal = () => {
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
 				} else if (FunctionCall.method_name === 'add_offer') {
-					const res = await axios.get(
+					const res = await ParasRequest.get(
 						`${process.env.V2_API_URL}/${args.token_id ? 'token' : 'token-series'}`,
 						{
 							params: {
@@ -117,7 +117,7 @@ const SuccessTransactionModal = () => {
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
 				} else if (FunctionCall.method_name === 'add_bid') {
-					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+					const res = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
 						params: {
 							contract_id: args.nft_contract_id,
 							token_id: args.token_id,
@@ -127,7 +127,7 @@ const SuccessTransactionModal = () => {
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
 				} else if (FunctionCall.method_name === 'cancel_bid') {
-					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+					const res = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
 						params: {
 							contract_id: args.nft_contract_id,
 							token_id: args.token_id,
@@ -137,7 +137,7 @@ const SuccessTransactionModal = () => {
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
 				} else if (FunctionCall.method_name === 'accept_bid') {
-					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+					const res = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
 						params: {
 							contract_id: args.nft_contract_id,
 							token_id: args.token_id,
@@ -147,7 +147,7 @@ const SuccessTransactionModal = () => {
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
 				} else if (FunctionCall.method_name === 'cancel_auction') {
-					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+					const res = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
 						params: {
 							contract_id: args.nft_contract_id,
 							token_id: args.token_id,
@@ -157,7 +157,7 @@ const SuccessTransactionModal = () => {
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
 				} else if (FunctionCall.method_name === 'nft_set_series_price') {
-					const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+					const res = await ParasRequest.get(`${process.env.V2_API_URL}/token-series`, {
 						params: {
 							contract_id: receiver_id,
 							token_series_id: args.token_series_id,
@@ -178,7 +178,7 @@ const SuccessTransactionModal = () => {
 						return
 					}
 
-					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+					const res = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
 						params: {
 							contract_id:
 								msgParse.market_type === 'accept_trade' ||
@@ -196,7 +196,7 @@ const SuccessTransactionModal = () => {
 					setTxDetail({ ...FunctionCall, args })
 					setShowModal(true)
 				} else if (FunctionCall.method_name === 'delete_market_data') {
-					const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+					const res = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
 						params: {
 							contract_id: args.nft_contract_id,
 							token_id: args.token_id,
@@ -207,7 +207,7 @@ const SuccessTransactionModal = () => {
 					setShowModal(true)
 				} else if (FunctionCall.method_name === 'nft_create_series') {
 					const logs = JSON.parse(receipts_outcome[0].outcome?.logs?.[0])
-					const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+					const res = await ParasRequest.get(`${process.env.V2_API_URL}/token-series`, {
 						params: {
 							contract_id: receiver_id,
 							token_series_id: logs.params.token_series_id,
@@ -245,7 +245,7 @@ const SuccessTransactionModal = () => {
 		const resOutcome = await JSON.parse(`${resFromTxLast}`)
 		await retry(
 			async () => {
-				const res = await axios.post(`${process.env.V2_API_URL}/categories/tokens`, {
+				const res = await ParasRequest.post(`${process.env.V2_API_URL}/categories/tokens`, {
 					account_id: currentUser,
 					contract_id: txLast?.transaction?.receiver_id,
 					token_series_id: resOutcome?.params?.token_series_id,

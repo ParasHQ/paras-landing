@@ -45,12 +45,7 @@ const ReportModal = ({ show, onClose }) => {
 		formData.append('additional_info', detail)
 
 		try {
-			await axios.post(url, formData, {
-				transformRequest: (data, headers) => {
-					delete headers.common['Authorization']
-					return data
-				},
-			})
+			await axios.post(url, formData)
 
 			setIsSubmitting(false)
 			toast.show({

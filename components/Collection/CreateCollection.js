@@ -4,7 +4,7 @@ import { checkSocialMediaUrl, checkUrl, parseImgUrl } from 'utils/common'
 import { useState } from 'react'
 import ImgCrop from 'components/ImgCrop'
 import useStore from 'lib/store'
-import Axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { useToast } from 'hooks/useToast'
 import { useRouter } from 'next/router'
 import { useIntl } from 'hooks/useIntl'
@@ -107,7 +107,7 @@ const CreateCollection = ({ onFinishCreate, oneGrid }) => {
 		formData.append('discord', collectionSocialMedia.discord)
 
 		try {
-			const resp = await Axios.post(`${process.env.V2_API_URL}/collections`, formData, {
+			const resp = await ParasRequest.post(`${process.env.V2_API_URL}/collections`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},

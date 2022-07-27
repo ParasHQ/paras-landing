@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import Head from 'next/head'
@@ -59,7 +59,7 @@ const ProfileDetail = ({ userProfile, accountId }) => {
 }
 
 export async function getServerSideProps({ params }) {
-	const profileRes = await axios(`${process.env.V2_API_URL}/profiles?accountId=${params.id}`)
+	const profileRes = await ParasRequest(`${process.env.V2_API_URL}/profiles?accountId=${params.id}`)
 
 	const userProfile = (await profileRes.data.data.results[0]) || null
 	const accountId = params.id

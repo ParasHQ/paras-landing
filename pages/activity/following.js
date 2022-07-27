@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import ActivityUserFollow from 'components/Follow/ActivityUserFollow'
 import ActivityUserFollowLoader from 'components/Follow/ActivityUserFollowLoader'
 import RecommendationUserFollow from 'components/Follow/RecommendationUserFollow'
@@ -156,7 +156,7 @@ const ActivityFollowingList = () => {
 	}
 
 	const fetchData = async (key) => {
-		return axios.get(`${process.env.V2_API_URL}${key}`).then((res) => res.data.data.results)
+		return ParasRequest.get(`${process.env.V2_API_URL}${key}`).then((res) => res.data.data.results)
 	}
 
 	const { data, size, setSize, isValidating } = useSWRInfinite(getKey, fetchData, {
@@ -193,7 +193,7 @@ const RecommendationUserFollowList = () => {
 	useEffect(() => {
 		let ignore = false
 		const fetchTopUsers = async () => {
-			const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=9`)
+			const res = await ParasRequest(`${process.env.V2_API_URL}/activities/top-users?__limit=9`)
 			if (!ignore) {
 				setTopUsers(res.data.data)
 			}

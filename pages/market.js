@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Nav from 'components/Nav'
@@ -66,7 +66,7 @@ const MarketPage = ({ serverQuery }) => {
 			...(query || serverQuery),
 			liked_by: currentUser,
 		})
-		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
+		const res = await ParasRequest(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
 		})
 		setTokens(res.data.data.results)
@@ -84,7 +84,7 @@ const MarketPage = ({ serverQuery }) => {
 	}
 
 	const getCategory = async () => {
-		const res = await axios(`${process.env.V2_API_URL}/categories`)
+		const res = await ParasRequest(`${process.env.V2_API_URL}/categories`)
 		store.setCardCategory(res.data.data.results)
 	}
 
@@ -107,7 +107,7 @@ const MarketPage = ({ serverQuery }) => {
 						liked_by: currentUser,
 				  }),
 		})
-		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
+		const res = await ParasRequest(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
 		})
 		const newData = await res.data.data

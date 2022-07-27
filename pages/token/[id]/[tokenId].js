@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Nav from 'components/Nav'
 import Head from 'next/head'
 import Footer from 'components/Footer'
@@ -125,7 +125,7 @@ export async function getServerSideProps({ params }) {
 	const [contractId] = params.id.split('::')
 
 	try {
-		const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
 			params: {
 				contract_id: contractId,
 				token_id: params.tokenId,

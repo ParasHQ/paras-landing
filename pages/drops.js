@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import dynamic from 'next/dynamic'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Blurhash } from 'react-blurhash'
@@ -313,7 +313,7 @@ const SpecialCard = ({
 	}, [])
 
 	const fetchToken = async () => {
-		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
+		const res = await ParasRequest(`${process.env.V2_API_URL}/token-series`, {
 			params: {
 				contract_id: 'x.paras.near',
 				token_series_id: tokenId,

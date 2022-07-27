@@ -6,7 +6,7 @@ import useStore from 'lib/store'
 import { useRouter } from 'next/router'
 import JSBI from 'jsbi'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 
 import { useIntl } from 'hooks/useIntl'
 import TokenSeriesDetailModal from './TokenSeriesDetailModal'
@@ -356,7 +356,7 @@ const TokenSeriesSingle = ({
 			account_id: currentUser,
 		}
 
-		const res = await axios.put(
+		const res = await ParasRequest.put(
 			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
 			params
 		)
@@ -382,7 +382,7 @@ const TokenSeriesSingle = ({
 			account_id: currentUser,
 		}
 
-		const res = await axios.put(
+		const res = await ParasRequest.put(
 			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
 			params
 		)

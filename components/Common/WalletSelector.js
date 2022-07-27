@@ -7,7 +7,7 @@ import { setupSender } from '@paras-wallet-selector/sender'
 import getConfig from 'config/near'
 import { providers } from 'near-api-js'
 import useStore from 'lib/store'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import JSBI from 'jsbi'
 import { Base64 } from 'js-base64'
 import * as Sentry from '@sentry/nextjs'
@@ -67,7 +67,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 
 			await generateAuthToken(currentUser.accountId)
 
-			const userProfileResp = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+			const userProfileResp = await ParasRequest.get(`${process.env.V2_API_URL}/profiles`, {
 				params: {
 					accountId: currentUser.accountId,
 				},
@@ -80,7 +80,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				formData.append('accountId', currentUser.accountId)
 
 				try {
-					const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
+					const resp = await ParasRequest.put(`${process.env.V2_API_URL}/profiles`, formData, {
 						headers: {
 							'Content-Type': 'multipart/form-data',
 							authorization: authToken,
@@ -182,7 +182,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 
 		setAuthToken(_authToken)
 
-		axios.defaults.headers.common['Authorization'] = _authToken
+		ParasRequest.defaults.headers.common['Authorization'] = _authToken
 
 		return _authToken
 	}

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Button from 'components/Common/Button'
 import { InputTextarea, InputText } from 'components/Common/form'
 import Footer from 'components/Footer'
@@ -55,7 +55,7 @@ const CollectionPageEdit = ({ collectionId }) => {
 	}
 
 	const fetchCollection = async () => {
-		const resp = await axios.get(`${process.env.V2_API_URL}/collections`, {
+		const resp = await ParasRequest.get(`${process.env.V2_API_URL}/collections`, {
 			params: {
 				collection_id: collectionId,
 			},
@@ -132,7 +132,7 @@ const CollectionPageEdit = ({ collectionId }) => {
 		formData.append('discord', collectionSocialMedia.discord ?? '')
 
 		try {
-			const resp = await axios.put(`${process.env.V2_API_URL}/collections`, formData, {
+			const resp = await ParasRequest.put(`${process.env.V2_API_URL}/collections`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},

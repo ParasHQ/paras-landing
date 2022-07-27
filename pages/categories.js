@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { useEffect, useState } from 'react'
 import Nav from 'components/Nav'
 import Head from 'next/head'
@@ -26,7 +26,7 @@ const Categories = () => {
 		if (!hasMore || isFetching) return
 
 		setIsFetching(true)
-		const res = await axios.get(`${process.env.V2_API_URL}/all-categories`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/all-categories`, {
 			params: {
 				__skip: page * LIMIT,
 				__limit: LIMIT,

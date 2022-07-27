@@ -1,3 +1,4 @@
+import ParasRequest from 'lib/ParasRequest'
 import axios from 'axios'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { Suspense, useEffect, useRef, useState } from 'react'
@@ -151,18 +152,22 @@ const NewPage = () => {
 	const uploadAudioFile = async () => {
 		const formDataAudio = new FormData()
 		formDataAudio.append(`files`, audioFile)
-		const respAudioUpload = await axios.post(`${process.env.V2_API_URL}/uploads`, formDataAudio, {
-			headers: {
-				'Content-Type': 'multipart/form-data',
-			},
-		})
+		const respAudioUpload = await ParasRequest.post(
+			`${process.env.V2_API_URL}/uploads`,
+			formDataAudio,
+			{
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			}
+		)
 		uploadedAudioRef.current = respAudioUpload.data.data[0]?.split('://')[1]
 	}
 
 	const upload3DFile = async () => {
 		const formData3D = new FormData()
 		formData3D.append(`files`, threeDFile)
-		const resp3DUpload = await axios.post(`${process.env.V2_API_URL}/uploads`, formData3D, {
+		const resp3DUpload = await ParasRequest.post(`${process.env.V2_API_URL}/uploads`, formData3D, {
 			headers: {
 				'Content-Type': 'multipart/form-data',
 			},
@@ -203,7 +208,7 @@ const NewPage = () => {
 
 		let resp
 		try {
-			resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
+			resp = await ParasRequest.post(`${process.env.V2_API_URL}/uploads`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},
@@ -322,7 +327,7 @@ const NewPage = () => {
 
 		if (step === 2) {
 			const getAttributeKeys = async () => {
-				const res = await axios.get(`${process.env.V2_API_URL}/collection-attributes`, {
+				const res = await ParasRequest.get(`${process.env.V2_API_URL}/collection-attributes`, {
 					params: {
 						collection_id: choosenCollection.collection_id,
 					},
@@ -395,25 +400,16 @@ const NewPage = () => {
 				for (const r of data.royalties) {
 					try {
 						const nearConfig = getConfig(process.env.APP_ENV || 'development')
-						const resp = await axios.post(
-							nearConfig.nodeUrl,
-							{
-								jsonrpc: '2.0',
-								id: 'dontcare',
-								method: 'query',
-								params: {
-									request_type: 'view_account',
-									finality: 'final',
-									account_id: r.accountId,
-								},
+						const resp = await axios.post(nearConfig.nodeUrl, {
+							jsonrpc: '2.0',
+							id: 'dontcare',
+							method: 'query',
+							params: {
+								request_type: 'view_account',
+								finality: 'final',
+								account_id: r.accountId,
 							},
-							{
-								transformRequest: (data, headers) => {
-									delete headers.common['Authorization']
-									return data
-								},
-							}
-						)
+						})
 						if (resp.data.error) {
 							throw new Error(`Account ${r.accountId} not exist`)
 						}
@@ -553,7 +549,7 @@ const NewPage = () => {
 		}
 
 		setIsFetching(true)
-		const res = await axios.get(`${process.env.V2_API_URL}/collections`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/collections`, {
 			params: {
 				creator_id: store.currentUser,
 				__skip: page * LIMIT,
@@ -588,7 +584,7 @@ const NewPage = () => {
 		const resOutcome = await JSON.parse(`${resFromTxLast}`)
 		await retry(
 			async () => {
-				const res = await axios.post(`${process.env.V2_API_URL}/categories/tokens`, {
+				const res = await ParasRequest.post(`${process.env.V2_API_URL}/categories/tokens`, {
 					account_id: store.currentUser,
 					contract_id: txLast?.transaction?.receiver_id,
 					token_series_id: resOutcome?.params?.token_series_id,

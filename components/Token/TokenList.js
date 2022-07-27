@@ -15,7 +15,7 @@ import CardListLoaderSmall from 'components/Card/CardListLoaderSmall'
 import useToken from 'hooks/useToken'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useToast } from 'hooks/useToast'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import IconLove from 'components/Icons/component/IconLove'
 import LoginModal from 'components/Modal/LoginModal'
 import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
@@ -341,7 +341,7 @@ const TokenSingle = ({
 			account_id: currentUser,
 		}
 
-		const res = await axios.put(
+		const res = await ParasRequest.put(
 			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
 			params
 		)
@@ -374,7 +374,7 @@ const TokenSingle = ({
 			account_id: currentUser,
 		}
 
-		const res = await axios.put(
+		const res = await ParasRequest.put(
 			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
 			params
 		)

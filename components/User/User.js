@@ -8,7 +8,6 @@ import useStore from 'lib/store'
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
-import ChooseAccountModal from 'components/Modal/ChooseAccountModal'
 import Scrollbars from 'react-custom-scrollbars'
 import near from 'lib/near'
 import transakSDK from '@transak/transak-sdk'
@@ -179,7 +178,6 @@ const User = () => {
 					</div>
 				</Modal>
 			)}
-			<ChooseAccountModal show={showUserModal === 'switchAcc'} onClose={dismissUserModal} />
 			<div
 				className="relative flex items-center justify-end text-gray-100"
 				onClick={toggleAccountModal}

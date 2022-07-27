@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import useStore from 'lib/store'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { useRouter } from 'next/router'
 import { IntlProvider } from 'react-intl'
 import * as locales from '../content/locale'
@@ -59,7 +59,7 @@ function MyApp({ Component, pageProps }) {
 				expires: 30,
 			})
 		}
-		await axios.post(`${process.env.V2_API_URL}/analytics`, {
+		await ParasRequest.post(`${process.env.V2_API_URL}/analytics`, {
 			uid: uid,
 			page: url,
 		})
@@ -89,7 +89,7 @@ function MyApp({ Component, pageProps }) {
 
 	const fetchActivities = async () => {
 		const _query = `is_verified=${false}&__limit=${1}`
-		const respActivities = await axios.get(`${process.env.V2_API_URL}/activities?${_query}`)
+		const respActivities = await ParasRequest.get(`${process.env.V2_API_URL}/activities?${_query}`)
 		const respDataActivities = respActivities.data.data.results
 		if (
 			Math.floor((new Date() - new Date(respDataActivities[0].msg?.datetime)) / (1000 * 60)) >=
@@ -102,7 +102,7 @@ function MyApp({ Component, pageProps }) {
 	}
 
 	const fetchSmallBanner = async () => {
-		const smallBannerResp = await axios.get(`${process.env.V2_API_URL}/small-banner`)
+		const smallBannerResp = await ParasRequest.get(`${process.env.V2_API_URL}/small-banner`)
 		const smallBanner = smallBannerResp.data.result
 
 		store.setSmallBanner(smallBanner[0])

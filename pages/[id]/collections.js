@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { useEffect, useState } from 'react'
 import Nav from 'components/Nav'
 import Head from 'next/head'
@@ -26,7 +26,7 @@ const Collections = ({ userProfile, accountId }) => {
 		if (!hasMore || isFetching) return
 
 		setIsFetching(true)
-		const res = await axios.get(`${process.env.V2_API_URL}/collections`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/collections`, {
 			params: {
 				creator_id: router.query.id,
 				__skip: page * LIMIT,
@@ -98,7 +98,7 @@ const Collections = ({ userProfile, accountId }) => {
 export default Collections
 
 export async function getServerSideProps({ params }) {
-	const profileRes = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+	const profileRes = await ParasRequest.get(`${process.env.V2_API_URL}/profiles`, {
 		params: {
 			accountId: params.id,
 		},

@@ -14,7 +14,7 @@ import Tooltip from 'components/Common/Tooltip'
 import { parseDate } from 'utils/common'
 import { useToast } from 'hooks/useToast'
 import { mutate } from 'swr'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const TabTokenUpdatePrice = ({ show, onClose, data }) => {
@@ -61,7 +61,7 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 
 	useEffect(() => {
 		const checkIsAnyTradeOffer = async () => {
-			const resp = await axios.get(`${process.env.V2_API_URL}/offers`, {
+			const resp = await ParasRequest.get(`${process.env.V2_API_URL}/offers`, {
 				params: {
 					buyer_id: currentUser,
 				},

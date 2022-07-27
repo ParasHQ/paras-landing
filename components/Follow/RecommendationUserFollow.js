@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Button from 'components/Common/Button'
 import { IconVerified } from 'components/Icons'
 import { useNonInitialEffect } from 'hooks/useNonInitialEffect'
@@ -33,7 +33,7 @@ const RecommendationUserFollow = ({ data }) => {
 
 		setIsLoading(true)
 		try {
-			await axios.request({
+			await ParasRequest.request({
 				url: `${process.env.V2_API_URL}${profile.follows ? '/unfollow' : '/follow'}`,
 				method: 'PUT',
 				params: {

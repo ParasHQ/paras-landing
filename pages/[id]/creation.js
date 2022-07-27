@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -59,7 +59,7 @@ const Creation = ({ userProfile, accountId }) => {
 			updated_at_next: updatedAtNext,
 		})
 
-		const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
 		})
 		const newData = await res.data.data
@@ -121,7 +121,7 @@ const Creation = ({ userProfile, accountId }) => {
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
 		const params = tokensParams(query)
-		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
+		const res = await ParasRequest(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
 		})
 
@@ -213,7 +213,7 @@ const Creation = ({ userProfile, accountId }) => {
 export default Creation
 
 export async function getServerSideProps({ params }) {
-	const profileRes = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+	const profileRes = await ParasRequest.get(`${process.env.V2_API_URL}/profiles`, {
 		params: {
 			accountId: params.id,
 		},

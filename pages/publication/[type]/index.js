@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { useEffect, useRef, useState } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
@@ -69,7 +69,7 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const _deletePublication = async () => {
 		setIsDeleting(true)
 		try {
-			await axios.delete(`${process.env.V2_API_URL}/publications/${pubDetail._id}`)
+			await ParasRequest.delete(`${process.env.V2_API_URL}/publications/${pubDetail._id}`)
 			setTimeout(() => {
 				router.push('/publication')
 			}, 1000)
@@ -321,13 +321,13 @@ export async function getServerSideProps({ params }) {
 	const id = type.split('-')
 	const slugName = id.slice(0, id.length - 1).join('-')
 
-	const resp = await axios(`${process.env.V2_API_URL}/publications?_id=${id[id.length - 1]}`)
+	const resp = await ParasRequest(`${process.env.V2_API_URL}/publications?_id=${id[id.length - 1]}`)
 
 	const pubDetail = (await resp.data?.data?.results[0]) || null
 
 	const errorCode = pubDetail ? false : 404
 
-	const profileRes = await axios(
+	const profileRes = await ParasRequest(
 		`${process.env.V2_API_URL}/profiles?accountId=${pubDetail?.author_id}`
 	)
 	const userProfile = (await profileRes.data.data.results[0]) || null

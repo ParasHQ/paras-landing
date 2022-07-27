@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Avatar from 'components/Common/Avatar'
 import Button from 'components/Common/Button'
 import { InputTextarea } from 'components/Common/form'
@@ -36,7 +36,7 @@ const EditProfileModal = ({ userData = {}, setUserData, active, onClose }) => {
 		formData.append('instagramId', userData.instagramId)
 
 		try {
-			const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
+			const resp = await ParasRequest.put(`${process.env.V2_API_URL}/profiles`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 import Nav from 'components/Nav'
@@ -103,7 +103,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 	})
 
 	const getCategory = async () => {
-		const res = await axios.get(`${process.env.V2_API_URL}/categories`)
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/categories`)
 		setCardCategory(res.data.data.results)
 	}
 
@@ -127,7 +127,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 			...(router.query || serverQuery),
 			..._page,
 		})
-		const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
 		})
 		const newData = await res.data.data
@@ -384,7 +384,7 @@ const tokensParams = (query) => {
 }
 
 export async function getServerSideProps({ params, query }) {
-	const categoryListResp = await axios(`${process.env.V2_API_URL}/categories`)
+	const categoryListResp = await ParasRequest(`${process.env.V2_API_URL}/categories`)
 	const categoryList = categoryListResp.data.data.results
 	const categoryDetail = categoryList.filter(
 		(category) => category.category_id === params.categoryId

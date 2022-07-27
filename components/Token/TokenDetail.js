@@ -31,6 +31,7 @@ import Tooltip from 'components/Common/Tooltip'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
 import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { Canvas } from '@react-three/fiber'
 import { Model1 } from 'components/Model3D/ThreeDModel'
 import FileType from 'file-type/browser'
@@ -239,10 +240,6 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const get3DModel = async (url) => {
 		const resp = await axios.get(`${parseImgUrl(url, undefined)}`, {
 			responseType: `blob`,
-			transformRequest: (data, headers) => {
-				delete headers.common['Authorization']
-				return data
-			},
 		})
 		const fileType = await FileType.fromBlob(resp.data)
 		setFileType(fileType?.mime)
@@ -253,10 +250,6 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const getAudio = async (url) => {
 		const resp = await axios.get(`${parseImgUrl(url, undefined)}`, {
 			responseType: `blob`,
-			transformRequest: (data, headers) => {
-				delete headers.common['Authorization']
-				return data
-			},
 		})
 		const fileType = await FileType.fromBlob(resp.data)
 		setFileType(fileType?.mime)
@@ -326,7 +319,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			account_id: currentUser,
 		}
 
-		const res = await axios.put(
+		const res = await ParasRequest.put(
 			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
 			params
 		)
@@ -354,7 +347,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			account_id: currentUser,
 		}
 
-		const res = await axios.put(
+		const res = await ParasRequest.put(
 			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
 			params
 		)

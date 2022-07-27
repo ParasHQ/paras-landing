@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { sentryCaptureException } from 'lib/sentry'
 import { useState } from 'react'
 import { useToast } from 'hooks/useToast'
@@ -43,7 +43,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 
 			const [contractId, tokenSeriesId] = contract_token_id.split('::')
 
-			const seriesResp = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+			const seriesResp = await ParasRequest.get(`${process.env.V2_API_URL}/token-series`, {
 				params: {
 					contract_id: contractId,
 					token_series_id: tokenSeriesId,
@@ -100,7 +100,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 		}
 
 		try {
-			await axios.post(`${process.env.V2_API_URL}/categories/tokens`, params)
+			await ParasRequest.post(`${process.env.V2_API_URL}/categories/tokens`, params)
 			onClose()
 			toast.show({
 				text: (

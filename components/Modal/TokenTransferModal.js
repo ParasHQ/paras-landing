@@ -6,7 +6,7 @@ import { InputText } from 'components/Common/form'
 import { GAS_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import getConfig from 'config/near'
-import Axios from 'axios'
+import axios from 'axios'
 import { useToast } from 'hooks/useToast'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
@@ -39,25 +39,16 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 				throw new Error(`Cannot transfer to self`)
 			}
 			const nearConfig = getConfig(process.env.APP_ENV || 'development')
-			const resp = await Axios.post(
-				nearConfig.nodeUrl,
-				{
-					jsonrpc: '2.0',
-					id: 'dontcare',
-					method: 'query',
-					params: {
-						request_type: 'view_account',
-						finality: 'final',
-						account_id: receiverId,
-					},
+			const resp = await axios.post(nearConfig.nodeUrl, {
+				jsonrpc: '2.0',
+				id: 'dontcare',
+				method: 'query',
+				params: {
+					request_type: 'view_account',
+					finality: 'final',
+					account_id: receiverId,
 				},
-				{
-					transformRequest: (data, headers) => {
-						delete headers.common['Authorization']
-						return data
-					},
-				}
-			)
+			})
 			if (resp.data.error) {
 				throw new Error(`Account ${receiverId} not exist`)
 			}

@@ -1,4 +1,4 @@
-import Axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { sentryCaptureException } from 'lib/sentry'
 import { useEffect, useState } from 'react'
 import { useToast } from 'hooks/useToast'
@@ -44,7 +44,7 @@ const Setting = ({ close }) => {
 	}, [])
 
 	const fetchEmail = async () => {
-		const resp = await Axios.get(`${process.env.V2_API_URL}/credentials/mail`)
+		const resp = await ParasRequest.get(`${process.env.V2_API_URL}/credentials/mail`)
 		const data = await resp.data.data.results[0]
 		if (data) {
 			setEmail(data.email)
@@ -58,7 +58,7 @@ const Setting = ({ close }) => {
 	const updateEmail = async () => {
 		setIsUpdating(true)
 		try {
-			const resp = await Axios.put(`${process.env.V2_API_URL}/credentials/mail`, {
+			const resp = await ParasRequest.put(`${process.env.V2_API_URL}/credentials/mail`, {
 				email,
 				preferences,
 				minPriceOffer: parseNearAmount(minPriceOffer),

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { sentryCaptureException } from 'lib/sentry'
 import { useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
@@ -100,7 +100,7 @@ const ProfileEdit = ({ close }) => {
 		formData.append('instagramId', instagram)
 
 		try {
-			const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
+			const resp = await ParasRequest.put(`${process.env.V2_API_URL}/profiles`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
 				},
