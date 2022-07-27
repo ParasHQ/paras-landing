@@ -7,8 +7,14 @@ import { parseImgUrl } from 'utils/common'
 const TopTransactionCard = ({ contract_token_id, setLocalToken }) => {
 	const router = useRouter()
 	const [token, setToken] = useState(null)
+	const [currentVariant, setVariant] = useState(0)
 
 	const [contractId, tokenId] = contract_token_id.split('::')
+
+	useEffect(() => {
+		const variant = localStorage.getItem('variant') || 0
+		setVariant(variant)
+	})
 
 	useEffect(() => {
 		fetchData()
@@ -43,22 +49,25 @@ const TopTransactionCard = ({ contract_token_id, setLocalToken }) => {
 						isMediaCdn: token.isMediaCdn,
 					})}
 					onClick={() => {
-						router.push(`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`)
-						// router.push(
-						// 	{
-						// 		pathname: router.pathname,
-						// 		query: {
-						// 			...router.query,
-						// 			tokenId: token.token_id,
-						// 			contractId: token.contract_id,
-						// 		},
-						// 	},
-						// 	`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`,
-						// 	{
-						// 		shallow: true,
-						// 		scroll: false,
-						// 	}
-						// )
+						currentVariant == 0
+							? router.push(
+									{
+										pathname: router.pathname,
+										query: {
+											...router.query,
+											tokenId: token.token_id,
+											contractId: token.contract_id,
+										},
+									},
+									`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`,
+									{
+										shallow: true,
+										scroll: false,
+									}
+							  )
+							: router.push(
+									`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`
+							  )
 					}}
 					imgBlur={token.metadata.blurhash}
 					token={{

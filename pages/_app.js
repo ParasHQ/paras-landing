@@ -51,7 +51,6 @@ function MyApp({ Component, pageProps }) {
 				...localeCopy['defaultAll'],
 		  }
 	const getvariant = (variant, experiment_id) => {
-		console.log('get variant = ' + variant)
 		setVariant(variant)
 		localStorage.setItem('variant', variant)
 	}

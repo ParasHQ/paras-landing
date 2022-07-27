@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
-import capitalize from 'capitalize'
-import { prettyBalance } from 'utils/common'
+import { capitalize, prettyBalance } from 'utils/common'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import axios from 'axios'
 import { IconChart, IconDownArrow } from 'components/Icons'
