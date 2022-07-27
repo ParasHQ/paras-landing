@@ -244,7 +244,7 @@ const TabInfo = ({ localToken, isNFT }) => {
 							</div>
 						)}
 						{localToken.metadata?.score && (
-							<div className="mt-3">
+							<div>
 								<p className="text-white text-sm">
 									Rarity Score : <b> {localToken.metadata?.score}</b>
 								</p>
