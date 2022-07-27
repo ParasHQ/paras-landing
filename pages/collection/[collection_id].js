@@ -56,6 +56,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [idNextOwned, setIdNextOwned] = useState(null)
 	const [lowestPriceNext, setLowestPriceNext] = useState(null)
 	const [lowestPriceNextOwned, setLowestPriceNextOwned] = useState(null)
+	const [endedSoonestNext, setEndedSoonestNext] = useState(null)
+	const [endedSoonestNextOwned, setEndedSoonestNextOwned] = useState(null)
 	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [activityPage, setActivityPage] = useState(0)
 	const [stats, setStats] = useState({})
@@ -118,6 +120,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				: {
 						_id_next: idNextOwned,
 						price_next: lowestPriceNextOwned,
+						ended_soonest_next: endedSoonestNextOwned,
 						owner_id: currentUser,
 				  }),
 		})
@@ -141,6 +144,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			setIdNextOwned(lastData._id)
 			params.__sort.includes('price') && setLowestPriceNextOwned(lastData.price)
 			params.__sort.includes('metadata.rank') && setRankNext(lastData.metadata.rank)
+			params.__sort.includes('ended_at') &&
+				setEndedSoonestNextOwned(lastData.sorted_auction_token?.ended_at)
 		}
 		setIsFetchingOwned(false)
 	}
@@ -161,6 +166,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						_id_next: idNext,
 						lowest_price_next: lowestPriceNext,
 						updated_at_next: updatedAtNext,
+						ended_soonest_next: endedSoonestNext,
 						rank_next: rankNext,
 				  }),
 		})
@@ -185,6 +191,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 			params.__sort.includes('metadata.rank') && setRankNext(lastData.metadata.rank)
+			params.__sort.includes('ended_at') &&
+				setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
 		}
 		setIsFetching(false)
 	}
@@ -279,6 +287,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
+			...(query.ended_soonest_next && { ended_soonest_next: query.ended_soonest_next }),
 			...(query.lowest_price_next &&
 				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 			...(query.updated_at_next &&
@@ -343,6 +352,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 				params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 				params.__sort.includes('metadata.rank') && setRankNext(lastData.metadata.rank)
+				params.__sort.includes('ended_at') &&
+					setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
 			}
 		} else if (query.tab === 'owned' && currentUser !== null) {
 			params = tokensParams({
@@ -361,6 +372,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				const lastData = res.data.data.results[res.data.data.results.length - 1]
 				setIdNextOwned(lastData._id)
 				params.__sort.includes('price') && setLowestPriceNextOwned(lastData.lowest_price)
+				params.__sort.includes('ended_at') &&
+					setEndedSoonestNextOwned(lastData.sorted_auction_token?.ended_at)
 			}
 		}
 		setIsFiltering(false)
