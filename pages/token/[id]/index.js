@@ -50,7 +50,7 @@ const TokenSeriesPage = ({ errorCode, initial }) => {
 	if (errorCode) {
 		return <Error />
 	}
-	console.log(currentVariant)
+
 	return (
 		<div className="min-h-screen bg-black">
 			<div

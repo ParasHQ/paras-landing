@@ -510,7 +510,7 @@ const TokenSeriesSingle = ({
 				{typeCardList !== 'top-rarity-token' && (
 					<div className={`px-1 relative ${displayType === 'large' ? `mt-4` : `mt-2`}`}>
 						<div className="block">
-							<p className="text-grray-400 text-xs">{typeSale()}</p>
+							<p className="text-gray-400 text-xs">{typeSale()}</p>
 							{token.token?.is_auction && !isEndedTime && (
 								<p className="text-gray-100 text-[9px] font-bold">{checkBidder()}</p>
 							)}
