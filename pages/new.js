@@ -1015,7 +1015,11 @@ const NewPage = () => {
 										</>
 									)}
 									{iframeUrl && showIframeFile && (
-										<iframe src={iframeUrl} className="object-contain w-full h-full" />
+										<iframe
+											src={iframeUrl}
+											sandbox="allow-scripts"
+											className="object-contain w-full h-full"
+										/>
 									)}
 								</>
 							) : (

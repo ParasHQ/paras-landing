@@ -9,7 +9,7 @@ import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
-import { capitalize, parseImgUrl, prettyBalance, abbrNum } from 'utils/common'
+import { capitalize, parseImgUrl, prettyBalance, abbrNum, prettyTruncate } from 'utils/common'
 import TokenMoreModal from '../Modal/TokenMoreModal'
 import TokenShareModal from '../Modal/TokenShareModal'
 import TokenUpdatePriceModal from '../Modal/TokenUpdatePriceModal'
@@ -105,6 +105,11 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			getIframe()
 		}
 	}, [])
+
+	useEffect(() => {
+		setActiveTab('info')
+		setTokenDisplay('detail')
+	}, [router.query.tokenId])
 
 	const TabNotification = (tab) => {
 		switch (tab) {
@@ -441,6 +446,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										{fileType?.includes('iframe') && (
 											<iframe
 												src={token?.metadata.animation_url}
+												sandbox="allow-scripts"
 												className="object-contain w-full h-full"
 											/>
 										)}
@@ -541,7 +547,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 					<ArtistBanned creatorId={token.metadata.creator_id} />
 				</div>
 				<div className="h-1/2 lg:h-full flex flex-col w-full lg:w-2/5 lg:max-w-2xl bg-gray-700">
-					<div className="hidden justify-between md:p-4 md:pb-2 md:flex">
+					<div className="hidden justify-between md:p-4 md:pb-2 md:flex z-20">
 						<div className="overflow-x-hidden">
 							<div className="flex justify-between items-center">
 								<p className="text-gray-300 truncate">
@@ -553,7 +559,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 							</div>
 
 							<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
-								{token.metadata.title}
+								{prettyTruncate(token.metadata.title, 28)}
 							</h1>
 							<div className="mt-1 text-white flex">
 								<p className="mr-1">{localeLn('by')}</p>
@@ -605,7 +611,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 						className="h-full"
 						universal={true}
 						renderView={(props) => (
-							<div {...props} id="TokenScroll" className="p-4 pt-0 relative" />
+							<div {...props} id="TokenScroll" className="p-4 pt-4 md:pt-0 relative" />
 						)}
 					>
 						<div>
@@ -621,7 +627,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 									</div>
 
 									<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
-										{token.metadata.title}
+										{prettyTruncate(token.metadata.title, 26)}
 									</h1>
 									<div className="mt-1 text-white flex">
 										<p className="mr-1">{localeLn('by')}</p>
@@ -671,7 +677,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 									)}
 								</div>
 							</div>
-							<div className="bg-gray-700 md:sticky flex md:top-0 z-20 overflow-x-scroll space-x-4 flex-grow overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
+							<div className="bg-gray-700 md:sticky flex md:top-0 z-30 overflow-x-scroll space-x-4 flex-grow overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
 								{tabDetail('info')}
 								{token.is_auction && !isAuctionEnds && tabDetail('auction')}
 								{tabDetail('owners')}
