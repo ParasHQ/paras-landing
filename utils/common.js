@@ -3,6 +3,7 @@ import Compressor from 'compressorjs'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import crypto from 'crypto'
+import sanitize from 'sanitize-html'
 
 TimeAgo.addLocale(en)
 export const timeAgo = new TimeAgo('en-US')
@@ -202,8 +203,8 @@ export const parseSortQuery = (sort, defaultMinPrice = false) => {
 		return 'lowest_price::-1'
 	} else if (sort === 'priceasc') {
 		return 'lowest_price::1'
-	} else if (sort === 'rankasc') {
-		return 'metadata.rank::1'
+	} else if (sort === 'scoredesc') {
+		return 'metadata.score::-1'
 	} else if (sort === 'urgentAuction') {
 		return 'ended_at::1'
 	}
@@ -218,8 +219,8 @@ export const parseSortTokenQuery = (sort) => {
 		return 'price::-1'
 	} else if (sort === 'priceasc') {
 		return 'price::1'
-	} else if (sort === 'rankasc') {
-		return 'metadata.rank::1'
+	} else if (sort === 'scoredesc') {
+		return 'metadata.score::-1'
 	} else if (sort === 'urgentAuction') {
 		return 'ended_at::1'
 	} else {
@@ -296,3 +297,41 @@ export const abbrNum = (number, decPlaces) => {
 export const isEmptyObject = (obj) => {
 	return obj && Object.keys(obj).length === 0 && Object.getPrototypeOf(obj) === Object.prototype
 }
+
+export const sanitizeHTML = (content) =>
+	sanitize(content, {
+		allowedTags: [
+			'p',
+			's',
+			'b',
+			'a',
+			'span',
+			'hr',
+			'h1',
+			'h2',
+			'h3',
+			'h4',
+			'h5',
+			'h6',
+			'table',
+			'col',
+			'tbody',
+			'tr',
+			'td',
+			'colgroup',
+			'code',
+			'img',
+			'iframe',
+		],
+		allowedAttributes: {
+			p: ['style'],
+			a: ['title', 'href', 'target', 'rel'],
+			span: ['style'],
+			table: ['style'],
+			img: ['src', 'href', 'width', 'height', 'target'],
+			iframe: ['src', 'href', 'title', 'width', 'height', 'target', 'allowfullscreen'],
+			col: ['style'],
+			tr: ['style'],
+			td: ['style'],
+		},
+	})

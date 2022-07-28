@@ -56,6 +56,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [idNextOwned, setIdNextOwned] = useState(null)
 	const [lowestPriceNext, setLowestPriceNext] = useState(null)
 	const [lowestPriceNextOwned, setLowestPriceNextOwned] = useState(null)
+	const [rankNext, setRankNext] = useState(null)
 	const [endedSoonestNext, setEndedSoonestNext] = useState(null)
 	const [endedSoonestNextOwned, setEndedSoonestNextOwned] = useState(null)
 	const [updatedAtNext, setUpdatedAtNext] = useState(null)
@@ -78,7 +79,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [display, setDisplay] = useState(
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
-	const [rankNext, setRankNext] = useState('')
+	const [scoreNext, setScoreNext] = useState('')
 	const [mediaQueryMd] = useState(
 		typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)')
 	)
@@ -146,6 +147,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			params.__sort.includes('metadata.rank') && setRankNext(lastData.metadata.rank)
 			params.__sort.includes('ended_at') &&
 				setEndedSoonestNextOwned(lastData.sorted_auction_token?.ended_at)
+			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
 		}
 		setIsFetchingOwned(false)
 	}
@@ -168,6 +170,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						updated_at_next: updatedAtNext,
 						ended_soonest_next: endedSoonestNext,
 						rank_next: rankNext,
+						score_next: scoreNext,
 				  }),
 		})
 
@@ -193,6 +196,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			params.__sort.includes('metadata.rank') && setRankNext(lastData.metadata.rank)
 			params.__sort.includes('ended_at') &&
 				setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
+			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
 		}
 		setIsFetching(false)
 	}
@@ -292,8 +296,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 			...(query.updated_at_next &&
 				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
-			...(query.rank_next &&
-				parsedSortQuery.includes('metadata.rank') && { rank_next: query.rank_next }),
+			...(query.score_next &&
+				parsedSortQuery.includes('metadata.score') && { score_next: query.score_next }),
 			...(query.min_copies && { min_copies: query.min_copies }),
 			...(query.max_copies && { max_copies: query.max_copies }),
 			...(query.price_next &&
@@ -354,6 +358,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				params.__sort.includes('metadata.rank') && setRankNext(lastData.metadata.rank)
 				params.__sort.includes('ended_at') &&
 					setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
+				params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
 			}
 		} else if (query.tab === 'owned' && currentUser !== null) {
 			params = tokensParams({
@@ -621,7 +626,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						<span>collection by</span>
 						<span className="flex flex-row ml-1 justify-center">
 							<ArtistVerified
-								token={tokens?.[0] || { metadata: { creator_id: collection.creator_id } }}
+								token={{ metadata: { creator_id: collection.creator_id } }}
+								collection={collection}
 							/>
 						</span>
 					</h4>
@@ -894,7 +900,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							fetchData={fetchDataOwned}
 							hasMore={hasMoreOwned}
 							displayType={display}
-							showRank={true}
+							showRarityScore={true}
 							showLike={true}
 						/>
 					) : router.query.tab == 'tracker' ? (

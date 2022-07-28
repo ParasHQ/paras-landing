@@ -63,9 +63,6 @@ const MarketPage = ({ serverQuery }) => {
 
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
-		// if (!query?.__sort?.includes('ended_at')) {
-		// 	setEndedSoonestNext(null)
-		// }
 		const params = tokensParams({
 			...(query || serverQuery),
 			liked_by: currentUser,
