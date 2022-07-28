@@ -7,7 +7,7 @@ import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import Profile from 'components/Profile/Profile'
 import FilterMarket from 'components/Filter/FilterMarket'
-import { parseSortQuery, setDataLocalStorage } from 'utils/common'
+import { parseImgUrl, parseSortQuery, setDataLocalStorage } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
@@ -157,7 +157,7 @@ const Creation = ({ userProfile, accountId }) => {
 			userProfile?.bio || ''
 		}`,
 		image: userProfile?.imgUrl
-			? `${process.env.V2_API_URL}/socialCard/avatar/${userProfile.imgUrl.split('://')[1]}`
+			? parseImgUrl(userProfile?.imgUrl, null, { useOriginal: true })
 			: `https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png`,
 	}
 

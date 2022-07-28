@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import Profile from 'components/Profile/Profile'
 import CollectionList from 'components/Collection/CollectionList'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
+import { parseImgUrl } from 'utils/common'
 
 const LIMIT = 12
 
@@ -50,7 +51,7 @@ const Collections = ({ userProfile, accountId }) => {
 		title: `${accountId} — Paras`,
 		description: `See NFT digital card collections from ${accountId}. ${userProfile?.bio || ''}`,
 		image: userProfile?.imgUrl
-			? `${process.env.V2_API_URL}/socialCard/avatar/${userProfile.imgUrl.split('://')[1]}`
+			? parseImgUrl(userProfile?.imgUrl, null, { useOriginal: true })
 			: `https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png`,
 	}
 
