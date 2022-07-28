@@ -26,10 +26,14 @@ const ActivityUserFollow = ({ activity }) => {
 
 	const getFollowingAccount = () => {
 		if (activity.type === 'resolve_purchase') {
+			if (activity.is_offer) {
+				return activity.from
+			}
 			return activity.to
-		}
-		if (activity.type === 'add_bid' || activity.type === 'add_offer') {
+		} else if (activity.type === 'add_bid' || activity.type === 'add_offer') {
 			return activity.from
+		} else if (activity.type === 'nft_transfer') {
+			return activity.to
 		}
 
 		return activity.msg?.params?.owner_id || activity.msg?.params?.creator_id

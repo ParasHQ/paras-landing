@@ -38,14 +38,33 @@ const ActivityDescriptionTop = ({ activity, token, onClickToSeeDetails, onClickT
 				<span className="font-bold">{formatNearAmount(activity.msg.params.price)} Ⓝ</span>
 			</>
 		)
-	} else if (activity.type === 'resolve_purchase' && activity.is_auction) {
+	} else if (activity.type === 'nft_transfer') {
 		return (
 			<>
-				<span>Bought a card from </span>
+				<span className="font-bold">Mint a new card </span>
+				<span>from </span>
 				<span className="font-bold cursor-pointer hover:underline" onClick={onClickToCollection}>
 					{token?.metadata.collection || token?.metadata.contract_id}
 				</span>
-				<span> via Auction</span>
+			</>
+		)
+	} else if (activity.type === 'resolve_purchase' && activity.is_offer) {
+		return (
+			<>
+				<span className="font-bold">Accepted an offer</span>
+				<span> for </span>
+				<span className="font-bold">{formatNearAmount(activity.msg.params.price)} Ⓝ</span>
+			</>
+		)
+	} else if (activity.type === 'resolve_purchase') {
+		return (
+			<>
+				<span className="font-bold">Bought a card</span>
+				<span> from </span>
+				<span className="font-bold cursor-pointer hover:underline" onClick={onClickToCollection}>
+					{token?.metadata.collection || token?.metadata.contract_id}
+				</span>
+				{activity.is_auction && <span> via Auction</span>}
 			</>
 		)
 	}

@@ -21,6 +21,15 @@ const ActivityDescriptionCenter = ({ activity }) => {
 				</p>
 			</div>
 		)
+	} else if (activity.type === 'resolve_purchase' && activity.is_offer) {
+		return (
+			<div>
+				<p className="text-gray-300 text-xs">Last Sold</p>
+				<p className="text-white text-2xl font-bold">
+					{formatNearAmount(activity.msg.params.price)} Ⓝ
+				</p>
+			</div>
+		)
 	} else if (activity.type === 'resolve_purchase') {
 		return (
 			<div>
