@@ -1,16 +1,15 @@
 import Card from 'components/Card/Card'
-import Button from 'components/Common/Button'
-import CountdownSimple from 'components/Common/CountdownSimple'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 import useProfileData from 'hooks/useProfileData'
 import useTokenOrTokenSeries from 'hooks/useTokenOrTokenSeries'
 import { trackFollowingClick } from 'lib/ga'
 import useStore from 'lib/store'
-import { formatNearAmount } from 'near-api-js/lib/utils/format'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { parseImgUrl, prettyTruncate, timeAgo } from 'utils/common'
+import { parseImgUrl } from 'utils/common'
+import ActivityDescriptionCenter from './ActivityUserFollow/ActivityDescriptionCenter'
+import ActivityFollowingBottom from './ActivityUserFollow/ActivityFollowingBottom'
+import ActivityFollowingTop from './ActivityUserFollow/ActivityFollowingTop'
 
 const ActivityUserFollow = ({ activity }) => {
 	const currentUser = useStore((state) => state.currentUser)
@@ -24,7 +23,19 @@ const ActivityUserFollow = ({ activity }) => {
 			liked_by: currentUser,
 		},
 	})
-	const accountId = activity.msg?.params?.owner_id || activity.msg?.params?.creator_id
+
+	const getFollowingAccount = () => {
+		if (activity.type === 'resolve_purchase') {
+			return activity.to
+		}
+		if (activity.type === 'add_bid' || activity.type === 'add_offer') {
+			return activity.from
+		}
+
+		return activity.msg?.params?.owner_id || activity.msg?.params?.creator_id
+	}
+
+	const accountId = getFollowingAccount()
 	const profile = useProfileData(accountId)
 
 	const onClickToSeeDetails = () => {
@@ -51,80 +62,8 @@ const ActivityUserFollow = ({ activity }) => {
 		)
 	}
 
-	const descriptionTop = () => {
-		if (activity.type === 'add_market_data' || activity.type === 'update_market_data') {
-			return (
-				<>
-					<span>{activity.msg.params.is_auction ? 'Auctioned ' : 'Listed '} </span>
-					<span className="font-bold cursor-pointer hover:underline" onClick={onClickToSeeDetails}>
-						{token?.metadata.title}
-					</span>
-					<span> for </span>
-					<span className="font-bold">{formatNearAmount(activity.msg.params.price)} Ⓝ</span>
-				</>
-			)
-		} else if (activity.type === 'nft_create_series') {
-			return (
-				<>
-					<span>Created </span>
-					<span className="font-bold cursor-pointer hover:underline" onClick={onClickToSeeDetails}>
-						{token?.metadata.title}
-					</span>
-					<span> series</span>
-				</>
-			)
-		}
-		return null
-	}
-
-	const descriptionCenter = () => {
-		if (activity.type === 'add_market_data') {
-			return (
-				<div>
-					<p className="text-gray-300 text-xs">
-						{activity.msg.params.is_auction ? 'Starting Price' : 'Listed Price'}
-					</p>
-					<p className="text-white text-2xl font-bold">
-						{formatNearAmount(activity.msg.params.price)} Ⓝ
-					</p>
-				</div>
-			)
-		} else if (activity.type === 'nft_create_series' && activity.msg.params.price) {
-			return (
-				<div>
-					<p className="text-gray-300 text-xs">Current Price</p>
-					<p className="text-white text-2xl font-bold">
-						{formatNearAmount(activity.msg.params.price)} Ⓝ
-					</p>
-				</div>
-			)
-		}
-		return null
-	}
-
-	const descriptionBottom = () => {
-		if (
-			(activity.type === 'add_market_data' || activity.type === 'update_market_data') &&
-			!activity.msg.params.is_auction
-		) {
-			const issuedAt = token?.metadata?.issued_at
-			return (
-				<div>
-					{issuedAt &&
-						issuedAt instanceof Date &&
-						!isNaN(issuedAt)(
-							<p className="text-xs text-gray-400">Minted {timeAgo.format(new Date(issuedAt))}</p>
-						)}
-				</div>
-			)
-		} else if (activity.type === 'add_market_data' && activity.msg.params.is_auction) {
-			return (
-				<div>
-					<CountdownSimple endedDate={activity.msg.params.ended_at} />
-				</div>
-			)
-		}
-		return null
+	const onClickToCollection = () => {
+		router.push(`/collection/${token.metadata.collection_id || token.metadata.contract_id}`)
 	}
 
 	return (
@@ -179,47 +118,20 @@ const ActivityUserFollow = ({ activity }) => {
 					</div>
 				</div>
 				<div className="flex flex-col space-y-4 justify-between w-full">
-					<div className="flex space-x-2">
-						<Link href={`/${accountId}`}>
-							<a
-								onClick={() => trackFollowingClick('Following_click_artist')}
-								className={`w-10 h-10 overflow-hidden ${
-									!profile?.imgUrl ? 'bg-primary' : 'bg-dark-primary-2'
-								} rounded-full cursor-pointer`}
-							>
-								<img
-									src={parseImgUrl(profile?.imgUrl, null, { width: `300` })}
-									className="w-full object-cover rounded-full cursor-pointer"
-								/>
-							</a>
-						</Link>
-						<div>
-							<div className="flex gap-3 items-baseline">
-								<Link href={`/${accountId}`}>
-									<a
-										className="text-white text-sm hover:underline"
-										onClick={() => trackFollowingClick('Following_click_artist')}
-									>
-										{prettyTruncate(accountId, 15, 'address')}
-									</a>
-								</Link>
-								<p className="text-gray-400 text-xs">
-									{timeAgo.format(new Date(activity.msg.datetime))}
-								</p>
-							</div>
-							<p className="text-white text-sm">{descriptionTop()}</p>
-						</div>
-					</div>
-					{descriptionCenter()}
-					<div>
-						<hr className="border-gray-600 mb-3" />
-						<div className="flex items-end justify-between flex-row-reverse">
-							<Button size="md" className="px-8" onClick={onClickToSeeDetails}>
-								See Details
-							</Button>
-							{descriptionBottom()}
-						</div>
-					</div>
+					<ActivityFollowingTop
+						activity={activity}
+						token={token}
+						profile={profile}
+						accountId={accountId}
+						onClickToSeeDetails={onClickToSeeDetails}
+						onClickToCollection={onClickToCollection}
+					/>
+					<ActivityDescriptionCenter activity={activity} />
+					<ActivityFollowingBottom
+						onClickToSeeDetails={onClickToSeeDetails}
+						activity={activity}
+						token={token}
+					/>
 				</div>
 			</div>
 		</div>
