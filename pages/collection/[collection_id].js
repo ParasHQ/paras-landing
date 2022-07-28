@@ -621,7 +621,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						<span>collection by</span>
 						<span className="flex flex-row ml-1 justify-center">
 							<ArtistVerified
-								token={tokens?.[0] || { metadata: { creator_id: collection.creator_id } }}
+								token={{ metadata: { creator_id: collection.creator_id } }}
+								collection={collection}
 							/>
 						</span>
 					</h4>

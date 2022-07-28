@@ -34,7 +34,7 @@ const ArtistVerified = ({ token, collection }) => {
 					</a>
 				</Link>
 			</span>
-			{(artistData?.isCreator || collection?.isCreator) && (
+			{(artistData?.isCreator || collection?.isCreator || collection?.is_creator) && (
 				<span data-for="verified-tooltip" data-tip="Verified Creator" className="ml-1">
 					<IconVerified size={17} color="#0816B3" />
 				</span>

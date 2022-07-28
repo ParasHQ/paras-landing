@@ -1,6 +1,6 @@
-import LaunchpadContentLoader from './LaunchpadContentLoader'
+import { sanitizeHTML } from 'utils/common'
 
-const LaunchpadContent = ({ project, tabActive, setTabActive, isValidating }) => {
+const LaunchpadContent = ({ project, tabActive, setTabActive }) => {
 	return (
 		<>
 			<div className="flex justify-center md:justify-start gap-10 mb-6 text-gray-200">
@@ -30,65 +30,14 @@ const LaunchpadContent = ({ project, tabActive, setTabActive, isValidating }) =>
 				)}
 			</div>
 			<div className="text-gray-200 text-justify">
-				{tabActive === 'story' && !isValidating ? (
-					<div dangerouslySetInnerHTML={{ __html: project.content.story }} />
-				) : (
-					project?.content.story && (
-						<>
-							<div className="hidden md:block">
-								<LaunchpadContentLoader
-									uniqueKey="big-launchpad-content-loader"
-									contentLength={1}
-								/>
-							</div>
-							<div className="md:hidden">
-								<LaunchpadContentLoader
-									uniqueKey="small-launchpad-content-loader"
-									contentLength={1}
-								/>
-							</div>
-						</>
-					)
+				{tabActive === 'story' && (
+					<div dangerouslySetInnerHTML={{ __html: sanitizeHTML(project.content.story) }} />
 				)}
-				{tabActive === 'roadmap' && !isValidating ? (
-					<div dangerouslySetInnerHTML={{ __html: project.content.roadmap }} />
-				) : (
-					project?.content.roadmap && (
-						<>
-							<div className="hidden md:block">
-								<LaunchpadContentLoader
-									uniqueKey="big-launchpad-content-loader"
-									contentLength={1}
-								/>
-							</div>
-							<div className="md:hidden">
-								<LaunchpadContentLoader
-									uniqueKey="small-launchpad-content-loader"
-									contentLength={1}
-								/>
-							</div>
-						</>
-					)
+				{tabActive === 'roadmap' && (
+					<div dangerouslySetInnerHTML={{ __html: sanitizeHTML(project.content.roadmap) }} />
 				)}
-				{tabActive === 'team' && !isValidating ? (
-					<div dangerouslySetInnerHTML={{ __html: project.content.team }} />
-				) : (
-					project?.content.team && (
-						<>
-							<div className="hidden md:block">
-								<LaunchpadContentLoader
-									uniqueKey="big-launchpad-content-loader"
-									contentLength={1}
-								/>
-							</div>
-							<div className="md:hidden">
-								<LaunchpadContentLoader
-									uniqueKey="small-launchpad-content-loader"
-									contentLength={1}
-								/>
-							</div>
-						</>
-					)
+				{tabActive === 'team' && (
+					<div dangerouslySetInnerHTML={{ __html: sanitizeHTML(project.content.team) }} />
 				)}
 			</div>
 		</>
