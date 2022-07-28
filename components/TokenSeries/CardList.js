@@ -545,9 +545,9 @@ const TokenSeriesSingle = ({
 							displayType === 'large' ? `flex gap-1` : `flex gap-1`
 						} text-right absolute top-0 right-0 flex-col items-end`}
 					>
-						{type === 'collection' && !!token.metadata.rank && (
+						{type === 'collection' && !!token.metadata.score && (
 							<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
-								Rank {token.metadata?.rank}
+								Rarity Score {token.metadata?.score?.toFixed(2)}
 							</p>
 						)}
 						{showLike && (

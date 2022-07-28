@@ -171,7 +171,7 @@ const FilterMarket = ({
 						<div>
 							{filter
 								.filter((item) => (isCollectibles ? item.key !== 'marketupdate' : item.key))
-								.filter((item) => (!isCollection ? item.key !== 'rankasc' : item))
+								.filter((item) => (!isCollection ? item.key !== 'scoredesc' : item))
 								.map((item, index) => (
 									<button
 										key={item.key}
@@ -315,7 +315,7 @@ const filter = [
 		value: 'Lowest Price',
 	},
 	{
-		key: 'rankasc',
+		key: 'scoredesc',
 		value: 'Rare to Common',
 	},
 	{
