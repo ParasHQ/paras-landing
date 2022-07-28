@@ -152,10 +152,6 @@ function MyApp({ Component, pageProps }) {
 		storage.setItem('currentPath', `${globalThis?.location.pathname}${globalThis?.location.search}`)
 	}, [])
 
-	useEffect(() => {
-		// removeQueryTransactionFromNear()
-	}, [router.isReady])
-
 	const getNearUsdPrice = async () => {
 		try {
 			const nearUsdPrice = await cachios.get(

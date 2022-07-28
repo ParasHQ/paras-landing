@@ -80,12 +80,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				formData.append('accountId', currentUser.accountId)
 
 				try {
-					const resp = await ParasRequest.put(`${process.env.V2_API_URL}/profiles`, formData, {
-						headers: {
-							'Content-Type': 'multipart/form-data',
-							authorization: authToken,
-						},
-					})
+					const resp = await ParasRequest.put(`${process.env.V2_API_URL}/profiles`, formData)
 					store.setUserProfile(resp.data.data)
 				} catch (err) {
 					store.setUserProfile({})

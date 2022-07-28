@@ -11,7 +11,7 @@ const HomeCollectionList = ({ showDetails }) => {
 	const [showRightClick, setShowRightClick] = useState(true)
 
 	const fetchData = () =>
-		ParasRequest(`${process.env.V2_API_URL}/featured-collections`, {}).then(
+		ParasRequest(`${process.env.V2_API_URL}/featured-collections`).then(
 			(res) => res.data.data.results
 		)
 

@@ -141,7 +141,6 @@ const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) =
 							type: 'FunctionCall',
 							params: {
 								methodName: 'nft_approve',
-								contractId: tradedToken[0].split('::')[0],
 								args: params,
 								attachedDeposit: STORAGE_APPROVE_FEE,
 								gas: GAS_FEE,

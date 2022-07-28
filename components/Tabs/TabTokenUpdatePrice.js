@@ -137,7 +137,6 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 							type: 'FunctionCall',
 							params: {
 								methodName: 'storage_deposit',
-								contractId: process.env.MARKETPLACE_CONTRACT_ID,
 								args: { receiver_id: currentUser },
 								deposit: STORAGE_ADD_MARKET_FEE,
 								gas: GAS_FEE,
