@@ -164,7 +164,6 @@ const ProjectPage = ({ project }) => {
 					<div className="mx-6 mt-28 md:mt-0 md:ml-10 md:w-8/12">
 						<LaunchpadContent
 							project={data}
-							isValidating={isValidating}
 							tabActive={tabActive}
 							setTabActive={(e) => setTabActive(e)}
 						/>

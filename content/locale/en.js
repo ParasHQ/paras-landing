@@ -581,10 +581,10 @@ const languages = {
 	AvailableInFollowingLang: 'Paras is available in the following languages:',
 }
 const myBids = {
-	MyBidsParas: 'My Bids — Paras',
-	MyBids: 'My Bids',
-	ReceivedBids: 'Received Bids',
-	NoActiveBid: 'You have no active bid',
+	MyOffersParas: 'My Offers — Paras',
+	MyOffers: 'My Offers',
+	ReceivedOffers: 'Received Offers',
+	NoActiveOffer: 'You have no active offer',
 }
 const liveAuction = {
 	LiveAuction: 'Live Auction',

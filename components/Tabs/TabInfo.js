@@ -236,10 +236,10 @@ const TabInfo = ({ localToken, isNFT }) => {
 								</div>
 							))}
 						</div>
-						{localToken.metadata?.rank && (
+						{localToken.metadata?.score && (
 							<div className="mt-3">
 								<p className="text-white text-sm">
-									Rank : <b> {localToken.metadata?.rank}</b>
+									Rarity Score : <b> {localToken.metadata?.score.toFixed(2)}</b>
 								</p>
 							</div>
 						)}

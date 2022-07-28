@@ -26,6 +26,7 @@ const Creation = ({ userProfile, accountId }) => {
 	const [hasMore, setHasMore] = useState(true)
 	const [idNext, setIdNext] = useState(null)
 	const [lowestPriceNext, setLowestPriceNext] = useState(null)
+	const [endedSoonestNext, setEndedSoonestNext] = useState(null)
 	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(false)
@@ -68,6 +69,7 @@ const Creation = ({ userProfile, accountId }) => {
 			_id_next: idNext,
 			lowest_price_next: lowestPriceNext,
 			updated_at_next: updatedAtNext,
+			ended_soonest_next: endedSoonestNext,
 		})
 
 		const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
@@ -86,6 +88,8 @@ const Creation = ({ userProfile, accountId }) => {
 			setIdNext(lastData._id)
 			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+			params.__sort.includes('ended_at') &&
+				setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
 		}
 		setIsFetching(false)
 	}
@@ -118,6 +122,7 @@ const Creation = ({ userProfile, accountId }) => {
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
+			...(query.ended_soonest_next && { ended_soonest_next: query.ended_soonest_next }),
 			...(query.lowest_price_next &&
 				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 			...(query.updated_at_next &&
@@ -146,6 +151,8 @@ const Creation = ({ userProfile, accountId }) => {
 			setIdNext(lastData._id)
 			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+			params.__sort.includes('ended_at') &&
+				setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
 		}
 
 		setIsFiltering(false)

@@ -361,7 +361,7 @@ const Nav = () => {
 								{localeLn('Comics')}
 							</a>
 						</div>
-						<div className="px-3 text-gray-100 hidden md:block text-sm fireTextRed">
+						<div className="px-3 text-gray-100 hidden md:block text-sm">
 							<a
 								href="https://guide.paras.id/collectors-guide/how-to-do-your-own-research-dyor"
 								target="_blank"
@@ -487,7 +487,7 @@ const Nav = () => {
 								<a
 									href="https://guide.paras.id/collectors-guide/how-to-do-your-own-research-dyor"
 									target="_blank"
-									className="p-4 block w-full fireTextRed"
+									className="p-4 block w-full"
 									rel="noreferrer"
 								>
 									DYOR

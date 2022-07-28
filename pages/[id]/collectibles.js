@@ -27,6 +27,7 @@ const Collection = ({ userProfile, accountId }) => {
 	const [collections, setCollections] = useState([])
 	const [idNext, setIdNext] = useState(null)
 	const [priceNext, setPriceNext] = useState(null)
+	const [endedSoonestNext, setEndedSoonestNext] = useState(null)
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(false)
@@ -65,6 +66,7 @@ const Collection = ({ userProfile, accountId }) => {
 				: {
 						_id_next: idNext,
 						price_next: priceNext,
+						ended_soonest_next: endedSoonestNext,
 				  }),
 		})
 		const res = await axios.get(`${process.env.V2_API_URL}/token`, {
@@ -93,6 +95,8 @@ const Collection = ({ userProfile, accountId }) => {
 			const lastData = newData.results[newData.results.length - 1]
 			setIdNext(lastData._id)
 			params.__sort.includes('price') && setPriceNext(lastData.price)
+			params.__sort.includes('ended_at') &&
+				setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
 		}
 		setIsFetching(false)
 	}
@@ -123,6 +127,7 @@ const Collection = ({ userProfile, accountId }) => {
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
+			...(query.ended_soonest_next && { ended_soonest_next: query.ended_soonest_next }),
 			...(query.price_next &&
 				parsedSortQuery.includes('price') && { price_next: query.price_next }),
 			...(query.is_staked && { is_staked: query.is_staked }),
@@ -147,6 +152,8 @@ const Collection = ({ userProfile, accountId }) => {
 			const lastData = res.data.data.results[res.data.data.results.length - 1]
 			setIdNext(lastData._id)
 			params.__sort.includes('price') && setPriceNext(lastData.price)
+			params.__sort.includes('ended_at') &&
+				setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
 		}
 
 		setIsFiltering(false)

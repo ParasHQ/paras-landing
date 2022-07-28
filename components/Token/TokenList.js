@@ -29,7 +29,7 @@ const TokenList = ({
 	hasMore,
 	displayType = 'large',
 	volume,
-	showRank = false,
+	showRarityScore = false,
 	showLike = false,
 }) => {
 	const store = useStore()
@@ -115,7 +115,7 @@ const TokenList = ({
 							typeTokenList={typeTokenList}
 							displayType={displayType}
 							volume={token.volume || volume?.[idx]}
-							showRank={showRank}
+							showRarityScore={showRarityScore}
 							showLike={showLike}
 							tokenIsLiked={tokenIsLiked}
 							setTokenIsLiked={setTokenIsLiked}
@@ -135,7 +135,7 @@ const TokenSingle = ({
 	displayType = 'large',
 	typeTokenList,
 	volume,
-	showRank,
+	showRarityScore,
 	showLike,
 	tokenIsLiked,
 	setTokenIsLiked,
@@ -548,10 +548,41 @@ const TokenSingle = ({
 										)}
 									</div>
 								) : (
-									<div className="line-through text-red-600">
-										<span className="text-gray-100">{localeLn('SALE')}</span>
-									</div>
-								)}
+								<div className="line-through text-red-600">
+									<span className="text-gray-100">{localeLn('SALE')}</span>
+								</div>
+							)}
+						</div>
+					</div>
+					<div
+						className={`${
+							displayType === 'large' ? `block` : `flex gap-1`
+						} text-right absolute top-0 right-0`}
+					>
+						{showRarityScore && !!token.metadata.score && (
+							<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
+								Rarity Score {token.metadata?.score?.toFixed(2)}
+							</p>
+						)}
+						{showLike && (
+							<div className="inline-flex items-center">
+								<div
+									className="cursor-pointer"
+									onClick={() => {
+										isLiked
+											? unlikeToken(token.contract_id, token.token_series_id, 'list')
+											: likeToken(token.contract_id, token.token_series_id, 'list')
+									}}
+								>
+									<IconLove
+										size={displayType === 'large' ? 18 : 16}
+										color={isLiked ? '#c51104' : 'transparent'}
+										stroke={isLiked ? 'none' : 'white'}
+									/>
+								</div>
+								<p className={`text-white ml-2 ${displayType === 'large' ? 'text-sm' : 'text-xs'}`}>
+									{abbrNum(defaultLikes || 0, 1)}
+								</p>
 							</div>
 						</div>
 						<div
