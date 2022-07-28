@@ -378,6 +378,12 @@ input.clear {
 		0px 0 8px rgb(0, 89, 255), 0 0 8px rgb(0, 195, 255), 0 0 5px #1300ba;
 }
 
+.fireTextRed {
+	text-shadow: 0 0 20px #fed4c9, -19px -20px 40px #ff0000, -1px -9px 20px #ec310c,
+		-20px -60px 60px #cd2e06, 1px -19px 70px #971616, 1px -14px 80px #450e0efe,
+		0px 0 8px rgb(255, 34, 0), 0 0 8px rgb(255, 77, 0), 0 0 5px #ba4400;
+}
+
 @media (max-width: 768px) {
 	.embedVideo {
 		height: 210px;

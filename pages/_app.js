@@ -13,8 +13,6 @@ import Script from 'next/script'
 import '../styles/font.css'
 import '../styles/tailwind.css'
 import 'draft-js/dist/Draft.css'
-import 'slick-carousel/slick/slick.css'
-import 'slick-carousel/slick/slick-theme.css'
 import 'croppie/croppie.css'
 
 import ToastProvider from 'hooks/useToast'
@@ -112,8 +110,16 @@ function MyApp({ Component, pageProps }) {
 		}
 	}
 
+	const fetchSmallBanner = async () => {
+		const smallBannerResp = await axios.get(`${process.env.V2_API_URL}/small-banner`)
+		const smallBanner = smallBannerResp.data.result
+
+		store.setSmallBanner(smallBanner[0])
+	}
+
 	useEffect(() => {
 		fetchActivities()
+		fetchSmallBanner()
 		setInterval(() => {
 			fetchActivities()
 		}, 1000 * 60 * 5)
