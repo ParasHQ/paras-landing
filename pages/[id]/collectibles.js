@@ -27,6 +27,7 @@ const Collection = ({ userProfile, accountId }) => {
 	const [collections, setCollections] = useState([])
 	const [idNext, setIdNext] = useState(null)
 	const [priceNext, setPriceNext] = useState(null)
+	const [endedSoonestNext, setEndedSoonestNext] = useState(null)
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(false)
@@ -36,10 +37,11 @@ const Collection = ({ userProfile, accountId }) => {
 
 	useEffect(() => {
 		fetchOwnerTokens(true)
-	}, [router.query.id])
+	}, [currentUser, router.query.id])
 
 	const fetchOwnerTokens = async (initialFetch = false) => {
 		const _hasMore = initialFetch ? true : hasMore
+		const _tokens = initialFetch ? [] : tokens
 
 		if (!_hasMore || isFetching) {
 			return
@@ -48,17 +50,20 @@ const Collection = ({ userProfile, accountId }) => {
 		setIsFetching(true)
 		const params = tokensParams({
 			...router.query,
-			...{
-				_id_next: idNext,
-				price_next: priceNext,
-			},
+			...(initialFetch
+				? {}
+				: {
+						_id_next: idNext,
+						price_next: priceNext,
+						ended_soonest_next: endedSoonestNext,
+				  }),
 		})
 		const res = await axios.get(`${process.env.V2_API_URL}/token`, {
 			params: params,
 		})
 		const newData = await res.data.data
 
-		const newTokens = [...(tokens || []), ...newData.results]
+		const newTokens = [..._tokens, ...newData.results]
 		setTokens(newTokens)
 
 		if (initialFetch) {
@@ -79,6 +84,8 @@ const Collection = ({ userProfile, accountId }) => {
 			const lastData = newData.results[newData.results.length - 1]
 			setIdNext(lastData._id)
 			params.__sort.includes('price') && setPriceNext(lastData.price)
+			params.__sort.includes('ended_at') &&
+				setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
 		}
 		setIsFetching(false)
 	}
@@ -109,6 +116,7 @@ const Collection = ({ userProfile, accountId }) => {
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
+			...(query.ended_soonest_next && { ended_soonest_next: query.ended_soonest_next }),
 			...(query.price_next &&
 				parsedSortQuery.includes('price') && { price_next: query.price_next }),
 			...(query.is_staked && { is_staked: query.is_staked }),
@@ -133,6 +141,8 @@ const Collection = ({ userProfile, accountId }) => {
 			const lastData = res.data.data.results[res.data.data.results.length - 1]
 			setIdNext(lastData._id)
 			params.__sort.includes('price') && setPriceNext(lastData.price)
+			params.__sort.includes('ended_at') &&
+				setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
 		}
 
 		setIsFiltering(false)

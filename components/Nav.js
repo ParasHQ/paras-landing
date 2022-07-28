@@ -189,22 +189,13 @@ const Nav = () => {
 				)}
 
 				{/* Banner for special event */}
-				<div
-					className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
-				>
-					<div className="px-10 py-1 md:p-0 ">
-						{`Congratulations to all `}
-						<a
-							href="https://twitter.com/parashq/status/1535260855142694914?s=21&t=HQF9pQqIetPcHpSH1QEV4g"
-							target="_blank"
-							className="font-bold cursor-pointer hover:underline"
-							rel="noreferrer"
-						>
-							the winners of Paras Art Competition
-						</a>
-						!
+				{store.smallBanner && store.smallBanner.is_active && (
+					<div
+						className={`relative text-white text-center overflow-hidden text-md md:leading-8 m-auto bg-primary z-50 flex items-center justify-center transition-height duration-500 md:h-8`}
+					>
+						<div dangerouslySetInnerHTML={{ __html: store.smallBanner.bannerText }}></div>
 					</div>
-				</div>
+				)}
 
 				{process.env.APP_ENV !== 'production' && (
 					<div
@@ -370,6 +361,16 @@ const Nav = () => {
 								{localeLn('Comics')}
 							</a>
 						</div>
+						<div className="px-3 text-gray-100 hidden md:block text-sm">
+							<a
+								href="https://guide.paras.id/collectors-guide/how-to-do-your-own-research-dyor"
+								target="_blank"
+								className="flex cursor-pointer"
+								rel="noreferrer"
+							>
+								DYOR
+							</a>
+						</div>
 						<div className="px-3">
 							{store.currentUser ? (
 								<div className="flex items-center -mx-2">
@@ -480,6 +481,16 @@ const Nav = () => {
 									rel="noreferrer"
 								>
 									{localeLn('Comics')}
+								</a>
+							</div>
+							<div className="text-gray-400">
+								<a
+									href="https://guide.paras.id/collectors-guide/how-to-do-your-own-research-dyor"
+									target="_blank"
+									className="p-4 block w-full"
+									rel="noreferrer"
+								>
+									DYOR
 								</a>
 							</div>
 						</div>

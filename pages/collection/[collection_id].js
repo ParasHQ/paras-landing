@@ -9,7 +9,13 @@ import useStore from 'lib/store'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { parseImgUrl, parseSortQuery, setDataLocalStorage, parseSortTokenQuery } from 'utils/common'
+import {
+	parseImgUrl,
+	parseSortQuery,
+	setDataLocalStorage,
+	parseSortTokenQuery,
+	prettyTruncate,
+} from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { useIntl } from 'hooks/useIntl'
 import CollectionStats from 'components/Collection/CollectionStats'
@@ -33,7 +39,7 @@ import { SHOW_TX_HASH_LINK } from 'constants/common'
 import DailyTracker from 'components/LineChart/DailyTracker'
 import Link from 'next/link'
 import LoadingTracker from 'components/Common/LoadingTracker'
-import { IconShareActivity, IconTwitter, IconWebsite } from 'components/Icons'
+import { IconDiscord, IconShareActivity, IconTwitter, IconWebsite } from 'components/Icons'
 
 const LIMIT = 12
 const LIMIT_ACTIVITY = 20
@@ -50,6 +56,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [idNextOwned, setIdNextOwned] = useState(null)
 	const [lowestPriceNext, setLowestPriceNext] = useState(null)
 	const [lowestPriceNextOwned, setLowestPriceNextOwned] = useState(null)
+	const [rankNext, setRankNext] = useState(null)
+	const [endedSoonestNext, setEndedSoonestNext] = useState(null)
+	const [endedSoonestNextOwned, setEndedSoonestNextOwned] = useState(null)
 	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [activityPage, setActivityPage] = useState(0)
 	const [stats, setStats] = useState({})
@@ -112,6 +121,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				: {
 						_id_next: idNextOwned,
 						price_next: lowestPriceNextOwned,
+						ended_soonest_next: endedSoonestNextOwned,
 						owner_id: currentUser,
 				  }),
 		})
@@ -134,6 +144,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			const lastData = newData.results[newData.results.length - 1]
 			setIdNextOwned(lastData._id)
 			params.__sort.includes('price') && setLowestPriceNextOwned(lastData.price)
+			params.__sort.includes('metadata.rank') && setRankNext(lastData.metadata.rank)
+			params.__sort.includes('ended_at') &&
+				setEndedSoonestNextOwned(lastData.sorted_auction_token?.ended_at)
 			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
 		}
 		setIsFetchingOwned(false)
@@ -155,6 +168,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						_id_next: idNext,
 						lowest_price_next: lowestPriceNext,
 						updated_at_next: updatedAtNext,
+						ended_soonest_next: endedSoonestNext,
+						rank_next: rankNext,
 						score_next: scoreNext,
 				  }),
 		})
@@ -178,6 +193,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			setIdNext(lastData._id)
 			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+			params.__sort.includes('metadata.rank') && setRankNext(lastData.metadata.rank)
+			params.__sort.includes('ended_at') &&
+				setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
 			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
 		}
 		setIsFetching(false)
@@ -273,6 +291,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
+			...(query.ended_soonest_next && { ended_soonest_next: query.ended_soonest_next }),
 			...(query.lowest_price_next &&
 				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 			...(query.updated_at_next &&
@@ -336,6 +355,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				setIdNext(lastData._id)
 				params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 				params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+				params.__sort.includes('metadata.rank') && setRankNext(lastData.metadata.rank)
+				params.__sort.includes('ended_at') &&
+					setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
 				params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
 			}
 		} else if (query.tab === 'owned' && currentUser !== null) {
@@ -355,6 +377,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				const lastData = res.data.data.results[res.data.data.results.length - 1]
 				setIdNextOwned(lastData._id)
 				params.__sort.includes('price') && setLowestPriceNextOwned(lastData.lowest_price)
+				params.__sort.includes('ended_at') &&
+					setEndedSoonestNextOwned(lastData.sorted_auction_token?.ended_at)
 			}
 		}
 		setIsFiltering(false)
@@ -602,7 +626,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						<span>collection by</span>
 						<span className="flex flex-row ml-1 justify-center">
 							<ArtistVerified
-								token={tokens?.[0] || { metadata: { creator_id: collection.creator_id } }}
+								token={{ metadata: { creator_id: collection.creator_id } }}
+								collection={collection}
 							/>
 						</span>
 					</h4>
@@ -642,26 +667,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 								target="_blank"
 								rel="noreferrer"
 							>
-								<svg
-									xmlns="http://www.w3.org/2000/svg"
-									className="icon icon-tabler icon-tabler-brand-discord"
-									width={25}
-									height={25}
-									viewBox="0 0 24 24"
-									strokeWidth="1.5"
-									stroke="#cbd5e0"
-									fill="none"
-									strokeLinecap="round"
-									strokeLinejoin="round"
-								>
-									<path stroke="none" d="M0 0h24v24H0z" fill="none" />
-									<circle cx={9} cy={12} r={1} />
-									<circle cx={15} cy={12} r={1} />
-									<path d="M7.5 7.5c3.5 -1 5.5 -1 9 0" />
-									<path d="M7 16.5c3.5 1 6.5 1 10 0" />
-									<path d="M15.5 17c0 1 1.5 3 2 3c1.5 0 2.833 -1.667 3.5 -3c.667 -1.667 .5 -5.833 -1.5 -11.5c-1.457 -1.015 -3 -1.34 -4.5 -1.5l-1 2.5" />
-									<path d="M8.5 17c0 1 -1.356 3 -1.832 3c-1.429 0 -2.698 -1.667 -3.333 -3c-.635 -1.667 -.476 -5.833 1.428 -11.5c1.388 -1.015 2.782 -1.34 4.237 -1.5l1 2.5" />
-								</svg>
+								<IconDiscord size={25} />
 							</a>
 						)}
 					</div>
@@ -853,8 +859,12 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 										onClick={() => removeAttributeFilter(index)}
 										className="flex-grow rounded-md px-4 py-1 mr-2 my-1 border-2 border-gray-800 bg-blue-400 bg-opacity-10 text-sm cursor-pointer group hover:border-gray-700"
 									>
-										<span className=" text-gray-500 font-bold">{Object.keys(type)[0] + ' : '}</span>{' '}
-										<span className=" text-gray-200">{Object.values(type)[0]}</span>{' '}
+										<span className=" text-gray-500 font-bold">
+											{prettyTruncate(Object.keys(type)[0], 30) + ' : '}
+										</span>{' '}
+										<span className=" text-gray-200">
+											{prettyTruncate(Object.values(type)[0], 30)}
+										</span>{' '}
 										<span className="font-extralight text-gray-600 text-lg ml-1 group-hover:text-gray-500">
 											x
 										</span>

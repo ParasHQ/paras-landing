@@ -10,7 +10,7 @@ function getConfigTransak(env) {
 				widgetHeight: `600px`,
 				themeColor: `#1300BA`,
 				hostURL: typeof window !== 'undefined' ? window.location.origin : ``,
-				defaultCryptoCurrency: 'NEAR',
+				cryptoCurrencyCode: 'NEAR',
 				walletAddress: WalletHelper.currentUser ? WalletHelper.currentUser.accountId : '',
 			}
 		case 'production':
@@ -21,7 +21,7 @@ function getConfigTransak(env) {
 				widgetHeight: `600px`,
 				themeColor: `#1300BA`,
 				hostURL: typeof window !== 'undefined' ? window.location.origin : ``,
-				defaultCryptoCurrency: 'NEAR',
+				cryptoCurrencyCode: 'NEAR',
 				walletAddress: WalletHelper.currentUser ? WalletHelper.currentUser.accountId : '',
 			}
 		default:

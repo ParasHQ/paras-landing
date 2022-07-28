@@ -9,6 +9,7 @@ import { useIntl } from 'hooks/useIntl'
 import { trackTopBuyer, trackTopCollection, trackTopSeller } from 'lib/ga'
 import router from 'next/router'
 import useProfileData from 'hooks/useProfileData'
+import IconV from 'components/Icons/component/IconV'
 
 const TopCollection = ({ collection, idx }) => {
 	const [colDetail, setColDetail] = useState({})
@@ -185,22 +186,7 @@ export const HomeTopUserList = ({
 							<h1 className="text-white font-semibold text-3xl capitalize">
 								{topUserTitle(topUserType)}
 							</h1>
-							{showToggle && (
-								<svg
-									viewBox="0 0 11 7"
-									fill="whites"
-									width="18"
-									height="18"
-									xlmns="http://www.w3.org/2000/svg"
-								>
-									<path
-										fillRule="evenodd"
-										clipRule="evenodd"
-										d="M5.00146 6.41431L9.70857 1.7072C10.0991 1.31668 10.0991 0.683511 9.70857 0.292986C9.31805 -0.097538 8.68488 -0.097538 8.29436 0.292986L5.00146 3.58588L1.70857 0.292986C1.31805 -0.097538 0.684882 -0.097538 0.294358 0.292986C-0.0961662 0.68351 -0.0961662 1.31668 0.294358 1.7072L5.00146 6.41431Z"
-										fill="white"
-									></path>
-								</svg>
-							)}
+							{showToggle && <IconV size={18} />}
 							<p className="text-white hidden md:block">in 7 days</p>
 						</div>
 						{showTopModal && (

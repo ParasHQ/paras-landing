@@ -9,7 +9,7 @@ import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
-import { capitalize, parseImgUrl, prettyBalance, abbrNum } from 'utils/common'
+import { capitalize, parseImgUrl, prettyBalance, abbrNum, prettyTruncate } from 'utils/common'
 import TokenMoreModal from '../Modal/TokenMoreModal'
 import TokenShareModal from '../Modal/TokenShareModal'
 import TokenUpdatePriceModal from '../Modal/TokenUpdatePriceModal'
@@ -22,7 +22,7 @@ import ArtistVerified from '../Common/ArtistVerified'
 import ArtistBanned from '../Common/ArtistBanned'
 import { useIntl } from 'hooks/useIntl'
 import TabOffers from 'components/Tabs/TabOffers'
-import PlaceBidModal from 'components/Modal/PlaceBidModal'
+import PlaceOfferModal from 'components/Modal/PlaceOfferModal'
 import TabPublication from 'components/Tabs/TabPublication'
 import Media from 'components/Common/Media'
 import ReportModal from 'components/Modal/ReportModal'
@@ -95,16 +95,21 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	}, [router.query.tab])
 
 	useEffect(() => {
-		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('model')) {
+		if (token?.metadata?.animation_url && token.metadata?.mime_type?.includes('model')) {
 			get3DModel(token?.metadata?.animation_url)
 		}
-		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('audio')) {
+		if (token?.metadata?.animation_url && token.metadata?.mime_type?.includes('audio')) {
 			getAudio(token?.metadata?.animation_url)
 		}
-		if (token?.metadata?.animation_url && token.metadata.mime_type.includes('iframe')) {
+		if (token?.metadata?.animation_url && token.metadata?.mime_type?.includes('iframe')) {
 			getIframe()
 		}
 	}, [])
+
+	useEffect(() => {
+		setActiveTab('info')
+		setTokenDisplay('detail')
+	}, [router.query.tokenId])
 
 	const TabNotification = (tab) => {
 		switch (tab) {
@@ -441,6 +446,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										{fileType?.includes('iframe') && (
 											<iframe
 												src={token?.metadata.animation_url}
+												sandbox="allow-scripts"
 												className="object-contain w-full h-full"
 											/>
 										)}
@@ -541,13 +547,75 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 					<ArtistBanned creatorId={token.metadata.creator_id} />
 				</div>
 				<div className="h-1/2 lg:h-full flex flex-col w-full lg:w-2/5 lg:max-w-2xl bg-gray-700">
+					<div className="hidden justify-between md:p-4 md:pb-2 md:flex z-20">
+						<div className="overflow-x-hidden">
+							<div className="flex justify-between items-center">
+								<p className="text-gray-300 truncate">
+									NFT //{' '}
+									{token.contract_id === process.env.NFT_CONTRACT_ID
+										? `#${token.edition_id} of ${token.metadata.copies}`
+										: `#${token.token_id}`}
+								</p>
+							</div>
+
+							<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
+								{prettyTruncate(token.metadata.title, 28)}
+							</h1>
+							<div className="mt-1 text-white flex">
+								<p className="mr-1">{localeLn('by')}</p>
+								<ArtistVerified token={token} />
+							</div>
+						</div>
+
+						<div className="flex flex-col items-end">
+							<IconDots
+								color="#ffffff"
+								className="cursor-pointer mb-1"
+								onClick={() => setShowModal('more')}
+							/>
+							<div className="w-full flex flex-col items-center justify-center">
+								<div
+									className="cursor-pointer"
+									onClick={() => {
+										isLiked
+											? unlikeToken(token.contract_id, token.token_series_id, 'detail')
+											: likeToken(token.contract_id, token.token_series_id, 'detail')
+									}}
+								>
+									<IconLove
+										size={17}
+										color={isLiked ? '#c51104' : 'transparent'}
+										stroke={isLiked ? 'none' : 'white'}
+									/>
+								</div>
+								<p className="text-white text-center text-sm">{abbrNum(defaultLikes ?? 0, 1)}</p>
+							</div>
+							{token.is_staked && (
+								<Tooltip
+									id="text-staked"
+									show={true}
+									text={'The NFT is being staked by the owner'}
+									className="font-bold bg-gray-800 text-white"
+								>
+									<span
+										className="bg-white text-primary font-bold rounded-full px-3 py-1 text-sm"
+										style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
+									>
+										staked
+									</span>
+								</Tooltip>
+							)}
+						</div>
+					</div>
 					<Scrollbars
 						className="h-full"
 						universal={true}
-						renderView={(props) => <div {...props} id="activityListScroll" className="p-4" />}
+						renderView={(props) => (
+							<div {...props} id="TokenScroll" className="p-4 pt-4 md:pt-0 relative" />
+						)}
 					>
 						<div>
-							<div className="flex justify-between">
+							<div className="flex justify-between md:hidden">
 								<div className="overflow-x-hidden">
 									<div className="flex justify-between items-center">
 										<p className="text-gray-300 truncate">
@@ -559,7 +627,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 									</div>
 
 									<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
-										{token.metadata.title}
+										{prettyTruncate(token.metadata.title, 26)}
 									</h1>
 									<div className="mt-1 text-white flex">
 										<p className="mr-1">{localeLn('by')}</p>
@@ -609,7 +677,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 									)}
 								</div>
 							</div>
-							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
+							<div className="bg-gray-700 md:sticky flex md:top-0 z-30 overflow-x-scroll space-x-4 flex-grow overflow-scroll flex-nowrap disable-scrollbars md:-mb-4">
 								{tabDetail('info')}
 								{token.is_auction && !isAuctionEnds && tabDetail('auction')}
 								{tabDetail('owners')}
@@ -617,7 +685,6 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 								{tabDetail('history')}
 								{tabDetail('publication')}
 							</div>
-
 							{activeTab === 'info' && <TabInfo localToken={token} isNFT={true} />}
 							{activeTab === 'auction' && (
 								<TabAuction localToken={token} setAuctionEnds={() => setIsEndedTime(true)} />
@@ -865,7 +932,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 				onClose={onDismissModal}
 				setShowModal={setShowModal}
 			/>
-			<PlaceBidModal
+			<PlaceOfferModal
 				show={showModal === 'placeoffer'}
 				data={token}
 				onClose={onDismissModal}

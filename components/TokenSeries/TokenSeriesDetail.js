@@ -7,7 +7,7 @@ import { IconDots, IconLoader } from 'components/Icons'
 import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
-import { capitalize, parseImgUrl, abbrNum } from 'utils/common'
+import { capitalize, parseImgUrl, abbrNum, prettyTruncate } from 'utils/common'
 import TokenSeriesTransferBuyer from '../Modal/TokenSeriesTransferBuyer'
 import TokenSeriesUpdatePriceModal from '../Modal/TokenSeriesUpdatePriceModal'
 import TokenSeriesBuyModal from '../Modal/TokenSeriesBuyModal'
@@ -24,7 +24,7 @@ import ArtistBanned from '../Common/ArtistBanned'
 import Media from '../Common/Media'
 import { useIntl } from 'hooks/useIntl'
 import TabOffers from 'components/Tabs/TabOffers'
-import PlaceBidModal from 'components/Modal/PlaceBidModal'
+import PlaceOfferModal from 'components/Modal/PlaceOfferModal'
 import TabPublication from 'components/Tabs/TabPublication'
 import ReportModal from 'components/Modal/ReportModal'
 import Card from 'components/Card/Card'
@@ -40,6 +40,7 @@ import FileType from 'file-type/browser'
 import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 
 const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
+	const router = useRouter()
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
 	const [isLiked, setIsLiked] = useState(false)
@@ -62,6 +63,11 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	}, [])
 
 	useEffect(() => {
+		setActiveTab('info')
+		setTokenDisplay('detail')
+	}, [router.query.id])
+
+	useEffect(() => {
 		if (token?.total_likes) {
 			if (token.likes) {
 				setIsLiked(true)
@@ -79,8 +85,6 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 			getIframe()
 		}
 	}, [JSON.stringify(token)])
-
-	const router = useRouter()
 
 	const isShowButton =
 		token.contract_id === process.env.NFT_CONTRACT_ID ||
@@ -434,6 +438,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 										{fileType && fileType.includes('iframe') && (
 											<iframe
 												src={token?.metadata.animation_url}
+												sandbox="allow-scripts"
 												className="object-contain w-full h-5/6 md:h-full"
 											/>
 										)}
@@ -533,13 +538,57 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 					<ArtistBanned creatorId={token.metadata.creator_id} />
 				</div>
 				<div className="h-1/2 lg:h-full flex flex-col w-full lg:w-2/5 lg:max-w-2xl bg-gray-700">
+					<div className="justify-between md:p-4 md:pb-2 hidden md:flex">
+						<div>
+							<div className="flex justify-between items-center">
+								<p className="text-gray-300">
+									{localeLn('SERIES')} {'// '}
+									{token.metadata.copies ? `Edition of ${token.metadata.copies}` : `Open Edition`}
+								</p>
+							</div>
+
+							<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
+								{prettyTruncate(token.metadata.title, 28)}
+							</h1>
+							<div className="mt-1 text-white flex">
+								<p className="mr-1">by</p>
+								<ArtistVerified token={token} />
+							</div>
+						</div>
+						<div>
+							<IconDots
+								color="#ffffff"
+								className="cursor-pointer"
+								onClick={() => setShowModal('more')}
+							/>
+							<div className="w-full flex flex-col items-center justify-center">
+								<div
+									className="cursor-pointer"
+									onClick={() => {
+										isLiked
+											? unlikeToken(token.contract_id, token.token_series_id, 'detail')
+											: likeToken(token.contract_id, token.token_series_id, 'detail')
+									}}
+								>
+									<IconLove
+										size={17}
+										color={isLiked ? '#c51104' : 'transparent'}
+										stroke={isLiked ? 'none' : 'white'}
+									/>
+								</div>
+								<p className="text-white text-center text-sm">{abbrNum(defaultLikes ?? 0, 1)}</p>
+							</div>
+						</div>
+					</div>
 					<Scrollbars
 						className="h-full"
 						universal={true}
-						renderView={(props) => <div {...props} id="TokenScroll" className="p-4" />}
+						renderView={(props) => (
+							<div {...props} id="TokenScroll" className="p-4 pt-4 md:pt-0 relative" />
+						)}
 					>
 						<div>
-							<div className="flex justify-between">
+							<div className="justify-between py-2 flex md:hidden">
 								<div>
 									<div className="flex justify-between items-center">
 										<p className="text-gray-300">
@@ -551,7 +600,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 									</div>
 
 									<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
-										{token.metadata.title}
+										{prettyTruncate(token.metadata.title, 26)}
 									</h1>
 									<div className="mt-1 text-white flex">
 										<p className="mr-1">by</p>
@@ -585,7 +634,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 									</div>
 								</div>
 							</div>
-							<div className="flex mt-3 overflow-x-scroll space-x-4 flex-grow relative flex-nowrap disable-scrollbars md:-mb-4">
+							<div className="bg-gray-700 flex md:sticky md:top-0 overflow-x-scroll space-x-4 flex-grow z-30 flex-nowrap disable-scrollbars md:-mb-4">
 								{tabDetail('info')}
 								{tabDetail('owners')}
 								{tabDetail('offers')}
@@ -644,7 +693,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 				].filter((x) => x)}
 			/>
 			<TokenShareModal show={showModal === 'share'} onClose={onDismissModal} tokenData={token} />
-			<PlaceBidModal
+			<PlaceOfferModal
 				show={showModal === 'placeoffer'}
 				data={token}
 				onClose={onDismissModal}

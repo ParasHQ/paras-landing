@@ -2,6 +2,7 @@ import axios from 'axios'
 import Button from 'components/Common/Button'
 import FollowArtistModal from 'components/Modal/FollowArtistModal'
 import LoginModal from 'components/Modal/LoginModal'
+import { trackFollowButton, trackUnfollowButton } from 'lib/ga'
 import WalletHelper from 'lib/WalletHelper'
 import { useEffect, useState } from 'react'
 import useSWR from 'swr'
@@ -24,6 +25,9 @@ const Follow = ({ userProfile, currentUser }) => {
 
 	const { data, mutate } = useSWR(userProfile.accountId, fetchProfile, {
 		fallbackData: userProfile,
+		revalidateOnFocus: false,
+		revalidateIfStale: false,
+		revalidateOnReconnect: false,
 	})
 
 	useEffect(() => {
@@ -38,22 +42,33 @@ const Follow = ({ userProfile, currentUser }) => {
 
 		setIsLoading(true)
 
-		await axios.request({
-			url: `${process.env.V2_API_URL}${data.follows ? '/unfollow' : '/follow'}`,
-			method: 'PUT',
-			headers: {
-				authorization: await WalletHelper.authToken(),
-			},
-			params: {
-				account_id: currentUser,
-				following_account_id: userProfile.accountId,
-			},
-		})
+		try {
+			await axios.request({
+				url: `${process.env.V2_API_URL}${data.follows ? '/unfollow' : '/follow'}`,
+				method: 'PUT',
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+				params: {
+					account_id: currentUser,
+					following_account_id: userProfile.accountId,
+				},
+			})
+		} catch (error) {
+			null
+		}
 
-		mutate()
+		if (data.follows) {
+			trackUnfollowButton(data.accountId)
+		} else {
+			trackFollowButton(data.accountId)
+		}
 
-		setIsLoading(false)
-		setButtonHover(false)
+		setTimeout(() => {
+			mutate()
+			setIsLoading(false)
+			setButtonHover(false)
+		}, 500)
 	}
 
 	const handleFollowModal = (typeList) => {

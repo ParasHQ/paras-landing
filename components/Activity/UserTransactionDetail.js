@@ -1,33 +1,91 @@
 import Link from 'next/link'
 import Scrollbars from 'react-custom-scrollbars'
-
 import LinkToProfile from '../LinkToProfile'
-
 import { parseImgUrl } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import TopTransactionCard, { renderThumb } from './TopTransactionCard'
-import useProfileData from 'hooks/useProfileData'
+import Button from 'components/Common/Button'
+import axios from 'axios'
+import WalletHelper from 'lib/WalletHelper'
+import useProfileSWR from 'hooks/useProfileSWR'
+import useStore from 'lib/store'
+import { useNonInitialEffect } from 'hooks/useNonInitialEffect'
+import { useState } from 'react'
+import LoginModal from 'components/Modal/LoginModal'
 
 const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => {
-	const profile = useProfileData(data.account_id)
+	const currentUser = useStore((state) => state.currentUser)
+	const { profile, mutate } = useProfileSWR({
+		key: data.account_id,
+		params: { followed_by: currentUser },
+	})
 	const { localeLn } = useIntl()
+	const [isLoading, setIsLoading] = useState(false)
+	const [showLogin, setShowLogin] = useState(false)
+
+	useNonInitialEffect(() => {
+		if (currentUser) {
+			mutate()
+		}
+	}, [currentUser])
+
+	const onClickFollowUnfollow = async () => {
+		if (!currentUser) {
+			setShowLogin(true)
+			return
+		}
+
+		setIsLoading(true)
+		try {
+			await axios.request({
+				url: `${process.env.V2_API_URL}${profile.follows ? '/unfollow' : '/follow'}`,
+				method: 'PUT',
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+				params: {
+					account_id: currentUser,
+					following_account_id: profile.accountId,
+				},
+			})
+		} catch (error) {
+			null
+		}
+
+		setTimeout(() => {
+			mutate()
+			setIsLoading(false)
+		}, 300)
+	}
 
 	return (
 		<div key={idx} className="md:flex border-2 border-dashed border-gray-800 rounded-md my-4">
+			<LoginModal show={showLogin} onClose={() => setShowLogin(false)} />
 			<div className="flex items-center md:w-2/5 p-4">
 				<p className="text-base text-gray-100 opacity-50 mr-3 self-start">{idx + 1}</p>
 				<div className="flex self-start">
-					<Link href={`/${data.account_id}`}>
-						<div className="cursor-pointer w-20 h-20 rounded-full overflow-hidden bg-primary">
-							<img
-								src={parseImgUrl(profile?.imgUrl, null, {
-									width: `200`,
-								})}
-								className="object-cover"
-							/>
-						</div>
-					</Link>
+					<div className="flex flex-col items-center">
+						<Link href={`/${data.account_id}`}>
+							<div className="cursor-pointer w-12 h-12 md:w-20 md:h-20 rounded-full overflow-hidden bg-primary">
+								<img
+									src={parseImgUrl(profile?.imgUrl, null, {
+										width: `200`,
+									})}
+									className="object-cover"
+								/>
+							</div>
+						</Link>
+						<Button
+							size="sm"
+							isLoading={isLoading}
+							loadingStyle="h-4"
+							className={`mt-2 w-24 rounded-full ${profile?.follows ? 'bg-[#1B4FA7]' : ''}`}
+							onClick={onClickFollowUnfollow}
+						>
+							{profile?.follows ? 'Following' : 'Follow'}
+						</Button>
+					</div>
 					<div className="ml-4">
 						{data.account_id && (
 							<LinkToProfile
