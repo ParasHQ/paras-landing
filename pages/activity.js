@@ -16,12 +16,12 @@ import { useIntl } from 'hooks/useIntl'
 import TopCollectorsAllTime from 'components/Activity/TopCollectorsAllTime'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import ActivityListLoader from 'components/Activity/ActivityListLoader'
-import RecyclerScroll from 'components/RecyclerScroll'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
 import Modal from 'components/Modal'
 import CopyLink from 'components/Common/CopyLink'
 import { FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton } from 'react-share'
+import RecyclerScrollCommon from 'components/RecyclerScroll/RecyclerCommon'
 
 const HEADERS = [
 	{
@@ -223,7 +223,7 @@ const ActivityLog = ({ query }) => {
 			<div
 				key={`${data._id}-${index}`}
 				className={`my-3 md:mt-6 ${index === detailIndex ? `h-36` : `h-auto`}`}
-				style={{ width: `${parentRef.current?.clientWidth - 32}px` }}
+				style={{ width: `${parentRef.current?.clientWidth}px` }}
 			>
 				<ActivityDetail
 					activity={data}
@@ -393,7 +393,6 @@ const ActivityLog = ({ query }) => {
 						{activityType === 'activity' && (
 							<div className="relative w-full text-white">
 								<div
-									ref={parentRef}
 									className={`px-4 w-full mx-auto ${
 										activityType === 'top-users' && 'hidden'
 									} md:block`}
@@ -417,15 +416,18 @@ const ActivityLog = ({ query }) => {
 									{initialState && isLoading ? (
 										<ActivityListLoader />
 									) : (
-										<div className="w-full h-100vh mt-2">
-											<RecyclerScroll
+										<div ref={parentRef} className="relative block w-full h-70vh mt-2">
+											<RecyclerScrollCommon
 												fetchNext={_fetchDataWrapper}
 												items={activityList}
 												rowRender={rowActivity}
 												renderLoader={renderLoader}
 												hasMore={activityListHasMore}
-												windowScroll={true}
+												windowScroll={false}
 												extendedState={{ detailIndex: activityDetailIdx }}
+												nonDeterministicRendering={true}
+												initialState={initialState}
+												parentRef={parentRef}
 											/>
 										</div>
 									)}

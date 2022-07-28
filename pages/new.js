@@ -13,7 +13,6 @@ import { useToast } from 'hooks/useToast'
 import Footer from 'components/Footer'
 import { parseDate, parseImgUrl, prettyBalance, readFileAsUrl } from 'utils/common'
 import { encodeImageToBlurhash } from 'lib/blurhash'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import { GAS_FEE, MAX_FILE_SIZE, STORAGE_CREATE_SERIES_FEE } from 'config/constants'
 import Button from 'components/Common/Button'
 import { InputText, InputTextarea, InputTextAuto } from 'components/Common/form'
@@ -23,13 +22,14 @@ import { sentryCaptureException } from 'lib/sentry'
 import Scrollbars from 'react-custom-scrollbars'
 import getConfig from 'config/near'
 import Tooltip from 'components/Common/Tooltip'
-import { Icon3D, IconIframe, IconInfo, IconLoader, IconSpin, IconX } from 'components/Icons'
+import { Icon3D, IconIframe, IconInfo, IconLoader, IconX } from 'components/Icons'
 import WalletHelper from 'lib/WalletHelper'
 import AudioPlayer from 'components/Common/AudioPlayer'
 import { Canvas } from '@react-three/fiber'
 import { Model1 } from 'components/Model3D/ThreeDModel'
 import FileType from 'file-type/browser'
 import retry from 'async-retry'
+import RecyclerScrollCommon from 'components/RecyclerScroll/RecyclerCommon'
 
 const LIMIT = 16
 
@@ -71,12 +71,6 @@ const RoyaltyWatch = ({ control, append }) => {
 		</div>
 	)
 }
-
-const LoaderIcon = () => (
-	<div className="flex items-center justify-center">
-		<IconSpin />
-	</div>
-)
 
 const NewPage = () => {
 	const { localeLn } = useIntl()
@@ -144,6 +138,8 @@ const NewPage = () => {
 	const [iframeInput, setIframeInput] = useState('')
 	const [iframeUrl, setIframeUrl] = useState('')
 	const [showIframeFile, setShowIframeFile] = useState(false)
+	const parentRef = useRef()
+	const [initialState, setInitialState] = useState(true)
 
 	const watchRoyalties = watch(`royalties`)
 	const showTooltipTxFee = (txFee?.next_fee || 0) > (txFee?.current_fee || 0)
@@ -553,6 +549,7 @@ const NewPage = () => {
 			setHasMore(true)
 		}
 		setIsFetching(false)
+		setInitialState(false)
 	}
 
 	const formatCategoryId = (categoryId) => {
@@ -596,6 +593,35 @@ const NewPage = () => {
 				retries: 20,
 				factor: 2,
 			}
+		)
+	}
+
+	const rowRender = (type, data, index, state) => {
+		const { choosenCollection } = state
+		return (
+			<div
+				key={`${data.collection_id}-${index}`}
+				onClick={() => setChoosenCollection(data)}
+				style={{ width: `${parentRef.current?.clientWidth}px` }}
+				className={`bg-gray-800 mt-3 flex items-center rounded-md overflow-hidden cursor-pointer border-2 shadow-xl drop-shadow-xl  ${
+					data.collection_id === choosenCollection.collection_id
+						? 'border-white'
+						: `border-gray-800`
+				}`}
+			>
+				<div className="w-10 h-10 bg-primary flex-shrink-0">
+					{data.media && (
+						<img
+							src={parseImgUrl(data.media, null, {
+								width: `600`,
+								useOriginal: process.env.APP_ENV === 'production' ? false : true,
+							})}
+							className="w-10 h-10"
+						/>
+					)}
+				</div>
+				<div className="ml-3 text-sm truncate">{data.collection}</div>
+			</div>
 		)
 	}
 
@@ -1106,51 +1132,27 @@ const NewPage = () => {
 							<div className="h-60">
 								<div className="text-sm mt-2">Choose Collection</div>
 								<div
-									className="max-h-36 lg:max-h-72 overflow-y-scroll new-card-scroll"
-									id="collection::user"
+									onClick={() => setShowCreateColl(!showCreateColl)}
+									className="bg-gray-800 mb-[0.1rem] md:my-1 flex items-center rounded-md overflow-hidden cursor-pointer border-2 border-gray-800"
 								>
-									<InfiniteScroll
-										dataLength={collectionList.length}
-										next={fetchCollectionUser}
+									<div className="h-10 w-full flex items-center justify-center flex-shrink-0 text-sm text-center font-medium">
+										+ {localeLn('CreateNewCollection')}
+									</div>
+								</div>
+								<div className="h-2/5 lg:h-60" id="collection::user" ref={parentRef}>
+									<RecyclerScrollCommon
+										fetchNext={fetchCollectionUser}
+										items={collectionList}
+										rowRender={rowRender}
 										hasMore={hasMore}
-										scrollableTarget="collection::user"
-									>
-										<div
-											onClick={() => setShowCreateColl(!showCreateColl)}
-											className="bg-gray-800 mt-2 flex items-center rounded-md overflow-hidden cursor-pointer border-2 border-gray-800"
-										>
-											<div className="h-10 w-full flex items-center justify-center flex-shrink-0 text-sm text-center font-medium">
-												+ {localeLn('CreateNewCollection')}
-											</div>
-										</div>
-										{collectionList.map((item) => (
-											<div
-												key={item.collection_id}
-												onClick={() => setChoosenCollection(item)}
-												className={`bg-gray-800 mt-3 flex items-center rounded-md overflow-hidden cursor-pointer border-2 shadow-xl drop-shadow-xl  ${
-													item.collection_id === choosenCollection.collection_id
-														? 'border-white'
-														: `border-gray-800`
-												}`}
-											>
-												<div className="w-10 h-10 bg-primary flex-shrink-0">
-													{item.media && (
-														<img
-															src={parseImgUrl(item.media, null, {
-																width: `600`,
-																useOriginal: process.env.APP_ENV === 'production' ? false : true,
-															})}
-															className="w-10 h-10"
-														/>
-													)}
-												</div>
-												<div className="ml-3 text-sm truncate">{item.collection}</div>
-											</div>
-										))}
-									</InfiniteScroll>
+										initialState={initialState}
+										extendedState={{ choosenCollection: choosenCollection }}
+										nonDeterministicRendering={true}
+										parentRef={parentRef}
+									/>
 								</div>
 								{category_id && category_name && (
-									<div className="text-xs lg:text-sm mt-3 mb-1 text-opacity-30 flex justify-between items-center">
+									<div className="h-1/6 text-xs lg:text-sm md:mt-3 my-1 text-opacity-30 flex justify-between items-center">
 										<p className="font-semibold">Choosen category:</p>
 										<div className="p-1 lg:p-2 bg-gray-800 bg-opacity-80 rounded-md font-thin border border-white">
 											{category_name}
