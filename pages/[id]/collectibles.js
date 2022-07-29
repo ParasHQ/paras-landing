@@ -7,7 +7,12 @@ import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import Profile from 'components/Profile/Profile'
 import FilterMarket from 'components/Filter/FilterMarket'
-import { parseImgUrl, parseSortTokenQuery, prevPagePositionY, setDataLocalStorage } from 'utils/common'
+import {
+	parseImgUrl,
+	parseSortTokenQuery,
+	prevPagePositionY,
+	setDataLocalStorage,
+} from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
