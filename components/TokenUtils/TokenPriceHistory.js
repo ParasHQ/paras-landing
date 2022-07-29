@@ -135,8 +135,8 @@ const TokenPriceHistory = ({ localToken, className }) => {
 			</div>
 			{isDropDown && (
 				<>
-					<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center py-20">
-						<div className="flex gap-4 -mt-16 md:px-2">
+					<div className="text-white bg-cyan-blue-1 rounded-b-xl px-6 text-center py-32">
+						<div className="flex gap-4 -mt-24 md:px-2">
 							<InputDropdown
 								data={dataHistory}
 								defaultValue="all-time"
@@ -245,7 +245,7 @@ const TokenPriceTracker = ({ data }) => {
 							/>
 							<Tooltip content={<CustomTooltip />} />
 							<Area
-								type="monotone"
+								type="linear"
 								stackId="1"
 								dataKey="price.$numberDecimal"
 								dot={false}

@@ -266,10 +266,10 @@ const TokenSingle = ({
 					scroll: false,
 				}
 			)
-			return
+		} else {
+			saveScrollPosition(tokens)
+			router.push(`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`)
 		}
-		saveScrollPosition(tokens)
-		router.push(`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`)
 	}
 
 	const onCloseModal = () => {
@@ -548,41 +548,10 @@ const TokenSingle = ({
 										)}
 									</div>
 								) : (
-								<div className="line-through text-red-600">
-									<span className="text-gray-100">{localeLn('SALE')}</span>
-								</div>
-							)}
-						</div>
-					</div>
-					<div
-						className={`${
-							displayType === 'large' ? `block` : `flex gap-1`
-						} text-right absolute top-0 right-0`}
-					>
-						{showRarityScore && !!token.metadata.score && (
-							<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
-								Rarity Score {token.metadata?.score?.toFixed(2)}
-							</p>
-						)}
-						{showLike && (
-							<div className="inline-flex items-center">
-								<div
-									className="cursor-pointer"
-									onClick={() => {
-										isLiked
-											? unlikeToken(token.contract_id, token.token_series_id, 'list')
-											: likeToken(token.contract_id, token.token_series_id, 'list')
-									}}
-								>
-									<IconLove
-										size={displayType === 'large' ? 18 : 16}
-										color={isLiked ? '#c51104' : 'transparent'}
-										stroke={isLiked ? 'none' : 'white'}
-									/>
-								</div>
-								<p className={`text-white ml-2 ${displayType === 'large' ? 'text-sm' : 'text-xs'}`}>
-									{abbrNum(defaultLikes || 0, 1)}
-								</p>
+									<div className="line-through text-red-600">
+										<span className="text-gray-100">{localeLn('SALE')}</span>
+									</div>
+								)}
 							</div>
 						</div>
 						<div
@@ -590,7 +559,41 @@ const TokenSingle = ({
 								displayType === 'large' ? `block` : `flex gap-1`
 							} text-right absolute top-0 right-0`}
 						>
-							{showRank && !!token.metadata.score && (
+							{showRarityScore && !!token.metadata.score && (
+								<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
+									Rarity Score {token.metadata?.score?.toFixed(2)}
+								</p>
+							)}
+							{showLike && (
+								<div className="inline-flex items-center">
+									<div
+										className="cursor-pointer"
+										onClick={() => {
+											isLiked
+												? unlikeToken(token.contract_id, token.token_series_id, 'list')
+												: likeToken(token.contract_id, token.token_series_id, 'list')
+										}}
+									>
+										<IconLove
+											size={displayType === 'large' ? 18 : 16}
+											color={isLiked ? '#c51104' : 'transparent'}
+											stroke={isLiked ? 'none' : 'white'}
+										/>
+									</div>
+									<p
+										className={`text-white ml-2 ${displayType === 'large' ? 'text-sm' : 'text-xs'}`}
+									>
+										{abbrNum(defaultLikes || 0, 1)}
+									</p>
+								</div>
+							)}
+						</div>
+						<div
+							className={`${
+								displayType === 'large' ? `block` : `flex gap-1`
+							} text-right absolute top-0 right-0`}
+						>
+							{showRarityScore && !!token.metadata.score && (
 								<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
 									Rarity Score {token.metadata?.score?.toFixed(2)}
 								</p>

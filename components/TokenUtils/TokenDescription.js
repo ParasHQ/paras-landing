@@ -6,7 +6,7 @@ import { trackCloseDescription, trackOpenDescription } from 'lib/ga'
 
 const TokenDescription = ({ localToken, className }) => {
 	const { localeLn } = useIntl()
-	const [isDropDown, setIsDropDown] = useState(true)
+	const [isDropDown, setIsDropDown] = useState(false)
 
 	const onClickDropdown = () => {
 		setIsDropDown(!isDropDown)

@@ -348,7 +348,7 @@ const TokenOffers = ({ localToken, className }) => {
 	const [isFetching, setIsFetching] = useState(false)
 	const [isOwned, setIsOwned] = useState(false)
 	const [showModal, setShowModal] = useState(null)
-	const [isDropDown, setIsDropDown] = useState(true)
+	const [isDropDown, setIsDropDown] = useState(false)
 	const [activeOffer, setActiveOffer] = useState(null)
 	const [storageFee, setStorageFee] = useState(STORAGE_APPROVE_FEE)
 	const [isAcceptingOffer, setIsAcceptingOffer] = useState(false)

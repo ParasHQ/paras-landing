@@ -72,7 +72,7 @@ const TokenBidHistory = ({ localToken: initialToken, className }) => {
 							.map((x) => (
 								<div key={x._id}>
 									{x.bidder && (
-										<div className="bg-cyan-blue-2 p-3 rounded-md shadow-md">
+										<div className="bg-cyan-blue-2 p-3 rounded-md shadow-md mb-2">
 											<p>
 												<LinkToProfile accountId={x.bidder} />
 												<span>

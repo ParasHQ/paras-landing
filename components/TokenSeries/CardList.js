@@ -254,12 +254,12 @@ const TokenSeriesSingle = ({
 					scroll: false,
 				}
 			)
-			return
+		} else {
+			saveScrollPosition(tokens)
+			router.push(
+				`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`
+			)
 		}
-		saveScrollPosition(tokens)
-		router.push(
-			`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`
-		)
 	}
 
 	const onCloseModal = () => {
