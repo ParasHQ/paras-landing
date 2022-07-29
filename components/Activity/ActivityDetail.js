@@ -130,6 +130,7 @@ const ActivityDetail = ({ activity, index, isLoading }) => {
 	const router = useRouter()
 	const store = useStore()
 	const currentUser = useStore((state) => state.currentUser)
+	const [currentVariant, setVariant] = useState(0)
 
 	const { token: localToken, mutate } = useTokenOrTokenSeries({
 		key: `${activity.contract_id}::${
@@ -139,6 +140,11 @@ const ActivityDetail = ({ activity, index, isLoading }) => {
 			lookup_likes: true,
 			liked_by: currentUser,
 		},
+	})
+
+	useEffect(() => {
+		const variant = localStorage.getItem('variant') || 0
+		setVariant(variant)
 	})
 
 	useNonInitialEffect(() => {
@@ -404,54 +410,7 @@ const ActivityDetail = ({ activity, index, isLoading }) => {
 										}`}
 										onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
 									>
-										<Link
-											href={{
-												pathname: router.pathname,
-												query: {
-													...router.query,
-													...(activity.token_id
-														? { tokenId: localToken?.token_id }
-														: { tokenSeriesId: localToken?.token_series_id }),
-													contractId: localToken?.contract_id,
-												},
-											}}
-											as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
-												activity.token_id ? `/${localToken?.token_id}` : ''
-											}`}
-											scroll={false}
-											shallow
-										>
-											<a onClick={(e) => isTradeActivity && e.preventDefault()}>
-												<Media
-													className="rounded-lg overflow-hidden"
-													url={parseImgUrl(localToken?.metadata.media, null, {
-														width: `300`,
-														useOriginal: process.env.APP_ENV === 'production' ? false : true,
-														isMediaCdn: localToken?.isMediaCdn,
-													})}
-													videoControls={false}
-													videoLoop={true}
-													videoMuted={true}
-													autoPlay={false}
-													playVideoButton={false}
-												/>
-											</a>
-										</Link>
-									</div>
-
-									{isTradeActivity && (
-										<div
-											className={`${
-												isTradeActivity
-													? `absolute w-14 cursor-pointer ${
-															!isFlipped
-																? `transition-all ${topCardPositionStyle}`
-																: `transition-all ${bottomCardPositionStyle}`
-													  }`
-													: `w-16 h-16 mx-auto`
-											}`}
-											onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
-										>
+										{currentVariant == 0 ? (
 											<Link
 												href={{
 													pathname: router.pathname,
@@ -471,11 +430,11 @@ const ActivityDetail = ({ activity, index, isLoading }) => {
 											>
 												<a onClick={(e) => isTradeActivity && e.preventDefault()}>
 													<Media
-														className="rounded-lg overflow-hidden object-cover"
-														url={parseImgUrl(localTradedToken?.metadata.media, null, {
+														className="rounded-lg overflow-hidden"
+														url={parseImgUrl(localToken?.metadata.media, null, {
 															width: `300`,
 															useOriginal: process.env.APP_ENV === 'production' ? false : true,
-															isMediaCdn: localTradedToken?.isMediaCdn,
+															isMediaCdn: localToken?.isMediaCdn,
 														})}
 														videoControls={false}
 														videoLoop={true}
@@ -485,6 +444,101 @@ const ActivityDetail = ({ activity, index, isLoading }) => {
 													/>
 												</a>
 											</Link>
+										) : (
+											<Link
+												href={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+													activity.token_id ? `/${localToken?.token_id}` : ''
+												}`}
+											>
+												<a onClick={(e) => isTradeActivity && e.preventDefault()}>
+													<Media
+														className="rounded-lg overflow-hidden"
+														url={parseImgUrl(localToken?.metadata.media, null, {
+															width: `300`,
+															useOriginal: process.env.APP_ENV === 'production' ? false : true,
+															isMediaCdn: localToken?.isMediaCdn,
+														})}
+														videoControls={false}
+														videoLoop={true}
+														videoMuted={true}
+														autoPlay={false}
+														playVideoButton={false}
+													/>
+												</a>
+											</Link>
+										)}
+									</div>
+
+									{isTradeActivity && (
+										<div
+											className={`${
+												isTradeActivity
+													? `absolute w-14 cursor-pointer ${
+															!isFlipped
+																? `transition-all ${topCardPositionStyle}`
+																: `transition-all ${bottomCardPositionStyle}`
+													  }`
+													: `w-16 h-16 mx-auto`
+											}`}
+											onClick={() => isTradeActivity && setIsFlipped(!isFlipped)}
+										>
+											{currentVariant == 0 ? (
+												<Link
+													href={{
+														pathname: router.pathname,
+														query: {
+															...router.query,
+															...(activity.token_id
+																? { tokenId: localToken?.token_id }
+																: { tokenSeriesId: localToken?.token_series_id }),
+															contractId: localToken?.contract_id,
+														},
+													}}
+													as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+														activity.token_id ? `/${localToken?.token_id}` : ''
+													}`}
+													scroll={false}
+													shallow
+												>
+													<a onClick={(e) => isTradeActivity && e.preventDefault()}>
+														<Media
+															className="rounded-lg overflow-hidden object-cover"
+															url={parseImgUrl(localTradedToken?.metadata.media, null, {
+																width: `300`,
+																useOriginal: process.env.APP_ENV === 'production' ? false : true,
+																isMediaCdn: localTradedToken?.isMediaCdn,
+															})}
+															videoControls={false}
+															videoLoop={true}
+															videoMuted={true}
+															autoPlay={false}
+															playVideoButton={false}
+														/>
+													</a>
+												</Link>
+											) : (
+												<Link
+													href={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+														activity.token_id ? `/${localToken?.token_id}` : ''
+													}`}
+												>
+													<a onClick={(e) => isTradeActivity && e.preventDefault()}>
+														<Media
+															className="rounded-lg overflow-hidden object-cover"
+															url={parseImgUrl(localTradedToken?.metadata.media, null, {
+																width: `300`,
+																useOriginal: process.env.APP_ENV === 'production' ? false : true,
+																isMediaCdn: localTradedToken?.isMediaCdn,
+															})}
+															videoControls={false}
+															videoLoop={true}
+															videoMuted={true}
+															autoPlay={false}
+															playVideoButton={false}
+														/>
+													</a>
+												</Link>
+											)}
 										</div>
 									)}
 								</div>
@@ -506,27 +560,39 @@ const ActivityDetail = ({ activity, index, isLoading }) => {
 											</p>
 										</a>
 									</Link>
-									<Link
-										href={{
-											pathname: router.pathname,
-											query: {
-												...router.query,
-												...(activity.token_id
-													? { tokenId: localToken?.token_id }
-													: { tokenSeriesId: localToken?.token_series_id }),
-												contractId: localToken?.contract_id,
-											},
-										}}
-										as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
-											activity.token_id ? `/${localToken?.token_id}` : ''
-										}`}
-										scroll={false}
-										shallow
-									>
-										<a className="font-semibold z-20 text-sm md:text-md hover:text-gray-300">
-											{prettyTruncate(localToken?.metadata.title, 25)}
-										</a>
-									</Link>
+									{currentVariant == 0 ? (
+										<Link
+											href={{
+												pathname: router.pathname,
+												query: {
+													...router.query,
+													...(activity.token_id
+														? { tokenId: localToken?.token_id }
+														: { tokenSeriesId: localToken?.token_series_id }),
+													contractId: localToken?.contract_id,
+												},
+											}}
+											as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+												activity.token_id ? `/${localToken?.token_id}` : ''
+											}`}
+											scroll={false}
+											shallow
+										>
+											<a className="font-semibold z-20 text-sm md:text-md hover:text-gray-300">
+												{prettyTruncate(localToken?.metadata.title, 25)}
+											</a>
+										</Link>
+									) : (
+										<Link
+											href={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+												activity.token_id ? `/${localToken?.token_id}` : ''
+											}`}
+										>
+											<a className="font-semibold z-20 text-sm md:text-md hover:text-gray-300">
+												{prettyTruncate(localToken?.metadata.title, 25)}
+											</a>
+										</Link>
+									)}
 									<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
 										<p className="w-min md:hidden font-semibold truncate z-20">
 											{activity.msg.params.price !== null

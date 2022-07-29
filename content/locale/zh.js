@@ -314,6 +314,8 @@ const tab = {
 	Owner: '主人',
 	Copies: '份',
 	NoOwnersBecome: 'No owners, become the first one!',
+	NoTokenDescription: '没有说明',
+	NoTokenAttributes: '没有属性',
 	Burned: '销毁',
 }
 

@@ -323,6 +323,8 @@ const tab = {
 	Owner: 'Owner',
 	Copies: 'Copies',
 	NoOwnersBecome: 'No owners, become the first one!',
+	NoTokenDescription: 'No Description',
+	NoTokenAttributes: 'No Attributes',
 	Burned: 'Burned',
 	StakedTo: 'staked to',
 }

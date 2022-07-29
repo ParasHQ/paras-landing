@@ -7,7 +7,9 @@ import Footer from 'components/Footer'
 import { parseImgUrl } from 'utils/common'
 import useTokenSeries from 'hooks/useTokenSeries'
 import useStore from 'lib/store'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import TokenSeriesDetailNew from 'components/TokenSeries/TokenSeriesDetailNew'
+import { EXPERIMENT_ID, GA_TRACKING_ID } from 'lib/gtag'
 
 const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.creator_id || token.contract_id
@@ -15,6 +17,7 @@ const getCreatorId = (token) => {
 
 const TokenSeriesPage = ({ errorCode, initial }) => {
 	const currentUser = useStore((state) => state.currentUser)
+	const [currentVariant, setVariant] = useState(0)
 	const { token, mutate } = useTokenSeries({
 		key: `${initial?.contract_id}::${initial?.token_series_id}`,
 		initialData: initial,
@@ -27,7 +30,17 @@ const TokenSeriesPage = ({ errorCode, initial }) => {
 	const asyncMutate = async () => {
 		await mutate()
 	}
-
+	useEffect(() => {
+		const variant = localStorage.getItem('variant') || 0
+		setVariant(variant)
+		if (window && window.gtag) {
+			window.gtag('event', 'experiment_impression', {
+				experiment_id: EXPERIMENT_ID,
+				variant_id: EXPERIMENT_ID + '.' + variant,
+				send_to: GA_TRACKING_ID,
+			})
+		}
+	})
 	useEffect(() => {
 		if (currentUser) {
 			asyncMutate()
@@ -91,7 +104,11 @@ const TokenSeriesPage = ({ errorCode, initial }) => {
 			</Head>
 			<Nav />
 			<div className="relative max-w-6xl m-auto pt-16 px-4">
-				<TokenSeriesDetail token={token} />
+				{currentVariant == 0 ? (
+					<TokenSeriesDetail token={token} />
+				) : (
+					<TokenSeriesDetailNew token={token} />
+				)}
 			</div>
 			<Footer />
 		</div>

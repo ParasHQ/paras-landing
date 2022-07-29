@@ -6,7 +6,7 @@ import Scrollbars from 'react-custom-scrollbars'
 const TokenRoyaltyModal = ({ royalty, show, onClose }) => {
 	return (
 		<Modal isShow={show} closeOnBgClick={true} closeOnEscape={true} close={onClose}>
-			<div className="max-w-sm py-4 w-full bg-gray-800 m-auto rounded-md relative">
+			<div className="max-w-sm py-4 w-full bg-cyan-blue-1 m-auto rounded-md relative">
 				<div className="absolute right-0 top-0 pr-4 pt-4">
 					<div className="cursor-pointer" onClick={onClose}>
 						<IconX />
