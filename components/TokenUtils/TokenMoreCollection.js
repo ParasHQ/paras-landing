@@ -94,6 +94,18 @@ const TokenMoreCollection = ({ localToken, className }) => {
 					) : (
 						<CardTopRarityListLoader length={4} />
 					)}
+					<div className="text-center my-4">
+						<Button
+							onClick={() => {
+								sessionStorage.clear()
+								router.push(
+									`/collection/${localToken.metadata.collection_id || localToken.contract_id}`
+								)
+							}}
+						>
+							View Collection
+						</Button>
+					</div>
 				</div>
 			)}
 		</div>
