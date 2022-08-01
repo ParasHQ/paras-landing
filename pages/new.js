@@ -29,8 +29,8 @@ import { Canvas } from '@react-three/fiber'
 import { Model1 } from 'components/Model3D/ThreeDModel'
 import FileType from 'file-type/browser'
 import retry from 'async-retry'
-import RecyclerScrollCommon from 'components/RecyclerScroll/RecyclerCommon'
 import IconV from 'components/Icons/component/IconV'
+import FilterAddCollection from 'components/Filter/FilterAddCollection'
 
 const LIMIT = 16
 
@@ -139,8 +139,6 @@ const NewPage = () => {
 	const [iframeInput, setIframeInput] = useState('')
 	const [iframeUrl, setIframeUrl] = useState('')
 	const [showIframeFile, setShowIframeFile] = useState(false)
-	const parentRef = useRef()
-	const [initialState, setInitialState] = useState(true)
 
 	const watchRoyalties = watch(`royalties`)
 	const showTooltipTxFee = (txFee?.next_fee || 0) > (txFee?.current_fee || 0)
@@ -550,7 +548,6 @@ const NewPage = () => {
 			setHasMore(true)
 		}
 		setIsFetching(false)
-		setInitialState(false)
 	}
 
 	const formatCategoryId = (categoryId) => {
@@ -594,35 +591,6 @@ const NewPage = () => {
 				retries: 20,
 				factor: 2,
 			}
-		)
-	}
-
-	const rowRender = (type, data, index, state) => {
-		const { choosenCollection } = state
-		return (
-			<div
-				key={`${data.collection_id}-${index}`}
-				onClick={() => setChoosenCollection(data)}
-				style={{ width: `${parentRef.current?.clientWidth}px` }}
-				className={`bg-gray-800 mt-3 flex items-center rounded-md overflow-hidden cursor-pointer border-2 shadow-xl drop-shadow-xl  ${
-					data.collection_id === choosenCollection.collection_id
-						? 'border-white'
-						: `border-gray-800`
-				}`}
-			>
-				<div className="w-10 h-10 bg-primary flex-shrink-0">
-					{data.media && (
-						<img
-							src={parseImgUrl(data.media, null, {
-								width: `600`,
-								useOriginal: process.env.APP_ENV === 'production' ? false : true,
-							})}
-							className="w-10 h-10"
-						/>
-					)}
-				</div>
-				<div className="ml-3 text-sm truncate">{data.collection}</div>
-			</div>
 		)
 	}
 
@@ -1111,7 +1079,7 @@ const NewPage = () => {
 							</div>
 						)}
 					</div>
-					<div className="w-full lg:w-1/3 bg-gray-700 p-4 relative">
+					<div className="w-full -mt-20 pb-80 md:pb-0 md:mt-0 lg:w-1/3 bg-gray-700 p-4 relative">
 						{router.query.categoryId && (
 							<div
 								className="w-full bg-primary px-4 py-1 text-center -m-4 mb-4 shadow-md"
@@ -1138,33 +1106,29 @@ const NewPage = () => {
 								<div className="text-sm mt-2">Choose Collection</div>
 								<div
 									onClick={() => setShowCreateColl(!showCreateColl)}
-									className="bg-gray-800 mb-[0.1rem] md:my-1 flex items-center rounded-md overflow-hidden cursor-pointer border-2 border-gray-800"
+									className="bg-gray-800 mt-2 flex items-center rounded-md overflow-hidden cursor-pointer border-2 border-gray-800"
 								>
 									<div className="h-10 w-full flex items-center justify-center flex-shrink-0 text-sm text-center font-medium">
 										+ {localeLn('CreateNewCollection')}
 									</div>
 								</div>
-								<div className="h-2/5 lg:h-60" id="collection::user" ref={parentRef}>
-									<RecyclerScrollCommon
-										fetchNext={fetchCollectionUser}
-										items={collectionList}
-										rowRender={rowRender}
-										hasMore={hasMore}
-										initialState={initialState}
-										extendedState={{ choosenCollection: choosenCollection }}
-										nonDeterministicRendering={true}
-										parentRef={parentRef}
-									/>
-								</div>
+								<FilterAddCollection
+									collections={collectionList}
+									fetchCollectionUser={fetchCollectionUser}
+									hasMore={hasMore}
+									choosenCollection={choosenCollection}
+									setChoosenCollection={(e) => setChoosenCollection(e)}
+									currentUser={store.currentUser}
+								/>
 								{category_id && category_name && (
-									<div className="h-1/6 text-xs lg:text-sm md:mt-3 my-1 text-opacity-30 flex justify-between items-center">
+									<div className="text-xs lg:text-sm mt-3 mb-1 text-opacity-30 flex justify-between items-center">
 										<p className="font-semibold">Choosen category:</p>
 										<div className="p-1 lg:p-2 bg-gray-800 bg-opacity-80 rounded-md font-thin border border-white">
 											{category_name}
 										</div>
 									</div>
 								)}
-								<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
+								<div className="flex justify-between px-4 pb-2 absolute bottom-0 right-0 left-0">
 									<button disabled={step === 0} onClick={_handleBack}>
 										{localeLn('Back')}
 									</button>

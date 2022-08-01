@@ -18,7 +18,7 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 	const [showTooltip, setShowTooltip] = useState(false)
 	const [isEndedUpcoming, setIsEndedUpcoming] = useState(false)
 	const randomID = 'launchpad-stats'
-	const whitelistProject = ['62d818706e2cdf40c37fbcf7']
+	const whitelistTag = 'paras'
 	const mintDuration = getMintDuration(
 		project?.mint_details[0].started_at,
 		project?.mint_details[0].ended_at
@@ -62,7 +62,7 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 	) : (
 		<>
 			{showTooltip && <ReactTooltip id={randomID} place="top" type="dark" />}
-			{!whitelistProject.includes(project._id) && (
+			{!project.tags.map((tag) => tag.toLowerCase()).includes(whitelistTag) && (
 				<div className="max-w-3xl md:mx-auto flex justify-between items-center gap-2 border-2 border-orange-300 rounded-md text-white text-justify md:text-left mb-10 p-2 pl-4 mx-4">
 					<IconWarning />
 					<p>
