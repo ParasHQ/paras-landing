@@ -141,7 +141,7 @@ const CollectionItem = ({ collections, choosenCollection, setChoosenCollection }
 						onClick={() => setChoosenCollection(value)}
 						className={`bg-gray-800 ${idx !== 0 && 'mt-3'} ${
 							idx === collections.length - 1 && 'mb-3'
-						} flex items-center rounded-md overflow-hidden cursor-pointer border-2 shadow-xl drop-shadow-xl  ${
+						} flex items-center rounded-md overflow-hidden cursor-pointer border-2 ${
 							value.collection_id === choosenCollection.collection_id
 								? 'border-white'
 								: `border-gray-800`
