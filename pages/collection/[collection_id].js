@@ -715,7 +715,13 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 					)}
 				</div>
 				<div className="mb-4 md:mb-10 sm:my-2 flex flex-wrap items-center justify-center px-4">
-					<CollectionStats stats={stats} />
+					{stats && stats.collection_id ? (
+						<CollectionStats stats={stats} />
+					) : (
+						<div>
+							<p className="m-auto text-2xl text-gray-600 font-semibold text-center">{'---'}</p>
+						</div>
+					)}
 				</div>
 				<div className="flex items-center justify-center relative mb-6">
 					<div className="flex justify-center mt-4 relative z-10">
