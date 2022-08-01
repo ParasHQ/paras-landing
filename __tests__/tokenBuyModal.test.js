@@ -1,11 +1,11 @@
 import '@testing-library/jest-dom'
 import { render, screen } from '@testing-library/react'
-import { IconArrow } from 'components/Icons'
+import TokenBuyModal from 'components/Modal/TokenBuyModal'
 
 describe('Token Buy Modal Testing', () => {
 	it('Buy Button', () => {
 		//test render component
-		render(<IconArrow />)
+		render(<TokenBuyModal />)
 		screen.debug()
 	})
 })

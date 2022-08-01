@@ -12,7 +12,7 @@
 		"format": "prettier --write .",
 		"prettier-check": "prettier --check .",
 		"prepare": "husky install",
-		"test": "jest --watch"
+		"test": "jest --watch --transformIgnorePatterns \"node_modules/(?!@toolz/allow)/\" --env=jsdom"
 	},
 	"dependencies": {
 		"@draft-js-plugins/anchor": "^4.1.1",
