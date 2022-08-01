@@ -347,7 +347,7 @@ const Nav = () => {
 						</div>
 						<div className="relative px-3 text-gray-100 hidden md:block text-sm">
 							<Link href="/publication">
-								<a>{localeLn('Publication')}</a>
+								<a>{'Publikasi'}</a>
 							</Link>
 							{router.pathname.includes('/publication') && navActive()}
 						</div>
