@@ -92,7 +92,7 @@ const ProjectPage = ({ project }) => {
 				setRemindMe(pref === 'true')
 			}
 		}
-	})
+	}, [currentUser])
 
 	return (
 		<div className="min-h-screen bg-black">
