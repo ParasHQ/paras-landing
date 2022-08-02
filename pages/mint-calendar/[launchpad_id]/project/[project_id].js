@@ -78,7 +78,6 @@ const ProjectPage = ({ project }) => {
 	}
 
 	useEffect(() => {
-		console.log(currentUser)
 		if (!currentUser) {
 			setShowRemindMe(false)
 		} else {
