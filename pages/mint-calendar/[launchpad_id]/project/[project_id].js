@@ -81,6 +81,7 @@ const ProjectPage = ({ project }) => {
 		if (!currentUser) {
 			setShowRemindMe(false)
 		} else {
+			setShowRemindMe(true)
 			const pref =
 				window.localStorage.getItem(`${router.query.launchpad_id}:${router.query.project_id}`) ||
 				null
