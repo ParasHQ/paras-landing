@@ -451,6 +451,10 @@ input.clear {
 	transform: scale(-1, 1);
 }
 
+.hide-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
 .pixelated {
 	image-rendering: -moz-crisp-edges;
 	image-rendering: -webkit-crisp-edges;
