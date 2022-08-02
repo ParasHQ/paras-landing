@@ -22,12 +22,10 @@ import LaunchpadRemindModal from 'components/Modal/LaunchpadRemindModal'
 
 const ProjectPage = ({ project }) => {
 	const currentUser = useStore((state) => state.currentUser)
-	const currentProfile = useStore((state) => state.userProfile)
-	const currentEmail = currentProfile.email || ''
+	const isEmailVerified = useStore((state) => !state.showEmailWarning)
 	const [tabActive, setTabActive] = useState('story')
 	const [showRemindMe, setShowRemindMe] = useState(true)
 	const [showSettings, setShowSettings] = useState(false)
-	const [showFillEmail, setShowFillEmail] = useState(false)
 	const [checkEmailShowed, setCheckEmailShowed] = useState(false)
 	const [remindMe, setRemindMe] = useState(false)
 	const [isEndedLive, setIsEndedLive] = useState(false)
@@ -37,7 +35,7 @@ const ProjectPage = ({ project }) => {
 	const fetchData = (url) => axios(url).then((res) => res.data)
 
 	const changeRemindMe = async () => {
-		if (currentEmail != '') {
+		if (isEmailVerified) {
 			try {
 				const resp = await axios.post(
 					`${process.env.V2_API_URL}/launchpad/${router.query.launchpad_id}/project/${router.query.project_id}/reminder`,
@@ -53,19 +51,16 @@ const ProjectPage = ({ project }) => {
 			} catch (e) {
 				console.log(e)
 			}
-		} else {
-			setShowFillEmail(true)
 		}
 	}
 
 	const goTo = () => {
-		setShowFillEmail(false)
+		closeReminderModal()
 		setShowSettings(true)
 	}
 
 	const closeReminderModal = () => {
 		setCheckEmailShowed(true)
-		setShowFillEmail(false)
 	}
 
 	const { data, isValidating } = useSWR(
@@ -96,27 +91,20 @@ const ProjectPage = ({ project }) => {
 			} else if (pref != null) {
 				setRemindMe(pref === 'true')
 			}
-			if (!checkEmailShowed) {
-				setShowFillEmail(!currentEmail)
-			}
 		}
 	})
 
 	return (
 		<div className="min-h-screen bg-black">
-			{showFillEmail && currentUser ? (
-				<Modal close={() => closeReminderModal()} closeOnBgClick={false} closeOnEscape={false}>
-					<LaunchpadRemindModal onClose={() => closeReminderModal()} onGoToSetting={goTo} />
+			{!checkEmailShowed && !isEmailVerified && currentUser && (
+				<Modal close={closeReminderModal} closeOnBgClick={false} closeOnEscape={false}>
+					<LaunchpadRemindModal onClose={closeReminderModal} onGoToSetting={goTo} />
 				</Modal>
-			) : (
-				<></>
 			)}
-			{showSettings && currentUser ? (
+			{showSettings && currentUser && (
 				<Modal close={() => setShowSettings(false)} closeOnBgClick={false} closeOnEscape={false}>
 					<Setting close={() => setShowSettings(false)} />
 				</Modal>
-			) : (
-				<></>
 			)}
 			<div
 				className="fixed inset-0 opacity-75"

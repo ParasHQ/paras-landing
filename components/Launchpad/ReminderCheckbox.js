@@ -1,6 +1,6 @@
 const ReminderCheckbox = ({ value, onChange }) => {
 	return (
-		<div className="text-gray-200 mt-6 flex justify-between items-center mt-2">
+		<div className="text-gray-200 mt-6 flex justify-between items-center">
 			<div className="mb-1">
 				<div className="form-switch inline-block align-middle">
 					<input
