@@ -227,7 +227,7 @@ const ProjectPage = ({ project }) => {
 								</>
 							)}
 							{showRemindMe && data && data.status === 'upcoming' && !isEndedComing ? (
-								<ReminderCheckbox value={remindMe} onChange={() => changeRemindMe()} />
+								<ReminderCheckbox value={remindMe} onChange={changeRemindMe} />
 							) : (
 								<></>
 							)}
