@@ -106,7 +106,10 @@ const FilterAddCollection = ({
 					</div>
 				)}
 			</div>
-			<div className="max-h-96 overflow-scroll" id="collection::user">
+			<div
+				className="max-h-96 md:max-h-[22rem] 2xl:max-h-[30rem] overflow-y-scroll md:hide-scrollbar"
+				id="collection::user"
+			>
 				<InfiniteScroll
 					dataLength={collections.length}
 					next={fetchCollectionUser}
