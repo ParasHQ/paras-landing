@@ -28,6 +28,7 @@ const ProjectPage = ({ project }) => {
 	const [showRemindMe, setShowRemindMe] = useState(true)
 	const [showSettings, setShowSettings] = useState(false)
 	const [showFillEmail, setShowFillEmail] = useState(false)
+	const [checkEmailShowed, setCheckEmailShowed] = useState(false)
 	const [remindMe, setRemindMe] = useState(false)
 	const [isEndedLive, setIsEndedLive] = useState(false)
 	const [isEndedComing, setIsEndedComing] = useState(false)
@@ -62,6 +63,11 @@ const ProjectPage = ({ project }) => {
 		setShowSettings(true)
 	}
 
+	const closeReminderModal = () => {
+		setCheckEmailShowed(true)
+		setShowFillEmail(false)
+	}
+
 	const { data, isValidating } = useSWR(
 		`${process.env.V2_API_URL}/mint-calendar/${router.query.launchpad_id}/project/${router.query.project_id}`,
 		fetchData,
@@ -90,21 +96,17 @@ const ProjectPage = ({ project }) => {
 			} else if (pref != null) {
 				setRemindMe(pref === 'true')
 			}
-			setShowFillEmail(!currentEmail)
+			if (!checkEmailShowed) {
+				setShowFillEmail(!currentEmail)
+			}
 		}
 	})
 
 	return (
 		<div className="min-h-screen bg-black">
 			{showFillEmail && currentUser ? (
-				<Modal
-					close={() => {
-						setShowFillEmail(false)
-					}}
-					closeOnBgClick={true}
-					closeOnEscape={true}
-				>
-					<LaunchpadRemindModal onClose={() => setShowFillEmail(false)} onGoToSetting={goTo} />
+				<Modal close={() => closeReminderModal()} closeOnBgClick={false} closeOnEscape={false}>
+					<LaunchpadRemindModal onClose={() => closeReminderModal()} onGoToSetting={goTo} />
 				</Modal>
 			) : (
 				<></>
