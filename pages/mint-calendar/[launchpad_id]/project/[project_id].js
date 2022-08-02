@@ -22,7 +22,8 @@ import LaunchpadRemindModal from 'components/Modal/LaunchpadRemindModal'
 
 const ProjectPage = ({ project }) => {
 	const currentUser = useStore((state) => state.currentUser)
-	const isEmailVerified = useStore((state) => !state.showEmailWarning)
+	const currentProfile = useStore((state) => state.userProfile)
+	const isEmailVerified = currentProfile.isEmailVerified || false
 	const [tabActive, setTabActive] = useState('story')
 	const [showRemindMe, setShowRemindMe] = useState(true)
 	const [showSettings, setShowSettings] = useState(false)
