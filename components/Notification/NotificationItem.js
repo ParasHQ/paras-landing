@@ -77,6 +77,27 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 			: notif.token_series_id
 	}${notif.token_id ? `/${notif.token_id}` : ''}`
 
+	const levelLoyalty = false
+	if (levelLoyalty) {
+		return (
+			<div>
+				<Link href={url}>
+					<a>
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
+							<div className="text-gray-300">
+								<p>Congratulations,</p>
+								<p>{"You're now a Silver Member"}</p>
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
 	if (!token) {
 		return null
 	}
