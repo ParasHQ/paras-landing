@@ -21,8 +21,6 @@ export const fetchTokenTest = async () => {
 		const price = token.price
 		const hasPrice = token.has_price
 
-		if (!token.has_price) return 'This token is not for sale.'
-
 		return {
 			url,
 			contract_id: contractId,

@@ -5,10 +5,11 @@ import * as React from 'react'
 import MockAdapter from 'axios-mock-adapter'
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
 import { IntlProvider } from 'react-intl'
-import { onBuyToken } from '__mocks__/callFunctionMock'
+import { onPlaceBid } from '__mocks__/callFunctionMock'
 import { fetchTokenTest } from '__mocks__/serviceMock'
 import esTranslations from '__mocks__/locale/en.json'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import PlaceOfferModal from 'components/Modal/PlaceOfferModal'
 
 const tokens = {
 	contract_id: 'x.paras.near',
@@ -19,7 +20,9 @@ const tokens = {
 	has_price: true,
 }
 
-describe('TokenBuyModal Testing', () => {
+const valueOffer = 0.1
+
+describe('PlaceOfferModal Testing', () => {
 	let mock
 
 	beforeAll(async () => {
@@ -65,27 +68,34 @@ describe('TokenBuyModal Testing', () => {
 		})
 	})
 
-	describe('callFunction => method: buy', () => {
-		test('should have any price', async () => {
-			mock.onGet(`${process.env.V2_API_URL}/token`).reply(200, tokens)
-			const tokenMock = mock.handlers.get[0]
-
-			expect(tokenMock[4].has_price).toBeTruthy()
-			expect(tokenMock[4].has_price).toMatchSnapshot()
-		})
-
-		test('should appear buy button', async () => {
+	describe('callFunction => method: add_offer', () => {
+		test('should input offer greater than 0.0', async () => {
 			const token = await fetchTokenTest()
 			render(
 				<IntlProvider locale="en" messages={esTranslations}>
-					<TokenBuyModal data={token.result} show />
+					<PlaceOfferModal data={token.result} show />
 				</IntlProvider>
 			)
 
-			const buyBtn = fireEvent.click(screen.getByRole('button', { name: 'Buy' }))
+			const inputOffer = screen.getByPlaceholderText('Place your Offer')
+			fireEvent.change(inputOffer, { target: { value: 0.0 } })
 
-			expect(buyBtn).toBeTruthy()
-			expect(buyBtn).toMatchSnapshot()
+			expect(valueOffer).toBeGreaterThan(Number(inputOffer.value))
+			expect(inputOffer.value).toMatchSnapshot()
+		})
+
+		test('should appear input offer', async () => {
+			const token = await fetchTokenTest()
+			render(
+				<IntlProvider locale="en" messages={esTranslations}>
+					<PlaceOfferModal data={token.result} show />
+				</IntlProvider>
+			)
+
+			const inputOffer = fireEvent.click(screen.getByRole('spinbutton'))
+
+			expect(inputOffer).toBeTruthy()
+			expect(inputOffer).toMatchSnapshot()
 		})
 
 		test('should return arguments and method the same like data API', async () => {
@@ -95,20 +105,20 @@ describe('TokenBuyModal Testing', () => {
 
 			const tokenMock = mock.handlers.get[0][4]
 			const token = await fetchTokenTest()
-			const callFunction = await onBuyToken()
+			const callFunction = await onPlaceBid(valueOffer)
 
 			const callFunctionMock = jest.fn()
 			callFunctionMock.mockReturnValueOnce({
-				contractId: 'marketplace.paras.near',
-				methodName: `buy`,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
+				methodName: 'add_offer',
 				args: {
-					token_id: tokenMock.token_id,
 					nft_contract_id: tokenMock.contract_id,
+					token_id: tokenMock.token_id,
 					ft_token_id: tokenMock.ft_token_id,
-					price: tokenMock.price,
+					price: valueOffer,
 				},
-				gas: `150000000000000`,
-				deposit: tokenMock.price,
+				deposit: valueOffer,
+				gas: `100000000000000`,
 			})
 
 			render(

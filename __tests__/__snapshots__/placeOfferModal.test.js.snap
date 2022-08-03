@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TokenBuyModal Testing API Gateway When API call is successful should return contract_id && token_id 1`] = `
+exports[`PlaceOfferModal Testing API Gateway When API call is successful should return contract_id && token_id 1`] = `
 Array [
   "https://api-v2-mainnet.paras.id/token",
   undefined,
@@ -18,7 +18,7 @@ Array [
 ]
 `;
 
-exports[`TokenBuyModal Testing API Gateway When API call is successful should return contract_id && token_id 2`] = `
+exports[`PlaceOfferModal Testing API Gateway When API call is successful should return contract_id && token_id 2`] = `
 Object {
   "contract_id": "x.paras.near",
   "ft_token_id": "near",
@@ -71,11 +71,11 @@ Object {
 }
 `;
 
-exports[`TokenBuyModal Testing callFunction => method: buy should appear buy button 1`] = `true`;
+exports[`PlaceOfferModal Testing callFunction => method: add_offer should appear input offer 1`] = `true`;
 
-exports[`TokenBuyModal Testing callFunction => method: buy should have any price 1`] = `true`;
+exports[`PlaceOfferModal Testing callFunction => method: add_offer should input offer greater than 0.0 1`] = `"0"`;
 
-exports[`TokenBuyModal Testing callFunction => method: buy should return arguments and method the same like data API 1`] = `
+exports[`PlaceOfferModal Testing callFunction => method: add_offer should return arguments and method the same like data API 1`] = `
 [MockFunction] {
   "calls": Array [
     Array [],
@@ -87,13 +87,13 @@ exports[`TokenBuyModal Testing callFunction => method: buy should return argumen
         "args": Object {
           "ft_token_id": "near",
           "nft_contract_id": "x.paras.near",
-          "price": "5700000000000000000000000",
+          "price": 0.1,
           "token_id": "230098:1",
         },
-        "contractId": "marketplace.paras.near",
-        "deposit": "5700000000000000000000000",
-        "gas": "150000000000000",
-        "methodName": "buy",
+        "deposit": 0.1,
+        "gas": "100000000000000",
+        "methodName": "add_offer",
+        "receiverId": "marketplace.paras.near",
       },
     },
   ],
