@@ -16,9 +16,10 @@ import WalletHelper from 'lib/WalletHelper'
 
 const TokenBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
-	const { currentUser, setTransactionRes } = useStore()
+	const { currentUser, setTransactionRes, userBalance } = useStore()
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const [isBuying, setIsBuying] = useState(false)
+	const [notEnoughBalance, setNotEnoughBalance] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
 
 	const { localeLn } = useIntl()
@@ -34,6 +35,12 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 			setShowLogin(true)
 			return
 		}
+
+		if (parseFloat(data.price / 10 ** 24) >= parseFloat(userBalance.available / 10 ** 24)) {
+			setNotEnoughBalance(true)
+			return
+		}
+
 		setIsBuying(true)
 		trackBuyToken(data.token_id)
 
@@ -105,6 +112,11 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 						<p className="text-white mt-4 text-sm text-center opacity-90 px-4">
 							{localeLn('RedirectedToconfirm')}
 						</p>
+						{notEnoughBalance && (
+							<p className="text-red-500 text-center text-sm mt-2 -mb-2">
+								You don{`'`}t have enough balance
+							</p>
+						)}
 						<div className="mt-6">
 							<Button
 								size="md"
