@@ -99,3 +99,5 @@ exports[`TokenBuyModal Testing callFunction => method: buy should return argumen
   ],
 }
 `;
+
+exports[`TokenBuyModal Testing callFunction => method: buy should user balance greater than token price 1`] = `"redirect to near wallet"`;

@@ -8,7 +8,7 @@ import { IntlProvider } from 'react-intl'
 import { onBuyToken } from '__mocks__/callFunctionMock'
 import { fetchTokenTest } from '__mocks__/serviceMock'
 import esTranslations from '__mocks__/locale/en.json'
-import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 
 const tokens = {
 	contract_id: 'x.paras.near',
@@ -86,6 +86,26 @@ describe('TokenBuyModal Testing', () => {
 
 			expect(buyBtn).toBeTruthy()
 			expect(buyBtn).toMatchSnapshot()
+		})
+
+		test('should user balance greater than token price', async () => {
+			const token = await fetchTokenTest()
+			render(
+				<IntlProvider locale="en" messages={esTranslations}>
+					<TokenBuyModal data={token.result} show />
+				</IntlProvider>
+			)
+
+			const userBalance = parseNearAmount('9.7')
+			const handleOnBuyToken = jest.fn((tokenPrice) => {
+				if (parseFloat(formatNearAmount(tokenPrice)) >= parseFloat(formatNearAmount(userBalance))) {
+					return `You don't have enough balance`
+				}
+				return 'redirect to near wallet'
+			})
+
+			expect(handleOnBuyToken(token.price)).toBe('redirect to near wallet')
+			expect(handleOnBuyToken(token.price)).toMatchSnapshot()
 		})
 
 		test('should return arguments and method the same like data API', async () => {
