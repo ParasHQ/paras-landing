@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 import axios from 'axios'
-import * as React from 'react'
 import MockAdapter from 'axios-mock-adapter'
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
 import { IntlProvider } from 'react-intl'
