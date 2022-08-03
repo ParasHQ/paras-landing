@@ -6,8 +6,9 @@ export const fetchTokenTest = async () => {
 	try {
 		const resp = await axios.get(`${BASE_API}/token`, {
 			params: {
-				contract_id: 'v0.apemetaerror.near',
-				token_id: '103',
+				contract_id: 'x.paras.near',
+				token_series_id: '230098',
+				token_id: '230098:1',
 				lookup_token: true,
 			},
 		})
@@ -19,6 +20,8 @@ export const fetchTokenTest = async () => {
 		const ftTokenId = token.ft_token_id
 		const price = token.price
 		const hasPrice = token.has_price
+
+		if (!token.has_price) return 'This token is not for sale.'
 
 		return {
 			url,

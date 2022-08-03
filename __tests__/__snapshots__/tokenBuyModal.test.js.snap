@@ -1,0 +1,101 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TokenBuyModal Testing API Gateway When API call is successful should return contract_id && token_id 1`] = `
+Array [
+  "https://api-v2-mainnet.paras.id/token",
+  undefined,
+  undefined,
+  200,
+  Object {
+    "contract_id": "x.paras.near",
+    "ft_token_id": "near",
+    "has_price": true,
+    "price": "5700000000000000000000000",
+    "token_id": "230098:1",
+    "token_series_id": "230098",
+  },
+  undefined,
+]
+`;
+
+exports[`TokenBuyModal Testing API Gateway When API call is successful should return contract_id && token_id 2`] = `
+Object {
+  "contract_id": "x.paras.near",
+  "ft_token_id": "near",
+  "has_price": true,
+  "price": "5700000000000000000000000",
+  "result": Object {
+    "_id": "620f98bf089d2c5bb02c8d93",
+    "approval_id": 9,
+    "categories": Array [],
+    "contract_id": "x.paras.near",
+    "edition_id": "1",
+    "ft_token_id": "near",
+    "has_price": true,
+    "has_rank": true,
+    "is_creator": true,
+    "likes": null,
+    "metadata": Object {
+      "blurhash": "U01CvZMwo#fPj@tSf6j]o#f6j[aykDj[j[j[",
+      "collection": "Soul Out",
+      "collection_id": "soul-out-by-sxthyboynear",
+      "copies": 1,
+      "creator_id": "sxthyboy.near",
+      "description": "\\" โฮกปิ้บ \\"
+\\" Soul Out \\"collection is 111 unique NFT in NEAR Protocol Blockchain Only. It is all hand-drawn art.",
+      "expires_at": null,
+      "extra": null,
+      "issued_at": "1645189307622433324",
+      "media": "bafybeihbhlksad3d336hxuayqoosplfxe2tw5vw43fxevu4ta7kagj42f4",
+      "media_hash": null,
+      "mime_type": "image/png",
+      "rank": 35,
+      "reference": "bafkreidv6pipty4oknf5xo4zqusdgytrblzwgpw7oualwudfmhp67sa4dq",
+      "reference_hash": null,
+      "score": 0,
+      "starts_at": null,
+      "title": "Soul Out #024 #1",
+      "updated_at": null,
+    },
+    "owner_id": "iqbalutomo.near",
+    "price": "5700000000000000000000000",
+    "royalty": Object {
+      "sxthyboy.near": 1000,
+    },
+    "token_id": "230098:1",
+    "token_series_id": "230098",
+    "view": 110,
+  },
+  "token_id": "230098:1",
+  "url": "https://api-v2-mainnet.paras.id/token",
+}
+`;
+
+exports[`TokenBuyModal Testing callFunction => method: Buy should appear buy button 1`] = `true`;
+
+exports[`TokenBuyModal Testing callFunction => method: Buy should have any price 1`] = `true`;
+
+exports[`TokenBuyModal Testing callFunction => method: Buy should return arguments and method the same like data API 1`] = `
+[MockFunction] {
+  "calls": Array [
+    Array [],
+  ],
+  "results": Array [
+    Object {
+      "type": "return",
+      "value": Object {
+        "args": Object {
+          "ft_token_id": "near",
+          "nft_contract_id": "x.paras.near",
+          "price": "5700000000000000000000000",
+          "token_id": "230098:1",
+        },
+        "contractId": "marketplace.paras.near",
+        "deposit": "5700000000000000000000000",
+        "gas": "150000000000000",
+        "methodName": "buy",
+      },
+    },
+  ],
+}
+`;
