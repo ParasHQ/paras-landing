@@ -23,7 +23,7 @@ const CollectionStats = ({ stats }) => {
 					className="text-center rounded-l block p-3 sm:p-5"
 				>
 					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
-						{stats.total_cards || '0'}
+						{stats.total_cards || '---'}
 					</p>
 					<p className="text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg">
 						{localeLn('Items')}
@@ -35,7 +35,7 @@ const CollectionStats = ({ stats }) => {
 					className="text-center block p-3 sm:p-5"
 				>
 					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
-						{stats.total_card_sale || '0'}
+						{stats.total_card_sale || '---'}
 					</p>
 					<p className="text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg">
 						{localeLn('TotalListed')}
@@ -48,7 +48,7 @@ const CollectionStats = ({ stats }) => {
 					className="text-center block p-3 sm:p-5"
 				>
 					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
-						{stats.total_owners || '0'}
+						{stats.total_owners || '---'}
 					</p>
 					<p className="text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg">
 						{localeLn('TotalOwners')}
@@ -60,7 +60,7 @@ const CollectionStats = ({ stats }) => {
 					className="text-center block w-32 p-1 sm:w-auto sm:p-5"
 				>
 					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
-						{formatNearAmount(stats.volume, 2) + ' Ⓝ'}
+						{stats.volume ? formatNearAmount(stats.volume, 2) + ' Ⓝ' : '---'}
 					</p>
 					<p className="text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg">
 						{localeLn('TotalVolume')}
@@ -84,7 +84,7 @@ const CollectionStats = ({ stats }) => {
 					className="text-center rounded-r block p-3 sm:p-5"
 				>
 					<p className="text-white font-bold truncate text-md sm:text-sm md:text-2xl">
-						{prettyBalance(stats.avg_price || '0', 24, 4)} Ⓝ
+						{stats.avg_price ? prettyBalance(stats.avg_price || '0', 24, 4) + 'Ⓝ' : '---'}
 					</p>
 					<p className="text-gray-400 text-xs sm:text-sm md:text-md lg:text-lg">
 						{localeLn('AveragePrice')}
