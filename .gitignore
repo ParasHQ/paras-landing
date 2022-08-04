@@ -39,3 +39,4 @@ yarn-error.log*
 .vercel
 # Sentry
 .sentryclirc
+.history
