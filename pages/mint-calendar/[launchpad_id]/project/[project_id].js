@@ -5,22 +5,64 @@ import Footer from 'components/Footer'
 import LaunchpadButtonLoader from 'components/Launchpad/LaunchpadButtonLoader'
 import LaunchpadContent from 'components/Launchpad/LaunchpadContent'
 import LaunchpadStats from 'components/Launchpad/LaunchpadStats'
+import ReminderCheckbox from 'components/Launchpad/ReminderCheckbox'
 import SocialMediaLaunchpad from 'components/Launchpad/SocialMediaLaunchpad'
 import Nav from 'components/Nav'
 import { generateFromString } from 'generate-avatar'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import useSWR from 'swr'
 import { parseImgUrl } from 'utils/common'
+import useStore from 'lib/store'
+import WalletHelper from 'lib/WalletHelper'
+import Modal from '../../../../components/Modal'
+import Setting from '../../../../components/Setting'
+import LaunchpadRemindModal from 'components/Modal/LaunchpadRemindModal'
 
 const ProjectPage = ({ project }) => {
+	const currentUser = useStore((state) => state.currentUser)
+	const currentProfile = useStore((state) => state.userProfile)
+	const isEmailVerified = currentProfile.isEmailVerified || false
 	const [tabActive, setTabActive] = useState('story')
+	const [showRemindMe, setShowRemindMe] = useState(true)
+	const [showSettings, setShowSettings] = useState(false)
+	const [checkEmailShowed, setCheckEmailShowed] = useState(false)
+	const [remindMe, setRemindMe] = useState(false)
 	const [isEndedLive, setIsEndedLive] = useState(false)
 	const [isEndedComing, setIsEndedComing] = useState(false)
 	const router = useRouter()
 
 	const fetchData = (url) => axios(url).then((res) => res.data)
+
+	const changeRemindMe = async () => {
+		if (isEmailVerified) {
+			try {
+				const resp = await axios.post(
+					`${process.env.V2_API_URL}/launchpad/${router.query.launchpad_id}/project/${router.query.project_id}/reminder`,
+					{
+						remind: !remindMe,
+					},
+					{ headers: { authorization: await WalletHelper.authToken() } }
+				)
+				if (resp.status == 200) {
+					localStorage.setItem(`${router.query.launchpad_id}:${router.query.project_id}`, !remindMe)
+					setRemindMe(!remindMe)
+				}
+			} catch (e) {
+				console.log(e)
+			}
+		}
+	}
+
+	const goTo = () => {
+		closeReminderModal()
+		setShowSettings(true)
+	}
+
+	const closeReminderModal = () => {
+		setCheckEmailShowed(true)
+	}
 
 	const { data, isValidating } = useSWR(
 		`${process.env.V2_API_URL}/mint-calendar/${router.query.launchpad_id}/project/${router.query.project_id}`,
@@ -37,8 +79,34 @@ const ProjectPage = ({ project }) => {
 		cover: parseImgUrl(project.banner_image, null, { useOriginal: true }),
 	}
 
+	useEffect(() => {
+		if (!currentUser) {
+			setShowRemindMe(false)
+		} else {
+			setShowRemindMe(true)
+			const pref =
+				window.localStorage.getItem(`${router.query.launchpad_id}:${router.query.project_id}`) ||
+				null
+			if (pref == null && project.reminder && project.reminder.includes(currentUser)) {
+				setRemindMe(true)
+			} else if (pref != null) {
+				setRemindMe(pref === 'true')
+			}
+		}
+	}, [currentUser])
+
 	return (
 		<div className="min-h-screen bg-black">
+			{!checkEmailShowed && !isEmailVerified && currentUser && (
+				<Modal close={closeReminderModal} closeOnBgClick={false} closeOnEscape={false}>
+					<LaunchpadRemindModal onClose={closeReminderModal} onGoToSetting={goTo} />
+				</Modal>
+			)}
+			{showSettings && currentUser && (
+				<Modal close={() => setShowSettings(false)} closeOnBgClick={false} closeOnEscape={false}>
+					<Setting close={() => setShowSettings(false)} />
+				</Modal>
+			)}
 			<div
 				className="fixed inset-0 opacity-75"
 				style={{
@@ -158,6 +226,9 @@ const ProjectPage = ({ project }) => {
 										<Button isDisabled>Upcoming</Button>
 									)}
 								</>
+							)}
+							{showRemindMe && data && data.status === 'upcoming' && !isEndedComing && (
+								<ReminderCheckbox value={remindMe} onChange={changeRemindMe} />
 							)}
 						</div>
 					</div>
