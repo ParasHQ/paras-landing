@@ -40,7 +40,7 @@
 		"draft-js": "^0.11.7",
 		"file-type": "^16.5.3",
 		"generate-avatar": "^1.4.10",
-		"javascript-time-ago": "^2.3.2",
+		"javascript-time-ago": "^2.5.7",
 		"js-base64": "^3.5.2",
 		"js-cookie": "^2.2.1",
 		"jsbi": "^3.1.4",
