@@ -11,6 +11,7 @@ import useStore from 'lib/store'
 import PublicationListScroll from 'components/Publication/PublicationListScroll'
 import DraftPublication from 'components/Draft/DraftPublication'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
+import { parseImgUrl } from 'utils/common'
 const LIMIT = 6
 
 const Publication = ({ userProfile, accountId }) => {
@@ -75,7 +76,7 @@ const Publication = ({ userProfile, accountId }) => {
 			userProfile?.bio || ''
 		}`,
 		image: userProfile?.imgUrl
-			? `${process.env.API_URL}/socialCard/avatar/${userProfile.imgUrl.split('://')[1]}`
+			? parseImgUrl(userProfile?.imgUrl, null, { useOriginal: true })
 			: `https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png`,
 	}
 	const { localeLn } = useIntl()
