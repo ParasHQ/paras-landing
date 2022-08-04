@@ -1128,7 +1128,7 @@ const NewPage = () => {
 										</div>
 									</div>
 								)}
-								<div className="flex justify-between px-4 pb-2 absolute bottom-0 right-0 left-0">
+								<div className="flex justify-between px-4 pb-4 absolute bottom-0 right-0 left-0">
 									<button disabled={step === 0} onClick={_handleBack}>
 										{localeLn('Back')}
 									</button>
