@@ -62,7 +62,7 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 	) : (
 		<>
 			{showTooltip && <ReactTooltip id={randomID} place="top" type="dark" />}
-			{!project.tags.map((tag) => tag.toLowerCase()).includes(whitelistTag) && (
+			{!project.tags?.map((tag) => tag.toLowerCase()).includes(whitelistTag) && (
 				<div className="max-w-3xl md:mx-auto flex justify-between items-center gap-2 border-2 border-orange-300 rounded-md text-white text-justify md:text-left mb-10 p-2 pl-4 mx-4">
 					<IconWarning />
 					<p>

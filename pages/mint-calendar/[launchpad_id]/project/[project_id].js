@@ -27,7 +27,7 @@ const ProjectPage = ({ project }) => {
 	const [tabActive, setTabActive] = useState('story')
 	const [showRemindMe, setShowRemindMe] = useState(true)
 	const [showSettings, setShowSettings] = useState(false)
-	const [checkEmailShowed, setCheckEmailShowed] = useState(false)
+	const [checkEmailShowed, setCheckEmailShowed] = useState(true)
 	const [remindMe, setRemindMe] = useState(false)
 	const [isEndedLive, setIsEndedLive] = useState(false)
 	const [isEndedComing, setIsEndedComing] = useState(false)
@@ -52,6 +52,8 @@ const ProjectPage = ({ project }) => {
 			} catch (e) {
 				console.log(e)
 			}
+		} else {
+			setCheckEmailShowed(false)
 		}
 	}
 
