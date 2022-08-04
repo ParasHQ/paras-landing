@@ -78,7 +78,7 @@
 		"autoprefixer": "^10.4.4",
 		"dotenv-cli": "^4.1.1",
 		"eslint": "^7.30.0",
-		"eslint-config-next": "^11.0.1",
+		"eslint-config-next": "^12.2.3",
 		"eslint-config-prettier": "8.3.0",
 		"eslint-plugin-react-hooks": "^4.2.0",
 		"husky": "^7.0.0",
