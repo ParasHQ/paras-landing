@@ -15,7 +15,7 @@ import near from 'lib/near'
 import transakSDK from '@transak/transak-sdk'
 import getConfigTransak from 'config/transak'
 import { IconTriangle } from 'components/Icons'
-import { trackTransakButton } from 'lib/ga'
+import { trackNFTLendingClick, trackTransakButton } from 'lib/ga'
 
 export function openTransak(fetchNearBalance, toast) {
 	const transak = new transakSDK(
@@ -304,6 +304,17 @@ const User = () => {
 							<Link href="/my-bids">
 								<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
 									{localeLn('NavMyBids')}
+								</a>
+							</Link>
+							<Link href="https://fprotocol.io/loans?r=paras">
+								<a
+									href="https://fprotocol.io/loans?r=paras"
+									target={'_blank'}
+									rel="noreferrer"
+									className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+									onClick={trackNFTLendingClick(store.userProfile.accountId)}
+								>
+									{localeLn('NFT Lending')}
 								</a>
 							</Link>
 							<button
