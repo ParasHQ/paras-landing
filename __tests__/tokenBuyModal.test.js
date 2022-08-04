@@ -114,7 +114,6 @@ describe('TokenBuyModal Testing', () => {
 			mock.restore()
 
 			const tokenMock = mock.handlers.get[0][4]
-			const token = await fetchTokenTest()
 			const callFunction = await onBuyToken()
 
 			const callFunctionMock = jest.fn()
@@ -130,12 +129,6 @@ describe('TokenBuyModal Testing', () => {
 				gas: `150000000000000`,
 				deposit: tokenMock.price,
 			})
-
-			render(
-				<IntlProvider locale="en" messages={esTranslations}>
-					<TokenBuyModal data={token.result} show />
-				</IntlProvider>
-			)
 
 			expect(callFunctionMock()).toMatchObject(callFunction)
 			expect(callFunctionMock).toMatchSnapshot()

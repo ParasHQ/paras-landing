@@ -2,7 +2,6 @@ import '@testing-library/jest-dom'
 import { fireEvent, render, screen } from '@testing-library/react'
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
-import TokenBuyModal from 'components/Modal/TokenBuyModal'
 import { IntlProvider } from 'react-intl'
 import { onPlaceBid } from '__mocks__/callFunctionMock'
 import { fetchTokenTest } from '__mocks__/serviceMock'
@@ -103,7 +102,6 @@ describe('PlaceOfferModal Testing', () => {
 			mock.restore()
 
 			const tokenMock = mock.handlers.get[0][4]
-			const token = await fetchTokenTest()
 			const callFunction = await onPlaceBid(valueOffer)
 
 			const callFunctionMock = jest.fn()
@@ -119,12 +117,6 @@ describe('PlaceOfferModal Testing', () => {
 				deposit: valueOffer,
 				gas: `100000000000000`,
 			})
-
-			render(
-				<IntlProvider locale="en" messages={esTranslations}>
-					<TokenBuyModal data={token.result} show />
-				</IntlProvider>
-			)
 
 			expect(callFunctionMock()).toMatchObject(callFunction)
 			expect(callFunctionMock).toMatchSnapshot()
