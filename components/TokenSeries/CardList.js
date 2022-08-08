@@ -216,7 +216,9 @@ const TokenSeriesSingle = ({
 		const lookupToken = token?.token
 		let platform = navigator.userAgent.includes('iPhone')
 		if (platform) {
-			router.push(`/token/${token.contract_id}::${token.token_series_id}`)
+			router.push(
+				`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`
+			)
 			return
 		}
 		router.push(
