@@ -298,6 +298,10 @@ export const isEmptyObject = (obj) => {
 	return obj && Object.keys(obj).length === 0 && Object.getPrototypeOf(obj) === Object.prototype
 }
 
+export const capitalizeFirstLetter = (string) => {
+	return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
 export const sanitizeHTML = (content) =>
 	sanitize(content, {
 		allowedTags: [

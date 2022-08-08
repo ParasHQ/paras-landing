@@ -1,15 +1,51 @@
+import axios from 'axios'
 import Button from 'components/Common/Button'
 import { IconX } from 'components/Icons'
-import { useState } from 'react'
+import useStore from 'lib/store'
+import WalletHelper from 'lib/WalletHelper'
+import { useEffect, useState } from 'react'
+import useSWR from 'swr'
+import { capitalizeFirstLetter } from 'utils/common'
 
-const RaffleRegisterModal = ({ show, onClose }) => {
+const RaffleRegisterModal = () => {
+	const [showModal, setShowModal] = useState(false)
 	const [isSignedUp, setIsSignedUp] = useState(false)
 	const [dontShowAgain, setDontShowAgain] = useState(false)
+	const [isLoading, setIsLoading] = useState(false)
+	const currentUser = useStore((state) => state.currentUser)
 
-	const changeState = () => setIsSignedUp(!isSignedUp)
+	const fetchRaffle = async () =>
+		axios
+			.get(`${process.env.V2_API_URL}/raffle/status`, {
+				headers: {
+					authorization: await WalletHelper.authToken(),
+				},
+			})
+			.then((res) => res.data)
 
-	const onClickSignUp = () => {
-		return
+	const { data } = useSWR(currentUser ? 'raffle-status' : null, fetchRaffle, {
+		revalidateOnFocus: false,
+		revalidateIfStale: false,
+		revalidateOnReconnect: false,
+	})
+
+	const onClickSignUp = async () => {
+		try {
+			setIsLoading(true)
+			await axios.post(
+				`${process.env.V2_API_URL}/raffle/register`,
+				{ raffle_id: data.raffle_id },
+				{
+					headers: {
+						authorization: await WalletHelper.authToken(),
+					},
+				}
+			)
+			setIsSignedUp(true)
+			setIsLoading(false)
+		} catch (error) {
+			return error
+		}
 	}
 
 	const onClickNextTime = () => {
@@ -17,6 +53,20 @@ const RaffleRegisterModal = ({ show, onClose }) => {
 			localStorage.setItem('dontShowAgainRaffle', true)
 		}
 		onClose()
+	}
+
+	const onClose = () => {
+		setShowModal(false)
+	}
+
+	useEffect(() => {
+		if (data && data.current_level !== 'bronze') {
+			setShowModal(true)
+		}
+	}, [data])
+
+	if (!data || !showModal) {
+		return null
 	}
 
 	return (
@@ -29,9 +79,16 @@ const RaffleRegisterModal = ({ show, onClose }) => {
 				</div>
 				{isSignedUp ? (
 					<div className="w-[23rem]">
+						<p className="text-xl md:text-2xl font-semibold text-gray-100">
+							Thanks for Participating
+						</p>
+						<p className="text-xl md:text-2xl font-semibold text-gray-100 mt-2">Goodluck!✨</p>
+					</div>
+				) : (
+					<div className="w-[23rem]">
 						<p className="text-xl md:text-2xl font-semibold text-gray-100">Congratulations,</p>
 						<p className="text-xl md:text-2xl font-semibold text-gray-100">
-							{"You're now a Gold Member!"}
+							{`You're now a ${capitalizeFirstLetter(data?.current_level)} Member!`}
 						</p>
 						<p className="text-white pr-2 text-sm">
 							{`Get a chance to win a raffle by clicking "Sign Up"`}
@@ -50,25 +107,13 @@ const RaffleRegisterModal = ({ show, onClose }) => {
 							</label>
 						</div>
 						<div className="flex space-x-4 md:space-x-8">
-							<Button size="md" isFullWidth onClick={changeState}>
+							<Button size="md" isFullWidth onClick={onClickSignUp} isLoading={isLoading}>
 								Sign up
 							</Button>
 							<Button variant="white" size="md" isFullWidth onClick={onClickNextTime}>
 								Next time
 							</Button>
 						</div>
-					</div>
-				) : (
-					<div className="w-[23rem]">
-						<p className="text-xl md:text-2xl font-semibold text-gray-100">
-							Thanks for Participating
-						</p>
-						<p
-							className="text-xl md:text-2xl font-semibold text-gray-100 mt-2"
-							onClick={changeState}
-						>
-							Goodluck!✨
-						</p>
 					</div>
 				)}
 			</div>

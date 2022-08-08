@@ -2,7 +2,7 @@ import axios from 'axios'
 import Link from 'next/link'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
-import { parseImgUrl, prettyTruncate } from 'utils/common'
+import { capitalizeFirstLetter, parseImgUrl, prettyTruncate } from 'utils/common'
 import Media from 'components/Common/Media'
 
 const NotificationImage = ({ media }) => {
@@ -77,23 +77,32 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 			: notif.token_series_id
 	}${notif.token_id ? `/${notif.token_id}` : ''}`
 
-	const levelLoyalty = false
-	if (levelLoyalty) {
+	if (notif.type === 'notification_level_up') {
 		return (
 			<div>
-				<Link href={url}>
-					<a>
-						<div
-							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
-							onClick={() => notificationModal(false)}
-						>
-							<div className="text-gray-300">
-								<p>Congratulations,</p>
-								<p>{"You're now a Silver Member"}</p>
-							</div>
-						</div>
-					</a>
-				</Link>
+				<div className="p-2 rounded-md button-wrapper flex items-center">
+					<div className="text-gray-300 select-none">
+						<p>Congratulations,</p>
+						<p>{`You're now a ${capitalizeFirstLetter(notif.msg.current_level)} Member`}</p>
+					</div>
+				</div>
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_level_down') {
+		return (
+			<div>
+				<div className="p-2 rounded-md button-wrapper flex items-center">
+					<div className="text-gray-300 select-none">
+						<span>
+							Sorry, your member has dropped to {capitalizeFirstLetter(notif.msg.current_level)}.
+						</span>
+						<span> Start </span>
+						<span className="font-bold">lock staking </span>
+						<span>again to keep them at {capitalizeFirstLetter(notif.msg.previous_level)}!</span>
+					</div>
+				</div>
 			</div>
 		)
 	}
