@@ -306,9 +306,9 @@ const User = () => {
 									{localeLn('NavMyBids')}
 								</a>
 							</Link>
-							<Link href="https://fprotocol.io/loans?r=paras">
+							<Link href="https://www.fdao.co/loans?r=bd.paras.near">
 								<a
-									href="https://fprotocol.io/loans?r=paras"
+									href="https://www.fdao.co/loans?r=bd.paras.near"
 									target={'_blank'}
 									rel="noreferrer"
 									className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
