@@ -7,6 +7,7 @@ import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import NotificationItem from './NotificationItem'
 import WalletHelper from 'lib/WalletHelper'
+import NotificationSignUpRaffle from './NotificationRaffle'
 
 const LIMIT = 30
 
@@ -43,6 +44,7 @@ const NotificationList = () => {
 	const [showNotificationModal, setShowNotificationModal] = useState(false)
 	const [hasNotification, setHasNotification] = useState(false)
 	const { localeLn } = useIntl()
+
 	useEffect(() => {
 		if (userProfile?.has_notification) {
 			setHasNotification(true)
@@ -202,6 +204,7 @@ const NotificationList = () => {
 										loader={<h4 className="text-center p-2">{localeLn('LoadingLoading')}</h4>}
 										scrollableTarget="scrollableDiv"
 									>
+										<NotificationSignUpRaffle />
 										{notificationList.map((notif) => {
 											return (
 												<div key={notif._id}>

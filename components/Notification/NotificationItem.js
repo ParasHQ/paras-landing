@@ -79,12 +79,10 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 
 	if (notif.type === 'notification_level_up') {
 		return (
-			<div>
-				<div className="p-2 rounded-md button-wrapper flex items-center">
-					<div className="text-gray-300 select-none">
-						<p>Congratulations,</p>
-						<p>{`You're now a ${capitalizeFirstLetter(notif.msg.current_level)} Member`}</p>
-					</div>
+			<div className="p-2 rounded-md button-wrapper flex items-center">
+				<div className="text-gray-300 select-none">
+					<p>Congratulations,</p>
+					<p>{`You're now a ${capitalizeFirstLetter(notif.msg.current_level)} Member`}</p>
 				</div>
 			</div>
 		)
@@ -92,16 +90,14 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 
 	if (notif.type === 'notification_level_down') {
 		return (
-			<div>
-				<div className="p-2 rounded-md button-wrapper flex items-center">
-					<div className="text-gray-300 select-none">
-						<span>
-							Sorry, your member has dropped to {capitalizeFirstLetter(notif.msg.current_level)}.
-						</span>
-						<span> Start </span>
-						<span className="font-bold">lock staking </span>
-						<span>again to keep them at {capitalizeFirstLetter(notif.msg.previous_level)}!</span>
-					</div>
+			<div className="p-2 rounded-md button-wrapper flex items-center">
+				<div className="text-gray-300 select-none">
+					<span>
+						Sorry, your member has dropped to {capitalizeFirstLetter(notif.msg.current_level)}.
+					</span>
+					<span> Start </span>
+					<span className="font-bold">lock staking </span>
+					<span>again to keep them at {capitalizeFirstLetter(notif.msg.previous_level)}!</span>
 				</div>
 			</div>
 		)
