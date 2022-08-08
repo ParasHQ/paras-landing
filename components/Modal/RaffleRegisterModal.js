@@ -1,10 +1,10 @@
 import axios from 'axios'
+import { useEffect, useRef, useState } from 'react'
+import useSWR from 'swr'
 import Button from 'components/Common/Button'
 import { IconX } from 'components/Icons'
 import useStore from 'lib/store'
 import WalletHelper from 'lib/WalletHelper'
-import { useEffect, useState } from 'react'
-import useSWR from 'swr'
 import { capitalizeFirstLetter } from 'utils/common'
 
 const RaffleRegisterModal = () => {
@@ -13,6 +13,8 @@ const RaffleRegisterModal = () => {
 	const [dontShowAgain, setDontShowAgain] = useState(false)
 	const [isLoading, setIsLoading] = useState(false)
 	const currentUser = useStore((state) => state.currentUser)
+
+	const localStorageDontShowAgain = useRef(null)
 
 	const fetchRaffle = async () =>
 		axios
@@ -60,7 +62,16 @@ const RaffleRegisterModal = () => {
 	}
 
 	useEffect(() => {
-		if (data && data.current_level !== 'bronze') {
+		localStorageDontShowAgain.current = localStorage.getItem('dontShowAgainRaffle')
+	}, [])
+
+	useEffect(() => {
+		if (
+			data &&
+			data.current_level !== 'bronze' &&
+			data.status !== 'registered' &&
+			localStorageDontShowAgain.current !== 'true'
+		) {
 			setShowModal(true)
 		}
 	}, [data])
