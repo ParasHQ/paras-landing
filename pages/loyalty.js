@@ -69,7 +69,7 @@ export default function Loyalty() {
 			<div className="max-w-6xl m-auto">
 				<div className="relative mx-4 my-12 bg-[#20124D]">
 					<div
-						className="py-12"
+						className="py-4 md:py-12"
 						style={{ background: 'linear-gradient(180deg, #4E29AA 0%, #20124D 100%)' }}
 					>
 						<img
@@ -77,7 +77,7 @@ export default function Loyalty() {
 							src="https://paras-cdn.imgix.net/bafkreigxmtjfl6nsvb6ycpx3zvkdgqhtebbrq5ukf3lwyiigyycxhni6rq"
 						/>
 						<div className="flex items-center justify-center">
-							<p className="text-[#20124D] font-bold text-2xl bg-[#F1C232] px-8 py-4 rounded-md">
+							<p className="text-[#20124D] font-bold text:xl md:text-2xl bg-[#F1C232] px-8 py-4 m-4 rounded-md text-center">
 								Join Paras Loyalty & Get Excellent Rewards!
 							</p>
 						</div>
@@ -92,19 +92,19 @@ export default function Loyalty() {
 					</div>
 
 					{/* Rewards */}
-					<div className="m-6 bg-white pb-8 rounded-xl">
+					<div className="m-4 md:m-6 bg-white pb-8 rounded-xl">
 						<div>
 							<p className="font-bold text-center text-2xl text-white py-4 bg-[#674EA7] rounded-xl">
 								September's Rewards
 							</p>
 						</div>
 						<div className="my-8">
-							<p className="loyalty-mechanism-text text-center mx-16">
+							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16">
 								NFTs from Paras Top 10 Collections
 							</p>
-							<div className="grid grid-cols-3 md:mx-32 my-4">
+							<div className="grid grid-cols-2 gap-1 mx-1 md:gap-2 md:grid-cols-3 md:mx-32 my-4">
 								{data?.map((token) => (
-									<div key={token._id} className="bg-black m-2 rounded-xl overflow-hidden">
+									<div key={token._id} className="bg-black rounded-xl overflow-hidden">
 										<div className="w-full p-2 bg-black border-4 border-[#351C75] rounded-xl">
 											<div>
 												<Card
@@ -156,21 +156,21 @@ export default function Loyalty() {
 							</div>
 						</div>
 						<div className="my-8">
-							<p className="loyalty-mechanism-text text-center mx-16">
+							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16">
 								WL Spots & Free NFTs from New & Upcoming Projects
 							</p>
 						</div>
 					</div>
 
 					{/* Mechanism */}
-					<div className="m-6 mt-16 bg-white pb-8 rounded-xl">
+					<div className="m-4 md:m-6 mt-16 bg-white pb-8 rounded-xl">
 						<div>
 							<p className="font-bold text-center text-2xl text-white py-4 bg-[#674EA7] rounded-xl">
 								Loyalty Program Mechanism
 							</p>
 						</div>
 
-						<div className="mx-16 my-6">
+						<div className="mx-4 md:mx-16 my-6">
 							<div className="my-6">
 								<div className="flex">
 									<p className="loyalty-mechanism-number">1</p>
@@ -181,7 +181,7 @@ export default function Loyalty() {
 								<div className="text-center my-4">
 									<div>
 										<img
-											className="my-12 mx-auto"
+											className="my-4 md:my-12 mx-auto"
 											src="https://paras-cdn.imgix.net/bafkreigc23upnrqg6agxp5txv2xdqnwntngmmqv47vyixksyrvj4vvtoz4"
 										/>
 									</div>
@@ -245,10 +245,19 @@ export default function Loyalty() {
 										put into separate raffle pools.
 									</p>
 								</div>
-								<div className="flex justify-center items-center mt-8">
-									<img src="https://paras-cdn.imgix.net/bafkreihnolfcz3uxsw67bhfdq4hilg4axsqhzp5jirgz5iel5fyurnq5vi" />
-									<img src="https://paras-cdn.imgix.net/bafkreiecmt6ab5az2yqfwn4au6o2xikuxphv2n5akvfrdpskmd5qosz7mi" />
-									<img src="https://paras-cdn.imgix.net/bafkreib5somhf4ht7d4ygnon6tgls45ytxharnod7k3yldhxdvw2axnps4" />
+								<div className="md:flex text-center justify-center items-center mt-8">
+									<img
+										className="m-auto"
+										src="https://paras-cdn.imgix.net/bafkreihnolfcz3uxsw67bhfdq4hilg4axsqhzp5jirgz5iel5fyurnq5vi"
+									/>
+									<img
+										className="m-auto"
+										src="https://paras-cdn.imgix.net/bafkreiecmt6ab5az2yqfwn4au6o2xikuxphv2n5akvfrdpskmd5qosz7mi"
+									/>
+									<img
+										className="m-auto"
+										src="https://paras-cdn.imgix.net/bafkreib5somhf4ht7d4ygnon6tgls45ytxharnod7k3yldhxdvw2axnps4"
+									/>
 								</div>
 							</div>
 							<div>
@@ -260,7 +269,7 @@ export default function Loyalty() {
 								</div>
 								<div>
 									<img
-										className="my-12 mx-auto"
+										className="my-4 md:my-12 mx-auto"
 										src="https://paras-cdn.imgix.net/bafkreifu5bjpwp2n2pesjangyhc4h4q7prkmms2yal7o5zphh57ekl3gsi"
 									/>
 								</div>
@@ -275,7 +284,7 @@ export default function Loyalty() {
 								</div>
 								<div>
 									<img
-										className="my-12 mx-auto"
+										className="my-4 md:my-12 mx-auto"
 										src="https://paras-cdn.imgix.net/bafkreiee7nrub2itrxlhz5mamvsnxdnr4izqt2dhytadiy435ssbep3c6m"
 									/>
 								</div>

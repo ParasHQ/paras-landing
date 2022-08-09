@@ -536,10 +536,10 @@ input[type='time']::-webkit-calendar-picker-indicator {
 
 @layer components {
 	.loyalty-mechanism-number {
-		@apply bg-[#E69138] p-2 font-semibold text-lg rounded-md px-5 flex items-center justify-center;
+		@apply bg-[#E69138] p-2 font-semibold md:text-lg rounded-md px-5 flex items-center justify-center;
 	}
 
 	.loyalty-mechanism-text {
-		@apply bg-[#F1C232] font-semibold text-lg flex-1 p-2 rounded-md pl-4;
+		@apply bg-[#F1C232] font-semibold md:text-lg flex-1 p-2 rounded-md pl-4;
 	}
 }
