@@ -238,6 +238,7 @@ const ActivityLog = ({ query }) => {
 		)
 	}
 
+	// Render loader
 	const renderLoader = () => {
 		if (isFetching || isLoading) return <ActivityListLoader />
 	}
