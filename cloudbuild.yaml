@@ -3,7 +3,6 @@ steps:
     name: 'gcr.io/cloud-builders/kubectl'
     args:
       [
-        'kubectl',
         'get',
         'configmap',
         '"config-${_GKE_NAMESPACE}-${_GKE_DEPLOYMENT_NAME}"',
