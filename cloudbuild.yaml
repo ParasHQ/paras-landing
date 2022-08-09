@@ -37,7 +37,6 @@ steps:
         'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}',
         '--tag',
         'pr-${_PR_NUMBER}',
-        '--no-traffic',
       ]
 
   - id: 'link revision on pull request'
