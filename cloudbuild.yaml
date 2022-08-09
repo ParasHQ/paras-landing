@@ -14,12 +14,10 @@ steps:
 
   - id: 'set permission kubectl'
     name: 'gcr.io/${PROJECT_ID}/deployment-previews' # our custom builder
-    entrypoint: 'bash'
     args: ['chmod', 'u+x', './kubectl']
 
   - id: 'get env from configmap'
     name: 'gcr.io/${PROJECT_ID}/deployment-previews' # our custom builder
-    entrypoint: 'bash'
     args:
       [
         './kubectl',
