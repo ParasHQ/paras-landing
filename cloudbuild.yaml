@@ -1,21 +1,9 @@
 steps:
-  - id: 'get kubectl'
-    name: 'gcr.io/${PROJECT_ID}/deployment-previews' # our custom builder
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        curl -sfLo kubectl "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-
-  - id: 'set permission kubectl'
-    name: 'gcr.io/${PROJECT_ID}/deployment-previews' # our custom builder
-    args: ['chmod', 'u+x', './kubectl']
-
   - id: 'get env from configmap'
-    name: 'gcr.io/${PROJECT_ID}/deployment-previews' # our custom builder
+    name: 'gcr.io/cloud-builders/kubectl'
     args:
       [
-        './kubectl',
+        'kubectl',
         'get',
         'configmap',
         '"config-${_GKE_NAMESPACE}-${_GKE_DEPLOYMENT_NAME}"',
