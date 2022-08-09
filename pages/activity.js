@@ -258,7 +258,7 @@ const ActivityLog = ({ query }) => {
 					<title>{localeLn('ActivityParas')}</title>
 					<meta
 						name="description"
-						content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
+						content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR Blockchain."
 					/>
 
 					<meta
