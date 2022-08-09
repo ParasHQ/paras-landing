@@ -15,6 +15,7 @@ steps:
   - id: 'build image'
     name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}', '.']
+    timeout: '1600s'
 
   - id: 'push image'
     name: 'gcr.io/cloud-builders/docker'
