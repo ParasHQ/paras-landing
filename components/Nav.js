@@ -351,15 +351,11 @@ const Nav = () => {
 							</Link>
 							{router.pathname.includes('/publication') && navActive()}
 						</div>
-						<div className="px-3 text-gray-100 hidden md:block text-sm">
-							<a
-								href="https://comic.paras.id?utm_source=paras-marketplace&utm_medium=website&utm_campaign=nav"
-								target="_blank"
-								className="flex cursor-pointer"
-								rel="noreferrer"
-							>
-								{localeLn('Comics')}
-							</a>
+						<div className="relative px-3 text-gray-100 hidden md:block text-sm">
+							<Link href="/loyalty">
+								<a>{localeLn('Loyalty')}</a>
+							</Link>
+							{router.pathname.includes('/loyalty') && navActive()}
 						</div>
 						<div className="px-3 text-gray-100 hidden md:block text-sm">
 							<a
@@ -474,14 +470,15 @@ const Nav = () => {
 								</Link>
 							</div>
 							<div className="text-gray-400 ">
-								<a
-									href="https://comic.paras.id?utm_source=paras-marketplace&utm_medium=website&utm_campaign=nav"
-									target="_blank"
-									className="p-4 block w-full"
-									rel="noreferrer"
-								>
-									{localeLn('Comics')}
-								</a>
+								<Link href="/loyalty">
+									<a
+										className={`p-4 block w-full ${
+											router.pathname.includes('/loyalty') && 'text-white'
+										}`}
+									>
+										{localeLn('loyalty')}
+									</a>
+								</Link>
 							</div>
 							<div className="text-gray-400">
 								<a
