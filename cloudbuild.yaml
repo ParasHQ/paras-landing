@@ -14,6 +14,10 @@ steps:
         '>',
         'env.temp',
       ]
+    env:
+      - 'CLOUDSDK_COMPUTE_REGION=asia-southeast1'
+      - 'CLOUDSDK_COMPUTE_ZONE=asia-southeast1-a'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-testnet'
 
   - id: 'build image'
     name: 'gcr.io/cloud-builders/docker'
