@@ -1,7 +1,7 @@
 steps:
   - id: 'get env from configmap'
     name: 'gcr.io/cloud-builders/kubectl'
-    entrypoint: bash
+    entrypoint: sh
     args:
       - '-c'
       - |
