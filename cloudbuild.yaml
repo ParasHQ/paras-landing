@@ -60,6 +60,8 @@ steps:
         '${SHORT_SHA}',
       ]
 
+timeout: 1600s
+
 substitutions:
   _SERVICE_NAME: paras-landing
   _REGION: asia-southeast1
