@@ -7,7 +7,7 @@ import { GAS_FEE_150 } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
-import { trackBuyToken, trackBuyTokenImpression } from 'lib/ga'
+import { trackBuyToken, trackBuyTokenImpression, trackClickBuyButton } from 'lib/ga'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
@@ -37,6 +37,7 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 		}
 		setIsBuying(true)
 		trackBuyToken(data.token_id)
+		trackClickBuyButton(data.token_id)
 
 		const wallet = await selector.wallet()
 

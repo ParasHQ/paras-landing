@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import ParasRequest from 'lib/ParasRequest'
-import InfiniteScroll from 'react-infinite-scroll-component'
+import axios from 'axios'
 import Head from 'next/head'
 import Nav from 'components/Nav'
 import Footer from 'components/Footer'
 import useStore from 'lib/store'
-import ActivityDetail from 'components/Activity/ActivityDetail'
+import ActivityDetail, { descriptionMaker } from 'components/Activity/ActivityDetail'
 import { useRouter } from 'next/router'
 import ActivityTopUsers from 'components/Activity/ActivityTopUsers'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
@@ -18,6 +18,45 @@ import TopCollectorsAllTime from 'components/Activity/TopCollectorsAllTime'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import ActivityListLoader from 'components/Activity/ActivityListLoader'
 import IconV from 'components/Icons/component/IconV'
+import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
+import TokenDetailModal from 'components/Token/TokenDetailModal'
+import Modal from 'components/Modal'
+import CopyLink from 'components/Common/CopyLink'
+import { FacebookIcon, FacebookShareButton, TwitterIcon, TwitterShareButton } from 'react-share'
+import RecyclerScrollCommon from 'components/RecyclerScroll/RecyclerCommon'
+
+const HEADERS = [
+	{
+		id: 'title',
+		title: 'Title',
+		className: `w-3/12 p-3 h-full`,
+	},
+	{
+		id: 'price',
+		title: 'Price',
+		className: `items-center text-center w-2/12 p-3 h-full`,
+	},
+	{
+		id: 'from',
+		title: 'From',
+		className: `items-center w-2/12 p-3 h-full`,
+	},
+	{
+		id: 'to',
+		title: 'To',
+		className: `items-center w-2/12 p-3 h-full`,
+	},
+	{
+		id: 'time',
+		title: 'Time',
+		className: `w-4/12 md:w-2/12 pr-2 md:p-0 lg:p-3 text-center md:h-full`,
+	},
+	{
+		id: 'type',
+		title: 'Type',
+		className: `w-2/12 p-3 h-full`,
+	},
+]
 
 const ActivityLog = ({ query }) => {
 	const {
@@ -28,6 +67,9 @@ const ActivityLog = ({ query }) => {
 		activityListHasMore,
 		setActivityListHasMore,
 		setActivitySlowUpdate,
+		localToken,
+		localTradedToken,
+		activity,
 	} = useStore()
 	const router = useRouter()
 	const modalRef = useRef()
@@ -38,6 +80,12 @@ const ActivityLog = ({ query }) => {
 	const [showModal, setShowModal] = useState(false)
 	const [activityType, setActivityType] = useState(router.query.tab ? router.query.tab : 'activity')
 	const [isLoading, setIsLoading] = useState(false)
+	const [initialState, setInitialState] = useState(true)
+	const parentRef = useRef()
+	const [activityDetailIdx, setActivityDetailIdx] = useState(-1)
+	const [showModalShare, setShowModalShare] = useState(null)
+	const [isCopiedShare, setIsCopiedShare] = useState(false)
+	const shareLink = `${process.env.BASE_URL}/activity/${activity._id}`
 	const { localeLn } = useIntl()
 	useEffect(() => {
 		const onClick = (e) => {
@@ -155,10 +203,45 @@ const ActivityLog = ({ query }) => {
 		}
 		setIsFetching(false)
 		setIsLoading(false)
+		setInitialState(false)
 	}
 
 	const _fetchDataWrapper = async () => {
 		_fetchData(router.query)
+	}
+
+	const handleAfterCopyShare = () => {
+		setIsCopiedShare(true)
+
+		setTimeout(() => {
+			setShowModalShare(false)
+			setIsCopiedShare(false)
+		}, 1500)
+	}
+
+	const rowActivity = (type, data, index, state) => {
+		const { detailIndex } = state
+		return (
+			<div
+				key={`${data._id}-${index}`}
+				className={`my-3 md:mt-6 ${index === detailIndex ? `h-36` : `h-auto`}`}
+				style={{ width: `${parentRef.current?.clientWidth}px` }}
+			>
+				<ActivityDetail
+					activity={data}
+					index={index}
+					isLoading={isLoading}
+					isFetching={isFetching}
+					setShowDetailIndex={setActivityDetailIdx}
+					setShowModalShare={setShowModalShare}
+				/>
+			</div>
+		)
+	}
+
+	// Render loader
+	const renderLoader = () => {
+		if (isFetching || isLoading) return <ActivityListLoader />
 	}
 
 	return (
@@ -320,25 +403,100 @@ const ActivityLog = ({ query }) => {
 											<p className="text-gray-300 py-8">{localeLn('NoTransactions')}</p>
 										</div>
 									)}
-									<InfiniteScroll
-										dataLength={activityList.length}
-										next={_fetchDataWrapper}
-										hasMore={activityListHasMore}
-										loader={<ActivityListLoader />}
-									>
-										{activityList.map((act, index) => {
-											return (
-												<div key={act._id} className="mt-6">
-													<ActivityDetail activity={act} index={index} isLoading={isLoading} />
-												</div>
-											)
-										})}
-									</InfiniteScroll>
+									<div className="w-full hidden md:block">
+										<div className="flex flex-row w-full text-gray-300 hover:opacity-75 items-center">
+											{HEADERS.map((d, index) => {
+												return (
+													<div key={d.id} className={`${HEADERS[index].className} h-full`}>
+														<span className="capitalize">{localeLn(d.title)}</span>
+													</div>
+												)
+											})}
+										</div>
+									</div>
+									{initialState && isLoading ? (
+										<ActivityListLoader />
+									) : (
+										<div ref={parentRef} className="relative block w-full h-70vh mt-2">
+											<RecyclerScrollCommon
+												fetchNext={_fetchDataWrapper}
+												items={activityList}
+												rowRender={rowActivity}
+												renderLoader={renderLoader}
+												hasMore={activityListHasMore}
+												windowScroll={false}
+												extendedState={{ detailIndex: activityDetailIdx }}
+												nonDeterministicRendering={true}
+												initialState={initialState}
+												parentRef={parentRef}
+											/>
+										</div>
+									)}
 								</div>
 							</div>
 						)}
 					</div>
-
+					{showModalShare === 'options' && (
+						<Modal close={() => setShowModalShare('')}>
+							<div className="max-w-sm w-full px-4 py-2 bg-gray-100 m-auto rounded-md text-black">
+								<CopyLink link={shareLink} afterCopy={handleAfterCopyShare}>
+									<div className="py-2 cursor-pointer flex items-center">
+										<svg
+											className="rounded-md"
+											width="24"
+											height="24"
+											viewBox="0 0 24 24"
+											fill="none"
+											xmlns="http://www.w3.org/2000/svg"
+										>
+											<rect width="24" height="24" fill="#11111F" />
+											<path
+												fillRule="evenodd"
+												clipRule="evenodd"
+												d="M12.7147 14.4874L13.7399 15.5126L11.6894 17.5631C10.2738 18.9787 7.97871 18.9787 6.56313 17.5631C5.14755 16.1476 5.14755 13.8524 6.56313 12.4369L8.61364 10.3864L9.63889 11.4116L7.58839 13.4621C6.73904 14.3115 6.73904 15.6885 7.58839 16.5379C8.43773 17.3872 9.8148 17.3872 10.6641 16.5379L12.7147 14.4874ZM11.6894 9.36136L10.6641 8.3361L12.7146 6.2856C14.1302 4.87002 16.4253 4.87002 17.8409 6.2856C19.2565 7.70118 19.2565 9.99628 17.8409 11.4119L15.7904 13.4624L14.7651 12.4371L16.8156 10.3866C17.665 9.53726 17.665 8.1602 16.8156 7.31085C15.9663 6.4615 14.5892 6.4615 13.7399 7.31085L11.6894 9.36136ZM9.12499 13.9751L10.1502 15.0004L15.2765 9.87409L14.2513 8.84883L9.12499 13.9751Z"
+												fill="white"
+											/>
+										</svg>
+										<p className="pl-2">{isCopiedShare ? `Copied` : `Copy Link`}</p>
+									</div>
+								</CopyLink>
+								<div className="py-2 cursor-pointer">
+									<TwitterShareButton
+										title={`${descriptionMaker(
+											activity,
+											localToken,
+											localTradedToken
+										)} via @ParasHQ\n\n#paras #cryptoart #digitalart #tradingcards`}
+										url={shareLink}
+										className="flex items-center w-full"
+									>
+										<TwitterIcon
+											size={24}
+											className="rounded-md"
+											bgStyle={{
+												fill: '#11111F',
+											}}
+										></TwitterIcon>
+										<p className="pl-2">{localeLn('Twitter')}</p>
+									</TwitterShareButton>
+								</div>
+								<div className="py-2 cursor-pointer">
+									<FacebookShareButton url={shareLink} className="flex items-center w-full">
+										<FacebookIcon
+											size={24}
+											className="rounded-md"
+											bgStyle={{
+												fill: '#11111F',
+											}}
+										></FacebookIcon>
+										<p className="pl-2">{localeLn('Facebook')}</p>
+									</FacebookShareButton>
+								</div>
+							</div>
+						</Modal>
+					)}
+					<TokenSeriesDetailModal tokens={[localToken]} />
+					<TokenDetailModal tokens={[localToken]} />
 					<ButtonScrollTop />
 				</div>
 				<Footer />

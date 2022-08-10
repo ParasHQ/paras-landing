@@ -321,6 +321,8 @@ const tab = {
 	Owner: 'Propietario',
 	Copies: 'Copias',
 	NoOwnersBecome: 'No propietarios, vuelvete el primero!',
+	NoTokenDescription: 'Sin descripción',
+	NoTokenAttributes: 'Sin atributos',
 	Burned: 'Quemada',
 }
 const token = {

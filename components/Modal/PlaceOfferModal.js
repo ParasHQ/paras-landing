@@ -17,6 +17,7 @@ import BannedConfirmModal from './BannedConfirmModal'
 import TradeNFTModal from './TradeNFTModal'
 import { trackOfferToken, trackOfferTokenImpression } from 'lib/ga'
 import { useWalletSelector } from 'components/Common/WalletSelector'
+import { trackClickPlaceOffer, trackOfferToken, trackOfferTokenImpression } from 'lib/ga'
 
 const PlaceOfferModal = ({
 	data,
@@ -123,6 +124,7 @@ const PlaceOfferModal = ({
 		const hasDepositStorage = await hasStorageBalance()
 
 		trackOfferToken(data.token_id)
+		trackClickPlaceOffer(data.token_id)
 
 		try {
 			const depositParams = { receiver_id: currentUser }

@@ -7,7 +7,12 @@ import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import Profile from 'components/Profile/Profile'
 import FilterMarket from 'components/Filter/FilterMarket'
-import { parseSortTokenQuery, setDataLocalStorage } from 'utils/common'
+import {
+	parseImgUrl,
+	parseSortTokenQuery,
+	prevPagePositionY,
+	setDataLocalStorage,
+} from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
@@ -27,12 +32,24 @@ const Collection = ({ userProfile, accountId }) => {
 	const [collections, setCollections] = useState([])
 	const [idNext, setIdNext] = useState(null)
 	const [priceNext, setPriceNext] = useState(null)
+	const [endedSoonestNext, setEndedSoonestNext] = useState(null)
 	const [hasMore, setHasMore] = useState(true)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(false)
 	const [display, setDisplay] = useState(
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
+	const prevY =
+		typeof window !== 'undefined' &&
+		parseInt(sessionStorage.getItem('scrollPosition' + router.pathname + router.asPath))
+
+	useEffect(() => {
+		if (prevY) {
+			let prevData = setInterval(() => fetchOwnerTokens, 1000)
+			setTimeout(() => clearInterval(prevData), 2000)
+		}
+		prevPagePositionY(router, window.scrollY, tokens)
+	}, [tokens])
 
 	useEffect(() => {
 		fetchOwnerTokens(true)
@@ -54,6 +71,7 @@ const Collection = ({ userProfile, accountId }) => {
 				: {
 						_id_next: idNext,
 						price_next: priceNext,
+						ended_soonest_next: endedSoonestNext,
 				  }),
 		})
 		const res = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
@@ -82,6 +100,8 @@ const Collection = ({ userProfile, accountId }) => {
 			const lastData = newData.results[newData.results.length - 1]
 			setIdNext(lastData._id)
 			params.__sort.includes('price') && setPriceNext(lastData.price)
+			params.__sort.includes('ended_at') &&
+				setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
 		}
 		setIsFetching(false)
 	}
@@ -112,6 +132,7 @@ const Collection = ({ userProfile, accountId }) => {
 			...(query.pmin && { min_price: parseNearAmount(query.pmin) }),
 			...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 			...(query._id_next && { _id_next: query._id_next }),
+			...(query.ended_soonest_next && { ended_soonest_next: query.ended_soonest_next }),
 			...(query.price_next &&
 				parsedSortQuery.includes('price') && { price_next: query.price_next }),
 			...(query.is_staked && { is_staked: query.is_staked }),
@@ -136,6 +157,8 @@ const Collection = ({ userProfile, accountId }) => {
 			const lastData = res.data.data.results[res.data.data.results.length - 1]
 			setIdNext(lastData._id)
 			params.__sort.includes('price') && setPriceNext(lastData.price)
+			params.__sort.includes('ended_at') &&
+				setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
 		}
 
 		setIsFiltering(false)
@@ -164,7 +187,7 @@ const Collection = ({ userProfile, accountId }) => {
 			userProfile?.bio || ''
 		}`,
 		image: userProfile?.imgUrl
-			? `${process.env.V2_API_URL}/socialCard/avatar/${userProfile.imgUrl.split('://')[1]}`
+			? parseImgUrl(userProfile?.imgUrl, null, { useOriginal: true })
 			: `https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png`,
 	}
 

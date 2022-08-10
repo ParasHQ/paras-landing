@@ -77,7 +77,7 @@ const MyBids = () => {
 				}}
 			></div>
 			<Head>
-				<title>{localeLn('MyBidsParas')}</title>
+				<title>{localeLn('MyOffersParas')}</title>
 				<meta
 					name="description"
 					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
@@ -126,7 +126,7 @@ const MyBids = () => {
 							type === 'myBids' ? 'font-bold' : 'opacity-75'
 						}`}
 					>
-						{localeLn('MyBids')}
+						{localeLn('MyOffers')}
 					</div>
 					<div
 						onClick={() => switchType('receivedBids')}
@@ -134,7 +134,7 @@ const MyBids = () => {
 							type === 'receivedBids' ? 'font-bold' : 'opacity-75'
 						}`}
 					>
-						{localeLn('ReceivedBids')}
+						{localeLn('ReceivedOffers')}
 					</div>
 				</div>
 				<InfiniteScroll
@@ -154,7 +154,7 @@ const MyBids = () => {
 					))}
 					{bidsData.length === 0 && !hasMore && (
 						<div className="border-2 border-dashed p-2 rounded-md text-center border-gray-800 my-4">
-							<p className="my-20 text-center text-gray-200">{localeLn('NoActiveBid')}</p>
+							<p className="my-20 text-center text-gray-200">{localeLn('NoActiveOffer')}</p>
 						</div>
 					)}
 					{bidsData.length === 0 && hasMore && (

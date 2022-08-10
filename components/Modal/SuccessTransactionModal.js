@@ -299,7 +299,10 @@ const SuccessTransactionModal = () => {
 			const msg = JSON.parse(txDetail.args.msg)
 			if (msg.market_type === 'sale' && !msg.is_auction) {
 				return 'Update Listing Success'
-			} else if (msg.market_type === 'accept_offer') {
+			} else if (
+				msg.market_type === 'accept_offer' ||
+				msg.market_type === 'accept_offer_paras_series'
+			) {
 				return 'Accept Offer Success'
 			} else if (msg.market_type === 'add_trade') {
 				return 'Add Trade Success'
@@ -389,7 +392,10 @@ const SuccessTransactionModal = () => {
 						{formatNearAmount(msg.price || 0)} Ⓝ
 					</>
 				)
-			} else if (msg.market_type === 'accept_offer') {
+			} else if (
+				msg.market_type === 'accept_offer' ||
+				msg.market_type === 'accept_offer_paras_series'
+			) {
 				return (
 					<>
 						You successfully accept offer <b>{prettyTruncate(token.metadata.title, 30)}</b>

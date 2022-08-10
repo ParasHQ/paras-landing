@@ -7,7 +7,7 @@ import Head from 'next/head'
 import Footer from 'components/Footer'
 import useStore from 'lib/store'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
-import { parseSortQuery, setDataLocalStorage } from 'utils/common'
+import { parseSortQuery, prevPagePositionY, setDataLocalStorage } from 'utils/common'
 import CardListLoader from 'components/Card/CardListLoader'
 import CategoryList from 'components/CategoryList'
 import { useIntl } from 'hooks/useIntl'
@@ -25,13 +25,26 @@ const MarketPage = ({ serverQuery }) => {
 	const [idNext, setIdNext] = useState(null)
 	const [lowestPriceNext, setLowestPriceNext] = useState(null)
 	const [updatedAtNext, setUpdatedAtNext] = useState(null)
+	const [endedSoonestNext, setEndedSoonestNext] = useState(null)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(true)
 	const [display, setDisplay] = useState(
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
 	const [hasMore, setHasMore] = useState(true)
+	const prevY =
+		typeof window !== 'undefined' &&
+		parseInt(sessionStorage.getItem('scrollPosition' + router.pathname + router.asPath))
+
 	const { localeLn } = useIntl()
+
+	useEffect(() => {
+		if (prevY) {
+			let prevData = setInterval(() => _fetchData, 1000)
+			setTimeout(() => clearInterval(prevData), 2000)
+		}
+		prevPagePositionY(router, window.scrollY, tokens)
+	}, [tokens])
 
 	useEffect(() => {
 		getCategory()
@@ -79,6 +92,8 @@ const MarketPage = ({ serverQuery }) => {
 			setIdNext(lastData._id)
 			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+			params.__sort.includes('ended_at') &&
+				setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
 		}
 		setIsFiltering(false)
 	}
@@ -105,6 +120,7 @@ const MarketPage = ({ serverQuery }) => {
 						lowest_price_next: lowestPriceNext,
 						updated_at_next: updatedAtNext,
 						liked_by: currentUser,
+						ended_soonest_next: endedSoonestNext,
 				  }),
 		})
 		const res = await ParasRequest(`${process.env.V2_API_URL}/token-series`, {
@@ -122,6 +138,8 @@ const MarketPage = ({ serverQuery }) => {
 			setIdNext(lastData._id)
 			params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+			params.__sort.includes('ended_at') &&
+				setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
 		}
 		setIsFetching(false)
 	}
@@ -228,6 +246,7 @@ const tokensParams = (query) => {
 		...(query.pmax && { max_price: parseNearAmount(query.pmax) }),
 		...(query.card_trade_type === 'notForSale' && { has_price: false }),
 		...(query._id_next && { _id_next: query._id_next }),
+		...(query.ended_soonest_next && { ended_soonest_next: query.ended_soonest_next }),
 		...(query.lowest_price_next &&
 			parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 		...(query.updated_at_next &&

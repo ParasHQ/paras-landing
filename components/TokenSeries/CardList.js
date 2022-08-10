@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import Card from 'components/Card/Card'
-import { parseImgUrl, prettyBalance, abbrNum } from 'utils/common'
+import { parseImgUrl, prettyBalance, abbrNum, saveScrollPosition } from 'utils/common'
 import Link from 'next/link'
 import useStore from 'lib/store'
 import { useRouter } from 'next/router'
@@ -19,7 +19,7 @@ import { useToast } from 'hooks/useToast'
 
 import IconLove from 'components/Icons/component/IconLove'
 import LoginModal from 'components/Modal/LoginModal'
-import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
+import { trackClickMoreCollection, trackLikeToken, trackUnlikeToken } from 'lib/ga'
 
 const CardList = ({
 	name = 'default',
@@ -30,6 +30,7 @@ const CardList = ({
 	type,
 	displayType = 'large',
 	showLike = false,
+	typeCardList,
 }) => {
 	const store = useStore()
 	const containerRef = useRef()
@@ -101,7 +102,11 @@ const CardList = ({
 				}
 				className="-mx-4"
 			>
-				<div className="flex flex-wrap select-none">
+				<div
+					className={`flex ${
+						typeCardList === 'top-rarity-token' ? 'flex-nowrap' : 'flex-wrap'
+					} select-none`}
+				>
 					{tokens.map((_token, idx) => (
 						<TokenSeriesSingle
 							key={`${_token.contract_id}::${_token.token_series_id}-${displayType}-${idx}`}
@@ -110,6 +115,8 @@ const CardList = ({
 							displayType={displayType}
 							type={type}
 							showLike={showLike}
+							tokens={tokens}
+							typeCardList={typeCardList}
 						/>
 					))}
 				</div>
@@ -126,6 +133,8 @@ const TokenSeriesSingle = ({
 	type,
 	displayType = 'large',
 	showLike,
+	tokens,
+	typeCardList,
 }) => {
 	const currentUser = useStore((state) => state.currentUser)
 	const { token, mutate } = useTokenSeries({
@@ -144,6 +153,7 @@ const TokenSeriesSingle = ({
 	const [isLiked, setIsLiked] = useState(false)
 	const [defaultLikes, setDefaultLikes] = useState(0)
 	const [showLogin, setShowLogin] = useState(false)
+	const [currentVariant, setVariant] = useState(0)
 	const { localeLn } = useIntl()
 	const toast = useToast()
 
@@ -152,6 +162,11 @@ const TokenSeriesSingle = ({
 			? token.token?.amount
 			: token.lowest_price || token.price
 	const [isEndedTime, setIsEndedTime] = useState(false)
+
+	useEffect(() => {
+		const variant = localStorage.getItem('variant') || 0
+		setVariant(variant)
+	})
 
 	const _showInfoUpdatingAuction = () => {
 		toast.show({
@@ -213,28 +228,41 @@ const TokenSeriesSingle = ({
 	const onClickSeeDetails = async (choosenToken, additionalQuery) => {
 		const token = (await mutate()) || choosenToken
 		const lookupToken = token?.token
-		let platform = navigator.userAgent.includes('iPhone')
-		if (platform) {
-			router.push(`/token/${token.contract_id}::${token.token_series_id}`)
-			return
-		}
-		router.push(
-			{
-				pathname: router.pathname,
-				query: {
-					...router.query,
-					...additionalQuery,
-					contractId: token.contract_id,
-					tokenSeriesId: token.token_series_id,
-					tokenId: lookupToken?.token_id || '',
-				},
-			},
-			`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`,
-			{
-				shallow: true,
-				scroll: false,
+		if (currentVariant == 0) {
+			if (typeCardList === 'top-rarity-token')
+				trackClickMoreCollection(lookupToken?.token_id || token.token_series_id)
+			let platform = navigator.userAgent.includes('iPhone')
+			if (platform) {
+				router.push(
+					`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`
+				)
+				return
 			}
-		)
+			router.push(
+				{
+					pathname: router.pathname,
+					query: {
+						...router.query,
+						...additionalQuery,
+						contractId: token.contract_id,
+						tokenSeriesId: token.token_series_id,
+						tokenId: lookupToken?.token_id || '',
+					},
+				},
+				`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`,
+				{
+					shallow: true,
+					scroll: false,
+				}
+			)
+		} else {
+			if (typeCardList !== 'top-rarity-token') {
+				saveScrollPosition(tokens)
+			}
+			router.push(
+				`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`
+			)
+		}
 	}
 
 	const onCloseModal = () => {
@@ -462,6 +490,7 @@ const TokenSeriesSingle = ({
 									!isLiked &&
 									likeToken(token.contract_id, token.token_series_id, 'double_click_list')
 								}
+								typeCardList={typeCardList}
 							/>
 						</div>
 					</a>
@@ -534,9 +563,9 @@ const TokenSeriesSingle = ({
 							displayType === 'large' ? `flex gap-1` : `flex gap-1`
 						} text-right absolute top-0 right-0 flex-col items-end`}
 					>
-						{type === 'collection' && !!token.metadata.rank && (
+						{type === 'collection' && !!token.metadata.score && (
 							<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
-								Rank {token.metadata?.rank}
+								Rarity Score {token.metadata?.score?.toFixed(2)}
 							</p>
 						)}
 						{showLike && (

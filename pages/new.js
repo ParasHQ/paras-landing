@@ -14,7 +14,6 @@ import { useToast } from 'hooks/useToast'
 import Footer from 'components/Footer'
 import { parseDate, parseImgUrl, prettyBalance, readFileAsUrl } from 'utils/common'
 import { encodeImageToBlurhash } from 'lib/blurhash'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import { GAS_FEE, MAX_FILE_SIZE, STORAGE_CREATE_SERIES_FEE } from 'config/constants'
 import Button from 'components/Common/Button'
 import { InputText, InputTextarea, InputTextAuto } from 'components/Common/form'
@@ -32,6 +31,7 @@ import FileType from 'file-type/browser'
 import retry from 'async-retry'
 import IconV from 'components/Icons/component/IconV'
 import { useWalletSelector } from 'components/Common/WalletSelector'
+import FilterAddCollection from 'components/Filter/FilterAddCollection'
 
 const LIMIT = 16
 
@@ -1025,7 +1025,11 @@ const NewPage = () => {
 										</>
 									)}
 									{iframeUrl && showIframeFile && (
-										<iframe src={iframeUrl} className="object-contain w-full h-full" />
+										<iframe
+											src={iframeUrl}
+											sandbox="allow-scripts"
+											className="object-contain w-full h-full"
+										/>
 									)}
 								</>
 							) : (
@@ -1085,7 +1089,7 @@ const NewPage = () => {
 							</div>
 						)}
 					</div>
-					<div className="w-full lg:w-1/3 bg-gray-700 p-4 relative">
+					<div className="w-full -mt-20 pb-80 md:pb-0 md:mt-0 lg:w-1/3 bg-gray-700 p-4 relative">
 						{router.query.categoryId && (
 							<div
 								className="w-full bg-primary px-4 py-1 text-center -m-4 mb-4 shadow-md"
@@ -1111,49 +1115,21 @@ const NewPage = () => {
 							<div className="h-60">
 								<div className="text-sm mt-2">Choose Collection</div>
 								<div
-									className="max-h-36 lg:max-h-72 overflow-y-scroll new-card-scroll"
-									id="collection::user"
+									onClick={() => setShowCreateColl(!showCreateColl)}
+									className="bg-gray-800 mt-2 flex items-center rounded-md overflow-hidden cursor-pointer border-2 border-gray-800"
 								>
-									<InfiniteScroll
-										dataLength={collectionList.length}
-										next={fetchCollectionUser}
-										hasMore={hasMore}
-										scrollableTarget="collection::user"
-									>
-										<div
-											onClick={() => setShowCreateColl(!showCreateColl)}
-											className="bg-gray-800 mt-2 flex items-center rounded-md overflow-hidden cursor-pointer border-2 border-gray-800"
-										>
-											<div className="h-10 w-full flex items-center justify-center flex-shrink-0 text-sm text-center font-medium">
-												+ {localeLn('CreateNewCollection')}
-											</div>
-										</div>
-										{collectionList.map((item) => (
-											<div
-												key={item.collection_id}
-												onClick={() => setChoosenCollection(item)}
-												className={`bg-gray-800 mt-3 flex items-center rounded-md overflow-hidden cursor-pointer border-2 shadow-xl drop-shadow-xl  ${
-													item.collection_id === choosenCollection.collection_id
-														? 'border-white'
-														: `border-gray-800`
-												}`}
-											>
-												<div className="w-10 h-10 bg-primary flex-shrink-0">
-													{item.media && (
-														<img
-															src={parseImgUrl(item.media, null, {
-																width: `600`,
-																useOriginal: process.env.APP_ENV === 'production' ? false : true,
-															})}
-															className="w-10 h-10"
-														/>
-													)}
-												</div>
-												<div className="ml-3 text-sm truncate">{item.collection}</div>
-											</div>
-										))}
-									</InfiniteScroll>
+									<div className="h-10 w-full flex items-center justify-center flex-shrink-0 text-sm text-center font-medium">
+										+ {localeLn('CreateNewCollection')}
+									</div>
 								</div>
+								<FilterAddCollection
+									collections={collectionList}
+									fetchCollectionUser={fetchCollectionUser}
+									hasMore={hasMore}
+									choosenCollection={choosenCollection}
+									setChoosenCollection={(e) => setChoosenCollection(e)}
+									currentUser={store.currentUser}
+								/>
 								{category_id && category_name && (
 									<div className="text-xs lg:text-sm mt-3 mb-1 text-opacity-30 flex justify-between items-center">
 										<p className="font-semibold">Choosen category:</p>
@@ -1162,7 +1138,7 @@ const NewPage = () => {
 										</div>
 									</div>
 								)}
-								<div className="flex justify-between p-4 absolute bottom-0 right-0 left-0">
+								<div className="flex justify-between px-4 pb-4 absolute bottom-0 right-0 left-0">
 									<button disabled={step === 0} onClick={_handleBack}>
 										{localeLn('Back')}
 									</button>

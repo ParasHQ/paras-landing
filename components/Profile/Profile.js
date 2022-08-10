@@ -180,7 +180,7 @@ const Profile = ({ userProfile, activeTab }) => {
 							</a>
 						)}
 					</div>
-					<Follow userProfile={profileData} currentUser={currentUser} />
+					{profileData && <Follow userProfile={profileData} currentUser={currentUser} />}
 				</div>
 			</div>
 			{profileData?.flag && (
