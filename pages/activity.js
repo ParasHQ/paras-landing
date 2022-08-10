@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import ParasRequest from 'lib/ParasRequest'
-import axios from 'axios'
 import Head from 'next/head'
 import Nav from 'components/Nav'
 import Footer from 'components/Footer'

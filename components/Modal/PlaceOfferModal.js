@@ -15,7 +15,6 @@ import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
 import TradeNFTModal from './TradeNFTModal'
-import { trackOfferToken, trackOfferTokenImpression } from 'lib/ga'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 import { trackClickPlaceOffer, trackOfferToken, trackOfferTokenImpression } from 'lib/ga'
 

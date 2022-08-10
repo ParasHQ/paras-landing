@@ -15,7 +15,6 @@ import { useEffect, useState } from 'react'
 import useSWR from 'swr'
 import { parseImgUrl } from 'utils/common'
 import useStore from 'lib/store'
-import WalletHelper from 'lib/WalletHelper'
 import Modal from '../../../../components/Modal'
 import Setting from '../../../../components/Setting'
 import LaunchpadRemindModal from 'components/Modal/LaunchpadRemindModal'
@@ -38,18 +37,18 @@ const ProjectPage = ({ project }) => {
 	const changeRemindMe = async () => {
 		if (isEmailVerified) {
 			try {
-				const resp = await axios.post(
+				const resp = await ParasRequest.post(
 					`${process.env.V2_API_URL}/launchpad/${router.query.launchpad_id}/project/${router.query.project_id}/reminder`,
 					{
 						remind: !remindMe,
-					},
-					{ headers: { authorization: await WalletHelper.authToken() } }
+					}
 				)
 				if (resp.status == 200) {
 					localStorage.setItem(`${router.query.launchpad_id}:${router.query.project_id}`, !remindMe)
 					setRemindMe(!remindMe)
 				}
 			} catch (e) {
+				// eslint-disable-next-line no-console
 				console.log(e)
 			}
 		} else {

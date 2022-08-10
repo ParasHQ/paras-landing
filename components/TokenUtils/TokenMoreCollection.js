@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 import { IconDownArrow } from 'components/Icons'
 import CardTopRarityListLoader from 'components/Card/CardTopRarityListLoader'
 import Button from 'components/Common/Button'
 import router from 'next/router'
 import CardList from 'components/TokenSeries/CardList'
+import ParasRequest from 'lib/ParasRequest'
 
 const LIMIT = 7
 
@@ -23,7 +23,7 @@ const TokenMoreCollection = ({ localToken, className }) => {
 		}
 		const fetchTopRarityToken = async () => {
 			setIsLoading(true)
-			const resp = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+			const resp = await ParasRequest.get(`${process.env.V2_API_URL}/token-series`, {
 				params: auctionParams,
 			})
 			const dataTopRarity = resp.data.data.results
