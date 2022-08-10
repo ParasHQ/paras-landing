@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
-const InputDropdown = ({ data, defaultValue = '', selectItem = () => null }) => {
+const InputDropdown = ({
+	data,
+	defaultValue = '',
+	selectItem = () => null,
+	bgColor = 'bg-[#302D36]',
+}) => {
 	const [modal, setModal] = useState(false)
 	const [select, setSelect] = useState(() => data.find((item) => item.id === defaultValue).label)
 
@@ -36,7 +41,9 @@ const InputDropdown = ({ data, defaultValue = '', selectItem = () => null }) => 
 				</svg>
 			</div>
 			{modal && (
-				<div className="right-0 w-52 py-2 mt-2 bg-[#302D36] shadow-lg rounded-lg absolute z-20 overflow-hidden">
+				<div
+					className={`${bgColor} w-52 py-2 mt-2 shadow-lg rounded-lg absolute z-20 overflow-hidden`}
+				>
 					<div className="overflow-y-auto max-h-60">
 						<ul className="text-white w-full">
 							{data.map((item, index) => {

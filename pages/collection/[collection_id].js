@@ -14,6 +14,7 @@ import {
 	parseSortQuery,
 	setDataLocalStorage,
 	parseSortTokenQuery,
+	prevPagePositionY,
 	prettyTruncate,
 } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
@@ -84,8 +85,19 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)')
 	)
 	const isItemActiveTab = router.query.tab === 'items' || router.query.tab === undefined
+	const prevY =
+		typeof window !== 'undefined' &&
+		parseInt(sessionStorage.getItem('scrollPosition' + router.pathname + router.asPath))
 
 	const toast = useToast()
+
+	useEffect(() => {
+		if (prevY) {
+			let prevData = setInterval(() => fetchData, 1000)
+			setTimeout(() => clearInterval(prevData), 2000)
+		}
+		prevPagePositionY(router, window.scrollY, tokens)
+	}, [tokens])
 
 	const _fetchCollectionStats = async (initialFetch) => {
 		if (initialFetch) {
@@ -860,7 +872,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 										className="flex-grow rounded-md px-4 py-1 mr-2 my-1 border-2 border-gray-800 bg-blue-400 bg-opacity-10 text-sm cursor-pointer group hover:border-gray-700"
 									>
 										<span className=" text-gray-500 font-bold">
-											{prettyTruncate(Object.keys(type)[0], 30) + ' : '}
+											{(Object.keys(type)[0], 30) + ' : '}
 										</span>{' '}
 										<span className=" text-gray-200">
 											{prettyTruncate(Object.values(type)[0], 30)}

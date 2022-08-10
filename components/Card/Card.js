@@ -23,6 +23,7 @@ const Card = ({
 	flippable = false,
 	isAbleToLike = false,
 	onLike = () => {},
+	typeCardList,
 }) => {
 	const initialRotate = {
 		x: 0,
@@ -150,7 +151,9 @@ const Card = ({
 					}}
 				>
 					<div
-						className="card bg-black w-full h-full"
+						className={`card ${
+							typeCardList === 'top-rarity-token' ? 'bg-transparent' : 'bg-black'
+						} w-full h-full`}
 						style={{
 							fontSize: `${dimension.width / 14}px`,
 							transform: `rotateY(${rotate.x}deg) rotateX(${rotate.y}deg)`,
@@ -159,12 +162,14 @@ const Card = ({
 					>
 						<div className="h-full py-2 flex flex-col">
 							<div className="text-center px-2 relative">
-								<p className="text-white font-bold truncate" style={{ fontSize: `.85em` }}>
-									{token.title}
-								</p>
-								<p className="text-white truncate" style={{ fontSize: `.6em` }}>
-									{token.collection}
-								</p>
+								<div className={`${type === 'new-card-detail' && 'pt-4'}`}>
+									<p className="text-white font-bold truncate" style={{ fontSize: `.85em` }}>
+										{token.title}
+									</p>
+									<p className="text-white truncate" style={{ fontSize: `.6em` }}>
+										{token.collection}
+									</p>
+								</div>
 								{audioUrl && token.mime_type?.includes('audio') && (
 									<div className="absolute top-1 right-2">
 										<div className="block md:hidden">
@@ -248,7 +253,11 @@ const Card = ({
 							</div>
 							<div className="px-2 mt-auto">
 								<div className="flex justify-between">
-									<div className="w-1/2 flex items-center">
+									<div
+										className={`${
+											type === 'new-card-detail' && 'pb-4 pl-2'
+										} w-1/2 flex items-center`}
+									>
 										<p className="text-white truncate mr-1" style={{ fontSize: `.6em` }}>
 											{token.creatorId}
 										</p>

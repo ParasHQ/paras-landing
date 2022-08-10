@@ -9,6 +9,8 @@ import { sentryCaptureException } from 'lib/sentry'
 import useToken from 'hooks/useToken'
 import { useEffect, useState } from 'react'
 import useStore from 'lib/store'
+import TokenDetailNew from 'components/Token/TokenDetailNew'
+import { EXPERIMENT_ID, GA_TRACKING_ID } from 'lib/gtag'
 
 const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.contract_id
@@ -16,6 +18,7 @@ const getCreatorId = (token) => {
 
 const TokenPage = ({ errorCode, initial }) => {
 	const currentUser = useStore((state) => state.currentUser)
+	const [currentVariant, setVariant] = useState(0)
 	const { token, mutate } = useToken({
 		key: `${initial?.contract_id}::${initial?.token_series_id}/${initial?.token_id}`,
 		initialData: initial,
@@ -25,6 +28,18 @@ const TokenPage = ({ errorCode, initial }) => {
 		},
 	})
 	const [isEndedTime, setIsEndedTime] = useState(false)
+
+	useEffect(() => {
+		const variant = localStorage.getItem('variant') || 0
+		setVariant(variant)
+		if (window && window.gtag) {
+			window.gtag('event', 'experiment_impression', {
+				experiment_id: EXPERIMENT_ID,
+				variant_id: EXPERIMENT_ID + '.' + variant,
+				send_to: GA_TRACKING_ID,
+			})
+		}
+	})
 
 	useEffect(() => {
 		checkAuctionTime()
@@ -114,7 +129,11 @@ const TokenPage = ({ errorCode, initial }) => {
 			</Head>
 			<Nav />
 			<div className="relative max-w-6xl m-auto pt-16 px-4">
-				<TokenDetail token={token} isAuctionEnds={isEndedTime} />
+				{currentVariant == 0 ? (
+					<TokenDetail token={token} isAuctionEnds={isEndedTime} />
+				) : (
+					<TokenDetailNew token={token} />
+				)}
 			</div>
 			<Footer />
 		</div>
@@ -134,7 +153,12 @@ export async function getServerSideProps({ params }) {
 
 		const token = res.data.data.results[0] || null
 
-		return { props: { initial: token, errorCode: token ? null : 404 } }
+		return {
+			props: {
+				initial: token,
+				errorCode: token ? null : 404,
+			},
+		}
 	} catch (err) {
 		sentryCaptureException(err)
 		const errorCode = 404
