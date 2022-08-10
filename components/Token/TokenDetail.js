@@ -874,7 +874,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 								</div>
 							</div>
 						)}
-						{token.token_series_id !== token.token_id && (
+						{token.token_series_id !== token.token_id && token.metadata.copies !== 1 && (
 							<div
 								className="mt-2 text-center text-white cursor-pointer hover:opacity-80 text-sm"
 								size="md"
