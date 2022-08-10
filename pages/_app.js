@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import useStore from 'lib/store'
 import ParasRequest from 'lib/ParasRequest'
@@ -30,7 +30,6 @@ const MAX_ACTIVITY_DELAY = 5
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
 	const router = useRouter()
-	const [currentVariant, setVariant] = useState(0)
 
 	const { locale, defaultLocale, pathname } = router
 
@@ -50,8 +49,7 @@ function MyApp({ Component, pageProps }) {
 				...defaultLocaleCopy['defaultAll'],
 				...localeCopy['defaultAll'],
 		  }
-	const getvariant = (variant, experiment_id) => {
-		setVariant(variant)
+	const getvariant = (variant) => {
 		localStorage.setItem('variant', variant)
 	}
 	const counter = async (url) => {
@@ -162,6 +160,24 @@ function MyApp({ Component, pageProps }) {
 		if (!storage) return
 		storage.setItem('currentPath', `${globalThis?.location.pathname}${globalThis?.location.search}`)
 	}, [])
+
+	useEffect(() => {
+		if (router.isReady) removeQueryTransactionFromNear()
+	}, [router.isReady])
+
+	const removeQueryTransactionFromNear = () => {
+		const query = router.query
+
+		if (query.successLogin || query.public_key || query.all_keys) {
+			delete query.account_id
+			delete query.public_key
+			delete query.transactionHashes
+			delete query.all_keys
+			delete query.successLogin
+
+			router.replace({ pathname: router.pathname, query }, undefined, { shallow: true })
+		}
+	}
 
 	const getNearUsdPrice = async () => {
 		try {
