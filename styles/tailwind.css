@@ -409,7 +409,7 @@ input.clear {
 }
 
 .form-switch-label {
-	@apply block overflow-hidden cursor-pointer bg-white rounded-full h-6  shadow-inner;
+	@apply block overflow-hidden cursor-pointer bg-gray-200 rounded-full h-6  shadow-inner;
 	transition: background-color 0.2s ease-in;
 }
 
@@ -449,6 +449,10 @@ input.clear {
 	-o-transform: scale(-1, 1);
 	-webkit-transform: scale(-1, 1);
 	transform: scale(-1, 1);
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+	display: none;
 }
 
 .pixelated {
