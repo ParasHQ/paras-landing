@@ -17,7 +17,7 @@ const HomeLaunchpad = ({ showDetails }) => {
 	return (
 		<div className="mb-8 relative">
 			<div className="text-white md:flex justify-start items-center gap-4 mb-8">
-				<h1 className="font-semibold text-3xl capitalize">Mint Calendar</h1>
+				<h1 className="font-semibold text-3xl capitalize">Mint Kalender</h1>
 			</div>
 			<LaunchpadList showDetails={showDetails} data={results} isValidating={isValidating} />
 		</div>
