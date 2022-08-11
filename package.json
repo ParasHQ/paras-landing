@@ -86,7 +86,7 @@
 		"dotenv-cli": "^4.1.1",
 		"eslint": "^7.30.0",
 		"eslint-config-next": "^12.2.3",
-		"eslint-config-prettier": "8.3.0",
+		"eslint-config-prettier": "8.5.0",
 		"eslint-plugin-react-hooks": "^4.2.0",
 		"husky": "^7.0.0",
 		"lint-staged": "^11.1.2",
