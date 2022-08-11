@@ -56,7 +56,7 @@ const TokenMoreCollection = ({ localToken, className }) => {
 					onClick={() => setIsDropDown(!isDropDown)}
 				>
 					<p className="text-xl py-3">More from this Collection</p>
-					<div className={`${!isDropDown && 'rotate-180'}`}>
+					<div className={`${isDropDown && 'rotate-180'}`}>
 						<IconDownArrow size={30} />
 					</div>
 				</div>

@@ -58,7 +58,7 @@ const TokenBidHistory = ({ localToken: initialToken, className }) => {
 					onClick={() => setIsDropDown(!isDropDown)}
 				>
 					<CurrentBid initial={localToken} key={localToken.token_id} />
-					<div className={`${!isDropDown && 'rotate-180'}`}>
+					<div className={`${isDropDown && 'rotate-180'}`}>
 						<IconDownArrow size={30} />
 					</div>
 				</div>
