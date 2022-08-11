@@ -103,8 +103,103 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		)
 	}
 
+	if (notif.type === 'notification_raffle_type_drop') {
+		return (
+			<div className="p-2 rounded-md button-wrapper flex items-center">
+				<div className="text-gray-300 select-none">
+					<span>Sorry, your member has dropped to </span>
+					<span className="font-bold">{capitalizeFirstLetter(notif.msg.current_raffle_type)}.</span>
+					<span> You will be automatically signed up for </span>
+					<span className="font-bold">{capitalizeFirstLetter(notif.msg.previous_raffle_type)}</span>
+					<span> raffle</span>
+				</div>
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_raffle_registered') {
+		return (
+			<div className="p-2 rounded-md w-full button-wrapper flex items-center">
+				<div className="text-gray-300 select-none w-full">
+					<p>We have recorded your information for the raffle</p>
+				</div>
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_raffle_begin') {
+		return (
+			<div className="p-2 rounded-md w-full button-wrapper flex items-center">
+				<div className="text-gray-300 select-none w-full">
+					<p className="font-bold">The raffle is just about to begin!</p>
+					<p>
+						<span>{`Don't miss it, check `}</span>
+						<span>
+							<Link href="/loyalty">
+								<a className="font-bold">loyalty</a>
+							</Link>
+						</span>
+						<span> about the mechanism</span>
+					</p>
+				</div>
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_raffle_end_soon') {
+		return (
+			<div className="p-2 rounded-md w-full button-wrapper flex items-center">
+				<div className="text-gray-300 select-none w-full">
+					<p className="font-bold">The raffle ends soon!</p>
+					<p>
+						<span>{`Don't miss it, check `}</span>
+						<span>
+							<Link href="/loyalty">
+								<a className="font-bold">loyalty</a>
+							</Link>
+						</span>
+						<span> about the mechanism</span>
+					</p>
+				</div>
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_raffle_over') {
+		return (
+			<div className="p-2 rounded-md w-full button-wrapper flex items-center">
+				<div className="text-gray-300 select-none w-full">
+					<p className="font-bold">The raffle is over!</p>
+					<p>The winners have been drawn</p>
+				</div>
+			</div>
+		)
+	}
+
 	if (!token) {
 		return null
+	}
+
+	if (notif.type === 'notification_raffle_won') {
+		return (
+			<div>
+				<Link href={url}>
+					<a>
+						<div
+							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={token.metadata?.media} />
+							<div className="pl-2 text-gray-300">
+								<span>Congratulations {prettyTruncate(notif.to, 14, 'address')},</span>
+								<span> you have won a </span>
+								<span>{token.metadata?.title} from the</span>
+							</div>
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
 	}
 
 	if (notif.type === 'nft_transfer' && notif.from === null) {
