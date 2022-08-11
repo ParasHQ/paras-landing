@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Head from 'next/head'
 import Nav from 'components/Nav'
 import Footer from 'components/Footer'
@@ -147,7 +147,7 @@ const ActivityDetailPage = ({ errorCode, activity, token }) => {
 }
 
 export async function getServerSideProps({ params }) {
-	const activityResp = await axios.get(`${process.env.V2_API_URL}/activities`, {
+	const activityResp = await ParasRequest.get(`${process.env.V2_API_URL}/activities`, {
 		params: {
 			_id: params.id,
 		},
@@ -179,7 +179,7 @@ export async function getServerSideProps({ params }) {
 				},
 		  }
 
-	const tokenResp = await axios(query.url, {
+	const tokenResp = await ParasRequest(query.url, {
 		params: query.params,
 	})
 

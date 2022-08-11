@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Head from 'next/head'
 import { useState, useRef, useEffect } from 'react'
 import Footer from 'components/Footer'
@@ -8,7 +8,6 @@ import { useToast } from 'hooks/useToast'
 import { checkSocialMediaUrl } from 'utils/common'
 import { useRouter } from 'next/router'
 import { sentryCaptureException } from 'lib/sentry'
-import WalletHelper from 'lib/WalletHelper'
 import { useForm } from 'react-hook-form'
 import ReCAPTCHA from 'react-google-recaptcha'
 
@@ -62,11 +61,7 @@ const Verify = () => {
 
 	const checkQuota = async () => {
 		try {
-			const resp = await axios.get(`${process.env.V2_API_URL}/verifications/check-quota`, {
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			})
+			const resp = await ParasRequest.get(`${process.env.V2_API_URL}/verifications/check-quota`)
 			const data = resp.data.data
 			setTotalCurrent(data.totalCurrent > data.totalQuota ? data.totalQuota : data.totalCurrent)
 			setTotalQuota(data.totalQuota)
@@ -91,11 +86,9 @@ const Verify = () => {
 
 	const checkFinishSchedule = async () => {
 		try {
-			const resp = await axios.get(`${process.env.V2_API_URL}/verifications/scheduled-finish`, {
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			})
+			const resp = await ParasRequest.get(
+				`${process.env.V2_API_URL}/verifications/scheduled-finish`
+			)
 			const data = resp.data.data
 			setScheduleTimestamp(data.timestamp)
 		} catch (err) {
@@ -111,13 +104,8 @@ const Verify = () => {
 
 	const checkStatusVerification = async () => {
 		try {
-			const resp = await axios.get(
-				`${process.env.V2_API_URL}/verifications?accountId=${store.currentUser}`,
-				{
-					headers: {
-						authorization: await WalletHelper.authToken(),
-					},
-				}
+			const resp = await ParasRequest.get(
+				`${process.env.V2_API_URL}/verifications?accountId=${store.currentUser}`
 			)
 			const data = resp.data.data.results
 			if (data.length > 0) {
@@ -168,11 +156,7 @@ const Verify = () => {
 		}
 
 		try {
-			await axios.post(`${process.env.V2_API_URL}/verifications`, dataPost, {
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			})
+			await ParasRequest.post(`${process.env.V2_API_URL}/verifications`, dataPost)
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">

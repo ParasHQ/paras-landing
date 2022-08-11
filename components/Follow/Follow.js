@@ -1,9 +1,8 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Button from 'components/Common/Button'
 import FollowArtistModal from 'components/Modal/FollowArtistModal'
 import LoginModal from 'components/Modal/LoginModal'
 import { trackFollowButton, trackUnfollowButton } from 'lib/ga'
-import WalletHelper from 'lib/WalletHelper'
 import { useEffect, useState } from 'react'
 import useSWR from 'swr'
 
@@ -14,7 +13,7 @@ const Follow = ({ userProfile, currentUser }) => {
 	const [followListModal, setFollowListModal] = useState('')
 
 	const fetchProfile = async () => {
-		const res = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/profiles`, {
 			params: {
 				accountId: userProfile.accountId,
 				followed_by: currentUser,
@@ -23,7 +22,7 @@ const Follow = ({ userProfile, currentUser }) => {
 		return (await res.data.data.results[0]) || null
 	}
 
-	const { data, mutate } = useSWR(userProfile.accountId, fetchProfile, {
+	const { data, mutate } = useSWR(userProfile?.accountId, fetchProfile, {
 		fallbackData: userProfile,
 		revalidateOnFocus: false,
 		revalidateIfStale: false,
@@ -43,12 +42,9 @@ const Follow = ({ userProfile, currentUser }) => {
 		setIsLoading(true)
 
 		try {
-			await axios.request({
+			await ParasRequest.request({
 				url: `${process.env.V2_API_URL}${data.follows ? '/unfollow' : '/follow'}`,
 				method: 'PUT',
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
 				params: {
 					account_id: currentUser,
 					following_account_id: userProfile.accountId,
@@ -100,7 +96,7 @@ const Follow = ({ userProfile, currentUser }) => {
 				</div>
 				<div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 px-[1.5px] py-2 bg-white bg-opacity-50" />
 			</div>
-			{currentUser !== userProfile.accountId && data?.follows?.follower === currentUser ? (
+			{currentUser !== userProfile?.accountId && data?.follows?.follower === currentUser ? (
 				<div
 					className="mt-4 mb-6 w-3/6 mx-auto"
 					onMouseEnter={() => setButtonHover(true)}
@@ -117,7 +113,7 @@ const Follow = ({ userProfile, currentUser }) => {
 					</Button>
 				</div>
 			) : (
-				currentUser !== userProfile.accountId &&
+				currentUser !== userProfile?.accountId &&
 				currentUser && (
 					<div className="mt-4 mb-6 w-3/6 mx-auto">
 						<Button

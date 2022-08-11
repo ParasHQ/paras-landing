@@ -1,3 +1,4 @@
+import ParasRequest from 'lib/ParasRequest'
 import axios from 'axios'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import { Suspense, useEffect, useRef, useState } from 'react'
@@ -23,13 +24,13 @@ import Scrollbars from 'react-custom-scrollbars'
 import getConfig from 'config/near'
 import Tooltip from 'components/Common/Tooltip'
 import { Icon3D, IconIframe, IconInfo, IconLoader, IconX } from 'components/Icons'
-import WalletHelper from 'lib/WalletHelper'
 import AudioPlayer from 'components/Common/AudioPlayer'
 import { Canvas } from '@react-three/fiber'
 import { Model1 } from 'components/Model3D/ThreeDModel'
 import FileType from 'file-type/browser'
 import retry from 'async-retry'
 import IconV from 'components/Icons/component/IconV'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 import FilterAddCollection from 'components/Filter/FilterAddCollection'
 
 const LIMIT = 16
@@ -81,6 +82,7 @@ const NewPage = () => {
 	const router = useRouter()
 	const toast = useToast()
 	const [formInput, setFormInput] = useState({})
+	const { selector, viewFunction } = useWalletSelector()
 	const { errors, control, register, handleSubmit, watch, setValue, getValues } = useForm()
 	const { fields, append, remove } = useFieldArray({
 		control,
@@ -150,22 +152,24 @@ const NewPage = () => {
 	const uploadAudioFile = async () => {
 		const formDataAudio = new FormData()
 		formDataAudio.append(`files`, audioFile)
-		const respAudioUpload = await axios.post(`${process.env.V2_API_URL}/uploads`, formDataAudio, {
-			headers: {
-				'Content-Type': 'multipart/form-data',
-				authorization: await WalletHelper.authToken(),
-			},
-		})
+		const respAudioUpload = await ParasRequest.post(
+			`${process.env.V2_API_URL}/uploads`,
+			formDataAudio,
+			{
+				headers: {
+					'Content-Type': 'multipart/form-data',
+				},
+			}
+		)
 		uploadedAudioRef.current = respAudioUpload.data.data[0]?.split('://')[1]
 	}
 
 	const upload3DFile = async () => {
 		const formData3D = new FormData()
 		formData3D.append(`files`, threeDFile)
-		const resp3DUpload = await axios.post(`${process.env.V2_API_URL}/uploads`, formData3D, {
+		const resp3DUpload = await ParasRequest.post(`${process.env.V2_API_URL}/uploads`, formData3D, {
 			headers: {
 				'Content-Type': 'multipart/form-data',
-				authorization: await WalletHelper.authToken(),
 			},
 		})
 		uploaded3DRef.current = resp3DUpload.data.data[0]?.split('://')[1]
@@ -204,10 +208,9 @@ const NewPage = () => {
 
 		let resp
 		try {
-			resp = await axios.post(`${process.env.V2_API_URL}/uploads`, formData, {
+			resp = await ParasRequest.post(`${process.env.V2_API_URL}/uploads`, formData, {
 				headers: {
 					'Content-Type': 'multipart/form-data',
-					authorization: await WalletHelper.authToken(),
 				},
 			})
 			setMediaHash(resp.data.data[0].split('://')[1])
@@ -215,7 +218,9 @@ const NewPage = () => {
 
 			setIsUploading('success')
 
-			if (store.selectedCategory !== '' && WalletHelper.activeWallet !== 'sender') {
+			const wallet = await selector.wallet()
+
+			if (store.selectedCategory !== '' && wallet.id !== 'sender') {
 				window.sessionStorage.setItem(`categoryToken`, store.selectedCategory)
 			}
 		} catch (err) {
@@ -258,22 +263,35 @@ const NewPage = () => {
 				}
 			}
 
-			const res = await WalletHelper.callFunction({
-				contractId: process.env.NFT_CONTRACT_ID,
-				methodName: `nft_create_series`,
-				args: params,
-				gas: GAS_FEE,
-				deposit: STORAGE_CREATE_SERIES_FEE,
+			const wallet = await selector.wallet()
+
+			const res = await wallet.signAndSendTransactions({
+				transactions: [
+					{
+						receiverId: process.env.NFT_CONTRACT_ID,
+						actions: [
+							{
+								type: 'FunctionCall',
+								params: {
+									methodName: 'nft_create_series',
+									args: params,
+									gas: GAS_FEE,
+									deposit: STORAGE_CREATE_SERIES_FEE,
+								},
+							},
+						],
+					},
+				],
 			})
 
 			setIsCreating(false)
-			if (res?.response) {
+			if (res) {
 				if (store.selectedCategory !== '') {
 					await submitCategoryCard(res)
 				}
 				setTimeout(() => {
 					router.push('/market')
-					store.setTransactionRes(res?.response)
+					store.setTransactionRes(res)
 				}, 2000)
 			}
 		} catch (err) {
@@ -309,7 +327,7 @@ const NewPage = () => {
 
 		if (step === 2) {
 			const getAttributeKeys = async () => {
-				const res = await axios.get(`${process.env.V2_API_URL}/collection-attributes`, {
+				const res = await ParasRequest.get(`${process.env.V2_API_URL}/collection-attributes`, {
 					params: {
 						collection_id: choosenCollection.collection_id,
 					},
@@ -510,13 +528,13 @@ const NewPage = () => {
 		if (store.initialized && store.currentUser) {
 			fetchCollectionUser()
 		}
-	}, [store.initialized])
+	}, [store.initialized, store.currentUser])
 
 	useEffect(() => {
 		const getTxFee = async () => {
-			const txFeeContract = await WalletHelper.viewFunction({
+			const txFeeContract = await viewFunction({
 				methodName: 'get_transaction_fee',
-				contractId: process.env.NFT_CONTRACT_ID,
+				receiverId: process.env.NFT_CONTRACT_ID,
 			})
 			setTxFee(txFeeContract)
 		}
@@ -531,7 +549,7 @@ const NewPage = () => {
 		}
 
 		setIsFetching(true)
-		const res = await axios.get(`${process.env.V2_API_URL}/collections`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/collections`, {
 			params: {
 				creator_id: store.currentUser,
 				__skip: page * LIMIT,
@@ -566,21 +584,13 @@ const NewPage = () => {
 		const resOutcome = await JSON.parse(`${resFromTxLast}`)
 		await retry(
 			async () => {
-				const res = await axios.post(
-					`${process.env.V2_API_URL}/categories/tokens`,
-					{
-						account_id: store.currentUser,
-						contract_id: txLast?.transaction?.receiver_id,
-						token_series_id: resOutcome?.params?.token_series_id,
-						category_id: store.selectedCategory,
-						storeToSheet: store.selectedCategory === 'art-competition' ? 'true' : 'false',
-					},
-					{
-						headers: {
-							authorization: await WalletHelper.authToken(),
-						},
-					}
-				)
+				const res = await ParasRequest.post(`${process.env.V2_API_URL}/categories/tokens`, {
+					account_id: store.currentUser,
+					contract_id: txLast?.transaction?.receiver_id,
+					token_series_id: resOutcome?.params?.token_series_id,
+					category_id: store.selectedCategory,
+					storeToSheet: store.selectedCategory === 'art-competition' ? 'true' : 'false',
+				})
 				if (res.status === 403 || res.status === 400) {
 					sentryCaptureException(res.data?.message || `Token series still haven't exist`)
 					return

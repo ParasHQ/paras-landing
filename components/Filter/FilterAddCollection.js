@@ -4,7 +4,7 @@ import { useIntl } from 'hooks/useIntl'
 import { parseImgUrl } from 'utils/common'
 import { IconSearch } from 'components/Icons'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 
 const FilterAddCollection = ({
 	collections,
@@ -62,7 +62,7 @@ const FilterAddCollection = ({
 		const { value } = event
 
 		if (value.length >= 3) {
-			const resp = await axios.get(`${process.env.V2_API_URL}/collections`, {
+			const resp = await ParasRequest.get(`${process.env.V2_API_URL}/collections`, {
 				params: {
 					creator_id: currentUser,
 					collection_search: value,

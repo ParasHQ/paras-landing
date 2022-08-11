@@ -8,12 +8,12 @@ import { GAS_FEE_150, STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import JSBI from 'jsbi'
 import { IconInfo } from 'components/Icons'
 import { useEffect, useState } from 'react'
-import WalletHelper from 'lib/WalletHelper'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Tooltip from 'components/Common/Tooltip'
 import { useToast } from 'hooks/useToast'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
-const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess }) => {
+const AcceptBidAuctionModal = ({ data, show, onClose }) => {
 	const { localeLn } = useIntl()
 	const { nearUsdPrice } = useStore()
 	const [txFee, setTxFee] = useState(null)
@@ -23,18 +23,18 @@ const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess }) => {
 		fee: (txFee?.current_fee || 0) / 100,
 	})
 	const [isAcceptBid, setIsAcceptBid] = useState(false)
-	const { currentUser, setTransactionRes } = useStore((state) => ({
-		currentUser: state.currentUser,
+	const { setTransactionRes } = useStore((state) => ({
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const toast = useToast()
+	const { viewFunction, selector } = useWalletSelector()
 
 	useEffect(() => {
 		const getTxFee = async () => {
 			if (show) {
-				const txFeeContract = await WalletHelper.viewFunction({
+				const txFeeContract = await viewFunction({
 					methodName: 'get_transaction_fee',
-					contractId: process.env.MARKETPLACE_CONTRACT_ID,
+					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				})
 				setTxFee(txFeeContract)
 			}
@@ -43,93 +43,32 @@ const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess }) => {
 		getTxFee()
 	}, [show])
 
-	const hasStorageBalance = async () => {
-		try {
-			const currentStorage = await WalletHelper.viewFunction({
-				methodName: 'storage_balance_of',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
-				args: { account_id: currentUser },
-			})
-
-			const supplyPerOwner = await WalletHelper.viewFunction({
-				methodName: 'get_supply_by_owner_id',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
-				args: { account_id: currentUser },
-			})
-
-			const usedStorage = JSBI.multiply(
-				JSBI.BigInt(parseInt(supplyPerOwner) + 1),
-				JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
-			)
-
-			if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
-				return true
-			}
-			return false
-		} catch (err) {
-			sentryCaptureException(err)
-		}
-	}
-
 	const onAcceptBidAuction = async () => {
 		setIsAcceptBid(true)
 
-		const hasDepositStorage = await hasStorageBalance()
-
 		try {
-			const depositParams = { receiver_id: currentUser }
-
 			const params = {
 				nft_contract_id: data.contract_id,
 				token_id: data.token_id,
 			}
-
-			let res
-			if (hasDepositStorage) {
-				res = await WalletHelper.signAndSendTransaction({
-					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
-					actions: [
-						{
+			const wallet = await selector.wallet()
+			const res = await wallet.signAndSendTransaction({
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
+				actions: [
+					{
+						type: 'FunctionCall',
+						params: {
 							methodName: 'accept_bid',
 							args: params,
 							deposit: '1',
 							gas: GAS_FEE_150,
 						},
-					],
-				})
-			} else {
-				res = await WalletHelper.signAndSendTransaction({
-					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
-					actions: [
-						{
-							methodName: 'storage_deposit',
-							args: depositParams,
-							deposit: STORAGE_ADD_MARKET_FEE,
-							gas: GAS_FEE_150,
-						},
-						{
-							methodName: 'accept_bid',
-							args: params,
-							deposit: '1',
-							gas: GAS_FEE_150,
-						},
-					],
-				})
-			}
-			if (res?.response.error) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							{res?.response.error.kind.ExecutionError}
-						</div>
-					),
-					type: 'error',
-					duration: 2500,
-				})
-			} else if (res) {
+					},
+				],
+			})
+			if (res) {
 				onClose()
-				setTransactionRes(res?.response)
-				onSuccess && onSuccess()
+				setTransactionRes([res])
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">{`Successfully accept bid auction`}</div>
@@ -140,6 +79,15 @@ const AcceptBidAuctionModal = ({ data, show, onClose, onSuccess }) => {
 			}
 			setIsAcceptBid(false)
 		} catch (err) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{err.message || localeLn('SomethingWentWrong')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 			sentryCaptureException(err)
 			setIsAcceptBid(false)
 		}

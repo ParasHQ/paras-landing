@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { sentryCaptureException } from 'lib/sentry'
 import { useState } from 'react'
 import { useToast } from 'hooks/useToast'
@@ -7,7 +7,6 @@ import { parseImgUrl } from 'utils/common'
 import Card from 'components/Card/Card'
 import Modal from 'components/Modal'
 import { useIntl } from 'hooks/useIntl'
-import WalletHelper from 'lib/WalletHelper'
 import { IconX } from 'components/Icons'
 
 const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
@@ -44,7 +43,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 
 			const [contractId, tokenSeriesId] = contract_token_id.split('::')
 
-			const seriesResp = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+			const seriesResp = await ParasRequest.get(`${process.env.V2_API_URL}/token-series`, {
 				params: {
 					contract_id: contractId,
 					token_series_id: tokenSeriesId,
@@ -101,11 +100,7 @@ const AddCategoryModal = ({ onClose, categoryName, categoryId, curators }) => {
 		}
 
 		try {
-			await axios.post(`${process.env.V2_API_URL}/categories/tokens`, params, {
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			})
+			await ParasRequest.post(`${process.env.V2_API_URL}/categories/tokens`, params)
 			onClose()
 			toast.show({
 				text: (

@@ -12,8 +12,8 @@ import { trackMintToken } from 'lib/ga'
 import axios from 'axios'
 import getConfig from 'config/near'
 import { useToast } from 'hooks/useToast'
-import WalletHelper from 'lib/WalletHelper'
 import useStore from 'lib/store'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const TokenSeriesMintModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
@@ -23,6 +23,7 @@ const TokenSeriesMintModal = ({ show, onClose, data }) => {
 	const { currentUser } = useStore()
 	const { localeLn } = useIntl()
 	const toast = useToast()
+	const { selector } = useWalletSelector()
 
 	const onTransfer = async () => {
 		if (!currentUser) {
@@ -67,25 +68,22 @@ const TokenSeriesMintModal = ({ show, onClose, data }) => {
 		trackMintToken(data.token_series_id)
 
 		try {
-			const res = await WalletHelper.callFunction({
-				contractId: data.contract_id,
-				methodName: `nft_mint`,
-				args: params,
-				gas: GAS_FEE,
-				deposit: STORAGE_MINT_FEE,
+			const wallet = await selector.wallet()
+			const res = await wallet.signAndSendTransaction({
+				receiverId: data.contract_id,
+				actions: [
+					{
+						type: 'FunctionCall',
+						params: {
+							methodName: `nft_mint`,
+							args: params,
+							gas: GAS_FEE,
+							deposit: STORAGE_MINT_FEE,
+						},
+					},
+				],
 			})
-			if (res?.response.error) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							{res?.response.error.kind.ExecutionError}
-						</div>
-					),
-					type: 'error',
-					duration: 2500,
-				})
-				return
-			} else if (res) {
+			if (res) {
 				onClose()
 				setReceiverId('')
 				toast.show({
@@ -100,6 +98,15 @@ const TokenSeriesMintModal = ({ show, onClose, data }) => {
 			}
 			setIsMinting(false)
 		} catch (err) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{err.message || localeLn('SomethingWentWrong')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 			sentryCaptureException(err)
 			setIsMinting(false)
 		}

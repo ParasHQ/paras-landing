@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import TokenList from 'components/Token/TokenList'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -7,7 +7,12 @@ import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import Profile from 'components/Profile/Profile'
 import FilterMarket from 'components/Filter/FilterMarket'
-import { parseImgUrl, parseSortTokenQuery, setDataLocalStorage } from 'utils/common'
+import {
+	parseImgUrl,
+	parseSortTokenQuery,
+	prevPagePositionY,
+	setDataLocalStorage,
+} from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
@@ -34,6 +39,17 @@ const Collection = ({ userProfile, accountId }) => {
 	const [display, setDisplay] = useState(
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
+	const prevY =
+		typeof window !== 'undefined' &&
+		parseInt(sessionStorage.getItem('scrollPosition' + router.pathname + router.asPath))
+
+	useEffect(() => {
+		if (prevY) {
+			let prevData = setInterval(() => fetchOwnerTokens, 1000)
+			setTimeout(() => clearInterval(prevData), 2000)
+		}
+		prevPagePositionY(router, window.scrollY, tokens)
+	}, [tokens])
 
 	useEffect(() => {
 		fetchOwnerTokens(true)
@@ -58,7 +74,7 @@ const Collection = ({ userProfile, accountId }) => {
 						ended_soonest_next: endedSoonestNext,
 				  }),
 		})
-		const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
 			params: params,
 		})
 		const newData = await res.data.data
@@ -67,7 +83,7 @@ const Collection = ({ userProfile, accountId }) => {
 		setTokens(newTokens)
 
 		if (initialFetch) {
-			const collections = await axios(`${process.env.V2_API_URL}/owned-collections`, {
+			const collections = await ParasRequest(`${process.env.V2_API_URL}/owned-collections`, {
 				params: {
 					accountId: accountId,
 				},
@@ -129,7 +145,7 @@ const Collection = ({ userProfile, accountId }) => {
 		setIsFiltering(true)
 
 		const params = tokensParams(query)
-		const res = await axios(`${process.env.V2_API_URL}/token`, {
+		const res = await ParasRequest(`${process.env.V2_API_URL}/token`, {
 			params: params,
 		})
 		setTokens(res.data.data.results)
@@ -235,7 +251,7 @@ const Collection = ({ userProfile, accountId }) => {
 export default Collection
 
 export async function getServerSideProps({ params }) {
-	const profileRes = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+	const profileRes = await ParasRequest.get(`${process.env.V2_API_URL}/profiles`, {
 		params: {
 			accountId: params.id,
 		},

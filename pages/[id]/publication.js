@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { useIntl } from 'hooks/useIntl'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -45,7 +45,7 @@ const Publication = ({ userProfile, accountId }) => {
 		}
 
 		setIsFetching(true)
-		const res = await axios.get(`${process.env.V2_API_URL}/publications`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/publications`, {
 			params: {
 				author_id: router.query.id,
 				__skip: _pubListPage * LIMIT,
@@ -148,7 +148,7 @@ const Publication = ({ userProfile, accountId }) => {
 export default Publication
 
 export async function getServerSideProps({ params }) {
-	const profileRes = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+	const profileRes = await ParasRequest.get(`${process.env.V2_API_URL}/profiles`, {
 		params: {
 			accountId: params.id,
 		},

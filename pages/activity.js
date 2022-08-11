@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Head from 'next/head'
 import Nav from 'components/Nav'
 import Footer from 'components/Footer'
@@ -109,7 +109,7 @@ const ActivityLog = ({ query }) => {
 				_fetchData({}, true)
 			}
 			let res
-			res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=5`)
+			res = await ParasRequest(`${process.env.V2_API_URL}/activities/top-users?__limit=5`)
 			setTopUser(res.data.data)
 			setIsFetchingTop(false)
 		}
@@ -171,7 +171,7 @@ const ActivityLog = ({ query }) => {
 				_filterMinMax(fetchQuery?.filter, fetchQuery?.pmin, fetchQuery?.pmax) +
 				_filterVerified(fetchQuery?.is_verified)
 
-			const res = await axios.get(`${process.env.V2_API_URL}/activities?${_filter}`, {
+			const res = await ParasRequest.get(`${process.env.V2_API_URL}/activities?${_filter}`, {
 				params: {
 					_id_before: _activityListIdBefore,
 					__limit: FETCH_TOKENS_LIMIT,
@@ -238,6 +238,7 @@ const ActivityLog = ({ query }) => {
 		)
 	}
 
+	// Render loader
 	const renderLoader = () => {
 		if (isFetching || isLoading) return <ActivityListLoader />
 	}

@@ -14,9 +14,9 @@ import { useEffect, useState } from 'react'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
-import WalletHelper from 'lib/WalletHelper'
 import TradeNFTModal from './TradeNFTModal'
-import { trackOfferToken, trackOfferTokenImpression } from 'lib/ga'
+import { useWalletSelector } from 'components/Common/WalletSelector'
+import { trackClickPlaceOffer, trackOfferToken, trackOfferTokenImpression } from 'lib/ga'
 
 const PlaceOfferModal = ({
 	data,
@@ -47,6 +47,7 @@ const PlaceOfferModal = ({
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const [isEnableTrade, setIsEnableTrade] = useState(true)
+	const { selector, viewFunction } = useWalletSelector()
 
 	useEffect(() => {
 		if (show) {
@@ -74,9 +75,9 @@ const PlaceOfferModal = ({
 							? { token_id: data.token_id }
 							: { token_series_id: data.token_series_id }),
 					}
-					const bidData = await WalletHelper.viewFunction({
+					const bidData = await viewFunction({
 						methodName: 'get_offer',
-						contractId: process.env.MARKETPLACE_CONTRACT_ID,
+						receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 						args: params,
 					})
 					setHasBid(true)
@@ -91,15 +92,15 @@ const PlaceOfferModal = ({
 
 	const hasStorageBalance = async () => {
 		try {
-			const currentStorage = await WalletHelper.viewFunction({
+			const currentStorage = await viewFunction({
 				methodName: 'storage_balance_of',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 
-			const supplyPerOwner = await WalletHelper.viewFunction({
+			const supplyPerOwner = await viewFunction({
 				methodName: 'get_supply_by_owner_id',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 
@@ -122,6 +123,7 @@ const PlaceOfferModal = ({
 		const hasDepositStorage = await hasStorageBalance()
 
 		trackOfferToken(data.token_id)
+		trackClickPlaceOffer(data.token_id)
 
 		try {
 			const depositParams = { receiver_id: currentUser }
@@ -134,42 +136,52 @@ const PlaceOfferModal = ({
 				ft_token_id: 'near',
 				price: parseNearAmount(bidAmount),
 			}
+			const wallet = await selector.wallet()
 
 			let res
 			if (hasDepositStorage) {
-				res = await WalletHelper.signAndSendTransaction({
+				res = await wallet.signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{
-							methodName: 'add_offer',
-							args: params,
-							deposit: parseNearAmount(bidAmount),
-							gas: GAS_FEE,
+							type: 'FunctionCall',
+							params: {
+								methodName: 'add_offer',
+								args: params,
+								deposit: parseNearAmount(bidAmount),
+								gas: GAS_FEE,
+							},
 						},
 					],
 				})
 			} else {
-				res = await WalletHelper.signAndSendTransaction({
+				res = await wallet.signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{
-							methodName: 'storage_deposit',
-							args: depositParams,
-							deposit: STORAGE_ADD_MARKET_FEE,
-							gas: GAS_FEE,
+							type: 'FunctionCall',
+							params: {
+								methodName: 'storage_deposit',
+								args: depositParams,
+								deposit: STORAGE_ADD_MARKET_FEE,
+								gas: GAS_FEE,
+							},
 						},
 						{
-							methodName: 'add_offer',
-							args: params,
-							deposit: parseNearAmount(bidAmount),
-							gas: GAS_FEE,
+							type: 'FunctionCall',
+							params: {
+								methodName: 'add_offer',
+								args: params,
+								deposit: parseNearAmount(bidAmount),
+								gas: GAS_FEE,
+							},
 						},
 					],
 				})
 			}
-			if (res?.response) {
+			if (res) {
 				onClose()
-				setTransactionRes(res?.response)
+				setTransactionRes([res])
 				onSuccess && onSuccess()
 			}
 			setIsBidding(false)

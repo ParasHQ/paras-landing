@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Head from 'next/head'
 
 import Nav from 'components/Nav'
@@ -20,7 +20,9 @@ const TopCollectionsPage = () => {
 
 	const _fetchData = async () => {
 		setIsLoading(true)
-		const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=${LIMIT}`)
+		const res = await ParasRequest(
+			`${process.env.V2_API_URL}/activities/top-users?__limit=${LIMIT}`
+		)
 
 		const newData = [...topCollectionData, ...res.data.data.collections]
 		setTopCollectionData(newData)

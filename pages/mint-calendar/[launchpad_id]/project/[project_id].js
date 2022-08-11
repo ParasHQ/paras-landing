@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Card from 'components/Card/Card'
 import Button from 'components/Common/Button'
 import Footer from 'components/Footer'
@@ -15,7 +15,6 @@ import { useEffect, useState } from 'react'
 import useSWR from 'swr'
 import { parseImgUrl } from 'utils/common'
 import useStore from 'lib/store'
-import WalletHelper from 'lib/WalletHelper'
 import Modal from '../../../../components/Modal'
 import Setting from '../../../../components/Setting'
 import LaunchpadRemindModal from 'components/Modal/LaunchpadRemindModal'
@@ -33,23 +32,23 @@ const ProjectPage = ({ project }) => {
 	const [isEndedComing, setIsEndedComing] = useState(false)
 	const router = useRouter()
 
-	const fetchData = (url) => axios(url).then((res) => res.data)
+	const fetchData = (url) => ParasRequest(url).then((res) => res.data)
 
 	const changeRemindMe = async () => {
 		if (isEmailVerified) {
 			try {
-				const resp = await axios.post(
+				const resp = await ParasRequest.post(
 					`${process.env.V2_API_URL}/launchpad/${router.query.launchpad_id}/project/${router.query.project_id}/reminder`,
 					{
 						remind: !remindMe,
-					},
-					{ headers: { authorization: await WalletHelper.authToken() } }
+					}
 				)
 				if (resp.status == 200) {
 					localStorage.setItem(`${router.query.launchpad_id}:${router.query.project_id}`, !remindMe)
 					setRemindMe(!remindMe)
 				}
 			} catch (e) {
+				// eslint-disable-next-line no-console
 				console.log(e)
 			}
 		} else {
@@ -256,7 +255,7 @@ const ProjectPage = ({ project }) => {
 export default ProjectPage
 
 export async function getServerSideProps({ params }) {
-	const resp = await axios.get(
+	const resp = await ParasRequest.get(
 		`${process.env.V2_API_URL}/launchpad/${params.launchpad_id}/project/${params.project_id}`
 	)
 	if (!resp.data) {

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { IconLeft, IconRight } from 'components/Icons'
 import { trackFeatureBannerCommunity, trackFeatureBannerOfficial } from 'lib/ga'
 import { useRouter } from 'next/router'
@@ -13,7 +13,7 @@ const HomeFeaturedBanner = () => {
 	const [showRightClick, setShowRightClick] = useState(true)
 
 	const fetchFeaturedPost = () =>
-		axios.get(`${process.env.V2_API_URL}/featured-post`).then((res) => res.data.data)
+		ParasRequest.get(`${process.env.V2_API_URL}/featured-post`).then((res) => res.data.data)
 
 	const { data: FeaturedData, isValidating } = useSWR('home-featured', fetchFeaturedPost)
 

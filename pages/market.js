@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Nav from 'components/Nav'
@@ -7,7 +7,7 @@ import Head from 'next/head'
 import Footer from 'components/Footer'
 import useStore from 'lib/store'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
-import { parseSortQuery, setDataLocalStorage } from 'utils/common'
+import { parseSortQuery, prevPagePositionY, setDataLocalStorage } from 'utils/common'
 import CardListLoader from 'components/Card/CardListLoader'
 import CategoryList from 'components/CategoryList'
 import { useIntl } from 'hooks/useIntl'
@@ -32,7 +32,19 @@ const MarketPage = ({ serverQuery }) => {
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
 	const [hasMore, setHasMore] = useState(true)
+	const prevY =
+		typeof window !== 'undefined' &&
+		parseInt(sessionStorage.getItem('scrollPosition' + router.pathname + router.asPath))
+
 	const { localeLn } = useIntl()
+
+	useEffect(() => {
+		if (prevY) {
+			let prevData = setInterval(() => _fetchData, 1000)
+			setTimeout(() => clearInterval(prevData), 2000)
+		}
+		prevPagePositionY(router, window.scrollY, tokens)
+	}, [tokens])
 
 	useEffect(() => {
 		getCategory()
@@ -67,7 +79,7 @@ const MarketPage = ({ serverQuery }) => {
 			...(query || serverQuery),
 			liked_by: currentUser,
 		})
-		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
+		const res = await ParasRequest(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
 		})
 		setTokens(res.data.data.results)
@@ -87,7 +99,7 @@ const MarketPage = ({ serverQuery }) => {
 	}
 
 	const getCategory = async () => {
-		const res = await axios(`${process.env.V2_API_URL}/categories`)
+		const res = await ParasRequest(`${process.env.V2_API_URL}/categories`)
 		store.setCardCategory(res.data.data.results)
 	}
 
@@ -111,7 +123,7 @@ const MarketPage = ({ serverQuery }) => {
 						ended_soonest_next: endedSoonestNext,
 				  }),
 		})
-		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
+		const res = await ParasRequest(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
 		})
 		const newData = await res.data.data

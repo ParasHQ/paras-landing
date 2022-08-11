@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Head from 'next/head'
 
 import Nav from 'components/Nav'
@@ -75,7 +75,7 @@ const Edit = ({ pubDetail }) => {
 
 export async function getServerSideProps({ params }) {
 	const { pubId } = params
-	const resp = await axios(`${process.env.V2_API_URL}/publications?_id=${pubId}`)
+	const resp = await ParasRequest(`${process.env.V2_API_URL}/publications?_id=${pubId}`)
 	const pubDetail = (await resp.data?.data?.results[0]) || null
 
 	return { props: { pubDetail } }

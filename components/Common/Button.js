@@ -94,7 +94,7 @@ Button.propTypes = {
 	isDisabled: PropTypes.bool,
 	isFullWidth: PropTypes.bool,
 	size: PropTypes.oneOf(['sm', 'md', 'lg']),
-	variant: PropTypes.oneOf(['primary', 'secondary', 'ghost', 'error']),
+	variant: PropTypes.oneOf(['primary', 'secondary', 'ghost', 'error', 'white']),
 	onClick: PropTypes.func,
 }
 

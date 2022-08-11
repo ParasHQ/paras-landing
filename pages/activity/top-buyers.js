@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import router from 'next/router'
 import Head from 'next/head'
 
@@ -21,7 +21,9 @@ const TopBuyersPage = () => {
 
 	const _fetchData = async () => {
 		setIsLoading(true)
-		const res = await axios(`${process.env.V2_API_URL}/activities/top-users?__limit=${LIMIT}`)
+		const res = await ParasRequest(
+			`${process.env.V2_API_URL}/activities/top-users?__limit=${LIMIT}`
+		)
 
 		const newData = [...usersData, ...res.data.data.buyers]
 		setUsersData(newData)

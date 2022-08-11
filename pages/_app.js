@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import useStore from 'lib/store'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { useRouter } from 'next/router'
 import { IntlProvider } from 'react-intl'
 import * as locales from '../content/locale'
@@ -14,22 +14,23 @@ import '../styles/font.css'
 import '../styles/tailwind.css'
 import 'draft-js/dist/Draft.css'
 import 'croppie/croppie.css'
+import '@paras-wallet-selector/modal-ui/styles.css'
 
 import ToastProvider from 'hooks/useToast'
 import { SWRConfig } from 'swr'
-import * as Sentry from '@sentry/nextjs'
 import { sentryCaptureException } from 'lib/sentry'
 import { GTM_ID, pageview } from 'lib/gtm'
 import SuccessTransactionModal from 'components/Modal/SuccessTransactionModal'
-import WalletHelper from 'lib/WalletHelper'
 import cachios from 'cachios'
 import RPCStatus from 'components/Common/RPCStatus'
+import { WalletSelectorContextProvider } from 'components/Common/WalletSelector'
 
 const MAX_ACTIVITY_DELAY = 5
 
 function MyApp({ Component, pageProps }) {
 	const store = useStore()
 	const router = useRouter()
+
 	const { locale, defaultLocale, pathname } = router
 
 	let localeCopy = locales[locale]
@@ -48,7 +49,9 @@ function MyApp({ Component, pageProps }) {
 				...defaultLocaleCopy['defaultAll'],
 				...localeCopy['defaultAll'],
 		  }
-
+	const getvariant = (variant) => {
+		localStorage.setItem('variant', variant)
+	}
 	const counter = async (url) => {
 		// check cookie uid
 		let uid = cookie.get('uid')
@@ -59,19 +62,10 @@ function MyApp({ Component, pageProps }) {
 				expires: 30,
 			})
 		}
-		const authHeader = await WalletHelper.authToken()
-		await axios.post(
-			`${process.env.V2_API_URL}/analytics`,
-			{
-				uid: uid,
-				page: url,
-			},
-			{
-				headers: {
-					authorization: authHeader,
-				},
-			}
-		)
+		await ParasRequest.post(`${process.env.V2_API_URL}/analytics`, {
+			uid: uid,
+			page: url,
+		})
 	}
 
 	useEffect(() => {
@@ -98,7 +92,7 @@ function MyApp({ Component, pageProps }) {
 
 	const fetchActivities = async () => {
 		const _query = `is_verified=${false}&__limit=${1}`
-		const respActivities = await axios.get(`${process.env.V2_API_URL}/activities?${_query}`)
+		const respActivities = await ParasRequest.get(`${process.env.V2_API_URL}/activities?${_query}`)
 		const respDataActivities = respActivities.data.data.results
 		if (
 			Math.floor((new Date() - new Date(respDataActivities[0].msg?.datetime)) / (1000 * 60)) >=
@@ -111,7 +105,7 @@ function MyApp({ Component, pageProps }) {
 	}
 
 	const fetchSmallBanner = async () => {
-		const smallBannerResp = await axios.get(`${process.env.V2_API_URL}/small-banner`)
+		const smallBannerResp = await ParasRequest.get(`${process.env.V2_API_URL}/small-banner`)
 		const smallBanner = smallBannerResp.data.result
 
 		store.setSmallBanner(smallBanner[0])
@@ -142,7 +136,12 @@ function MyApp({ Component, pageProps }) {
 			router.push('/' + lang + router.asPath)
 			return
 		}
-		_init()
+		if (window && window.gtag) {
+			window.gtag('event', 'optimize.callback', {
+				name: gtag.EXPERIMENT_ID,
+				callback: getvariant,
+			})
+		}
 
 		if (process.env.APP_ENV === 'production') {
 			// initial route analytics
@@ -156,88 +155,15 @@ function MyApp({ Component, pageProps }) {
 			}
 			pageview(url)
 		}
-
+		getNearUsdPrice()
 		const storage = globalThis?.sessionStorage
 		if (!storage) return
 		storage.setItem('currentPath', `${globalThis?.location.pathname}${globalThis?.location.search}`)
 	}, [])
 
 	useEffect(() => {
-		removeQueryTransactionFromNear()
-	}, [router.isReady])
-
-	useEffect(() => {
-		if (store.activeWallet === 'senderWallet') {
-			const currentUser = WalletHelper.currentUser
-			setupUser(currentUser)
-		}
-	}, [store.activeWallet])
-
-	const _init = async () => {
-		await WalletHelper.initialize({ onChangeUser: setupUser })
-
-		const currentUser = WalletHelper.currentUser
-
-		if (currentUser) {
-			setupUser(currentUser)
-		}
-		getNearUsdPrice()
-		store.setInitialized(true)
-	}
-
-	const setupUser = async (currentUser) => {
-		if (!currentUser) return
-
-		store.setCurrentUser(currentUser.accountId)
-		store.setUserBalance(currentUser.balance)
-
-		Sentry.configureScope((scope) => {
-			const user = currentUser ? { id: currentUser.accountId } : null
-			scope.setUser(user)
-			scope.setTag('environment', process.env.APP_ENV)
-		})
-
-		const userProfileResp = await axios.get(`${process.env.V2_API_URL}/profiles`, {
-			params: {
-				accountId: currentUser.accountId,
-			},
-		})
-		const userProfileResults = userProfileResp.data.data.results
-
-		if (userProfileResults.length === 0) {
-			const formData = new FormData()
-			formData.append('bio', 'Citizen of Paras')
-			formData.append('accountId', currentUser.accountId)
-
-			try {
-				const resp = await axios.put(`${process.env.V2_API_URL}/profiles`, formData, {
-					headers: {
-						'Content-Type': 'multipart/form-data',
-						authorization: await WalletHelper.authToken(),
-					},
-				})
-				store.setUserProfile(resp.data.data)
-			} catch (err) {
-				sentryCaptureException(err)
-				store.setUserProfile({})
-			}
-		} else {
-			const userProfile = userProfileResults[0]
-			store.setUserProfile(userProfile)
-
-			const { isEmailVerified = false } = userProfile
-			if (!isEmailVerified && !cookie.get('hideEmailNotVerified')) {
-				store.setShowEmailWarning(true)
-			}
-		}
-
-		const parasBalance = await WalletHelper.viewFunction({
-			methodName: 'ft_balance_of',
-			contractId: process.env.PARAS_TOKEN_CONTRACT,
-			args: { account_id: currentUser.accountId },
-		})
-		store.setParasBalance(parasBalance)
-	}
+		if (store.currentUser) removeQueryTransactionFromNear()
+	}, [store.currentUser])
 
 	const removeQueryTransactionFromNear = () => {
 		const query = router.query
@@ -271,18 +197,20 @@ function MyApp({ Component, pageProps }) {
 		<>
 			{/* Google Tag Manager - Global base code */}
 			{/* eslint-disable @next/next/inline-script-id */}
-			<Script
-				strategy="afterInteractive"
-				dangerouslySetInnerHTML={{
-					__html: `
+			{process.env.NODE_ENV === 'production' && GTM_ID && (
+				<Script
+					strategy="afterInteractive"
+					dangerouslySetInnerHTML={{
+						__html: `
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
             j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
             })(window,document,'script','dataLayer', '${GTM_ID}');
           `,
-				}}
-			/>
+					}}
+				/>
+			)}
 			<Script
 				strategy="afterInteractive"
 				dangerouslySetInnerHTML={{
@@ -314,8 +242,10 @@ function MyApp({ Component, pageProps }) {
 				>
 					<SWRConfig value={{}}>
 						<ToastProvider>
-							<Component {...pageProps} />
-							<SuccessTransactionModal />
+							<WalletSelectorContextProvider>
+								<Component {...pageProps} />
+								<SuccessTransactionModal />
+							</WalletSelectorContextProvider>
 						</ToastProvider>
 					</SWRConfig>
 				</IntlProvider>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import CardListLoader from 'components/Card/CardListLoader'
 import TokenList from 'components/Token/TokenList'
 
@@ -13,7 +13,7 @@ export const HomeCardList = () => {
 	}, [])
 
 	const fetchTokenList = async () => {
-		const resp = await axios.get(`${process.env.V2_API_URL}/top-token`)
+		const resp = await ParasRequest.get(`${process.env.V2_API_URL}/top-token`)
 		if (resp.data.data) {
 			setTokenList(resp.data.data.map((data) => ({ ...data.token, volume: data.volume })))
 			setVolume(resp.data.data.map((data) => ({ volume: data.volume })))

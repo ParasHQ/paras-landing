@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Button from 'components/Common/Button'
 import { IconX } from 'components/Icons'
 import Modal from 'components/Modal'
@@ -76,7 +76,7 @@ const AddTradeNFTUrlModal = ({ setIsShow, onClose, setTradedToken }) => {
 			owner_id: currentUser,
 		}
 
-		const resp = await axios.get(`${process.env.V2_API_URL}/token`, {
+		const resp = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
 			params: params,
 			ttl: 60,
 		})

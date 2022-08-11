@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import useSWR from 'swr'
 
 const useProfileSWR = ({ key, initialData, args = {}, params = {} }) => {
@@ -6,14 +6,12 @@ const useProfileSWR = ({ key, initialData, args = {}, params = {} }) => {
 		if (!key) {
 			return
 		}
-		return axios
-			.get(`${process.env.V2_API_URL}/profiles`, {
-				params: {
-					accountId: key,
-					...params,
-				},
-			})
-			.then((res) => res.data.data.results[0])
+		return ParasRequest.get(`${process.env.V2_API_URL}/profiles`, {
+			params: {
+				accountId: key,
+				...params,
+			},
+		}).then((res) => res.data.data.results[0])
 	}
 
 	const { data, mutate, error } = useSWR(key, fetchData, {
