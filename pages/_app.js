@@ -162,8 +162,8 @@ function MyApp({ Component, pageProps }) {
 	}, [])
 
 	useEffect(() => {
-		if (router.isReady) removeQueryTransactionFromNear()
-	}, [router.isReady])
+		if (store.currentUser) removeQueryTransactionFromNear()
+	}, [store.currentUser])
 
 	const removeQueryTransactionFromNear = () => {
 		const query = router.query
