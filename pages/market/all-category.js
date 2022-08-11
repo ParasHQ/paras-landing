@@ -1,4 +1,4 @@
-import Axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Head from 'next/head'
 import { useEffect } from 'react'
 import CategoryList from 'components/CategoryList'
@@ -15,7 +15,7 @@ const AllCategory = () => {
 	}, [])
 
 	const getCategory = async () => {
-		const res = await Axios(`${process.env.API_URL}/categories`)
+		const res = await ParasRequest(`${process.env.API_URL}/categories`)
 		store.setCardCategory(res.data.data.results)
 	}
 

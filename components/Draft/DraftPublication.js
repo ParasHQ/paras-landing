@@ -1,11 +1,12 @@
+import useStore from 'lib/store'
 import { useEffect, useRef, useState } from 'react'
-import WalletHelper from 'lib/WalletHelper'
 
 const DraftPublication = ({ onCreatePublication }) => {
 	const draftModalRef = useRef()
 	const [showDraftModal, setShowDraftModal] = useState(false)
 	const [currentUserDraft, setCurrentUserDraft] = useState()
 	const [allDraftStorage, setAllDraftStorage] = useState()
+	const currentUser = useStore((state) => state.currentUser)
 
 	useEffect(() => {
 		const onClickEv = (e) => {
@@ -24,21 +25,17 @@ const DraftPublication = ({ onCreatePublication }) => {
 	useEffect(() => {
 		let draftStorage = JSON.parse(localStorage.getItem('draft-publication'))
 
-		const allDraftStorage = draftStorage?.filter(
-			(item) => WalletHelper?.currentUser?.accountId !== item.author_id
-		)
+		const allDraftStorage = draftStorage?.filter((item) => currentUser !== item.author_id)
 		setAllDraftStorage(allDraftStorage)
 
 		if (draftStorage !== null) {
-			const currentUserDraft = draftStorage?.filter(
-				(item) => WalletHelper?.currentUser?.accountId === item.author_id
-			)
+			const currentUserDraft = draftStorage?.filter((item) => currentUser === item.author_id)
 			setCurrentUserDraft(currentUserDraft)
 		} else {
 			draftStorage = []
 			setCurrentUserDraft(draftStorage)
 		}
-	}, [showDraftModal])
+	}, [showDraftModal, currentUser])
 
 	const editDraft = (_id) => {
 		const editItem = currentUserDraft.filter((item) => item._id === _id)

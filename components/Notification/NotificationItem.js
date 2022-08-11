@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Link from 'next/link'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
@@ -37,7 +37,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 			token_id: notif.msg.params.buyer_token_id,
 			contract_id: notif.msg.params.buyer_nft_contract_id,
 		}
-		const resp = await axios.get(`${process.env.V2_API_URL}/token`, {
+		const resp = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
 			params: params,
 		})
 		if (resp.data.data.results.length > 0) {
@@ -62,7 +62,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 					},
 			  }
 
-		const resp = await axios.get(query.url, {
+		const resp = await ParasRequest.get(query.url, {
 			params: query.params,
 		})
 

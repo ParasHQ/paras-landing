@@ -1,4 +1,4 @@
-import Axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Head from 'next/head'
 import { useState } from 'react'
 import { useEffect } from 'react'
@@ -40,7 +40,7 @@ const MyBids = () => {
 		}
 
 		setIsFetching(true)
-		const res = await Axios(
+		const res = await ParasRequest(
 			`${process.env.V2_API_URL}/offers?${
 				type === 'receivedBids'
 					? `receiver_id=${store.currentUser}`

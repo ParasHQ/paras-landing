@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Head from 'next/head'
 import Error from 'pages/404'
 import Nav from 'components/Nav'
@@ -118,7 +118,7 @@ const TokenSeriesPage = ({ errorCode, initial }) => {
 export async function getServerSideProps({ params }) {
 	const [contractId, tokenSeriesId] = params.id.split('::')
 
-	const res = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+	const res = await ParasRequest.get(`${process.env.V2_API_URL}/token-series`, {
 		params: {
 			contract_id: contractId,
 			token_series_id: tokenSeriesId,

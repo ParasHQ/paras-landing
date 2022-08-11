@@ -1,26 +1,12 @@
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import { IconNear, IconXCircle } from 'components/Icons'
-import IconSender from 'components/Icons/component/IconSender'
+import { useWalletSelector } from 'components/Common/WalletSelector'
+import { IconXCircle } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
-import near from 'lib/near'
-import senderWallet from 'lib/senderWallet'
-import useStore from 'lib/store'
-import { isChromeBrowser } from 'utils/common'
 
 const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 	const { localeLn } = useIntl()
-	const { setActiveWallet } = useStore()
-
-	const loginSenderWallet = async () => {
-		if (typeof window.near !== 'undefined' && window.near.isSender) {
-			await senderWallet.signIn()
-			onClose()
-			setActiveWallet('senderWallet')
-		} else {
-			window.open('https://senderwallet.io/')
-		}
-	}
+	const { modal } = useWalletSelector()
 
 	return (
 		<Modal isShow={show} close={onClose}>
@@ -48,30 +34,9 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 					<p className="text-gray-400 text-sm mb-2 text-center">
 						{localeLn('You need NEAR account to login')}
 					</p>
-					<Button className="mt-2 px-1 h-12" size="md" isFullWidth onClick={() => near.login()}>
-						<IconNear className="rounded-full absolute h-6 w-6 top-0 bottom-0 left-3 m-auto" />
-						{localeLn('Login with NEAR')}
+					<Button className="mt-2 px-1 h-12" size="md" isFullWidth onClick={() => modal.show()}>
+						{localeLn('Login')}
 					</Button>
-					{isChromeBrowser && (
-						<Button
-							className="mt-4 px-1 hidden md:block"
-							size="md"
-							variant="white"
-							isFullWidth
-							onClick={loginSenderWallet}
-						>
-							<div className="absolute h-7 w-7 top-0 bottom-0 left-2 m-auto flex items-center justify-center">
-								<IconSender size={24} />
-							</div>
-							{localeLn('Login with Sender Wallet')}
-							<span
-								className="bg-white text-primary font-bold rounded-full px-2 text-sm absolute right-2"
-								style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
-							>
-								beta
-							</span>
-						</Button>
-					)}
 				</div>
 				<div className="absolute -top-4 -right-4 cursor-pointer" onClick={onClose}>
 					<IconXCircle size={32} />

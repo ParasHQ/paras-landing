@@ -8,18 +8,17 @@ import useStore from 'lib/store'
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
 import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
-import ChooseAccountModal from 'components/Modal/ChooseAccountModal'
 import Scrollbars from 'react-custom-scrollbars'
-import WalletHelper, { walletType } from 'lib/WalletHelper'
 import near from 'lib/near'
 import transakSDK from '@transak/transak-sdk'
 import getConfigTransak from 'config/transak'
 import { IconTriangle } from 'components/Icons'
 import { trackTransakButton } from 'lib/ga'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
-export function openTransak(fetchNearBalance, toast) {
+export function openTransak(fetchNearBalance, toast, accountId) {
 	const transak = new transakSDK(
-		getConfigTransak(process.env.APP_ENV !== 'production' ? 'staging' : 'production')
+		getConfigTransak(process.env.APP_ENV !== 'production' ? 'staging' : 'production', accountId)
 	)
 	transak.init()
 	transak.on(transak.EVENTS.TRANSAK_WIDGET_CLOSE, () => {
@@ -62,6 +61,8 @@ const User = () => {
 	const [showAccountModal, setShowAccountModal] = useState(false)
 	const [showUserModal, setShowUserModal] = useState(null)
 
+	const { selector, modal, getAccountBalance, viewFunction } = useWalletSelector()
+
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
@@ -86,10 +87,10 @@ const User = () => {
 	}
 
 	const fetchUserBalance = async () => {
-		const nearbalance = await (await near.near.account(store.currentUser)).getAccountBalance()
-		const parasBalance = await WalletHelper.viewFunction({
+		const nearbalance = await getAccountBalance(store.currentUser)
+		const parasBalance = await viewFunction({
 			methodName: 'ft_balance_of',
-			contractId: process.env.PARAS_TOKEN_CONTRACT,
+			receiverId: process.env.PARAS_TOKEN_CONTRACT,
 			args: { account_id: store.currentUser },
 		})
 		store.setUserBalance(nearbalance)
@@ -137,8 +138,11 @@ const User = () => {
 		}
 	}
 
-	const _signOut = () => {
-		WalletHelper.signOut()
+	const _signOut = async () => {
+		const wallet = await selector.wallet()
+		await wallet.signOut()
+
+		window.location.replace(window.location.origin + window.location.pathname)
 	}
 
 	const dismissUserModal = () => {
@@ -151,7 +155,7 @@ const User = () => {
 	}
 
 	const onClickSwitchAccount = () => {
-		setShowUserModal('switchAcc')
+		modal.show()
 		toggleAccountModal()
 	}
 
@@ -174,7 +178,6 @@ const User = () => {
 					</div>
 				</Modal>
 			)}
-			<ChooseAccountModal show={showUserModal === 'switchAcc'} onClose={dismissUserModal} />
 			<div
 				className="relative flex items-center justify-end text-gray-100"
 				onClick={toggleAccountModal}
@@ -257,7 +260,7 @@ const User = () => {
 							<button
 								className="flex items-center w-2/3 mx-auto justify-center button-wrapper rounded-md py-2 text-white bg-gray-100 bg-opacity-15 hover:bg-opacity-10 transition-all mt-1"
 								onClick={() => {
-									openTransak(fetchUserBalance, toast)
+									openTransak(fetchUserBalance, toast, store.currentUser)
 									onTransakButtonClick()
 								}}
 							>
@@ -319,14 +322,12 @@ const User = () => {
 								{localeLn('NavSettings')}
 							</button>
 							<hr className="my-2" />
-							{WalletHelper.activeWallet === walletType.web && (
-								<div
-									className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
-									onClick={onClickSwitchAccount}
-								>
-									{localeLn('NavSwitchAccount')}
-								</div>
-							)}
+							<div
+								className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+								onClick={onClickSwitchAccount}
+							>
+								{localeLn('NavSwitchAccount')}
+							</div>
 							<p
 								onClick={_signOut}
 								className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"

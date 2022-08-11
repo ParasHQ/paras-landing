@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { capitalize, prettyBalance } from 'utils/common'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
-import axios from 'axios'
 import { IconChart, IconDownArrow } from 'components/Icons'
 import InputDropdown from 'components/Common/form/components/InputDropdown'
 import {
@@ -14,6 +13,7 @@ import {
 	YAxis,
 } from 'recharts'
 import { trackClosePriceHistory, trackOpenPriceHistory } from 'lib/ga'
+import ParasRequest from 'lib/ParasRequest'
 
 const dataHistory = [
 	{ id: 'last-7-days', label: 'Last 7 days' },
@@ -47,7 +47,7 @@ const TokenPriceHistory = ({ localToken, className }) => {
 	}
 
 	const fetchDataActivities = async () => {
-		const res = await axios.get(`${process.env.V2_API_URL}/activities`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/activities`, {
 			params: params,
 		})
 

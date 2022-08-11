@@ -1,10 +1,10 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import useSWR from 'swr'
 import LaunchpadList from 'components/Launchpad/LaunchpadList'
 
 const HomeLaunchpad = ({ showDetails }) => {
 	const fetchData = () => {
-		return axios(`${process.env.V2_API_URL}/launchpad/all`, {
+		return ParasRequest(`${process.env.V2_API_URL}/launchpad/all`, {
 			params: {
 				launchpad_id: 'enleap',
 			},

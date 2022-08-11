@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import TokenList from 'components/Token/TokenList'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -74,7 +74,7 @@ const Collection = ({ userProfile, accountId }) => {
 						ended_soonest_next: endedSoonestNext,
 				  }),
 		})
-		const res = await axios.get(`${process.env.V2_API_URL}/token`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
 			params: params,
 		})
 		const newData = await res.data.data
@@ -83,7 +83,7 @@ const Collection = ({ userProfile, accountId }) => {
 		setTokens(newTokens)
 
 		if (initialFetch) {
-			const collections = await axios(`${process.env.V2_API_URL}/owned-collections`, {
+			const collections = await ParasRequest(`${process.env.V2_API_URL}/owned-collections`, {
 				params: {
 					accountId: accountId,
 				},
@@ -145,7 +145,7 @@ const Collection = ({ userProfile, accountId }) => {
 		setIsFiltering(true)
 
 		const params = tokensParams(query)
-		const res = await axios(`${process.env.V2_API_URL}/token`, {
+		const res = await ParasRequest(`${process.env.V2_API_URL}/token`, {
 			params: params,
 		})
 		setTokens(res.data.data.results)
@@ -251,7 +251,7 @@ const Collection = ({ userProfile, accountId }) => {
 export default Collection
 
 export async function getServerSideProps({ params }) {
-	const profileRes = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+	const profileRes = await ParasRequest.get(`${process.env.V2_API_URL}/profiles`, {
 		params: {
 			accountId: params.id,
 		},

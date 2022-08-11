@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Head from 'next/head'
 
 import Nav from 'components/Nav'
@@ -25,7 +25,7 @@ const TopCardsPage = () => {
 		}
 
 		setIsFetching(true)
-		const res = await axios(
+		const res = await ParasRequest(
 			`${process.env.API_URL}/activities/topCards?__skip=${page * LIMIT}&__limit=${LIMIT}`
 		)
 

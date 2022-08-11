@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Link from 'next/link'
 import router, { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -13,7 +13,6 @@ import { parseImgUrl } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
-import WalletHelper from 'lib/WalletHelper'
 import { IconSpin } from 'components/Icons'
 
 const CategorySubmission = () => {
@@ -35,21 +34,22 @@ const CategorySubmission = () => {
 	}, [categoryId, currentUser])
 
 	const getCategorySubmission = async () => {
-		const auth = await WalletHelper.authToken()
 		setIsLoading(true)
 		if (categoryId) {
 			try {
-				const response = await axios.get(`${process.env.V2_API_URL}/categories/tokens/submission`, {
-					params: {
-						token_series_id: submissionId,
-						category_id: categoryId,
-						status: 'pending',
-					},
-					headers: {
-						'Content-Type': 'application/x-www-form-urlencoded',
-						authorization: auth,
-					},
-				})
+				const response = await ParasRequest.get(
+					`${process.env.V2_API_URL}/categories/tokens/submission`,
+					{
+						params: {
+							token_series_id: submissionId,
+							category_id: categoryId,
+							status: 'pending',
+						},
+						headers: {
+							'Content-Type': 'application/x-www-form-urlencoded',
+						},
+					}
+				)
 				const results = response.data.data.results
 				setToken(results[0])
 				setSubmissions(results)
@@ -141,7 +141,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 	}, [submission])
 
 	const fetchTokenSeries = async () => {
-		const resp = await axios.get(`${process.env.V2_API_URL}/token-series`, {
+		const resp = await ParasRequest.get(`${process.env.V2_API_URL}/token-series`, {
 			params: {
 				token_series_id: submission.token_series_id,
 				contract_id: submission.contract_id,
@@ -165,11 +165,7 @@ const SubmissionDetail = ({ submission, updateData }) => {
 		setIsLoading(true)
 
 		try {
-			await axios.put(`${process.env.V2_API_URL}/categories/tokens/${type}`, params, {
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			})
+			await ParasRequest.put(`${process.env.V2_API_URL}/categories/tokens/${type}`, params)
 			setShowModal('')
 			updateData(submission._id)
 		} catch (error) {

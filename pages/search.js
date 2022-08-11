@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { useContext, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
@@ -71,7 +71,7 @@ export default function SearchPage({ searchQuery }) {
 
 			const params = tokensParams(query)
 			let res
-			res = await axios(`${process.env.V2_API_URL}/token-series`, {
+			res = await ParasRequest(`${process.env.V2_API_URL}/token-series`, {
 				params: params,
 			})
 			if (res.data.data.results.length === LIMIT) {
@@ -88,7 +88,7 @@ export default function SearchPage({ searchQuery }) {
 			}
 			setTokens(res.data.data.results)
 			let resPub /** Publication */
-			resPub = await axios(`${process.env.V2_API_URL}/publications`, {
+			resPub = await ParasRequest(`${process.env.V2_API_URL}/publications`, {
 				params: {
 					search: query.q,
 					__view: 'simple',
@@ -104,7 +104,7 @@ export default function SearchPage({ searchQuery }) {
 			}
 			setPublication(resPub.data.data.results)
 			let resColl // Collection
-			resColl = await axios(`${process.env.V2_API_URL}/collections`, {
+			resColl = await ParasRequest(`${process.env.V2_API_URL}/collections`, {
 				params: {
 					collection_search: query.q,
 					__skip: 0,
@@ -121,7 +121,7 @@ export default function SearchPage({ searchQuery }) {
 			}
 			setCollections(resColl.data.data.results)
 			let resPro // Profile
-			resPro = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+			resPro = await ParasRequest.get(`${process.env.V2_API_URL}/profiles`, {
 				params: {
 					search: query.q,
 					__skip: 0,
@@ -167,7 +167,7 @@ export default function SearchPage({ searchQuery }) {
 			lowest_price_next: lowestPriceNext,
 			updated_at_next: updatedAtNext,
 		})
-		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
+		const res = await ParasRequest(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
 		})
 		const newData = await res.data.data
@@ -192,7 +192,7 @@ export default function SearchPage({ searchQuery }) {
 		}
 
 		setPubIsFetch(true)
-		const res = await axios(`${process.env.V2_API_URL}/publications`, {
+		const res = await ParasRequest(`${process.env.V2_API_URL}/publications`, {
 			params: {
 				search: query.q,
 				__view: 'simple',
@@ -217,7 +217,7 @@ export default function SearchPage({ searchQuery }) {
 		if (!collHasMore || collIsFetch) return
 
 		setCollIsFetch(true)
-		const res = await axios(`${process.env.V2_API_URL}/collections`, {
+		const res = await ParasRequest(`${process.env.V2_API_URL}/collections`, {
 			params: {
 				collection_search: encodeURIComponent(query.q),
 				__skip: collPage * LIMIT,
@@ -244,7 +244,7 @@ export default function SearchPage({ searchQuery }) {
 
 		setProIsFetch(true)
 
-		const res = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/profiles`, {
 			params: {
 				search: query.q,
 				__skip: proPage * LIMIT,

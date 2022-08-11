@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import Axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Link from 'next/link'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { useIntl } from 'hooks/useIntl'
@@ -38,7 +38,7 @@ const PublicationPreviewList = ({ tokenId }) => {
 		}
 
 		setIsFetching(true)
-		const res = await Axios(
+		const res = await ParasRequest(
 			`${process.env.V2_API_URL}/publications?tokenId=${tokenId}&__skip=${
 				page * 5
 			}&__limit=5&__view=simple`

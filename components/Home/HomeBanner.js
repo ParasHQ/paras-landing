@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { useEffect, useRef, useState } from 'react'
 import { Carousel } from 'react-responsive-carousel'
 import 'react-responsive-carousel/lib/styles/carousel.min.css'
@@ -7,7 +7,7 @@ import { parseImgUrl } from 'utils/common'
 
 const HomeBanner = () => {
 	const fetchFeaturedPost = () =>
-		axios.get(`${process.env.V2_API_URL}/banner`).then((res) => res.data.result)
+		ParasRequest.get(`${process.env.V2_API_URL}/banner`).then((res) => res.data.result)
 
 	const { data, isValidating } = useSWR('home-banner', fetchFeaturedPost)
 

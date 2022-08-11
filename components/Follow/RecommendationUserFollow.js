@@ -1,10 +1,9 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Button from 'components/Common/Button'
 import { IconVerified } from 'components/Icons'
 import { useNonInitialEffect } from 'hooks/useNonInitialEffect'
 import useProfileSWR from 'hooks/useProfileSWR'
 import useStore from 'lib/store'
-import WalletHelper from 'lib/WalletHelper'
 import Link from 'next/link'
 import { useState } from 'react'
 import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
@@ -34,12 +33,9 @@ const RecommendationUserFollow = ({ data }) => {
 
 		setIsLoading(true)
 		try {
-			await axios.request({
+			await ParasRequest.request({
 				url: `${process.env.V2_API_URL}${profile.follows ? '/unfollow' : '/follow'}`,
 				method: 'PUT',
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
 				params: {
 					account_id: currentUser,
 					following_account_id: profile.accountId,

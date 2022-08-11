@@ -6,8 +6,7 @@ import useStore from 'lib/store'
 import { useRouter } from 'next/router'
 import JSBI from 'jsbi'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import axios from 'axios'
-import WalletHelper from 'lib/WalletHelper'
+import ParasRequest from 'lib/ParasRequest'
 
 import { useIntl } from 'hooks/useIntl'
 import TokenSeriesDetailModal from './TokenSeriesDetailModal'
@@ -385,14 +384,9 @@ const TokenSeriesSingle = ({
 			account_id: currentUser,
 		}
 
-		const res = await axios.put(
+		const res = await ParasRequest.put(
 			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
-			params,
-			{
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			}
+			params
 		)
 
 		if (res.status !== 200) {
@@ -416,14 +410,9 @@ const TokenSeriesSingle = ({
 			account_id: currentUser,
 		}
 
-		const res = await axios.put(
+		const res = await ParasRequest.put(
 			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
-			params,
-			{
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			}
+			params
 		)
 
 		if (res.status !== 200) {
@@ -574,9 +563,9 @@ const TokenSeriesSingle = ({
 							displayType === 'large' ? `flex gap-1` : `flex gap-1`
 						} text-right absolute top-0 right-0 flex-col items-end`}
 					>
-						{type === 'collection' && !!token.metadata.score && (
+						{type === 'collection' && !!token.metadata.rank && (
 							<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
-								Rarity Score {token.metadata?.score?.toFixed(2)}
+								Rank {token.metadata?.rank}
 							</p>
 						)}
 						{showLike && (
