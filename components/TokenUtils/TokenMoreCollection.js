@@ -18,6 +18,7 @@ const TokenMoreCollection = ({ localToken, className }) => {
 			collection_id: localToken.metadata.collection_id
 				? localToken.metadata.collection_id
 				: localToken.contract_id,
+			exclude_total_burn: true,
 			__sort: 'metadata.score::-1',
 			__limit: LIMIT,
 		}
