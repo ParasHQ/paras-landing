@@ -15,6 +15,7 @@ import TokenBuyModal from 'components/Modal/TokenBuyModal'
 import TokenTransferModal from 'components/Modal/TokenTransferModal'
 import ReportModal from 'components/Modal/ReportModal'
 import ParasRequest from 'lib/ParasRequest'
+import Link from 'next/link'
 
 const TokenHead = ({ localToken, typeToken }) => {
 	const [defaultLikes, setDefaultLikes] = useState(0)
@@ -166,12 +167,22 @@ const TokenHead = ({ localToken, typeToken }) => {
 						{localToken.metadata.title}
 					</h1>
 					<div className="mt-1 text-white text-lg flex">
-						<p className="mr-1 font-bold">
-							{localToken.metadata.collection ||
-								localToken.contract_id?.replace(/\b(?:-|.|near)\b/gi, ' ').trim()}
+						<div className="mr-1 truncate">
+							<Link
+								href={`/collection/${localToken.metadata.collection_id || localToken.contract_id}`}
+							>
+								<a className="font-bold border-b-2 border-transparent hover:border-white">
+									{localToken.metadata.collection ||
+										localToken.contract_id?.replace(/\b(?:-|.|near)\b/gi, ' ').trim()}
+								</a>
+							</Link>
 							<span className="font-normal"> by </span>
-							{localToken.metadata.creator_id}
-						</p>
+							<Link href={`/${localToken.metadata.creator_id}`}>
+								<a className="font-bold border-b-2 border-transparent hover:border-white">
+									{localToken.metadata.creator_id}
+								</a>
+							</Link>
+						</div>
 					</div>
 				</div>
 			</div>
