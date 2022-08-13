@@ -106,7 +106,7 @@ const TokenInfo = ({ localToken, className }) => {
 						)}
 					</div>
 					<div className="flex justify-between mb-2 md:mb-0">
-						<p>Mint Address</p>
+						<p>Token Id</p>
 						<p>
 							{prettyTruncate(localToken.token_id, 25, 'address') ||
 								prettyTruncate(localToken.token_series_id, 25, 'address')}

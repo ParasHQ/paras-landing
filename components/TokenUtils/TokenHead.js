@@ -4,7 +4,6 @@ import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 import { abbrNum, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { mutate } from 'swr'
-import ArtistVerified from 'components/Common/ArtistVerified'
 import IconLove from 'components/Icons/component/IconLove'
 import Tooltip from 'components/Common/Tooltip'
 import { IconDots } from 'components/Icons'
@@ -167,8 +166,12 @@ const TokenHead = ({ localToken, typeToken }) => {
 						{localToken.metadata.title}
 					</h1>
 					<div className="mt-1 text-white text-lg flex">
-						<p className="mr-1">{localeLn('owned by')}</p>
-						<ArtistVerified token={localToken} type={'token-detail'} />
+						<p className="mr-1 font-bold">
+							{localToken.metadata.collection ||
+								localToken.contract_id?.replace(/\b(?:-|.|near)\b/gi, ' ').trim()}
+							<span className="font-normal"> by </span>
+							{localToken.metadata.creator_id}
+						</p>
 					</div>
 				</div>
 			</div>
