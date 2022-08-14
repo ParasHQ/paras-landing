@@ -16,6 +16,7 @@ import TokenBuyModal from 'components/Modal/TokenBuyModal'
 import TokenTransferModal from 'components/Modal/TokenTransferModal'
 import ReportModal from 'components/Modal/ReportModal'
 import ParasRequest from 'lib/ParasRequest'
+import TradeNFTModal from 'components/Modal/TradeNFTModal'
 
 const TokenHead = ({ localToken, typeToken }) => {
 	const [defaultLikes, setDefaultLikes] = useState(0)
@@ -263,6 +264,12 @@ const TokenHead = ({ localToken, typeToken }) => {
 				show={showModal === 'transfer'}
 				onClose={onDismissModal}
 				data={localToken}
+			/>
+			<TradeNFTModal
+				show={showModal === 'placeofferNFT'}
+				data={localToken}
+				onClose={onDismissModal}
+				tokenType={`token`}
 			/>
 			<ReportModal show={showModal === 'report'} data={localToken} onClose={onDismissModal} />
 		</div>
