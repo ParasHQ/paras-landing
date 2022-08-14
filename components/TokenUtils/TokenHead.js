@@ -4,7 +4,6 @@ import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 import { abbrNum, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { mutate } from 'swr'
-import ArtistVerified from 'components/Common/ArtistVerified'
 import IconLove from 'components/Icons/component/IconLove'
 import Tooltip from 'components/Common/Tooltip'
 import { IconDots } from 'components/Icons'
@@ -16,6 +15,7 @@ import TokenBuyModal from 'components/Modal/TokenBuyModal'
 import TokenTransferModal from 'components/Modal/TokenTransferModal'
 import ReportModal from 'components/Modal/ReportModal'
 import ParasRequest from 'lib/ParasRequest'
+import Link from 'next/link'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
 
 const TokenHead = ({ localToken, typeToken }) => {
@@ -168,8 +168,22 @@ const TokenHead = ({ localToken, typeToken }) => {
 						{localToken.metadata.title}
 					</h1>
 					<div className="mt-1 text-white text-lg flex">
-						<p className="mr-1">{localeLn('owned by')}</p>
-						<ArtistVerified token={localToken} type={'token-detail'} />
+						<div className="mr-1 truncate">
+							<Link
+								href={`/collection/${localToken.metadata.collection_id || localToken.contract_id}`}
+							>
+								<a className="font-bold border-b-2 border-transparent hover:border-white">
+									{localToken.metadata.collection ||
+										localToken.contract_id?.replace(/\b(?:-|.|near)\b/gi, ' ').trim()}
+								</a>
+							</Link>
+							<span className="font-normal"> by </span>
+							<Link href={`/${localToken.metadata.creator_id}`}>
+								<a className="font-bold border-b-2 border-transparent hover:border-white">
+									{localToken.metadata.creator_id}
+								</a>
+							</Link>
+						</div>
 					</div>
 				</div>
 			</div>
