@@ -17,6 +17,8 @@ import ReportModal from 'components/Modal/ReportModal'
 import ParasRequest from 'lib/ParasRequest'
 import Link from 'next/link'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
+import TokenSeriesTransferBuyer from 'components/Modal/TokenSeriesTransferBuyer'
+import TokenSeriesBurnModal from 'components/Modal/TokenSeriesBurnModal'
 
 const TokenHead = ({ localToken, typeToken }) => {
 	const [defaultLikes, setDefaultLikes] = useState(0)
@@ -25,6 +27,9 @@ const TokenHead = ({ localToken, typeToken }) => {
 	const currentUser = useStore((state) => state.currentUser)
 
 	const { localeLn } = useIntl()
+	const isEnableTrade = !process.env.WHITELIST_CONTRACT_ID.split(';').includes(
+		localToken?.contract_id
+	)
 
 	useEffect(() => {
 		if (localToken?.total_likes && localToken?.likes) {
@@ -133,6 +138,32 @@ const TokenHead = ({ localToken, typeToken }) => {
 			return false
 		}
 		return currentUser === localToken.owner_id
+	}
+
+	const isCreator = () => {
+		if (!currentUser) {
+			return false
+		}
+		return (
+			currentUser === localToken.metadata.creator_id ||
+			(!localToken.metadata.creator_id && currentUser === localToken.contract_id)
+		)
+	}
+
+	const onClickDecreaseCopies = () => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+		setShowModal('decreaseCopies')
+	}
+
+	const onClickBuyerTransfer = () => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+		setShowModal('buyerTransfer')
 	}
 
 	return (
@@ -249,19 +280,37 @@ const TokenHead = ({ localToken, typeToken }) => {
 					)}
 				</div>
 			</div>
-			<TokenMoreModal
-				show={showModal === 'more'}
-				onClose={onDismissModal}
-				listModalItem={[
-					{ name: 'Share to...', onClick: onClickShare },
-					!isOwner() &&
-						!localToken.is_staked && { name: 'Offer Via NFT', onClick: onClickOfferNFT },
-					isOwner() && !localToken.is_staked && { name: 'Update Listing', onClick: onClickUpdate },
-					isOwner() && !localToken.is_staked && { name: 'Transfer', onClick: onClickTransfer },
-					isOwner() && !localToken.is_staked && { name: 'Burn Card', onClick: onClickBurn },
-					{ name: 'Report', onClick: () => setShowModal('report') },
-				].filter((x) => x)}
-			/>
+			{typeToken === 'token-series' ? (
+				<TokenMoreModal
+					show={showModal === 'more'}
+					onClose={onDismissModal}
+					listModalItem={[
+						{ name: 'Share to...', onClick: onClickShare },
+						isEnableTrade && {
+							name: 'Offer Via NFT',
+							onClick: onClickOfferNFT,
+						},
+						{ name: 'Transfer', onClick: onClickBuyerTransfer },
+						isCreator() && { name: 'Reduce Copies', onClick: onClickDecreaseCopies },
+						{ name: 'Report', onClick: () => setShowModal('report') },
+					].filter((x) => x)}
+				/>
+			) : (
+				<TokenMoreModal
+					show={showModal === 'more'}
+					onClose={onDismissModal}
+					listModalItem={[
+						{ name: 'Share to...', onClick: onClickShare },
+						!isOwner() &&
+							!localToken.is_staked && { name: 'Offer Via NFT', onClick: onClickOfferNFT },
+						isOwner() &&
+							!localToken.is_staked && { name: 'Update Listing', onClick: onClickUpdate },
+						isOwner() && !localToken.is_staked && { name: 'Transfer', onClick: onClickTransfer },
+						isOwner() && !localToken.is_staked && { name: 'Burn Card', onClick: onClickBurn },
+						{ name: 'Report', onClick: () => setShowModal('report') },
+					].filter((x) => x)}
+				/>
+			)}
 			<TokenShareModal
 				show={showModal === 'share'}
 				onClose={onDismissModal}
@@ -284,6 +333,16 @@ const TokenHead = ({ localToken, typeToken }) => {
 				data={localToken}
 				onClose={onDismissModal}
 				tokenType={`token`}
+			/>
+			<TokenSeriesTransferBuyer
+				show={showModal === 'buyerTransfer'}
+				onClose={onDismissModal}
+				data={localToken}
+			/>
+			<TokenSeriesBurnModal
+				show={showModal === 'decreaseCopies'}
+				onClose={onDismissModal}
+				data={localToken}
 			/>
 			<ReportModal show={showModal === 'report'} data={localToken} onClose={onDismissModal} />
 		</div>

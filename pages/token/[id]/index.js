@@ -104,11 +104,11 @@ const TokenSeriesPage = ({ errorCode, initial }) => {
 			</Head>
 			<Nav />
 			<div className="relative max-w-6xl m-auto pt-16 px-4">
-				{currentVariant == 0 ? (
+				{/* {currentVariant == 0 ? (
 					<TokenSeriesDetail token={token} />
-				) : (
-					<TokenSeriesDetailNew token={token} />
-				)}
+				) : ( */}
+				<TokenSeriesDetailNew token={token} />
+				{/* )} */}
 			</div>
 			<Footer />
 		</div>
