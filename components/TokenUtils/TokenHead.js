@@ -293,7 +293,7 @@ const TokenHead = ({ localToken, typeToken }) => {
 						{ name: 'Transfer', onClick: onClickBuyerTransfer },
 						isCreator() && { name: 'Reduce Copies', onClick: onClickDecreaseCopies },
 						{ name: 'Report', onClick: () => setShowModal('report') },
-					].filter((x) => x)}
+					]}
 				/>
 			) : (
 				<TokenMoreModal
@@ -308,7 +308,7 @@ const TokenHead = ({ localToken, typeToken }) => {
 						isOwner() && !localToken.is_staked && { name: 'Transfer', onClick: onClickTransfer },
 						isOwner() && !localToken.is_staked && { name: 'Burn Card', onClick: onClickBurn },
 						{ name: 'Report', onClick: () => setShowModal('report') },
-					].filter((x) => x)}
+					]}
 				/>
 			)}
 			<TokenShareModal
