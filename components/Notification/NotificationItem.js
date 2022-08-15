@@ -2,7 +2,7 @@ import ParasRequest from 'lib/ParasRequest'
 import Link from 'next/link'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
-import { capitalizeFirstLetter, parseImgUrl, prettyTruncate } from 'utils/common'
+import { capitalizeFirstLetter, parseImgUrl, prettyTruncate, shortTimeAgo } from 'utils/common'
 import Media from 'components/Common/Media'
 
 const NotificationImage = ({ media }) => {
@@ -18,6 +18,14 @@ const NotificationImage = ({ media }) => {
 				videoLoop={true}
 			/>
 		</div>
+	)
+}
+
+const NotificationTime = ({ time }) => {
+	return (
+		<p className="absolute top-1 right-1 flex-1 text-[0.675rem] pl-1 text-right leading-4 text-opacity-60 text-white whitespace-nowrap">
+			{shortTimeAgo(time)}
+		</p>
 	)
 }
 
@@ -79,18 +87,19 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 
 	if (notif.type === 'notification_level_up') {
 		return (
-			<div className="p-2 rounded-md button-wrapper flex items-center">
+			<div className="notification-item">
 				<div className="text-gray-300 select-none">
 					<p>Congratulations,</p>
 					<p>{`You're now a ${capitalizeFirstLetter(notif.msg.current_level)} Member`}</p>
 				</div>
+				<NotificationTime time={notif.issued_at} />
 			</div>
 		)
 	}
 
 	if (notif.type === 'notification_level_down') {
 		return (
-			<div className="p-2 rounded-md button-wrapper flex items-center">
+			<div className="notification-item">
 				<div className="text-gray-300 select-none">
 					<span>
 						Sorry, your member has dropped to {capitalizeFirstLetter(notif.msg.current_level)}.
@@ -110,13 +119,14 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 					</span>
 					<span>again to keep them at {capitalizeFirstLetter(notif.msg.previous_level)}!</span>
 				</div>
+				<NotificationTime time={notif.issued_at} />
 			</div>
 		)
 	}
 
 	if (notif.type === 'notification_raffle_type_drop') {
 		return (
-			<div className="p-2 rounded-md button-wrapper flex items-center">
+			<div className="notification-item">
 				<div className="text-gray-300 select-none">
 					<span>Sorry, your member has dropped to </span>
 					<span className="font-bold">{capitalizeFirstLetter(notif.msg.current_raffle_type)}.</span>
@@ -124,23 +134,25 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 					<span className="font-bold">{capitalizeFirstLetter(notif.msg.previous_raffle_type)}</span>
 					<span> raffle</span>
 				</div>
+				<NotificationTime time={notif.issued_at} />
 			</div>
 		)
 	}
 
 	if (notif.type === 'notification_raffle_registered') {
 		return (
-			<div className="p-2 rounded-md w-full button-wrapper flex items-center">
+			<div className="w-full notification-item">
 				<div className="text-gray-300 select-none w-full">
 					<p>We have recorded your information for the raffle</p>
 				</div>
+				<NotificationTime time={notif.issued_at} />
 			</div>
 		)
 	}
 
 	if (notif.type === 'notification_raffle_begin') {
 		return (
-			<div className="p-2 rounded-md w-full button-wrapper flex items-center">
+			<div className="w-full notification-item">
 				<div className="text-gray-300 select-none w-full">
 					<p className="font-bold">The raffle is just about to begin!</p>
 					<p>
@@ -153,13 +165,14 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 						<span> about the mechanism</span>
 					</p>
 				</div>
+				<NotificationTime time={notif.issued_at} />
 			</div>
 		)
 	}
 
 	if (notif.type === 'notification_raffle_end_soon') {
 		return (
-			<div className="p-2 rounded-md w-full button-wrapper flex items-center">
+			<div className="w-full notification-item">
 				<div className="text-gray-300 select-none w-full">
 					<p className="font-bold">The raffle ends soon!</p>
 					<p>
@@ -172,17 +185,19 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 						<span> about the mechanism</span>
 					</p>
 				</div>
+				<NotificationTime time={notif.issued_at} />
 			</div>
 		)
 	}
 
 	if (notif.type === 'notification_raffle_over') {
 		return (
-			<div className="p-2 rounded-md w-full button-wrapper flex items-center">
+			<div className="w-full notification-item">
 				<div className="text-gray-300 select-none w-full">
 					<p className="font-bold">The raffle is over!</p>
 					<p>The winners have been drawn</p>
 				</div>
+				<NotificationTime time={notif.issued_at} />
 			</div>
 		)
 	}
@@ -197,7 +212,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 				<Link href={url}>
 					<a>
 						<div
-							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={token.metadata?.media} />
@@ -206,6 +221,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								<span> you have won a </span>
 								<span>{token.metadata?.title} from the</span>
 							</div>
+							<NotificationTime time={notif.issued_at} />
 						</div>
 					</a>
 				</Link>
@@ -219,7 +235,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 				<Link href={url}>
 					<a>
 						<div
-							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={token.metadata?.media} />
@@ -230,6 +246,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 									'address'
 								)}`}
 							</div>
+							<NotificationTime time={notif.issued_at} />
 						</div>
 					</a>
 				</Link>
@@ -243,13 +260,14 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 				<Link href={url}>
 					<a>
 						<div
-							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-300">
 								burned <span className="font-medium text-gray-100">{token.metadata?.title}</span>
 							</div>
+							<NotificationTime time={notif.issued_at} />
 						</div>
 					</a>
 				</Link>
@@ -264,7 +282,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 					<Link href={url}>
 						<a>
 							<div
-								className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+								className="cursor-pointer notification-item"
 								onClick={() => notificationModal(false)}
 							>
 								<NotificationImage media={token.metadata?.media} />
@@ -276,6 +294,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 									</span>{' '}
 									for {formatNearAmount(notif.msg.params.price)} Ⓝ
 								</div>
+								<NotificationTime time={notif.issued_at} />
 							</div>
 						</a>
 					</Link>
@@ -289,7 +308,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 					<Link href={url}>
 						<a>
 							<div
-								className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+								className="cursor-pointer notification-item"
 								onClick={() => notificationModal(false)}
 							>
 								<NotificationImage media={token.metadata?.media} />
@@ -301,6 +320,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 									</span>{' '}
 									for {formatNearAmount(notif.msg.params.price)} Ⓝ
 								</div>
+								<NotificationTime time={notif.issued_at} />
 							</div>
 						</a>
 					</Link>
@@ -314,7 +334,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 					<Link href={url}>
 						<a>
 							<div
-								className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+								className="cursor-pointer notification-item"
 								onClick={() => notificationModal(false)}
 							>
 								<NotificationImage media={token.metadata?.media} />
@@ -326,6 +346,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 										{prettyTruncate(notif.from, 14, 'address')}
 									</span>
 								</div>
+								<NotificationTime time={notif.issued_at} />
 							</div>
 						</a>
 					</Link>
@@ -340,7 +361,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 				<Link href={url}>
 					<a>
 						<div
-							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={token.metadata?.media} />
@@ -363,6 +384,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 									for {formatNearAmount(notif.msg.params.price)} Ⓝ
 								</div>
 							)}
+							<NotificationTime time={notif.issued_at} />
 						</div>
 					</a>
 				</Link>
@@ -376,7 +398,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 				<Link href={url}>
 					<a>
 						<div
-							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={token.metadata?.media} />
@@ -385,6 +407,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								<span className="font-medium text-gray-100">{token.metadata?.title}</span> secondary
 								sale
 							</div>
+							<NotificationTime time={notif.issued_at} />
 						</div>
 					</a>
 				</Link>
@@ -398,7 +421,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 				<Link href={`${url}?tab=offers`}>
 					<a>
 						<div
-							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={token.metadata?.media} />
@@ -408,6 +431,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								{' for '}
 								{formatNearAmount(notif.msg.params.price)} Ⓝ
 							</div>
+							<NotificationTime time={notif.issued_at} />
 						</div>
 					</a>
 				</Link>
@@ -421,7 +445,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 				<Link href={`${url}?tab=auction`}>
 					<a>
 						<div
-							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={token.metadata?.media} />
@@ -434,6 +458,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								)}{' '}
 								Ⓝ
 							</div>
+							<NotificationTime time={notif.issued_at} />
 						</div>
 					</a>
 				</Link>
@@ -447,7 +472,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 				<Link href={`${url}?tab=auction`}>
 					<a>
 						<div
-							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={token.metadata?.media} />
@@ -460,6 +485,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								)}{' '}
 								Ⓝ
 							</div>
+							<NotificationTime time={notif.issued_at} />
 						</div>
 					</a>
 				</Link>
@@ -473,7 +499,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 				<Link href={url}>
 					<a>
 						<div
-							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={token.metadata?.media} />
@@ -482,6 +508,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								been accepted
 								{' to '} <span className="font-semibold">{notif.msg.category_name}</span> category
 							</div>
+							<NotificationTime time={notif.issued_at} />
 						</div>
 					</a>
 				</Link>
@@ -495,7 +522,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 				<Link href={url}>
 					<a>
 						<div
-							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={token.metadata?.media} />
@@ -504,6 +531,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								been rejected from <span className="font-semibold">{notif.msg.category_name}</span>{' '}
 								category.
 							</div>
+							<NotificationTime time={notif.issued_at} />
 						</div>
 					</a>
 				</Link>
@@ -517,7 +545,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 				<Link href={`${url}?tab=offers`}>
 					<a>
 						<div
-							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={tradedToken.metadata?.media} />
@@ -529,6 +557,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								{` `}
 								<span className="font-semibold text-gray-100">{token.metadata?.title}</span>
 							</div>
+							<NotificationTime time={notif.issued_at} />
 						</div>
 					</a>
 				</Link>
@@ -542,7 +571,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 				<Link href={`${url}?tab=offers`}>
 					<a>
 						<div
-							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={tradedToken.metadata?.media} />
@@ -553,6 +582,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								accepted trade{' '}
 								<span className="font-semibold text-gray-100">{tradedToken.metadata?.title}</span>
 							</div>
+							<NotificationTime time={notif.issued_at} />
 						</div>
 					</a>
 				</Link>
@@ -566,7 +596,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 				<Link href={`${url}?tab=auction`}>
 					<a>
 						<div
-							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={token.metadata?.media} />
@@ -575,6 +605,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								outbid <span className="font-semibold text-gray-100">{token.metadata?.title}</span>{' '}
 								for {formatNearAmount(notif.msg.params.amount)} Ⓝ
 							</div>
+							<NotificationTime time={notif.issued_at} />
 						</div>
 					</a>
 				</Link>
@@ -587,7 +618,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 				<Link href={url}>
 					<a>
 						<div
-							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={token.metadata?.media} />
@@ -598,6 +629,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 									{prettyTruncate(token.owner_id, 14, 'address')}
 								</span>
 							</div>
+							<NotificationTime time={notif.issued_at} />
 						</div>
 					</a>
 				</Link>
@@ -611,7 +643,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 				<Link href={url}>
 					<a>
 						<div
-							className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
+							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
 							<NotificationImage media={notif.msg.image} />
@@ -619,6 +651,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								<span className="font-medium text-gray-100">{notif.msg.title}</span> has been
 								delisted
 							</div>
+							<NotificationTime time={notif.issued_at} />
 						</div>
 					</a>
 				</Link>

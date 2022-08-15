@@ -173,13 +173,8 @@ const NotificationList = () => {
 			</div>
 			{showNotificationModal && (
 				<Fragment>
-					<div
-						className="absolute right-0 p-4 z-10 max-w-full md:max-w-none"
-						style={{
-							width: `24rem`,
-						}}
-					>
-						<div className="p-2 shadow-inner bg-dark-primary-2 text-gray-100 rounded-md">
+					<div className="absolute right-0 p-4 z-10 w-[28rem] max-w-full md:max-w-none">
+						<div className="p-2 shadow-inner bg-dark-primary-2 text-gray-100 rounded-md text-sm">
 							<h4 className="font-bold text-2xl px-2">{localeLn('Notifications')}</h4>
 							<Scrollbars
 								autoHeight
@@ -200,18 +195,20 @@ const NotificationList = () => {
 										loader={<h4 className="text-center p-2">{localeLn('LoadingLoading')}</h4>}
 										scrollableTarget="scrollableDiv"
 									>
-										<NotificationSignUpRaffle />
-										{notificationList.map((notif) => {
-											return (
-												<div key={notif._id}>
-													<NotificationItem
-														notif={notif}
-														currentUser={currentUser}
-														notificationModal={setShowNotificationModal}
-													/>
-												</div>
-											)
-										})}
+										<>
+											<NotificationSignUpRaffle />
+											{notificationList.map((notif) => {
+												return (
+													<div key={notif._id}>
+														<NotificationItem
+															notif={notif}
+															currentUser={currentUser}
+															notificationModal={setShowNotificationModal}
+														/>
+													</div>
+												)
+											})}
+										</>
 									</InfiniteScroll>
 								)}
 							</Scrollbars>
