@@ -106,7 +106,7 @@ const Profile = ({ userProfile, activeTab }) => {
 						src={parseImgUrl(profileData?.imgUrl, null, {
 							width: `300`,
 						})}
-						className="object-cover"
+						className="object-cover rounded-full"
 					/>
 					<img
 						src={parseImgUrl(ASSET_BADGE[profileData.level], null, {
