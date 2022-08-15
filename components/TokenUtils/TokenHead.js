@@ -167,8 +167,6 @@ const TokenHead = ({ localToken, typeToken }) => {
 		setShowModal('buyerTransfer')
 	}
 
-	console.log('test', isOwner() && !localToken.is_staked)
-
 	return (
 		<div>
 			<div className="flex justify-between relative">
