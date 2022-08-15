@@ -19,6 +19,7 @@ import Link from 'next/link'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
 import TokenSeriesTransferBuyer from 'components/Modal/TokenSeriesTransferBuyer'
 import TokenSeriesBurnModal from 'components/Modal/TokenSeriesBurnModal'
+import LoginModal from 'components/Modal/LoginModal'
 
 const TokenHead = ({ localToken, typeToken }) => {
 	const [defaultLikes, setDefaultLikes] = useState(0)
@@ -166,6 +167,8 @@ const TokenHead = ({ localToken, typeToken }) => {
 		setShowModal('buyerTransfer')
 	}
 
+	console.log('test', isOwner() && !localToken.is_staked)
+
 	return (
 		<div>
 			<div className="flex justify-between relative">
@@ -293,7 +296,7 @@ const TokenHead = ({ localToken, typeToken }) => {
 						{ name: 'Transfer', onClick: onClickBuyerTransfer },
 						isCreator() && { name: 'Reduce Copies', onClick: onClickDecreaseCopies },
 						{ name: 'Report', onClick: () => setShowModal('report') },
-					]}
+					].filter((x) => x)}
 				/>
 			) : (
 				<TokenMoreModal
@@ -305,10 +308,10 @@ const TokenHead = ({ localToken, typeToken }) => {
 							!localToken.is_staked && { name: 'Offer Via NFT', onClick: onClickOfferNFT },
 						isOwner() &&
 							!localToken.is_staked && { name: 'Update Listing', onClick: onClickUpdate },
-						isOwner() && !localToken.is_staked && { name: 'Transfer', onClick: onClickTransfer },
+						false && { name: 'Transfer', onClick: onClickTransfer },
 						isOwner() && !localToken.is_staked && { name: 'Burn Card', onClick: onClickBurn },
 						{ name: 'Report', onClick: () => setShowModal('report') },
-					]}
+					].filter((x) => x)}
 				/>
 			)}
 			<TokenShareModal
@@ -345,6 +348,7 @@ const TokenHead = ({ localToken, typeToken }) => {
 				data={localToken}
 			/>
 			<ReportModal show={showModal === 'report'} data={localToken} onClose={onDismissModal} />
+			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>
 	)
 }
