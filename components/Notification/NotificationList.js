@@ -6,7 +6,6 @@ import Scrollbars from 'react-custom-scrollbars'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import NotificationItem from './NotificationItem'
-import WalletHelper from 'lib/WalletHelper'
 import NotificationSignUpRaffle from './NotificationRaffle'
 
 const LIMIT = 30
