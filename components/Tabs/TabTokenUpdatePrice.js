@@ -12,10 +12,10 @@ import { useForm } from 'react-hook-form'
 import useStore from 'lib/store'
 import Tooltip from 'components/Common/Tooltip'
 import { parseDate } from 'utils/common'
-import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
 import { mutate } from 'swr'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 	const [newPrice, setNewPrice] = useState(data.price ? formatNearAmount(data.price) : '')
@@ -30,6 +30,7 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 	const [lockedTxFee, setLockedTxFee] = useState('')
 	const { localeLn } = useIntl()
 	const toast = useToast()
+	const { selector, viewFunction } = useWalletSelector()
 
 	const showTooltipTxFee = (txFee?.next_fee || 0) > (txFee?.current_fee || 0)
 	const tooltipTxFeeText = localeLn('DynamicTxFee', {
@@ -40,9 +41,9 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 
 	useEffect(() => {
 		const getTxFee = async () => {
-			const txFeeContract = await WalletHelper.viewFunction({
+			const txFeeContract = await viewFunction({
 				methodName: 'get_transaction_fee',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 			})
 			setTxFee(txFeeContract)
 		}
@@ -60,7 +61,7 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 
 	useEffect(() => {
 		const checkIsAnyTradeOffer = async () => {
-			const resp = await axios.get(`${process.env.V2_API_URL}/offers`, {
+			const resp = await ParasRequest.get(`${process.env.V2_API_URL}/offers`, {
 				params: {
 					buyer_id: currentUser,
 				},
@@ -88,15 +89,15 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 
 	const checkStorageBalance = async () => {
 		try {
-			const currentStorage = await WalletHelper.viewFunction({
+			const currentStorage = await viewFunction({
 				methodName: 'storage_balance_of',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 
-			const supplyPerOwner = await WalletHelper.viewFunction({
+			const supplyPerOwner = await viewFunction({
 				methodName: 'get_supply_by_owner_id',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 
@@ -123,19 +124,23 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 
 		trackUpdateListingToken(data.token_id)
 
+		const wallet = await selector.wallet()
+
 		try {
 			const txs = []
 
 			if (needDeposit) {
 				txs.push({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
-					functionCalls: [
+					actions: [
 						{
-							methodName: 'storage_deposit',
-							contractId: process.env.MARKETPLACE_CONTRACT_ID,
-							args: { receiver_id: currentUser },
-							attachedDeposit: STORAGE_ADD_MARKET_FEE,
-							gas: GAS_FEE,
+							type: 'FunctionCall',
+							params: {
+								methodName: 'storage_deposit',
+								args: { receiver_id: currentUser },
+								deposit: STORAGE_ADD_MARKET_FEE,
+								gas: GAS_FEE,
+							},
 						},
 					],
 				})
@@ -152,22 +157,25 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 			}
 			txs.push({
 				receiverId: data.contract_id,
-				functionCalls: [
+				actions: [
 					{
-						methodName: 'nft_approve',
-						contractId: data.contract_id,
-						args: params,
-						attachedDeposit: data.approval_id ? `1` : STORAGE_APPROVE_FEE,
-						gas: GAS_FEE_200,
+						type: 'FunctionCall',
+						params: {
+							methodName: 'nft_approve',
+							contractId: data.contract_id,
+							args: params,
+							deposit: data.approval_id ? `1` : STORAGE_APPROVE_FEE,
+							gas: GAS_FEE_200,
+						},
 					},
 				],
 			})
 
-			const res = await WalletHelper.multipleCallFunction(txs)
+			const res = await wallet.signAndSendTransactions({ transactions: txs })
 
-			if (res?.response) {
+			if (res) {
 				onClose()
-				setTransactionRes(res?.response)
+				setTransactionRes(res)
 			}
 			setIsUpdatingPrice(false)
 		} catch (err) {
@@ -185,54 +193,50 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 
 		trackRemoveListingToken(data.token_id)
 
+		const wallet = await selector.wallet()
 		const txs = []
 		try {
 			txs.push({
 				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
-				functionCalls: [
+				actions: [
 					{
-						methodName: 'delete_market_data',
-						contractId: process.env.MARKETPLACE_CONTRACT_ID,
-						args: {
-							token_id: data.token_id,
-							nft_contract_id: data.contract_id,
+						type: 'FunctionCall',
+						params: {
+							methodName: 'delete_market_data',
+							contractId: process.env.MARKETPLACE_CONTRACT_ID,
+							args: {
+								token_id: data.token_id,
+								nft_contract_id: data.contract_id,
+							},
+							deposit: `1`,
+							gas: GAS_FEE,
 						},
-						attachedDeposit: `1`,
-						gas: GAS_FEE,
 					},
 				],
 			})
 			!isAnyTradeOffer &&
 				txs.push({
 					receiverId: data.contract_id,
-					functionCalls: [
+					actions: [
 						{
-							methodName: 'nft_revoke',
-							contractId: data.contract_id,
-							args: {
-								token_id: data.token_id,
-								account_id: process.env.MARKETPLACE_CONTRACT_ID,
+							type: 'FunctionCall',
+							params: {
+								methodName: 'nft_revoke',
+								contractId: data.contract_id,
+								args: {
+									token_id: data.token_id,
+									account_id: process.env.MARKETPLACE_CONTRACT_ID,
+								},
+								deposit: `1`,
+								gas: GAS_FEE,
 							},
-							attachedDeposit: `1`,
-							gas: GAS_FEE,
 						},
 					],
 				})
 
-			const res = await WalletHelper.multipleCallFunction(txs)
+			const res = await wallet.signAndSendTransactions({ transactions: txs })
 
-			if (res?.response.error) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							{res?.response.error.kind.ExecutionError}
-						</div>
-					),
-					type: 'error',
-					duration: 2500,
-				})
-				return
-			} else if (res) {
+			if (res) {
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">
@@ -247,11 +251,17 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 					onClose()
 				}, 2500)
 			}
-
-			setIsRemovingPrice(false)
 		} catch (err) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">{localeLn('SomethingWentWrong')}</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 			sentryCaptureException(err)
 		}
+		setIsRemovingPrice(false)
 	}
 
 	const calculatePriceDistribution = () => {

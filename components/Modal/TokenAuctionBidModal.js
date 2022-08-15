@@ -14,10 +14,10 @@ import { useEffect, useState } from 'react'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
-import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
-const TokenAuctionBidModal = ({ data, show, onClose, onSuccess }) => {
+const TokenAuctionBidModal = ({ data, show, onClose }) => {
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const creatorData = useProfileData(data?.metadata.creator_id)
 	const { localeLn } = useIntl()
@@ -28,6 +28,7 @@ const TokenAuctionBidModal = ({ data, show, onClose, onSuccess }) => {
 		userBalance: state.userBalance,
 		setTransactionRes: state.setTransactionRes,
 	}))
+	const { selector, viewFunction } = useWalletSelector()
 	const toast = useToast()
 
 	useEffect(() => {
@@ -38,15 +39,15 @@ const TokenAuctionBidModal = ({ data, show, onClose, onSuccess }) => {
 
 	const hasStorageBalance = async () => {
 		try {
-			const currentStorage = await WalletHelper.viewFunction({
+			const currentStorage = await viewFunction({
 				methodName: 'storage_balance_of',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 
-			const supplyPerOwner = await WalletHelper.viewFunction({
+			const supplyPerOwner = await viewFunction({
 				methodName: 'get_supply_by_owner_id',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 
@@ -71,6 +72,7 @@ const TokenAuctionBidModal = ({ data, show, onClose, onSuccess }) => {
 
 		try {
 			const depositParams = { receiver_id: currentUser }
+			const wallet = await selector.wallet()
 
 			const params = {
 				nft_contract_id: data.contract_id,
@@ -81,50 +83,48 @@ const TokenAuctionBidModal = ({ data, show, onClose, onSuccess }) => {
 
 			let res
 			if (hasDepositStorage) {
-				res = await WalletHelper.signAndSendTransaction({
+				res = await wallet.signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{
-							methodName: 'add_bid',
-							args: params,
-							deposit: parseNearAmount(bidAuctionAmount),
-							gas: GAS_FEE,
+							type: 'FunctionCall',
+							params: {
+								methodName: 'add_bid',
+								args: params,
+								deposit: parseNearAmount(bidAuctionAmount),
+								gas: GAS_FEE,
+							},
 						},
 					],
 				})
 			} else {
-				res = await WalletHelper.signAndSendTransaction({
+				res = await wallet.signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{
-							methodName: 'storage_deposit',
-							args: depositParams,
-							deposit: STORAGE_ADD_MARKET_FEE,
-							gas: GAS_FEE,
+							type: 'FunctionCall',
+							params: {
+								methodName: 'storage_deposit',
+								args: depositParams,
+								deposit: STORAGE_ADD_MARKET_FEE,
+								gas: GAS_FEE,
+							},
 						},
 						{
-							methodName: 'add_bid',
-							args: params,
-							deposit: parseNearAmount(bidAuctionAmount),
-							gas: GAS_FEE,
+							type: 'FunctionCall',
+							params: {
+								methodName: 'add_bid',
+								args: params,
+								deposit: parseNearAmount(bidAuctionAmount),
+								gas: GAS_FEE,
+							},
 						},
 					],
 				})
 			}
-			if (res?.response.error) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							{res?.response.error.kind.ExecutionError}
-						</div>
-					),
-					type: 'error',
-					duration: 2500,
-				})
-			} else if (res) {
+			if (res) {
 				onClose()
-				setTransactionRes(res?.response)
-				onSuccess && onSuccess()
+				setTransactionRes([res])
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">{`Successfully add bid auction`}</div>
@@ -135,6 +135,15 @@ const TokenAuctionBidModal = ({ data, show, onClose, onSuccess }) => {
 			}
 			setIsBidding(false)
 		} catch (err) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{err.message || localeLn('SomethingWentWrong')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 			sentryCaptureException(err)
 			setIsBidding(false)
 		}

@@ -1,6 +1,4 @@
-import WalletHelper from 'lib/WalletHelper'
-
-function getConfigTransak(env) {
+function getConfigTransak(env, accountId) {
 	switch (env) {
 		case 'staging':
 			return {
@@ -10,8 +8,8 @@ function getConfigTransak(env) {
 				widgetHeight: `600px`,
 				themeColor: `#1300BA`,
 				hostURL: typeof window !== 'undefined' ? window.location.origin : ``,
-				cryptoCurrencyCode: 'NEAR',
-				walletAddress: WalletHelper.currentUser ? WalletHelper.currentUser.accountId : '',
+				defaultCryptoCurrency: 'NEAR',
+				walletAddress: accountId || '',
 			}
 		case 'production':
 			return {
@@ -21,8 +19,8 @@ function getConfigTransak(env) {
 				widgetHeight: `600px`,
 				themeColor: `#1300BA`,
 				hostURL: typeof window !== 'undefined' ? window.location.origin : ``,
-				cryptoCurrencyCode: 'NEAR',
-				walletAddress: WalletHelper.currentUser ? WalletHelper.currentUser.accountId : '',
+				defaultCryptoCurrency: 'NEAR',
+				walletAddress: accountId || '',
 			}
 		default:
 			throw Error(`Unconfigured environment '${env}'. Can be configured in src/config.js.`)

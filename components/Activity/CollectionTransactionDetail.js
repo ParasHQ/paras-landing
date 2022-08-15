@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import Scrollbars from 'react-custom-scrollbars'
@@ -16,7 +16,7 @@ const CollectionTransactionDetail = ({ data, idx, setLocalToken }) => {
 
 	useEffect(() => {
 		const fetchCollection = async () => {
-			const res = await axios(`${process.env.V2_API_URL}/collections`, {
+			const res = await ParasRequest(`${process.env.V2_API_URL}/collections`, {
 				params: {
 					collection_id: data.collection_id,
 				},
@@ -24,7 +24,7 @@ const CollectionTransactionDetail = ({ data, idx, setLocalToken }) => {
 			setColDetail(res.data.data.results[0])
 		}
 		const fetchRemainStats = async () => {
-			const stat = await axios(`${process.env.V2_API_URL}/collection-stats`, {
+			const stat = await ParasRequest(`${process.env.V2_API_URL}/collection-stats`, {
 				params: {
 					collection_id: data.collection_id,
 				},

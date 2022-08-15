@@ -15,8 +15,7 @@ import CardListLoaderSmall from 'components/Card/CardListLoaderSmall'
 import useToken from 'hooks/useToken'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useToast } from 'hooks/useToast'
-import axios from 'axios'
-import WalletHelper from 'lib/WalletHelper'
+import ParasRequest from 'lib/ParasRequest'
 import IconLove from 'components/Icons/component/IconLove'
 import LoginModal from 'components/Modal/LoginModal'
 import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
@@ -29,7 +28,7 @@ const TokenList = ({
 	hasMore,
 	displayType = 'large',
 	volume,
-	showRarityScore = false,
+	showRank = false,
 	showLike = false,
 }) => {
 	const store = useStore()
@@ -115,7 +114,7 @@ const TokenList = ({
 							typeTokenList={typeTokenList}
 							displayType={displayType}
 							volume={token.volume || volume?.[idx]}
-							showRarityScore={showRarityScore}
+							showRank={showRank}
 							showLike={showLike}
 							tokenIsLiked={tokenIsLiked}
 							setTokenIsLiked={setTokenIsLiked}
@@ -135,7 +134,7 @@ const TokenSingle = ({
 	displayType = 'large',
 	typeTokenList,
 	volume,
-	showRarityScore,
+	showRank,
 	showLike,
 	tokenIsLiked,
 	setTokenIsLiked,
@@ -362,14 +361,9 @@ const TokenSingle = ({
 			account_id: currentUser,
 		}
 
-		const res = await axios.put(
+		const res = await ParasRequest.put(
 			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
-			params,
-			{
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			}
+			params
 		)
 
 		if (res.status !== 200) {
@@ -400,14 +394,9 @@ const TokenSingle = ({
 			account_id: currentUser,
 		}
 
-		const res = await axios.put(
+		const res = await ParasRequest.put(
 			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
-			params,
-			{
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			}
+			params
 		)
 
 		if (res.status !== 200) {
@@ -559,9 +548,9 @@ const TokenSingle = ({
 								displayType === 'large' ? `block` : `flex gap-1`
 							} text-right absolute top-0 right-0`}
 						>
-							{showRarityScore && !!token.metadata.score && (
+							{showRank && !!token.metadata.rank && (
 								<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
-									Rarity Score {token.metadata?.score?.toFixed(2)}
+									Rank {token.metadata?.rank}
 								</p>
 							)}
 							{showLike && (
@@ -593,9 +582,9 @@ const TokenSingle = ({
 								displayType === 'large' ? `block` : `flex gap-1`
 							} text-right absolute top-0 right-0`}
 						>
-							{showRarityScore && !!token.metadata.score && (
+							{showRank && !!token.metadata.rank && (
 								<p className="text-white opacity-80 md:text-sm" style={{ fontSize: 11 }}>
-									Rarity Score {token.metadata?.score?.toFixed(2)}
+									Rank {token.metadata?.rank}
 								</p>
 							)}
 							{showLike && (

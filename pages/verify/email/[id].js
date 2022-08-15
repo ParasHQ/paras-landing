@@ -1,4 +1,4 @@
-import Axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -22,7 +22,7 @@ const EmailVerification = () => {
 
 	const verifyEmail = async () => {
 		try {
-			await Axios.put(`${process.env.V2_API_URL}/credentials/mail/verify`, {
+			await ParasRequest.put(`${process.env.V2_API_URL}/credentials/mail/verify`, {
 				token: router.query.id,
 			})
 			setEmailVerified(true)

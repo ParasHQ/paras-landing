@@ -22,13 +22,13 @@ import {
 } from 'config/constants'
 import CancelBid from 'components/Modal/CancelBid'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
-import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
 import TradingCard from 'components/Trading/TradingCard'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
 import ReactCardFlip from 'react-card-flip'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from 'components/Modal/BannedConfirmModal'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const Bid = ({ data, type, freshFetch }) => {
 	const store = useStore()
@@ -65,6 +65,7 @@ const Bid = ({ data, type, freshFetch }) => {
 	const [tradedTokenData, setTradedTokenData] = useState(null)
 	const [isFlipped, setIsFlipped] = useState(true)
 
+	const { selector } = useWalletSelector()
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
@@ -257,42 +258,47 @@ const Bid = ({ data, type, freshFetch }) => {
 				}
 			}
 
+			const wallet = await selector.wallet()
 			let res
 			// accept offer
 			if (userType === 'owner') {
-				res = await WalletHelper.callFunction({
-					contractId: data.contract_id,
-					methodName: `nft_approve`,
-					args: params,
-					gas: GAS_FEE_150,
-					deposit: STORAGE_APPROVE_FEE,
+				res = await wallet.signAndSendTransaction({
+					receiverId: data.contract_id,
+					actions: [
+						{
+							type: 'FunctionCall',
+							params: {
+								methodName: 'nft_approve',
+								args: params,
+								gas: GAS_FEE_150,
+								deposit: STORAGE_APPROVE_FEE,
+							},
+						},
+					],
 				})
 			}
 			// batch tx -> mint & accept
 			else {
-				res = await WalletHelper.callFunction({
-					contractId: data.contract_id,
-					methodName: `nft_mint_and_approve`,
-					args: params,
-					gas: GAS_FEE_200,
-					deposit: JSBI.add(
-						JSBI.BigInt(STORAGE_APPROVE_FEE),
-						JSBI.BigInt(STORAGE_MINT_FEE)
-					).toString(),
+				res = await wallet.signAndSendTransaction({
+					receiverId: data.contract_id,
+					actions: [
+						{
+							type: 'FunctionCall',
+							params: {
+								methodName: 'nft_mint_and_approve',
+								args: params,
+								gas: GAS_FEE_200,
+								deposit: JSBI.add(
+									JSBI.BigInt(STORAGE_APPROVE_FEE),
+									JSBI.BigInt(STORAGE_MINT_FEE)
+								).toString(),
+							},
+						},
+					],
 				})
 			}
 
-			if (res?.response.error) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							{res.response.error.kind.ExecutionError}
-						</div>
-					),
-					type: 'error',
-					duration: 2500,
-				})
-			} else if (res) {
+			if (res) {
 				setShowModal('')
 				toast.show({
 					text: (
@@ -304,6 +310,15 @@ const Bid = ({ data, type, freshFetch }) => {
 				setTimeout(freshFetch, 2500)
 			}
 		} catch (err) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{err.message || localeLn('SomethingWentWrong')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 			sentryCaptureException(err)
 		}
 	}
@@ -320,37 +335,36 @@ const Bid = ({ data, type, freshFetch }) => {
 			buyer_nft_contract_id: data.buyer_nft_contract_id,
 			buyer_token_id: data.buyer_token_id,
 		})
-
-		const res = await WalletHelper.signAndSendTransaction({
-			receiverId: data.contract_id,
-			actions: [
-				{
-					methodName: `nft_approve`,
-					args: params,
-					gas: ACCEPT_GAS_FEE,
-					deposit: STORAGE_APPROVE_FEE,
-				},
-			],
-		})
-		if (res.error && res.error.includes('reject')) {
-			return
-		} else {
-			if (res.response.error) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							{res.response.error.kind.ExecutionError}
-						</div>
-					),
-					type: 'error',
-					duration: 2500,
-				})
-			} else {
-				if (res.response) {
-					store.setTransactionRes(res?.response)
-				}
-				setTimeout(freshFetch, 2500)
+		try {
+			const wallet = await selector.wallet()
+			const res = await wallet.signAndSendTransaction({
+				receiverId: data.contract_id,
+				actions: [
+					{
+						type: 'FunctionCall',
+						params: {
+							methodName: 'nft_approve',
+							args: params,
+							gas: ACCEPT_GAS_FEE,
+							deposit: STORAGE_APPROVE_FEE,
+						},
+					},
+				],
+			})
+			if (res) {
+				store.setTransactionRes(res)
 			}
+			setTimeout(freshFetch, 2500)
+		} catch (error) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{error.message || localeLn('SomethingWentWrong')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 		}
 	}
 
@@ -372,53 +386,48 @@ const Bid = ({ data, type, freshFetch }) => {
 			  }
 
 		try {
+			const wallet = await selector.wallet()
 			if (isNFTTraded) {
-				const res = await WalletHelper.callFunction({
-					contractId: process.env.MARKETPLACE_CONTRACT_ID,
-					methodName: `delete_trade`,
-					args: params,
-					gas: GAS_FEE,
-					deposit: '1',
+				const res = await wallet.signAndSendTransaction({
+					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
+					actions: [
+						{
+							type: 'FunctionCall',
+							params: {
+								methodName: 'delete_trade',
+								args: params,
+								gas: GAS_FEE,
+								deposit: '1',
+							},
+						},
+					],
 				})
-				if (res.error && res.error.includes('reject')) {
-					return
-				} else {
-					if (res.error) {
-						toast.show({
-							text: <div className="font-semibold text-center text-sm">{res.error}</div>,
-							type: 'error',
-							duration: 2500,
-						})
-					} else {
-						toast.show({
-							text: (
-								<div className="font-semibold text-center text-sm">{`Successfully delete trade`}</div>
-							),
-							type: 'success',
-							duration: 2500,
-						})
-						setTimeout(freshFetch, 2500)
-					}
-				}
-			} else {
-				const res = await WalletHelper.callFunction({
-					contractId: process.env.MARKETPLACE_CONTRACT_ID,
-					methodName: `delete_offer`,
-					args: params,
-					gas: GAS_FEE,
-					deposit: '1',
-				})
-				if (res?.response.error) {
+				if (res) {
 					toast.show({
 						text: (
-							<div className="font-semibold text-center text-sm">
-								{res?.response.error.kind.ExecutionError}
-							</div>
+							<div className="font-semibold text-center text-sm">{`Successfully delete trade`}</div>
 						),
-						type: 'error',
+						type: 'success',
 						duration: 2500,
 					})
-				} else if (res) {
+					setTimeout(freshFetch, 2500)
+				}
+			} else {
+				const res = await wallet.signAndSendTransaction({
+					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
+					actions: [
+						{
+							type: 'FunctionCall',
+							params: {
+								methodName: 'delete_offer',
+								args: params,
+								gas: GAS_FEE,
+								deposit: '1',
+							},
+						},
+					],
+				})
+				if (res) {
 					setShowModal('')
 					toast.show({
 						text: (
@@ -430,6 +439,15 @@ const Bid = ({ data, type, freshFetch }) => {
 				}
 			}
 		} catch (error) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{error.message || localeLn('SomethingWentWrong')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
 			sentryCaptureException(error)
 		}
 	}

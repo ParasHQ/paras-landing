@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react'
 import useStore from 'lib/store'
 import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
-import WalletHelper from 'lib/WalletHelper'
 import { abbrNum, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
-import axios from 'axios'
 import { mutate } from 'swr'
 import ArtistVerified from 'components/Common/ArtistVerified'
 import IconLove from 'components/Icons/component/IconLove'
@@ -17,6 +15,7 @@ import TokenBurnModal from 'components/Modal/TokenBurnModal'
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
 import TokenTransferModal from 'components/Modal/TokenTransferModal'
 import ReportModal from 'components/Modal/ReportModal'
+import ParasRequest from 'lib/ParasRequest'
 
 const TokenHead = ({ localToken, typeToken }) => {
 	const [defaultLikes, setDefaultLikes] = useState(0)
@@ -48,14 +47,9 @@ const TokenHead = ({ localToken, typeToken }) => {
 			account_id: currentUser,
 		}
 
-		const res = await axios.put(
+		const res = await ParasRequest.put(
 			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
-			params,
-			{
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			}
+			params
 		)
 
 		mutate(`${localToken.contract_id}::${localToken.token_series_id}`)
@@ -81,14 +75,9 @@ const TokenHead = ({ localToken, typeToken }) => {
 			account_id: currentUser,
 		}
 
-		const res = await axios.put(
+		const res = await ParasRequest.put(
 			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
-			params,
-			{
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			}
+			params
 		)
 
 		mutate(`${localToken.contract_id}::${localToken.token_series_id}`)

@@ -1,9 +1,8 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Button from 'components/Common/Button'
 import FollowArtistModal from 'components/Modal/FollowArtistModal'
 import LoginModal from 'components/Modal/LoginModal'
 import { trackFollowButton, trackUnfollowButton } from 'lib/ga'
-import WalletHelper from 'lib/WalletHelper'
 import { useEffect, useState } from 'react'
 import useSWR from 'swr'
 
@@ -14,7 +13,7 @@ const Follow = ({ userProfile, currentUser }) => {
 	const [followListModal, setFollowListModal] = useState('')
 
 	const fetchProfile = async () => {
-		const res = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/profiles`, {
 			params: {
 				accountId: userProfile.accountId,
 				followed_by: currentUser,
@@ -43,12 +42,9 @@ const Follow = ({ userProfile, currentUser }) => {
 		setIsLoading(true)
 
 		try {
-			await axios.request({
+			await ParasRequest.request({
 				url: `${process.env.V2_API_URL}${data.follows ? '/unfollow' : '/follow'}`,
 				method: 'PUT',
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
 				params: {
 					account_id: currentUser,
 					following_account_id: userProfile.accountId,

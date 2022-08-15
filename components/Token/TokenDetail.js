@@ -31,6 +31,7 @@ import Tooltip from 'components/Common/Tooltip'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import TradeNFTModal from 'components/Modal/TradeNFTModal'
 import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import { Canvas } from '@react-three/fiber'
 import { Model1 } from 'components/Model3D/ThreeDModel'
 import FileType from 'file-type/browser'
@@ -43,7 +44,6 @@ import CancelAuctionModal from 'components/Modal/CancelAuctionModal'
 import CancelBidModal from 'components/Modal/CancelBidModal'
 import { mutate } from 'swr'
 import IconLove from 'components/Icons/component/IconLove'
-import WalletHelper from 'lib/WalletHelper'
 import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 
 const TokenDetail = ({ token, className, isAuctionEnds }) => {
@@ -319,14 +319,9 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			account_id: currentUser,
 		}
 
-		const res = await axios.put(
+		const res = await ParasRequest.put(
 			`${process.env.V2_API_URL}/like/${contract_id}/${token_series_id}`,
-			params,
-			{
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			}
+			params
 		)
 
 		mutate(`${token.contract_id}::${token.token_series_id}`)
@@ -352,14 +347,9 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			account_id: currentUser,
 		}
 
-		const res = await axios.put(
+		const res = await ParasRequest.put(
 			`${process.env.V2_API_URL}/unlike/${contract_id}/${token_series_id}`,
-			params,
-			{
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			}
+			params
 		)
 
 		mutate(`${token.contract_id}::${token.token_series_id}`)

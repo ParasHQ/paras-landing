@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Modal from 'components/Common/Modal'
 import { useEffect, useState } from 'react'
 
@@ -33,7 +33,7 @@ const TokenSeriesTransferBuyer = ({ show, onClose, data }) => {
 		}
 
 		setIsFetching(true)
-		const resp = await axios.get(`${process.env.V2_API_URL}/token`, {
+		const resp = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
 			params: {
 				token_series_id: data.token_series_id,
 				contract_id: data.contract_id,

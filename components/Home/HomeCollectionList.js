@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import useSWR from 'swr'
 
 import { CollectionItem } from 'components/Collection/CollectionList'
@@ -11,7 +11,9 @@ const HomeCollectionList = ({ showDetails }) => {
 	const [showRightClick, setShowRightClick] = useState(true)
 
 	const fetchData = () =>
-		axios(`${process.env.V2_API_URL}/featured-collections`, {}).then((res) => res.data.data.results)
+		ParasRequest(`${process.env.V2_API_URL}/featured-collections`).then(
+			(res) => res.data.data.results
+		)
 
 	const { data, isValidating } = useSWR('home-featured-collections', fetchData)
 	const ref = useRef(null)

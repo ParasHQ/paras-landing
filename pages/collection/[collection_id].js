@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import CardList from 'components/TokenSeries/CardList'
 import CardListLoader from 'components/Card/CardListLoader'
 import Button from 'components/Common/Button'
@@ -32,7 +32,6 @@ import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import ArtistBanned from 'components/Common/ArtistBanned'
 import cachios from 'cachios'
 import FilterDisplay from 'components/Filter/FilterDisplay'
-import WalletHelper from 'lib/WalletHelper'
 import ReactTooltip from 'react-tooltip'
 import TokenList from 'components/Token/TokenList'
 import CollectionSearch from 'components/Collection/CollectionSearch'
@@ -58,6 +57,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [lowestPriceNext, setLowestPriceNext] = useState(null)
 	const [lowestPriceNextOwned, setLowestPriceNextOwned] = useState(null)
 	const [rankNext, setRankNext] = useState(null)
+	const [scoreNext, setScoreNext] = useState(null)
 	const [endedSoonestNext, setEndedSoonestNext] = useState(null)
 	const [endedSoonestNextOwned, setEndedSoonestNextOwned] = useState(null)
 	const [updatedAtNext, setUpdatedAtNext] = useState(null)
@@ -80,7 +80,6 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [display, setDisplay] = useState(
 		(typeof window !== 'undefined' && window.localStorage.getItem('display')) || 'large'
 	)
-	const [scoreNext, setScoreNext] = useState('')
 	const [mediaQueryMd] = useState(
 		typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)')
 	)
@@ -101,13 +100,13 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 	const _fetchCollectionStats = async (initialFetch) => {
 		if (initialFetch) {
-			const stat = await axios(`${process.env.V2_API_URL}/collection-stats`, {
+			const stat = await ParasRequest(`${process.env.V2_API_URL}/collection-stats`, {
 				params: {
 					collection_id: collectionId,
 				},
 			})
 
-			const attributes = await axios(`${process.env.V2_API_URL}/collection-attributes`, {
+			const attributes = await ParasRequest(`${process.env.V2_API_URL}/collection-attributes`, {
 				params: {
 					collection_id: collectionId,
 				},
@@ -138,7 +137,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				  }),
 		})
 
-		const res = await axios(`${process.env.V2_API_URL}/token`, {
+		const res = await ParasRequest(`${process.env.V2_API_URL}/token`, {
 			params: params,
 		})
 
@@ -186,7 +185,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				  }),
 		})
 
-		const res = await axios(`${process.env.V2_API_URL}/token-series`, {
+		const res = await ParasRequest(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
 		})
 
@@ -308,8 +307,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 			...(query.updated_at_next &&
 				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
-			...(query.score_next &&
-				parsedSortQuery.includes('metadata.score') && { score_next: query.score_next }),
+			...(query.rank_next &&
+				parsedSortQuery.includes('metadata.rank') && { rank_next: query.rank_next }),
 			...(query.min_copies && { min_copies: query.min_copies }),
 			...(query.max_copies && { max_copies: query.max_copies }),
 			...(query.price_next &&
@@ -354,7 +353,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 		_fetchCollectionStats(true)
 		if (isItemActiveTab) {
 			params = tokensParams(query || serverQuery)
-			res = await axios(`${process.env.V2_API_URL}/token-series`, {
+			res = await ParasRequest(`${process.env.V2_API_URL}/token-series`, {
 				params: params,
 			})
 			setTokens(res.data.data.results)
@@ -377,7 +376,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				...(query || serverQuery),
 				owner_id: currentUser,
 			})
-			res = await axios(`${process.env.V2_API_URL}/token`, {
+			res = await ParasRequest(`${process.env.V2_API_URL}/token`, {
 				params: params,
 			})
 			setTokensOwned(res.data.data.results)
@@ -405,7 +404,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			return
 		}
 
-		const res = await axios.get(`${process.env.V2_API_URL}/collection-activities`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/collection-activities`, {
 			params: activitiesParams(_activityPage),
 		})
 
@@ -510,13 +509,12 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			url: `${process.env.V2_API_URL}/collections`,
 			headers: {
 				'Content-Type': 'multipart/form-data',
-				Authorization: await WalletHelper.authToken(),
 			},
 			data: formData,
 		}
 		setDeleteLoading(true)
 		try {
-			const resp = await axios.request(options)
+			const resp = await ParasRequest.request(options)
 			if (resp) {
 				setDeleteModal(false)
 				toast.show({
@@ -912,7 +910,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 							fetchData={fetchDataOwned}
 							hasMore={hasMoreOwned}
 							displayType={display}
-							showRarityScore={true}
+							showRank={true}
 							showLike={true}
 						/>
 					) : router.query.tab == 'tracker' ? (
@@ -1041,7 +1039,7 @@ export async function getServerSideProps({ params }) {
 		}
 	}
 
-	const resp = await axios.get(`${process.env.V2_API_URL}/collections`, {
+	const resp = await ParasRequest.get(`${process.env.V2_API_URL}/collections`, {
 		params: {
 			collection_id: params.collection_id,
 		},
