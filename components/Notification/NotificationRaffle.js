@@ -1,21 +1,14 @@
-import axios from 'axios'
 import { useState } from 'react'
 import useSWR from 'swr'
 import Button from 'components/Common/Button'
-import WalletHelper from 'lib/WalletHelper'
+import ParasRequest from 'lib/ParasRequest'
 
 const NotificationSignUpRaffle = () => {
 	const [isLoading, setIsLoading] = useState(false)
 	const [isSignedUp, setIsSignedUp] = useState(false)
 
 	const fetchRaffle = async () =>
-		axios
-			.get(`${process.env.V2_API_URL}/raffle/status`, {
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			})
-			.then((res) => res.data)
+		ParasRequest.get(`${process.env.V2_API_URL}/raffle/status`).then((res) => res.data)
 
 	const { data, mutate } = useSWR('raffle-status', fetchRaffle, {
 		revalidateOnFocus: false,
@@ -27,15 +20,9 @@ const NotificationSignUpRaffle = () => {
 	const onClickSignUp = async () => {
 		try {
 			setIsLoading(true)
-			await axios.post(
-				`${process.env.V2_API_URL}/raffle/register`,
-				{ raffle_id: data.raffle_id },
-				{
-					headers: {
-						authorization: await WalletHelper.authToken(),
-					},
-				}
-			)
+			await ParasRequest.post(`${process.env.V2_API_URL}/raffle/register`, {
+				raffle_id: data.raffle_id,
+			})
 			setTimeout(() => {
 				mutate()
 				setIsSignedUp(true)

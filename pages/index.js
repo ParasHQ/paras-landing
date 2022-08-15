@@ -83,7 +83,7 @@ export default function Home() {
 					<HomeCardList />
 					<HomeTopUserList activeType="top-buyers" showToggle={false} className="mt-12" />
 					<HomeTopUserList activeType="top-sellers" showToggle={false} className="mt-12" />
-					<RaffleRegisterModal show />
+					<RaffleRegisterModal />
 				</div>
 			</div>
 

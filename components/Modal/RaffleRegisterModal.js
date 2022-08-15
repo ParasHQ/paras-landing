@@ -1,11 +1,10 @@
-import axios from 'axios'
 import { useEffect, useRef, useState } from 'react'
 import useSWR from 'swr'
 import Button from 'components/Common/Button'
 import { IconX } from 'components/Icons'
 import useStore from 'lib/store'
-import WalletHelper from 'lib/WalletHelper'
 import { capitalizeFirstLetter } from 'utils/common'
+import ParasRequest from 'lib/ParasRequest'
 
 const RaffleRegisterModal = () => {
 	const [showModal, setShowModal] = useState(false)
@@ -17,13 +16,7 @@ const RaffleRegisterModal = () => {
 	const localStorageDontShowAgain = useRef(null)
 
 	const fetchRaffle = async () =>
-		axios
-			.get(`${process.env.V2_API_URL}/raffle/status`, {
-				headers: {
-					authorization: await WalletHelper.authToken(),
-				},
-			})
-			.then((res) => res.data)
+		ParasRequest.get(`${process.env.V2_API_URL}/raffle/status`).then((res) => res.data)
 
 	const { data } = useSWR(currentUser ? 'raffle-status' : null, fetchRaffle, {
 		revalidateOnFocus: false,
@@ -34,15 +27,9 @@ const RaffleRegisterModal = () => {
 	const onClickSignUp = async () => {
 		try {
 			setIsLoading(true)
-			await axios.post(
-				`${process.env.V2_API_URL}/raffle/register`,
-				{ raffle_id: data.raffle_id },
-				{
-					headers: {
-						authorization: await WalletHelper.authToken(),
-					},
-				}
-			)
+			await ParasRequest.post(`${process.env.V2_API_URL}/raffle/register`, {
+				raffle_id: data.raffle_id,
+			})
 			setIsSignedUp(true)
 			setIsLoading(false)
 		} catch (error) {
