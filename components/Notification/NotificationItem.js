@@ -96,7 +96,18 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 						Sorry, your member has dropped to {capitalizeFirstLetter(notif.msg.current_level)}.
 					</span>
 					<span> Start </span>
-					<span className="font-bold">lock staking </span>
+					<span>
+						<a
+							className="font-bold"
+							href={
+								process.env.APP_ENV === 'testnet'
+									? 'https://staking-dev.paras.id/'
+									: 'https://stake.paras.id'
+							}
+						>
+							lock staking{' '}
+						</a>
+					</span>
 					<span>again to keep them at {capitalizeFirstLetter(notif.msg.previous_level)}!</span>
 				</div>
 			</div>

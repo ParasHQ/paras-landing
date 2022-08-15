@@ -32,6 +32,7 @@ const RaffleRegisterModal = () => {
 			})
 			setIsSignedUp(true)
 			setIsLoading(false)
+			localStorage.removeItem('dontShowAgainRaffle')
 		} catch (error) {
 			return error
 		}

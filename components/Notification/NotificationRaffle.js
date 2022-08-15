@@ -27,6 +27,7 @@ const NotificationSignUpRaffle = () => {
 				mutate()
 				setIsSignedUp(true)
 				setIsLoading(false)
+				localStorage.removeItem('dontShowAgainRaffle')
 			}, 500)
 		} catch (error) {
 			return error
