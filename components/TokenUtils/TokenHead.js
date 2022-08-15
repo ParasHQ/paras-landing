@@ -306,7 +306,7 @@ const TokenHead = ({ localToken, typeToken }) => {
 							!localToken.is_staked && { name: 'Offer Via NFT', onClick: onClickOfferNFT },
 						isOwner() &&
 							!localToken.is_staked && { name: 'Update Listing', onClick: onClickUpdate },
-						false && { name: 'Transfer', onClick: onClickTransfer },
+						isOwner() && !localToken.is_staked && { name: 'Transfer', onClick: onClickTransfer },
 						isOwner() && !localToken.is_staked && { name: 'Burn Card', onClick: onClickBurn },
 						{ name: 'Report', onClick: () => setShowModal('report') },
 					].filter((x) => x)}
