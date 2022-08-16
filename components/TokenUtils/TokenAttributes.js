@@ -90,13 +90,6 @@ const TokenAttributes = ({ localToken, className }) => {
 										</div>
 									))}
 								</div>
-								{localToken.metadata?.rank && (
-									<div className="mt-3">
-										<p className="text-white text-sm">
-											Rank: <b> {localToken.metadata?.rank}</b>
-										</p>
-									</div>
-								)}
 								{localToken.metadata?.score && (
 									<div className="mt-3">
 										<p className="text-white text-sm">

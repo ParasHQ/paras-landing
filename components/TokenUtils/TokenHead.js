@@ -217,6 +217,11 @@ const TokenHead = ({ localToken, typeToken }) => {
 							</Link>
 						</div>
 					</div>
+					{localToken.metadata?.rank && (
+						<div className="mt-3">
+							<p className="text-white text-md">Rarity Rank #{localToken.metadata?.rank}</p>
+						</div>
+					)}
 				</div>
 			</div>
 			<div className="w-full flex items-center justify-start gap-8 relative mt-10">
