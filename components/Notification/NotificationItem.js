@@ -131,7 +131,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 					<span>Sorry, your member has dropped to </span>
 					<span className="font-bold">{capitalizeFirstLetter(notif.msg.current_raffle_type)}.</span>
 					<span> You will be automatically signed up for </span>
-					<span className="font-bold">{capitalizeFirstLetter(notif.msg.previous_raffle_type)}</span>
+					<span className="font-bold">{capitalizeFirstLetter(notif.msg.current_raffle_type)}</span>
 					<span> raffle</span>
 				</div>
 				<NotificationTime time={notif.issued_at} />
