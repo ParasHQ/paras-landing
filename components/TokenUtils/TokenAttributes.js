@@ -20,7 +20,7 @@ const TokenAttributes = ({ localToken, className }) => {
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
-		if (localToken.metadata.attributes && attributeRarity.length === 0) {
+		if (localToken.metadata.attributes) {
 			getRarity(localToken.metadata.attributes)
 		}
 	}, [localToken])
