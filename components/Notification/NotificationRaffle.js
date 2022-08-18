@@ -34,7 +34,7 @@ const NotificationSignUpRaffle = () => {
 		}
 	}
 
-	if (data && data.current_level !== 'bronze' && data.status !== 'registered') {
+	if (data && data.raffle_id && data.current_level !== 'bronze' && data.status !== 'registered') {
 		return (
 			<div className="p-2 rounded-md w-full button-wrapper flex items-center">
 				<div className="text-gray-300 select-none w-full">

@@ -56,6 +56,7 @@ const RaffleRegisterModal = () => {
 	useEffect(() => {
 		if (
 			data &&
+			data.raffle_id &&
 			data.current_level !== 'bronze' &&
 			data.status !== 'registered' &&
 			localStorageDontShowAgain.current !== 'true'
