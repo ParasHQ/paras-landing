@@ -124,6 +124,33 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		)
 	}
 
+	if (notif.type === 'notification_level_going_expire') {
+		return (
+			<div className="notification-item">
+				<div className="text-gray-300 select-none">
+					<span>Your </span>
+					<span className="font-bold">{capitalizeFirstLetter(notif.msg.current_level)}</span>
+					<span> is about to expire! Start</span>
+					<span>
+						<a
+							className="font-bold"
+							href={
+								process.env.APP_ENV === 'testnet'
+									? 'https://staking-dev.paras.id/'
+									: 'https://stake.paras.id'
+							}
+						>
+							{` lock staking `}
+						</a>
+					</span>
+					<span>again to keep them at </span>
+					<span className="font-bold">{capitalizeFirstLetter(notif.msg.current_level)}!</span>
+				</div>
+				<NotificationTime time={notif.issued_at} />
+			</div>
+		)
+	}
+
 	if (notif.type === 'notification_raffle_type_drop') {
 		return (
 			<div className="notification-item">
