@@ -78,14 +78,14 @@ const RaffleRegisterModal = () => {
 					</div>
 				</div>
 				{isSignedUp ? (
-					<div className="w-[23rem]">
+					<div className="md:w-[23rem]">
 						<p className="text-xl md:text-2xl font-semibold text-gray-100">
 							Thanks for Participating
 						</p>
 						<p className="text-xl md:text-2xl font-semibold text-gray-100 mt-2">Goodluck!✨</p>
 					</div>
 				) : (
-					<div className="w-[23rem]">
+					<div className="md:w-[23rem]">
 						<p className="text-xl md:text-2xl font-semibold text-gray-100">Congratulations,</p>
 						<p className="text-xl md:text-2xl font-semibold text-gray-100">
 							{`You're now a ${capitalizeFirstLetter(data?.current_level)} Member!`}
