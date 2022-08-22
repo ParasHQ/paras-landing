@@ -153,7 +153,6 @@ const Media = ({
 							e.preventDefault()
 							e.stopPropagation()
 							setPlayVideo(true)
-							alert('masuk')
 							setActivePlayButton(false)
 						}}
 					>
