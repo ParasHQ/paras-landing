@@ -14,7 +14,6 @@ import transakSDK from '@transak/transak-sdk'
 import getConfigTransak from 'config/transak'
 import { IconTriangle } from 'components/Icons'
 import { trackNFTLendingClick, trackTransakButton } from 'lib/ga'
-import { trackTransakButton } from 'lib/ga'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 
 export function openTransak(fetchNearBalance, toast, accountId) {
@@ -310,9 +309,9 @@ const User = () => {
 									{localeLn('NavMyBids')}
 								</a>
 							</Link>
-							<Link href="https://www.fdao.co/loans?r=bd.paras.near">
+							<Link href="https://pawnnft.finance/loans?r=bd.paras.near">
 								<a
-									href="https://www.fdao.co/loans?r=bd.paras.near"
+									href="https://pawnnft.finance/loans?r=bd.paras.near"
 									target={'_blank'}
 									rel="noreferrer"
 									className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
