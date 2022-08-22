@@ -30,7 +30,7 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 	const [lockedTxFee, setLockedTxFee] = useState('')
 	const { localeLn } = useIntl()
 	const toast = useToast()
-	const { selector, viewFunction } = useWalletSelector()
+	const { viewFunction, signAndSendTransactions } = useWalletSelector()
 
 	const showTooltipTxFee = (txFee?.next_fee || 0) > (txFee?.current_fee || 0)
 	const tooltipTxFeeText = localeLn('DynamicTxFee', {
@@ -124,8 +124,6 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 
 		trackUpdateListingToken(data.token_id)
 
-		const wallet = await selector.wallet()
-
 		try {
 			const txs = []
 
@@ -171,7 +169,7 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 				],
 			})
 
-			const res = await wallet.signAndSendTransactions({ transactions: txs })
+			const res = await signAndSendTransactions({ transactions: txs })
 
 			if (res) {
 				onClose()
@@ -193,7 +191,6 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 
 		trackRemoveListingToken(data.token_id)
 
-		const wallet = await selector.wallet()
 		const txs = []
 		try {
 			txs.push({
@@ -234,7 +231,7 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 					],
 				})
 
-			const res = await wallet.signAndSendTransactions({ transactions: txs })
+			const res = await signAndSendTransactions({ transactions: txs })
 
 			if (res) {
 				toast.show({

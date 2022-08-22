@@ -28,7 +28,7 @@ const TokenAuctionBidModal = ({ data, show, onClose }) => {
 		userBalance: state.userBalance,
 		setTransactionRes: state.setTransactionRes,
 	}))
-	const { selector, viewFunction } = useWalletSelector()
+	const { signAndSendTransaction, viewFunction } = useWalletSelector()
 	const toast = useToast()
 
 	useEffect(() => {
@@ -72,7 +72,6 @@ const TokenAuctionBidModal = ({ data, show, onClose }) => {
 
 		try {
 			const depositParams = { receiver_id: currentUser }
-			const wallet = await selector.wallet()
 
 			const params = {
 				nft_contract_id: data.contract_id,
@@ -83,7 +82,7 @@ const TokenAuctionBidModal = ({ data, show, onClose }) => {
 
 			let res
 			if (hasDepositStorage) {
-				res = await wallet.signAndSendTransaction({
+				res = await signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{
@@ -98,7 +97,7 @@ const TokenAuctionBidModal = ({ data, show, onClose }) => {
 					],
 				})
 			} else {
-				res = await wallet.signAndSendTransaction({
+				res = await signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{

@@ -15,6 +15,7 @@ import getConfigTransak from 'config/transak'
 import { IconTriangle } from 'components/Icons'
 import { trackTransakButton } from 'lib/ga'
 import { useWalletSelector } from 'components/Common/WalletSelector'
+import { signOut } from '@ramper/near'
 
 export function openTransak(fetchNearBalance, toast, accountId) {
 	const transak = new transakSDK(
@@ -139,8 +140,13 @@ const User = () => {
 	}
 
 	const _signOut = async () => {
-		const wallet = await selector.wallet()
-		await wallet.signOut()
+		const activeWallet = localStorage.getItem('PARAS_ACTIVE_WALLET')
+		if (activeWallet === 'ramper') {
+			signOut()
+		} else {
+			const wallet = await selector.wallet()
+			await wallet.signOut()
+		}
 
 		window.location.replace(window.location.origin + window.location.pathname)
 	}

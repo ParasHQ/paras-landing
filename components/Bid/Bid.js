@@ -65,7 +65,7 @@ const Bid = ({ data, type, freshFetch }) => {
 	const [tradedTokenData, setTradedTokenData] = useState(null)
 	const [isFlipped, setIsFlipped] = useState(true)
 
-	const { selector } = useWalletSelector()
+	const { signAndSendTransaction } = useWalletSelector()
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
@@ -258,11 +258,10 @@ const Bid = ({ data, type, freshFetch }) => {
 				}
 			}
 
-			const wallet = await selector.wallet()
 			let res
 			// accept offer
 			if (userType === 'owner') {
-				res = await wallet.signAndSendTransaction({
+				res = await signAndSendTransaction({
 					receiverId: data.contract_id,
 					actions: [
 						{
@@ -279,7 +278,7 @@ const Bid = ({ data, type, freshFetch }) => {
 			}
 			// batch tx -> mint & accept
 			else {
-				res = await wallet.signAndSendTransaction({
+				res = await signAndSendTransaction({
 					receiverId: data.contract_id,
 					actions: [
 						{
@@ -336,8 +335,7 @@ const Bid = ({ data, type, freshFetch }) => {
 			buyer_token_id: data.buyer_token_id,
 		})
 		try {
-			const wallet = await selector.wallet()
-			const res = await wallet.signAndSendTransaction({
+			const res = await signAndSendTransaction({
 				receiverId: data.contract_id,
 				actions: [
 					{
@@ -386,9 +384,8 @@ const Bid = ({ data, type, freshFetch }) => {
 			  }
 
 		try {
-			const wallet = await selector.wallet()
 			if (isNFTTraded) {
-				const res = await wallet.signAndSendTransaction({
+				const res = await signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{
@@ -413,7 +410,7 @@ const Bid = ({ data, type, freshFetch }) => {
 					setTimeout(freshFetch, 2500)
 				}
 			} else {
-				const res = await wallet.signAndSendTransaction({
+				const res = await signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{

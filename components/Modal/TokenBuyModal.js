@@ -20,7 +20,7 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const [isBuying, setIsBuying] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
-	const { selector } = useWalletSelector()
+	const { signAndSendTransaction } = useWalletSelector()
 
 	const { localeLn } = useIntl()
 
@@ -39,8 +39,6 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 		trackBuyToken(data.token_id)
 		trackClickBuyButton(data.token_id)
 
-		const wallet = await selector.wallet()
-
 		try {
 			const params = {
 				token_id: data.token_id,
@@ -49,7 +47,7 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 				price: data.price,
 			}
 
-			const res = await wallet.signAndSendTransaction({
+			const res = await signAndSendTransaction({
 				actions: [
 					{
 						type: 'FunctionCall',

@@ -12,7 +12,7 @@ const LoginPage = () => {
 	const { currentUser } = useStore()
 	const router = useRouter()
 
-	const { modal } = useWalletSelector()
+	const { modal, signInRamper } = useWalletSelector()
 
 	const { localeLn } = useIntl()
 
@@ -97,6 +97,9 @@ const LoginPage = () => {
 						<div className="mt-4">
 							<Button className="h-16" onClick={() => _signIn()} isFullWidth>
 								Login Wallet
+							</Button>
+							<Button className="h-16 mt-4" variant="white" onClick={signInRamper} isFullWidth>
+								Login with Social
 							</Button>
 						</div>
 						{/* Faucet balance is empty */}

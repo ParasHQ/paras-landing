@@ -27,7 +27,7 @@ const AcceptBidAuctionModal = ({ data, show, onClose }) => {
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const toast = useToast()
-	const { viewFunction, selector } = useWalletSelector()
+	const { viewFunction, signAndSendTransaction } = useWalletSelector()
 
 	useEffect(() => {
 		const getTxFee = async () => {
@@ -51,8 +51,8 @@ const AcceptBidAuctionModal = ({ data, show, onClose }) => {
 				nft_contract_id: data.contract_id,
 				token_id: data.token_id,
 			}
-			const wallet = await selector.wallet()
-			const res = await wallet.signAndSendTransaction({
+
+			const res = await signAndSendTransaction({
 				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				actions: [
 					{
