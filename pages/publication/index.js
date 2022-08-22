@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 
 import Nav from 'components/Nav'
 import Footer from 'components/Footer'
@@ -106,7 +106,7 @@ const Publication = () => {
 		}
 
 		setIsFetching(true)
-		const res = await axios(
+		const res = await ParasRequest(
 			`${process.env.V2_API_URL}/publications?${
 				router.query.type ? `type=${router.query.type}` : ``
 			}&__skip=${_page * LIMIT}&__limit=${LIMIT}`

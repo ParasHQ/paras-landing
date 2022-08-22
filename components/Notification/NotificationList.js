@@ -1,12 +1,11 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import useStore from 'lib/store'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Scrollbars from 'react-custom-scrollbars'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import NotificationItem from './NotificationItem'
-import WalletHelper from 'lib/WalletHelper'
 
 const LIMIT = 30
 
@@ -87,14 +86,11 @@ const NotificationList = () => {
 
 		setIsFetching(true)
 		try {
-			const res = await axios.get(`${process.env.V2_API_URL}/activities/notifications`, {
+			const res = await ParasRequest.get(`${process.env.V2_API_URL}/activities/notifications`, {
 				params: {
 					account_id: currentUser,
 					_id_before: notificationListIdBefore,
 					__limit: LIMIT,
-				},
-				headers: {
-					authorization: await WalletHelper.authToken(),
 				},
 			})
 			const newData = await res.data.data

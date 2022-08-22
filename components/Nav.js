@@ -12,7 +12,7 @@ import Cookies from 'js-cookie'
 import NotificationList from './Notification/NotificationList'
 import User from './User/User'
 import SlowActivityInfo from './SlowActivityInfo'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import AutoCompleteList from './AutoComplete/AutoCompleteList'
 import { IconQuestion, IconSearch, IconX } from './Icons'
 
@@ -77,7 +77,7 @@ const Nav = () => {
 		const { value } = event
 
 		if (value.length >= 3) {
-			const resSearchAutoComplete = await axios.get(`${process.env.V2_API_URL}/search`, {
+			const resSearchAutoComplete = await ParasRequest.get(`${process.env.V2_API_URL}/search`, {
 				params: {
 					search: value,
 					__skip: 0,

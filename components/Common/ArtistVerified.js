@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import ReactTooltip from 'react-tooltip'
 import { prettyTruncate } from 'utils/common'
 
-const ArtistVerified = ({ token, collection }) => {
+const ArtistVerified = ({ token, collection, type }) => {
 	const [showTooltip, setShowTooltip] = useState(false)
 	const artistData = useProfileData(token?.metadata.creator_id)
 
@@ -15,6 +15,9 @@ const ArtistVerified = ({ token, collection }) => {
 	}, [token])
 
 	const getCreatorId = () => {
+		if (type === 'token-detail') {
+			return token?.owner_id || token?.contract_id
+		}
 		return token?.metadata.creator_id || token?.contract_id
 	}
 
@@ -30,7 +33,7 @@ const ArtistVerified = ({ token, collection }) => {
 					}
 				>
 					<a className="text-white font-semibold border-b-2 border-transparent hover:border-white">
-						{prettyTruncate(getCreatorId(), 30, 'address')}
+						{prettyTruncate(getCreatorId(), 18, 'address')}
 					</a>
 				</Link>
 			</span>

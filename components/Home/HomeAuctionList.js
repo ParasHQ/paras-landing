@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import CardListLoader from 'components/Card/CardListLoader'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import TokenList from 'components/Token/TokenList'
 import Link from 'next/link'
 
@@ -20,7 +20,7 @@ const HomeAuctionList = () => {
 		}
 		const fetchAuctionToken = async () => {
 			setIsLoading(true)
-			const resp = await axios.get(`${process.env.V2_API_URL}/token`, {
+			const resp = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
 				params: auctionParams,
 			})
 			setAuctionToken(resp.data.data.results)

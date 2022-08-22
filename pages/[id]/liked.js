@@ -1,4 +1,4 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -13,7 +13,6 @@ import CardListLoader from 'components/Card/CardListLoader'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import FilterDisplay from 'components/Filter/FilterDisplay'
 import useStore from 'lib/store'
-import WalletHelper from 'lib/WalletHelper'
 
 const LIMIT = 12
 
@@ -63,11 +62,8 @@ const Liked = ({ userProfile, accountId }) => {
 			updated_at_next: updatedAtNext,
 		})
 
-		const res = await axios.get(`${process.env.V2_API_URL}/liked-token`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/liked-token`, {
 			params: params,
-			headers: {
-				authorization: await WalletHelper.authToken(),
-			},
 		})
 		const newData = await res.data.data.results
 
@@ -124,11 +120,8 @@ const Liked = ({ userProfile, accountId }) => {
 	const updateFilter = async (query) => {
 		setIsFiltering(true)
 		const params = tokensParams(query)
-		const res = await axios.get(`${process.env.V2_API_URL}/liked-token`, {
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/liked-token`, {
 			params: params,
-			headers: {
-				authorization: await WalletHelper.authToken(),
-			},
 		})
 
 		const newData = res.data.data.results
@@ -221,7 +214,7 @@ const Liked = ({ userProfile, accountId }) => {
 export default Liked
 
 export async function getServerSideProps({ params }) {
-	const profileRes = await axios.get(`${process.env.V2_API_URL}/profiles`, {
+	const profileRes = await ParasRequest.get(`${process.env.V2_API_URL}/profiles`, {
 		params: {
 			accountId: params.id,
 		},

@@ -10,10 +10,10 @@ import JSBI from 'jsbi'
 import { useEffect, useState } from 'react'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
-import WalletHelper from 'lib/WalletHelper'
 import { trackUpdateListingToken } from 'lib/ga'
 import { useToast } from 'hooks/useToast'
 import { prettyBalance } from 'utils/common'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const TabCreateAuction = ({ data, onClose }) => {
 	const [needDeposit, setNeedDeposit] = useState(false)
@@ -28,6 +28,7 @@ const TabCreateAuction = ({ data, onClose }) => {
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const [isGreaterTime, setIsGreaterTime] = useState(false)
+	const { viewFunction, selector } = useWalletSelector()
 	const toast = useToast()
 
 	useEffect(() => {
@@ -51,15 +52,15 @@ const TabCreateAuction = ({ data, onClose }) => {
 
 	const checkStorageBalance = async () => {
 		try {
-			const currentStorage = await WalletHelper.viewFunction({
+			const currentStorage = await viewFunction({
 				methodName: 'storage_balance_of',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 
-			const supplyPerOwner = await WalletHelper.viewFunction({
+			const supplyPerOwner = await viewFunction({
 				methodName: 'get_supply_by_owner_id',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				args: { account_id: currentUser },
 			})
 
@@ -117,17 +118,20 @@ const TabCreateAuction = ({ data, onClose }) => {
 
 		try {
 			const txs = []
+			const wallet = await selector.wallet()
 
 			if (needDeposit) {
 				txs.push({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
-					functionCalls: [
+					actions: [
 						{
-							methodName: 'storage_deposit',
-							contractId: process.env.MARKETPLACE_CONTRACT_ID,
-							args: { receiver_id: currentUser },
-							attachedDeposit: STORAGE_ADD_MARKET_FEE,
-							gas: GAS_FEE,
+							type: 'FunctionCall',
+							params: {
+								methodName: 'storage_deposit',
+								args: { receiver_id: currentUser },
+								deposit: STORAGE_ADD_MARKET_FEE,
+								gas: GAS_FEE,
+							},
 						},
 					],
 				})
@@ -146,33 +150,27 @@ const TabCreateAuction = ({ data, onClose }) => {
 					is_auction: true,
 				}),
 			}
+
 			txs.push({
 				receiverId: data.contract_id,
-				functionCalls: [
+				actions: [
 					{
-						methodName: `nft_approve`,
-						args: params,
-						gas: GAS_FEE,
-						attachedDeposit: '440000000000000000000',
+						type: 'FunctionCall',
+						params: {
+							methodName: `nft_approve`,
+							args: params,
+							gas: GAS_FEE,
+							deposit: '440000000000000000000',
+						},
 					},
 				],
 			})
 
-			const res = await WalletHelper.multipleCallFunction(txs)
+			const res = await wallet.signAndSendTransactions({ transactions: txs })
 
-			if (res?.response.error) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							{res?.response.error.kind.ExecutionError}
-						</div>
-					),
-					type: 'error',
-					duration: 2500,
-				})
-			} else if (res) {
+			if (res) {
 				onClose()
-				setTransactionRes(res?.response)
+				setTransactionRes(res)
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">{`Successfully create auction`}</div>
@@ -183,6 +181,16 @@ const TabCreateAuction = ({ data, onClose }) => {
 			}
 			setIsCreatingPrice(false)
 		} catch (err) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{err.message || localeLn('SomethingWentWrong')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+
 			sentryCaptureException(err)
 			setIsCreatingPrice(false)
 		}

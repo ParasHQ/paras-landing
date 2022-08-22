@@ -13,7 +13,7 @@ const nav = {
 	NavJoinDiscord: 'Join Paras Discord',
 	NavViewWallet: 'View on NEAR Wallet',
 	NavGetParas: 'Get $PARAS on Ref',
-	NavSwitchAccount: 'Switch Account',
+	NavSwitchAccount: 'Switch Wallet',
 	NavAddAccount: 'Add Account',
 	NavCreateCard: 'Create Card',
 	NavLogOut: 'Log out',
@@ -323,6 +323,8 @@ const tab = {
 	Owner: 'Owner',
 	Copies: 'Copies',
 	NoOwnersBecome: 'No owners, become the first one!',
+	NoTokenDescription: 'No Description',
+	NoTokenAttributes: 'No Attributes',
 	Burned: 'Burned',
 	StakedTo: 'staked to',
 }

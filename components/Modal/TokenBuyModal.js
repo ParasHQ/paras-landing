@@ -7,12 +7,12 @@ import { GAS_FEE_150 } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
-import { trackBuyToken, trackBuyTokenImpression } from 'lib/ga'
+import { trackBuyToken, trackBuyTokenImpression, trackClickBuyButton } from 'lib/ga'
 import useProfileData from 'hooks/useProfileData'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
 import useStore from 'lib/store'
-import WalletHelper from 'lib/WalletHelper'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const TokenBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
@@ -20,6 +20,7 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const [isBuying, setIsBuying] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
+	const { selector } = useWalletSelector()
 
 	const { localeLn } = useIntl()
 
@@ -36,6 +37,9 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 		}
 		setIsBuying(true)
 		trackBuyToken(data.token_id)
+		trackClickBuyButton(data.token_id)
+
+		const wallet = await selector.wallet()
 
 		try {
 			const params = {
@@ -45,17 +49,23 @@ const TokenBuyModal = ({ show, onClose, data }) => {
 				price: data.price,
 			}
 
-			const res = await WalletHelper.callFunction({
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
-				methodName: `buy`,
-				args: params,
-				gas: GAS_FEE_150,
-				deposit: data.price,
+			const res = await wallet.signAndSendTransaction({
+				actions: [
+					{
+						type: 'FunctionCall',
+						params: {
+							methodName: 'buy',
+							args: params,
+							gas: GAS_FEE_150,
+							deposit: data.price,
+						},
+					},
+				],
 			})
 
-			if (res?.response) {
+			if (res) {
 				onClose()
-				setTransactionRes(res?.response)
+				setTransactionRes([res])
 			}
 
 			setIsBuying(false)

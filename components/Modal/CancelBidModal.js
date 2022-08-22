@@ -3,14 +3,13 @@ import { useIntl } from 'hooks/useIntl'
 import Modal from 'components/Common/Modal'
 import Button from 'components/Common/Button'
 import { sentryCaptureException } from 'lib/sentry'
-import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
-import JSBI from 'jsbi'
+import { GAS_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { useState } from 'react'
-import WalletHelper from 'lib/WalletHelper'
 import { useToast } from 'hooks/useToast'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
-const CancelBidModal = ({ data, show, onClose, onSuccess }) => {
+const CancelBidModal = ({ data, show, onClose }) => {
 	const { localeLn } = useIntl()
 	const [isCancelBid, setIsCancelBid] = useState(false)
 	const { currentUser, setTransactionRes } = useStore((state) => ({
@@ -18,95 +17,36 @@ const CancelBidModal = ({ data, show, onClose, onSuccess }) => {
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const toast = useToast()
-
-	const hasStorageBalance = async () => {
-		try {
-			const currentStorage = await WalletHelper.viewFunction({
-				methodName: 'storage_balance_of',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
-				args: { account_id: currentUser },
-			})
-
-			const supplyPerOwner = await WalletHelper.viewFunction({
-				methodName: 'get_supply_by_owner_id',
-				contractId: process.env.MARKETPLACE_CONTRACT_ID,
-				args: { account_id: currentUser },
-			})
-
-			const usedStorage = JSBI.multiply(
-				JSBI.BigInt(parseInt(supplyPerOwner) + 1),
-				JSBI.BigInt(STORAGE_ADD_MARKET_FEE)
-			)
-
-			if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
-				return true
-			}
-			return false
-		} catch (err) {
-			sentryCaptureException(err)
-		}
-	}
+	const { selector } = useWalletSelector()
 
 	const onCancelBid = async () => {
 		setIsCancelBid(true)
 
-		const hasDepositStorage = await hasStorageBalance()
-
 		try {
-			const depositParams = { receiver_id: currentUser }
-
 			const params = {
 				nft_contract_id: data.contract_id,
 				token_id: data.token_id,
 				account_id: currentUser,
 			}
 
-			let res
-			if (hasDepositStorage) {
-				res = await WalletHelper.signAndSendTransaction({
-					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
-					actions: [
-						{
+			const wallet = await selector.wallet()
+			const res = await wallet.signAndSendTransaction({
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
+				actions: [
+					{
+						type: 'FunctionCall',
+						params: {
 							methodName: 'cancel_bid',
 							args: params,
 							deposit: '1',
 							gas: GAS_FEE,
 						},
-					],
-				})
-			} else {
-				res = await WalletHelper.signAndSendTransaction({
-					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
-					actions: [
-						{
-							methodName: 'storage_deposit',
-							args: depositParams,
-							deposit: STORAGE_ADD_MARKET_FEE,
-							gas: GAS_FEE,
-						},
-						{
-							methodName: 'cancel_bid',
-							args: params,
-							deposit: '1',
-							gas: GAS_FEE,
-						},
-					],
-				})
-			}
-			if (res?.response.error) {
-				toast.show({
-					text: (
-						<div className="font-semibold text-center text-sm">
-							{res?.response.error.kind.ExecutionError}
-						</div>
-					),
-					type: 'error',
-					duration: 2500,
-				})
-			} else if (res) {
+					},
+				],
+			})
+			if (res) {
 				onClose()
-				setTransactionRes(res?.response)
-				onSuccess && onSuccess()
+				setTransactionRes([res])
 				toast.show({
 					text: (
 						<div className="font-semibold text-center text-sm">{`Successfully cancel bid auction`}</div>

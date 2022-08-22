@@ -119,6 +119,7 @@ const ActivityDetail = ({ activity, index, setShowDetailIndex, setShowModalShare
 	const router = useRouter()
 	const store = useStore()
 	const currentUser = useStore((state) => state.currentUser)
+	const [currentVariant, setVariant] = useState(0)
 
 	const { token: localToken, mutate } = useTokenOrTokenSeries({
 		key: `${activity.contract_id}::${
@@ -128,6 +129,11 @@ const ActivityDetail = ({ activity, index, setShowDetailIndex, setShowModalShare
 			lookup_likes: true,
 			liked_by: currentUser,
 		},
+	})
+
+	useEffect(() => {
+		const variant = localStorage.getItem('variant') || 0
+		setVariant(variant)
 	})
 
 	useNonInitialEffect(() => {
@@ -314,14 +320,22 @@ const ActivityDetail = ({ activity, index, setShowDetailIndex, setShowModalShare
 								>
 									<Link
 										href={{
-											pathname: router.pathname,
-											query: {
-												...router.query,
-												...(activity.token_id
-													? { tokenId: localToken?.token_id }
-													: { tokenSeriesId: localToken?.token_series_id }),
-												contractId: localToken?.contract_id,
-											},
+											pathname:
+												currentVariant === 0
+													? router.pathname
+													: `/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+															activity.token_id ? `/${localToken?.token_id}` : ''
+													  }`,
+											query:
+												currentVariant === 0
+													? {
+															...router.query,
+															...(activity.token_id
+																? { tokenId: localToken?.token_id }
+																: { tokenSeriesId: localToken?.token_series_id }),
+															contractId: localToken?.contract_id,
+													  }
+													: {},
 										}}
 										as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
 											activity.token_id ? `/${localToken?.token_id}` : ''
@@ -362,14 +376,22 @@ const ActivityDetail = ({ activity, index, setShowDetailIndex, setShowModalShare
 									>
 										<Link
 											href={{
-												pathname: router.pathname,
-												query: {
-													...router.query,
-													...(activity.token_id
-														? { tokenId: localToken?.token_id }
-														: { tokenSeriesId: localToken?.token_series_id }),
-													contractId: localToken?.contract_id,
-												},
+												pathname:
+													currentVariant === 0
+														? router.pathname
+														: `/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+																activity.token_id ? `/${localToken?.token_id}` : ''
+														  }`,
+												query:
+													currentVariant === 0
+														? {
+																...router.query,
+																...(activity.token_id
+																	? { tokenId: localToken?.token_id }
+																	: { tokenSeriesId: localToken?.token_series_id }),
+																contractId: localToken?.contract_id,
+														  }
+														: {},
 											}}
 											as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
 												activity.token_id ? `/${localToken?.token_id}` : ''
@@ -417,14 +439,22 @@ const ActivityDetail = ({ activity, index, setShowDetailIndex, setShowModalShare
 								<div onClick={() => store.setLocalToken(localToken)}>
 									<Link
 										href={{
-											pathname: router.pathname,
-											query: {
-												...router.query,
-												...(activity.token_id
-													? { tokenId: localToken?.token_id }
-													: { tokenSeriesId: localToken?.token_series_id }),
-												contractId: localToken?.contract_id,
-											},
+											pathname:
+												currentVariant === 0
+													? router.pathname
+													: `/token/${localToken?.contract_id}::${localToken?.token_series_id}${
+															activity.token_id ? `/${localToken?.token_id}` : ''
+													  }`,
+											query:
+												currentVariant === 0
+													? {
+															...router.query,
+															...(activity.token_id
+																? { tokenId: localToken?.token_id }
+																: { tokenSeriesId: localToken?.token_series_id }),
+															contractId: localToken?.contract_id,
+													  }
+													: {},
 										}}
 										as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
 											activity.token_id ? `/${localToken?.token_id}` : ''

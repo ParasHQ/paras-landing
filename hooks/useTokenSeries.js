@@ -1,19 +1,17 @@
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import useSWR from 'swr'
 
 const useTokenSeries = ({ key, initialData, params = {} }) => {
 	const fetchData = async (key) => {
 		const [contractId, tokenSeriesId] = key.split('::')
-		return axios
-			.get(`${process.env.V2_API_URL}/token-series`, {
-				params: {
-					contract_id: contractId,
-					token_series_id: tokenSeriesId,
-					lookup_token: true,
-					...params,
-				},
-			})
-			.then((res) => res.data.data.results[0])
+		return ParasRequest.get(`${process.env.V2_API_URL}/token-series`, {
+			params: {
+				contract_id: contractId,
+				token_series_id: tokenSeriesId,
+				lookup_token: true,
+				...params,
+			},
+		}).then((res) => res.data.data.results[0])
 	}
 
 	const { data, mutate, error } = useSWR(

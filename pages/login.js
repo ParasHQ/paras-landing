@@ -1,23 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
-import near from 'lib/near'
 import Nav from 'components/Nav'
 import useStore from 'lib/store'
 import Footer from 'components/Footer'
 import { useIntl } from 'hooks/useIntl'
 import Button from 'components/Common/Button'
-import senderWallet from 'lib/senderWallet'
-import { isChromeBrowser } from 'utils/common'
-import { useToast } from 'hooks/useToast'
-import { IconNear } from 'components/Icons'
-import IconSender from 'components/Icons/component/IconSender'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const LoginPage = () => {
-	const { currentUser, setActiveWallet } = useStore()
+	const { currentUser } = useStore()
 	const router = useRouter()
-	const [isLoading, setIsLoading] = useState(false)
-	const toast = useToast()
+
+	const { modal } = useWalletSelector()
 
 	const { localeLn } = useIntl()
 
@@ -27,34 +22,8 @@ const LoginPage = () => {
 		}
 	}, [currentUser])
 
-	const _signIn = () => {
-		setIsLoading(true)
-		near.login()
-	}
-
-	const loginSenderWallet = async () => {
-		if (typeof window.near !== 'undefined' && window.near.isSender) {
-			await senderWallet.signIn()
-			setActiveWallet('senderWallet')
-		} else {
-			toast.show({
-				text: (
-					<div className="text-sm text-gray-900 flex items-center gap-4">
-						<div className="h-24 w-24 flex items-center justify-center">
-							<IconSender size={81} />
-						</div>
-						<div>
-							<p className="mb-2">{localeLn('Sender Wallet is not installed. Install here:')}</p>
-							<Button size="sm" isFullWidth onClick={() => window.open('https://senderwallet.io/')}>
-								Install
-							</Button>
-						</div>
-					</div>
-				),
-				type: 'info',
-				duration: null,
-			})
-		}
+	const _signIn = async () => {
+		modal.show()
 	}
 
 	return (
@@ -126,27 +95,10 @@ const LoginPage = () => {
 							</div>
 						</div>
 						<div className="mt-4">
-							<Button className="h-16" onClick={() => _signIn()} isFullWidth isDisabled={isLoading}>
-								<IconNear className="rounded-full absolute h-8 w-8 top-0 bottom-0 left-4 m-auto" />
-								{isLoading ? localeLn('LoadingLoading') : localeLn('LoginWithNEAR')}
+							<Button className="h-16" onClick={() => _signIn()} isFullWidth>
+								Login Wallet
 							</Button>
 						</div>
-						{isChromeBrowser && (
-							<div className="mt-4 hidden md:block">
-								<Button className="h-16" variant="white" isFullWidth onClick={loginSenderWallet}>
-									<div className="absolute h-8 w-8 top-0 bottom-0 left-4 m-auto flex items-center justify-center">
-										<IconSender size={36} />
-									</div>
-									Login with Sender Wallet
-									<span
-										className="bg-white text-primary font-bold rounded-full px-3 text-sm absolute right-4"
-										style={{ boxShadow: `rgb(83 97 255) 0px 0px 5px 1px` }}
-									>
-										beta
-									</span>
-								</Button>
-							</div>
-						)}
 						{/* Faucet balance is empty */}
 						{/* <div className="mt-8 text-center">
 							<a

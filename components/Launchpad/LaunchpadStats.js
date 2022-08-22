@@ -92,7 +92,7 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 							: null
 					}
 				>
-					<p
+					<div
 						className={`${
 							project.status === 'upcoming' ? `text-xl` : `text-2xl`
 						} md:text-2xl font-bold ${!isEnded ? `text-red-500` : projectStatus(project.status)}`}
@@ -115,7 +115,7 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 								{project.status === 'end' && 'Ended'}
 							</>
 						)}
-					</p>
+					</div>
 					<p>Mint Start</p>
 				</div>
 				<div
@@ -123,7 +123,7 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 					data-for={randomID}
 					data-tip="Mint time duration"
 				>
-					<p
+					<div
 						className={`${
 							project.status === 'live' ? `text-xl` : `text-2xl`
 						} md:text-2xl font-bold`}
@@ -139,7 +139,7 @@ const LaunchpadStats = ({ project, isEnded, isEndedComing, isValidating }) => {
 						) : (
 							mintDurationType(project.status)
 						)}
-					</p>
+					</div>
 					<p>Mint Duration</p>
 				</div>
 				<div className="text-center" data-for={randomID} data-tip="Mint price">

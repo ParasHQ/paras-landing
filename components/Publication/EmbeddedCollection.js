@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import ParasRequest from 'lib/ParasRequest'
 import Link from 'next/link'
 
 import { parseImgUrl } from 'utils/common'
@@ -17,7 +17,7 @@ const EmbeddedCollection = ({ collectionId, pubDetail }) => {
 		if (pubDetail?.isComic) {
 			pubDetail?.collection_ids?.map(async () => {
 				const url = process.env.COMIC_API_URL
-				const res = await axios({
+				const res = await ParasRequest({
 					url: url + `/comics`,
 					method: 'GET',
 					params: {
@@ -30,7 +30,7 @@ const EmbeddedCollection = ({ collectionId, pubDetail }) => {
 		}
 
 		const url = process.env.V2_API_URL
-		const res = await axios({
+		const res = await ParasRequest({
 			url: url + `/collections`,
 			method: 'GET',
 			params: {
