@@ -24,6 +24,7 @@ const Media = ({
 	const [playVideo, setPlayVideo] = useState(false)
 	const audioRef = useRef()
 	const [isPlaying, setIsPlaying] = useState(false)
+	const [activePlayButton, setActivePlayButton] = useState(true)
 
 	useEffect(() => {
 		if (url && seeDetails && media !== null) {
@@ -143,7 +144,7 @@ const Media = ({
 	if (media?.type.includes('video')) {
 		return (
 			<div className="relative w-full mx-auto h-full">
-				{!videoControls && playVideoButton && (
+				{!videoControls && playVideoButton && activePlayButton && (
 					<div
 						className={`absolute bg-gray-200 p-2 rounded-full ${
 							isAuction ? 'top-0 md: left-3 md:left-5' : 'right-3 md:right-5 bottom-1/10'
@@ -152,6 +153,8 @@ const Media = ({
 							e.preventDefault()
 							e.stopPropagation()
 							setPlayVideo(true)
+							alert('masuk')
+							setActivePlayButton(false)
 						}}
 					>
 						<svg
@@ -193,6 +196,7 @@ const Media = ({
 								e.preventDefault()
 								e.stopPropagation()
 								setPlayVideo(false)
+								setActivePlayButton(true)
 							}
 						}}
 					>
