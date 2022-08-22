@@ -17,7 +17,6 @@ import {
 } from 'config/constants'
 import JSBI from 'jsbi'
 import { parseImgUrl, prettyBalance, timeAgo } from 'utils/common'
-import Avatar from 'components/Common/Avatar'
 import AcceptBidModal from 'components/Modal/AcceptBidModal'
 import { useToast } from 'hooks/useToast'
 import Media from 'components/Common/Media'
@@ -25,6 +24,7 @@ import { useRouter } from 'next/router'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from 'components/Modal/BannedConfirmModal'
 import { useWalletSelector } from 'components/Common/WalletSelector'
+import ProfileImageBadge from 'components/Common/ProfileImageBadge'
 
 const FETCH_TOKENS_LIMIT = 12
 
@@ -220,7 +220,11 @@ const Offer = ({
 				<div className="flex items-center">
 					<div className="w-2/3 flex items-center">
 						<div className="hidden md:block">
-							<Avatar size="md" src={parseImgUrl(profile.imgUrl)} />
+							<ProfileImageBadge
+								className="w-8 h-8"
+								imgUrl={profile?.imgUrl}
+								level={profile?.level}
+							/>
 						</div>
 						<div className="pl-2">
 							<div className="overflow-hidden truncate">

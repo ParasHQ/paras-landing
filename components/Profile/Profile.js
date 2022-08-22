@@ -22,7 +22,8 @@ import {
 } from 'components/Icons'
 import Tooltip from 'components/Common/Tooltip'
 import Follow from 'components/Follow/Follow'
-import { ASSET_BADGE, ASSET_BADGE_COLOR, TEXT_BADGE_COLOR } from 'constants/badge'
+import { TEXT_BADGE_COLOR } from 'constants/badge'
+import ProfileImageBadge from 'components/Common/ProfileImageBadge'
 
 const Profile = ({ userProfile, activeTab }) => {
 	const currentUser = useStore((store) => store.currentUser)
@@ -97,24 +98,11 @@ const Profile = ({ userProfile, activeTab }) => {
 						</div>
 					)}
 				</div>
-				<div
-					className={`w-32 h-32 rounded-full bg-primary mt-8 md:mt-44 z-0 border-[6px] relative ${
-						ASSET_BADGE_COLOR[profileData.level]
-					}`}
-				>
-					<img
-						src={parseImgUrl(profileData?.imgUrl, null, {
-							width: `300`,
-						})}
-						className="object-cover rounded-full"
-					/>
-					<img
-						src={parseImgUrl(ASSET_BADGE[profileData.level], null, {
-							width: `100`,
-						})}
-						className="absolute -bottom-5 right-0 left-0 w-10 h-10 m-auto"
-					/>
-				</div>
+				<ProfileImageBadge
+					className="w-32 h-32 mt-8 md:mt-44"
+					imgUrl={profileData?.imgUrl}
+					level={profileData?.level}
+				/>
 				<p className={`${TEXT_BADGE_COLOR[profileData.level]} mt-4 text-xs font-light`}>
 					{capitalizeFirstLetter(profileData.level)} Member
 				</p>
