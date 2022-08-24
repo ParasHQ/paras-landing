@@ -19,9 +19,8 @@ import {
 	AUTH_PROVIDER,
 	THEME,
 	WALLET_PROVIDER,
-	SUPPORTED_NEAR_NETWORKS,
 	getUser,
-	// signMessage,
+	signMessage,
 	sendTransaction,
 } from '@ramper/near'
 import { createAction } from '@paras-wallet-selector/wallet-utils'
@@ -57,8 +56,10 @@ export const WalletSelectorContextProvider = ({ children }) => {
 	}, [])
 
 	const initializeRamper = async () => {
+		const nearConfig = getConfig(process.env.APP_ENV || 'development')
 		await initRamper({
-			appName: 'Near Test App',
+			appName: 'Paras - NFT Marketplace for Digital Collectibles on NEAR',
+
 			authProviders: [
 				AUTH_PROVIDER.GOOGLE,
 				AUTH_PROVIDER.FACEBOOK,
@@ -67,7 +68,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				AUTH_PROVIDER.EMAIL,
 			],
 			walletProviders: [WALLET_PROVIDER.NEAR_WALLET],
-			network: SUPPORTED_NEAR_NETWORKS.TESTNET,
+			network: nearConfig.networkId,
 			theme: THEME.DARK,
 		})
 		const user = getUser()
@@ -93,7 +94,6 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			)
 			.subscribe((nextAccounts) => {
 				const accountId = nextAccounts.find((account) => account.active)?.accountId || null
-				setActiveWallet('wallet-selector')
 				setupUser({ accountId: accountId })
 			})
 
@@ -107,12 +107,12 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		await signIn()
 		const user = getUser()
 
-		setActiveWallet('ramper')
-		setupUser({ accountId: user.wallets.near.publicKey }, 'ramper')
+		setupUser({ accountId: user?.wallets.near.publicKey }, 'ramper')
 	}
 
 	const setupUser = async (currentUser, walletType = 'wallet-selector') => {
 		if (!currentUser.accountId) return
+		setActiveWallet(walletType)
 
 		try {
 			await generateAuthToken(currentUser.accountId, walletType)
@@ -219,15 +219,25 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		}
 		const msgBuf = new Uint8Array(arr)
 		let signedMsg
+
 		if (walletType === 'wallet-selector') {
 			const wallet = await selector.wallet()
 			signedMsg = await wallet.signMessage({ message: msgBuf })
-		} else {
-			return
+		}
 
-			// Still error on this
-			// TODO confirm with ramper
-			// signedMsg = await signMessage({ message: msgBuf, network: 'testnet' })
+		if (walletType === 'ramper') {
+			const ramperSignedMsg = JSON.parse(localStorage.getItem('RAMPER_SIGNED_MSG'))
+			if (ramperSignedMsg && ramperSignedMsg.accountId === accountId) {
+				signedMsg = ramperSignedMsg.signedMsg
+			} else {
+				signedMsg = (await signMessage({ message: msgBuf, network: 'testnet' })).result
+				signedMsg.publicKey.data = new Uint8Array(Object.values(signedMsg.publicKey.data))
+				signedMsg.signature = new Uint8Array(Object.values(signedMsg.signature))
+
+				// save the signed message to local storage
+				const signedMsgString = JSON.stringify({ accountId, signedMsg })
+				localStorage.setItem('RAMPER_SIGNED_MSG', signedMsgString)
+			}
 		}
 
 		const pubKey = Buffer.from(signedMsg.publicKey.data).toString('hex')
