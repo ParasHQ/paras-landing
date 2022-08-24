@@ -115,6 +115,46 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		)
 	}
 
+	if (notif.type === 'notification_raffle_program_launch') {
+		return (
+			<div className="w-full notification-item">
+				<div className="text-gray-300 select-none w-full">
+					<p className="font-bold text-base">Join Paras Loyalty Now!</p>
+					<p className="text-sm">
+						<span>{`Get into our exclusive raffle & grab the rewards! `}</span>
+						<span>{`More details here 👉 `}</span>
+						<span>
+							<Link href="/loyalty">
+								<a className="font-bold">loyalty</a>
+							</Link>
+						</span>
+					</p>
+				</div>
+				<NotificationTime time={notif.issued_at} />
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_raffle_new_cycle') {
+		return (
+			<div className="w-full notification-item">
+				<div className="text-gray-300 select-none w-full">
+					<p className="font-bold text-base">Exclusive Rewards Are Waiting For You!</p>
+					<p className="text-sm">
+						<span>{`Find out this month's Paras Loyalty rewards `}</span>
+						<span>
+							<Link href="/loyalty">
+								<a className="font-bold">here</a>
+							</Link>
+						</span>
+						.
+					</p>
+				</div>
+				<NotificationTime time={notif.issued_at} />
+			</div>
+		)
+	}
+
 	if (notif.type === 'notification_level_down') {
 		return (
 			<div className="notification-item">
