@@ -69,9 +69,17 @@ export default function Loyalty() {
 			<div className="max-w-6xl m-auto">
 				<div className="relative mx-4 my-12 bg-[#20124D]">
 					<div
-						className="py-4 md:py-12"
+						className="py-4 md:py-12 relative"
 						style={{ background: 'linear-gradient(180deg, #4E29AA 0%, #20124D 100%)' }}
 					>
+						<img
+							src="https://paras-cdn.imgix.net/bafkreievunopbghyvakrsccb4jkxyeukimknqq5nxhxggbze7u6cdbppdq"
+							className="absolute top-10 left-0 h-full"
+						/>
+						<img
+							src="https://paras-cdn.imgix.net/bafkreihphetd3lgmjqrxd5ngaxpos3mm6rswsacgwxrlybtfuxzumzlbxy"
+							className="absolute top-0 right-0 bottom-0 h-full"
+						/>
 						<img
 							className="w-1/2 mx-auto"
 							src="https://paras-cdn.imgix.net/bafkreigxmtjfl6nsvb6ycpx3zvkdgqhtebbrq5ukf3lwyiigyycxhni6rq"
@@ -85,10 +93,16 @@ export default function Loyalty() {
 
 					<div className="bg-[#20124D] text-center py-8">
 						<p className="text-white font-bold text-2xl mb-2">What is Paras Loyalty?</p>
-						<p className="text-gray-200 text-xl w-2/3 m-auto">
+						<p className="text-gray-200 text-xl px-4 md:w-2/3 m-auto">
 							It is a special program created to appreciate $PARAS stakers by giving exclusive
 							access to limited raffles.
 						</p>
+						<a
+							href="https://stake.paras.id"
+							className="inline-block p-3 bg-white text-primary font-bold border-[0.5rem] mt-4 border-primary rounded-xl text-xl"
+						>
+							Start Locked Staking
+						</a>
 					</div>
 
 					{/* Rewards */}
@@ -159,6 +173,7 @@ export default function Loyalty() {
 							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16">
 								WL Spots & Free NFTs from New & Upcoming Projects
 							</p>
+							<p className="font-bold py-16 text-center text-xl">Coming Soon</p>
 						</div>
 					</div>
 
@@ -182,7 +197,7 @@ export default function Loyalty() {
 									<div>
 										<img
 											className="my-4 md:my-12 mx-auto"
-											src="https://paras-cdn.imgix.net/bafkreigc23upnrqg6agxp5txv2xdqnwntngmmqv47vyixksyrvj4vvtoz4"
+											src="https://paras-cdn.imgix.net/bafkreifu5bjpwp2n2pesjangyhc4h4q7prkmms2yal7o5zphh57ekl3gsi"
 										/>
 									</div>
 									<p>
@@ -202,17 +217,13 @@ export default function Loyalty() {
 								<div className="flex">
 									<p className="loyalty-mechanism-number">2</p>
 									<p className="loyalty-mechanism-text">
-										On the 15th-18th day of every month, Silver, Gold, and Platinum members will
-										have a chance to sign up and enter exclusive raffle.
+										Silver, Gold, and Platinum members will have a chance to sign up and enter an
+										exclusive raffle on 19th–25th September.
 									</p>
 								</div>
 								<div>
 									<div className="text-center my-4">
-										<img
-											className="m-auto my-4"
-											src="https://paras-cdn.imgix.net/bafkreigigsme75p5tnvvotbq3p5wgpq4vxtcgxucvpds32qyvkvg5dy5wa"
-										/>
-										<p>
+										<p className="md:w-3/4 md:m-auto">
 											Silver, Gold, Platinum members can log in to{' '}
 											<span>
 												<a href="https://paras.id" className="text-blue-700 underline">
@@ -222,17 +233,20 @@ export default function Loyalty() {
 											, and sign up to the exclusive raffle through a whitelisted pop up banner that
 											will appear on the home screen.
 										</p>
-									</div>
-									<div className="text-center my-4">
 										<img
 											className="m-auto my-4"
-											src="https://paras-cdn.imgix.net/bafkreihj2n5wlj2xuj7f45tx7mj4ybdhuz5pgm7gwgjtt65rpjgebn4g2e"
+											src="https://paras-cdn.imgix.net/bafkreidr72bc26na4qgsr3pprbcxghefz7qri2arztexhvr6qot46zs7jy"
 										/>
-										<p>
-											If you are a Silver, Gold, or Platinum member, and you can't find the pop up
-											banner, you can check your notification box, look for the raffle announcement,
-											and click 'Sign Up' to join the exclusive raffle.
+									</div>
+									<div className="text-center my-4 ">
+										<p className="md:w-3/4 md:m-auto">
+											If you’re missing the pop-up banner, check your notification box and look for
+											the raffle announcement. Click ‘Sign Up’ to join the exclusive raffle.
 										</p>
+										<img
+											className="m-auto my-4"
+											src="https://paras-cdn.imgix.net/bafkreifr6uiqs5m6nc5k25zmwtzuk5elbmfqjp2a4rwg3amzrj2ylpio3i"
+										/>
 									</div>
 								</div>
 							</div>
@@ -259,6 +273,9 @@ export default function Loyalty() {
 										src="https://paras-cdn.imgix.net/bafkreib5somhf4ht7d4ygnon6tgls45ytxharnod7k3yldhxdvw2axnps4"
 									/>
 								</div>
+								<p className="text-center">
+									The more $PARAS you lock, the higher your probability to win the raffle
+								</p>
 							</div>
 							<div>
 								<div className="flex">
@@ -270,7 +287,7 @@ export default function Loyalty() {
 								<div>
 									<img
 										className="my-4 md:my-12 mx-auto"
-										src="https://paras-cdn.imgix.net/bafkreifu5bjpwp2n2pesjangyhc4h4q7prkmms2yal7o5zphh57ekl3gsi"
+										src="https://paras-cdn.imgix.net/bafkreierkobcoxdtdj5coxx3iq45t33yoywv3p3qexghvg6inqcl7kxyxe"
 									/>
 								</div>
 							</div>
@@ -279,14 +296,23 @@ export default function Loyalty() {
 								<div className="flex">
 									<p className="loyalty-mechanism-number">5</p>
 									<p className="loyalty-mechanism-text">
-										The monthly raffle period will be held as follows:
+										September raffle period will be held as follows:
 									</p>
 								</div>
-								<div>
+								<div className="my-4 md:my-12 mx-auto">
 									<img
-										className="my-4 md:my-12 mx-auto"
-										src="https://paras-cdn.imgix.net/bafkreiee7nrub2itrxlhz5mamvsnxdnr4izqt2dhytadiy435ssbep3c6m"
+										className="mx-auto mb-4"
+										src="https://paras-cdn.imgix.net/bafkreidaeidyhwmauk6htnifjegcfrqzjbqhiaikeyyx6g7xedri7hjh7y"
 									/>
+									<p className="text-center">
+										Please check the{' '}
+										<a
+											href="https://guide.paras.id/terms-and-conditions/loyalty-program"
+											className="text-blue-700 underline"
+										>
+											Terms & Conditions of Paras Loyalty.
+										</a>
+									</p>
 								</div>
 							</div>
 						</div>

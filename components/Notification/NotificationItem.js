@@ -318,7 +318,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 					<p className="font-bold text-base">Paras Loyalty Raffle Winner List</p>
 					<p>
 						<span>{`The raffle is over! Check the ${notif.msg.raffle.title}'s winners `}</span>
-						<a className="font-bold cursor-pointer" href={notif.msg.raffle.winners_publication_url}>
+						<a className="font-bold cursor-pointer" href={notif.msg.winners_publication_url}>
 							here
 						</a>{' '}
 						🏆
@@ -333,24 +333,49 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		return null
 	}
 
-	if (notif.type === 'notification_raffle_won') {
+	if (notif.type === 'notification_raffle_won_wl_spot') {
 		return (
 			<div>
 				<Link href={url}>
 					<a>
-						<div
-							className="cursor-pointer notification-item"
-							onClick={() => notificationModal(false)}
-						>
-							<NotificationImage media={token.metadata?.media} />
-							<div className="pl-2 text-gray-300">
+						<div className="notification-item" onClick={() => notificationModal(false)}>
+							<div className="text-gray-300">
+								<p className="text-base font-bold">
+									Congratulations {prettyTruncate(notif.to, 14, 'address')},
+								</p>
+								<p>
+									<span>You have won 1 </span>
+									<span>
+										{notif.msg.collection_name} WL Spot from Paras Loyalty! Read more about the
+										rewards{' '}
+										<a className="font-bold cursor-pointer" href={notif.msg.reward_publication_url}>
+											here
+										</a>{' '}
+									</span>
+								</p>
+							</div>
+							<NotificationTime time={notif.issued_at} />
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_raffle_won_nft') {
+		return (
+			<div>
+				<Link href={url}>
+					<a>
+						<div className="notification-item" onClick={() => notificationModal(false)}>
+							<div className="text-gray-300">
 								<p className="text-base font-bold">
 									Congratulations {prettyTruncate(notif.to, 14, 'address')},
 								</p>
 								<p>
 									<span>You have won a </span>
 									<span>
-										{token.metadata?.title} from Paras Loyalty! We will send it to your account in
+										{notif.msg.card_name} from Paras Loyalty! We will send it to your account in
 										1x24 hours.
 									</span>
 								</p>
