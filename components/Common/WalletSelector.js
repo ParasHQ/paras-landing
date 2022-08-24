@@ -231,13 +231,13 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				signedMsg = ramperSignedMsg.signedMsg
 			} else {
 				signedMsg = (await signMessage({ message: msgBuf, network: 'testnet' })).result
-				signedMsg.publicKey.data = new Uint8Array(Object.values(signedMsg.publicKey.data))
-				signedMsg.signature = new Uint8Array(Object.values(signedMsg.signature))
 
 				// save the signed message to local storage
 				const signedMsgString = JSON.stringify({ accountId, signedMsg })
 				localStorage.setItem('RAMPER_SIGNED_MSG', signedMsgString)
 			}
+			signedMsg.publicKey.data = new Uint8Array(Object.values(signedMsg.publicKey.data))
+			signedMsg.signature = new Uint8Array(Object.values(signedMsg.signature))
 		}
 
 		const pubKey = Buffer.from(signedMsg.publicKey.data).toString('hex')

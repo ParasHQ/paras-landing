@@ -143,10 +143,12 @@ const User = () => {
 		const activeWallet = localStorage.getItem('PARAS_ACTIVE_WALLET')
 		if (activeWallet === 'ramper') {
 			signOut()
+			localStorage.removeItem('RAMPER_SIGNED_MSG')
 		} else {
 			const wallet = await selector.wallet()
 			await wallet.signOut()
 		}
+		localStorage.removeItem('PARAS_ACTIVE_WALLET')
 
 		window.location.replace(window.location.origin + window.location.pathname)
 	}
