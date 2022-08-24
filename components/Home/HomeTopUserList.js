@@ -86,8 +86,12 @@ const TopUser = ({ user, idx, topUserType }) => {
 			<p className="text-base text-gray-100 opacity-50 mr-3">{idx + 1}</p>
 			<div onClick={() => onTopUser(topUserType)}>
 				<a href={`/${user.account_id}`} onClick={(e) => e.preventDefault()}>
-					<div className="flex-shrink-0 cursor-pointer w-12 h-12 relative">
-						<ProfileImageBadge imgUrl={profile?.imgUrl} level={profile?.level} />
+					<div className="flex-shrink-0 cursor-pointer relative">
+						<ProfileImageBadge
+							imgUrl={profile?.imgUrl}
+							level={profile?.level}
+							className="w-12 h-12"
+						/>
 					</div>
 				</a>
 			</div>

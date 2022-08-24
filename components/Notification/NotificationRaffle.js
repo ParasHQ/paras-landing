@@ -2,6 +2,7 @@ import { useState } from 'react'
 import useSWR from 'swr'
 import Button from 'components/Common/Button'
 import ParasRequest from 'lib/ParasRequest'
+import { capitalizeFirstLetter, isDateLessThanTwoDaysBefore } from 'utils/common'
 
 const NotificationSignUpRaffle = () => {
 	const [isLoading, setIsLoading] = useState(false)
@@ -38,11 +39,27 @@ const NotificationSignUpRaffle = () => {
 		return (
 			<div className="p-2 rounded-md w-full button-wrapper flex items-center">
 				<div className="text-gray-300 select-none w-full">
-					<div className="text-center">
-						<p className="text-lg font-bold">Get a chance to win a raffle!</p>
-						<Button size="sm" onClick={onClickSignUp} isDisabled={isLoading}>
-							Sign Up
-						</Button>
+					<div>
+						<p className="text-base font-bold">
+							{data.ended_at && isDateLessThanTwoDaysBefore(data.ended_at)
+								? 'Raffle Registration Will End Soon!'
+								: `Sign Up for ${capitalizeFirstLetter(data?.current_level)} Raffle Now!`}
+						</p>
+						<p className="text-sm">
+							{`Click 'Sign Up' & get a chance to win exclusive rewards for ${capitalizeFirstLetter(
+								data?.current_level
+							)} member.`}
+						</p>
+						<div className="flex justify-center">
+							<Button
+								size="sm"
+								onClick={onClickSignUp}
+								className="text-center mt-2"
+								isDisabled={isLoading}
+							>
+								Sign Up
+							</Button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -53,7 +70,8 @@ const NotificationSignUpRaffle = () => {
 		return (
 			<div className="p-2 rounded-md w-full button-wrapper flex items-center">
 				<div className="text-gray-300 select-none w-full">
-					<p>We have recorded your information for the raffle</p>
+					<p className="font-bold text-base">Confirmation of Raffle Entry</p>
+					<p className="text-sm">{`You’ve been registered for the raffle. Thank you & good luck! ✨`}</p>
 				</div>
 			</div>
 		)

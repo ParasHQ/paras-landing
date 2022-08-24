@@ -2,7 +2,13 @@ import ParasRequest from 'lib/ParasRequest'
 import Link from 'next/link'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
-import { capitalizeFirstLetter, parseImgUrl, prettyTruncate, shortTimeAgo } from 'utils/common'
+import {
+	capitalizeFirstLetter,
+	parseImgUrl,
+	prettyTruncate,
+	formatDateToReadable,
+	shortTimeAgo,
+} from 'utils/common'
 import Media from 'components/Common/Media'
 
 const NotificationImage = ({ media }) => {
@@ -89,8 +95,20 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		return (
 			<div className="notification-item">
 				<div className="text-gray-300 select-none">
-					<p>Congratulations,</p>
-					<p>{`You're now a ${capitalizeFirstLetter(notif.msg.current_level)} Member`}</p>
+					<p className="font-bold text-base">{`Congrats! You're now a ${capitalizeFirstLetter(
+						notif.msg.current_level
+					)} Member!`}</p>
+					<p>
+						<span>
+							You can register for a raffle on {formatDateToReadable(notif.msg.raffle.started_at)}{' '}
+							to {formatDateToReadable(notif.msg.raffle.ended_at)}. Read more here 👉{' '}
+						</span>
+						<span>
+							<Link href="/loyalty">
+								<a className="font-bold">Loyalty</a>
+							</Link>
+						</span>
+					</p>
 				</div>
 				<NotificationTime time={notif.issued_at} />
 			</div>
@@ -101,23 +119,27 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		return (
 			<div className="notification-item">
 				<div className="text-gray-300 select-none">
-					<span>
-						Sorry, your member has dropped to {capitalizeFirstLetter(notif.msg.current_level)}.
-					</span>
-					<span> Start </span>
-					<span>
-						<a
-							className="font-bold"
-							href={
-								process.env.APP_ENV === 'testnet'
-									? 'https://staking-dev.paras.id/'
-									: 'https://stake.paras.id'
-							}
-						>
-							lock staking{' '}
-						</a>
-					</span>
-					<span>again to keep them at {capitalizeFirstLetter(notif.msg.previous_level)}!</span>
+					<p className="font-bold text-base">
+						<span>
+							Sorry, your member has dropped to {capitalizeFirstLetter(notif.msg.current_level)}.
+						</span>
+					</p>
+					<p>
+						<span> Start </span>
+						<span>
+							<a
+								className="font-bold"
+								href={
+									process.env.APP_ENV === 'testnet'
+										? 'https://staking-dev.paras.id/'
+										: 'https://stake.paras.id'
+								}
+							>
+								lock staking{' '}
+							</a>
+						</span>
+						<span>again to keep them at {capitalizeFirstLetter(notif.msg.previous_level)}!</span>
+					</p>
 				</div>
 				<NotificationTime time={notif.issued_at} />
 			</div>
@@ -128,23 +150,26 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		return (
 			<div className="notification-item">
 				<div className="text-gray-300 select-none">
-					<span>Your </span>
-					<span className="font-bold">{capitalizeFirstLetter(notif.msg.current_level)}</span>
-					<span> is about to expire! Start</span>
-					<span>
-						<a
-							className="font-bold"
-							href={
-								process.env.APP_ENV === 'testnet'
-									? 'https://staking-dev.paras.id/'
-									: 'https://stake.paras.id'
-							}
-						>
-							{` lock staking `}
-						</a>
-					</span>
-					<span>again to keep them at </span>
-					<span className="font-bold">{capitalizeFirstLetter(notif.msg.current_level)}!</span>
+					<p className="text-base font-bold">
+						<span>Your membership is about to expire!</span>
+					</p>
+					<p>
+						<span>Start</span>
+						<span>
+							<a
+								className="font-bold"
+								href={
+									process.env.APP_ENV === 'testnet'
+										? 'https://staking-dev.paras.id/'
+										: 'https://stake.paras.id'
+								}
+							>
+								{` lock staking `}
+							</a>
+						</span>
+						<span>again to keep them at </span>
+						<span className="font-bold">{capitalizeFirstLetter(notif.msg.current_level)}!</span>
+					</p>
 				</div>
 				<NotificationTime time={notif.issued_at} />
 			</div>
@@ -155,11 +180,37 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		return (
 			<div className="notification-item">
 				<div className="text-gray-300 select-none">
-					<span>Sorry, your member has dropped to </span>
-					<span className="font-bold">{capitalizeFirstLetter(notif.msg.current_raffle_type)}.</span>
-					<span> You will be automatically signed up for </span>
-					<span className="font-bold">{capitalizeFirstLetter(notif.msg.current_raffle_type)}</span>
-					<span> raffle</span>
+					<p className="text-base font-bold">Your Membership Level Has Dropped!</p>
+					{notif.msg.is_raffle_active ? (
+						<p>
+							<span> You will be automatically signed up for </span>
+							<span className="font-bold">
+								{capitalizeFirstLetter(notif.msg.current_raffle_type)}
+							</span>
+							<span> raffle</span>
+						</p>
+					) : (
+						<p>
+							<span>
+								You are currently a {capitalizeFirstLetter(notif.msg.current_raffle_type)} member.
+								Start
+							</span>
+							<span>
+								<a
+									className="font-bold"
+									href={
+										process.env.APP_ENV === 'testnet'
+											? 'https://staking-dev.paras.id/'
+											: 'https://stake.paras.id'
+									}
+								>
+									{` lock staking `}
+								</a>
+							</span>
+							<span>again to keep them at </span>
+							<span className="font-bold">{capitalizeFirstLetter(notif.msg.current_level)}!</span>
+						</p>
+					)}
 				</div>
 				<NotificationTime time={notif.issued_at} />
 			</div>
@@ -170,59 +221,68 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		return (
 			<div className="w-full notification-item">
 				<div className="text-gray-300 select-none w-full">
-					<p>We have recorded your information for the raffle</p>
+					<p className="font-bold text-base">Confirmation of Raffle Entry</p>
+					<p className="text-sm">{`You’ve been registered for the raffle. Thank you & good luck! ✨`}</p>
 				</div>
 				<NotificationTime time={notif.issued_at} />
 			</div>
 		)
 	}
 
-	if (notif.type === 'notification_raffle_begin') {
-		return (
-			<div className="w-full notification-item">
-				<div className="text-gray-300 select-none w-full">
-					<p className="font-bold">The raffle is just about to begin!</p>
-					<p>
-						<span>{`Don't miss it, check `}</span>
-						<span>
-							<Link href="/loyalty">
-								<a className="font-bold">loyalty</a>
-							</Link>
-						</span>
-						<span> about the mechanism</span>
-					</p>
-				</div>
-				<NotificationTime time={notif.issued_at} />
-			</div>
-		)
-	}
+	// Commented since there are changes in the PRD
+	//
+	// if (notif.type === 'notification_raffle_begin') {
+	// 	return (
+	// 		<div className="w-full notification-item">
+	// 			<div className="text-gray-300 select-none w-full">
+	// 				<p className="font-bold">The raffle is just about to begin!</p>
+	// 				<p>
+	// 					<span>{`Don't miss it, check `}</span>
+	// 					<span>
+	// 						<Link href="/loyalty">
+	// 							<a className="font-bold">loyalty</a>
+	// 						</Link>
+	// 					</span>
+	// 					<span> about the mechanism</span>
+	// 				</p>
+	// 			</div>
+	// 			<NotificationTime time={notif.issued_at} />
+	// 		</div>
+	// 	)
+	// }
 
-	if (notif.type === 'notification_raffle_end_soon') {
-		return (
-			<div className="w-full notification-item">
-				<div className="text-gray-300 select-none w-full">
-					<p className="font-bold">The raffle ends soon!</p>
-					<p>
-						<span>{`Don't miss it, check `}</span>
-						<span>
-							<Link href="/loyalty">
-								<a className="font-bold">loyalty</a>
-							</Link>
-						</span>
-						<span> about the mechanism</span>
-					</p>
-				</div>
-				<NotificationTime time={notif.issued_at} />
-			</div>
-		)
-	}
+	// if (notif.type === 'notification_raffle_end_soon') {
+	// 	return (
+	// 		<div className="w-full notification-item">
+	// 			<div className="text-gray-300 select-none w-full">
+	// 				<p className="font-bold">The raffle ends soon!</p>
+	// 				<p>
+	// 					<span>{`Don't miss it, check `}</span>
+	// 					<span>
+	// 						<Link href="/loyalty">
+	// 							<a className="font-bold">loyalty</a>
+	// 						</Link>
+	// 					</span>
+	// 					<span> about the mechanism</span>
+	// 				</p>
+	// 			</div>
+	// 			<NotificationTime time={notif.issued_at} />
+	// 		</div>
+	// 	)
+	// }
 
 	if (notif.type === 'notification_raffle_over') {
 		return (
 			<div className="w-full notification-item">
 				<div className="text-gray-300 select-none w-full">
-					<p className="font-bold">The raffle is over!</p>
-					<p>The winners have been drawn</p>
+					<p className="font-bold text-base">Paras Loyalty Raffle Winner List</p>
+					<p>
+						<span>{`The raffle is over! Check the ${notif.msg.raffle.title}'s winners `}</span>
+						<a className="font-bold cursor-pointer" href={notif.msg.raffle.winners_publication_url}>
+							here
+						</a>{' '}
+						🏆
+					</p>
 				</div>
 				<NotificationTime time={notif.issued_at} />
 			</div>

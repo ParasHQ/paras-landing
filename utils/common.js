@@ -247,7 +247,7 @@ export const parseGetCollectionIdfromUrl = (url) => {
 	}
 }
 
-export const capitalize = (words) => {
+export const capitalize = (words = '') => {
 	return words[0].toUpperCase() + words.slice(1)
 }
 
@@ -396,4 +396,15 @@ export const shortTimeAgo = (time) => {
 		},
 	})
 	return dayjs(time).fromNow()
+}
+
+export const formatDateToReadable = (date) => {
+	return dayjs(date).format('D MMM YY')
+}
+
+export const isDateLessThanTwoDaysBefore = (date) => {
+	const today = dayjs()
+	const dateToCheck = dayjs(date)
+	const diff = dateToCheck.diff(today, 'day')
+	return diff < 2
 }
