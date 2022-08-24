@@ -41,7 +41,7 @@ const NotificationSignUpRaffle = () => {
 				<div className="text-gray-300 select-none w-full">
 					<div>
 						<p className="text-base font-bold">
-							{data.ended_at && isDateLessThanTwoDaysBefore(data.ended_at)
+							{data.raffle.ended_at && isDateLessThanTwoDaysBefore(data.raffle.ended_at)
 								? 'Raffle Registration Will End Soon!'
 								: `Sign Up for ${capitalizeFirstLetter(data?.current_level)} Raffle Now!`}
 						</p>

@@ -304,9 +304,16 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-300">
-								<span>Congratulations {prettyTruncate(notif.to, 14, 'address')},</span>
-								<span> you have won a </span>
-								<span>{token.metadata?.title} from the</span>
+								<p className="text-base font-bold">
+									Congratulations {prettyTruncate(notif.to, 14, 'address')},
+								</p>
+								<p>
+									<span>You have won a </span>
+									<span>
+										{token.metadata?.title} from Paras Loyalty! We will send it to your account in
+										1x24 hours.
+									</span>
+								</p>
 							</div>
 							<NotificationTime time={notif.issued_at} />
 						</div>
