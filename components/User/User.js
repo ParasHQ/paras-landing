@@ -13,7 +13,7 @@ import near from 'lib/near'
 import transakSDK from '@transak/transak-sdk'
 import getConfigTransak from 'config/transak'
 import { IconTriangle } from 'components/Icons'
-import { trackTransakButton } from 'lib/ga'
+import { trackNFTLendingClick, trackTransakButton } from 'lib/ga'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 
 export function openTransak(fetchNearBalance, toast, accountId) {
@@ -307,6 +307,17 @@ const User = () => {
 							<Link href="/my-bids">
 								<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
 									{localeLn('NavMyBids')}
+								</a>
+							</Link>
+							<Link href="https://pawnnft.finance/loans?r=bd.paras.near">
+								<a
+									href="https://pawnnft.finance/loans?r=bd.paras.near"
+									target={'_blank'}
+									rel="noreferrer"
+									className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+									onClick={trackNFTLendingClick(store.userProfile.accountId)}
+								>
+									{localeLn('NFT Lending')}
 								</a>
 							</Link>
 							<button
