@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
 import {
-	capitalizeFirstLetter,
+	capitalize,
 	parseImgUrl,
 	prettyTruncate,
 	formatDateToReadable,
@@ -95,7 +95,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		return (
 			<div className="notification-item">
 				<div className="text-gray-300 select-none">
-					<p className="font-bold text-base">{`Congrats! You're now a ${capitalizeFirstLetter(
+					<p className="font-bold text-base">{`Congrats! You're now a ${capitalize(
 						notif.msg.current_level
 					)} Member!`}</p>
 					<p>
@@ -160,9 +160,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 			<div className="notification-item">
 				<div className="text-gray-300 select-none">
 					<p className="font-bold text-base">
-						<span>
-							Sorry, your member has dropped to {capitalizeFirstLetter(notif.msg.current_level)}.
-						</span>
+						<span>Sorry, your member has dropped to {capitalize(notif.msg.current_level)}.</span>
 					</p>
 					<p>
 						<span> Start </span>
@@ -178,7 +176,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								lock staking{' '}
 							</a>
 						</span>
-						<span>again to keep them at {capitalizeFirstLetter(notif.msg.previous_level)}!</span>
+						<span>again to keep them at {capitalize(notif.msg.previous_level)}!</span>
 					</p>
 				</div>
 				<NotificationTime time={notif.issued_at} />
@@ -208,7 +206,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							</a>
 						</span>
 						<span>again to keep them at </span>
-						<span className="font-bold">{capitalizeFirstLetter(notif.msg.current_level)}!</span>
+						<span className="font-bold">{capitalize(notif.msg.current_level)}!</span>
 					</p>
 				</div>
 				<NotificationTime time={notif.issued_at} />
@@ -224,16 +222,13 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 					{notif.msg.is_raffle_active ? (
 						<p>
 							<span> You will be automatically signed up for </span>
-							<span className="font-bold">
-								{capitalizeFirstLetter(notif.msg.current_raffle_type)}
-							</span>
+							<span className="font-bold">{capitalize(notif.msg.current_raffle_type)}</span>
 							<span> raffle</span>
 						</p>
 					) : (
 						<p>
 							<span>
-								You are currently a {capitalizeFirstLetter(notif.msg.current_raffle_type)} member.
-								Start
+								You are currently a {capitalize(notif.msg.current_raffle_type)} member. Start
 							</span>
 							<span>
 								<a
@@ -248,7 +243,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								</a>
 							</span>
 							<span>again to keep them at </span>
-							<span className="font-bold">{capitalizeFirstLetter(notif.msg.current_level)}!</span>
+							<span className="font-bold">{capitalize(notif.msg.current_level)}!</span>
 						</p>
 					)}
 				</div>

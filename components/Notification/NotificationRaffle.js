@@ -2,7 +2,7 @@ import { useState } from 'react'
 import useSWR from 'swr'
 import Button from 'components/Common/Button'
 import ParasRequest from 'lib/ParasRequest'
-import { capitalizeFirstLetter, isDateLessThanTwoDaysBefore } from 'utils/common'
+import { capitalize, isDateLessThanTwoDaysBefore } from 'utils/common'
 
 const NotificationSignUpRaffle = () => {
 	const [isLoading, setIsLoading] = useState(false)
@@ -43,10 +43,10 @@ const NotificationSignUpRaffle = () => {
 						<p className="text-base font-bold">
 							{data.raffle.ended_at && isDateLessThanTwoDaysBefore(data.raffle.ended_at)
 								? 'Raffle Registration Will End Soon!'
-								: `Sign Up for ${capitalizeFirstLetter(data?.current_level)} Raffle Now!`}
+								: `Sign Up for ${capitalize(data?.current_level)} Raffle Now!`}
 						</p>
 						<p className="text-sm">
-							{`Click 'Sign Up' & get a chance to win exclusive rewards for ${capitalizeFirstLetter(
+							{`Click 'Sign Up' & get a chance to win exclusive rewards for ${capitalize(
 								data?.current_level
 							)} member.`}
 						</p>

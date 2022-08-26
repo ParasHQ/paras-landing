@@ -3,7 +3,7 @@ import useSWR from 'swr'
 import Button from 'components/Common/Button'
 import { IconX } from 'components/Icons'
 import useStore from 'lib/store'
-import { capitalizeFirstLetter } from 'utils/common'
+import { capitalize } from 'utils/common'
 import ParasRequest from 'lib/ParasRequest'
 
 const RaffleRegisterModal = () => {
@@ -87,10 +87,10 @@ const RaffleRegisterModal = () => {
 				) : (
 					<div className="md:w-[23rem]">
 						<p className="text-xl md:text-2xl font-semibold text-gray-100">
-							Sign Up for {capitalizeFirstLetter(data?.current_level)} Raffle Now!
+							Sign Up for {capitalize(data?.current_level)} Raffle Now!
 						</p>
 						<p className="text-white pr-2 text-sm">
-							{`Click 'Sign Up' & get a chance to win exclusive rewards for ${capitalizeFirstLetter(
+							{`Click 'Sign Up' & get a chance to win exclusive rewards for ${capitalize(
 								data?.current_level
 							)} member.`}
 						</p>

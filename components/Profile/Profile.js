@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { Fragment, useContext, useEffect, useState } from 'react'
-import { capitalizeFirstLetter, parseImgUrl, prettyTruncate } from 'utils/common'
+import { capitalize, parseImgUrl, prettyTruncate } from 'utils/common'
 import CopyLink from '../Common/CopyLink'
 import { useIntl } from 'hooks/useIntl'
 import useStore from 'lib/store'
@@ -104,7 +104,7 @@ const Profile = ({ userProfile, activeTab }) => {
 					level={profileData?.level}
 				/>
 				<p className={`${TEXT_BADGE_COLOR[profileData.level]} mt-4 text-xs font-light`}>
-					{capitalizeFirstLetter(profileData.level)} Member
+					{capitalize(profileData.level)} Member
 				</p>
 				<div className="mt-1 max-w-sm text-center overflow-hidden">
 					{profileData?.isCreator && (
