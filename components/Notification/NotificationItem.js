@@ -100,8 +100,8 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 					)} Member!`}</p>
 					<p>
 						<span>
-							You can register for a raffle on {formatDateToReadable(notif.msg.raffle.started_at)}{' '}
-							to {formatDateToReadable(notif.msg.raffle.ended_at)}. Read more here 👉{' '}
+							You can register for a raffle on {formatDateToReadable(notif.msg?.raffle?.started_at)}{' '}
+							to {formatDateToReadable(notif.msg?.raffle?.ended_at)}. Read more here 👉{' '}
 						</span>
 						<span>
 							<Link href="/loyalty">
