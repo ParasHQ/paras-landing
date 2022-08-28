@@ -218,12 +218,37 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		return (
 			<div className="notification-item">
 				<div className="text-gray-300 select-none">
-					<p className="text-base font-bold">Your Membership Level Has Dropped!</p>
+					<p className="text-base font-bold">
+						{notif.msg.current_raffle_type === 'bronze'
+							? 'Your level has dropped to Bronze!'
+							: 'Your Membership Level Has Dropped!'}
+					</p>
 					{notif.msg.is_raffle_active ? (
 						<p>
-							<span> You will be automatically signed up for </span>
-							<span className="font-bold">{capitalize(notif.msg.current_raffle_type)}</span>
-							<span> raffle</span>
+							{notif.msg.current_raffle_type === 'bronze' ? (
+								<>
+									<span>Start</span>
+									<span>
+										<a
+											className="font-bold"
+											href={
+												process.env.APP_ENV === 'testnet'
+													? 'https://staking-dev.paras.id/'
+													: 'https://stake.paras.id'
+											}
+										>
+											{` lock staking `}
+										</a>
+									</span>
+									<span>again to stay enrolled in raffle!</span>
+								</>
+							) : (
+								<>
+									<span> You will be automatically signed up for </span>
+									<span className="font-bold">{capitalize(notif.msg.current_raffle_type)}</span>
+									<span> raffle</span>
+								</>
+							)}
 						</p>
 					) : (
 						<p>
@@ -243,7 +268,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								</a>
 							</span>
 							<span>again to keep them at </span>
-							<span className="font-bold">{capitalize(notif.msg.current_raffle_type)}!</span>
+							<span className="font-bold">{capitalize(notif.msg.previous_raffle_type)}!</span>
 						</p>
 					)}
 				</div>
@@ -331,28 +356,23 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 	if (notif.type === 'notification_raffle_won_wl_spot') {
 		return (
 			<div>
-				<Link href={url}>
-					<a>
-						<div className="notification-item" onClick={() => notificationModal(false)}>
-							<div className="text-gray-300">
-								<p className="text-base font-bold">
-									Congratulations {prettyTruncate(notif.to, 14, 'address')},
-								</p>
-								<p>
-									<span>You have won 1 </span>
-									<span>
-										{notif.msg.collection_name} WL Spot from Paras Loyalty! Read more about the
-										rewards{' '}
-										<a className="font-bold cursor-pointer" href={notif.msg.reward_publication_url}>
-											here
-										</a>{' '}
-									</span>
-								</p>
-							</div>
-							<NotificationTime time={notif.issued_at} />
-						</div>
-					</a>
-				</Link>
+				<div className="notification-item" onClick={() => notificationModal(false)}>
+					<div className="text-gray-300">
+						<p className="text-base font-bold">
+							Congratulations {prettyTruncate(notif.to, 14, 'address')},
+						</p>
+						<p>
+							<span>You have won 1 </span>
+							<span>
+								{notif.msg.collection_name} WL Spot from Paras Loyalty! Read more about the rewards{' '}
+								<a className="font-bold cursor-pointer" href={notif.msg.reward_publication_url}>
+									here
+								</a>{' '}
+							</span>
+						</p>
+					</div>
+					<NotificationTime time={notif.issued_at} />
+				</div>
 			</div>
 		)
 	}
@@ -360,25 +380,21 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 	if (notif.type === 'notification_raffle_won_nft') {
 		return (
 			<div>
-				<Link href={url}>
-					<a>
-						<div className="notification-item" onClick={() => notificationModal(false)}>
-							<div className="text-gray-300">
-								<p className="text-base font-bold">
-									Congratulations {prettyTruncate(notif.to, 14, 'address')},
-								</p>
-								<p>
-									<span>You have won a </span>
-									<span>
-										{notif.msg.card_name} from Paras Loyalty! We will send it to your account in
-										1x24 hours.
-									</span>
-								</p>
-							</div>
-							<NotificationTime time={notif.issued_at} />
-						</div>
-					</a>
-				</Link>
+				<div className="notification-item" onClick={() => notificationModal(false)}>
+					<div className="text-gray-300">
+						<p className="text-base font-bold">
+							Congratulations {prettyTruncate(notif.to, 14, 'address')},
+						</p>
+						<p>
+							<span>You have won a </span>
+							<span>
+								{notif.msg.card_name} from Paras Loyalty! We will send it to your account in 1x24
+								hours.
+							</span>
+						</p>
+					</div>
+					<NotificationTime time={notif.issued_at} />
+				</div>
 			</div>
 		)
 	}
