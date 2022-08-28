@@ -5,7 +5,6 @@ import Link from 'next/link'
 import Card from 'components/Card/Card'
 import CancelBid from 'components/Modal/CancelBid'
 import TokenDetailModal from 'components/Token/TokenDetailModal'
-import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 import TokenAuctionBidModal from 'components/Modal/TokenAuctionBidModal'
 import { parseImgUrl, prettyTruncate, prettyBalance } from 'utils/common'
 import { useWalletSelector } from 'components/Common/WalletSelector'
@@ -26,7 +25,7 @@ const AuctionBid = ({ token, freshFetch }) => {
 
 	useEffect(() => {
 		filterBid()
-	}, token)
+	}, [token])
 
 	const filterBid = () => {
 		const filteredBid = token.bidder_list.filter((bid) => bid.bidder === store.currentUser)
@@ -97,7 +96,6 @@ const AuctionBid = ({ token, freshFetch }) => {
 
 	return (
 		<>
-			<TokenSeriesDetailModal tokens={[token]} />
 			<TokenDetailModal tokens={[token]} />
 			<TokenAuctionBidModal
 				show={showModal === 'placeauction'}
@@ -128,7 +126,6 @@ const AuctionBid = ({ token, freshFetch }) => {
 										pathname: router.pathname,
 										query: {
 											...router.query,
-											// tokenSeriesId: token.token_series_id,
 											tokenId: token.token_id,
 											contractId: token.contract_id,
 										},
@@ -194,47 +191,27 @@ const AuctionBid = ({ token, freshFetch }) => {
 
 					<div className="flex-1 items-start md:items-center mt-8 md:mt-0 md:flex ml-4 md:ml-6 justify-between">
 						<div className="text-gray-100">
-							<Link
-								href={{
-									pathname: router.pathname,
-									query: {
-										...router.query,
-										tokenSeriesId: token.token_series_id,
-										tokenId: token.token_id,
-										contractId: token.contract_id,
-									},
-								}}
-								as={
-									token.token_id
-										? `/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`
-										: `/token/${token.contract_id}::${token.token_series_id}`
-								}
-								scroll={false}
-								shallow
-							>
-								<div className="font-bold text-2xl">
-									<Link
-										href={{
-											pathname: router.pathname,
-											query: {
-												...router.query,
-												// tokenSeriesId: token.token_series_id,
-												tokenId: token.token_id,
-												contractId: token.contract_id,
-											},
-										}}
-										as={
-											token.token_id
-												? `/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`
-												: `/token/${token.contract_id}::${token.token_series_id}`
-										}
-										scroll={false}
-										shallow
-									>
-										<a className="font-bold">{prettyTruncate(token?.metadata?.title, 25)}</a>
-									</Link>
-								</div>
-							</Link>
+							<div className="font-bold text-2xl">
+								<Link
+									href={{
+										pathname: router.pathname,
+										query: {
+											...router.query,
+											tokenId: token.token_id,
+											contractId: token.contract_id,
+										},
+									}}
+									as={
+										token.token_id
+											? `/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`
+											: `/token/${token.contract_id}::${token.token_series_id}`
+									}
+									scroll={false}
+									shallow
+								>
+									<a className="font-bold">{prettyTruncate(token?.metadata?.title, 25)}</a>
+								</Link>
+							</div>
 							<p className="opacity-75">{prettyTruncate(token?.metadata?.collection, 30)}</p>
 							<div className="mt-4 mb-3">{`Your bid : ${prettyBalance(bid.amount, 24, 4)} Ⓝ`}</div>
 							<div className="mb-6">{`Token highest bid : ${prettyBalance(
