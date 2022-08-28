@@ -243,7 +243,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								</a>
 							</span>
 							<span>again to keep them at </span>
-							<span className="font-bold">{capitalize(notif.msg.current_level)}!</span>
+							<span className="font-bold">{capitalize(notif.msg.current_raffle_type)}!</span>
 						</p>
 					)}
 				</div>

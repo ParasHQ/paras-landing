@@ -247,8 +247,8 @@ export const parseGetCollectionIdfromUrl = (url) => {
 	}
 }
 
-export const capitalize = (words = '') => {
-	return words[0].toUpperCase() + words.slice(1)
+export const capitalize = (words = '  ') => {
+	return words[0]?.toUpperCase() + words.slice(1)
 }
 
 export default function sha1(data, encoding) {
