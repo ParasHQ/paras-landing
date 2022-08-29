@@ -18,7 +18,6 @@ import {
 	signIn,
 	AUTH_PROVIDER,
 	THEME,
-	WALLET_PROVIDER,
 	getUser,
 	signMessage,
 	sendTransaction,
@@ -67,7 +66,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				AUTH_PROVIDER.APPLE,
 				AUTH_PROVIDER.EMAIL,
 			],
-			walletProviders: [WALLET_PROVIDER.NEAR_WALLET],
+			walletProviders: [],
 			network: nearConfig.networkId,
 			theme: THEME.DARK,
 		})

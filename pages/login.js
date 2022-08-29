@@ -96,10 +96,10 @@ const LoginPage = () => {
 						</div>
 						<div className="mt-4">
 							<Button className="h-16" onClick={() => _signIn()} isFullWidth>
-								Login Wallet
+								Login with Wallet
 							</Button>
 							<Button className="h-16 mt-4" variant="white" onClick={signInRamper} isFullWidth>
-								Login with Social
+								Login with Email
 							</Button>
 						</div>
 						{/* Faucet balance is empty */}
