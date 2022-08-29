@@ -7,8 +7,8 @@ import { parseImgUrl } from 'utils/common'
 import useSWR from 'swr'
 import axios from 'axios'
 
-const url = `https://api-v2-mainnet.paras.id/token-series?exclude_total_burn=true&__sort=updated_at::-1&__limit=6&is_verified=true&lookup_token=true`
-const fetchData = () => axios.get(url).then((res) => res.data.data.results)
+const url = `${process.env.V2_API_URL}/raffle/current`
+const fetchData = () => axios.get(url).then((res) => res.data)
 
 export default function Loyalty() {
 	const { data } = useSWR('token-dummy', fetchData, {
@@ -116,58 +116,9 @@ export default function Loyalty() {
 							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16">
 								NFTs from Paras Top 10 Collections
 							</p>
-							<div className="grid grid-cols-2 gap-1 mx-1 md:gap-2 md:grid-cols-3 md:mx-32 my-4">
-								{data?.map((token) => (
-									<div key={token._id} className="bg-black rounded-xl overflow-hidden">
-										<div className="w-full p-2 bg-black border-4 border-[#351C75] rounded-xl">
-											<div>
-												<Card
-													key={token._id}
-													imgUrl={parseImgUrl(token.metadata.media, null, {
-														width: `600`,
-														useOriginal: process.env.APP_ENV === 'production' ? false : true,
-														isMediaCdn: token.isMediaCdn,
-													})}
-													audioUrl={
-														token.metadata.mime_type &&
-														token.metadata.mime_type.includes('audio') &&
-														token.metadata.animation_url
-													}
-													threeDUrl={
-														token.metadata.mime_type &&
-														token.metadata.mime_type.includes('model') &&
-														token.metadata.animation_url
-													}
-													iframeUrl={
-														token.metadata.mime_type &&
-														token.metadata.mime_type.includes('iframe') &&
-														token.metadata.animation_url
-													}
-													imgBlur={token.metadata.blurhash}
-													flippable
-													token={{
-														title: token.metadata.title,
-														collection: token.metadata.collection || token.contract_id,
-														copies: token.metadata.copies,
-														creatorId: token.metadata.creator_id || token.contract_id,
-														is_creator: token.is_creator,
-														description: token.metadata.description,
-														royalty: token.royalty,
-														attributes: token.metadata.attributes,
-														_is_the_reference_merged: token._is_the_reference_merged,
-														mime_type: token.metadata.mime_type,
-														is_auction: token.token?.is_auction,
-														started_at: token.token?.started_at,
-														ended_at: token.token?.ended_at,
-														has_auction: token?.has_auction,
-														animation_url: token?.metadata?.animation_url,
-													}}
-												/>
-											</div>
-										</div>
-									</div>
-								))}
-							</div>
+							<RewardNFT data={data?.raffle.reward.nft.platinum} level="Platinum" />
+							<RewardNFT data={data?.raffle.reward.nft.gold} level="Gold" />
+							<RewardNFT data={data?.raffle.reward.nft.silver} level="Silver" />
 						</div>
 						<div className="my-8">
 							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16">
@@ -332,5 +283,70 @@ export default function Loyalty() {
 
 			<Footer />
 		</div>
+	)
+}
+
+const RewardNFT = ({ data, level }) => {
+	if (!data || !data.length) return null
+
+	return (
+		<>
+			<p className="font-bold mt-6 text-center text-xl">{level}</p>
+			<div className="flex items-center justify-center md:mx-32 my-4">
+				{data?.map(({ token }) => {
+					if (!token) return null
+					return (
+						<div key={token._id} className="bg-black rounded-xl overflow-hidden w-1/4">
+							<div className="w-full p-2 bg-black border-4 border-[#351C75] rounded-xl">
+								<div>
+									<Card
+										key={token._id}
+										imgUrl={parseImgUrl(token.metadata.media, null, {
+											width: `600`,
+											useOriginal: process.env.APP_ENV === 'production' ? false : true,
+											isMediaCdn: token.isMediaCdn,
+										})}
+										audioUrl={
+											token.metadata.mime_type &&
+											token.metadata.mime_type.includes('audio') &&
+											token.metadata.animation_url
+										}
+										threeDUrl={
+											token.metadata.mime_type &&
+											token.metadata.mime_type.includes('model') &&
+											token.metadata.animation_url
+										}
+										iframeUrl={
+											token.metadata.mime_type &&
+											token.metadata.mime_type.includes('iframe') &&
+											token.metadata.animation_url
+										}
+										imgBlur={token.metadata.blurhash}
+										flippable
+										token={{
+											title: token.metadata.title,
+											collection: token.metadata.collection || token.contract_id,
+											copies: token.metadata.copies,
+											creatorId: token.metadata.creator_id || token.contract_id,
+											is_creator: token.is_creator,
+											description: token.metadata.description,
+											royalty: token.royalty,
+											attributes: token.metadata.attributes,
+											_is_the_reference_merged: token._is_the_reference_merged,
+											mime_type: token.metadata.mime_type,
+											is_auction: token.token?.is_auction,
+											started_at: token.token?.started_at,
+											ended_at: token.token?.ended_at,
+											has_auction: token?.has_auction,
+											animation_url: token?.metadata?.animation_url,
+										}}
+									/>
+								</div>
+							</div>
+						</div>
+					)
+				})}
+			</div>
+		</>
 	)
 }
