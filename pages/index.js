@@ -9,8 +9,6 @@ import HomeFeaturedBanner from 'components/Home/HomeFeaturedBanner'
 import HomeBanner from 'components/Home/HomeBanner'
 import HomeAuctionList from 'components/Home/HomeAuctionList'
 import HomeLaunchpad from 'components/Home/HomeLaunchpad'
-import RaffleRegisterModal from 'components/Modal/RaffleRegisterModal'
-import RaffleRewardModal from 'components/Modal/RaffleRewardModal'
 
 export default function Home() {
 	const { localeLn } = useIntl()
@@ -84,9 +82,6 @@ export default function Home() {
 					<HomeCardList />
 					<HomeTopUserList activeType="top-buyers" showToggle={false} className="mt-12" />
 					<HomeTopUserList activeType="top-sellers" showToggle={false} className="mt-12" />
-
-					<RaffleRegisterModal />
-					<RaffleRewardModal />
 				</div>
 			</div>
 

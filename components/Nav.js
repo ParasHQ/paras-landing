@@ -425,7 +425,7 @@ const Nav = () => {
 											router.pathname.includes('/loyalty') && 'text-white'
 										}`}
 									>
-										{localeLn('loyalty')}
+										{localeLn('Loyalty')}
 									</a>
 								</Link>
 							</div>

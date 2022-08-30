@@ -11,7 +11,7 @@ const url = `${process.env.V2_API_URL}/raffle/current`
 const fetchData = () => axios.get(url).then((res) => res.data)
 
 export default function Loyalty() {
-	const { data } = useSWR('token-dummy', fetchData, {
+	const { data } = useSWR('loyalty-raffle-data', fetchData, {
 		revalidateOnFocus: false,
 		revalidateIfStale: false,
 		revalidateOnReconnect: false,
