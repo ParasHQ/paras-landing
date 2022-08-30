@@ -23,6 +23,7 @@ import {
 	sendTransaction,
 } from '@ramper/near'
 import { createAction } from '@paras-wallet-selector/wallet-utils'
+import SignMesssageModal from 'components/Modal/SignMessageModal'
 
 const WalletSelectorContext = React.createContext(null)
 
@@ -30,6 +31,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 	const [selector, setSelector] = useState(null)
 	const [modal, setModal] = useState(null)
 	const [authToken, setAuthToken] = useState(null)
+	const [showRamperSignModal, setShowRamperSignModal] = useState(false)
 	const store = useStore()
 	const authSession = useRef()
 
@@ -228,6 +230,9 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			const ramperSignedMsg = JSON.parse(localStorage.getItem('RAMPER_SIGNED_MSG'))
 			if (ramperSignedMsg && ramperSignedMsg.accountId === accountId) {
 				signedMsg = ramperSignedMsg.signedMsg
+			} else if (!showRamperSignModal) {
+				setShowRamperSignModal(true)
+				return
 			} else {
 				signedMsg = (await signMessage({ message: msgBuf, network: 'testnet' })).result
 
@@ -245,6 +250,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		const _authToken = Base64.encode(payload.join('&'))
 
 		setAuthToken(_authToken)
+		setShowRamperSignModal(false)
 
 		ParasRequest.defaults.headers.common['Authorization'] = _authToken
 
@@ -325,6 +331,10 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				signAndSendTransactions,
 			}}
 		>
+			<SignMesssageModal
+				show={showRamperSignModal}
+				onClick={() => generateAuthToken(store.currentUser, 'ramper')}
+			/>
 			{children}
 		</WalletSelectorContext.Provider>
 	)
