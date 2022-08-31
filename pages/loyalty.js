@@ -6,6 +6,7 @@ import Card from 'components/Card/Card'
 import { parseImgUrl } from 'utils/common'
 import useSWR from 'swr'
 import axios from 'axios'
+import { STAKE_PARAS_URL } from 'constants/common'
 
 const url = `${process.env.V2_API_URL}/raffle/current`
 const fetchData = () => axios.get(url).then((res) => res.data)
@@ -98,7 +99,7 @@ export default function Loyalty() {
 							access to limited raffles.
 						</p>
 						<a
-							href="https://stake.paras.id"
+							href={STAKE_PARAS_URL}
 							className="inline-block p-3 bg-white text-primary font-bold border-[0.5rem] mt-4 border-primary rounded-xl text-xl"
 						>
 							Start Locked Staking
@@ -156,7 +157,7 @@ export default function Loyalty() {
 									</p>
 									<p>
 										Learn more on how to do locked staking{' '}
-										<a href="https://stake.paras.id" className="text-blue-700 underline">
+										<a href={STAKE_PARAS_URL} className="text-blue-700 underline">
 											here
 										</a>
 										.
@@ -272,7 +273,7 @@ export default function Loyalty() {
 					<div className="py-16 text-center">
 						<p className="text-white text-2xl">Join Paras Loyalty & Grab Your Rewards!</p>
 						<a
-							href="https://stake.paras.id"
+							href={STAKE_PARAS_URL}
 							className="inline-block p-3 bg-white text-primary font-bold border-[0.5rem] mt-4 border-primary rounded-xl text-xl"
 						>
 							Start Locked Staking

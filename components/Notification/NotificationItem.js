@@ -10,6 +10,7 @@ import {
 	shortTimeAgo,
 } from 'utils/common'
 import Media from 'components/Common/Media'
+import { STAKE_PARAS_URL } from 'constants/common'
 
 const NotificationImage = ({ media }) => {
 	return (
@@ -165,14 +166,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 					<p>
 						<span> Start </span>
 						<span>
-							<a
-								className="font-bold"
-								href={
-									process.env.APP_ENV === 'testnet'
-										? 'https://staking-dev.paras.id/'
-										: 'https://stake.paras.id'
-								}
-							>
+							<a className="font-bold" href={STAKE_PARAS_URL}>
 								lock staking{' '}
 							</a>
 						</span>
@@ -194,14 +188,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 					<p>
 						<span>Start</span>
 						<span>
-							<a
-								className="font-bold"
-								href={
-									process.env.APP_ENV === 'testnet'
-										? 'https://staking-dev.paras.id/'
-										: 'https://stake.paras.id'
-								}
-							>
+							<a className="font-bold" href={STAKE_PARAS_URL}>
 								{` lock staking `}
 							</a>
 						</span>
@@ -229,14 +216,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								<>
 									<span>Start</span>
 									<span>
-										<a
-											className="font-bold"
-											href={
-												process.env.APP_ENV === 'testnet'
-													? 'https://staking-dev.paras.id/'
-													: 'https://stake.paras.id'
-											}
-										>
+										<a className="font-bold" href={STAKE_PARAS_URL}>
 											{` lock staking `}
 										</a>
 									</span>
@@ -256,14 +236,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								You are currently a {capitalize(notif.msg.current_raffle_type)} member. Start
 							</span>
 							<span>
-								<a
-									className="font-bold"
-									href={
-										process.env.APP_ENV === 'testnet'
-											? 'https://staking-dev.paras.id/'
-											: 'https://stake.paras.id'
-									}
-								>
+								<a className="font-bold" href={STAKE_PARAS_URL}>
 									{` lock staking `}
 								</a>
 							</span>
