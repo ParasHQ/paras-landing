@@ -13,8 +13,10 @@ import { parseImgUrl, timeAgo } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const CategorySubmission = () => {
+	const { generateAuthToken } = useWalletSelector()
 	const [submissions, setSubmissions] = useState(null)
 	const { categoryId } = useRouter().query
 	const currentUser = useStore((state) => state.currentUser)
@@ -42,6 +44,7 @@ const CategorySubmission = () => {
 						},
 						headers: {
 							'Content-Type': 'application/x-www-form-urlencoded',
+							Authorization: await generateAuthToken(),
 						},
 					}
 				)

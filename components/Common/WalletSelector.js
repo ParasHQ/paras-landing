@@ -192,6 +192,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				authToken,
 				getAccountBalance,
 				viewFunction,
+				generateAuthToken,
 			}}
 		>
 			{children}
