@@ -157,7 +157,10 @@ export default function Loyalty() {
 									</p>
 									<p>
 										Learn more on how to do locked staking{' '}
-										<a href={STAKE_PARAS_URL} className="text-blue-700 underline">
+										<a
+											href="https://paras.id/publication/how-to-do-locked-staking-6311c2d10de00d001cd7a05a"
+											className="text-blue-700 underline"
+										>
 											here
 										</a>
 										.
