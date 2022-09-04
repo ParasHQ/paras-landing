@@ -222,6 +222,19 @@ const TokenHead = ({ localToken, typeToken }) => {
 							<p className="text-white text-md">Rarity Rank #{localToken.metadata?.rank}</p>
 						</div>
 					)}
+					{localToken?.categories && (
+						<div className="mt-2">
+							<div className="flex flex-1 items-center gap-2">
+								{localToken.categories.map((category, idx) => (
+									<Link key={idx} href={`/market/${category.category_id}`}>
+										<p className="px-2 py-1 border border-bg-white rounded-md text-xs text-white text-center hover:bg-white hover:text-black cursor-pointer">
+											{category.name}
+										</p>
+									</Link>
+								))}
+							</div>
+						</div>
+					)}
 				</div>
 			</div>
 			<div className="w-full flex items-center justify-start gap-8 relative mt-10">
