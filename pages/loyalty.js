@@ -296,7 +296,7 @@ const RewardNFT = ({ data, level }) => {
 	return (
 		<>
 			<p className="font-bold mt-6 text-center text-xl">{level}</p>
-			<div className="flex items-center justify-center md:mx-32 my-4">
+			<div className="flex items-center justify-center md:mx-32 my-4 space-x-4">
 				{data?.map(({ token }) => {
 					if (!token) return null
 					return (
