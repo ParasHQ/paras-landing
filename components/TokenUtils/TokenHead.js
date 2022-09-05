@@ -4,7 +4,6 @@ import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 import { abbrNum, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { mutate } from 'swr'
-import ArtistVerified from 'components/Common/ArtistVerified'
 import IconLove from 'components/Icons/component/IconLove'
 import Tooltip from 'components/Common/Tooltip'
 import { IconDots } from 'components/Icons'
@@ -16,6 +15,11 @@ import TokenBuyModal from 'components/Modal/TokenBuyModal'
 import TokenTransferModal from 'components/Modal/TokenTransferModal'
 import ReportModal from 'components/Modal/ReportModal'
 import ParasRequest from 'lib/ParasRequest'
+import Link from 'next/link'
+import TradeNFTModal from 'components/Modal/TradeNFTModal'
+import TokenSeriesTransferBuyer from 'components/Modal/TokenSeriesTransferBuyer'
+import TokenSeriesBurnModal from 'components/Modal/TokenSeriesBurnModal'
+import LoginModal from 'components/Modal/LoginModal'
 
 const TokenHead = ({ localToken, typeToken }) => {
 	const [defaultLikes, setDefaultLikes] = useState(0)
@@ -24,6 +28,9 @@ const TokenHead = ({ localToken, typeToken }) => {
 	const currentUser = useStore((state) => state.currentUser)
 
 	const { localeLn } = useIntl()
+	const isEnableTrade = !process.env.WHITELIST_CONTRACT_ID.split(';').includes(
+		localToken?.contract_id
+	)
 
 	useEffect(() => {
 		if (localToken?.total_likes && localToken?.likes) {
@@ -134,6 +141,32 @@ const TokenHead = ({ localToken, typeToken }) => {
 		return currentUser === localToken.owner_id
 	}
 
+	const isCreator = () => {
+		if (!currentUser) {
+			return false
+		}
+		return (
+			currentUser === localToken.metadata.creator_id ||
+			(!localToken.metadata.creator_id && currentUser === localToken.contract_id)
+		)
+	}
+
+	const onClickDecreaseCopies = () => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+		setShowModal('decreaseCopies')
+	}
+
+	const onClickBuyerTransfer = () => {
+		if (!currentUser) {
+			setShowModal('notLogin')
+			return
+		}
+		setShowModal('buyerTransfer')
+	}
+
 	return (
 		<div>
 			<div className="flex justify-between relative">
@@ -167,9 +200,41 @@ const TokenHead = ({ localToken, typeToken }) => {
 						{localToken.metadata.title}
 					</h1>
 					<div className="mt-1 text-white text-lg flex">
-						<p className="mr-1">{localeLn('owned by')}</p>
-						<ArtistVerified token={localToken} type={'token-detail'} />
+						<div className="mr-1 truncate">
+							<Link
+								href={`/collection/${localToken.metadata.collection_id || localToken.contract_id}`}
+							>
+								<a className="font-bold border-b-2 border-transparent hover:border-white">
+									{localToken.metadata.collection ||
+										localToken.contract_id?.replace(/\b(?:-|.|near)\b/gi, ' ').trim()}
+								</a>
+							</Link>
+							<span className="font-normal"> by </span>
+							<Link href={`/${localToken.metadata.creator_id}`}>
+								<a className="font-bold border-b-2 border-transparent hover:border-white">
+									{localToken.metadata.creator_id}
+								</a>
+							</Link>
+						</div>
 					</div>
+					{localToken.metadata?.rank && (
+						<div className="mt-3">
+							<p className="text-white text-md">Rarity Rank #{localToken.metadata?.rank}</p>
+						</div>
+					)}
+					{localToken?.categories && (
+						<div className="mt-2">
+							<div className="flex flex-1 items-center gap-2">
+								{localToken.categories.map((category, idx) => (
+									<Link key={idx} href={`/market/${category.category_id}`}>
+										<p className="px-2 py-1 border border-bg-white rounded-md text-xs text-white text-center hover:bg-white hover:text-black cursor-pointer">
+											{category.name}
+										</p>
+									</Link>
+								))}
+							</div>
+						</div>
+					)}
 				</div>
 			</div>
 			<div className="w-full flex items-center justify-start gap-8 relative mt-10">
@@ -234,19 +299,37 @@ const TokenHead = ({ localToken, typeToken }) => {
 					)}
 				</div>
 			</div>
-			<TokenMoreModal
-				show={showModal === 'more'}
-				onClose={onDismissModal}
-				listModalItem={[
-					{ name: 'Share to...', onClick: onClickShare },
-					!isOwner() &&
-						!localToken.is_staked && { name: 'Offer Via NFT', onClick: onClickOfferNFT },
-					isOwner() && !localToken.is_staked && { name: 'Update Listing', onClick: onClickUpdate },
-					isOwner() && !localToken.is_staked && { name: 'Transfer', onClick: onClickTransfer },
-					isOwner() && !localToken.is_staked && { name: 'Burn Card', onClick: onClickBurn },
-					{ name: 'Report', onClick: () => setShowModal('report') },
-				].filter((x) => x)}
-			/>
+			{typeToken === 'token-series' ? (
+				<TokenMoreModal
+					show={showModal === 'more'}
+					onClose={onDismissModal}
+					listModalItem={[
+						{ name: 'Share to...', onClick: onClickShare },
+						isEnableTrade && {
+							name: 'Offer Via NFT',
+							onClick: onClickOfferNFT,
+						},
+						{ name: 'Transfer', onClick: onClickBuyerTransfer },
+						isCreator() && { name: 'Reduce Copies', onClick: onClickDecreaseCopies },
+						{ name: 'Report', onClick: () => setShowModal('report') },
+					].filter((x) => x)}
+				/>
+			) : (
+				<TokenMoreModal
+					show={showModal === 'more'}
+					onClose={onDismissModal}
+					listModalItem={[
+						{ name: 'Share to...', onClick: onClickShare },
+						!isOwner() &&
+							!localToken.is_staked && { name: 'Offer Via NFT', onClick: onClickOfferNFT },
+						isOwner() &&
+							!localToken.is_staked && { name: 'Update Listing', onClick: onClickUpdate },
+						isOwner() && !localToken.is_staked && { name: 'Transfer', onClick: onClickTransfer },
+						isOwner() && !localToken.is_staked && { name: 'Burn Card', onClick: onClickBurn },
+						{ name: 'Report', onClick: () => setShowModal('report') },
+					].filter((x) => x)}
+				/>
+			)}
 			<TokenShareModal
 				show={showModal === 'share'}
 				onClose={onDismissModal}
@@ -264,7 +347,24 @@ const TokenHead = ({ localToken, typeToken }) => {
 				onClose={onDismissModal}
 				data={localToken}
 			/>
+			<TradeNFTModal
+				show={showModal === 'placeofferNFT'}
+				data={localToken}
+				onClose={onDismissModal}
+				tokenType={`token`}
+			/>
+			<TokenSeriesTransferBuyer
+				show={showModal === 'buyerTransfer'}
+				onClose={onDismissModal}
+				data={localToken}
+			/>
+			<TokenSeriesBurnModal
+				show={showModal === 'decreaseCopies'}
+				onClose={onDismissModal}
+				data={localToken}
+			/>
 			<ReportModal show={showModal === 'report'} data={localToken} onClose={onDismissModal} />
+			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
 		</div>
 	)
 }
