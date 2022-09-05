@@ -21,34 +21,34 @@ export default function Loyalty() {
 	return (
 		<div className="min-h-screen relative bg-black">
 			<Head>
-				<title>Loyalty — Paras</title>
+				<title>Paras Loyalty</title>
 				<meta
 					name="description"
-					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
+					content="To appreciate our users, we will launch a new program, Paras Loyalty, on September 5, at 1 PM UTC. This program will give you exclusive access to limited raffles 🔥🔥"
 				/>
 				<meta
 					name="keywords"
 					content="paras, paras id, paras digital, nft, nft marketplace, near, near marketplace"
 				/>
 
-				<meta name="twitter:title" content="Loyalty — Paras" />
+				<meta name="twitter:title" content="Paras Loyalty" />
 				<meta name="twitter:card" content="summary_large_image" />
 				<meta name="twitter:site" content="@ParasHQ" />
 				<meta name="twitter:url" content="https://paras.id" />
 				<meta
 					name="twitter:description"
-					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
+					content="To appreciate our users, we will launch a new program, Paras Loyalty, on September 5, at 1 PM UTC. This program will give you exclusive access to limited raffles 🔥🔥"
 				/>
 				<meta
 					name="twitter:image"
 					content="https://paras-media.s3-ap-southeast-1.amazonaws.com/paras-v2-twitter-card-large.png"
 				/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Loyalty — Paras" />
-				<meta property="og:site_name" content="Loyalty — Paras" />
+				<meta property="og:title" content="Paras Loyalty" />
+				<meta property="og:site_name" content="Paras Loyalty" />
 				<meta
 					property="og:description"
-					content="Create, Trade, and Collect Digital Collectibles. All-in-one social NFT marketplace for creators and collectors. Discover the best and latest NFT collectibles on NEAR."
+					content="To appreciate our users, we will launch a new program, Paras Loyalty, on September 5, at 1 PM UTC. This program will give you exclusive access to limited raffles 🔥🔥"
 				/>
 				<meta property="og:url" content="https://paras.id" />
 				<meta
@@ -296,55 +296,57 @@ const RewardNFT = ({ data, level }) => {
 	return (
 		<>
 			<p className="font-bold mt-6 text-center text-xl">{level}</p>
-			<div className="flex items-center justify-center md:mx-32 my-4 space-x-4">
+			<div className="flex flex-wrap items-center justify-center md:mx-32 my-4">
 				{data?.map(({ token }) => {
 					if (!token) return null
 					return (
-						<div key={token._id} className="bg-black rounded-xl overflow-hidden w-1/4">
-							<div className="w-full p-2 bg-black border-4 border-[#351C75] rounded-xl">
-								<div>
-									<Card
-										key={token._id}
-										imgUrl={parseImgUrl(token.metadata.media, null, {
-											width: `600`,
-											useOriginal: process.env.APP_ENV === 'production' ? false : true,
-											isMediaCdn: token.isMediaCdn,
-										})}
-										audioUrl={
-											token.metadata.mime_type &&
-											token.metadata.mime_type.includes('audio') &&
-											token.metadata.animation_url
-										}
-										threeDUrl={
-											token.metadata.mime_type &&
-											token.metadata.mime_type.includes('model') &&
-											token.metadata.animation_url
-										}
-										iframeUrl={
-											token.metadata.mime_type &&
-											token.metadata.mime_type.includes('iframe') &&
-											token.metadata.animation_url
-										}
-										imgBlur={token.metadata.blurhash}
-										flippable
-										token={{
-											title: token.metadata.title,
-											collection: token.metadata.collection || token.contract_id,
-											copies: token.metadata.copies,
-											creatorId: token.metadata.creator_id || token.contract_id,
-											is_creator: token.is_creator,
-											description: token.metadata.description,
-											royalty: token.royalty,
-											attributes: token.metadata.attributes,
-											_is_the_reference_merged: token._is_the_reference_merged,
-											mime_type: token.metadata.mime_type,
-											is_auction: token.token?.is_auction,
-											started_at: token.token?.started_at,
-											ended_at: token.token?.ended_at,
-											has_auction: token?.has_auction,
-											animation_url: token?.metadata?.animation_url,
-										}}
-									/>
+						<div key={token._id} className="w-1/2 md:w-1/4 p-1 md:p-2">
+							<div className="bg-black rounded-xl overflow-hidden">
+								<div className="w-full p-2 bg-black border-4 border-[#351C75] rounded-xl">
+									<div>
+										<Card
+											key={token._id}
+											imgUrl={parseImgUrl(token.metadata.media, null, {
+												width: `600`,
+												useOriginal: process.env.APP_ENV === 'production' ? false : true,
+												isMediaCdn: token.isMediaCdn,
+											})}
+											audioUrl={
+												token.metadata.mime_type &&
+												token.metadata.mime_type.includes('audio') &&
+												token.metadata.animation_url
+											}
+											threeDUrl={
+												token.metadata.mime_type &&
+												token.metadata.mime_type.includes('model') &&
+												token.metadata.animation_url
+											}
+											iframeUrl={
+												token.metadata.mime_type &&
+												token.metadata.mime_type.includes('iframe') &&
+												token.metadata.animation_url
+											}
+											imgBlur={token.metadata.blurhash}
+											flippable
+											token={{
+												title: token.metadata.title,
+												collection: token.metadata.collection || token.contract_id,
+												copies: token.metadata.copies,
+												creatorId: token.metadata.creator_id || token.contract_id,
+												is_creator: token.is_creator,
+												description: token.metadata.description,
+												royalty: token.royalty,
+												attributes: token.metadata.attributes,
+												_is_the_reference_merged: token._is_the_reference_merged,
+												mime_type: token.metadata.mime_type,
+												is_auction: token.token?.is_auction,
+												started_at: token.token?.started_at,
+												ended_at: token.token?.ended_at,
+												has_auction: token?.has_auction,
+												animation_url: token?.metadata?.animation_url,
+											}}
+										/>
+									</div>
 								</div>
 							</div>
 						</div>
