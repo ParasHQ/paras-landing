@@ -3,11 +3,11 @@ import LinkToProfile from 'components/Common/LinkToProfile'
 import { useEffect, useState } from 'react'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
-import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
-import Avatar from 'components/Common/Avatar'
+import { prettyBalance, prettyTruncate } from 'utils/common'
 import Link from 'next/link'
 import useToken from 'hooks/useToken'
 import { useRouter } from 'next/router'
+import ProfileImageBadge from 'components/Common/ProfileImageBadge'
 
 const TabAuction = ({ localToken: initialToken, setAuctionEnds = () => {} }) => {
 	const [historyBid, setHistoryBid] = useState([])
@@ -240,7 +240,11 @@ const CurrentBid = ({ initial = {} }) => {
 						}`}
 					>
 						<a className="hover:opacity-80">
-							<Avatar size="lg" src={parseImgUrl(profile.imgUrl)} className="align-bottom" />
+							<ProfileImageBadge
+								className="w-12 h-12"
+								imgUrl={profile?.imgUrl}
+								level={profile?.level}
+							/>
 						</a>
 					</Link>
 					<div>

@@ -24,6 +24,7 @@ import SuccessTransactionModal from 'components/Modal/SuccessTransactionModal'
 import cachios from 'cachios'
 import RPCStatus from 'components/Common/RPCStatus'
 import { WalletSelectorContextProvider } from 'components/Common/WalletSelector'
+import RaffleLoyaltyModalGroup from 'components/Common/RaffleRoyaltyModalGroup'
 
 const MAX_ACTIVITY_DELAY = 5
 
@@ -243,8 +244,10 @@ function MyApp({ Component, pageProps }) {
 					<SWRConfig value={{}}>
 						<ToastProvider>
 							<WalletSelectorContextProvider>
-								<Component {...pageProps} />
-								<SuccessTransactionModal />
+								<RaffleLoyaltyModalGroup>
+									<Component {...pageProps} />
+									<SuccessTransactionModal />
+								</RaffleLoyaltyModalGroup>
 							</WalletSelectorContextProvider>
 						</ToastProvider>
 					</SWRConfig>
