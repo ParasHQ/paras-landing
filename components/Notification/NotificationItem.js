@@ -2,13 +2,7 @@ import ParasRequest from 'lib/ParasRequest'
 import Link from 'next/link'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import { useEffect, useState } from 'react'
-import {
-	capitalize,
-	parseImgUrl,
-	prettyTruncate,
-	formatDateToReadable,
-	shortTimeAgo,
-} from 'utils/common'
+import { capitalize, parseImgUrl, prettyTruncate, shortTimeAgo } from 'utils/common'
 import Media from 'components/Common/Media'
 import { STAKE_PARAS_URL } from 'constants/common'
 
@@ -100,7 +94,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 						notif.msg.current_level
 					)} Member!`}</p>
 					<p>
-						<span>You can register for a raffle on on Sep 19-25, 2022. Read more here 👉 </span>
+						<span>You can register for a raffle on Sep 19-25, 2022. Read more here 👉 </span>
 						<span>
 							<Link href="/loyalty">
 								<a className="font-bold">Loyalty</a>
