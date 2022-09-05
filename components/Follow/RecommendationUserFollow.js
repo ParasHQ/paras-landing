@@ -9,6 +9,7 @@ import { useState } from 'react'
 import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
 import { mutate } from 'swr'
 import LoginModal from 'components/Modal/LoginModal'
+import ProfileImageBadge from 'components/Common/ProfileImageBadge'
 
 const RecommendationUserFollow = ({ data }) => {
 	const currentUser = useStore((state) => state.currentUser)
@@ -71,16 +72,11 @@ const RecommendationUserFollow = ({ data }) => {
 			<div className="mt-2 mx-2">
 				<div className="relative">
 					<Link href={`/${data.account_id}`}>
-						<a
-							className={`absolute w-16 h-16 -top-10 overflow-hidden border-2 border-black ${
-								!profile?.imgUrl ? 'bg-primary' : 'bg-dark-primary-2'
-							} rounded-full cursor-pointer`}
-						>
-							<img
-								src={parseImgUrl(profile?.imgUrl, null, {
-									width: `300`,
-								})}
-								className="w-full object-cover rounded-full cursor-pointer"
+						<a className="absolute -top-12">
+							<ProfileImageBadge
+								className="w-16 h-16 cursor-pointer"
+								imgUrl={profile?.imgUrl}
+								level={profile?.level}
 							/>
 						</a>
 					</Link>

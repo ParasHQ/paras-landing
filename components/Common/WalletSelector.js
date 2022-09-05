@@ -56,6 +56,8 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		const setupUser = async (currentUser) => {
 			if (!currentUser.accountId) return
 
+			await generateAuthToken(currentUser.accountId)
+
 			store.setCurrentUser(currentUser.accountId)
 
 			Sentry.configureScope((scope) => {
@@ -67,11 +69,10 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			const userNearBalance = await getAccountBalance(currentUser.accountId)
 			store.setUserBalance(userNearBalance)
 
-			await generateAuthToken(currentUser.accountId)
-
 			const userProfileResp = await ParasRequest.get(`${process.env.V2_API_URL}/profiles`, {
 				params: {
 					accountId: currentUser.accountId,
+					is_cached: false,
 				},
 			})
 			const userProfileResults = userProfileResp.data.data.results

@@ -3,6 +3,7 @@ import { parseImgUrl } from 'utils/common'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import ProfileListLoader from './ProfileListLoader'
 import { IconInstagram, IconTwitter, IconWebsite, IconWeibo } from 'components/Icons'
+import ProfileImageBadge from 'components/Common/ProfileImageBadge'
 
 const ProfileList = ({ data, fetchData, hasMore, page }) => {
 	if (data.length === 0 && !hasMore) {
@@ -43,18 +44,11 @@ const ProfileList = ({ data, fetchData, hasMore, page }) => {
 											backgroundImage: `url(${parseImgUrl(profile?.coverUrl, null)})`,
 										}}
 									/>
-									<div
-										className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 translate-y-3 md:-translate-y-36 right-0 w-24 h-24 overflow-hidden border-4 border-black ${
-											!profile.imgUrl ? 'bg-primary' : 'bg-dark-primary-2'
-										} shadow-inner z-20 rounded-full mt-8 md:mt-44`}
-									>
-										<img
-											src={parseImgUrl(profile?.imgUrl, null, {
-												width: `300`,
-											})}
-											className="w-full object-cover rounded-full"
-										/>
-									</div>
+									<ProfileImageBadge
+										className="w-24 h-24 absolute top-1/2 left-1/2 transform -translate-x-1/2 translate-y-3 md:-translate-y-36"
+										imgUrl={profile?.imgUrl}
+										level={profile?.level}
+									/>
 								</div>
 							</a>
 						</Link>

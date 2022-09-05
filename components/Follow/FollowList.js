@@ -1,5 +1,4 @@
 import ParasRequest from 'lib/ParasRequest'
-import Avatar from 'components/Common/Avatar'
 import Button from 'components/Common/Button'
 import { IconVerified } from 'components/Icons'
 import { trackFollowButton, trackUnfollowButton } from 'lib/ga'
@@ -8,8 +7,9 @@ import Link from 'next/link'
 import { useState } from 'react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { mutate } from 'swr'
-import { parseImgUrl, prettyTruncate } from 'utils/common'
+import { prettyTruncate } from 'utils/common'
 import FollowListLoader from './FollowListLoader'
+import ProfileImageBadge from 'components/Common/ProfileImageBadge'
 
 const FollowList = ({ data, userProfile, getMoreData, hasMore, typeFollow }) => {
 	const [buttonHover, setButtonHover] = useState('')
@@ -76,12 +76,10 @@ const FollowList = ({ data, userProfile, getMoreData, hasMore, typeFollow }) => 
 									<Link href={`/${user.account_id}`}>
 										<div className="relative hover:opacity-80 cursor-pointer">
 											<a>
-												<Avatar
-													size="lg"
-													src={parseImgUrl(user.imgUrl, null, {
-														width: `50`,
-													})}
-													className="align-bottom"
+												<ProfileImageBadge
+													className="w-12 h-12"
+													imgUrl={userProfile?.imgUrl}
+													level={userProfile?.level}
 												/>
 											</a>
 										</div>

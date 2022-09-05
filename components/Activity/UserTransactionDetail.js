@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import Scrollbars from 'react-custom-scrollbars'
 import LinkToProfile from '../LinkToProfile'
-import { parseImgUrl } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import TopTransactionCard, { renderThumb } from './TopTransactionCard'
@@ -12,6 +11,7 @@ import useStore from 'lib/store'
 import { useNonInitialEffect } from 'hooks/useNonInitialEffect'
 import { useState } from 'react'
 import LoginModal from 'components/Modal/LoginModal'
+import ProfileImageBadge from 'components/Common/ProfileImageBadge'
 
 const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => {
 	const currentUser = useStore((state) => state.currentUser)
@@ -63,14 +63,11 @@ const UserTransactionDetail = ({ data, idx, type = 'buyer', setLocalToken }) => 
 				<div className="flex self-start">
 					<div className="flex flex-col items-center">
 						<Link href={`/${data.account_id}`}>
-							<div className="cursor-pointer w-12 h-12 md:w-20 md:h-20 rounded-full overflow-hidden bg-primary">
-								<img
-									src={parseImgUrl(profile?.imgUrl, null, {
-										width: `200`,
-									})}
-									className="object-cover"
-								/>
-							</div>
+							<ProfileImageBadge
+								className="w-12 h-12 md:w-20 md:h-20 "
+								imgUrl={profile?.imgUrl}
+								level={profile?.level}
+							/>
 						</Link>
 						<Button
 							size="sm"
