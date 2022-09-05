@@ -15,6 +15,7 @@ import TokenAuction from 'components/TokenUtils/TokenAuction'
 import TokenBidHistory from 'components/TokenUtils/TokenBidHistory'
 import ArtistBanned from 'components/Common/ArtistBanned'
 import { trackTokenDetailPage } from 'lib/ga'
+import IFrame3DTokenModal from 'components/Modal/IFrame3DTokenModal'
 
 const TokenDetailNew = ({ token }) => {
 	const [showModal, setShowModal] = useState(null)
@@ -27,12 +28,20 @@ const TokenDetailNew = ({ token }) => {
 		setShowModal(null)
 	}
 
+	const tokenOnClick = () => {
+		if (token.metadata.mime_type.includes('model') || token.metadata.mime_type.includes('iframe')) {
+			setShowModal('iframe3dtoken')
+		}
+		return
+	}
+
 	return (
 		<>
 			<div className="md:grid auto-rows-auto grid-cols-7 gap-x-10">
 				<div className="row-span-6 col-start-1 col-end-4">
 					<div className="w-full h-auto mb-10">
 						<Card
+							onClick={tokenOnClick}
 							imgUrl={parseImgUrl(token.metadata.media, null, {
 								width: `600`,
 								useOriginal: process.env.APP_ENV === 'production' ? false : true,
@@ -110,6 +119,12 @@ const TokenDetailNew = ({ token }) => {
 			</div>
 			<TokenMoreCollection localToken={token} className="col-span-2 mb-10 hidden md:block" />
 			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
+			<IFrame3DTokenModal
+				show={showModal === 'iframe3dtoken'}
+				onClose={onDismissModal}
+				typeToken="token"
+				token={token}
+			/>
 		</>
 	)
 }
