@@ -24,6 +24,9 @@ const IFrame3DTokenModal = ({ token, typeToken, show, onClose }) => {
 		if (token?.metadata?.animation_url && token.metadata?.mime_type?.includes('model')) {
 			get3DModel(token?.metadata?.animation_url)
 		}
+		if (token?.metadata?.animation_url && token.metadata?.mime_type?.includes('iframe')) {
+			getIframe()
+		}
 	}, [JSON.stringify(token)])
 
 	const get3DModel = async (url) => {
@@ -34,6 +37,10 @@ const IFrame3DTokenModal = ({ token, typeToken, show, onClose }) => {
 		setFileType(fileType.mime)
 		const objectUrl = URL.createObjectURL(resp.data)
 		setThreeDUrl(objectUrl)
+	}
+
+	const getIframe = () => {
+		setFileType(token?.metadata?.mime_type)
 	}
 
 	return (
