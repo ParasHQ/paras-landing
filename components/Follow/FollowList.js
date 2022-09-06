@@ -78,8 +78,8 @@ const FollowList = ({ data, userProfile, getMoreData, hasMore, typeFollow }) => 
 											<a>
 												<ProfileImageBadge
 													className="w-12 h-12"
-													imgUrl={userProfile?.imgUrl}
-													level={userProfile?.level}
+													imgUrl={user?.imgUrl}
+													level={user?.level}
 												/>
 											</a>
 										</div>
