@@ -1,5 +1,4 @@
 import cachios from 'cachios'
-import Avatar from 'components/Common/Avatar'
 import Button from 'components/Common/Button'
 import TokenBuyModal from 'components/Modal/TokenBuyModal'
 import TokenUpdatePriceModal from 'components/Modal/TokenUpdatePriceModal'
@@ -8,11 +7,12 @@ import useStore from 'lib/store'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
+import { prettyBalance, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import useToken from 'hooks/useToken'
 import { IconDownArrow } from 'components/Icons'
 import { trackClickOwners } from 'lib/ga'
+import ProfileImageBadge from 'components/Common/ProfileImageBadge'
 
 const FETCH_TOKENS_LIMIT = 100
 
@@ -109,7 +109,7 @@ const TokenOwners = ({ localToken, className }) => {
 					onClick={() => setIsDropDown(!isDropDown)}
 				>
 					<p className="text-xl py-3">Owners</p>
-					<div className={`${!isDropDown && 'rotate-180'}`}>
+					<div className={`${isDropDown && 'rotate-180'}`}>
 						<IconDownArrow size={30} />
 					</div>
 				</div>
@@ -270,7 +270,11 @@ const Owner = ({ initial = {}, onBuy, onUpdateListing }) => {
 				<div className="flex items-center">
 					<Link href={`/${token.owner_id}`}>
 						<a className="hover:opacity-80">
-							<Avatar size="md" src={parseImgUrl(profile.imgUrl)} className="align-bottom" />
+							<ProfileImageBadge
+								className="w-8 h-8"
+								imgUrl={profile?.imgUrl}
+								level={profile?.level}
+							/>
 						</a>
 					</Link>
 					{token.owner_id ? (

@@ -5,6 +5,7 @@ import router from 'next/router'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import Link from 'next/link'
 import { IconSpin } from 'components/Icons'
+import ProfileImageBadge from 'components/Common/ProfileImageBadge'
 
 const AutoCompleteImage = ({ media, rounded }) => {
 	return (
@@ -132,7 +133,11 @@ const AutoCompleteList = ({
 														className="cursor-pointer p-2 rounded-md button-wrapper flex items-center"
 														onClick={() => modal(false)}
 													>
-														<AutoCompleteImage media={profile?.imgUrl} rounded="full" />
+														<ProfileImageBadge
+															className="w-10 h-10 flex-shrink-0"
+															imgUrl={profile?.imgUrl}
+															level={profile?.level}
+														/>
 														<div className="flex mt-1 pl-4 text-gray-300 text-md">
 															{profile.accountId}
 															{profile?.isCreator && (

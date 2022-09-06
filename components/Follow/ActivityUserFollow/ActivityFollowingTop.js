@@ -1,6 +1,7 @@
+import ProfileImageBadge from 'components/Common/ProfileImageBadge'
 import { trackFollowingClick } from 'lib/ga'
 import Link from 'next/link'
-import { parseImgUrl, prettyTruncate, timeAgo } from 'utils/common'
+import { prettyTruncate, timeAgo } from 'utils/common'
 import ActivityDescriptionTop from './ActivityDescriptionTop'
 
 const ActivityFollowingTop = ({
@@ -14,15 +15,11 @@ const ActivityFollowingTop = ({
 	return (
 		<div className="flex space-x-2">
 			<Link href={`/${accountId}`}>
-				<a
-					onClick={() => trackFollowingClick('Following_click_artist')}
-					className={`w-10 h-10 overflow-hidden ${
-						!profile?.imgUrl ? 'bg-primary' : 'bg-dark-primary-2'
-					} rounded-full cursor-pointer`}
-				>
-					<img
-						src={parseImgUrl(profile?.imgUrl, null, { width: `300` })}
-						className="w-full object-cover rounded-full cursor-pointer"
+				<a onClick={() => trackFollowingClick('Following_click_artist')}>
+					<ProfileImageBadge
+						className="w-10 h-10"
+						imgUrl={profile?.imgUrl}
+						level={profile?.level}
 					/>
 				</a>
 			</Link>

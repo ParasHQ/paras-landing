@@ -1,9 +1,10 @@
 import Link from 'next/link'
-import { parseImgUrl, prettyBalance } from 'utils/common'
+import { prettyBalance } from 'utils/common'
 import LinkToProfile from '../LinkToProfile'
 import { useIntl } from 'hooks/useIntl'
 import TopUserLoader from './TopUserLoader'
 import useProfileData from 'hooks/useProfileData'
+import ProfileImageBadge from 'components/Common/ProfileImageBadge'
 
 const TopUsers = ({ data = [], className, userType = 'buyer', linkTo, isFetching }) => {
 	const { localeLn } = useIntl()
@@ -51,14 +52,7 @@ const TopUser = ({ user, idx }) => {
 		<div className="my-3 flex items-center">
 			<p className="text-base text-gray-100 opacity-50 mr-3">{idx + 1}</p>
 			<Link href={`/${user.account_id}`}>
-				<div className="cursor-pointer w-12 h-12 rounded-full overflow-hidden bg-primary">
-					<img
-						src={parseImgUrl(profile?.imgUrl, null, {
-							width: `300`,
-						})}
-						className="object-cover"
-					/>
-				</div>
+				<ProfileImageBadge className="w-12 h-12" imgUrl={profile?.imgUrl} level={profile?.level} />
 			</Link>
 			<div className="ml-3">
 				{user.account_id && (

@@ -128,7 +128,7 @@ const TokenPriceHistory = ({ localToken, className }) => {
 					onClick={() => onCLickDropdown()}
 				>
 					<p className="text-xl py-3">Price History</p>
-					<div className={`${!isDropDown && 'rotate-180'}`}>
+					<div className={`${isDropDown && 'rotate-180'}`}>
 						<IconDownArrow size={30} />
 					</div>
 				</div>

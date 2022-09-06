@@ -7,15 +7,16 @@ import Link from 'next/link'
 import useStore from 'lib/store'
 import { useRouter } from 'next/router'
 import { useEffect, useRef, useState } from 'react'
-import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
+import { prettyBalance, prettyTruncate } from 'utils/common'
 import Scrollbars from 'react-custom-scrollbars'
 import near from 'lib/near'
 import transakSDK from '@transak/transak-sdk'
 import getConfigTransak from 'config/transak'
 import { IconTriangle } from 'components/Icons'
-import { trackTransakButton } from 'lib/ga'
+import { trackNFTLendingClick, trackTransakButton } from 'lib/ga'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 import { signOut } from '@ramper/near'
+import ProfileImageBadge from 'components/Common/ProfileImageBadge'
 
 export function openTransak(fetchNearBalance, toast, accountId) {
 	const transak = new transakSDK(
@@ -192,9 +193,11 @@ const User = () => {
 			>
 				<div className="cursor-pointer select-none overflow-hidden rounded-md bg-dark-primary-2">
 					<div className="flex items-center w-full h-full button-wrapper p-1">
-						<div className="w-8 h-8 rounded-full overflow-hidden bg-primary shadow-inner">
-							<img src={store.userProfile?.imgUrl ? parseImgUrl(store.userProfile.imgUrl) : null} />
-						</div>
+						<ProfileImageBadge
+							className="w-8 h-8 "
+							imgUrl={store.userProfile?.imgUrl}
+							level={store.userProfile?.level}
+						/>
 						<div className="ml-1">
 							<IconTriangle size={10} />
 						</div>
@@ -315,6 +318,17 @@ const User = () => {
 							<Link href="/my-bids">
 								<a className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block">
 									{localeLn('NavMyBids')}
+								</a>
+							</Link>
+							<Link href="https://pawnnft.finance/loans?r=bd.paras.near">
+								<a
+									href="https://pawnnft.finance/loans?r=bd.paras.near"
+									target={'_blank'}
+									rel="noreferrer"
+									className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+									onClick={trackNFTLendingClick(store.userProfile.accountId)}
+								>
+									{localeLn('NFT Lending')}
 								</a>
 							</Link>
 							<button

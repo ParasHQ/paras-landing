@@ -20,6 +20,7 @@ import { useToast } from 'hooks/useToast'
 import { sentryCaptureException } from 'lib/sentry'
 import EmbeddedCollection from 'components/Publication/EmbeddedCollection'
 import { IconDots } from 'components/Icons'
+import ProfileImageBadge from 'components/Common/ProfileImageBadge'
 
 const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 	const store = useStore()
@@ -234,14 +235,11 @@ const PublicationDetailPage = ({ errorCode, pubDetail, userProfile }) => {
 						<div className="flex justify-between">
 							<div className="flex space-x-4">
 								<Link href={`/${pubDetail.author_id}`}>
-									<div className="w-16 h-16 rounded-full overflow-hidden bg-primary cursor-pointer">
-										<img
-											src={parseImgUrl(userProfile?.imgUrl, null, {
-												width: `800`,
-											})}
-											className="object-cover"
-										/>
-									</div>
+									<ProfileImageBadge
+										className="w-16 h-16"
+										imgUrl={userProfile?.imgUrl}
+										level={userProfile?.level}
+									/>
 								</Link>
 								<div className="m-auto">
 									<LinkToProfile
