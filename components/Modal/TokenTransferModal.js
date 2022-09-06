@@ -21,7 +21,7 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 	const { currentUser } = useStore()
 	const toast = useToast()
 	const { localeLn } = useIntl()
-	const { selector } = useWalletSelector()
+	const { signAndSendTransaction } = useWalletSelector()
 
 	const onTransfer = async () => {
 		if (!currentUser) {
@@ -67,8 +67,7 @@ const TokenTransferModal = ({ show, onClose, data }) => {
 		trackTransferToken(data.token_id)
 
 		try {
-			const wallet = await selector.wallet()
-			const res = await wallet.signAndSendTransaction({
+			const res = await signAndSendTransaction({
 				receiverId: data.contract_id,
 				actions: [
 					{

@@ -23,7 +23,7 @@ const TokenSeriesMintModal = ({ show, onClose, data }) => {
 	const { currentUser } = useStore()
 	const { localeLn } = useIntl()
 	const toast = useToast()
-	const { selector } = useWalletSelector()
+	const { signAndSendTransaction } = useWalletSelector()
 
 	const onTransfer = async () => {
 		if (!currentUser) {
@@ -68,8 +68,7 @@ const TokenSeriesMintModal = ({ show, onClose, data }) => {
 		trackMintToken(data.token_series_id)
 
 		try {
-			const wallet = await selector.wallet()
-			const res = await wallet.signAndSendTransaction({
+			const res = await signAndSendTransaction({
 				receiverId: data.contract_id,
 				actions: [
 					{

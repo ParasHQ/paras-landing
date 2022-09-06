@@ -21,7 +21,7 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 	const [isBuying, setIsBuying] = useState(false)
 	const { currentUser, setTransactionRes } = useStore()
 	const creatorData = useProfileData(data.metadata.creator_id)
-	const { selector } = useWalletSelector()
+	const { signAndSendTransaction } = useWalletSelector()
 
 	const { localeLn } = useIntl()
 
@@ -48,8 +48,7 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 		trackClickBuyButton(data.token_series_id)
 
 		try {
-			const wallet = await selector.wallet()
-			const res = await wallet.signAndSendTransaction({
+			const res = await signAndSendTransaction({
 				receiverId: data.contract_id,
 				actions: [
 					{

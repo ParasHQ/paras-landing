@@ -56,7 +56,7 @@ const Offer = ({
 	const isNFTTraded = data?.type && data?.type === 'trade'
 	const { nearUsdPrice } = useStore()
 	const { localeLn } = useIntl()
-	const { selector } = useWalletSelector()
+	const { signAndSendTransaction } = useWalletSelector()
 
 	useEffect(() => {
 		if (data.buyer_id) {
@@ -142,9 +142,8 @@ const Offer = ({
 			  }
 
 		try {
-			const wallet = await selector.wallet()
 			if (isNFTTraded) {
-				const res = await wallet.signAndSendTransaction({
+				const res = await signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{
@@ -169,7 +168,7 @@ const Offer = ({
 					setTimeout(fetchOffer, 2500)
 				}
 			} else {
-				const res = await wallet.signAndSendTransaction({
+				const res = await signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{
@@ -361,7 +360,7 @@ const TokenOffers = ({ localToken, className }) => {
 	const [offerBuyerData, setOfferBuyerData] = useState(null)
 	const toast = useToast()
 	const { localeLn } = useIntl()
-	const { selector } = useWalletSelector()
+	const { signAndSendTransaction } = useWalletSelector()
 
 	useEffect(() => {
 		if (localToken.token_series_id) {
@@ -414,9 +413,8 @@ const TokenOffers = ({ localToken, className }) => {
 
 			let res
 			// accept offer
-			const wallet = await selector.wallet()
 			if (userType === 'owner') {
-				res = await wallet.signAndSendTransaction({
+				res = await signAndSendTransaction({
 					receiverId: activeOffer.contract_id,
 					actions: [
 						{
@@ -433,7 +431,7 @@ const TokenOffers = ({ localToken, className }) => {
 			}
 			// batch tx -> mint & accept
 			else {
-				res = await wallet.signAndSendTransaction({
+				res = await signAndSendTransaction({
 					receiverId: activeOffer.contract_id,
 					actions: [
 						{
@@ -492,9 +490,8 @@ const TokenOffers = ({ localToken, className }) => {
 			buyer_token_id: offerBuyerData.buyer_token_id,
 		})
 
-		const wallet = await selector.wallet()
 		try {
-			const res = await wallet.signAndSendTransaction({
+			const res = await signAndSendTransaction({
 				receiverId: offerBuyerData.contract_id,
 				actions: [
 					{

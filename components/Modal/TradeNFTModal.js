@@ -23,7 +23,7 @@ const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) =
 	}))
 
 	const { localeLn } = useIntl()
-	const { selector, viewFunction } = useWalletSelector()
+	const { signAndSendTransaction, signAndSendTransactions, viewFunction } = useWalletSelector()
 	const [hasTraded] = useState(fromUpdate ? true : false)
 
 	useEffect(() => {
@@ -95,10 +95,9 @@ const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) =
 				})
 			}
 
-			const wallet = await selector.wallet()
 			let res
 			if (hasDepositStorage) {
-				res = await wallet.signAndSendTransaction({
+				res = await signAndSendTransaction({
 					receiverId: tradedToken[0].split('::')[0],
 					actions: [
 						{
@@ -148,7 +147,7 @@ const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) =
 						},
 					],
 				})
-				const res = await wallet.signAndSendTransactions({ transactions: txs })
+				const res = await signAndSendTransactions({ transactions: txs })
 				if (res.error && res.error.includes('reject')) {
 					setIsTrading(false)
 				} else if (res.response) {
