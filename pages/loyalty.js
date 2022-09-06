@@ -98,8 +98,10 @@ export default function Loyalty() {
 							It is a special program created to appreciate $PARAS stakers by giving exclusive
 							access to limited raffles.
 						</p>
+						{/* eslint-disable-next-line react/jsx-no-target-blank */}
 						<a
 							href={STAKE_PARAS_URL}
+							target={'_blank'}
 							className="inline-block p-3 bg-white text-primary font-bold border-[0.5rem] mt-4 border-primary rounded-xl text-xl"
 						>
 							Start Locked Staking
@@ -142,7 +144,7 @@ export default function Loyalty() {
 								<div className="flex">
 									<p className="loyalty-mechanism-number">1</p>
 									<p className="loyalty-mechanism-text">
-										Loyalty level will be fetermined based on the amount of $PARAS locked.
+										Loyalty level will be determined based on the amount of $PARAS locked.
 									</p>
 								</div>
 								<div className="text-center my-4">
@@ -275,8 +277,10 @@ export default function Loyalty() {
 
 					<div className="py-16 text-center">
 						<p className="text-white text-2xl">Join Paras Loyalty & Grab Your Rewards!</p>
+						{/* eslint-disable-next-line react/jsx-no-target-blank */}
 						<a
 							href={STAKE_PARAS_URL}
+							target="_blank"
 							className="inline-block p-3 bg-white text-primary font-bold border-[0.5rem] mt-4 border-primary rounded-xl text-xl"
 						>
 							Start Locked Staking
