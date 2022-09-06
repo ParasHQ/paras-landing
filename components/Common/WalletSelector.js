@@ -241,7 +241,8 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				setShowRamperSignModal(true)
 				return
 			} else {
-				signedMsg = (await signMessage({ message: msgBuf, network: 'testnet' })).result
+				const nearConfig = getConfig(process.env.APP_ENV || 'development')
+				signedMsg = (await signMessage({ message: msgBuf, network: nearConfig.networkId })).result
 
 				// save the signed message to local storage
 				const signedMsgString = JSON.stringify({ accountId, signedMsg })
