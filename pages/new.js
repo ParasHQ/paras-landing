@@ -82,7 +82,7 @@ const NewPage = () => {
 	const router = useRouter()
 	const toast = useToast()
 	const [formInput, setFormInput] = useState({})
-	const { selector, viewFunction } = useWalletSelector()
+	const { selector, signAndSendTransactions, viewFunction } = useWalletSelector()
 	const { errors, control, register, handleSubmit, watch, setValue, getValues } = useForm()
 	const { fields, append, remove } = useFieldArray({
 		control,
@@ -263,9 +263,7 @@ const NewPage = () => {
 				}
 			}
 
-			const wallet = await selector.wallet()
-
-			const res = await wallet.signAndSendTransactions({
+			const res = await signAndSendTransactions({
 				transactions: [
 					{
 						receiverId: process.env.NFT_CONTRACT_ID,

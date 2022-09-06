@@ -17,7 +17,7 @@ const TokenBurnModal = ({ show, onClose, data }) => {
 	const { localeLn } = useIntl()
 	const { currentUser } = useStore()
 	const toast = useToast()
-	const { selector } = useWalletSelector()
+	const { signAndSendTransaction } = useWalletSelector()
 
 	const onBurnToken = async () => {
 		if (!currentUser) {
@@ -31,8 +31,8 @@ const TokenBurnModal = ({ show, onClose, data }) => {
 			const params = {
 				token_id: data.token_id,
 			}
-			const wallet = await selector.wallet()
-			const res = await wallet.signAndSendTransaction({
+
+			const res = await signAndSendTransaction({
 				receiverId: data.contract_id,
 				actions: [
 					{

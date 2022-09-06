@@ -17,7 +17,7 @@ const CancelAuctionModal = ({ data, show, onClose }) => {
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const toast = useToast()
-	const { selector } = useWalletSelector()
+	const { signAndSendTransaction } = useWalletSelector()
 
 	const onCancelAuction = async () => {
 		setIsCancelAuction(true)
@@ -29,8 +29,7 @@ const CancelAuctionModal = ({ data, show, onClose }) => {
 				is_auction: true,
 			}
 
-			const wallet = await selector.wallet()
-			const res = await wallet.signAndSendTransaction({
+			const res = await signAndSendTransaction({
 				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				actions: [
 					{

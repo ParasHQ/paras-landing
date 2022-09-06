@@ -47,7 +47,7 @@ const PlaceOfferModal = ({
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const [isEnableTrade, setIsEnableTrade] = useState(true)
-	const { selector, viewFunction } = useWalletSelector()
+	const { signAndSendTransaction, viewFunction } = useWalletSelector()
 
 	useEffect(() => {
 		if (show) {
@@ -136,11 +136,10 @@ const PlaceOfferModal = ({
 				ft_token_id: 'near',
 				price: parseNearAmount(bidAmount),
 			}
-			const wallet = await selector.wallet()
 
 			let res
 			if (hasDepositStorage) {
-				res = await wallet.signAndSendTransaction({
+				res = await signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{
@@ -155,7 +154,7 @@ const PlaceOfferModal = ({
 					],
 				})
 			} else {
-				res = await wallet.signAndSendTransaction({
+				res = await signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{

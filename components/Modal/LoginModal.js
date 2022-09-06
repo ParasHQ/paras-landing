@@ -6,7 +6,7 @@ import { useIntl } from 'hooks/useIntl'
 
 const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 	const { localeLn } = useIntl()
-	const { modal } = useWalletSelector()
+	const { modal, signInRamper } = useWalletSelector()
 
 	return (
 		<Modal isShow={show} close={onClose}>
@@ -35,7 +35,19 @@ const LoginModal = ({ show, onClose, title = 'Please Login First' }) => {
 						{localeLn('You need NEAR account to login')}
 					</p>
 					<Button className="mt-2 px-1 h-12" size="md" isFullWidth onClick={() => modal.show()}>
-						{localeLn('Login')}
+						{localeLn('Login with Wallet')}
+					</Button>
+					<Button
+						className="mt-2 px-1 h-12"
+						size="md"
+						variant="white"
+						isFullWidth
+						onClick={() => {
+							onClose()
+							signInRamper()
+						}}
+					>
+						{localeLn('Login with Email')}
 					</Button>
 				</div>
 				<div className="absolute -top-4 -right-4 cursor-pointer" onClick={onClose}>
