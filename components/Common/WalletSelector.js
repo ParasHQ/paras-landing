@@ -24,6 +24,7 @@ import {
 } from '@ramper/near'
 import { createAction } from '@paras-wallet-selector/wallet-utils'
 import SignMesssageModal from 'components/Modal/SignMessageModal'
+import { sentryCaptureException } from 'lib/sentry'
 
 const WalletSelectorContext = React.createContext(null)
 
@@ -115,11 +116,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		if (!currentUser.accountId) return
 		setActiveWallet(walletType)
 
-		try {
-			await generateAuthToken(currentUser.accountId, walletType)
-		} catch (error) {
-			null
-		}
+		await generateAuthToken(currentUser.accountId, walletType)
 		store.setCurrentUser(currentUser.accountId)
 
 		Sentry.configureScope((scope) => {
@@ -186,30 +183,40 @@ export const WalletSelectorContextProvider = ({ children }) => {
 	}
 
 	const getAccountBalance = async (accountId) => {
-		const nearConfig = getConfig(process.env.APP_ENV || 'development')
-		const provider = new providers.JsonRpcProvider({ url: nearConfig.nodeUrl })
-		const state = await provider.query({
-			request_type: 'view_account',
-			account_id: accountId,
-			finality: 'final',
-		})
-		const protocolConfig = await provider.experimental_protocolConfig({
-			finality: 'final',
-		})
-		const costPerByte = JSBI.BigInt(protocolConfig.runtime_config.storage_amount_per_byte)
-		const stateStaked = JSBI.multiply(JSBI.BigInt(state.storage_usage), costPerByte)
-		const staked = JSBI.BigInt(state.locked)
-		const totalBalance = JSBI.add(JSBI.BigInt(state.amount), staked)
-		const availableBalance = JSBI.subtract(
-			totalBalance,
-			JSBI.greaterThan(staked, stateStaked) ? staked : stateStaked
-		)
+		try {
+			const nearConfig = getConfig(process.env.APP_ENV || 'development')
+			const provider = new providers.JsonRpcProvider({ url: nearConfig.nodeUrl })
+			const state = await provider.query({
+				request_type: 'view_account',
+				account_id: accountId,
+				finality: 'final',
+			})
+			const protocolConfig = await provider.experimental_protocolConfig({
+				finality: 'final',
+			})
+			const costPerByte = JSBI.BigInt(protocolConfig.runtime_config.storage_amount_per_byte)
+			const stateStaked = JSBI.multiply(JSBI.BigInt(state.storage_usage), costPerByte)
+			const staked = JSBI.BigInt(state.locked)
+			const totalBalance = JSBI.add(JSBI.BigInt(state.amount), staked)
+			const availableBalance = JSBI.subtract(
+				totalBalance,
+				JSBI.greaterThan(staked, stateStaked) ? staked : stateStaked
+			)
 
-		return {
-			total: totalBalance.toString(),
-			stateStaked: stateStaked.toString(),
-			staked: staked.toString(),
-			available: availableBalance.toString(),
+			return {
+				total: totalBalance.toString(),
+				stateStaked: stateStaked.toString(),
+				staked: staked.toString(),
+				available: availableBalance.toString(),
+			}
+		} catch (error) {
+			sentryCaptureException(error)
+			return {
+				total: '0',
+				stateStaked: '0',
+				staked: '0',
+				available: '0',
+			}
 		}
 	}
 

@@ -15,7 +15,7 @@ import getConfigTransak from 'config/transak'
 import { IconTriangle } from 'components/Icons'
 import { trackNFTLendingClick, trackTransakButton } from 'lib/ga'
 import { useWalletSelector } from 'components/Common/WalletSelector'
-import { signOut } from '@ramper/near'
+import { openWallet, signOut } from '@ramper/near'
 import ProfileImageBadge from 'components/Common/ProfileImageBadge'
 
 export function openTransak(fetchNearBalance, toast, accountId) {
@@ -344,6 +344,18 @@ const User = () => {
 								{localeLn('NavSettings')}
 							</button>
 							<hr className="my-2" />
+							{typeof window !== 'undefined' &&
+								window.localStorage.getItem('PARAS_ACTIVE_WALLET') === 'ramper' && (
+									<div
+										className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+										onClick={() => {
+											toggleAccountModal()
+											openWallet()
+										}}
+									>
+										{localeLn('My Ramper Wallet')}
+									</div>
+								)}
 							<div
 								className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
 								onClick={onClickSwitchAccount}
