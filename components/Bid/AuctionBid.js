@@ -17,7 +17,7 @@ const AuctionBid = ({ token, freshFetch }) => {
 	const router = useRouter()
 	const store = useStore()
 	const toast = useToast()
-	const { selector } = useWalletSelector()
+	const { signAndSendTransaction } = useWalletSelector()
 	const { localeLn } = useIntl()
 	const [bid, setBid] = useState({})
 	const [highestBid, setHighestBid] = useState({})
@@ -50,8 +50,7 @@ const AuctionBid = ({ token, freshFetch }) => {
 		}
 
 		try {
-			const wallet = await selector.wallet()
-			const res = await wallet.signAndSendTransaction({
+			const res = await signAndSendTransaction({
 				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 				actions: [
 					{
