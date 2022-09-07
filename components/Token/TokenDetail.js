@@ -299,9 +299,9 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			}
 		} else {
 			if (type === 'near') {
-				return formatNearAmount(token?.price)
+				return token.price ? formatNearAmount(token.price) : '0'
 			} else if (type === 'usd') {
-				const price = token?.price || token?.lowest_price
+				const price = token?.price || token?.lowest_price || '0'
 				return price.toString()
 			}
 		}

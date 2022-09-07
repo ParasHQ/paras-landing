@@ -95,6 +95,7 @@ const TokenSeriesDetailNew = ({ token }) => {
 					</div>
 					<div className="hidden md:block">
 						<TokenDescription localToken={token} className="mb-10" />
+						<TokenAttributes localToken={token} className="mb-10" />
 						<TokenInfo localToken={token} />
 					</div>
 				</div>
@@ -118,7 +119,6 @@ const TokenSeriesDetailNew = ({ token }) => {
 					)}
 					<TokenOwners localToken={token} className="mb-10" />
 					<TokenOffers localToken={token} className="mb-10" />
-					<TokenAttributes localToken={token} className="mb-10" />
 				</div>
 			</div>
 			<TokenMoreCollection localToken={token} className="col-span-2 mb-10 hidden md:block" />

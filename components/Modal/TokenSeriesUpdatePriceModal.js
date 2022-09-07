@@ -31,7 +31,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 	})
 	const tooltipLockedFeeText = `This is the current locked transaction fee. Every update to the NFT price will also update the value according to the global transaction fee.`
 	const { currentUser, setTransactionRes } = useStore()
-	const { selector, viewFunction } = useWalletSelector()
+	const { signAndSendTransaction, viewFunction } = useWalletSelector()
 
 	useEffect(() => {
 		const getTxFee = async () => {
@@ -72,8 +72,7 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 		trackUpdateListingTokenSeries(data.token_series_id)
 
 		try {
-			const wallet = await selector.wallet()
-			const res = await wallet.signAndSendTransaction({
+			const res = await signAndSendTransaction({
 				receiverId: data.contract_id,
 				actions: [
 					{
@@ -110,8 +109,8 @@ const TokenSeriesUpdatePriceModal = ({ show, onClose, data }) => {
 			const params = {
 				token_series_id: data.token_series_id,
 			}
-			const wallet = await selector.wallet()
-			const res = await wallet.signAndSendTransaction({
+
+			const res = await signAndSendTransaction({
 				receiverId: data.contract_id,
 				actions: [
 					{

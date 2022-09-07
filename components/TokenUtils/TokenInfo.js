@@ -45,7 +45,7 @@ const TokenInfo = ({ localToken, className }) => {
 					onClick={() => setIsDropDown(!isDropDown)}
 				>
 					<p className="text-xl py-3">Info</p>
-					<div className={`${!isDropDown && 'rotate-180'}`}>
+					<div className={`${isDropDown && 'rotate-180'}`}>
 						<IconDownArrow size={30} />
 					</div>
 				</div>
@@ -106,7 +106,7 @@ const TokenInfo = ({ localToken, className }) => {
 						)}
 					</div>
 					<div className="flex justify-between mb-2 md:mb-0">
-						<p>Mint Address</p>
+						<p>Token Id</p>
 						<p>
 							{prettyTruncate(localToken.token_id, 25, 'address') ||
 								prettyTruncate(localToken.token_series_id, 25, 'address')}

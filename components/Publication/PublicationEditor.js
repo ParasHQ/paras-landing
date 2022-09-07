@@ -333,7 +333,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 
 		const data = {
 			_id: uid,
-			author_id: currentUser.accountId,
+			author_id: currentUser,
 			title: title.getCurrentContent().getPlainText(),
 			draft: true,
 			thumbnail: _thumbnail,
@@ -366,7 +366,7 @@ const PublicationEditor = ({ isEdit = false, pubDetail = null, draftDetail = [] 
 			localStorage.setItem('draft-publication', JSON.stringify(draftStorage))
 		}
 
-		const routerUrl = `/${currentUser.accountId}/publication`
+		const routerUrl = `/${currentUser}/publication`
 		router.push(routerUrl)
 	}
 

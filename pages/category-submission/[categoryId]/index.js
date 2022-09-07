@@ -13,6 +13,7 @@ import { parseImgUrl, timeAgo } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
+import retry from 'async-retry'
 
 const CategorySubmission = () => {
 	const [submissions, setSubmissions] = useState(null)
@@ -32,35 +33,42 @@ const CategorySubmission = () => {
 
 	const getCategorySubmission = async () => {
 		if (categoryId) {
-			try {
-				const res = await ParasRequest.get(
-					`${process.env.V2_API_URL}/categories/tokens/submission`,
-					{
-						params: {
-							category_id: categoryId,
-							status: 'pending',
-						},
-						headers: {
-							'Content-Type': 'application/x-www-form-urlencoded',
-						},
+			await retry(
+				async () => {
+					const res = await ParasRequest.get(
+						`${process.env.V2_API_URL}/categories/tokens/submission`,
+						{
+							params: {
+								category_id: categoryId,
+								status: 'pending',
+							},
+							headers: {
+								'Content-Type': 'application/x-www-form-urlencoded',
+							},
+						}
+					)
+					if (res.success === 0 || res.message === 'unauthorized' || res.status === 401) {
+						sentryCaptureException('error unauthorized account to access submission category page')
+						toast.show({
+							text: (
+								<div className="font-semibold text-center text-sm">
+									{localeLn('DontHavePermission')}
+								</div>
+							),
+							type: 'error',
+							duration: 2500,
+						})
+						router.push('/')
+						return
+					} else {
+						setSubmissions(res.data.data.results)
 					}
-				)
-				setSubmissions(res.data.data.results)
-			} catch (error) {
-				sentryCaptureException(error)
-				if (error.response.status === 401) {
-					toast.show({
-						text: (
-							<div className="font-semibold text-center text-sm">
-								{localeLn('DontHavePermission')}
-							</div>
-						),
-						type: 'error',
-						duration: 2500,
-					})
-					router.push('/')
+				},
+				{
+					retries: 5,
+					factor: 1,
 				}
-			}
+			)
 		}
 	}
 

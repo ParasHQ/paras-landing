@@ -533,3 +533,17 @@ input[type='time']::-webkit-calendar-picker-indicator {
 		transform: scale(1);
 	}
 }
+
+@layer components {
+	.loyalty-mechanism-number {
+		@apply bg-[#E69138] p-2 font-semibold md:text-lg rounded-md px-5 flex items-center justify-center;
+	}
+
+	.loyalty-mechanism-text {
+		@apply bg-[#F1C232] font-semibold md:text-lg flex-1 p-2 rounded-md pl-4;
+	}
+
+	.notification-item {
+		@apply p-2 rounded-md button-wrapper flex items-center relative min-h-[6rem];
+	}
+}

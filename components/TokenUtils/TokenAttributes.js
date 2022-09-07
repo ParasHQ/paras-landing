@@ -20,7 +20,7 @@ const TokenAttributes = ({ localToken, className }) => {
 	const { localeLn } = useIntl()
 
 	useEffect(() => {
-		if (localToken.metadata.attributes && attributeRarity.length === 0) {
+		if (localToken.metadata.attributes) {
 			getRarity(localToken.metadata.attributes)
 		}
 	}, [localToken])
@@ -48,7 +48,7 @@ const TokenAttributes = ({ localToken, className }) => {
 					onClick={() => setIsDropDown(!isDropDown)}
 				>
 					<p className="text-xl py-3">Attributes</p>
-					<div className={`${!isDropDown && 'rotate-180'}`}>
+					<div className={`${isDropDown && 'rotate-180'}`}>
 						<IconDownArrow size={30} />
 					</div>
 				</div>

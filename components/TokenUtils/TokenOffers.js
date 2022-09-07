@@ -17,7 +17,6 @@ import {
 } from 'config/constants'
 import JSBI from 'jsbi'
 import { parseImgUrl, prettyBalance, timeAgo } from 'utils/common'
-import Avatar from 'components/Common/Avatar'
 import AcceptBidModal from 'components/Modal/AcceptBidModal'
 import { useToast } from 'hooks/useToast'
 import Media from 'components/Common/Media'
@@ -27,6 +26,7 @@ import BannedConfirmModal from 'components/Modal/BannedConfirmModal'
 import { IconDownArrow } from 'components/Icons'
 import { trackClickOffers } from 'lib/ga'
 import { useWalletSelector } from 'components/Common/WalletSelector'
+import ProfileImageBadge from 'components/Common/ProfileImageBadge'
 
 const FETCH_TOKENS_LIMIT = 12
 
@@ -56,7 +56,7 @@ const Offer = ({
 	const isNFTTraded = data?.type && data?.type === 'trade'
 	const { nearUsdPrice } = useStore()
 	const { localeLn } = useIntl()
-	const { selector } = useWalletSelector()
+	const { signAndSendTransaction } = useWalletSelector()
 
 	useEffect(() => {
 		if (data.buyer_id) {
@@ -142,9 +142,8 @@ const Offer = ({
 			  }
 
 		try {
-			const wallet = await selector.wallet()
 			if (isNFTTraded) {
-				const res = await wallet.signAndSendTransaction({
+				const res = await signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{
@@ -169,7 +168,7 @@ const Offer = ({
 					setTimeout(fetchOffer, 2500)
 				}
 			} else {
-				const res = await wallet.signAndSendTransaction({
+				const res = await signAndSendTransaction({
 					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
 					actions: [
 						{
@@ -222,7 +221,11 @@ const Offer = ({
 				<div className="flex items-center">
 					<div className="w-2/3 flex items-center">
 						<div className="hidden md:block">
-							<Avatar size="md" src={parseImgUrl(profile.imgUrl)} />
+							<ProfileImageBadge
+								className="w-8 h-8"
+								imgUrl={profile?.imgUrl}
+								level={profile?.level}
+							/>
 						</div>
 						<div className="pl-2">
 							<div className="overflow-hidden truncate">
@@ -357,7 +360,7 @@ const TokenOffers = ({ localToken, className }) => {
 	const [offerBuyerData, setOfferBuyerData] = useState(null)
 	const toast = useToast()
 	const { localeLn } = useIntl()
-	const { selector } = useWalletSelector()
+	const { signAndSendTransaction } = useWalletSelector()
 
 	useEffect(() => {
 		if (localToken.token_series_id) {
@@ -410,9 +413,8 @@ const TokenOffers = ({ localToken, className }) => {
 
 			let res
 			// accept offer
-			const wallet = await selector.wallet()
 			if (userType === 'owner') {
-				res = await wallet.signAndSendTransaction({
+				res = await signAndSendTransaction({
 					receiverId: activeOffer.contract_id,
 					actions: [
 						{
@@ -429,7 +431,7 @@ const TokenOffers = ({ localToken, className }) => {
 			}
 			// batch tx -> mint & accept
 			else {
-				res = await wallet.signAndSendTransaction({
+				res = await signAndSendTransaction({
 					receiverId: activeOffer.contract_id,
 					actions: [
 						{
@@ -488,9 +490,8 @@ const TokenOffers = ({ localToken, className }) => {
 			buyer_token_id: offerBuyerData.buyer_token_id,
 		})
 
-		const wallet = await selector.wallet()
 		try {
-			const res = await wallet.signAndSendTransaction({
+			const res = await signAndSendTransaction({
 				receiverId: offerBuyerData.contract_id,
 				actions: [
 					{
@@ -618,7 +619,7 @@ const TokenOffers = ({ localToken, className }) => {
 					onClick={() => setIsDropDown(!isDropDown)}
 				>
 					<p className="text-xl py-3">Offers</p>
-					<div className={`${!isDropDown && 'rotate-180'}`}>
+					<div className={`${isDropDown && 'rotate-180'}`}>
 						<IconDownArrow size={30} />
 					</div>
 				</div>

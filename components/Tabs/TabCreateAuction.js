@@ -28,7 +28,7 @@ const TabCreateAuction = ({ data, onClose }) => {
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const [isGreaterTime, setIsGreaterTime] = useState(false)
-	const { viewFunction, selector } = useWalletSelector()
+	const { viewFunction, signAndSendTransactions } = useWalletSelector()
 	const toast = useToast()
 
 	useEffect(() => {
@@ -118,7 +118,6 @@ const TabCreateAuction = ({ data, onClose }) => {
 
 		try {
 			const txs = []
-			const wallet = await selector.wallet()
 
 			if (needDeposit) {
 				txs.push({
@@ -166,7 +165,7 @@ const TabCreateAuction = ({ data, onClose }) => {
 				],
 			})
 
-			const res = await wallet.signAndSendTransactions({ transactions: txs })
+			const res = await signAndSendTransactions({ transactions: txs })
 
 			if (res) {
 				onClose()
