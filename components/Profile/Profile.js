@@ -103,8 +103,10 @@ const Profile = ({ userProfile, activeTab }) => {
 					imgUrl={profileData?.imgUrl}
 					level={profileData?.level}
 				/>
-				<p className={`${TEXT_BADGE_COLOR[profileData.level]} mt-4 text-xs font-light`}>
-					{capitalize(profileData.level)} Member
+				<p
+					className={`${TEXT_BADGE_COLOR[profileData?.level || 'bronze']} mt-4 text-xs font-light`}
+				>
+					{capitalize(profileData?.level || 'bronze')} Member
 				</p>
 				<div className="mt-1 max-w-sm text-center overflow-hidden">
 					{profileData?.isCreator && (
