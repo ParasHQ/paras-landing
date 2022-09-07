@@ -60,6 +60,12 @@ const Nav = () => {
 		}
 	}, [showMobileNav, showAutoComplete])
 
+	useEffect(() => {
+		if (store.currentUser && router.query.settings === 'newsletter') {
+			setShowSettingModal(true)
+		}
+	}, [store.currentUser, router.query.settings])
+
 	const debounce = (func, timeout) => {
 		let timer
 
