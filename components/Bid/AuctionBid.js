@@ -36,7 +36,7 @@ const AuctionBid = ({ token, freshFetch }) => {
 			issued_at: currentUserBid.issued_at,
 		}
 
-		const filteredHighestBid = token.bidder_list[0]
+		const filteredHighestBid = token.bidder_list[token.bidder_list.length - 1]
 
 		setBid(bidState)
 		setHighestBid(filteredHighestBid)
