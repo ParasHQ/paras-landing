@@ -7,6 +7,7 @@ import Bid from 'components/Bid/Bid'
 import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import useStore from 'lib/store'
+import AuctionBid from 'components/Bid/AuctionBid'
 
 import { useIntl } from 'hooks/useIntl'
 const MyBids = () => {
@@ -40,13 +41,34 @@ const MyBids = () => {
 		}
 
 		setIsFetching(true)
-		const res = await ParasRequest(
-			`${process.env.V2_API_URL}/offers?${
-				type === 'receivedBids'
-					? `receiver_id=${store.currentUser}`
-					: `buyer_id=${store.currentUser}`
-			}&__limit=10&__skip=${_page * 10}`
-		)
+		let res
+		switch (type) {
+			case 'myBids':
+				res = await ParasRequest(
+					`${process.env.V2_API_URL}/offers?buyer_id=${store.currentUser}&__limit=10&__skip=${
+						_page * 10
+					}`
+				)
+				break
+			case 'receivedBids':
+				res = await ParasRequest(
+					`${process.env.V2_API_URL}/offers?receiver_id=${store.currentUser}&__limit=10&__skip=${
+						_page * 10
+					}`
+				)
+				break
+			case 'myBidsAuction':
+				res = await ParasRequest(
+					`${process.env.V2_API_URL}/bids?bidder_id=${store.currentUser}&__limit=10&__skip=${
+						_page * 10
+					}`
+				)
+				break
+			default:
+				res = null
+				break
+		}
+
 		const newData = await res.data.data
 
 		const newBidsData = [..._bidsData, ...newData.results]
@@ -136,6 +158,14 @@ const MyBids = () => {
 					>
 						{localeLn('ReceivedOffers')}
 					</div>
+					<div
+						onClick={() => switchType('myBidsAuction')}
+						className={`cursor-pointer text-4xl text-gray-100 ${
+							type === 'myBidsAuction' ? 'font-bold' : 'opacity-75'
+						}`}
+					>
+						{localeLn('My Bids')}
+					</div>
 				</div>
 				<InfiniteScroll
 					dataLength={bidsData.length}
@@ -147,11 +177,20 @@ const MyBids = () => {
 						</div>
 					}
 				>
-					{bidsData.map((bid) => (
-						<div key={bid._id}>
-							<Bid data={bid} type={type} freshFetch={() => _fetchData(true)} />
-						</div>
-					))}
+					{type === 'myBidsAuction' &&
+						bidsData.map((bid) => (
+							<div key={bid._id}>
+								<AuctionBid token={bid} freshFetch={() => _fetchData(true)} />
+							</div>
+						))}
+
+					{(type === 'myBids' || type === 'receivedBids') &&
+						bidsData.map((bid) => (
+							<div key={bid._id}>
+								<Bid data={bid} type={type} freshFetch={() => _fetchData(true)} />
+							</div>
+						))}
+
 					{bidsData.length === 0 && !hasMore && (
 						<div className="border-2 border-dashed p-2 rounded-md text-center border-gray-800 my-4">
 							<p className="my-20 text-center text-gray-200">{localeLn('NoActiveOffer')}</p>
