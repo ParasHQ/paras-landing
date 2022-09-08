@@ -12,7 +12,7 @@ const TopTransactionCard = ({ contract_token_id, setLocalToken }) => {
 	const [contractId, tokenId] = contract_token_id.split('::')
 
 	useEffect(() => {
-		const variant = localStorage.getItem('variant') || 0
+		const variant = 0
 		setVariant(variant)
 	})
 
