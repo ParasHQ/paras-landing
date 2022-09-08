@@ -116,8 +116,10 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		if (!currentUser.accountId) return
 		setActiveWallet(walletType)
 
-		await generateAuthToken(currentUser.accountId, walletType)
+		const authToken = await generateAuthToken(currentUser.accountId, walletType)
 		store.setCurrentUser(currentUser.accountId)
+
+		if (!authToken) return
 
 		Sentry.configureScope((scope) => {
 			const user = currentUser ? { id: currentUser.accountId } : null
@@ -167,6 +169,8 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			args: { account_id: currentUser.accountId },
 		})
 		store.setParasBalance(parasBalance)
+
+		store.setInitialized(true)
 	}
 
 	const viewFunction = async ({ receiverId, methodName, args = '' }) => {
@@ -243,6 +247,8 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			} else {
 				const nearConfig = getConfig(process.env.APP_ENV || 'development')
 				signedMsg = (await signMessage({ message: msgBuf, network: nearConfig.networkId })).result
+
+				if (!signedMsg) return
 
 				// save the signed message to local storage
 				const signedMsgString = JSON.stringify({ accountId, signedMsg })
@@ -341,7 +347,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		>
 			<SignMesssageModal
 				show={showRamperSignModal}
-				onClick={() => generateAuthToken(store.currentUser, 'ramper')}
+				onClick={async () => setupUser({ accountId: store.currentUser }, 'ramper')}
 			/>
 			{children}
 		</WalletSelectorContext.Provider>
