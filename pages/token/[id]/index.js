@@ -31,7 +31,7 @@ const TokenSeriesPage = ({ errorCode, initial }) => {
 		await mutate()
 	}
 	useEffect(() => {
-		const variant = localStorage.getItem('variant') || 0
+		const variant = 0
 		setVariant(variant)
 		if (window && window.gtag) {
 			window.gtag('event', 'experiment_impression', {
