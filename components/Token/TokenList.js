@@ -169,7 +169,7 @@ const TokenSingle = ({
 	const [isEndedTime, setIsEndedTime] = useState(false)
 
 	useEffect(() => {
-		const variant = localStorage.getItem('variant') || 0
+		const variant = 0
 		setVariant(variant)
 	})
 

@@ -21,6 +21,7 @@ import {
 	getUser,
 	signMessage,
 	sendTransaction,
+	signOut,
 } from '@ramper/near'
 import { createAction } from '@paras-wallet-selector/wallet-utils'
 import SignMesssageModal from 'components/Modal/SignMessageModal'
@@ -106,6 +107,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 	}, [selector])
 
 	const signInRamper = async () => {
+		localStorage.removeItem('RAMPER_SIGNED_MSG')
 		await signIn()
 		const user = getUser()
 
@@ -116,8 +118,10 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		if (!currentUser.accountId) return
 		setActiveWallet(walletType)
 
-		await generateAuthToken(currentUser.accountId, walletType)
+		const authToken = await generateAuthToken(currentUser.accountId, walletType)
 		store.setCurrentUser(currentUser.accountId)
+
+		if (!authToken) return
 
 		Sentry.configureScope((scope) => {
 			const user = currentUser ? { id: currentUser.accountId } : null
@@ -167,6 +171,8 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			args: { account_id: currentUser.accountId },
 		})
 		store.setParasBalance(parasBalance)
+
+		store.setInitialized(true)
 	}
 
 	const viewFunction = async ({ receiverId, methodName, args = '' }) => {
@@ -243,11 +249,21 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			} else {
 				const nearConfig = getConfig(process.env.APP_ENV || 'development')
 				signedMsg = (await signMessage({ message: msgBuf, network: nearConfig.networkId })).result
-
-				// save the signed message to local storage
-				const signedMsgString = JSON.stringify({ accountId, signedMsg })
-				localStorage.setItem('RAMPER_SIGNED_MSG', signedMsgString)
 			}
+
+			if (!signedMsg) {
+				signOut()
+				localStorage.removeItem('RAMPER_SIGNED_MSG')
+				localStorage.removeItem('PARAS_ACTIVE_WALLET')
+
+				window.location.replace(window.location.origin + window.location.pathname)
+				return
+			}
+
+			// save the signed message to local storage
+			const signedMsgString = JSON.stringify({ accountId, signedMsg })
+			localStorage.setItem('RAMPER_SIGNED_MSG', signedMsgString)
+
 			signedMsg.publicKey.data = new Uint8Array(Object.values(signedMsg.publicKey.data))
 			signedMsg.signature = new Uint8Array(Object.values(signedMsg.signature))
 		}
@@ -341,7 +357,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		>
 			<SignMesssageModal
 				show={showRamperSignModal}
-				onClick={() => generateAuthToken(store.currentUser, 'ramper')}
+				onClick={async () => setupUser({ accountId: store.currentUser }, 'ramper')}
 			/>
 			{children}
 		</WalletSelectorContext.Provider>
