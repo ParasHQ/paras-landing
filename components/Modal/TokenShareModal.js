@@ -7,6 +7,8 @@ import {
 	TwitterShareButton,
 } from 'react-share'
 import ListModal from './ListModal'
+import axios from 'axios'
+import { useEffect } from 'react'
 
 const Share = ({ show, onClose, tokenData }) => {
 	const ShareList = [
@@ -47,6 +49,21 @@ const Share = ({ show, onClose, tokenData }) => {
 }
 
 const TokenShareModal = ({ show, onClose, tokenData }) => {
+	useEffect(() => {
+		const fetchCollection = async () => {
+			const res = await axios.get(`${process.env.V2_API_URL}/collections`, {
+				params: {
+					collection_id: tokenData.metadata.collection_id || tokenData.contract_id,
+				},
+			})
+
+			const collectionName = res.data.data.results[0].collection || tokenData.contract_id
+			tokenData.metadata.collection = collectionName
+		}
+
+		fetchCollection()
+	}, [])
+
 	if (typeof window == 'undefined') {
 		return null
 	}
