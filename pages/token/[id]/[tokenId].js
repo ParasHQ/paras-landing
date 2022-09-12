@@ -30,7 +30,7 @@ const TokenPage = ({ errorCode, initial }) => {
 	const [isEndedTime, setIsEndedTime] = useState(false)
 
 	useEffect(() => {
-		const variant = localStorage.getItem('variant') || 0
+		const variant = 0
 		setVariant(variant)
 		if (window && window.gtag) {
 			window.gtag('event', 'experiment_impression', {
