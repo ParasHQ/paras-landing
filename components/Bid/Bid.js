@@ -529,8 +529,12 @@ const Bid = ({ data, type, freshFetch }) => {
 												},
 											},
 											token.token_id
-												? `/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`
-												: `/token/${token.contract_id}::${token.token_series_id}`,
+												? `/token/${token.contract_id}::${encodeURIComponent(
+														token.token_series_id
+												  )}/${encodeURIComponent(token.token_id)}`
+												: `/token/${token.contract_id}::${encodeURIComponent(
+														token.token_series_id
+												  )}`,
 											{
 												shallow: true,
 												scroll: false,
@@ -633,8 +637,10 @@ const Bid = ({ data, type, freshFetch }) => {
 											},
 										},
 										token.token_id
-											? `/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`
-											: `/token/${token.contract_id}::${token.token_series_id}`,
+											? `/token/${token.contract_id}::${encodeURIComponent(
+													token.token_series_id
+											  )}/${encodeURIComponent(token.token_id)}`
+											: `/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}`,
 										{
 											shallow: true,
 											scroll: false,
@@ -667,8 +673,12 @@ const Bid = ({ data, type, freshFetch }) => {
 										}}
 										as={
 											token.token_id
-												? `/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`
-												: `/token/${token.contract_id}::${token.token_series_id}`
+												? `/token/${token.contract_id}::${encodeURIComponent(
+														token.token_series_id
+												  )}/${encodeURIComponent(token.token_id)}`
+												: `/token/${token.contract_id}::${encodeURIComponent(
+														token.token_series_id
+												  )}`
 										}
 										scroll={false}
 										shallow
@@ -712,8 +722,12 @@ const Bid = ({ data, type, freshFetch }) => {
 										}}
 										as={
 											tradedTokenData?.token_id
-												? `/token/${tradedTokenData?.contract_id}::${tradedTokenData?.token_series_id}/${tradedTokenData?.token_id}`
-												: `/token/${tradedTokenData?.contract_id}::${tradedTokenData?.token_series_id}`
+												? `/token/${tradedTokenData?.contract_id}::${encodeURIComponent(
+														tradedTokenData?.token_series_id
+												  )}/${encodeURIComponent(tradedTokenData?.token_id)}`
+												: `/token/${tradedTokenData?.contract_id}::${encodeURIComponent(
+														tradedTokenData?.token_series_id
+												  )}`
 										}
 										scroll={false}
 										shallow
@@ -740,8 +754,12 @@ const Bid = ({ data, type, freshFetch }) => {
 										}}
 										as={
 											token.token_id
-												? `/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`
-												: `/token/${token.contract_id}::${token.token_series_id}`
+												? `/token/${token.contract_id}::${encodeURIComponent(
+														token.token_series_id
+												  )}/${encodeURIComponent(token.token_id)}`
+												: `/token/${token.contract_id}::${encodeURIComponent(
+														token.token_series_id
+												  )}`
 										}
 										scroll={false}
 										shallow

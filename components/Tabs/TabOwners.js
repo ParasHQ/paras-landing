@@ -271,7 +271,11 @@ const Owner = ({ initial = {}, onBuy, onUpdateListing }) => {
 					)}
 				</div>
 				<div className="pl-4 overflow-hidden">
-					<Link href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}>
+					<Link
+						href={`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
+							token.token_id && encodeURIComponent(token.token_id)
+						}`}
+					>
 						<a className="hover:opacity-80">
 							<p className="text-white font-semibold truncate">
 								{token.contract_id === process.env.NFT_CONTRACT_ID
