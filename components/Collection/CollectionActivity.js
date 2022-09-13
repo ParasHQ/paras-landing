@@ -417,7 +417,9 @@ const CollectionActivity = ({
 												<div className="w-1/4 bg-blue-900 rounded-lg z-20">
 													{activity?.data?.[0]?.metadata.media && (
 														<Link
-															href={`/token/${activity.contract_id}::${activity.token_series_id}`}
+															href={`/token/${activity.contract_id}::${encodeURIComponent(
+																activity.token_series_id
+															)}`}
 														>
 															<a>
 																<Media
@@ -440,14 +442,18 @@ const CollectionActivity = ({
 												</div>
 												<div className="pl-4 overflow-hidden cursor-pointer">
 													<Link
-														href={`/token/${activity.contract_id}::${activity.token_series_id}`}
+														href={`/token/${activity.contract_id}::${encodeURIComponent(
+															activity.token_series_id
+														)}`}
 													>
 														<a className="font-semibold z-20">
 															{prettyTruncate(activity?.data?.[0]?.metadata.title, 25)}
 														</a>
 													</Link>
 													<Link
-														href={`/token/${activity.contract_id}::${activity.token_series_id}`}
+														href={`/token/${activity.contract_id}::${encodeURIComponent(
+															activity.token_series_id
+														)}`}
 													>
 														<p className="w-min md:hidden font-semibold truncate z-20">
 															{formatNearAmount(activity.price ? activity.price : '0')} Ⓝ

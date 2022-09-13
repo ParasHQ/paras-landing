@@ -335,7 +335,7 @@ const SpecialCard = ({
 						contractId: localToken.contract_id,
 					},
 				},
-				`/token/${localToken.contract_id}::${localToken.token_series_id}`,
+				`/token/${localToken.contract_id}::${encodeURIComponent(localToken.token_series_id)}`,
 				{
 					shallow: true,
 					scroll: false,

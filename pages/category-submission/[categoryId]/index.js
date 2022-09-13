@@ -246,7 +246,9 @@ const SubmissionDetail = ({ submission, updateData }) => {
 									contractId: localToken?.contract_id,
 								},
 							}}
-							as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}`}
+							as={`/token/${localToken?.contract_id}::${encodeURIComponent(
+								localToken?.token_series_id
+							)}`}
 							scroll={false}
 							shallow
 						>

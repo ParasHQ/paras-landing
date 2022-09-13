@@ -267,16 +267,16 @@ const SuccessTransactionModal = () => {
 
 	if (!showModal || !token) return null
 
-	const tokenUrl = `${window.location.hostname}/token/${token.contract_id}::${
+	const tokenUrl = `${window.location.hostname}/token/${token.contract_id}::${encodeURIComponent(
 		token.token_series_id
-	}${token.token_id ? `/${token.token_id}` : ''}`
+	)}${token.token_id ? `/${encodeURIComponent(token.token_id)}` : ''}`
 
 	const explorerUrl = (txhash) =>
 		getConfig(process.env.APP_ENV || 'development').explorerUrl + '/transactions/' + txhash
 
 	const onClickSeeToken = () => {
-		const url = `/token/${token.contract_id}::${token.token_series_id}${
-			token.token_id ? `/${token.token_id}` : ''
+		const url = `/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}${
+			token.token_id ? `/${encodeURIComponent(token.token_id)}` : ''
 		}${txDetail.method_name === 'add_offer' ? '?tab=offers' : ''}`
 		router.push(url)
 		onCloseModal()

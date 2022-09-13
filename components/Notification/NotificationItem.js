@@ -82,9 +82,9 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 
 	const url = `/token/${notif.contract_id}::${
 		notif.type === 'notification_add_trade' || notif.type === 'accept_trade'
-			? notif.token_id?.split(':')[0]
-			: notif.token_series_id
-	}${notif.token_id ? `/${notif.token_id}` : ''}`
+			? encodeURIComponent(notif.token_id?.split(':')[0])
+			: encodeURIComponent(notif.token_series_id)
+	}${notif.token_id ? `/${encodeURIComponent(notif.token_id)}` : ''}`
 
 	if (notif.type === 'notification_level_up') {
 		return (

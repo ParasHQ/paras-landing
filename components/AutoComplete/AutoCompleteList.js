@@ -188,7 +188,11 @@ const AutoCompleteList = ({
 											<div
 												key={idx}
 												onClick={() =>
-													router.push(`/token/${item.contract_id}::${item.token_series_id}`)
+													router.push(
+														`/token/${item.contract_id}::${encodeURIComponent(
+															item.token_series_id
+														)}`
+													)
 												}
 											>
 												<a>
