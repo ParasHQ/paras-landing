@@ -8,9 +8,28 @@ import {
 } from 'react-share'
 import ListModal from './ListModal'
 import axios from 'axios'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const Share = ({ show, onClose, tokenData }) => {
+	const [collection, setCollection] = useState(null)
+
+	useEffect(() => {
+		if (show) {
+			const fetchCollection = async () => {
+				const res = await axios.get(`${process.env.V2_API_URL}/collections`, {
+					params: {
+						collection_id: tokenData.metadata.collection_id || tokenData.contract_id,
+					},
+				})
+
+				const collectionName = res.data.data.results[0].collection || tokenData.contract_id
+				setCollection(collectionName)
+			}
+
+			fetchCollection()
+		}
+	}, [show])
+
 	const ShareList = [
 		{
 			name: (
@@ -24,7 +43,7 @@ const Share = ({ show, onClose, tokenData }) => {
 		{
 			name: (
 				<TwitterShareButton
-					title={`Checkout ${tokenData.metadata.title} from collection ${tokenData.metadata.collection} on @ParasHQ\n\n#paras #cryptoart #digitalart #tradingcards`}
+					title={`Checkout ${tokenData.metadata.title} from collection ${collection} on @ParasHQ\n\n#paras #cryptoart #digitalart #tradingcards`}
 					url={window.location.href}
 					className="flex text-white"
 				>
@@ -45,25 +64,17 @@ const Share = ({ show, onClose, tokenData }) => {
 		},
 	]
 
-	return <ListModal show={show} onClose={onClose} list={ShareList} />
+	return (
+		<ListModal
+			show={show}
+			onClose={onClose}
+			list={ShareList}
+			isFetching={!collection ? true : false}
+		/>
+	)
 }
 
 const TokenShareModal = ({ show, onClose, tokenData }) => {
-	useEffect(() => {
-		const fetchCollection = async () => {
-			const res = await axios.get(`${process.env.V2_API_URL}/collections`, {
-				params: {
-					collection_id: tokenData.metadata.collection_id || tokenData.contract_id,
-				},
-			})
-
-			const collectionName = res.data.data.results[0].collection || tokenData.contract_id
-			tokenData.metadata.collection = collectionName
-		}
-
-		fetchCollection()
-	}, [])
-
 	if (typeof window == 'undefined') {
 		return null
 	}
