@@ -7,6 +7,14 @@ import { parseImgUrl } from 'utils/common'
 import useSWR from 'swr'
 import axios from 'axios'
 import { STAKE_PARAS_URL } from 'constants/common'
+import { useEffect } from 'react'
+import {
+	trackViewLPLoyalty,
+	trackClickHowToLoyalty,
+	trackClickTCLoyalty,
+	trackClickBottomButtonLockedStaking,
+	trackClickTopButtonLockedStaking,
+} from 'lib/ga'
 
 const url = `${process.env.V2_API_URL}/raffle/current`
 const fetchData = () => axios.get(url).then((res) => res.data)
@@ -17,6 +25,10 @@ export default function Loyalty() {
 		revalidateIfStale: false,
 		revalidateOnReconnect: false,
 	})
+
+	useEffect(() => {
+		trackViewLPLoyalty()
+	}, [])
 
 	return (
 		<div className="min-h-screen relative bg-black">
@@ -102,6 +114,7 @@ export default function Loyalty() {
 						<a
 							href={STAKE_PARAS_URL}
 							target={'_blank'}
+							onClick={trackClickTopButtonLockedStaking}
 							className="inline-block p-3 bg-white text-primary font-bold border-[0.5rem] mt-4 border-primary rounded-xl text-xl"
 						>
 							Start Locked Staking
@@ -162,6 +175,7 @@ export default function Loyalty() {
 										<a
 											href="https://paras.id/publication/how-to-do-locked-staking-6311c2d10de00d001cd7a05a"
 											className="text-blue-700 underline"
+											onClick={trackClickHowToLoyalty}
 										>
 											here
 										</a>
@@ -266,6 +280,7 @@ export default function Loyalty() {
 										<a
 											href="https://guide.paras.id/terms-and-conditions/loyalty-program"
 											className="text-blue-700 underline"
+											onClick={trackClickTCLoyalty}
 										>
 											Terms & Conditions of Paras Loyalty.
 										</a>
@@ -281,6 +296,7 @@ export default function Loyalty() {
 						<a
 							href={STAKE_PARAS_URL}
 							target="_blank"
+							onClick={trackClickBottomButtonLockedStaking}
 							className="inline-block p-3 bg-white text-primary font-bold border-[0.5rem] mt-4 border-primary rounded-xl text-xl"
 						>
 							Start Locked Staking
