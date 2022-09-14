@@ -312,6 +312,12 @@ const TokenSeriesSingle = ({
 			// Multiple Edition
 			if (token.token === undefined && token.lowest_price) {
 				onClickSeeDetails(token, { tab: 'owners' })
+			} else if (
+				token.token &&
+				token.token.owner_id === currentUser &&
+				token.token.disable_market
+			) {
+				setModalType('disablemarket')
 			}
 			// 1 of 1 Edition, owned by current user
 			else if (token.token && token.token.owner_id === currentUser) {

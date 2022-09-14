@@ -13,6 +13,7 @@ import useToken from 'hooks/useToken'
 import { IconDownArrow } from 'components/Icons'
 import { trackClickOwners } from 'lib/ga'
 import ProfileImageBadge from 'components/Common/ProfileImageBadge'
+import DisableMarketModal from 'components/Modal/DisableMarketModal'
 
 const FETCH_TOKENS_LIMIT = 100
 
@@ -63,7 +64,7 @@ const TokenOwners = ({ localToken, className }) => {
 
 	const onUpdateListing = async (token) => {
 		setActiveToken(token)
-		setShowModal('update')
+		setShowModal(token.disable_market ? 'disableMarket' : 'update')
 	}
 
 	const onDismissModal = () => {
@@ -164,6 +165,9 @@ const TokenOwners = ({ localToken, className }) => {
 					onClose={onDismissModal}
 					data={activeToken}
 				/>
+			)}
+			{showModal === 'disableMarket' && (
+				<DisableMarketModal show={showModal === 'disableMarket'} onClose={onDismissModal} />
 			)}
 		</div>
 	)

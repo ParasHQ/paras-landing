@@ -11,6 +11,7 @@ import { prettyBalance, prettyTruncate } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import useToken from 'hooks/useToken'
 import ProfileImageBadge from 'components/Common/ProfileImageBadge'
+import DisableMarketModal from 'components/Modal/DisableMarketModal'
 
 const FETCH_TOKENS_LIMIT = 100
 
@@ -60,7 +61,7 @@ const TabOwners = ({ localToken, isAuctionEnds }) => {
 
 	const onUpdateListing = async (token) => {
 		setActiveToken(token)
-		setShowModal('update')
+		setShowModal(token.disable_market ? 'disableMarket' : 'update')
 	}
 
 	const onDismissModal = () => {
@@ -143,6 +144,9 @@ const TabOwners = ({ localToken, isAuctionEnds }) => {
 					onClose={onDismissModal}
 					data={activeToken}
 				/>
+			)}
+			{showModal === 'disableMarket' && (
+				<DisableMarketModal show={showModal === 'disableMarket'} onClose={onDismissModal} />
 			)}
 		</div>
 	)

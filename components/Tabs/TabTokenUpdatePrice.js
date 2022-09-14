@@ -484,7 +484,7 @@ const TabTokenUpdatePrice = ({ show, onClose, data }) => {
 					type="submit"
 					size="md"
 					isFullWidth
-					isDisabled={newPrice === '' || isUpdatingPrice}
+					isDisabled={newPrice === '' || isUpdatingPrice || data.disable_market}
 					isLoading={isUpdatingPrice}
 					onClick={handleSubmit(onUpdateListing)}
 				>

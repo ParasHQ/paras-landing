@@ -45,6 +45,7 @@ import CancelBidModal from 'components/Modal/CancelBidModal'
 import { mutate } from 'swr'
 import IconLove from 'components/Icons/component/IconLove'
 import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
+import DisableMarketModal from 'components/Modal/DisableMarketModal'
 
 const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -827,7 +828,13 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 							!isAuctionEnds && (
 								<div className="flex flex-wrap space-x-4">
 									<div className="w-full flex-1">
-										<Button size="md" onClick={() => setShowModal('updatePrice')} isFullWidth>
+										<Button
+											size="md"
+											onClick={() =>
+												setShowModal(token.disable_market ? 'disableMarket' : 'updatePrice')
+											}
+											isFullWidth
+										>
 											{localeLn('UpdateListing')}
 										</Button>
 									</div>
@@ -883,7 +890,9 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 				listModalItem={[
 					{ name: 'Share to...', onClick: onClickShare },
 					!isOwner() && !token.is_staked && { name: 'Offer Via NFT', onClick: onClickOfferNFT },
-					isOwner() && !token.is_staked && { name: 'Update Listing', onClick: onClickUpdate },
+					isOwner() &&
+						!token.is_staked &&
+						!token.disable_market && { name: 'Update Listing', onClick: onClickUpdate },
 					isOwner() && !token.is_staked && { name: 'Transfer', onClick: onClickTransfer },
 					isOwner() && !token.is_staked && { name: 'Burn Card', onClick: onClickBurn },
 					{ name: 'Report', onClick: () => setShowModal('report') },
@@ -936,6 +945,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			/>
 			<ReportModal show={showModal === 'report'} data={token} onClose={onDismissModal} />
 			<LoginModal show={showModal === 'notLogin'} onClose={onDismissModal} />
+			<DisableMarketModal show={showModal === 'disableMarket'} onClose={onDismissModal} />
 		</div>
 	)
 }

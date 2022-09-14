@@ -7,6 +7,7 @@ import TokenSeriesBuyModal from './TokenSeriesBuyModal'
 import TokenSeriesUpdatePriceModal from './TokenSeriesUpdatePriceModal'
 import TokenUpdatePriceModal from './TokenUpdatePriceModal'
 import TradeNFTModal from './TradeNFTModal'
+import DisableMarketModal from './DisableMarketModal'
 
 const MarketTokenModal = ({
 	useNFTModal = false,
@@ -66,6 +67,10 @@ const MarketTokenModal = ({
 
 	if (modalType === 'placebid') {
 		return <TokenAuctionBidModal data={localToken} onClose={onCloseModal} show />
+	}
+
+	if (modalType === 'disablemarket') {
+		return <DisableMarketModal show={modalType === 'disablemarket'} onClose={onCloseModal} />
 	}
 
 	return null

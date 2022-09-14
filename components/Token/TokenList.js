@@ -297,7 +297,9 @@ const TokenSingle = ({
 		const price = token.price
 
 		setActiveToken(token)
-		if (token.owner_id === currentUser) {
+		if (token.owner_id === currentUser && token.disable_market) {
+			setModalType('disablemarket')
+		} else if (token.owner_id === currentUser) {
 			if (token.is_staked) {
 				router.push('https://stake.paras.id')
 				return
