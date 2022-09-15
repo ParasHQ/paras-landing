@@ -38,12 +38,14 @@ import { Canvas } from '@react-three/fiber'
 import { Model1 } from 'components/Model3D/ThreeDModel'
 import FileType from 'file-type/browser'
 import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	const router = useRouter()
 	const [activeTab, setActiveTab] = useState('info')
 	const [showModal, setShowModal] = useState('creatorTransfer')
 	const [isLiked, setIsLiked] = useState(false)
+	const [hasBid, setHasBid] = useState(false)
 	const [defaultLikes, setDefaultLikes] = useState(0)
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
@@ -55,6 +57,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	const [threeDUrl, setThreeDUrl] = useState('')
 	const [showLove, setShowLove] = useState(false)
 	const [fileType, setFileType] = useState(token?.metadata?.mime_type)
+	const { viewFunction } = useWalletSelector()
 
 	useEffect(() => {
 		if (!process.env.WHITELIST_CONTRACT_ID.split(';').includes(token?.contract_id)) {
@@ -66,6 +69,29 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 		setActiveTab('info')
 		setTokenDisplay('detail')
 	}, [router.query.id])
+
+	useEffect(() => {
+		const viewGetOffer = async () => {
+			try {
+				const params = {
+					nft_contract_id: token.contract_id,
+					buyer_id: currentUser,
+					...(token.token_id
+						? { token_id: token.token_id }
+						: { token_series_id: token.token_series_id }),
+				}
+				await viewFunction({
+					methodName: 'get_offer',
+					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
+					args: params,
+				})
+				setHasBid(true)
+			} catch (error) {
+				// if doesn't have offer
+			}
+		}
+		viewGetOffer()
+	}, [])
 
 	useEffect(() => {
 		if (token?.total_likes) {
@@ -220,7 +246,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 					</Button>
 					{!disableOfferContract && (
 						<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
-							{`Place an offer`}
+							{hasBid ? `Update Offer` : `Make Offer`}
 						</Button>
 					)}
 				</div>
@@ -249,7 +275,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 						</Button>
 						{!disableOfferContract && (
 							<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
-								{`Place an offer`}
+								{hasBid ? `Update Offer` : `Make Offer`}
 							</Button>
 						)}
 					</div>
@@ -273,7 +299,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 		} else {
 			return (
 				<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
-					{`Place an offer`}
+					{hasBid ? `Update Offer` : `Make Offer`}
 				</Button>
 			)
 		}
