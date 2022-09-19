@@ -191,7 +191,7 @@ const CardInfo = {
 	NotAllowedToList: 'No tienes permitido listar esta tarjeta en este momento',
 	NotAllowedToBuy:
 		'No tienes permitido comprar esta tarjeta en este momento. Solo cuentas en la lista blanca pueden comprar esta tarjeta',
-	AboutToAcceptBid: 'Estás a punto de aceptar la oferta por',
+	AboutToAcceptBid: 'Está a punto de aceptar la oferta de',
 	From: 'de',
 	RoyaltyForArtist: 'Regalías para Artistas',
 	ServiceFee: 'Comisión de Servicio',
