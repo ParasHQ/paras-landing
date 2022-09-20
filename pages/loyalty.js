@@ -140,7 +140,19 @@ export default function Loyalty() {
 							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16">
 								WL Spots & Free NFTs from New & Upcoming Projects
 							</p>
-							<p className="font-bold py-16 text-center text-xl">Coming Soon</p>
+							{/* <p className="font-bold py-16 text-center text-xl">Coming Soon</p> */}
+							<div className="my-8 flex items-center justify-center md:space-x-8 mx-4 md:mx-28 flex-wrap">
+								{data?.raffle.reward.wl_spot.map((nft) => (
+									<div className="w-1/2 md:w-1/4 mb-6 p-2" key={nft.name}>
+										<div className="w-28 h-28 md:h-44 md:w-44 rounded-md border-4 border-[#20124D] m-auto">
+											<a href={nft.link} target="_blank" rel="noreferrer">
+												<img className="h-full w-full object-cover" src={parseImgUrl(nft.media)} />
+											</a>
+										</div>
+										<p className="font-bold py-4 text-center md:text-xl">{nft.name}</p>
+									</div>
+								))}
+							</div>
 						</div>
 					</div>
 
@@ -316,7 +328,7 @@ const RewardNFT = ({ data, level }) => {
 	return (
 		<>
 			<p className="font-bold mt-6 text-center text-xl">{level}</p>
-			<div className="flex flex-wrap items-center justify-center md:mx-32 my-4">
+			<div className="flex flex-wrap items-center justify-center md:mx-16 my-4">
 				{data?.map(({ token }) => {
 					if (!token) return null
 					return (
