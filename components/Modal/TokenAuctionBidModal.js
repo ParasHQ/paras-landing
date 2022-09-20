@@ -185,7 +185,7 @@ const TokenAuctionBidModal = ({ data, show, onClose }) => {
 					<div>
 						<div className="flex items-center space-x-2">
 							<h1 className="text-2xl font-bold text-white tracking-tight">
-								{'Place a Bid Auction'}
+								{'Place Bid Auction'}
 							</h1>
 						</div>
 						<p className="text-white mt-2">
@@ -265,7 +265,7 @@ const TokenAuctionBidModal = ({ data, show, onClose }) => {
 									size="md"
 									type="submit"
 								>
-									{localeLn('Place a bid')}
+									{localeLn('Place bid')}
 								</Button>
 								<Button variant="ghost" size="md" isFullWidth className="mt-4" onClick={onClose}>
 									{localeLn('Cancel')}

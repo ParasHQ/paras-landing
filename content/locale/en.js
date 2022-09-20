@@ -129,7 +129,7 @@ const CardInfo = {
 	BurnSuccess: 'Burn success',
 	SomethingWentWrong: 'Something went wrong, try again later',
 	ListingUpdateSuccess: 'Listing update success',
-	PlaceABid: 'Place a bid',
+	PlaceABid: 'Place bid',
 	UpdateListing: 'Update Listing',
 	Transfer: 'Transfer',
 	ShareTo: 'Share to...',

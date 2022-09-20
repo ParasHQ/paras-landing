@@ -287,7 +287,7 @@ const TokenSingle = ({
 		return token.price && !token?.is_auction && !isEndedTime
 			? 'Buy Now'
 			: token?.is_auction && !isEndedTime
-			? 'Place a Bid'
+			? 'Place Bid'
 			: isEndedTime
 			? 'Auction Ends'
 			: 'Place Offer'

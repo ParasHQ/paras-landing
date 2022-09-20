@@ -25,7 +25,7 @@ const ActivityDescriptionTop = ({ activity, token, onClickToSeeDetails, onClickT
 	} else if (activity.type === 'add_bid') {
 		return (
 			<>
-				<span className="font-bold">Place a bid </span>
+				<span className="font-bold">Place bid </span>
 				<span>for </span>
 				<span className="font-bold">{formatNearAmount(activity.msg.params.amount)} Ⓝ</span>
 			</>
