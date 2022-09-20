@@ -194,7 +194,7 @@ const CardInfo = {
 	NotAllowedToList: 'You are not allowed to list this card at the moment',
 	NotAllowedToBuy:
 		'You are not allowed to buy this card at the moment. Only whitelisted account can buy this card',
-	AboutToAcceptBid: 'You are about to accept bid for',
+	AboutToAcceptBid: 'You are about to accept offer for',
 	From: 'from',
 	RoyaltyForArtist: 'Royalty for Artist',
 	ServiceFee: 'Service Fee',
