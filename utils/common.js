@@ -106,10 +106,10 @@ export const parseImgUrl = (imgUrl, defaultValue = '', opts = {}) => {
 	let transformationList = []
 	if (opts.width) {
 		transformationList.push(`w=${opts.width}`)
-		!opts.seeDetails && transformationList.push(`auto=format,enhance`)
+		!opts.seeDetails && transformationList.push(`auto=format,compress`)
 	} else {
 		transformationList.push('w=800')
-		!opts.seeDetails && transformationList.push(`auto=format,enhance`)
+		!opts.seeDetails && transformationList.push(`auto=format,compress`)
 	}
 	if (schema === 'ipfs') {
 		let parts = url.split('/')

@@ -456,7 +456,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 										className="rounded-lg overflow-hidden"
 										url={
 											token.metadata?.mime_type
-												? parseImgUrl(token.metadata.media)
+												? parseImgUrl(token.metadata.media, undefined, { seeDetails: true })
 												: token.metadata.media
 										}
 										videoControls={true}
