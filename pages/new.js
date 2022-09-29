@@ -730,7 +730,10 @@ const NewPage = () => {
 													{prettyBalance(
 														Number(
 															getValues('amount', 0) *
-																((95 - (calcRoyalties(watchRoyalties) || 0)) / 100)
+																((100 -
+																	(txFee?.current_fee || 0) / 100 -
+																	calcRoyalties(watchRoyalties) || 0) /
+																	100)
 														)
 															.toPrecision(4)
 															.toString(),
@@ -746,7 +749,10 @@ const NewPage = () => {
 																Number(
 																	store.nearUsdPrice *
 																		getValues('amount', 0) *
-																		((95 - (calcRoyalties(watchRoyalties) || 0)) / 100)
+																		((100 -
+																			(txFee?.current_fee || 0) / 100 -
+																			(calcRoyalties(watchRoyalties) || 0)) /
+																			100)
 																)
 																	.toPrecision(4)
 																	.toString(),
