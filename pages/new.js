@@ -602,8 +602,6 @@ const NewPage = () => {
 		)
 	}
 
-	console.log('tx', txFee)
-
 	return (
 		<div className="min-h-screen bg-black">
 			<div
