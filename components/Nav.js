@@ -327,12 +327,12 @@ const Nav = () => {
 								<a className="block w-full">{localeLn('Drops')}</a>
 							</Link>
 						</div> */}
-						<div className="relative px-3 text-gray-100 fireText hidden md:block text-sm">
+						{/* <div className="relative px-3 text-gray-100 fireText hidden md:block text-sm">
 							<Link href="/loyalty">
 								<a>{localeLn('Loyalty')}</a>
 							</Link>
 							{router.pathname.includes('/loyalty') && navActive()}
-						</div>
+						</div> */}
 						<div className="relative px-3 text-gray-100 hidden md:block text-sm">
 							{router.pathname === '/market' ? (
 								<a className="cursor-pointer" onClick={() => store.setMarketScrollPersist(0)}>
@@ -424,7 +424,7 @@ const Nav = () => {
 									<a className="p-4 block w-full fireText">Drops</a>
 								</Link>
 							</div> */}
-							<div className="text-gray-400 ">
+							{/* <div className="text-gray-400 ">
 								<Link href="/loyalty">
 									<a
 										className={`p-4 block w-full ${
@@ -434,7 +434,7 @@ const Nav = () => {
 										{localeLn('Loyalty')}
 									</a>
 								</Link>
-							</div>
+							</div> */}
 							<div className="text-gray-400 ">
 								{router.pathname === '/market' ? (
 									<a
