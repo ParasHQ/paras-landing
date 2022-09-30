@@ -354,7 +354,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							<span>
 								{notif.msg.card_name} from Paras Loyalty! We will send it to your account in 1x24
 								hours. Read more about the rewards{' '}
-								<a className="font-bold cursor-pointer" href={notif.msg.reward_publication_url}>
+								<a className="font-bold cursor-pointer" href={notif.msg.winners_publication_url}>
 									here
 								</a>
 							</span>

@@ -322,6 +322,15 @@ export default function Loyalty() {
 	)
 }
 
+export async function getServerSideProps() {
+	return {
+		redirect: {
+			destination: '/',
+			permanent: false,
+		},
+	}
+}
+
 const RewardNFT = ({ data, level }) => {
 	if (!data || !data.length) return null
 

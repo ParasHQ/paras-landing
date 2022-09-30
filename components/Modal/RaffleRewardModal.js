@@ -54,7 +54,7 @@ const RaffleRewardModal = () => {
 								</span>
 								<span>
 									Read more about the rewards{' '}
-									<a className="font-bold cursor-pointer" href={data.msg.reward_publication_url}>
+									<a className="font-bold cursor-pointer" href={data.msg.winners_publication_url}>
 										here
 									</a>
 								</span>
