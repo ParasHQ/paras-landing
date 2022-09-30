@@ -45,6 +45,7 @@ import CancelBidModal from 'components/Modal/CancelBidModal'
 import { mutate } from 'swr'
 import IconLove from 'components/Icons/component/IconLove'
 import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const [activeTab, setActiveTab] = useState('info')
@@ -52,6 +53,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const [tokenDisplay, setTokenDisplay] = useState('detail')
 	const [isEndedTime, setIsEndedTime] = useState(false)
 	const [isLiked, setIsLiked] = useState(false)
+	const [hasBid, setHasBid] = useState(false)
 	const [defaultLikes, setDefaultLikes] = useState(0)
 	const currentUser = useStore((state) => state.currentUser)
 	const { localeLn } = useIntl()
@@ -61,6 +63,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	const [showLove, setShowLove] = useState(false)
 	const [fileType, setFileType] = useState(token?.metadata?.mime_type)
 	const toast = useToast()
+	const { viewFunction } = useWalletSelector()
 
 	useEffect(() => {
 		if (token?.total_likes) {
@@ -110,6 +113,29 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 		setActiveTab('info')
 		setTokenDisplay('detail')
 	}, [router.query.tokenId])
+
+	useEffect(() => {
+		const viewGetOffer = async () => {
+			try {
+				const params = {
+					nft_contract_id: token.contract_id,
+					buyer_id: currentUser,
+					...(token.token_id
+						? { token_id: token.token_id }
+						: { token_series_id: token.token_series_id }),
+				}
+				await viewFunction({
+					methodName: 'get_offer',
+					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
+					args: params,
+				})
+				setHasBid(true)
+			} catch (error) {
+				// if doesn't have offer
+			}
+		}
+		viewGetOffer()
+	}, [])
 
 	const TabNotification = (tab) => {
 		switch (tab) {
@@ -795,7 +821,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 											<div className="flex">
 												{token.owner_id !== currentUser && isCurrentBid('bidder') !== currentUser && (
 													<Button size="md" onClick={onClickAuction} className="px-6 mr-2">
-														{`Place a Bid`}
+														{`Place Bid`}
 													</Button>
 												)}
 												{token.owner_id !== currentUser && checkUserBid() && (
@@ -845,13 +871,13 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 									{`Buy for ${formatNearAmount(token.price)} Ⓝ`}
 								</Button>
 								<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
-									{`Place an offer`}
+									{hasBid ? `Update Offer` : `Make Offer`}
 								</Button>
 							</div>
 						)}
 						{token.owner_id !== currentUser && !token.price && (
 							<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
-								{`Place an offer`}
+								{hasBid ? `Update Offer` : `Make Offer`}
 							</Button>
 						)}
 						{(isAuctionEnds || isEndedTime) && (

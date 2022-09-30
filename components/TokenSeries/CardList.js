@@ -286,7 +286,7 @@ const TokenSeriesSingle = ({
 				return price && !token.token?.is_auction && !isEndedTime
 					? 'Buy Now'
 					: token.token?.is_auction && !isEndedTime
-					? 'Place a Bid'
+					? 'Place Bid'
 					: isEndedTime
 					? 'Auction Ends'
 					: 'Place Offer'
@@ -303,7 +303,7 @@ const TokenSeriesSingle = ({
 		return price && !token.token?.is_auction && !isEndedTime
 			? 'Buy Now'
 			: token.token?.is_auction && !isEndedTime
-			? 'Place a Bid'
+			? 'Place Bid'
 			: isEndedTime
 			? 'Auction Ends'
 			: 'Place Offer'

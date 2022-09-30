@@ -110,7 +110,7 @@ const TokenCurrentPrice = ({ localToken, className, typeCurrentPrice }) => {
 						</Button>
 						{!disableOfferContract && (
 							<Button size="md" onClick={onClickOffer} isFullWidth variant="ghost">
-								{`Place an offer`}
+								{`Make Offer`}
 							</Button>
 						)}
 					</div>
@@ -143,7 +143,7 @@ const TokenCurrentPrice = ({ localToken, className, typeCurrentPrice }) => {
 						<div className="w-full flex-1">
 							{!disableOfferContract && (
 								<Button size="md" onClick={onClickOffer} isFullWidth variant="ghost">
-									{`Place an offer`}
+									{`Make Offer`}
 								</Button>
 							)}
 						</div>
@@ -166,7 +166,7 @@ const TokenCurrentPrice = ({ localToken, className, typeCurrentPrice }) => {
 		} else {
 			return (
 				<Button size="md" onClick={onClickOffer} isFullWidth variant="ghost">
-					{`Place an offer`}
+					{`Make Offer`}
 				</Button>
 			)
 		}
@@ -247,13 +247,13 @@ const TokenCurrentPrice = ({ localToken, className, typeCurrentPrice }) => {
 									{`Buy`}
 								</Button>
 								<Button size="md" onClick={onClickOffer} isFullWidth variant="ghost">
-									{`Place an offer`}
+									{`Make Offer`}
 								</Button>
 							</div>
 						)}
 						{localToken.owner_id !== currentUser && !localToken.price && (
 							<Button size="md" onClick={onClickOffer} isFullWidth variant="ghost">
-								{`Place an offer`}
+								{`Make Offer`}
 							</Button>
 						)}
 					</>

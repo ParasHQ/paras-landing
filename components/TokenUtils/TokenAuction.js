@@ -314,7 +314,7 @@ const CurrentBid = ({ initial = {}, endedAuction, setShowModal }) => {
 						<div className="flex">
 							{token.owner_id !== currentUser && isCurrentBid('bidder') !== currentUser && (
 								<Button size="md" onClick={onClickAuction} className="px-6 mr-2">
-									{`Place a Bid`}
+									{`Place Bid`}
 								</Button>
 							)}
 							{token.owner_id !== currentUser && checkUserBid() && (

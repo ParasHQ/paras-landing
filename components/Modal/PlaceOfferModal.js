@@ -209,7 +209,7 @@ const PlaceOfferModal = ({
 					<div>
 						<div className="flex items-center space-x-2">
 							<h1 className="text-2xl font-bold text-white tracking-tight">
-								{hasBid ? 'Update Offer' : 'Place an Offer'}
+								{hasBid ? 'Update Offer' : 'Make Offer'}
 							</h1>
 							{isEnableTrade && (
 								<>
