@@ -7,6 +7,14 @@ import { parseImgUrl } from 'utils/common'
 import useSWR from 'swr'
 import axios from 'axios'
 import { STAKE_PARAS_URL } from 'constants/common'
+import { useEffect } from 'react'
+import {
+	trackViewLPLoyalty,
+	trackClickHowToLoyalty,
+	trackClickTCLoyalty,
+	trackClickBottomButtonLockedStaking,
+	trackClickTopButtonLockedStaking,
+} from 'lib/ga'
 
 const url = `${process.env.V2_API_URL}/raffle/current`
 const fetchData = () => axios.get(url).then((res) => res.data)
@@ -17,6 +25,10 @@ export default function Loyalty() {
 		revalidateIfStale: false,
 		revalidateOnReconnect: false,
 	})
+
+	useEffect(() => {
+		trackViewLPLoyalty()
+	}, [])
 
 	return (
 		<div className="min-h-screen relative bg-black">
@@ -102,6 +114,7 @@ export default function Loyalty() {
 						<a
 							href={STAKE_PARAS_URL}
 							target={'_blank'}
+							onClick={trackClickTopButtonLockedStaking}
 							className="inline-block p-3 bg-white text-primary font-bold border-[0.5rem] mt-4 border-primary rounded-xl text-xl"
 						>
 							Start Locked Staking
@@ -127,7 +140,19 @@ export default function Loyalty() {
 							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16">
 								WL Spots & Free NFTs from New & Upcoming Projects
 							</p>
-							<p className="font-bold py-16 text-center text-xl">Coming Soon</p>
+							{/* <p className="font-bold py-16 text-center text-xl">Coming Soon</p> */}
+							<div className="my-8 flex items-center justify-center md:space-x-8 mx-4 md:mx-28 flex-wrap">
+								{data?.raffle.reward.wl_spot.map((nft) => (
+									<div className="w-1/2 md:w-1/4 mb-6 p-2" key={nft.name}>
+										<div className="w-28 h-28 md:h-44 md:w-44 rounded-md border-4 border-[#20124D] m-auto">
+											<a href={nft.link} target="_blank" rel="noreferrer">
+												<img className="h-full w-full object-cover" src={parseImgUrl(nft.media)} />
+											</a>
+										</div>
+										<p className="font-bold py-4 text-center md:text-xl">{nft.name}</p>
+									</div>
+								))}
+							</div>
 						</div>
 					</div>
 
@@ -162,6 +187,7 @@ export default function Loyalty() {
 										<a
 											href="https://paras.id/publication/how-to-do-locked-staking-6311c2d10de00d001cd7a05a"
 											className="text-blue-700 underline"
+											onClick={trackClickHowToLoyalty}
 										>
 											here
 										</a>
@@ -266,6 +292,7 @@ export default function Loyalty() {
 										<a
 											href="https://guide.paras.id/terms-and-conditions/loyalty-program"
 											className="text-blue-700 underline"
+											onClick={trackClickTCLoyalty}
 										>
 											Terms & Conditions of Paras Loyalty.
 										</a>
@@ -281,6 +308,7 @@ export default function Loyalty() {
 						<a
 							href={STAKE_PARAS_URL}
 							target="_blank"
+							onClick={trackClickBottomButtonLockedStaking}
 							className="inline-block p-3 bg-white text-primary font-bold border-[0.5rem] mt-4 border-primary rounded-xl text-xl"
 						>
 							Start Locked Staking
@@ -300,7 +328,7 @@ const RewardNFT = ({ data, level }) => {
 	return (
 		<>
 			<p className="font-bold mt-6 text-center text-xl">{level}</p>
-			<div className="flex flex-wrap items-center justify-center md:mx-32 my-4">
+			<div className="flex flex-wrap items-center justify-center md:mx-16 my-4">
 				{data?.map(({ token }) => {
 					if (!token) return null
 					return (

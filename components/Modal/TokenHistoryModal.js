@@ -112,8 +112,10 @@ const Activity = ({ activity }) => {
 
 	const onClickNftTrade = () => {
 		router.push(
-			`/token/${tradedTokenData.contract_id}::${tradedTokenData.token_series_id}${
-				activity.msg?.params?.buyer_token_id && `/${tradedTokenData.token_id}`
+			`/token/${tradedTokenData.contract_id}::${encodeURIComponent(
+				tradedTokenData.token_series_id
+			)}${
+				activity.msg?.params?.buyer_token_id && `/${encodeURIComponent(tradedTokenData.token_id)}`
 			}`
 		)
 	}

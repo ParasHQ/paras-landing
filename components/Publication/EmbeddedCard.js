@@ -44,7 +44,11 @@ const EmbeddedCard = ({ tokenId }) => {
 		<Fragment>
 			<TokenSeriesDetailModal tokens={[token]} />
 			<TokenDetailModal tokens={[token]} />
-			<Link href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id || ''}`}>
+			<Link
+				href={`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
+					token.token_id ? encodeURIComponent(token.token_id) : ''
+				}`}
+			>
 				<a
 					onClick={(e) => {
 						e.preventDefault()
@@ -68,7 +72,9 @@ const EmbeddedCard = ({ tokenId }) => {
 											contractId: token.contract_id,
 										},
 									},
-									`/token/${token.contract_id}::${token.token_series_id}/${token.token_id || ''}`,
+									`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
+										token.token_id ? encodeURIComponent(token.token_id) : ''
+									}`,
 									{
 										shallow: true,
 										scroll: false,

@@ -490,7 +490,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 										className="rounded-lg overflow-hidden"
 										url={
 											token.metadata?.mime_type
-												? parseImgUrl(token.metadata.media)
+												? parseImgUrl(token.metadata.media, undefined, { seeDetails: true })
 												: token.metadata.media
 										}
 										videoControls={true}
@@ -895,7 +895,11 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 								className="mt-2 text-center text-white cursor-pointer hover:opacity-80 text-sm"
 								size="md"
 								variant="ghosts"
-								onClick={() => router.push(`/token/${token.contract_id}::${token.token_series_id}`)}
+								onClick={() =>
+									router.push(
+										`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}`
+									)
+								}
 							>
 								{localeLn('SeeTokenSeries')}
 							</div>

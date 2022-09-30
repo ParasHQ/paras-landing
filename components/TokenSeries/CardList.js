@@ -234,7 +234,9 @@ const TokenSeriesSingle = ({
 			let platform = navigator.userAgent.includes('iPhone')
 			if (platform) {
 				router.push(
-					`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`
+					`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
+						lookupToken?.token_id ? encodeURIComponent(lookupToken?.token_id) : ''
+					}`
 				)
 				return
 			}
@@ -249,7 +251,9 @@ const TokenSeriesSingle = ({
 						tokenId: lookupToken?.token_id || '',
 					},
 				},
-				`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`,
+				`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
+					lookupToken?.token_id ? encodeURIComponent(lookupToken?.token_id) : ''
+				}`,
 				{
 					shallow: true,
 					scroll: false,
@@ -260,7 +264,9 @@ const TokenSeriesSingle = ({
 				saveScrollPosition(tokens)
 			}
 			router.push(
-				`/token/${token.contract_id}::${token.token_series_id}/${lookupToken?.token_id || ''}`
+				`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
+					lookupToken?.token_id ? encodeURIComponent(lookupToken?.token_id) : ''
+				}`
 			)
 		}
 	}
@@ -439,7 +445,7 @@ const TokenSeriesSingle = ({
 					displayType === `large` ? `w-full md:w-1/3 lg:w-1/4 p-4` : `w-1/2 md:w-1/4 lg:w-1/6 p-2`
 				} flex-shrink-0 relative`}
 			>
-				<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
+				<Link href={`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}`}>
 					<a onClick={(e) => e.preventDefault()}>
 						<div className="w-full m-auto">
 							<Card
@@ -631,7 +637,9 @@ const TokenSeriesSingle = ({
 								Auction Ends
 							</p>
 						)}
-						<Link href={`/token/${token.contract_id}::${token.token_series_id}`}>
+						<Link
+							href={`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}`}
+						>
 							<a
 								onClick={(e) => {
 									e.preventDefault()
