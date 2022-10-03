@@ -253,6 +253,32 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		)
 	}
 
+	if (notif.type === 'notification_content') {
+		return (
+			<div className="flex items-center justify-between notification-item">
+				<div className="text-gray-300 w-10/12 flex flex-col">
+					{notif.msg?.content && /<[A-z]>/.test(notif.msg?.content) ? (
+						<div
+							dangerouslySetInnerHTML={{
+								__html: notif.msg?.content,
+							}}
+						></div>
+					) : (
+						<p className="font-semibold text-base">{notif.msg?.content}</p>
+					)}
+					<NotificationTime time={notif.issued_at} />
+				</div>
+				<div className="w-2/12 flex items-center">
+					<a href={notif.msg?.link}>
+						<button className="flex py-2 px-4 items-center justify-center bg-primary text-white rounded-lg cursor-pointer hover:opacity-70">
+							Link
+						</button>
+					</a>
+				</div>
+			</div>
+		)
+	}
+
 	// Commented since there are changes in the PRD
 	//
 	// if (notif.type === 'notification_raffle_begin') {

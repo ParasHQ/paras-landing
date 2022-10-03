@@ -5,8 +5,8 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import Scrollbars from 'react-custom-scrollbars'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
-import NotificationItem from './NotificationItem'
 import NotificationSignUpRaffle from './NotificationRaffle'
+import NotificationItem from './NotificationItem'
 
 const LIMIT = 30
 
