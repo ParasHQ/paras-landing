@@ -253,7 +253,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		)
 	}
 
-	if (notif.type === 'notification_content') {
+	if (notif.type === 'notification_content' && notif.to === currentUser) {
 		return (
 			<div className="flex items-center justify-between notification-item">
 				<div className="text-gray-300 w-10/12 flex flex-col">
