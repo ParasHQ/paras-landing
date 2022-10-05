@@ -97,7 +97,9 @@ const TokenSeriesTransferBuyer = ({ show, onClose, data }) => {
 											>
 												<div>
 													<Link
-														href={`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`}
+														href={`/token/${token.contract_id}::${encodeURIComponent(
+															token.token_series_id
+														)}/${token.token_id ? encodeURIComponent(token.token_id) : ''}`}
 													>
 														<a>
 															{localeLn('Edition')} #{token.edition_id}

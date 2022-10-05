@@ -83,7 +83,7 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 			<div className="max-w-sm w-full p-4 bg-gray-800 m-auto rounded-md relative">
 				<div>
 					<h1 className="text-2xl font-bold text-white tracking-tight">
-						{localeLn('Accept a Bid')}
+						{localeLn('Accept a Offer')}
 					</h1>
 					<p className="text-white mt-2">
 						{localeLn('AboutToAcceptBid')} <b>{token.metadata.name}</b> {localeLn('From')}{' '}
@@ -185,7 +185,7 @@ const AcceptBidModal = ({ onClose, token, data, storageFee, isLoading, onSubmitF
 							className="mt-4 rounded-md bg-transparent text-sm font-semibold border-2 px-4 py-2 border-primary bg-primary text-gray-100"
 							onClick={onSubmitForm}
 						>
-							{'Accept Bid'}
+							{'Accept Offer'}
 						</Button>
 						<Button
 							className="mt-4"

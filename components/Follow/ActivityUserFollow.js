@@ -56,8 +56,8 @@ const ActivityUserFollow = ({ activity }) => {
 					contractId: token?.contract_id,
 				},
 			},
-			`/token/${token?.contract_id}::${token?.token_series_id}${
-				activity.token_id ? `/${token?.token_id}` : ''
+			`/token/${token?.contract_id}::${encodeURIComponent(token?.token_series_id)}${
+				activity.token_id ? `/${encodeURIComponent(token?.token_id)}` : ''
 			}`,
 			{
 				shallow: true,

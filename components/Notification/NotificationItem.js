@@ -82,9 +82,9 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 
 	const url = `/token/${notif.contract_id}::${
 		notif.type === 'notification_add_trade' || notif.type === 'accept_trade'
-			? notif.token_id?.split(':')[0]
-			: notif.token_series_id
-	}${notif.token_id ? `/${notif.token_id}` : ''}`
+			? encodeURIComponent(notif.token_id?.split(':')[0])
+			: encodeURIComponent(notif.token_series_id)
+	}${notif.token_id ? `/${encodeURIComponent(notif.token_id)}` : ''}`
 
 	if (notif.type === 'notification_level_up') {
 		return (
@@ -353,7 +353,10 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							<span>You have won a </span>
 							<span>
 								{notif.msg.card_name} from Paras Loyalty! We will send it to your account in 1x24
-								hours.
+								hours. Read more about the rewards{' '}
+								<a className="font-bold cursor-pointer" href={notif.msg.reward_publication_url}>
+									here
+								</a>
 							</span>
 						</p>
 					</div>

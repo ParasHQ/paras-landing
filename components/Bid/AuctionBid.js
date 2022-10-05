@@ -130,8 +130,10 @@ const AuctionBid = ({ token, freshFetch }) => {
 										},
 									},
 									token.token_id
-										? `/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`
-										: `/token/${token.contract_id}::${token.token_series_id}`,
+										? `/token/${token.contract_id}::${encodeURIComponent(
+												token.token_series_id
+										  )}/${encodeURIComponent(token.token_id)}`
+										: `/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}`,
 									{
 										shallow: true,
 										scroll: false,
@@ -168,8 +170,10 @@ const AuctionBid = ({ token, freshFetch }) => {
 											},
 										},
 										token.token_id
-											? `/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`
-											: `/token/${token.contract_id}::${token.token_series_id}`,
+											? `/token/${token.contract_id}::${encodeURIComponent(
+													token.token_series_id
+											  )}/${encodeURIComponent(token.token_id)}`
+											: `/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}`,
 										{
 											shallow: true,
 											scroll: false,
@@ -202,8 +206,10 @@ const AuctionBid = ({ token, freshFetch }) => {
 									}}
 									as={
 										token.token_id
-											? `/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`
-											: `/token/${token.contract_id}::${token.token_series_id}`
+											? `/token/${token.contract_id}::${encodeURIComponent(
+													token.token_series_id
+											  )}/${encodeURIComponent(token.token_id)}`
+											: `/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}`
 									}
 									scroll={false}
 									shallow

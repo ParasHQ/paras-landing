@@ -207,9 +207,9 @@ const Offer = ({
 
 	const onClickNftTrade = () => {
 		router.push(
-			`/token/${tradedTokenData.contract_id}::${tradedTokenData.token_series_id}${
-				tradedTokenData.token_id && `/${tradedTokenData.token_id}`
-			}`
+			`/token/${tradedTokenData.contract_id}::${encodeURIComponent(
+				tradedTokenData.token_series_id
+			)}${tradedTokenData.token_id && `/${encodeURIComponent(tradedTokenData.token_id)}`}`
 		)
 	}
 

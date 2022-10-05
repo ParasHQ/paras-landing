@@ -323,8 +323,12 @@ const ActivityDetail = ({ activity, index, setShowDetailIndex, setShowModalShare
 											pathname:
 												currentVariant === 0
 													? router.pathname
-													: `/token/${localToken?.contract_id}::${localToken?.token_series_id}${
-															activity.token_id ? `/${localToken?.token_id}` : ''
+													: `/token/${localToken?.contract_id}::${encodeURIComponent(
+															localToken?.token_series_id
+													  )}${
+															activity.token_id
+																? `/${encodeURIComponent(localToken?.token_id)}`
+																: ''
 													  }`,
 											query:
 												currentVariant === 0
@@ -337,9 +341,9 @@ const ActivityDetail = ({ activity, index, setShowDetailIndex, setShowModalShare
 													  }
 													: {},
 										}}
-										as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
-											activity.token_id ? `/${localToken?.token_id}` : ''
-										}`}
+										as={`/token/${localToken?.contract_id}::${encodeURIComponent(
+											localToken?.token_series_id
+										)}${activity.token_id ? `/${encodeURIComponent(localToken?.token_id)}` : ''}`}
 										scroll={false}
 										shallow
 									>
@@ -379,8 +383,12 @@ const ActivityDetail = ({ activity, index, setShowDetailIndex, setShowModalShare
 												pathname:
 													currentVariant === 0
 														? router.pathname
-														: `/token/${localToken?.contract_id}::${localToken?.token_series_id}${
-																activity.token_id ? `/${localToken?.token_id}` : ''
+														: `/token/${localToken?.contract_id}::${encodeURIComponent(
+																localToken?.token_series_id
+														  )}${
+																activity.token_id
+																	? `/${encodeURIComponent(localToken?.token_id)}`
+																	: ''
 														  }`,
 												query:
 													currentVariant === 0
@@ -393,9 +401,9 @@ const ActivityDetail = ({ activity, index, setShowDetailIndex, setShowModalShare
 														  }
 														: {},
 											}}
-											as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
-												activity.token_id ? `/${localToken?.token_id}` : ''
-											}`}
+											as={`/token/${localToken?.contract_id}::${encodeURIComponent(
+												localToken?.token_series_id
+											)}${activity.token_id ? `/${encodeURIComponent(localToken?.token_id)}` : ''}`}
 											scroll={false}
 											shallow
 										>
@@ -442,8 +450,12 @@ const ActivityDetail = ({ activity, index, setShowDetailIndex, setShowModalShare
 											pathname:
 												currentVariant === 0
 													? router.pathname
-													: `/token/${localToken?.contract_id}::${localToken?.token_series_id}${
-															activity.token_id ? `/${localToken?.token_id}` : ''
+													: `/token/${localToken?.contract_id}::${encodeURIComponent(
+															localToken?.token_series_id
+													  )}${
+															activity.token_id
+																? `/${encodeURIComponent(localToken?.token_id)}`
+																: ''
 													  }`,
 											query:
 												currentVariant === 0
@@ -456,9 +468,9 @@ const ActivityDetail = ({ activity, index, setShowDetailIndex, setShowModalShare
 													  }
 													: {},
 										}}
-										as={`/token/${localToken?.contract_id}::${localToken?.token_series_id}${
-											activity.token_id ? `/${localToken?.token_id}` : ''
-										}`}
+										as={`/token/${localToken?.contract_id}::${encodeURIComponent(
+											localToken?.token_series_id
+										)}${activity.token_id ? `/${encodeURIComponent(localToken?.token_id)}` : ''}`}
 										scroll={false}
 										shallow
 									>
@@ -467,7 +479,11 @@ const ActivityDetail = ({ activity, index, setShowDetailIndex, setShowModalShare
 										</a>
 									</Link>
 								</div>
-								<Link href={`/token/${activity.contract_id}::${activity.token_series_id}`}>
+								<Link
+									href={`/token/${activity.contract_id}::${encodeURIComponent(
+										activity.token_series_id
+									)}`}
+								>
 									<p className="w-min md:hidden font-semibold truncate z-20">
 										{activity.msg.params.price !== null
 											? `${prettyBalance(
