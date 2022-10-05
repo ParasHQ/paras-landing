@@ -199,7 +199,7 @@ function MyApp({ Component, pageProps }) {
 		<>
 			<Head>
 				{process.env.APP_ENV !== 'production' ||
-					(process.env.NEXT_PUBLIC_DISABLE_INDEXING && (
+					(process.env.NEXT_PUBLIC_DISABLE_INDEXING === 'true' && (
 						<>
 							<meta name="robots" content="noindex" />
 							<meta name="googlebot" content="noindex" />
