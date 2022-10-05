@@ -25,6 +25,7 @@ import cachios from 'cachios'
 import RPCStatus from 'components/Common/RPCStatus'
 import { WalletSelectorContextProvider } from 'components/Common/WalletSelector'
 import RaffleLoyaltyModalGroup from 'components/Common/RaffleRoyaltyModalGroup'
+import Head from 'next/head'
 
 const MAX_ACTIVITY_DELAY = 5
 
@@ -196,6 +197,14 @@ function MyApp({ Component, pageProps }) {
 
 	return (
 		<>
+			<Head>
+				{process.env.APP_ENV !== 'production' && (
+					<>
+						<meta name="robots" content="noindex" />
+						<meta name="googlebot" content="noindex" />
+					</>
+				)}
+			</Head>
 			{/* Google Tag Manager - Global base code */}
 			{/* eslint-disable @next/next/inline-script-id */}
 			{process.env.NODE_ENV === 'production' && GTM_ID && (

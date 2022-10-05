@@ -131,7 +131,9 @@ export async function getServerSideProps({ params }) {
 	if (token?.token) {
 		return {
 			redirect: {
-				destination: `/token/${contractId}::${tokenSeriesId}/${token.token.token_id}`,
+				destination: `/token/${contractId}::${encodeURIComponent(tokenSeriesId)}/${
+					token.token.token_id && encodeURIComponent(token.token.token_id)
+				}`,
 				permanent: false,
 			},
 		}

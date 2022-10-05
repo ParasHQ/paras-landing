@@ -59,14 +59,18 @@ const TopTransactionCard = ({ contract_token_id, setLocalToken }) => {
 											contractId: token.contract_id,
 										},
 									},
-									`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`,
+									`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
+										token.token_id ? encodeURIComponent(token.token_id) : ''
+									}`,
 									{
 										shallow: true,
 										scroll: false,
 									}
 							  )
 							: router.push(
-									`/token/${token.contract_id}::${token.token_series_id}/${token.token_id}`
+									`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
+										token.token_id ? encodeURIComponent(token.token_id) : ''
+									}`
 							  )
 					}}
 					imgBlur={token.metadata.blurhash}
