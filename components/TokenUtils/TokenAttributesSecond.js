@@ -33,20 +33,15 @@ const TokenAttributesSecond = ({ localToken }) => {
 	}
 
 	return (
-		<div className="bg-neutral-03 text-white rounded-lg border border-neutral-05 p-4 mt-4 mb-10">
+		<div className="bg-neutral-03 text-white rounded-lg border border-neutral-05 py-6 px-5 mb-8">
 			<p className="font-bold text-xl mb-2">Attributes</p>
-			<p className="font-normal text-xs">
+			<p className="font-normal text-xs mb-6">
 				Some of the characteristics that determine the rarity score
 			</p>
-			<div className="flex flex-row justify-between items-center mt-8">
+			<div className="flex flex-row justify-between items-center mb-2">
 				<div className="border border-neutral-05 rounded-lg text-sm font-bold p-2">
 					{' '}
 					Rarity Score: {localToken.metadata?.score.toFixed(2) || 0}{' '}
-				</div>
-				<div>
-					<button className="bg-neutral-05 rounded-lg">
-						<IconArrowSmall size={30} />
-					</button>
 				</div>
 			</div>
 

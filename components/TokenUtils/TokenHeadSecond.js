@@ -10,7 +10,7 @@ import { parseImgUrl, prettyTruncate } from 'utils/common'
 const TokenHeadSecond = ({ localToken }) => {
 	return (
 		<div className="bg-neutral-04 rounded-lg">
-			<div className="bg-neutral-03 text-white rounded-lg border border-neutral-05 p-4 mb-4">
+			<div className="bg-neutral-03 text-white rounded-lg border border-neutral-05 px-5 py-6 mb-4">
 				<div className="flex flex-row justify-between items-center">
 					<p className="font-bold text-3xl">TES</p>
 					<div className="flex flex-row">
@@ -29,7 +29,7 @@ const TokenHeadSecond = ({ localToken }) => {
 					</div>
 				</div>
 
-				<div className="bg-neutral-01 border border-neutral-05 rounded-lg p-2 my-2">
+				<div className="bg-neutral-01 border border-neutral-05 rounded-lg p-2 mt-2">
 					<p className="text-sm">
 						Owned by{' '}
 						<Link href={`/${localToken.owner_id}`}>
@@ -38,7 +38,7 @@ const TokenHeadSecond = ({ localToken }) => {
 					</p>
 				</div>
 
-				<div className="grid grid-cols-2 gap-x-4 my-2">
+				<div className="grid grid-cols-2 gap-x-3 mt-2">
 					<div className="border border-neutral-05 rounded-lg">
 						<div className="flex flex-row justify-between items-center">
 							<div className="inline-flex items-center w-16 p-2">
@@ -130,7 +130,8 @@ const TokenHeadSecond = ({ localToken }) => {
 						</div>
 					</div>
 				</div>
-				<div className="flex flex-row justify-start items-center my-2 gap-x-2">
+
+				<div className="flex flex-row gap-x-[6px] justify-start items-center my-3">
 					{/* TODO */}
 					<div className="bg-neutral-04 border border-neutral-05 rounded-md">
 						<p className="text-xs font-thin px-1 py-2">Abstract</p>

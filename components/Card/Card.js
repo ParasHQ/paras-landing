@@ -24,6 +24,7 @@ const Card = ({
 	isAbleToLike = false,
 	onLike = () => {},
 	typeCardList,
+	isNewDesign = false,
 }) => {
 	const initialRotate = {
 		x: 0,
@@ -152,7 +153,11 @@ const Card = ({
 				>
 					<div
 						className={`card ${
-							typeCardList === 'top-rarity-token' ? 'bg-transparent' : 'bg-black'
+							typeCardList === 'top-rarity-token'
+								? 'bg-transparent'
+								: isNewDesign
+								? 'bg-neutral-01'
+								: 'bg-black'
 						} w-full h-full`}
 						style={{
 							fontSize: `${dimension.width / 14}px`,

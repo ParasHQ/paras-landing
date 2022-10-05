@@ -8,7 +8,7 @@ const CardLowerController = ({ localToken }) => {
 	const { localeLn } = useIntl()
 
 	return (
-		<div className="flex flex-row justify-between items-center mt-4 mb-10">
+		<div className="flex flex-row justify-between items-center mb-8">
 			<div className="flex flex-row text-white items-center">
 				<ButtonOutline
 					content={

@@ -55,13 +55,13 @@ const TokenPublicationSecond = ({ localToken }) => {
 	}
 
 	return (
-		<div className="bg-neutral-03 text-white rounded-lg border border-neutral-05 p-4">
+		<div className="bg-neutral-03 text-white rounded-lg border border-neutral-05 py-6 px-5">
 			<p className="font-bold text-xl mb-2">Publications</p>
-			<p className="font-normal text-xs">Visit the publication to see the creation story.</p>
+			<p className="font-normal text-xs mb-6">Visit the publication to see the creation story.</p>
 
 			<div className="max-h-80 overflow-y-auto">
 				{publications.length <= 0 ? (
-					<div className="bg-neutral-01 border border-neutral-05 rounded-lg py-10 mt-4">
+					<div className="bg-neutral-01 border border-neutral-05 rounded-lg py-10">
 						<IconEmptyPublication size={100} className="mx-auto my-4" />
 					</div>
 				) : (

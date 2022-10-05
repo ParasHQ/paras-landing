@@ -8,7 +8,7 @@ const IconLoaderSecond = ({ size, ...props }) => (
 		width={size}
 		height={size}
 		viewBox="0 0 48 48"
-		className="loaderIcon animate-spin  text-white"
+		className="loaderIcon animate-spin text-white"
 		{...props}
 	>
 		<defs>

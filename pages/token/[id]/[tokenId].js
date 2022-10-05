@@ -11,6 +11,7 @@ import { useEffect, useState } from 'react'
 import useStore from 'lib/store'
 import TokenDetailNew from 'components/Token/TokenDetailNew'
 import { EXPERIMENT_ID, GA_TRACKING_ID } from 'lib/gtag'
+import TokenDetailNewSecond from 'components/Token/TokenDetailNewSecond'
 
 const getCreatorId = (token) => {
 	return token.metadata.creator_id || token.contract_id
@@ -77,8 +78,8 @@ const TokenPage = ({ errorCode, initial }) => {
 	}
 
 	return (
-		<div className="min-h-screen bg-black">
-			<div
+		<div className="min-h-screen bg-neutral-01">
+			{/* <div
 				className="fixed inset-0 opacity-75"
 				style={{
 					zIndex: 0,
@@ -86,7 +87,7 @@ const TokenPage = ({ errorCode, initial }) => {
 					backgroundRepeat: 'no-repeat',
 					backgroundSize: 'cover',
 				}}
-			></div>
+			></div> */}
 			<Head>
 				<title>{`${token.metadata.title} — Paras`}</title>
 				<meta
@@ -128,13 +129,14 @@ const TokenPage = ({ errorCode, initial }) => {
 				/>
 			</Head>
 			<Nav />
-			<div className="relative max-w-6xl m-auto pt-16 px-4">
-				{currentVariant == 0 ? (
-					<TokenDetail token={token} isAuctionEnds={isEndedTime} />
-				) : (
+			{currentVariant == 0 ? (
+				// <TokenDetail token={token} isAuctionEnds={isEndedTime} />
+				<TokenDetailNewSecond token={token} />
+			) : (
+				<div className="relative max-w-6xl m-auto pt-16 px-4">
 					<TokenDetailNew token={token} />
-				)}
-			</div>
+				</div>
+			)}
 			<Footer />
 		</div>
 	)

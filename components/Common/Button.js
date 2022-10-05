@@ -39,6 +39,13 @@ const Button = ({
 				!isDisabled && 'hover:bg-white hover:bg-opacity-60'
 			}`
 			break
+		case 'second':
+			buttonVariantStyle = `bg-transparent hover:bg-neutral-05 focus:bg-neutral-04 ${
+				!isDisabled
+					? 'text-neutral-10 border border-neutral-10'
+					: 'text-neutral-06 border border-neutral-06'
+			}`
+			break
 		default:
 			break
 	}
