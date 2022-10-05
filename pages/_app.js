@@ -198,12 +198,13 @@ function MyApp({ Component, pageProps }) {
 	return (
 		<>
 			<Head>
-				{process.env.APP_ENV !== 'production' && (
-					<>
-						<meta name="robots" content="noindex" />
-						<meta name="googlebot" content="noindex" />
-					</>
-				)}
+				{process.env.APP_ENV !== 'production' ||
+					(process.env.NEXT_PUBLIC_DISABLE_INDEXING && (
+						<>
+							<meta name="robots" content="noindex" />
+							<meta name="googlebot" content="noindex" />
+						</>
+					))}
 			</Head>
 			{/* Google Tag Manager - Global base code */}
 			{/* eslint-disable @next/next/inline-script-id */}
