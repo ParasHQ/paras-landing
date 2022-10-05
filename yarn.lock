@@ -343,6 +343,14 @@
   resolved "https://registry.yarnpkg.com/@humanwhocodes/object-schema/-/object-schema-1.2.0.tgz#87de7af9c231826fdd68ac7258f77c429e0e5fcf"
   integrity sha512-wdppn25U8z/2yiaT6YGquE6X8sSv7hNMWSXYSSU1jGv/yd6XqjXgTDJ8KP4NgjTXfJ3GbRjeeb8RTV7a/VpM+w==
 
+"@meteorwallet/sdk@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@meteorwallet/sdk/-/sdk-0.6.0.tgz#006b77410a7874f0c9bfc0d693f199b561f39d19"
+  integrity sha512-oriaQ1gk1hpQx6V6BxsvUthDd0Bpmv3ho5Ap5pm9P0euEosWtFUVF1dTYndJE10qBG8yLW+EOOX1LZ8taXCiRA==
+  dependencies:
+    nanoid "3.3.4"
+    query-string "^7.1.1"
+
 "@multiformats/base-x@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@multiformats/base-x/-/base-x-4.0.1.tgz#95ff0fa58711789d53aefb2590a8b7a4e715d121"
@@ -453,6 +461,17 @@
   integrity sha512-0rrdJMhC5JWsUiRlKKMoIiaVJmTFT6udZrsoD5Fh8Ogywd2m0CwYdzkPvtp6d40mvipt31+G0jaK+jb9qvcWMA==
   dependencies:
     near-api-js "0.44.2"
+    rxjs "~7.4.0"
+
+"@paras-wallet-selector/meteor-wallet@^5.0.3-beta1":
+  version "5.0.3-beta1"
+  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/meteor-wallet/-/meteor-wallet-5.0.3-beta1.tgz#b5a7ec85027414a05632d4b55368ebacf9f4e8b6"
+  integrity sha512-LCSosGsxSYQt92AKxLfXMjw90+2EwHhxCLPpR+R8dQmVJxvssgSB+uNsCGWoPi18oi3ONFdXQAI6rR4F265mHA==
+  dependencies:
+    "@meteorwallet/sdk" "^0.6.0"
+    "@paras-wallet-selector/core" "5.0.3"
+    "@paras-wallet-selector/wallet-utils" "5.0.3"
+    bn.js "^5.2.0"
     rxjs "~7.4.0"
 
 "@paras-wallet-selector/modal-ui@5.0.3":
@@ -4275,7 +4294,7 @@ nanocolors@^0.2.2, nanocolors@^0.2.8:
   resolved "https://registry.yarnpkg.com/nanocolors/-/nanocolors-0.2.12.tgz#4d05932e70116078673ea4cc6699a1c56cc77777"
   integrity sha512-SFNdALvzW+rVlzqexid6epYdt8H9Zol7xDoQarioEFcFN0JHo4CYNztAxmtfgGTVRCmFlEOqqhBpoFGKqSAMug==
 
-nanoid@^3.1.23, nanoid@^3.3.4:
+nanoid@3.3.4, nanoid@^3.1.23, nanoid@^3.3.4:
   version "3.3.4"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.4.tgz#730b67e3cd09e2deacf03c027c81c9d9dbc5e8ab"
   integrity sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==
