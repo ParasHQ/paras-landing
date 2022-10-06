@@ -90,17 +90,8 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		return (
 			<div className="notification-item">
 				<div className="text-gray-300 select-none">
-					<p className="font-bold text-base">{`Congrats! You're now a ${capitalize(
-						notif.msg.current_level
-					)} Member!`}</p>
-					<p>
-						<span>You can register for a raffle on Sep 19-25, 2022. Read more here 👉 </span>
-						<span>
-							<Link href="/loyalty">
-								<a className="font-bold">Loyalty</a>
-							</Link>
-						</span>
-					</p>
+					<p className="font-bold text-base">Congratulations, </p>
+					<p>{`You're now a ${capitalize(notif.msg.current_level)} Member!`}</p>
 				</div>
 				<NotificationTime time={notif.issued_at} />
 			</div>
