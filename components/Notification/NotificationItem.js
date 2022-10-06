@@ -90,17 +90,8 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		return (
 			<div className="notification-item">
 				<div className="text-gray-300 select-none">
-					<p className="font-bold text-base">{`Congrats! You're now a ${capitalize(
-						notif.msg.current_level
-					)} Member!`}</p>
-					<p>
-						<span>You can register for a raffle on Sep 19-25, 2022. Read more here 👉 </span>
-						<span>
-							<Link href="/loyalty">
-								<a className="font-bold">Loyalty</a>
-							</Link>
-						</span>
-					</p>
+					<p className="font-bold text-base">Congratulations, </p>
+					<p>{`You're now a ${capitalize(notif.msg.current_level)} Member!`}</p>
 				</div>
 				<NotificationTime time={notif.issued_at} />
 			</div>
@@ -249,6 +240,32 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 					<p className="text-sm">{`You’ve been registered for the raffle. Thank you & good luck! ✨`}</p>
 				</div>
 				<NotificationTime time={notif.issued_at} />
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_content' && notif.to === currentUser) {
+		return (
+			<div className="flex items-center justify-between notification-item">
+				<div className="text-gray-300 w-10/12 flex flex-col">
+					{notif.msg?.content && /<[A-z]>/.test(notif.msg?.content) ? (
+						<div
+							dangerouslySetInnerHTML={{
+								__html: notif.msg?.content,
+							}}
+						></div>
+					) : (
+						<p className="font-semibold text-base">{notif.msg?.content}</p>
+					)}
+					<NotificationTime time={notif.issued_at} />
+				</div>
+				<div className="w-2/12 flex items-center">
+					<a href={notif.msg?.link}>
+						<button className="flex py-2 px-4 items-center justify-center bg-primary text-white rounded-lg cursor-pointer hover:opacity-70">
+							Link
+						</button>
+					</a>
+				</div>
 			</div>
 		)
 	}
