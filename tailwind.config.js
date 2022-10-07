@@ -57,6 +57,12 @@ module.exports = {
 				'neutral-08': '#A9B1BF',
 				'neutral-09': '#DADEE5',
 				'neutral-10': '#F9F9F9',
+				'danger-100': '#FFF5F0',
+				'danger-200': '#FF8E8E',
+				'danger-500': '#A32323',
+				'danger-700': '#860000',
+				'danger-900': '#720000',
+				'danger-disabled': '#400000',
 			},
 			boxShadow: {
 				bold: '4px 4px 0px #000000;',

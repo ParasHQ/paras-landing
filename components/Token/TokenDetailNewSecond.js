@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { parseImgUrl } from 'utils/common'
+import Button from 'components/Common/Button'
 import Card from 'components/Card/Card'
 import CardLowerController from 'components/TokenUtils/CardLowerController'
 import TokenAttributesSecond from 'components/TokenUtils/TokenAttributesSecond'
@@ -12,7 +13,14 @@ import TokenTransactionHistory from 'components/TokenUtils/TokenTransactionHisto
 import TokenMoreCollectionSecond from 'components/TokenUtils/TokenMoreCollectionSecond'
 import TokenBuyModalSecond from 'components/Modal/TokenBuyModalSecond'
 import TokenOfferModal from 'components/Modal/TokenOfferModal'
-import Button from 'components/Common/Button'
+import TokenTradeModal from 'components/Modal/TokenTradeModal'
+import TokenBidModal from 'components/Modal/TokenBidModal'
+import TokenMintModal from 'components/Modal/TokenMintModal'
+import TokenUpdatePriceModalSecond from 'components/Modal/TokenUpdatePriceModalSecond'
+import TokenUpdateListing from 'components/Modal/TokenUpdateListing'
+import TokenTransferModalSecond from 'components/Modal/TokenTransferModalSecond'
+import TokenRemoveAuction from 'components/Modal/TokenRemoveAuction'
+import TokenAuctionModal from 'components/Modal/TokenAuctionModal'
 
 const ModalEnum = Object.freeze({
 	BUY: 'buy',
@@ -66,7 +74,7 @@ const TokenDetailNewSecond = ({ token }) => {
 		has_rank: true,
 	}
 
-	const [showModal, setShowModal] = useState()
+	const [showModal, setShowModal] = useState(null)
 
 	const onCloseModal = () => {
 		setShowModal(null)
@@ -170,6 +178,34 @@ const TokenDetailNewSecond = ({ token }) => {
 
 			<TokenBuyModalSecond show={showModal === ModalEnum.BUY} data={DUMMY} onClose={onCloseModal} />
 			<TokenOfferModal show={showModal === ModalEnum.OFFER} data={DUMMY} onClose={onCloseModal} />
+			<TokenTradeModal show={showModal === ModalEnum.TRADE} data={DUMMY} onClose={onCloseModal} />
+			<TokenBidModal show={showModal === ModalEnum.BID} data={DUMMY} onClose={onCloseModal} />
+			<TokenMintModal show={showModal === ModalEnum.MINT} data={DUMMY} onClose={onCloseModal} />
+			<TokenUpdatePriceModalSecond
+				show={showModal === ModalEnum.UPDATE_PRICE}
+				data={DUMMY}
+				onClose={onCloseModal}
+			/>
+			<TokenUpdateListing
+				show={showModal === ModalEnum.UPDATE_LISTING}
+				data={DUMMY}
+				onClose={onCloseModal}
+			/>
+			<TokenTransferModalSecond
+				show={showModal === ModalEnum.TRANSFER}
+				data={DUMMY}
+				onClose={onCloseModal}
+			/>
+			<TokenRemoveAuction
+				show={showModal === ModalEnum.REMOVE_AUCTION}
+				data={DUMMY}
+				onClose={onCloseModal}
+			/>
+			<TokenAuctionModal
+				show={showModal === ModalEnum.AUCTION}
+				data={DUMMY}
+				onClose={onCloseModal}
+			/>
 		</>
 	)
 }

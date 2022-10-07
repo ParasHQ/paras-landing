@@ -20,17 +20,7 @@ import { useForm } from 'react-hook-form'
 import { trackClickPlaceOffer, trackOfferToken, trackOfferTokenImpression } from 'lib/ga'
 import { InputText } from 'components/Common/form'
 
-const TokenOfferModal = ({
-	show,
-	onClose,
-	data,
-	offerAmount,
-	bidQuantity,
-	onSuccess,
-	fromDetail = true,
-	setShowModal,
-	tokenType = `token`,
-}) => {
+const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 	const store = useStore()
 	const { errors, register, handleSubmit, watch, setValue } = useForm()
 	const { signAndSendTransaction, viewFunction } = useWalletSelector()
@@ -163,7 +153,7 @@ const TokenOfferModal = ({
 						)}
 					>
 						<div className="relative mb-5">
-							<p className="text-sm font-bold text-center">Make Offer</p>
+							<p className="text-sm font-bold text-center">Update Listing</p>
 							<button className="absolute bg-neutral-05 rounded-md right-0 -top-2">
 								<IconX className={'ml-1 mt-1'} />
 							</button>
@@ -204,7 +194,7 @@ const TokenOfferModal = ({
 							</div>
 
 							<div className="flex flex-row justify-between items-center p-2">
-								<p className="text-sm text-neutral-10">Top Offer</p>
+								<p className="text-sm text-neutral-10">Current Price</p>
 								<div className="inline-flex">
 									<p className="font-bold text-sm text-neutral-10 truncate">{`${prettyBalance(
 										data.price ? formatNearAmount(data.price) : '0',
@@ -221,7 +211,7 @@ const TokenOfferModal = ({
 							</div>
 
 							<div className="flex flex-row justify-between items-center p-2">
-								<p className="text-sm text-neutral-10">Your Price Offer</p>
+								<p className="text-sm text-neutral-10">New Price</p>
 								<InputText
 									name="offerAmount"
 									step="any"
@@ -232,17 +222,83 @@ const TokenOfferModal = ({
 									})}
 									className={`${
 										errors.offerAmount && 'error'
-									} w-2/3 bg-neutral-04 border border-neutral-06 hover:bg-neutral-05 focus:bg-neutral-04 focus:border-neutral-07`}
-									placeholder="Place your Offer"
+									} w-2/3 bg-neutral-04 border border-neutral-06 hover:bg-neutral-05 focus:bg-neutral-04 focus:border-neutral-07 text-right text-xs`}
+									placeholder="Place your new price here|"
 								/>
 							</div>
 
 							<div className="bg-neutral-04 border border-neutral-05 rounded-xl p-4 mb-4">
-								<p className="text-sm font-bold">Offer Summary</p>
+								<p className="text-sm font-bold">Update Listing Summary</p>
 								<div className="border-b border-b-neutral-05 mb-4"></div>
 
 								<div className="flex flex-row justify-between items-center my-2">
-									<p className="text-sm">Your Offer</p>
+									<p className="text-sm">New Price</p>
+									<div className="inline-flex">
+										<p className="text-sm text-neutral-10 truncate">{`${prettyBalance(
+											data.price ? formatNearAmount(data.price) : '0',
+											0,
+											4
+										)} Ⓝ`}</p>
+										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+											<div className="text-[10px] text-gray-400 truncate ml-2">
+												($
+												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+											</div>
+										)}
+									</div>
+								</div>
+								<div className="flex flex-row justify-between items-center my-2">
+									<p className="text-sm">Receive</p>
+									<div className="inline-flex">
+										<p className="text-sm text-neutral-10 truncate">{`${prettyBalance(
+											data.price ? formatNearAmount(data.price) : '0',
+											0,
+											4
+										)} Ⓝ`}</p>
+										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+											<div className="text-[10px] text-gray-400 truncate ml-2">
+												($
+												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+											</div>
+										)}
+									</div>
+								</div>
+								<div className="flex flex-row justify-between items-center my-2">
+									<p className="text-sm">Royalty</p>
+									<div className="inline-flex">
+										<p className="text-sm text-neutral-10 truncate">{`${prettyBalance(
+											data.price ? formatNearAmount(data.price) : '0',
+											0,
+											4
+										)} Ⓝ`}</p>
+										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+											<div className="text-[10px] text-gray-400 truncate ml-2">
+												($
+												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+											</div>
+										)}
+									</div>
+								</div>
+								<div className="flex flex-row justify-between items-center my-2">
+									<p className="text-sm">Locked Fee</p>
+									<div className="inline-flex">
+										<p className="text-sm text-neutral-10 truncate">{`${prettyBalance(
+											data.price ? formatNearAmount(data.price) : '0',
+											0,
+											4
+										)} Ⓝ`}</p>
+										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+											<div className="text-[10px] text-gray-400 truncate ml-2">
+												($
+												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+											</div>
+										)}
+									</div>
+								</div>
+								<div className="border-b border-b-neutral-05 mt-4 mb-2"></div>
+
+								<div className="flex flex-row justify-between items-center my-2">
+									<p className="text-sm">Storage Fee</p>
 									<div className="inline-flex">
 										<p className="text-sm text-neutral-10 truncate">{`${prettyBalance(
 											data.price ? formatNearAmount(data.price) : '0',
@@ -295,24 +351,13 @@ const TokenOfferModal = ({
 							</div>
 						</div>
 
-						<div className="flex flex-row justify-between items-center">
+						<div className="flex flex-row justify-between items-center mb-6">
 							<p className="text-sm">Payment Method</p>
 							<div className="inline-flex items-center">
 								<p className="text-sm text-white">Near Wallet</p>
 								<IconInfoSecond size={18} color={'#F9F9F9'} className={'ml-2 mb-1'} />
 							</div>
 						</div>
-
-						<div className="w-full flex flex-row ">
-							<div className="w-full border-b border-neutral-05 mb-2 mr-2"></div>
-							<p className="text-sm font-medium">or</p>
-							<div className="w-full border-b border-neutral-05 mb-2 ml-2"></div>
-						</div>
-
-						<button className="w-full flex flex-row justify-center items-center mb-6">
-							<p className="text-4xl">+</p>
-							<p className="text-sm underline">Add Your NFT for Trade</p>
-						</button>
 
 						<div className="grid grid-cols-2 gap-x-4">
 							<div>
@@ -323,12 +368,12 @@ const TokenOfferModal = ({
 							<div>
 								<Button
 									variant="primary"
-									className={'text-sm w-full pl-12 text-center'}
+									className={'text-sm w-full pl-3 text-center'}
 									isDisabled={isOffering}
 									isLoading={isOffering}
 									type="submit"
 								>
-									Complete Offer
+									Complete Update Listing
 								</Button>
 							</div>
 						</div>
@@ -348,4 +393,4 @@ const TokenOfferModal = ({
 	)
 }
 
-export default TokenOfferModal
+export default TokenUpdateListing

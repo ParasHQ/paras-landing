@@ -1,6 +1,6 @@
+import Modal from 'components/Common/Modal'
 import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
-import Modal from 'components/Common/Modal'
 import LoginModal from './LoginModal'
 import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
@@ -17,41 +17,24 @@ import JSBI from 'jsbi'
 import Link from 'next/link'
 import IconInfoSecond from 'components/Icons/component/IconInfoSecond'
 import { useForm } from 'react-hook-form'
-import { trackClickPlaceOffer, trackOfferToken, trackOfferTokenImpression } from 'lib/ga'
 import { InputText } from 'components/Common/form'
 
-const TokenOfferModal = ({
-	show,
-	onClose,
-	data,
-	offerAmount,
-	bidQuantity,
-	onSuccess,
-	fromDetail = true,
-	setShowModal,
-	tokenType = `token`,
-}) => {
+const TokenBidModal = ({ show, data, onClose, onSuccess }) => {
 	const store = useStore()
+	const creatorData = useProfileData(data.metadata.creator_id)
 	const { errors, register, handleSubmit, watch, setValue } = useForm()
 	const { signAndSendTransaction, viewFunction } = useWalletSelector()
-
-	const [showLogin, setShowLogin] = useState(false)
 	const { currentUser, userBalance, setTransactionRes } = useStore((state) => ({
 		currentUser: state.currentUser,
 		userBalance: state.userBalance,
 		setTransactionRes: state.setTransactionRes,
 	}))
+
+	const [showLogin, setShowLogin] = useState(false)
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
-	const [isOffering, setIsOffering] = useState(false)
-	const creatorData = useProfileData(data.metadata.creator_id)
+	const [isBidding, setIsBidding] = useState(false)
 
 	const { localeLn } = useIntl()
-
-	useEffect(() => {
-		if (show) {
-			trackOfferTokenImpression(data.token_id)
-		}
-	}, [show])
 
 	const hasStorageBalance = async () => {
 		try {
@@ -81,12 +64,9 @@ const TokenOfferModal = ({
 		}
 	}
 
-	const onPlaceOffer = async ({ offerAmount }) => {
-		setIsOffering(true)
+	const onPlaceBid = async ({ bidAmount }) => {
+		setIsBidding(true)
 		const hasDepositStorage = await hasStorageBalance()
-
-		trackOfferToken(data.token_id)
-		trackClickPlaceOffer(data.token_id)
 
 		try {
 			const depositParams = { receiver_id: currentUser }
@@ -97,7 +77,7 @@ const TokenOfferModal = ({
 					? { token_id: data.token_id }
 					: { token_series_id: data.token_series_id }),
 				ft_token_id: 'near',
-				price: parseNearAmount(offerAmount),
+				price: parseNearAmount(bidAmount),
 			}
 
 			let res
@@ -108,9 +88,9 @@ const TokenOfferModal = ({
 						{
 							type: 'FunctionCall',
 							params: {
-								methodName: 'add_offer',
+								methodName: 'add_bid',
 								args: params,
-								deposit: parseNearAmount(offerAmount),
+								deposit: parseNearAmount(bidAmount),
 								gas: GAS_FEE,
 							},
 						},
@@ -132,9 +112,9 @@ const TokenOfferModal = ({
 						{
 							type: 'FunctionCall',
 							params: {
-								methodName: 'add_offer',
+								methodName: 'add_bid',
 								args: params,
-								deposit: parseNearAmount(offerAmount),
+								deposit: parseNearAmount(bidAmount),
 								gas: GAS_FEE,
 							},
 						},
@@ -146,10 +126,10 @@ const TokenOfferModal = ({
 				setTransactionRes([res])
 				onSuccess && onSuccess()
 			}
-			setIsOffering(false)
+			setIsBidding(false)
 		} catch (err) {
 			sentryCaptureException(err)
-			setIsOffering(false)
+			setIsBidding(false)
 		}
 	}
 
@@ -159,11 +139,11 @@ const TokenOfferModal = ({
 				<div className="max-w-[504px] w-full bg-neutral-03 text-white rounded-lg mx-auto p-6">
 					<form
 						onSubmit={handleSubmit((bidQuantity) =>
-							creatorData?.flag ? setShowBannedConfirm(true) : onPlaceOffer(bidQuantity)
+							creatorData?.flag ? setShowBannedConfirm(true) : onPlaceBid(bidQuantity)
 						)}
 					>
 						<div className="relative mb-5">
-							<p className="text-sm font-bold text-center">Make Offer</p>
+							<p className="text-sm font-bold text-center">Place Bid in Auction</p>
 							<button className="absolute bg-neutral-05 rounded-md right-0 -top-2">
 								<IconX className={'ml-1 mt-1'} />
 							</button>
@@ -204,7 +184,7 @@ const TokenOfferModal = ({
 							</div>
 
 							<div className="flex flex-row justify-between items-center p-2">
-								<p className="text-sm text-neutral-10">Top Offer</p>
+								<p className="text-sm text-neutral-10">Highest Bid</p>
 								<div className="inline-flex">
 									<p className="font-bold text-sm text-neutral-10 truncate">{`${prettyBalance(
 										data.price ? formatNearAmount(data.price) : '0',
@@ -221,9 +201,26 @@ const TokenOfferModal = ({
 							</div>
 
 							<div className="flex flex-row justify-between items-center p-2">
-								<p className="text-sm text-neutral-10">Your Price Offer</p>
+								<p className="text-sm text-neutral-10">Minimum Bid</p>
+								<div className="inline-flex">
+									<p className="font-bold text-sm text-neutral-10 truncate">{`${prettyBalance(
+										data.price ? formatNearAmount(data.price) : '0',
+										0,
+										4
+									)} Ⓝ`}</p>
+									{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+										<div className="text-[10px] text-gray-400 truncate ml-2">
+											($
+											{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+										</div>
+									)}
+								</div>
+							</div>
+
+							<div className="flex flex-row justify-between items-center p-2">
+								<p className="text-sm text-neutral-10">Your Bid</p>
 								<InputText
-									name="offerAmount"
+									name="bidAmount"
 									step="any"
 									ref={register({
 										required: true,
@@ -231,18 +228,18 @@ const TokenOfferModal = ({
 										max: parseFloat(userBalance.available / 10 ** 24),
 									})}
 									className={`${
-										errors.offerAmount && 'error'
+										errors.bidAmount && 'error'
 									} w-2/3 bg-neutral-04 border border-neutral-06 hover:bg-neutral-05 focus:bg-neutral-04 focus:border-neutral-07`}
-									placeholder="Place your Offer"
+									placeholder="Place your Bid"
 								/>
 							</div>
 
 							<div className="bg-neutral-04 border border-neutral-05 rounded-xl p-4 mb-4">
-								<p className="text-sm font-bold">Offer Summary</p>
+								<p className="text-sm font-bold">Bid Summary</p>
 								<div className="border-b border-b-neutral-05 mb-4"></div>
 
 								<div className="flex flex-row justify-between items-center my-2">
-									<p className="text-sm">Your Offer</p>
+									<p className="text-sm">Your Bid</p>
 									<div className="inline-flex">
 										<p className="text-sm text-neutral-10 truncate">{`${prettyBalance(
 											data.price ? formatNearAmount(data.price) : '0',
@@ -295,7 +292,7 @@ const TokenOfferModal = ({
 							</div>
 						</div>
 
-						<div className="flex flex-row justify-between items-center">
+						<div className="flex flex-row justify-between items-center mb-8">
 							<p className="text-sm">Payment Method</p>
 							<div className="inline-flex items-center">
 								<p className="text-sm text-white">Near Wallet</p>
@@ -303,32 +300,21 @@ const TokenOfferModal = ({
 							</div>
 						</div>
 
-						<div className="w-full flex flex-row ">
-							<div className="w-full border-b border-neutral-05 mb-2 mr-2"></div>
-							<p className="text-sm font-medium">or</p>
-							<div className="w-full border-b border-neutral-05 mb-2 ml-2"></div>
-						</div>
-
-						<button className="w-full flex flex-row justify-center items-center mb-6">
-							<p className="text-4xl">+</p>
-							<p className="text-sm underline">Add Your NFT for Trade</p>
-						</button>
-
 						<div className="grid grid-cols-2 gap-x-4">
 							<div>
-								<Button variant="second" className={'text-sm'} onClick={onClose}>
+								<Button variant="second" className={'text-sm p-0'} onClick={onClose}>
 									Cancel
 								</Button>
 							</div>
 							<div>
 								<Button
 									variant="primary"
-									className={'text-sm w-full pl-12 text-center'}
-									isDisabled={isOffering}
-									isLoading={isOffering}
+									className={'text-sm w-full pl-14 text-center'}
+									isDisabled={isBidding}
+									isLoading={isBidding}
 									type="submit"
 								>
-									Complete Offer
+									Complete Bid
 								</Button>
 							</div>
 						</div>
@@ -348,4 +334,4 @@ const TokenOfferModal = ({
 	)
 }
 
-export default TokenOfferModal
+export default TokenBidModal
