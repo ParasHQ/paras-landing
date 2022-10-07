@@ -1,22 +1,8 @@
 import Link from 'next/link'
-import { useToast } from 'hooks/useToast'
 import { useIntl } from 'hooks/useIntl'
-import { IconQuestion } from './Icons'
 
 const Footer = () => {
-	const toast = useToast()
 	const { localeLn } = useIntl()
-	const _showBetaInfo = () => {
-		toast.show({
-			text: (
-				<div className="text-sm text-gray-900">
-					<p>{localeLn('UseOwnRisk')}</p>
-				</div>
-			),
-			type: 'info',
-			duration: null,
-		})
-	}
 
 	return (
 		<div className="bg-black z-10 relative bg-opacity-60">
