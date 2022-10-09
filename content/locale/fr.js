@@ -215,6 +215,7 @@ const CardInfo = {
 	ReportButton: 'Signaler',
 	ReportButtonLoading: 'Signalement...',
 	ReportToastSuccess: 'Cet article à été signalé.',
+	CurrentBid: 'Enchère actuelle',
 }
 const publication = {
 	PublicationParas: 'Publication — Paras',

@@ -224,6 +224,7 @@ const CardInfo = {
 	ReportButton: 'Report',
 	ReportButtonLoading: 'Reporting...',
 	ReportToastSuccess: 'This item has been reported.',
+	CurrentBid: 'Current Bid',
 }
 const publication = {
 	PublicationParas: 'Publication — Paras',

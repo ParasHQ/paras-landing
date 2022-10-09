@@ -133,6 +133,8 @@ const TokenBidModal = ({ show, data, onClose, onSuccess }) => {
 		}
 	}
 
+	if (!data.is_auction) return null
+
 	return (
 		<>
 			<Modal isShow={show} closeOnBgClick={false} closeOnEscape={false} close={onClose}>

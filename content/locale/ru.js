@@ -222,6 +222,7 @@ const CardInfo = {
 	ReportButton: 'Создать отчёт',
 	ReportButtonLoading: 'Создание отчёта...',
 	ReportToastSuccess: 'Вы создали отчёт по данной позиции.',
+	CurrentBid: 'Текущая ставка',
 }
 const publication = {
 	PublicationParas: 'Публикация — Paras',

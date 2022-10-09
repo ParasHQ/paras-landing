@@ -222,6 +222,7 @@ const CardInfo = {
 	ReportButton: 'Reportar',
 	ReportButtonLoading: 'Reportando...',
 	ReportToastSuccess: 'Este item ha sido reportado.',
+	CurrentBid: 'Oferta actual',
 }
 const publication = {
 	PublicationParas: 'Publicación — Paras',

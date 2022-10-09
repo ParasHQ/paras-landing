@@ -78,6 +78,8 @@ const TokenBuyModalSecond = ({ show, onClose, data }) => {
 		}
 	}
 
+	if (!data.price) return null
+
 	return (
 		<>
 			<Modal isShow={show} closeOnBgClick={false} closeOnEscape={false} close={onClose}>
@@ -132,7 +134,7 @@ const TokenBuyModalSecond = ({ show, onClose, data }) => {
 								{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 									<div className="text-[10px] text-gray-400 truncate ml-2">
 										($
-										{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+										{/* {prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
 									</div>
 								)}
 							</div>
@@ -154,7 +156,7 @@ const TokenBuyModalSecond = ({ show, onClose, data }) => {
 									{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 										<div className="text-[10px] text-gray-400 truncate ml-2">
 											($
-											{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+											{/* {prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
 										</div>
 									)}
 								</div>
@@ -170,7 +172,7 @@ const TokenBuyModalSecond = ({ show, onClose, data }) => {
 									{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 										<div className="text-[10px] text-gray-400 truncate ml-2">
 											($
-											{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+											{/* {prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
 										</div>
 									)}
 								</div>
@@ -188,7 +190,7 @@ const TokenBuyModalSecond = ({ show, onClose, data }) => {
 									{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 										<div className="text-[10px] text-gray-400 truncate ml-2">
 											($
-											{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+											{/* {prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
 										</div>
 									)}
 								</div>
@@ -207,7 +209,7 @@ const TokenBuyModalSecond = ({ show, onClose, data }) => {
 							{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 								<div className="text-[10px] text-gray-400 truncate ml-2">
 									($
-									{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+									{/* {prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
 								</div>
 							)}
 						</div>

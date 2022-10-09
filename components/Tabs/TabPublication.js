@@ -22,8 +22,6 @@ const TabPublication = ({ localToken }) => {
 			return
 		}
 
-		// const queryTokenId = localToken.token_id ? `/${localToken.token_id}` : ''
-
 		const query = `${localToken.contract_id}::${localToken.token_series_id}`
 
 		setIsFetching(true)

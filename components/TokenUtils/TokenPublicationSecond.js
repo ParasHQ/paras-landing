@@ -1,15 +1,14 @@
-import { useIntl } from 'hooks/useIntl'
 import { useEffect, useState } from 'react'
 import cachios from 'cachios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { IconArrowSmall } from 'components/Icons'
 import IconEmptyPublication from 'components/Icons/component/IconEmptyPublication'
 import IconLoaderSecond from 'components/Icons/component/IconLoaderSecond'
+import Link from 'next/link'
 
 const LIMIT = 5
 
 const TokenPublicationSecond = ({ localToken }) => {
-	const { localeLn } = useIntl()
 	const [publications, setPublications] = useState([])
 	const [page, setPage] = useState(0)
 	const [isFetching, setIsFetching] = useState(false)
@@ -72,21 +71,23 @@ const TokenPublicationSecond = ({ localToken }) => {
 						loader={<IconLoaderSecond size={50} />}
 					>
 						{publications.map((publication) => (
-							<a
+							<Link
 								key={publication.slug}
-								className="flex flex-row justify-between items-center bg-neutral-01 border border-neutral-05 rounded-lg px-3 py-4 my-2"
+								href={`/publication/${publication.slug}-${publication._id}`}
 							>
-								<div>
-									<p className="text-neutral-08">Title </p>
-									<p className="text-neutral-09">Description</p>
-								</div>
-								<div className="flex flex-row items-center justify-between text-right">
-									<p className="font-normal text-sm">August 2, 2022</p>
-									<div className="text-sm text-neutral-09">
-										<IconArrowSmall size={45} />
+								<a className="flex flex-row justify-between items-center bg-neutral-01 border border-neutral-05 rounded-lg px-3 py-4 my-2">
+									<div>
+										<p className="text-neutral-08">{publication.title} </p>
+										<p className="text-neutral-09">{publication.description}</p>
 									</div>
-								</div>
-							</a>
+									<div className="flex flex-row items-center justify-between text-right">
+										<p className="font-normal text-sm">{new Date(publication.issued_at)}</p>
+										<div className="text-sm text-neutral-09">
+											<IconArrowSmall size={45} />
+										</div>
+									</div>
+								</a>
+							</Link>
 						))}
 					</InfiniteScroll>
 				)}

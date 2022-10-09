@@ -203,8 +203,8 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 									)} Ⓝ`}</p>
 									{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 										<div className="text-[10px] text-gray-400 truncate ml-2">
-											($
-											{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+											{/* ($
+											{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
 										</div>
 									)}
 								</div>
@@ -241,8 +241,8 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 										)} Ⓝ`}</p>
 										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">
-												($
-												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+												{/* ($
+												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
 											</div>
 										)}
 									</div>
@@ -257,8 +257,8 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 										)} Ⓝ`}</p>
 										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">
-												($
-												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+												{/* ($
+												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
 											</div>
 										)}
 									</div>
@@ -273,8 +273,8 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 										)} Ⓝ`}</p>
 										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">
-												($
-												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+												{/* ($
+												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
 											</div>
 										)}
 									</div>
@@ -289,8 +289,8 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 										)} Ⓝ`}</p>
 										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">
-												($
-												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+												{/* ($
+												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
 											</div>
 										)}
 									</div>
@@ -307,8 +307,8 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 										)} Ⓝ`}</p>
 										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">
-												($
-												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+												{/* ($
+												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
 											</div>
 										)}
 									</div>
@@ -325,8 +325,8 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 										)} Ⓝ`}</p>
 										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">
-												($
-												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+												{/* ($
+												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
 											</div>
 										)}
 									</div>
@@ -344,8 +344,8 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 								)} Ⓝ`}</p>
 								{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 									<div className="text-[10px] text-gray-400 truncate ml-2">
-										($
-										{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+										{/* ($
+										{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
 									</div>
 								)}
 							</div>

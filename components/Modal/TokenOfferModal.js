@@ -4,7 +4,6 @@ import Modal from 'components/Common/Modal'
 import LoginModal from './LoginModal'
 import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
-import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import useProfileData from 'hooks/useProfileData'
 import BannedConfirmModal from './BannedConfirmModal'
@@ -19,39 +18,56 @@ import IconInfoSecond from 'components/Icons/component/IconInfoSecond'
 import { useForm } from 'react-hook-form'
 import { trackClickPlaceOffer, trackOfferToken, trackOfferTokenImpression } from 'lib/ga'
 import { InputText } from 'components/Common/form'
+import cachios from 'cachios'
 
-const TokenOfferModal = ({
-	show,
-	onClose,
-	data,
-	offerAmount,
-	bidQuantity,
-	onSuccess,
-	fromDetail = true,
-	setShowModal,
-	tokenType = `token`,
-}) => {
+const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess, tokenType = `token` }) => {
 	const store = useStore()
-	const { errors, register, handleSubmit, watch, setValue } = useForm()
+	const { errors, register, handleSubmit, watch, setValue } = useForm({
+		defaultValues: {
+			offerAmount,
+		},
+	})
 	const { signAndSendTransaction, viewFunction } = useWalletSelector()
-
-	const [showLogin, setShowLogin] = useState(false)
+	const creatorData = useProfileData(data.metadata.creator_id)
 	const { currentUser, userBalance, setTransactionRes } = useStore((state) => ({
 		currentUser: state.currentUser,
 		userBalance: state.userBalance,
 		setTransactionRes: state.setTransactionRes,
 	}))
+
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const [isOffering, setIsOffering] = useState(false)
-	const creatorData = useProfileData(data.metadata.creator_id)
-
-	const { localeLn } = useIntl()
+	const [showLogin, setShowLogin] = useState(false)
+	const [highestOffer, setHighestOffer] = useState(null)
+	const [currentOffer, setCurrentOffer] = useState(0)
 
 	useEffect(() => {
 		if (show) {
+			fetchHighestOffer()
 			trackOfferTokenImpression(data.token_id)
 		}
 	}, [show])
+
+	const fetchHighestOffer = async () => {
+		try {
+			const res = await cachios.get(`${process.env.V2_API_URL}/offers`, {
+				params: {
+					contract_id: data.contract_id,
+					token_id: data.token_id,
+					token_series_id: data.token_series_id,
+					__sort: 'price::-1',
+				},
+			})
+
+			const newOffer = res.data.data.results
+			if (newOffer && newOffer.length > 0) {
+				const highest = newOffer[newOffer.length - 1].price
+				setHighestOffer(highest)
+			}
+		} catch (err) {
+			sentryCaptureException(err)
+		}
+	}
 
 	const hasStorageBalance = async () => {
 		try {
@@ -164,7 +180,10 @@ const TokenOfferModal = ({
 					>
 						<div className="relative mb-5">
 							<p className="text-sm font-bold text-center">Make Offer</p>
-							<button className="absolute bg-neutral-05 rounded-md right-0 -top-2">
+							<button
+								className="absolute bg-neutral-05 rounded-md right-0 -top-2"
+								onClick={onClose}
+							>
 								<IconX className={'ml-1 mt-1'} />
 							</button>
 						</div>
@@ -206,16 +225,23 @@ const TokenOfferModal = ({
 							<div className="flex flex-row justify-between items-center p-2">
 								<p className="text-sm text-neutral-10">Top Offer</p>
 								<div className="inline-flex">
-									<p className="font-bold text-sm text-neutral-10 truncate">{`${prettyBalance(
-										data.price ? formatNearAmount(data.price) : '0',
-										0,
-										4
-									)} Ⓝ`}</p>
-									{data?.price !== '0' && store.nearUsdPrice !== 0 && (
-										<div className="text-[10px] text-gray-400 truncate ml-2">
-											($
-											{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
-										</div>
+									{highestOffer && highestOffer.length > 0 ? (
+										<>
+											<p className="font-bold text-sm text-neutral-10 truncate">{`${prettyBalance(
+												highestOffer,
+												0,
+												4
+											)} Ⓝ`}</p>
+
+											{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+												<div className="text-[10px] text-gray-400 truncate ml-2">
+													($
+													{/* {prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
+												</div>
+											)}
+										</>
+									) : (
+										<p className="font-bold text-sm text-neutral-10 truncate">None</p>
 									)}
 								</div>
 							</div>
@@ -224,7 +250,9 @@ const TokenOfferModal = ({
 								<p className="text-sm text-neutral-10">Your Price Offer</p>
 								<InputText
 									name="offerAmount"
+									type="number"
 									step="any"
+									onChange={(e) => setCurrentOffer(e.target.value)}
 									ref={register({
 										required: true,
 										min: 0.01,
@@ -232,7 +260,7 @@ const TokenOfferModal = ({
 									})}
 									className={`${
 										errors.offerAmount && 'error'
-									} w-2/3 bg-neutral-04 border border-neutral-06 hover:bg-neutral-05 focus:bg-neutral-04 focus:border-neutral-07`}
+									} w-2/3 bg-neutral-04 border border-neutral-06 hover:bg-neutral-05 focus:bg-neutral-04 focus:border-neutral-07 text-right`}
 									placeholder="Place your Offer"
 								/>
 							</div>
@@ -244,17 +272,10 @@ const TokenOfferModal = ({
 								<div className="flex flex-row justify-between items-center my-2">
 									<p className="text-sm">Your Offer</p>
 									<div className="inline-flex">
-										<p className="text-sm text-neutral-10 truncate">{`${prettyBalance(
-											data.price ? formatNearAmount(data.price) : '0',
-											0,
-											4
-										)} Ⓝ`}</p>
-										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
-											<div className="text-[10px] text-gray-400 truncate ml-2">
-												($
-												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
-											</div>
-										)}
+										<p className="text-sm text-neutral-10 truncate">{currentOffer} Ⓝ</p>
+										<div className="text-[10px] text-gray-400 truncate ml-2">
+											(~${currentOffer * store.nearUsdPrice})
+										</div>
 									</div>
 								</div>
 								<div className="border-b border-b-neutral-05 mt-4 mb-2"></div>
@@ -270,7 +291,7 @@ const TokenOfferModal = ({
 										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">
 												($
-												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+												{/* {prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
 											</div>
 										)}
 									</div>
@@ -278,18 +299,23 @@ const TokenOfferModal = ({
 							</div>
 						</div>
 
+						<div className="mt-2 text-sm text-red-500 text-center">
+							{errors.offerAmount?.type === 'required' && `Offer amount is required`}
+							{errors.offerAmount?.type === 'min' && `Minimum 0.01 Ⓝ`}
+							{errors.offerAmount?.type === 'max' && `You don't have enough balance`}
+						</div>
 						<div className="flex flex-row justify-between items-center mb-2">
 							<p className="text-sm">Your Balance</p>
 							<div className="inline-flex">
 								<p className="text-sm text-neutral-10 font-bold truncate p-1">{`${prettyBalance(
-									data.price ? formatNearAmount(data.price) : '0',
-									0,
+									userBalance.available,
+									24,
 									4
 								)} Ⓝ`}</p>
-								{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+								{userBalance.available && store.nearUsdPrice !== 0 && (
 									<div className="text-[10px] text-gray-400 truncate ml-2">
-										($
-										{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+										(~$
+										{prettyBalance(JSBI.BigInt(userBalance.available) * store.nearUsdPrice, 24, 2)})
 									</div>
 								)}
 							</div>

@@ -216,6 +216,7 @@ const CardInfo = {
 	TotalBidAmount: '投标总价',
 	Redirecting: '重定向...',
 	SubmitBid: '投标',
+	CurrentBid: '当前出价',
 }
 const publication = {
 	PublicationParas: 'Publication — Paras',

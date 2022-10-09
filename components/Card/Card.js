@@ -156,7 +156,7 @@ const Card = ({
 							typeCardList === 'top-rarity-token'
 								? 'bg-transparent'
 								: isNewDesign
-								? 'bg-neutral-01'
+								? 'bg-transparent'
 								: 'bg-black'
 						} w-full h-full`}
 						style={{

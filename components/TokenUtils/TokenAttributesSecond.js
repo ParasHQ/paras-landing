@@ -1,7 +1,9 @@
 import cachios from 'cachios'
 import { useState, useEffect } from 'react'
-import { IconArrowSmall } from 'components/Icons'
 import IconEmptyAttribute from 'components/Icons/component/IconEmptyAttribute'
+import Link from 'next/link'
+import { trackClickAttributes } from 'lib/ga'
+import { IconArrowSmall } from 'components/Icons'
 
 const TokenAttributesSecond = ({ localToken }) => {
 	const [attributes, setAttributes] = useState([])
@@ -41,7 +43,9 @@ const TokenAttributesSecond = ({ localToken }) => {
 			<div className="flex flex-row justify-between items-center mb-2">
 				<div className="border border-neutral-05 rounded-lg text-sm font-bold p-2">
 					{' '}
-					Rarity Score: {localToken.metadata?.score.toFixed(2) || 0}{' '}
+					Rarity Score: {localToken.metadata?.score
+						? localToken.metadata?.score?.toFixed(2)
+						: 0}{' '}
 				</div>
 			</div>
 
@@ -50,23 +54,34 @@ const TokenAttributesSecond = ({ localToken }) => {
 					<IconEmptyAttribute size={100} className="mx-auto my-4" />
 				) : (
 					attributes.map((attribute) => (
-						<a
+						<Link
 							key={attribute}
-							className="flex flex-row justify-between items-center bg-neutral-01 border border-neutral-05 rounded-lg px-3 py-4 my-2"
 							href={`/collection/${collection.id}/?attributes=[${JSON.stringify({
 								[attribute.trait_type]: attribute.value,
 							})}]`}
 						>
-							<div>
-								<p className="text-neutral-08">{attribute.trait_type} :</p>
-								<p className="text-neutral-09">{attribute.value}</p>
-							</div>
-							<div className="text-right bg-neutral-03 rounded-lg p-1">
-								<p className="text-sm text-neutral-09">
-									{attribute.rarity?.rarity.toFixed(2)} % Rarity
-								</p>
-							</div>
-						</a>
+							<a
+								className="flex flex-row justify-between items-center bg-neutral-01 border border-neutral-05 rounded-lg px-3 py-4 my-2"
+								onClick={() =>
+									trackClickAttributes(
+										localToken.token_id || localToken.token_series_id,
+										attribute.trait_type,
+										attribute.value
+									)
+								}
+							>
+								<div>
+									<p className="text-neutral-08">{attribute.trait_type} :</p>
+									<p className="text-neutral-09">{attribute.value}</p>
+								</div>
+								<div className="inline-flex">
+									<p className="text-sm text-neutral-09 text-right bg-neutral-03 rounded-lg p-1">
+										{attribute.rarity?.rarity?.toFixed(2)} % Rarity
+									</p>
+									<IconArrowSmall size={24} />
+								</div>
+							</a>
+						</Link>
 					))
 				)}
 			</div>

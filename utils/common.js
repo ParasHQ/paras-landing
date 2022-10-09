@@ -407,42 +407,6 @@ export const isDateLessThanTwoDaysBefore = (date) => {
 	return diff < 2
 }
 
-export const isCurrentBid = (type, token) => {
-	let data = []
-	token?.bidder_list?.map((item) => {
-		if (type === 'bidder') data.push(item.bidder)
-		else if (type === 'time') data.push(item.issued_at)
-		else if (type === 'amount') data.push(item.amount)
-	})
-	const currentBid = data.reverse()
-
-	return currentBid[0]
-}
-
-export const checkNextPriceBid = (type, token) => {
-	if (token?.bidder_list && token?.bidder_list?.length !== 0) {
-		const currentBid = JSBI.BigInt(
-			token?.bidder_list && token?.bidder_list?.length !== 0 ? isCurrentBid('amount') : token?.price
-		)
-		const multiplebid = JSBI.multiply(JSBI.divide(currentBid, JSBI.BigInt(100)), JSBI.BigInt(5))
-		const nextBid = JSBI.add(currentBid, multiplebid).toString()
-		const nextBidToNear = (nextBid / 10 ** 24).toFixed(2)
-		const nextBidToUSD = parseNearAmount(nextBidToNear.toString())
-		if (type === 'near') {
-			return nextBidToNear
-		} else if (type === 'usd') {
-			return nextBidToUSD.toString()
-		}
-	} else {
-		if (type === 'near') {
-			return token.price ? formatNearAmount(token.price) : '0'
-		} else if (type === 'usd') {
-			const price = token?.price || token?.lowest_price || '0'
-			return price.toString()
-		}
-	}
-}
-
 export const nanoSecToMiliSec = (date) => {
 	const sliceNanoSec = String(date).slice(0, 13)
 

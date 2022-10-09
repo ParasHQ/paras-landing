@@ -21,6 +21,7 @@ import TokenUpdateListing from 'components/Modal/TokenUpdateListing'
 import TokenTransferModalSecond from 'components/Modal/TokenTransferModalSecond'
 import TokenRemoveAuction from 'components/Modal/TokenRemoveAuction'
 import TokenAuctionModal from 'components/Modal/TokenAuctionModal'
+import SuccessTransactionModalSecond from 'components/Modal/SuccessTransactionModalSecond'
 
 const ModalEnum = Object.freeze({
 	BUY: 'buy',
@@ -86,35 +87,38 @@ const TokenDetailNewSecond = ({ token }) => {
 				{/* TODO: REMOVE THIS IF DONE */}
 				<p className="text-white">BUTTON TO TEST MODAL ONLY - ONLY ON DEVELOPMENT</p>
 				<div className="grid grid-cols-5 gap-x-2">
-					<Button variant="second" onClick={() => setShowModal(ModalEnum.BUY)}>
+					<Button variant="secondary" onClick={() => setShowModal(ModalEnum.BUY)}>
 						BUY
 					</Button>
-					<Button variant="second" onClick={() => setShowModal(ModalEnum.OFFER)}>
+					<Button variant="secondary" onClick={() => setShowModal(ModalEnum.OFFER)}>
 						OFFER
 					</Button>
-					<Button variant="second" onClick={() => setShowModal(ModalEnum.TRADE)}>
+					<Button variant="secondary" onClick={() => setShowModal(ModalEnum.TRADE)}>
 						TRADE
 					</Button>
-					<Button variant="second" onClick={() => setShowModal(ModalEnum.BID)}>
+					<Button variant="secondary" onClick={() => setShowModal(ModalEnum.BID)}>
 						BID
 					</Button>
-					<Button variant="second" onClick={() => setShowModal(ModalEnum.MINT)}>
+					<Button variant="secondary" onClick={() => setShowModal(ModalEnum.MINT)}>
 						MINT
 					</Button>
-					<Button variant="second" onClick={() => setShowModal(ModalEnum.UPDATE_LISTING)}>
+					<Button variant="secondary" onClick={() => setShowModal(ModalEnum.UPDATE_LISTING)}>
 						UPDATE_LISTING
 					</Button>
-					<Button variant="second" onClick={() => setShowModal(ModalEnum.UPDATE_PRICE)}>
+					<Button variant="secondary" onClick={() => setShowModal(ModalEnum.UPDATE_PRICE)}>
 						UPDATE_PRICE
 					</Button>
-					<Button variant="second" onClick={() => setShowModal(ModalEnum.AUCTION)}>
+					<Button variant="secondary" onClick={() => setShowModal(ModalEnum.AUCTION)}>
 						AUCTION
 					</Button>
-					<Button variant="second" onClick={() => setShowModal(ModalEnum.TRANSFER)}>
+					<Button variant="secondary" onClick={() => setShowModal(ModalEnum.TRANSFER)}>
 						TRANSFER
 					</Button>
-					<Button variant="second" onClick={() => setShowModal(ModalEnum.REMOVE_AUCTION)}>
+					<Button variant="secondary" onClick={() => setShowModal(ModalEnum.REMOVE_AUCTION)}>
 						REMOVE_AUCTION
+					</Button>
+					<Button variant="secondary" onClick={() => setShowModal(ModalEnum.REMOVE_AUCTION)}>
+						SUCCESS
 					</Button>
 				</div>
 
@@ -162,8 +166,18 @@ const TokenDetailNewSecond = ({ token }) => {
 					</div>
 
 					<div className="hidden md:block col-start-4 col-end-8">
-						<TokenHeadSecond localToken={token} />
-						<TokenPriceInfo localToken={token} />
+						<TokenHeadSecond
+							localToken={token}
+							onShowTradeModal={() => {
+								setShowModal(ModalEnum.TRADE)
+							}}
+						/>
+						<TokenPriceInfo
+							localToken={token}
+							onShowBuyModal={() => setShowModal(ModalEnum.BUY)}
+							onShowBidModal={() => setShowModal(ModalEnum.BID)}
+							onShowOfferModal={() => setShowModal(ModalEnum.OFFER)}
+						/>
 						<TokenInformation localToken={token} />
 						<TokenPriceHistorySecond localToken={token} />
 					</div>
@@ -176,36 +190,38 @@ const TokenDetailNewSecond = ({ token }) => {
 				<TokenMoreCollectionSecond />
 			</div>
 
-			<TokenBuyModalSecond show={showModal === ModalEnum.BUY} data={DUMMY} onClose={onCloseModal} />
-			<TokenOfferModal show={showModal === ModalEnum.OFFER} data={DUMMY} onClose={onCloseModal} />
-			<TokenTradeModal show={showModal === ModalEnum.TRADE} data={DUMMY} onClose={onCloseModal} />
-			<TokenBidModal show={showModal === ModalEnum.BID} data={DUMMY} onClose={onCloseModal} />
-			<TokenMintModal show={showModal === ModalEnum.MINT} data={DUMMY} onClose={onCloseModal} />
-			<TokenUpdatePriceModalSecond
+			{/* Modals Component */}
+			{/* <TokenBuyModalSecond show={showModal === ModalEnum.BUY} data={token} onClose={onCloseModal} /> */}
+			<TokenOfferModal show={showModal === ModalEnum.OFFER} data={token} onClose={onCloseModal} />
+			{/* <TokenTradeModal show={showModal === ModalEnum.TRADE} data={token} onClose={onCloseModal} /> */}
+			{/* <TokenBidModal show={showModal === ModalEnum.BID} data={token} onClose={onCloseModal} /> */}
+			{/* <TokenMintModal show={showModal === ModalEnum.MINT} data={token} onClose={onCloseModal} /> */}
+			{/* <TokenUpdatePriceModalSecond
 				show={showModal === ModalEnum.UPDATE_PRICE}
-				data={DUMMY}
+				data={token}
 				onClose={onCloseModal}
-			/>
+			/> */}
 			<TokenUpdateListing
 				show={showModal === ModalEnum.UPDATE_LISTING}
-				data={DUMMY}
+				data={token}
 				onClose={onCloseModal}
 			/>
-			<TokenTransferModalSecond
+			{/* <TokenTransferModalSecond
 				show={showModal === ModalEnum.TRANSFER}
-				data={DUMMY}
+				data={token}
 				onClose={onCloseModal}
 			/>
 			<TokenRemoveAuction
 				show={showModal === ModalEnum.REMOVE_AUCTION}
-				data={DUMMY}
+				data={token}
 				onClose={onCloseModal}
 			/>
 			<TokenAuctionModal
 				show={showModal === ModalEnum.AUCTION}
-				data={DUMMY}
+				data={token}
 				onClose={onCloseModal}
-			/>
+			/> */}
+			{/* <SuccessTransactionModalSecond /> */}
 		</>
 	)
 }
