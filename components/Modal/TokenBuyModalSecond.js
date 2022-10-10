@@ -20,9 +20,13 @@ import IconInfoSecond from 'components/Icons/component/IconInfoSecond'
 
 const TokenBuyModalSecond = ({ show, onClose, data }) => {
 	const store = useStore()
+	const { currentUser, userBalance, setTransactionRes } = useStore((state) => ({
+		currentUser: state.currentUser,
+		userBalance: state.userBalance,
+		setTransactionRes: state.setTransactionRes,
+	}))
 
 	const [showLogin, setShowLogin] = useState(false)
-	const { currentUser, setTransactionRes } = useStore()
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const [isBuying, setIsBuying] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
@@ -126,15 +130,13 @@ const TokenBuyModalSecond = ({ show, onClose, data }) => {
 						<div className="flex flex-row justify-between items-center p-2">
 							<p className="text-sm text-neutral-10">Price</p>
 							<div className="inline-flex">
-								<p className="font-bold text-sm text-neutral-10 truncate">{`${prettyBalance(
-									data.price ? formatNearAmount(data.price) : '0',
-									0,
-									4
-								)} Ⓝ`}</p>
+								<p className="font-bold text-sm text-neutral-10 truncate">{`${
+									data.price ? formatNearAmount(data.price) : '0'
+								} Ⓝ`}</p>
 								{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 									<div className="text-[10px] text-gray-400 truncate ml-2">
-										($
-										{/* {prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
+										(~$
+										{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
 									</div>
 								)}
 							</div>
@@ -148,31 +150,13 @@ const TokenBuyModalSecond = ({ show, onClose, data }) => {
 							<div className="flex flex-row justify-between items-center my-2">
 								<p className="text-sm">Price</p>
 								<div className="inline-flex">
-									<p className="text-sm text-neutral-10 truncate">{`${prettyBalance(
-										data.price ? formatNearAmount(data.price) : '0',
-										0,
-										4
-									)} Ⓝ`}</p>
+									<p className="text-sm text-neutral-10 truncate">{`${
+										data.price ? formatNearAmount(data.price) : '0'
+									} Ⓝ`}</p>
 									{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 										<div className="text-[10px] text-gray-400 truncate ml-2">
-											($
-											{/* {prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
-										</div>
-									)}
-								</div>
-							</div>
-							<div className="flex flex-row justify-between items-center my-2">
-								<p className="text-sm">Storage Fee</p>
-								<div className="inline-flex">
-									<p className="text-sm text-neutral-10 truncate">{`${prettyBalance(
-										data.price ? formatNearAmount(data.price) : '0',
-										0,
-										4
-									)} Ⓝ`}</p>
-									{data?.price !== '0' && store.nearUsdPrice !== 0 && (
-										<div className="text-[10px] text-gray-400 truncate ml-2">
-											($
-											{/* {prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
+											(~$
+											{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
 										</div>
 									)}
 								</div>
@@ -182,15 +166,13 @@ const TokenBuyModalSecond = ({ show, onClose, data }) => {
 							<div className="flex flex-row justify-between items-center">
 								<p className="text-sm">Total Payment</p>
 								<div className="inline-flex">
-									<p className="bg-[#1300BA80] text-sm text-neutral-10 font-bold truncate p-1">{`${prettyBalance(
-										data.price ? formatNearAmount(data.price) : '0',
-										0,
-										4
-									)} Ⓝ`}</p>
+									<p className="bg-[#1300BA80] text-sm text-neutral-10 font-bold truncate p-1">{`${
+										data.price ? formatNearAmount(data.price) : '0'
+									} Ⓝ`}</p>
 									{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 										<div className="text-[10px] text-gray-400 truncate ml-2">
-											($
-											{/* {prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
+											(~$
+											{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
 										</div>
 									)}
 								</div>
@@ -202,14 +184,14 @@ const TokenBuyModalSecond = ({ show, onClose, data }) => {
 						<p className="text-sm">Your Balance</p>
 						<div className="inline-flex">
 							<p className="text-sm text-neutral-10 font-bold truncate p-1">{`${prettyBalance(
-								data.price ? formatNearAmount(data.price) : '0',
-								0,
+								userBalance.available,
+								24,
 								4
 							)} Ⓝ`}</p>
-							{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+							{userBalance.available && store.nearUsdPrice !== 0 && (
 								<div className="text-[10px] text-gray-400 truncate ml-2">
-									($
-									{/* {prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
+									(~$
+									{prettyBalance(JSBI.BigInt(userBalance.available) * store.nearUsdPrice, 24, 2)})
 								</div>
 							)}
 						</div>
@@ -230,7 +212,11 @@ const TokenBuyModalSecond = ({ show, onClose, data }) => {
 							</Button>
 						</div>
 						<div>
-							<Button variant="primary" className={'text-sm w-full pl-9 text-center'}>
+							<Button
+								variant="primary"
+								className={'text-sm w-full pl-9 text-center'}
+								onClick={onBuyToken}
+							>
 								Complete Purchase
 							</Button>
 						</div>

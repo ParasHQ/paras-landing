@@ -30,7 +30,7 @@ const TabOwnersSecond = ({ localToken }) => {
 	const [owners, setOwners] = useState([])
 	const [showModal, setShowModal] = useState(null)
 	const [showOwnerSortModal, setShowOwnerSortModal] = useState(false)
-	const [ownerSortBy, setOwnerSortBy] = useState(OwnerSortEnum[0])
+	const [ownerSortBy, setOwnerSortBy] = useState(OwnerSortEnum[4])
 	const [fetching, setFetching] = useState(null)
 
 	useEffect(() => {
@@ -44,20 +44,20 @@ const TabOwnersSecond = ({ localToken }) => {
 	const changeSortBy = (sortby) => {
 		let tempTokens = owners.slice()
 
-		if (sortby === 'nameasc') {
+		if (sortby.key === 'nameasc') {
 			tempTokens.sort((a, b) => a.owner_id?.localeCompare(b.owner_id))
-		} else if (sortby === 'namedesc') {
+		} else if (sortby.key === 'namedesc') {
 			tempTokens.sort((a, b) => b.owner_id?.localeCompare(a.owner_id))
-		} else if (sortby === 'editionasc') {
+		} else if (sortby.key === 'editionasc') {
 			tempTokens.sort((a, b) => parseInt(a.edition_id) - parseInt(b.edition_id))
-		} else if (sortby === 'editiondesc') {
+		} else if (sortby.key === 'editiondesc') {
 			tempTokens.sort((a, b) => parseInt(b.edition_id) - parseInt(a.edition_id))
-		} else if (sortby === 'priceasc') {
+		} else if (sortby.key === 'priceasc') {
 			let saleOwner = owners.filter((token) => token.price)
 			let nonSaleOwner = owners.filter((token) => !token.price)
 			saleOwner = saleOwner.sort((a, b) => a.price - b.price)
 			tempTokens = [...saleOwner, ...nonSaleOwner]
-		} else if (sortby === 'pricedesc') {
+		} else if (sortby.key === 'pricedesc') {
 			let saleOwner = owners.filter((token) => token.price)
 			let nonSaleOwner = owners.filter((token) => !token.price)
 			saleOwner = saleOwner.sort((a, b) => b.price - a.price)
@@ -146,7 +146,7 @@ const TabOwnersSecond = ({ localToken }) => {
 				<div className="col-span-12 border-b border-b-neutral-04 my-1"></div>
 				{owners.map((owner) => (
 					<Owner
-						key={owner.owner_id}
+						key={owner._id}
 						initial={owner}
 						onShowBuyModal={() => setShowModal(ModalEnum.BUY)}
 						onShowBidModal={() => setShowModal(ModalEnum.BID)}
@@ -203,11 +203,11 @@ const Owner = ({
 		key: `${initial.contract_id}::${initial.token_series_id}/${initial.token_id}`,
 		initialData: initial,
 	})
+	const { currentUser } = useStore()
+	const { localeLn } = useIntl()
 
 	const [profile, setProfile] = useState([])
 	const [ownedDate, setOwnedDate] = useState(null)
-	const { currentUser } = useStore()
-	const { localeLn } = useIntl()
 
 	useEffect(() => {
 		if (token.owner_id) {
@@ -270,18 +270,22 @@ const Owner = ({
 					className="w-8 h-8 rounded-lg"
 				/>
 				<div className="flex flex-col justify-between items-stretch ml-2">
-					<p className="text-xs font-bold mb-2 text-neutral-10">
-						{prettyTruncate(token.owner_id, 24, 'address')}
-					</p>
+					<Link href={`/${token.owner_id}`}>
+						<a>
+							<p className="text-xs font-bold mb-2 text-neutral-10">
+								{prettyTruncate(token.owner_id, 12, 'address')}
+							</p>
+						</a>
+					</Link>
 					<Link
 						href={`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
 							token.token_id && encodeURIComponent(token.token_id)
 						}`}
 					>
-						<a className="text-sm font-thin text-neutral-10 truncate">
+						<a className="text-xs font-thin text-neutral-10 truncate">
 							{token.contract_id === process.env.NFT_CONTRACT_ID
 								? `${localeLn('Edition')} #${token.edition_id}`
-								: `#${token.token_id}`}
+								: `${prettyTruncate(token.token_id, 5)}`}
 						</a>
 					</Link>
 				</div>

@@ -183,8 +183,8 @@ const TokenTransactionHistory = ({ localToken }) => {
 								<p className="text-neutral-10 text-sm col-span-2">Transaction Type</p>
 								<p className="text-neutral-10 text-sm">Transaction ID</p>
 								<p className="text-neutral-10 text-sm">Price</p>
-								<p className="text-neutral-10 text-sm">Buyer</p>
-								<p className="text-neutral-10 text-sm">Seller</p>
+								<p className="text-neutral-10 text-sm">From</p>
+								<p className="text-neutral-10 text-sm">To</p>
 								<p className="text-neutral-10 text-sm">Date</p>
 							</div>
 							<div className="h-96 overflow-auto">

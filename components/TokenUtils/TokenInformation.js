@@ -13,15 +13,24 @@ import IconLoaderSecond from 'components/Icons/component/IconLoaderSecond'
 import useStore from 'lib/store'
 import { useIntl } from 'hooks/useIntl'
 import ProfileImageBadge from 'components/Common/ProfileImageBadge'
-import { prettyBalance, prettyTruncate, TabEnum } from 'utils/common'
+import { parseImgUrl, prettyBalance, prettyTruncate, TabEnum } from 'utils/common'
 import Button from 'components/Common/Button'
 import TabOwnersSecond from 'components/Tabs/TabOwnersSecond'
 import TabOffersSecond from 'components/Tabs/TabOffersSecond'
+import TokenInfoCopy from 'components/TokenInfoCopy'
+import CopyLink from 'components/Common/CopyLink'
+
+const TextCopyEnum = {
+	TOKEN_ID: 'token_id',
+	CONTRACT_ID: 'contract_id',
+	MEDIA: 'media',
+}
 
 const TokenInformation = ({ localToken }) => {
 	const { localeLn } = useIntl()
 
 	const [tab, setTab] = useState(TabEnum.INFO)
+	const [textCopied, setTextCopied] = useState(null)
 	const [fetching, setFetching] = useState(null)
 	const [collectionStats, setCollectionStats] = useState(null)
 
@@ -80,7 +89,9 @@ const TokenInformation = ({ localToken }) => {
 							href={`/collection/${localToken.metadata?.collection_id || localToken.contract_id}`}
 						>
 							<a className="w-2/3 inline-flex flex-row justify-between bg-neutral-01 border border-neutral-05 hover:bg-neutral-05 hover:border-neutral-10 rounded-lg cursor-pointer p-2">
-								<p className="text-white text-sm">Skullpunkk</p>
+								<p className="text-white text-sm">
+									{localToken.metadata?.collection_id || localToken.contract_id}
+								</p>
 								<IconOut size={20} stroke={'#F9F9F9'} className="text-right" />
 							</a>
 						</Link>
@@ -90,10 +101,22 @@ const TokenInformation = ({ localToken }) => {
 							<p className="text-white text-sm">Royalty</p>
 						</div>
 						<div className="w-2/3 inline-flex flex-row justify-between bg-neutral-01 border border-neutral-05 hover:bg-neutral-05 hover:border-neutral-10 rounded-lg cursor-pointer p-2">
-							<p className="text-white text-sm">10 %</p>
+							<p className="text-white text-sm">
+								{localToken.royalty && Object.keys(localToken.royalty).length > 0 ? (
+									<p className="text-gray-100 font-semibold">
+										{Object.values(localToken.royalty).reduce(
+											(a, b) => parseInt(a) + parseInt(b),
+											0
+										) / 100}
+										%
+									</p>
+								) : (
+									<p className="text-neutral-10">None</p>
+								)}
+							</p>
 							<IconInfoSecond size={20} color={'#F9F9F9'} />
 						</div>
-						<span className="group-hover:opacity-100 transition-opacity bg-neutral-01 border border-neutral-10 p-2 text-sm text-neutral-10 rounded-md absolute right-20 opacity-0 mx-auto">
+						<span className="group-hover:opacity-100 transition-opacity bg-neutral-01 border border-neutral-10 p-2 text-sm mb-10 text-neutral-10 rounded-md absolute right-20 opacity-0 mx-auto">
 							Royalty will split amongst account ids.
 						</span>
 					</div>
@@ -102,7 +125,7 @@ const TokenInformation = ({ localToken }) => {
 							<p className="text-white text-sm">Token ID</p>
 						</div>
 						<div className="w-2/3 inline-flex flex-row justify-between bg-neutral-01 border border-neutral-05 hover:bg-neutral-05 hover:border-neutral-10 rounded-lg cursor-pointer p-2">
-							<p className="text-white text-sm">55018:1</p>
+							<p className="text-white text-sm">{localToken.token_id}</p>
 							<IconCopySecond size={20} color={'#F9F9F9'} />
 						</div>
 					</div>
@@ -111,25 +134,42 @@ const TokenInformation = ({ localToken }) => {
 							<p className="text-white text-sm">Smart Contract</p>
 						</div>
 						<div className="w-2/3 inline-flex flex-row justify-between bg-neutral-01 border border-neutral-05 hover:bg-neutral-05 hover:border-neutral-10 rounded-lg cursor-pointer p-2">
-							<p className="text-white text-sm">x.paras.near</p>
+							<p className="text-white text-sm">{localToken.contract_id}</p>
 							<IconCopySecond size={20} color={'#F9F9F9'} />
 						</div>
 					</div>
-					<div className="inline-flex justify-between items-center p-1">
+					<div className="group inline-flex justify-between items-center p-1">
 						<div className="w-1/3">
 							<p className="text-white text-sm">NFT Link</p>
 						</div>
 						<div className="w-2/3 inline-flex flex-row justify-between bg-neutral-01 border border-neutral-05 hover:bg-neutral-05 hover:border-neutral-10 rounded-lg cursor-pointer p-2">
-							<p className="text-white text-sm">https://ipfs.fleek.co/ipfs/baf...</p>
+							<CopyLink
+								link={parseImgUrl(localToken.metadata.media, null, {
+									useOriginal: process.env.APP_ENV === 'production' ? true : false,
+								})}
+								afterCopy={() => {
+									setTextCopied(TextCopyEnum.MEDIA)
+									setTimeout(() => {
+										setTextCopied(null)
+									}, 2500)
+								}}
+							>
+								<p className="text-white text-sm">
+									{prettyTruncate(localToken.metadata.media, 30)}
+								</p>
+							</CopyLink>
 							<IconCopySecond size={20} color={'#F9F9F9'} />
 						</div>
+						<span className="before:opacity-100 transition-opacity bg-neutral-01 border border-neutral-10 p-2 text-sm text-neutral-10 rounded-md absolute right-20 opacity-0 mx-auto">
+							Copied
+						</span>
 					</div>
 					<div className="inline-flex justify-between items-center p-1">
 						<div className="w-1/3">
 							<p className="text-white text-sm">Locked Fee</p>
 						</div>
 						<div className="w-2/3 inline-flex flex-row justify-between bg-neutral-01 border border-neutral-05 hover:bg-neutral-05 hover:border-neutral-10 rounded-lg cursor-pointer p-2">
-							<p className="text-white text-sm">2 %</p>
+							<p className="text-white text-sm"></p>
 							<IconInfoSecond size={20} color={'#F9F9F9'} />
 						</div>
 					</div>
@@ -216,7 +256,7 @@ const TokenInformation = ({ localToken }) => {
 
 			{tab === TabEnum.OFFERS && (
 				<div className="max-h-80 overflow-y-auto">
-					<div className="bg-neutral-01 border border-neutral-05 rounded-lg py-10">
+					<div className="bg-neutral-01 border border-neutral-05 rounded-lg p-1">
 						{fetching === TabEnum.OFFERS && (
 							<div className="w-full">
 								<IconLoaderSecond size={30} className="mx-auto animate-spin" />
@@ -228,123 +268,6 @@ const TokenInformation = ({ localToken }) => {
 				</div>
 			)}
 		</div>
-	)
-}
-
-const Offer = ({ initial = {} }) => {
-	const { token } = useToken({
-		key: `${initial.contract_id}::${initial.token_series_id}/${initial.token_id}`,
-		initialData: initial,
-	})
-
-	const [profile, setProfile] = useState([])
-	const [ownedDate, setOwnedDate] = useState(null)
-	const { currentUser } = useStore()
-	const { localeLn } = useIntl()
-
-	useEffect(() => {
-		if (token.owner_id) {
-			fetchOwnerProfile()
-			fetchOwnedDate()
-		}
-	}, [token.owner_id])
-
-	const fetchOwnerProfile = async () => {
-		try {
-			const resp = await cachios.get(`${process.env.V2_API_URL}/profiles`, {
-				params: {
-					accountId: token.owner_id,
-				},
-				ttl: 60,
-			})
-			const newData = resp.data.data.results[0] || {}
-			setProfile(newData)
-		} catch (err) {
-			sentryCaptureException(err)
-		}
-	}
-
-	const checkTokenPrice = () => {
-		if (token && token.amount) {
-			return prettyBalance(token.amount.$numberDecimal, 24, 2)
-		} else if (token && token.price) {
-			return prettyBalance(token.price, 24, 2)
-		} else {
-			return '---'
-		}
-	}
-
-	const fetchOwnedDate = async () => {
-		try {
-			const resp = await cachios.get(`${process.env.V2_API_URL}/activities`, {
-				params: {
-					contract_id: token.contract_id,
-					token_id: token.token_id,
-					type: 'nft_transfer',
-					to: token.owner_id,
-					__limit: 1,
-					__sort: '_id::-1',
-				},
-			})
-
-			const newData = resp.data.data.results[0] || null
-			setOwnedDate(newData.issued_at)
-		} catch (err) {
-			sentryCaptureException(err)
-		}
-	}
-
-	return (
-		<>
-			<div className="col-span-4 inline-flex items-center w-full py-2">
-				<ProfileImageBadge
-					imgUrl={profile.imgUrl}
-					level={profile?.level}
-					className="w-8 h-8 rounded-lg"
-				/>
-				<div className="flex flex-col justify-between items-stretch ml-2">
-					<p className="text-xs font-bold mb-2 text-neutral-10">
-						{prettyTruncate(token.owner_id, 24, 'address')}
-					</p>
-					<Link
-						href={`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
-							token.token_id && encodeURIComponent(token.token_id)
-						}`}
-					>
-						<a className="text-sm font-thin text-neutral-10 truncate">
-							{token.contract_id === process.env.NFT_CONTRACT_ID
-								? `${localeLn('Edition')} #${token.edition_id}`
-								: `#${token.token_id}`}
-						</a>
-					</Link>
-				</div>
-			</div>
-			<div className="col-span-2 flex flex-col py-3">
-				{token.price ? (
-					<p className="text-md text-left text-neutral-10 font-bold">
-						{checkTokenPrice().toString()} Ⓝ
-					</p>
-				) : (
-					<div className="line-through text-red-600">
-						<p className="text-lg font-bold text-gray-100">{localeLn('SALE')}</p>
-					</div>
-				)}
-			</div>
-			<div className="col-span-3 inline-flex py-4">
-				<p className="text-xs text-neutral-10">
-					{new Date(ownedDate).toLocaleDateString('en-US', {
-						year: 'numeric',
-						month: 'long',
-						day: 'numeric',
-					})}{' '}
-				</p>
-			</div>
-			<div className="col-span-3 inline-flex py-4 justify-end">
-				<p className="underline text-neutral-10 cursor-pointer">Reject</p>
-				<Button size={'sm'}>Accept</Button>
-			</div>
-			<div className="col-span-12 border-b border-b-neutral-04 mb-2"></div>
-		</>
 	)
 }
 

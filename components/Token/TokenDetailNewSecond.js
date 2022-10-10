@@ -145,7 +145,7 @@ const TokenDetailNewSecond = ({ token }) => {
 			</div>
 
 			{/* Modals Component */}
-			{/* <TokenBuyModalSecond show={showModal === ModalEnum.BUY} data={token} onClose={onCloseModal} /> */}
+			<TokenBuyModalSecond show={showModal === ModalEnum.BUY} data={token} onClose={onCloseModal} />
 			<TokenOfferModal show={showModal === ModalEnum.OFFER} data={token} onClose={onCloseModal} />
 			{/* <TokenTradeModal show={showModal === ModalEnum.TRADE} data={token} onClose={onCloseModal} /> */}
 			{/* <TokenBidModal show={showModal === ModalEnum.BID} data={token} onClose={onCloseModal} /> */}

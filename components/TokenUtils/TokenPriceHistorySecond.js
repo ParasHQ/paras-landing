@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react'
 import ParasRequest from 'lib/ParasRequest'
 import IconEmptyPriceHistory from 'components/Icons/component/IconEmptyPriceHistory'
 
-const CurrencyEnum = {
+const ChartCurrencyEnum = {
 	NEAR: 'Near',
 	USD: 'USD',
 }
@@ -35,7 +35,8 @@ const TokenPriceHistorySecond = ({ localToken }) => {
 	const [isDropDown, setIsDropDown] = useState(true)
 	const [avgPrice, setAvgPrice] = useState()
 	const [selectPriceHistory, setSelectPriceHistory] = useState('all-time')
-	const [chartFilter, setChartFilter] = useState()
+	const [chartFilter, setChartFilter] = useState(ChartFilterEnum.ONE_DAY)
+	const [chartCurrency, setChartCurrency] = useState(ChartCurrencyEnum.NEAR)
 
 	useEffect(() => {
 		fetchDataActivities()
@@ -130,18 +131,27 @@ const TokenPriceHistorySecond = ({ localToken }) => {
 
 			<div className="flex flex-row justify-between items-center">
 				<div className="grid grid-cols-2 bg-neutral-01 border border-neutral-05 rounded-lg p-1">
-					<button className="bg-neutral-03 border border-neutral-05 rounded-md text-white text-xs text-center px-1 py-2">
-						Near
-					</button>
-					<button className="bg-neutral-03 border border-neutral-05 rounded-md text-white text-xs text-center px-1 py-2">
-						USD
-					</button>
+					{Object.keys(ChartCurrencyEnum).map((curr) => (
+						<button
+							key={curr}
+							className={`${
+								chartCurrency === ChartCurrencyEnum[curr] &&
+								'bg-neutral-03 border border-neutral-05'
+							} rounded-md text-neutral-10 text-xs text-center px-1 py-2`}
+							onClick={() => setChartCurrency(ChartCurrencyEnum[curr])}
+						>
+							{ChartCurrencyEnum[curr]}
+						</button>
+					))}
 				</div>
 				<div className="grid grid-cols-7 bg-neutral-01 border border-neutral-05 rounded-lg p-1">
 					{Object.keys(ChartFilterEnum).map((filter) => (
 						<button
 							key={filter}
-							className="bg-neutral-03 border border-neutral-05 rounded-md text-white text-xs text-center p-1"
+							className={`${
+								chartFilter === ChartFilterEnum[filter] && 'bg-neutral-03 border border-neutral-05'
+							} rounded-md text-neutral-10 text-xs text-center p-1`}
+							onClick={() => setChartFilter(ChartFilterEnum[filter])}
 						>
 							{ChartFilterEnum[filter]}
 						</button>
@@ -224,7 +234,7 @@ const TokenPriceTracker = ({ data }) => {
 const CustomTooltip = ({ active, payload }) => {
 	if (active && payload && payload.length) {
 		return (
-			<div className="bg-gray-900 text-white p-2 rounded-md">
+			<div className="bg-gray-900 text-neutral-10 p-2 rounded-md">
 				{payload.map((p, idx) => {
 					return (
 						<div key={idx}>

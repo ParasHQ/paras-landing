@@ -81,7 +81,13 @@ const TokenPublicationSecond = ({ localToken }) => {
 										<p className="text-neutral-09">{publication.description}</p>
 									</div>
 									<div className="flex flex-row items-center justify-between text-right">
-										<p className="font-normal text-sm">{new Date(publication.issued_at)}</p>
+										<p className="font-normal text-sm">
+											{new Date(publication.issued_at).toLocaleDateString('en-US', {
+												year: 'numeric',
+												month: 'long',
+												day: 'numeric',
+											})}{' '}
+										</p>
 										<div className="text-sm text-neutral-09">
 											<IconArrowSmall size={45} />
 										</div>
