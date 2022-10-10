@@ -209,7 +209,7 @@ const TokenPriceInfo = ({ localToken, onShowBuyModal, onShowBidModal, onShowOffe
 
 						<div className="flex flex-row items-center my-3">
 							<p className="font-bold text-2xl text-neutral-10 truncate">{`${prettyBalance(
-								localToken?.price,
+								localToken?.price ? formatNearAmount(localToken.price) : '0',
 								0,
 								4
 							)} Ⓝ`}</p>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { parseImgUrl } from 'utils/common'
+import { parseImgUrl, ModalEnum } from 'utils/common'
 import Button from 'components/Common/Button'
 import Card from 'components/Card/Card'
 import CardLowerController from 'components/TokenUtils/CardLowerController'
@@ -23,58 +23,7 @@ import TokenRemoveAuction from 'components/Modal/TokenRemoveAuction'
 import TokenAuctionModal from 'components/Modal/TokenAuctionModal'
 import SuccessTransactionModalSecond from 'components/Modal/SuccessTransactionModalSecond'
 
-const ModalEnum = Object.freeze({
-	BUY: 'buy',
-	OFFER: 'offer',
-	TRADE: 'trade',
-	BID: 'bid',
-	MINT: 'mint',
-	UPDATE_LISTING: 'update_listing',
-	UPDATE_PRICE: 'update_price',
-	AUCTION: 'auction',
-	TRANSFER: 'transfer',
-	REMOVE_AUCTION: 'remove_auction',
-})
-
 const TokenDetailNewSecond = ({ token }) => {
-	const DUMMY = {
-		_id: {
-			$oid: '612f3b189523cb06e3887740',
-		},
-		contract_id: 'paras-token-v1.testnet',
-		token_id: '1:2',
-		owner_id: 'johnnear.testnet',
-		token_series_id: '1',
-		edition_id: '2',
-		metadata: {
-			title: 'Dragon Slayer #2',
-			description: 'Killing a dragon is not an easy job',
-			media: 'bafybeihdvqgsoab4wbaeziot2i23zca4o3hnrdg5z6y7xtprxsfynw3k34',
-			media_hash: null,
-			copies: 5,
-			issued_at: '1609834941794',
-			expires_at: null,
-			starts_at: null,
-			updated_at: null,
-			extra: null,
-			reference: 'bafybeigurmyt46hvno5754sf3toahihumvphgsn2tapaifxo7hmmq43kiu',
-			reference_hash: null,
-			collection: 'Mythical Warrior',
-			collectionId: 'mythical-warrior-by-hdriqi',
-			creatorId: 'hdriqi',
-			blurhash: 'UAAnGO*G.P?spGE1IAk8uN.6tkM|NMH[bJai',
-			creator_id: 'hdriqi',
-			score: 0,
-			rank: 263,
-		},
-		royalty: {},
-		price: '1000000000000000000000000000000000',
-		approval_id: null,
-		ft_token_id: null,
-		is_creator: true,
-		has_rank: true,
-	}
-
 	const [showModal, setShowModal] = useState(null)
 
 	const onCloseModal = () => {
@@ -178,16 +127,21 @@ const TokenDetailNewSecond = ({ token }) => {
 							onShowBidModal={() => setShowModal(ModalEnum.BID)}
 							onShowOfferModal={() => setShowModal(ModalEnum.OFFER)}
 						/>
-						<TokenInformation localToken={token} />
+						<TokenInformation
+							localToken={token}
+							onShowBuyModal={() => setShowModal(ModalEnum.BUY)}
+							onShowBidModal={() => setShowModal(ModalEnum.BID)}
+							onShowOfferModal={() => setShowModal(ModalEnum.OFFER)}
+						/>
 						<TokenPriceHistorySecond localToken={token} />
 					</div>
 				</div>
 			</div>
 			<div className="max-w-full bg-neutral-03 rounded-t-xl">
-				<TokenTransactionHistory />
+				<TokenTransactionHistory localToken={token} />
 			</div>
 			<div className="max-w-full bg-neutral-03 border-t border-neutral-05">
-				<TokenMoreCollectionSecond />
+				<TokenMoreCollectionSecond localToken={token} />
 			</div>
 
 			{/* Modals Component */}

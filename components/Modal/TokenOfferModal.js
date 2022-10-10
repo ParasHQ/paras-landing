@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import LoginModal from './LoginModal'
-import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
+import { GAS_FEE, STORAGE_ADD_MARKET_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { sentryCaptureException } from 'lib/sentry'
 import useProfileData from 'hooks/useProfileData'
@@ -284,8 +284,8 @@ const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess, tokenTyp
 									<p className="text-sm">Total Payment</p>
 									<div className="inline-flex">
 										<p className="bg-[#1300BA80] text-sm text-neutral-10 font-bold truncate p-1">{`${prettyBalance(
-											data.price ? formatNearAmount(data.price) : '0',
-											0,
+											currentOffer ? formatNearAmount(currentOffer) : 0,
+											24,
 											4
 										)} Ⓝ`}</p>
 										{data?.price !== '0' && store.nearUsdPrice !== 0 && (

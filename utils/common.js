@@ -414,3 +414,23 @@ export const nanoSecToMiliSec = (date) => {
 		return sliceNanoSec
 	}
 }
+
+export const TabEnum = Object.freeze({
+	INFO: 'Info',
+	DESCRIPTION: 'Description',
+	OWNERS: 'Owners',
+	OFFERS: 'Offers',
+})
+
+export const ModalEnum = Object.freeze({
+	BUY: 'buy',
+	OFFER: 'offer',
+	TRADE: 'trade',
+	BID: 'bid',
+	MINT: 'mint',
+	UPDATE_LISTING: 'update_listing',
+	UPDATE_PRICE: 'update_price',
+	AUCTION: 'auction',
+	TRANSFER: 'transfer',
+	REMOVE_AUCTION: 'remove_auction',
+})

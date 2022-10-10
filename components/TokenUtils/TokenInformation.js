@@ -1,5 +1,4 @@
-import { IconArrowSmall, IconCopied, IconInfo } from 'components/Icons'
-import CopyLink from 'components/Common/CopyLink'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import useToken from 'hooks/useToken'
 import IconCopySecond from 'components/Icons/component/IconCopySecond'
 import IconInfoSecond from 'components/Icons/component/IconInfoSecond'
@@ -8,37 +7,26 @@ import IconOut from 'components/Icons/component/IconOut'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import IconEmptyDescription from 'components/Icons/component/IconEmptyDescription'
-import JSBI from 'jsbi'
 import cachios from 'cachios'
 import ParasRequest from 'lib/ParasRequest'
 import IconLoaderSecond from 'components/Icons/component/IconLoaderSecond'
-import IconEmptyOffer from 'components/Icons/component/IconEmptyOffer'
-import IconEmptyOwners from 'components/Icons/component/IconEmptyOwners'
-import IconSort from 'components/Icons/component/IconSort'
 import useStore from 'lib/store'
 import { useIntl } from 'hooks/useIntl'
 import ProfileImageBadge from 'components/Common/ProfileImageBadge'
-import { parseImgUrl, prettyBalance, prettyTruncate } from 'utils/common'
+import { prettyBalance, prettyTruncate, TabEnum } from 'utils/common'
 import Button from 'components/Common/Button'
+import TabOwnersSecond from 'components/Tabs/TabOwnersSecond'
+import TabOffersSecond from 'components/Tabs/TabOffersSecond'
 
-const FETCH_TOKENS_LIMIT = 100
-const TabEnum = {
-	INFO: 'Info',
-	DESCRIPTION: 'Description',
-	OWNERS: 'Owners',
-	OFFERS: 'Offers',
-}
+const TokenInformation = ({ localToken }) => {
+	const { localeLn } = useIntl()
 
-const TokenInformation = ({ localToken, onBuy, onOffer }) => {
 	const [tab, setTab] = useState(TabEnum.INFO)
 	const [fetching, setFetching] = useState(null)
 	const [collectionStats, setCollectionStats] = useState(null)
-	const [owners, setOwners] = useState([])
-	const [offers, setOffers] = useState([])
 
 	useEffect(() => {
 		fetchCollectionStats()
-		fetchOwners([], null)
 		fetchOffers()
 	}, [])
 
@@ -53,38 +41,7 @@ const TokenInformation = ({ localToken, onBuy, onOffer }) => {
 		})
 
 		const newStat = await stat.data.data.results
-		// setData({ ...data, stats: newStat })
 		setCollectionStats(newStat)
-
-		setFetching(null)
-	}
-
-	const fetchOwners = async (owners, idNext) => {
-		if (!localToken.token_series_id) return
-
-		setFetching(TabEnum.OWNERS)
-
-		const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
-			params: {
-				token_series_id: localToken.token_series_id,
-				contract_id: localToken.contract_id,
-				_id_next: idNext,
-				__limit: FETCH_TOKENS_LIMIT,
-				__sort: 'price::1',
-			},
-			ttl: 120,
-		})
-
-		let respData = resp.data.data.results
-		const newOwners = [...owners, ...respData]
-		// setData({ ...data, owners: newOwners })
-		setOwners(newOwners)
-
-		if (respData.length === FETCH_TOKENS_LIMIT) {
-			fetchOwners(newOwners, respData[respData.length - 1]._id)
-		} else {
-			setFetching(null)
-		}
 
 		setFetching(null)
 	}
@@ -92,7 +49,7 @@ const TokenInformation = ({ localToken, onBuy, onOffer }) => {
 	const fetchOffers = async () => {}
 
 	return (
-		<div className="bg-neutral-04 border border-neutral-05 rounded-lg my-6 px-5 py-6">
+		<div className="relative bg-neutral-04 border border-neutral-05 rounded-lg my-6 px-5 py-6">
 			<div className="mb-6">
 				<p className="font-bold text-xl text-neutral-10">General Informations</p>
 				<p className="font-normal text-xs text-neutral-10 mt-2">
@@ -181,7 +138,7 @@ const TokenInformation = ({ localToken, onBuy, onOffer }) => {
 
 			{tab === TabEnum.DESCRIPTION && (
 				<div className="max-h-80 overflow-y-auto">
-					<div className="bg-neutral-01 border border-neutral-05 rounded-lg py-10">
+					<div className="bg-neutral-01 border border-neutral-05 rounded-lg py-6">
 						{fetching === TabEnum.DESCRIPTION && (
 							<div className="w-full">
 								<IconLoaderSecond size={30} className="mx-auto animate-spin" />
@@ -193,62 +150,66 @@ const TokenInformation = ({ localToken, onBuy, onOffer }) => {
 						) : (
 							<IconEmptyDescription size={100} className="mx-auto my-4" />
 						)}
+
+						<div className="flex flex-row justify-around items-center pt-6">
+							<div className="text-right text-xs text-neutral-10 font-bold block">
+								<p>Collection</p>
+								<p>Stats</p>
+							</div>
+							<div
+								data-tip="Number of NFT that has been minted."
+								className="text-center rounded-lg block "
+							>
+								<p className="text-white font-bold truncate text-xs">
+									{collectionStats.total_cards || '---'}
+								</p>
+								<p className="text-gray-400 text-xs">{localeLn('Items')}</p>
+							</div>
+							<div data-tip="Total of unique owners." className="text-center block ">
+								<p className="text-white font-bold truncate text-xs">
+									{collectionStats.total_owners || '---'}
+								</p>
+								<p className="text-gray-400 text-xs">{localeLn('Owners')}</p>
+							</div>
+							<div data-tip="Total volume all time." className="text-center block">
+								<p className="text-white font-bold truncate text-xs">
+									{collectionStats.volume
+										? formatNearAmount(collectionStats.volume, 2) + ' Ⓝ'
+										: '---'}
+								</p>
+								<p className="text-gray-400 text-xs">{localeLn('TotalVolume')}</p>
+							</div>
+							<div data-tip="The cheapest price." className="text-center block ">
+								<p className="text-white font-bold truncate text-xs">
+									{collectionStats.floor_price
+										? prettyBalance(collectionStats.floor_price, 24, 4) + ' Ⓝ'
+										: '---'}
+								</p>
+								<p className="text-gray-400 text-xs">{localeLn('FloorPrice')}</p>
+							</div>
+							<div data-tip="Average price all time." className="text-center rounded-r block ">
+								<p className="text-white font-bold truncate text-xs">
+									{collectionStats.avg_price
+										? prettyBalance(collectionStats.avg_price || '0', 24, 4) + 'Ⓝ'
+										: '---'}
+								</p>
+								<p className="text-gray-400 text-xs">{localeLn('AveragePrice')}</p>
+							</div>
+						</div>
 					</div>
 				</div>
 			)}
 
 			{tab === TabEnum.OWNERS && (
 				<div className="max-h-80 overflow-y-auto">
-					<div className="bg-neutral-01 border border-neutral-05 rounded-lg">
+					<div className="bg-neutral-01 border border-neutral-05 rounded-lg p-1">
 						{fetching === TabEnum.OWNERS && (
 							<div className="w-full">
 								<IconLoaderSecond size={30} className="mx-auto animate-spin" />
 							</div>
 						)}
 
-						{fetching === null && owners.length > 0 ? (
-							<div>
-								<div className="flex flex-row justify-between items-center p-1">
-									<div className="inline-flex">
-										<IconSort size={20} stroke={'#F9F9F9'} />
-										<p className="text-xs text-neutral-10">Filter & Sort</p>
-									</div>
-									<div className="relative inline-flex gap-x-6">
-										<div className="flex flex-row items-center gap-x-2">
-											<input
-												type="checkbox"
-												className="w-auto border-neutral-10 rounded-lg"
-												style={{ backgroundColor: '#151719' }}
-											/>
-											<p className="text-xs text-neutral-10">Buy</p>
-										</div>
-										<div className="flex flex-row items-center gap-x-2">
-											<input
-												type="checkbox"
-												className="w-auto border-neutral-10 rounded-lg"
-												style={{ backgroundColor: '#151719' }}
-											/>
-											<p className="text-xs text-neutral-10">Offer</p>
-										</div>
-										<div className="flex flex-row justify-between items-center bg-neutral-01 border border-neutral-05 rounded-lg p-2">
-											<p className="text-neutral-10 text-xs mr-4">Price low to high</p>
-											<IconArrowSmall size={20} className="rotate-90" />
-										</div>
-									</div>
-								</div>
-								<div className="grid grid-cols-12 p-2">
-									<p className="text-xs text-neutral-10 col-span-4">Owner</p>
-									<p className="text-xs text-neutral-10 col-span-2">Price</p>
-									<p className="text-xs text-neutral-10 col-span-3">Owned Date</p>
-									<p className="text-xs text-neutral-10 text-right col-span-3">Action</p>
-									{owners.map((owner) => (
-										<Owner key={owner.owner_id} initial={owner} onBuy={onBuy} onOffer={onOffer} />
-									))}
-								</div>
-							</div>
-						) : (
-							<IconEmptyOwners size={100} className="mx-auto my-4" />
-						)}
+						<TabOwnersSecond localToken={localToken} setFetching={setFetching} />
 					</div>
 				</div>
 			)}
@@ -262,11 +223,7 @@ const TokenInformation = ({ localToken, onBuy, onOffer }) => {
 							</div>
 						)}
 
-						{fetching === null && localToken.description ? (
-							<p className="text-sm text-neutral-10">{localToken.description}</p>
-						) : (
-							<IconEmptyOffer size={100} className="mx-auto my-4" />
-						)}
+						<TabOffersSecond localToken={localToken} />
 					</div>
 				</div>
 			)}
@@ -274,13 +231,12 @@ const TokenInformation = ({ localToken, onBuy, onOffer }) => {
 	)
 }
 
-const Owner = ({ initial = {}, onBuy, onOffer, onUpdateListing }) => {
+const Offer = ({ initial = {} }) => {
 	const { token } = useToken({
 		key: `${initial.contract_id}::${initial.token_series_id}/${initial.token_id}`,
 		initialData: initial,
 	})
 
-	const store = useStore()
 	const [profile, setProfile] = useState([])
 	const [ownedDate, setOwnedDate] = useState(null)
 	const { currentUser } = useStore()
@@ -364,14 +320,14 @@ const Owner = ({ initial = {}, onBuy, onOffer, onUpdateListing }) => {
 				</div>
 			</div>
 			<div className="col-span-2 flex flex-col py-3">
-				<p className="text-md text-left text-neutral-10 font-bold">
-					{checkTokenPrice().toString()} Ⓝ
-				</p>
-				{token?.price !== '0' && store.nearUsdPrice !== 0 && (
-					<p className="text-[10px] text-gray-400 truncate">
-						($
-						{/* {prettyBalance(JSBI.BigInt(token.price) * store.nearUsdPrice, 24, 2)}) */}
+				{token.price ? (
+					<p className="text-md text-left text-neutral-10 font-bold">
+						{checkTokenPrice().toString()} Ⓝ
 					</p>
+				) : (
+					<div className="line-through text-red-600">
+						<p className="text-lg font-bold text-gray-100">{localeLn('SALE')}</p>
+					</div>
 				)}
 			</div>
 			<div className="col-span-3 inline-flex py-4">
@@ -383,9 +339,11 @@ const Owner = ({ initial = {}, onBuy, onOffer, onUpdateListing }) => {
 					})}{' '}
 				</p>
 			</div>
-			<div className="col-span-3 inline-flex py-4">
-				<Button size={'sm'}>Offer</Button>
+			<div className="col-span-3 inline-flex py-4 justify-end">
+				<p className="underline text-neutral-10 cursor-pointer">Reject</p>
+				<Button size={'sm'}>Accept</Button>
 			</div>
+			<div className="col-span-12 border-b border-b-neutral-04 mb-2"></div>
 		</>
 	)
 }
