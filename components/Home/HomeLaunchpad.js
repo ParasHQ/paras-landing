@@ -14,6 +14,8 @@ const HomeLaunchpad = ({ showDetails }) => {
 	const { data, isValidating } = useSWR('/launchpad/all', fetchData)
 	const results = data?.filter((project) => project.status !== 'end')
 
+	if (!results || results.length === 0) return null
+
 	return (
 		<div className="mb-8 relative">
 			<div className="text-white md:flex justify-start items-center gap-4 mb-8">
