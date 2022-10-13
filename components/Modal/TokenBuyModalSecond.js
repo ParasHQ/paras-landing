@@ -5,7 +5,6 @@ import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
 import { GAS_FEE_150, GAS_FEE, STORAGE_MINT_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
-import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import {
 	trackBuyTokenSeries,
@@ -36,8 +35,6 @@ const TokenBuyModalSecond = ({ show, onClose, data }) => {
 	const [isBuying, setIsBuying] = useState(false)
 	const creatorData = useProfileData(data.metadata.creator_id)
 	const { signAndSendTransaction } = useWalletSelector()
-
-	const { localeLn } = useIntl()
 
 	useEffect(() => {
 		if (show) {
@@ -271,6 +268,8 @@ const TokenBuyModalSecond = ({ show, onClose, data }) => {
 								variant="primary"
 								className={'text-sm w-full pl-9 text-center'}
 								onClick={onBuyNftOrSeries}
+								isDisabled={isBuying}
+								isLoading={isBuying}
 							>
 								Complete Purchase
 							</Button>

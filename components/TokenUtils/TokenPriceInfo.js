@@ -20,6 +20,10 @@ const TokenPriceInfo = ({
 	onShowOfferModal,
 	onShowMintModal,
 	onShowUpdatePriceModal,
+	onShowAuctionModal,
+	onShowTransferModal,
+	onShowUpdateListingModal,
+	onShowRemoveAuction,
 }) => {
 	const { localeLn } = useIntl()
 	const router = useRouter()
@@ -33,6 +37,7 @@ const TokenPriceInfo = ({
 	const [mins, setMins] = useState('-')
 	const [secs, setSecs] = useState('-')
 	const [historyBid, setHistoryBid] = useState([])
+	const [showBidderList, setShowBidderList] = useState(false)
 
 	useEffect(() => {
 		if (!localToken.is_auction) {
@@ -77,7 +82,7 @@ const TokenPriceInfo = ({
 				if (distance < 0) {
 					clearInterval(timer)
 					setIsEndedTime(true)
-					// setAuctionEnds(true)
+					setIsEndedAuction(true)
 				}
 			}
 		})
@@ -177,7 +182,7 @@ const TokenPriceInfo = ({
 	return (
 		<div
 			className={`bg-neutral-04 rounded-lg mt-6 ${
-				localToken.bidder_list && localToken.bidder_list?.length > 1 && 'pb-2'
+				localToken.bidder_list && localToken.bidder_list?.length > 0 && 'pb-2'
 			}`}
 		>
 			<div className="min-h-56 bg-neutral-03 border border-neutral-05 rounded-lg my-4 p-5">
@@ -225,7 +230,7 @@ const TokenPriceInfo = ({
 					<div className="block mb-10">
 						<div className="inline-flex">
 							<IconPriceTag size={20} stroke={'#F9F9F9'} />
-							<p className="text-white font-light ml-2">{localeLn('CurrentPrice')}</p>
+							<p className="text-white font-light ml-2">{localeLn('StartingBid')}</p>
 						</div>
 
 						<div className="flex flex-row items-center my-3">
@@ -234,7 +239,7 @@ const TokenPriceInfo = ({
 							)} Ⓝ`}</p>
 							{localToken?.price !== '0' && store.nearUsdPrice !== 0 && (
 								<div className="text-[10px] text-gray-400 truncate ml-2">
-									($
+									(~$
 									{prettyBalance(JSBI.BigInt(checkNextPriceBid('usd')) * store.nearUsdPrice, 24, 2)}
 									)
 								</div>
@@ -256,43 +261,54 @@ const TokenPriceInfo = ({
 				{localToken?.is_auction && (
 					<>
 						<div className="flex flex-row justify-between items-center mb-4">
-							<div className="block">
-								<div className="inline-flex">
-									<IconBid size={20} stroke={'#F9F9F9'} />
-									<p className="text-white font-light ml-2">{localeLn('CurrentBid')}</p>
-								</div>
+							{!localToken?.amount || (localToken?.bidder_list && localToken?.bidder_list === 0) ? (
+								<div className="block">
+									<div className="inline-flex">
+										<IconBid size={20} stroke={'#F9F9F9'} />
+										<p className="text-white font-light ml-2">{localeLn('CurrentBid')}</p>
+									</div>
 
-								<div className="flex flex-row items-center">
-									<p className="font-bold text-2xl text-neutral-10 truncate">{`${prettyBalance(
-										checkNextPriceBid('near', localToken),
-										0,
-										4
-									)} Ⓝ`}</p>
-									{localToken?.price !== '0' && store.nearUsdPrice !== 0 && (
-										<div className="text-[10px] text-gray-400 truncate ml-2">
-											($
-											{prettyBalance(
-												JSBI.BigInt(checkNextPriceBid('usd')) * store.nearUsdPrice,
-												24,
-												2
-											)}
-											)
-										</div>
-									)}
-									{localToken?.price === '0' && localToken?.is_auction && !isEndedAuction && (
-										<div className="text-[9px] text-gray-400 truncate mt-1 ml-2">
-											~ $
-											{prettyBalance(
-												JSBI.BigInt(localToken?.amount ? localToken?.amount : localToken?.price) *
-													store.nearUsdPrice,
-												24,
-												2
-											)}
-										</div>
-									)}
+									<div className="flex flex-row items-center">
+										<p className="font-bold text-2xl text-neutral-10 truncate">{`${prettyBalance(
+											localToken?.price?.$numberDecimal || localToken?.price,
+											24,
+											4
+										)} Ⓝ`}</p>
+										{localToken?.price && localToken?.price !== '0' && store.nearUsdPrice !== 0 && (
+											<div className="text-[10px] text-gray-400 truncate ml-2">
+												(~$
+												{prettyBalance(localToken?.price, 24, 2)})
+											</div>
+										)}
+									</div>
 								</div>
-							</div>
+							) : (
+								<div className="block">
+									<div className="inline-flex">
+										<IconBid size={20} stroke={'#F9F9F9'} />
+										<p className="text-white font-light ml-2">{localeLn('CurrentBid')}</p>
+									</div>
 
+									<div className="flex flex-row items-center">
+										<p className="font-bold text-2xl text-neutral-10 truncate">{`${prettyBalance(
+											localToken?.amount?.$numberDecimal,
+											24,
+											4
+										)} Ⓝ`}</p>
+										{localToken?.amount && store.nearUsdPrice !== 0 && (
+											<div className="text-[10px] text-gray-400 truncate ml-2">
+												(~$
+												{prettyBalance(
+													JSBI.BigInt(localToken?.amount?.$numberDecimal) * store.nearUsdPrice,
+													24,
+													2
+												)}
+												)
+											</div>
+										)}
+									</div>
+								</div>
+							)}
 							<div className="block">
 								<div className="inline-flex">
 									<p className="text-white font-light">{localeLn('Next Bid')}</p>
@@ -307,24 +323,13 @@ const TokenPriceInfo = ({
 									)} Ⓝ`}</p>
 									{localToken?.price !== '0' && store.nearUsdPrice !== 0 && (
 										<div className="text-[10px] text-gray-400 truncate ml-2">
-											($
+											(~$
 											{prettyBalance(
 												JSBI.BigInt(checkNextPriceBid('usd')) * store.nearUsdPrice,
 												24,
 												2
 											)}
 											)
-										</div>
-									)}
-									{localToken?.price === '0' && localToken?.is_auction && !isEndedAuction && (
-										<div className="text-[9px] text-gray-400 truncate mt-1 ml-2">
-											~ $
-											{prettyBalance(
-												JSBI.BigInt(localToken?.amount ? localToken?.amount : localToken?.price) *
-													store.nearUsdPrice,
-												24,
-												2
-											)}
 										</div>
 									)}
 								</div>
@@ -334,16 +339,6 @@ const TokenPriceInfo = ({
 				)}
 
 				{/* Logic to show Button */}
-				{isCreator() && (
-					<div className="md:grid grid-cols-2 gap-x-6">
-						<Button variant={'second'} onClick={onShowUpdatePriceModal}>
-							Update Price
-						</Button>
-						<Button variant={'primary'} onClick={onShowMintModal}>
-							Mint
-						</Button>
-					</div>
-				)}
 				{localToken.owner_id &&
 					localToken.owner_id !== currentUser &&
 					!localToken.price &&
@@ -365,32 +360,48 @@ const TokenPriceInfo = ({
 							</Button>
 						</div>
 					)}
-				{localToken.owner_id !== currentUser &&
-					localToken.price &&
-					localToken.is_auction &&
-					!hasBid() && (
+				{localToken.owner_id !== currentUser && localToken.is_auction && !hasBid() && (
+					<Button variant={'primary'} onClick={onShowBidModal} className="w-full">
+						Place Bid
+					</Button>
+				)}
+				{localToken.owner_id !== currentUser && localToken.is_auction && hasBid() && (
+					<div className="md:grid grid-cols-2 gap-x-6">
+						<Button variant={'second'}>Cancel Bid</Button>
 						<Button variant={'primary'} onClick={onShowBidModal}>
 							Place Bid
 						</Button>
-					)}
-				{localToken.owner_id !== currentUser &&
-					localToken.price &&
-					localToken.is_auction &&
-					hasBid() && (
-						<div className="md:grid grid-cols-2 gap-x-6">
-							<Button variant={'second'}>Cancel Bid</Button>
-							<Button variant={'primary'} onClick={onShowBidModal}>
-								Place Bid
-							</Button>
-						</div>
-					)}
+					</div>
+				)}
 				{localToken.owner_id === currentUser && !localToken.price && !localToken.is_auction && (
-					<div className="md:grid grid-cols-2 gap-x-6">
-						<Button variant={'primary'} className={'col-span-2'}>
+					<div className="md:grid grid-cols-2 gap-x-6 gap-y-4">
+						<Button variant={'primary'} className={'col-span-2'} onClick={onShowAuctionModal}>
 							Create Auction
 						</Button>
-						<Button variant="ghost">Transfer NFT to</Button>
-						<Button variant={'second'}>Update Listing</Button>
+						<Button variant="ghost" onClick={onShowTransferModal}>
+							Transfer NFT to
+						</Button>
+						<Button variant={'second'} onClick={onShowUpdateListingModal}>
+							Update Listing
+						</Button>
+					</div>
+				)}
+				{localToken.owner_id === currentUser && localToken.owner_id && (
+					<>
+						<button className="w-full bg-transparent text-[#FF8E8E]" onClick={onShowRemoveAuction}>
+							Remove Auction
+						</button>
+						<div className="border-b border-[#FF8E8E] mx-56 -mt-2"></div>
+					</>
+				)}
+				{!localToken.owner_id && isCreator() && (
+					<div className="md:grid grid-cols-2 gap-x-6">
+						<Button variant={'second'} onClick={onShowUpdatePriceModal}>
+							Update Price
+						</Button>
+						<Button variant={'primary'} onClick={onShowMintModal}>
+							Mint
+						</Button>
 					</div>
 				)}
 			</div>
@@ -406,13 +417,13 @@ const TokenPriceInfo = ({
 										new Date(localToken.bidder_list[localToken.bidder_list.length - 1].issued_at)
 									)}
 								</p>
-								<Link
-									href={`/collection/${
-										localToken.metadata?.collection_id || localToken.contract_id
-									}`}
-								>
+								<Link href={`/${localToken.bidder_list[localToken.bidder_list.length - 1].bidder}`}>
 									<a className="text-sm font-bold truncate text-neutral-10">
-										{prettyTruncate(localToken.metadata?.collection || localToken.contract_id, 20)}
+										{prettyTruncate(
+											localToken.bidder_list[localToken.bidder_list.length - 1].bidder,
+											20,
+											'address'
+										)}
 									</a>
 								</Link>
 							</div>
@@ -432,10 +443,68 @@ const TokenPriceInfo = ({
 						</div>
 					</div>
 
-					<div className="flex flex-row justify-between items-center bg-neutral-05 rounded-lg p-2 mx-4 mb-2">
+					<div
+						className={`
+              ${
+								showBidderList
+									? 'flex flex-row justify-between items-center bg-neutral-01 border border-neutral-05 rounded-lg p-2 mx-4 mb-2'
+									: 'flex flex-row justify-between items-center bg-neutral-05 rounded-lg p-2 mx-4 mb-2'
+							} cursor-pointer`}
+						onClick={() => setShowBidderList(!showBidderList)}
+					>
 						<p className="text-neutral-10 font-semibold text-sm">Bid History</p>
 						<IconArrowSmall size={20} stroke={'#F9F9F9'} className="rotate-90" />
 					</div>
+					{showBidderList && (
+						<div className="flex flex-col justify-between items-center bg-neutral-01 rounded-lg p-2 mx-4 mb-2">
+							{historyBid.map((bid) => (
+								<div
+									key={bid}
+									className="flex flex-row w-full justify-between items-center bg-neutral-01 border border-neutral-05 rounded-lg px-2 py-1 mx-4 mb-2"
+								>
+									<div className="inline-flex items-center max-w-56">
+										<Media
+											className="w-8 rounded-lg"
+											url={parseImgUrl(localToken?.metadata.media, null, {
+												width: `30`,
+												useOriginal: process.env.APP_ENV === 'production' ? false : true,
+												isMediaCdn: localToken?.isMediaCdn,
+											})}
+											videoControls={false}
+											videoLoop={true}
+											videoMuted={true}
+											autoPlay={false}
+											playVideoButton={false}
+										/>
+										<div className="flex flex-col justify-between items-stretch mr-2">
+											<p className="text-xs font-thin text-neutral-10 text-right">
+												{timeAgo.format(
+													new Date(
+														localToken.bidder_list[localToken.bidder_list.length - 1].issued_at
+													)
+												)}
+											</p>
+											<Link
+												href={`/collection/${
+													localToken.metadata?.collection_id || localToken.contract_id
+												}`}
+											>
+												<a className="text-sm underline font-bold truncate text-neutral-10">
+													{prettyTruncate(
+														localToken.metadata?.collection || localToken.contract_id,
+														20
+													)}
+												</a>
+											</Link>
+										</div>
+									</div>
+									<p className="text-neutral-10 text-sm">
+										Bid on {prettyBalance(bid.amount, 24, 2)} Ⓝ
+									</p>
+								</div>
+							))}
+						</div>
+					)}
 				</div>
 			)}
 		</div>

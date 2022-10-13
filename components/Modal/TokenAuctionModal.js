@@ -17,6 +17,14 @@ import { parseImgUrl, prettyTruncate, prettyBalance } from 'utils/common'
 import Media from 'components/Common/Media'
 import { useForm } from 'react-hook-form'
 
+const ExpirationDateEnum = {
+	ONE_DAY: '1 day',
+	THREE_DAY: '3 days',
+	SEVEN_DAY: '7 days',
+	ONE_MONTH: '1 month',
+	CUSTOM_DATE: 'Custom Date',
+}
+
 const TokenAuctionModal = ({ data, show, onClose, onSuccess }) => {
 	const store = useStore()
 	const creatorData = useProfileData(data.metadata.creator_id)
@@ -33,6 +41,8 @@ const TokenAuctionModal = ({ data, show, onClose, onSuccess }) => {
 	const [isOffering, setIsOffering] = useState(false)
 	const [showLogin, setShowLogin] = useState(false)
 	const [showDate, setShowDate] = useState(false)
+	const [startingBid, setStartingBid] = useState(0)
+	const [expirationDate, setExpirationDate] = useState(ExpirationDateEnum.ONE_DAY)
 
 	const onAuction = async () => {}
 
@@ -101,41 +111,35 @@ const TokenAuctionModal = ({ data, show, onClose, onSuccess }) => {
 								<InputText
 									name="startingBid"
 									step="any"
-									ref={register({
-										required: true,
-										min: 0.01,
-									})}
-									className={`${
-										errors.offerAmount && 'error'
-									} w-2/3 bg-neutral-04 border border-neutral-06 hover:bg-neutral-05 hover:border-color-06 focus:bg-neutral-04 focus:border-neutral-08 py-2 text-right`}
+									onChange={(e) => setStartingBid(e.target.value)}
+									className="w-2/3 bg-neutral-04 border border-neutral-06 hover:bg-neutral-05 hover:border-color-06 focus:bg-neutral-04 focus:border-neutral-08 py-2 text-right"
 									placeholder="Place your starting bid"
 								/>
 							</div>
 
 							<p className="text-sm text-neutral-10 pl-2">Expiration Date</p>
 							<div className="grid grid-cols-3 gap-x-2 pl-2">
-								<button className="bg-neutral-05 rounded-lg px-4 py-2">1 day</button>
+								<button
+									className="bg-neutral-05 rounded-lg px-4 py-2"
+									onClick={() => setShowDate(!showDate)}
+								>
+									{expirationDate}
+								</button>
 								<div className="col-span-2">
-									<input
-										{...register('endDateAuction', {
-											required: true,
-											validate: (date) => {
-												const currentDate = new Date()
-												const fiveDaysAfter = new Date(
-													currentDate.getTime() + 5 * 24 * 60 * 60 * 1000
-												)
-												const inputtedDate = new Date(date)
-												if (fiveDaysAfter < inputtedDate) {
-													return 'Auction must be less than 5 days'
-												} else if (currentDate > inputtedDate) {
-													return 'Auction must be in the future'
-												} else {
-													return true
-												}
-											},
-										})}
+									<InputText
+										name="expirationDate"
 										type="datetime-local"
-										className="bg-neutral-04 focus:bg-neutral-01 border border-neutral-07 focus:border-neutral-10 rounded-lg text-sm text-right text-neutral-10"
+										min={distanceExpirationDate('min')}
+										max={distanceExpirationDate('max')}
+										ref={register({
+											required: true,
+											min: distanceExpirationDate('min'),
+											max: distanceExpirationDate('max'),
+										})}
+										value={watch('expirationDate')}
+										className={`${
+											errors.expirationDate && 'error'
+										} bg-neutral-04 focus:bg-neutral-01 border border-neutral-07 focus:border-neutral-10 rounded-lg text-sm text-right text-neutral-10`}
 									/>
 								</div>
 							</div>
@@ -167,17 +171,10 @@ const TokenAuctionModal = ({ data, show, onClose, onSuccess }) => {
 								<div className="flex flex-row justify-between items-center mb-3">
 									<p className="text-sm">Starting Bid</p>
 									<div className="inline-flex">
-										<p className="text-sm text-neutral-10 truncate">{`${prettyBalance(
-											data.price ? formatNearAmount(data.price) : '0',
-											0,
-											4
-										)} Ⓝ`}</p>
-										{/* {data?.price !== '0' && store.nearUsdPrice !== 0 && (
-											<div className="text-[10px] text-gray-400 truncate ml-2">
-												($
-												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
-											</div>
-										)} */}
+										<p className="text-sm text-neutral-10 truncate">{startingBid} Ⓝ</p>
+										<div className="text-[10px] text-gray-400 truncate ml-2">
+											(~${startingBid * store.nearUsdPrice})
+										</div>
 									</div>
 								</div>
 								<div className="flex flex-row justify-between items-center">
@@ -193,16 +190,16 @@ const TokenAuctionModal = ({ data, show, onClose, onSuccess }) => {
 							<p className="text-sm">Your Balance</p>
 							<div className="inline-flex">
 								<p className="text-sm text-neutral-10 font-bold truncate p-1">{`${prettyBalance(
-									data.price ? formatNearAmount(data.price) : '0',
-									0,
+									userBalance.available,
+									24,
 									4
 								)} Ⓝ`}</p>
-								{/* {data?.price !== '0' && store.nearUsdPrice !== 0 && (
+								{userBalance.available && store.nearUsdPrice !== 0 && (
 									<div className="text-[10px] text-gray-400 truncate ml-2">
-										($
-										{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+										(~$
+										{prettyBalance(JSBI.BigInt(userBalance.available) * store.nearUsdPrice, 24, 2)})
 									</div>
-								)} */}
+								)}
 							</div>
 						</div>
 

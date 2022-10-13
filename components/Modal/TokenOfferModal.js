@@ -2,11 +2,9 @@ import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import LoginModal from './LoginModal'
-import { GAS_FEE, STORAGE_ADD_MARKET_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
+import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { sentryCaptureException } from 'lib/sentry'
-import useProfileData from 'hooks/useProfileData'
-import BannedConfirmModal from './BannedConfirmModal'
 import useStore from 'lib/store'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 import Media from 'components/Common/Media'
@@ -29,14 +27,12 @@ const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess, tokenTyp
 		},
 	})
 	const { signAndSendTransaction, viewFunction } = useWalletSelector()
-	const creatorData = useProfileData(data.metadata.creator_id)
 	const { currentUser, userBalance, setTransactionRes } = useStore((state) => ({
 		currentUser: state.currentUser,
 		userBalance: state.userBalance,
 		setTransactionRes: state.setTransactionRes,
 	}))
 
-	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const [showTradeModal, setShowTradeModal] = useState(false)
 	const [isOffering, setIsOffering] = useState(false)
 	const [showLogin, setShowLogin] = useState(false)
@@ -231,10 +227,10 @@ const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess, tokenTyp
 												4
 											)} Ⓝ`}</p>
 
-											{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+											{highestOffer && store.nearUsdPrice !== 0 && (
 												<div className="text-[10px] text-gray-400 truncate ml-2">
-													($
-													{/* {prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
+													(~$
+													{prettyBalance(JSBI.BigInt(highestOffer) * store.nearUsdPrice, 24, 2)})
 												</div>
 											)}
 										</>
@@ -272,7 +268,7 @@ const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess, tokenTyp
 									<div className="inline-flex">
 										<p className="text-sm text-neutral-10 truncate">{currentOffer} Ⓝ</p>
 										<div className="text-[10px] text-gray-400 truncate ml-2">
-											(~${currentOffer * store.nearUsdPrice})
+											(~${prettyBalance(currentOffer * store.nearUsdPrice, 24, 2)})
 										</div>
 									</div>
 								</div>
@@ -284,7 +280,7 @@ const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess, tokenTyp
 										<p className="bg-[#1300BA80] text-sm text-neutral-10 font-bold truncate p-1">
 											{currentOffer} Ⓝ
 										</p>
-										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+										{store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">
 												(~${currentOffer * store.nearUsdPrice})
 											</div>

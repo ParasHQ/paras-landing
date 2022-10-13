@@ -15,6 +15,7 @@ import TokenBidModal from 'components/Modal/TokenBidModal'
 import TokenBuyModalSecond from 'components/Modal/TokenBuyModalSecond'
 import TokenUpdateListing from 'components/Modal/TokenUpdateListing'
 import IconEmptyOwners from 'components/Icons/component/IconEmptyOwners'
+import LoginModal from 'components/Modal/LoginModal'
 
 const FETCH_TOKENS_LIMIT = 100
 const OwnerSortEnum = [
@@ -27,11 +28,14 @@ const OwnerSortEnum = [
 ]
 
 const TabOwnersSecond = ({ localToken }) => {
+	const { currentUser } = useStore()
+
 	const [owners, setOwners] = useState([])
 	const [showModal, setShowModal] = useState(null)
 	const [showOwnerSortModal, setShowOwnerSortModal] = useState(false)
 	const [ownerSortBy, setOwnerSortBy] = useState(OwnerSortEnum[4])
 	const [fetching, setFetching] = useState(null)
+	const [showLoginModal, setShowLoginModal] = useState(false)
 
 	useEffect(() => {
 		fetchOwners([], null)
@@ -105,7 +109,7 @@ const TabOwnersSecond = ({ localToken }) => {
 	}
 
 	return (
-		<div>
+		<div className="">
 			<div className="flex flex-row justify-between items-center p-1">
 				<div className="inline-flex items-center">
 					<IconSort size={20} stroke={'#F9F9F9'} className="mb-1" />
@@ -148,10 +152,18 @@ const TabOwnersSecond = ({ localToken }) => {
 					<Owner
 						key={owner._id}
 						initial={owner}
-						onShowBuyModal={() => setShowModal(ModalEnum.BUY)}
-						onShowBidModal={() => setShowModal(ModalEnum.BID)}
-						onShowOfferModal={() => setShowModal(ModalEnum.OFFER)}
-						onShowUpdateListingModal={() => setShowModal(ModalEnum.UPDATE_LISTING)}
+						onShowBuyModal={() => {
+							currentUser ? setShowModal(ModalEnum.BUY) : setShowLoginModal(true)
+						}}
+						onShowBidModal={() => {
+							currentUser ? setShowModal(ModalEnum.BID) : setShowLoginModal(true)
+						}}
+						onShowOfferModal={() => {
+							currentUser ? setShowModal(ModalEnum.OFFER) : setShowLoginModal(true)
+						}}
+						onShowUpdateListingModal={() => {
+							currentUser ? setShowModal(ModalEnum.UPDATE_LISTING) : setShowLoginModal(true)
+						}}
 					/>
 				))}
 			</div>
@@ -188,6 +200,8 @@ const TabOwnersSecond = ({ localToken }) => {
 				data={localToken}
 				onClose={onCloseModal}
 			/>
+
+			<LoginModal onClose={() => setShowLoginModal(false)} show={showLoginModal} />
 		</div>
 	)
 }
@@ -311,6 +325,11 @@ const Owner = ({
 				</p>
 			</div>
 			<div className="col-span-3 inline-flex py-4 justify-end">
+				{currentUser !== token.owner_id && token.price && token.is_auction && (
+					<Button size={'sm'} onClick={onShowBidModal}>
+						Bid
+					</Button>
+				)}
 				{currentUser !== token.owner_id && !token.price && (
 					<Button size={'sm'} onClick={onShowOfferModal}>
 						Offer
@@ -321,11 +340,7 @@ const Owner = ({
 						Buy Now
 					</Button>
 				)}
-				{currentUser !== token.owner_id && token.price && token.is_auction && (
-					<Button size={'sm'} onClick={onShowBidModal}>
-						Bid
-					</Button>
-				)}
+				k
 				{currentUser === token.owner_id && (
 					<Button size={'sm'} onClick={onShowUpdateListingModal}>
 						Update

@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import LoginModal from './LoginModal'
-import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
+import { GAS_FEE, GAS_FEE_200, STORAGE_APPROVE_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import useProfileData from 'hooks/useProfileData'
-import BannedConfirmModal from './BannedConfirmModal'
 import useStore from 'lib/store'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 import Media from 'components/Common/Media'
@@ -17,33 +16,119 @@ import JSBI from 'jsbi'
 import Link from 'next/link'
 import IconInfoSecond from 'components/Icons/component/IconInfoSecond'
 import { useForm } from 'react-hook-form'
-import { trackClickPlaceOffer, trackOfferToken, trackOfferTokenImpression } from 'lib/ga'
+import { trackRemoveListingToken, trackUpdateListingToken } from 'lib/ga'
 import { InputText } from 'components/Common/form'
 
 const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 	const store = useStore()
+	const { localeLn } = useIntl()
 	const { errors, register, handleSubmit, watch, setValue } = useForm()
-	const { signAndSendTransaction, viewFunction } = useWalletSelector()
-
-	const [showLogin, setShowLogin] = useState(false)
+	const { signAndSendTransactions, viewFunction } = useWalletSelector()
 	const { currentUser, userBalance, setTransactionRes } = useStore((state) => ({
 		currentUser: state.currentUser,
 		userBalance: state.userBalance,
 		setTransactionRes: state.setTransactionRes,
 	}))
-	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
-	const [isOffering, setIsOffering] = useState(false)
-	const creatorData = useProfileData(data.metadata.creator_id)
 
-	const { localeLn } = useIntl()
+	const [showLogin, setShowLogin] = useState(false)
+	const [needDeposit, setNeedDeposit] = useState(false)
+	const [currentPrice, setCurrentPrice] = useState(0)
+	const [isUpdatingPrice, setIsUpdatingPrice] = useState(false)
+	const [txFee, setTxFee] = useState(null)
 
 	useEffect(() => {
 		if (show) {
-			trackOfferTokenImpression(data.token_id)
+			getTxFee()
 		}
 	}, [show])
 
-	const hasStorageBalance = async () => {
+	useEffect(() => {
+		if (currentUser) {
+			setTimeout(() => {
+				checkStorageBalance()
+			}, 250)
+		}
+	}, [currentUser])
+
+	const getTxFee = async () => {
+		const contractForCall =
+			process.env.NFT_CONTRACT_ID === data.contract_id
+				? data.contract_id
+				: process.env.MARKETPLACE_CONTRACT_ID
+		const txFeeContract = await viewFunction({
+			methodName: 'get_transaction_fee',
+			receiverId: contractForCall,
+		})
+		setTxFee(txFeeContract)
+	}
+
+	const onUpdateListing = async () => {
+		if (!currentUser) {
+			return
+		}
+		setIsUpdatingPrice(true)
+
+		trackUpdateListingToken(data.token_id)
+
+		try {
+			const txs = []
+
+			if (needDeposit) {
+				txs.push({
+					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
+					actions: [
+						{
+							type: 'FunctionCall',
+							params: {
+								methodName: 'storage_deposit',
+								args: { receiver_id: currentUser },
+								deposit: STORAGE_ADD_MARKET_FEE,
+								gas: GAS_FEE,
+							},
+						},
+					],
+				})
+			}
+
+			const params = {
+				token_id: data.token_id,
+				account_id: process.env.MARKETPLACE_CONTRACT_ID,
+				msg: JSON.stringify({
+					price: parseNearAmount(currentPrice),
+					market_type: 'sale',
+					ft_token_id: `near`,
+				}),
+			}
+			txs.push({
+				receiverId: data.contract_id,
+				actions: [
+					{
+						type: 'FunctionCall',
+						params: {
+							methodName: 'nft_approve',
+							contractId: data.contract_id,
+							args: params,
+							deposit: data.approval_id ? `1` : STORAGE_APPROVE_FEE,
+							gas: GAS_FEE_200,
+						},
+					},
+				],
+			})
+
+			const res = await signAndSendTransactions({ transactions: txs })
+
+			if (res) {
+				onClose()
+				setTransactionRes(res)
+			}
+			setIsUpdatingPrice(false)
+		} catch (err) {
+			sentryCaptureException(err)
+			setIsUpdatingPrice(false)
+		}
+	}
+
+	const checkStorageBalance = async () => {
 		try {
 			const currentStorage = await viewFunction({
 				methodName: 'storage_balance_of',
@@ -63,83 +148,65 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 			)
 
 			if (JSBI.greaterThanOrEqual(JSBI.BigInt(currentStorage), usedStorage)) {
-				return true
+				setNeedDeposit(false)
+			} else {
+				setNeedDeposit(true)
 			}
-			return false
 		} catch (err) {
 			sentryCaptureException(err)
 		}
 	}
 
-	const onPlaceOffer = async ({ offerAmount }) => {
-		setIsOffering(true)
-		const hasDepositStorage = await hasStorageBalance()
-
-		trackOfferToken(data.token_id)
-		trackClickPlaceOffer(data.token_id)
-
-		try {
-			const depositParams = { receiver_id: currentUser }
-
-			const params = {
-				nft_contract_id: data.contract_id,
-				...(data.token_id
-					? { token_id: data.token_id }
-					: { token_series_id: data.token_series_id }),
-				ft_token_id: 'near',
-				price: parseNearAmount(offerAmount),
-			}
-
-			let res
-			if (hasDepositStorage) {
-				res = await signAndSendTransaction({
-					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
-					actions: [
-						{
-							type: 'FunctionCall',
-							params: {
-								methodName: 'add_offer',
-								args: params,
-								deposit: parseNearAmount(offerAmount),
-								gas: GAS_FEE,
-							},
-						},
-					],
-				})
+	const calculatePriceDistribution = () => {
+		if (
+			currentPrice &&
+			JSBI.greaterThan(JSBI.BigInt(parseNearAmount(currentPrice)), JSBI.BigInt(0))
+		) {
+			let fee
+			if (txFee?.start_time && new Date() > new Date(txFee?.start_time * 1000)) {
+				fee = JSBI.BigInt(txFee?.next_fee || 0)
 			} else {
-				res = await signAndSendTransaction({
-					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
-					actions: [
-						{
-							type: 'FunctionCall',
-							params: {
-								methodName: 'storage_deposit',
-								args: depositParams,
-								deposit: STORAGE_ADD_MARKET_FEE,
-								gas: GAS_FEE,
-							},
-						},
-						{
-							type: 'FunctionCall',
-							params: {
-								methodName: 'add_offer',
-								args: params,
-								deposit: parseNearAmount(offerAmount),
-								gas: GAS_FEE,
-							},
-						},
-					],
-				})
+				fee = JSBI.BigInt(txFee?.current_fee || 0)
 			}
-			if (res) {
-				onClose()
-				setTransactionRes([res])
-				onSuccess && onSuccess()
+
+			if (data.contract_id === 'comic.paras.near') {
+				fee = JSBI.BigInt(500)
 			}
-			setIsOffering(false)
-		} catch (err) {
-			sentryCaptureException(err)
-			setIsOffering(false)
+
+			const calcRoyalty =
+				Object.values(data.royalty).length > 0
+					? JSBI.divide(
+							JSBI.multiply(
+								JSBI.BigInt(parseNearAmount(currentPrice)),
+								JSBI.BigInt(
+									Object.values(data.royalty).reduce((a, b) => {
+										return parseInt(a) + parseInt(b)
+									}, 0)
+								)
+							),
+							JSBI.BigInt(10000)
+					  )
+					: JSBI.BigInt(0)
+
+			const calcFee = JSBI.divide(
+				JSBI.multiply(JSBI.BigInt(parseNearAmount(currentPrice)), fee),
+				JSBI.BigInt(10000)
+			)
+
+			const cut = JSBI.add(calcRoyalty, calcFee)
+
+			const calcReceive = JSBI.subtract(JSBI.BigInt(parseNearAmount(currentPrice)), cut)
+
+			return {
+				receive: formatNearAmount(calcReceive.toString()),
+				royalty: formatNearAmount(calcRoyalty.toString()),
+				fee: formatNearAmount(calcFee.toString()),
+			}
+		}
+		return {
+			receive: 0,
+			royalty: 0,
+			fee: 0,
 		}
 	}
 
@@ -147,11 +214,7 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 		<>
 			<Modal isShow={show} closeOnBgClick={false} closeOnEscape={false} close={onClose}>
 				<div className="max-w-[504px] w-full bg-neutral-03 text-white rounded-lg mx-auto p-6">
-					<form
-						onSubmit={handleSubmit((bidQuantity) =>
-							creatorData?.flag ? setShowBannedConfirm(true) : onPlaceOffer(bidQuantity)
-						)}
-					>
+					<form onSubmit={handleSubmit(() => onUpdateListing())}>
 						<div className="relative mb-5">
 							<p className="text-sm font-bold text-center">Update Listing</p>
 							<button className="absolute bg-neutral-05 rounded-md right-0 -top-2">
@@ -196,15 +259,15 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 							<div className="flex flex-row justify-between items-center p-2">
 								<p className="text-sm text-neutral-10">Current Price</p>
 								<div className="inline-flex">
-									<p className="font-bold text-sm text-neutral-10 truncate">{`${prettyBalance(
-										data.price ? formatNearAmount(data.price) : '0',
-										0,
-										4
-									)} Ⓝ`}</p>
-									{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+									<p className="font-bold text-sm text-neutral-10 truncate">{`${
+										data.price
+											? prettyBalance(formatNearAmount(data.price) || '0', 0, 4) + 'Ⓝ'
+											: 'None'
+									}`}</p>
+									{data.price && data.price !== '0' && store.nearUsdPrice !== 0 && (
 										<div className="text-[10px] text-gray-400 truncate ml-2">
-											{/* ($
-											{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
+											(~$
+											{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
 										</div>
 									)}
 								</div>
@@ -213,15 +276,16 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 							<div className="flex flex-row justify-between items-center p-2">
 								<p className="text-sm text-neutral-10">New Price</p>
 								<InputText
-									name="offerAmount"
+									name="currentPrice"
 									step="any"
+									onChange={(e) => setCurrentPrice(e.target.value)}
 									ref={register({
 										required: true,
 										min: 0.01,
 										max: parseFloat(userBalance.available / 10 ** 24),
 									})}
 									className={`${
-										errors.offerAmount && 'error'
+										errors.currentPrice && 'error'
 									} w-2/3 bg-neutral-04 border border-neutral-06 hover:bg-neutral-05 focus:bg-neutral-04 focus:border-neutral-07 text-right text-xs`}
 									placeholder="Place your new price here|"
 								/>
@@ -234,15 +298,10 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 								<div className="flex flex-row justify-between items-center my-2">
 									<p className="text-sm">New Price</p>
 									<div className="inline-flex">
-										<p className="text-sm text-neutral-10 truncate">{`${prettyBalance(
-											data.price ? formatNearAmount(data.price) : '0',
-											0,
-											4
-										)} Ⓝ`}</p>
-										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+										<p className="text-sm text-neutral-10 truncate">{currentPrice} Ⓝ</p>
+										{store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">
-												{/* ($
-												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
+												(~${currentPrice * store.nearUsdPrice})
 											</div>
 										)}
 									</div>
@@ -250,15 +309,18 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 								<div className="flex flex-row justify-between items-center my-2">
 									<p className="text-sm">Receive</p>
 									<div className="inline-flex">
-										<p className="text-sm text-neutral-10 truncate">{`${prettyBalance(
-											data.price ? formatNearAmount(data.price) : '0',
-											0,
-											4
-										)} Ⓝ`}</p>
-										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+										<p className="text-sm text-neutral-10 truncate">
+											{calculatePriceDistribution().receive} Ⓝ
+										</p>
+										{store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">
-												{/* ($
-												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
+												(~$
+												{prettyBalance(
+													calculatePriceDistribution().receive * store.nearUsdPrice,
+													0,
+													2
+												)}
+												)
 											</div>
 										)}
 									</div>
@@ -266,15 +328,18 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 								<div className="flex flex-row justify-between items-center my-2">
 									<p className="text-sm">Royalty</p>
 									<div className="inline-flex">
-										<p className="text-sm text-neutral-10 truncate">{`${prettyBalance(
-											data.price ? formatNearAmount(data.price) : '0',
-											0,
-											4
-										)} Ⓝ`}</p>
-										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+										<p className="text-sm text-neutral-10 truncate">
+											{calculatePriceDistribution().royalty} Ⓝ
+										</p>
+										{store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">
-												{/* ($
-												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
+												(~$
+												{prettyBalance(
+													calculatePriceDistribution().royalty * store.nearUsdPrice,
+													0,
+													2
+												)}
+												)
 											</div>
 										)}
 									</div>
@@ -282,15 +347,14 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 								<div className="flex flex-row justify-between items-center my-2">
 									<p className="text-sm">Locked Fee</p>
 									<div className="inline-flex">
-										<p className="text-sm text-neutral-10 truncate">{`${prettyBalance(
-											data.price ? formatNearAmount(data.price) : '0',
-											0,
-											4
-										)} Ⓝ`}</p>
+										<p className="text-sm text-neutral-10 truncate">
+											{calculatePriceDistribution().fee} Ⓝ
+										</p>
 										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">
-												{/* ($
-												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
+												(~$
+												{prettyBalance(calculatePriceDistribution().fee * store.nearUsdPrice, 0, 2)}
+												)
 											</div>
 										)}
 									</div>
@@ -300,15 +364,18 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 								<div className="flex flex-row justify-between items-center my-2">
 									<p className="text-sm">Storage Fee</p>
 									<div className="inline-flex">
-										<p className="text-sm text-neutral-10 truncate">{`${prettyBalance(
-											data.price ? formatNearAmount(data.price) : '0',
-											0,
-											4
-										)} Ⓝ`}</p>
-										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+										<p className="text-sm text-neutral-10 truncate">
+											{formatNearAmount(STORAGE_ADD_MARKET_FEE)} Ⓝ
+										</p>
+										{store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">
-												{/* ($
-												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
+												(~$
+												{prettyBalance(
+													JSBI.BigInt(STORAGE_ADD_MARKET_FEE) * store.nearUsdPrice,
+													24,
+													4
+												)}
+												)
 											</div>
 										)}
 									</div>
@@ -318,15 +385,18 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 								<div className="flex flex-row justify-between items-center">
 									<p className="text-sm">Total Payment</p>
 									<div className="inline-flex">
-										<p className="bg-[#1300BA80] text-sm text-neutral-10 font-bold truncate p-1">{`${prettyBalance(
-											data.price ? formatNearAmount(data.price) : '0',
-											0,
-											4
-										)} Ⓝ`}</p>
-										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+										<p className="bg-[#1300BA80] text-sm text-neutral-10 font-bold truncate p-1">
+											{formatNearAmount(STORAGE_ADD_MARKET_FEE)} Ⓝ
+										</p>
+										{store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">
-												{/* ($
-												{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
+												(~$
+												{prettyBalance(
+													JSBI.BigInt(STORAGE_ADD_MARKET_FEE) * store.nearUsdPrice,
+													24,
+													4
+												)}
+												)
 											</div>
 										)}
 									</div>
@@ -338,14 +408,14 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 							<p className="text-sm">Your Balance</p>
 							<div className="inline-flex">
 								<p className="text-sm text-neutral-10 font-bold truncate p-1">{`${prettyBalance(
-									data.price ? formatNearAmount(data.price) : '0',
-									0,
+									userBalance.available,
+									24,
 									4
 								)} Ⓝ`}</p>
-								{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+								{userBalance.available && store.nearUsdPrice !== 0 && (
 									<div className="text-[10px] text-gray-400 truncate ml-2">
-										{/* ($
-										{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
+										(~$
+										{prettyBalance(JSBI.BigInt(userBalance.available) * store.nearUsdPrice, 24, 2)})
 									</div>
 								)}
 							</div>
@@ -369,8 +439,8 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 								<Button
 									variant="primary"
 									className={'text-sm w-full pl-3 text-center'}
-									isDisabled={isOffering}
-									isLoading={isOffering}
+									isDisabled={isUpdatingPrice}
+									isLoading={isUpdatingPrice}
 									type="submit"
 								>
 									Complete Update Listing
@@ -380,14 +450,6 @@ const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
 					</form>
 				</div>
 			</Modal>
-			{/* {showBannedConfirm && (
-				<BannedConfirmModal
-					creatorData={creatorData}
-					action={onBuyToken}
-					setIsShow={(e) => setShowBannedConfirm(e)}
-					onClose={onClose}
-				/>
-			)} */}
 			<LoginModal onClose={() => setShowLogin(false)} show={showLogin} />
 		</>
 	)

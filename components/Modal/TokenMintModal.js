@@ -207,7 +207,7 @@ const TokenMintModal = ({ data, show, onClose }) => {
 								) : errorMessage === '' ? (
 									<p className="text-xs mt-2 text-[#64CC7F]">Valid Account Id</p>
 								) : (
-									<p className="text-xs mt-2 text-[#FF8E8E]">Not Valid Account Id</p>
+									<p className="text-xs mt-2 text-[#FF8E8E]">{errorMessage}</p>
 								)}
 							</div>
 						)}
@@ -243,10 +243,10 @@ const TokenMintModal = ({ data, show, onClose }) => {
 									<p className="text-sm text-neutral-10 truncate">
 										{formatNearAmount(STORAGE_MINT_FEE)} Ⓝ
 									</p>
-									{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+									{store.nearUsdPrice !== 0 && (
 										<div className="text-[10px] text-gray-400 truncate ml-2">
 											($
-											{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)})
+											{prettyBalance(JSBI.BigInt(STORAGE_MINT_FEE) * store.nearUsdPrice, 24, 2)})
 										</div>
 									)}
 								</div>
@@ -263,7 +263,7 @@ const TokenMintModal = ({ data, show, onClose }) => {
 							</p>
 							{userBalance.available && store.nearUsdPrice !== 0 && (
 								<div className="text-[10px] text-gray-400 truncate ml-2">
-									($
+									(~$
 									{prettyBalance(JSBI.BigInt(userBalance.available) * store.nearUsdPrice, 24, 2)})
 								</div>
 							)}

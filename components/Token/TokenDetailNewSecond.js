@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import useStore from 'lib/store'
 import { parseImgUrl, ModalEnum } from 'utils/common'
 import Button from 'components/Common/Button'
 import Card from 'components/Card/Card'
@@ -22,8 +23,13 @@ import TokenTransferModalSecond from 'components/Modal/TokenTransferModalSecond'
 import TokenRemoveAuction from 'components/Modal/TokenRemoveAuction'
 import TokenAuctionModal from 'components/Modal/TokenAuctionModal'
 import SuccessTransactionModalSecond from 'components/Modal/SuccessTransactionModalSecond'
+import LoginModal from 'components/Modal/LoginModal'
 
 const TokenDetailNewSecond = ({ token }) => {
+	const store = useStore()
+	const currentUser = store.currentUser
+
+	const [showLoginModal, setShowLoginModal] = useState(false)
 	const [showModal, setShowModal] = useState(null)
 
 	const onCloseModal = () => {
@@ -85,17 +91,45 @@ const TokenDetailNewSecond = ({ token }) => {
 						/>
 						<TokenPriceInfo
 							localToken={token}
-							onShowBuyModal={() => setShowModal(ModalEnum.BUY)}
-							onShowBidModal={() => setShowModal(ModalEnum.BID)}
-							onShowOfferModal={() => setShowModal(ModalEnum.OFFER)}
-							onShowMintModal={() => setShowModal(ModalEnum.MINT)}
-							onShowUpdatePriceModal={() => setShowModal(ModalEnum.UPDATE_PRICE)}
+							onShowBuyModal={() =>
+								currentUser ? setShowModal(ModalEnum.BUY) : setShowLoginModal(true)
+							}
+							onShowBidModal={() =>
+								currentUser ? setShowModal(ModalEnum.BID) : setShowLoginModal(true)
+							}
+							onShowOfferModal={() =>
+								currentUser ? setShowModal(ModalEnum.OFFER) : setShowLoginModal(true)
+							}
+							onShowMintModal={() =>
+								currentUser ? setShowModal(ModalEnum.MINT) : setShowLoginModal(true)
+							}
+							onShowUpdatePriceModal={() =>
+								currentUser ? setShowModal(ModalEnum.UPDATE_PRICE) : setShowLoginModal(true)
+							}
+							onShowAuctionModal={() =>
+								currentUser ? setShowModal(ModalEnum.AUCTION) : setShowLoginModal(true)
+							}
+							onShowTransferModal={() =>
+								currentUser ? setShowModal(ModalEnum.TRANSFER) : setShowLoginModal(true)
+							}
+							onShowUpdateListingModal={() =>
+								currentUser ? setShowModal(ModalEnum.UPDATE_LISTING) : setShowLoginModal(true)
+							}
+							onShowRemoveAuction={() =>
+								currentUser ? setShowModal(ModalEnum.REMOVE_AUCTION) : setShowLoginModal(true)
+							}
 						/>
 						<TokenInformation
 							localToken={token}
-							onShowBuyModal={() => setShowModal(ModalEnum.BUY)}
-							onShowBidModal={() => setShowModal(ModalEnum.BID)}
-							onShowOfferModal={() => setShowModal(ModalEnum.OFFER)}
+							onShowBuyModal={() =>
+								currentUser ? setShowModal(ModalEnum.BUY) : setShowLoginModal(true)
+							}
+							onShowBidModal={() =>
+								currentUser ? setShowModal(ModalEnum.BID) : setShowLoginModal(true)
+							}
+							onShowOfferModal={() =>
+								currentUser ? setShowModal(ModalEnum.OFFER) : setShowLoginModal(true)
+							}
 						/>
 						<TokenPriceHistorySecond localToken={token} />
 					</div>
@@ -112,34 +146,35 @@ const TokenDetailNewSecond = ({ token }) => {
 			<TokenBuyModalSecond show={showModal === ModalEnum.BUY} data={token} onClose={onCloseModal} />
 			<TokenOfferModal show={showModal === ModalEnum.OFFER} data={token} onClose={onCloseModal} />
 			<TokenTradeModal show={showModal === ModalEnum.TRADE} data={token} onClose={onCloseModal} />
-			{/* <TokenBidModal show={showModal === ModalEnum.BID} data={token} onClose={onCloseModal} /> */}
-			{/* <TokenMintModal show={showModal === ModalEnum.MINT} data={token} onClose={onCloseModal} /> */}
+			<TokenBidModal show={showModal === ModalEnum.BID} data={token} onClose={onCloseModal} />
+			<TokenMintModal show={showModal === ModalEnum.MINT} data={token} onClose={onCloseModal} />
 			<TokenUpdatePriceModalSecond
 				show={showModal === ModalEnum.UPDATE_PRICE}
 				data={token}
 				onClose={onCloseModal}
 			/>
-			{/* <TokenUpdateListing
+			<TokenUpdateListing
 				show={showModal === ModalEnum.UPDATE_LISTING}
 				data={token}
 				onClose={onCloseModal}
-			/> */}
-			{/* <TokenTransferModalSecond
+			/>
+			<TokenTransferModalSecond
 				show={showModal === ModalEnum.TRANSFER}
 				data={token}
 				onClose={onCloseModal}
-			/> */}
-			{/* <TokenRemoveAuction
+			/>
+			<TokenRemoveAuction
 				show={showModal === ModalEnum.REMOVE_AUCTION}
 				data={token}
 				onClose={onCloseModal}
-			/> */}
-			{/* <TokenAuctionModal
+			/>
+			<TokenAuctionModal
 				show={showModal === ModalEnum.AUCTION}
 				data={token}
 				onClose={onCloseModal}
-			/> */}
+			/>
 			{/* <SuccessTransactionModalSecond /> */}
+			<LoginModal onClose={() => setShowLoginModal(false)} show={showLoginModal} />
 		</>
 	)
 }

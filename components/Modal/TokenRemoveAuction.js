@@ -1,41 +1,90 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useToast } from 'hooks/useToast'
+import { GAS_FEE } from 'config/constants'
+import { sentryCaptureException } from 'lib/sentry'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
-import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
-import { GAS_FEE_150 } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
-import { sentryCaptureException } from 'lib/sentry'
-import { trackBuyToken, trackBuyTokenImpression, trackClickBuyButton } from 'lib/ga'
-import useProfileData from 'hooks/useProfileData'
-import BannedConfirmModal from './BannedConfirmModal'
 import useStore from 'lib/store'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 import Media from 'components/Common/Media'
 import { parseImgUrl, prettyTruncate, prettyBalance } from 'utils/common'
-import JSBI from 'jsbi'
 import Link from 'next/link'
 import IconInfoSecond from 'components/Icons/component/IconInfoSecond'
 import { InputText } from 'components/Common/form'
 import { useForm } from 'react-hook-form'
 
+const ConfirmEnum = {
+	REMOVE: 'remove',
+}
+
 const TokenRemoveAuction = ({ data, show, onClose, onSuccess }) => {
 	const store = useStore()
+	const toast = useToast()
 	const { localeLn } = useIntl()
 	const { signAndSendTransaction } = useWalletSelector()
-	const { errors, register, handleSubmit, watch, setValue } = useForm()
-	const { currentUser, userBalance, setTransactionRes } = useStore((state) => ({
-		currentUser: state.currentUser,
+	const { errors, register } = useForm()
+	const { userBalance, setTransactionRes } = useStore((state) => ({
 		userBalance: state.userBalance,
 		setTransactionRes: state.setTransactionRes,
 	}))
 
-	const creatorData = useProfileData(data.metadata.creator_id)
-
-	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
 	const [showLogin, setShowLogin] = useState(false)
-	const [confirm, setConfirm] = useState(false)
+	const [confirm, setConfirm] = useState('')
+	const [isCancelAuction, setIsCancelAuction] = useState(false)
+
+	const onCancelAuction = async () => {
+		setIsCancelAuction(true)
+
+		try {
+			const params = {
+				nft_contract_id: data.contract_id,
+				token_id: data.token_id,
+				is_auction: true,
+			}
+
+			const res = await signAndSendTransaction({
+				receiverId: process.env.MARKETPLACE_CONTRACT_ID,
+				actions: [
+					{
+						type: 'FunctionCall',
+						params: {
+							methodName: 'delete_market_data',
+							args: params,
+							gas: GAS_FEE,
+							deposit: '1',
+						},
+					},
+				],
+			})
+			if (res) {
+				onClose()
+				setTransactionRes([res])
+				toast.show({
+					text: (
+						<div className="font-semibold text-center text-sm">{`Successfully remove auction`}</div>
+					),
+					type: 'success',
+					duration: 2500,
+				})
+			}
+			setIsCancelAuction(false)
+		} catch (err) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{err.message || localeLn('SomethingWentWrong')}
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			sentryCaptureException(err)
+			setIsCancelAuction(false)
+		}
+	}
 
 	return (
 		<>
@@ -86,14 +135,14 @@ const TokenRemoveAuction = ({ data, show, onClose, onSuccess }) => {
 						<p className="text-sm">Your Balance</p>
 						<div className="inline-flex">
 							<p className="text-sm text-neutral-10 font-bold truncate p-1">{`${prettyBalance(
-								data.price ? formatNearAmount(data.price) : '0',
-								0,
+								userBalance.available,
+								24,
 								4
 							)} Ⓝ`}</p>
-							{data?.price !== '0' && store.nearUsdPrice !== 0 && (
+							{userBalance.available && store.nearUsdPrice !== 0 && (
 								<div className="text-[10px] text-gray-400 truncate ml-2">
-									{/* ($
-									{prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
+									(~$
+									{prettyBalance(userBalance.available * store.nearUsdPrice, 24, 2)})
 								</div>
 							)}
 						</div>
@@ -121,13 +170,14 @@ const TokenRemoveAuction = ({ data, show, onClose, onSuccess }) => {
 					<div className="mb-6">
 						<p className="text-sm text-neutral-10 mb-2">Type “remove” to confirm</p>
 						<InputText
-							name="offerAmount"
+							name="removeAuction"
 							step="any"
+							onChange={(e) => setConfirm(e.target.value)}
 							ref={register({
 								required: true,
 							})}
 							className={`${
-								errors.offerAmount && 'error'
+								errors.removeAuction && 'error'
 							} w-full bg-neutral-04 border border-neutral-06 hover:bg-neutral-05 focus:bg-neutral-04 focus:border-neutral-07 text-xs`}
 							placeholder="Account ID (example.near)"
 						/>
@@ -141,8 +191,15 @@ const TokenRemoveAuction = ({ data, show, onClose, onSuccess }) => {
 						</div>
 						<div>
 							<Button
+								isDisabled={confirm !== ConfirmEnum.REMOVE}
+								isLoading={isCancelAuction}
+								onClick={onCancelAuction}
 								className={`
-                ${confirm ? 'bg-danger-500 text-neutral-10' : 'bg-danger-disabled text-neutral-07'} 
+                ${
+									confirm === ConfirmEnum.REMOVE
+										? 'bg-danger-500 text-neutral-10'
+										: 'bg-danger-disabled text-neutral-07'
+								} 
                 text-sm w-full pl-12 text-center`}
 							>
 								Remove Auction
@@ -151,14 +208,7 @@ const TokenRemoveAuction = ({ data, show, onClose, onSuccess }) => {
 					</div>
 				</div>
 			</Modal>
-			{/* {showBannedConfirm && (
-				<BannedConfirmModal
-					creatorData={creatorData}
-					action={onBuyToken}
-					setIsShow={(e) => setShowBannedConfirm(e)}
-					onClose={onClose}
-				/>
-			)} */}
+
 			<LoginModal onClose={() => setShowLogin(false)} show={showLogin} />
 		</>
 	)

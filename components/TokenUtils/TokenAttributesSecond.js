@@ -51,7 +51,7 @@ const TokenAttributesSecond = ({ localToken }) => {
 
 			<div className="h-[448px] overflow-y-auto bg-neutral-01 border border-neutral-05 rounded-lg">
 				{attributes.length <= 0 ? (
-					<IconEmptyAttribute size={100} className="mx-auto my-4" />
+					<IconEmptyAttribute size={100} className="mx-auto my-36" />
 				) : (
 					attributes.map((attribute) => (
 						<Link

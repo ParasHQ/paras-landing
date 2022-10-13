@@ -167,7 +167,7 @@ const TokenPriceHistorySecond = ({ localToken }) => {
 				</div>
 			</div>
 
-			<div className="bg-neutral-01 border border-neutral-05 rounded-lg py-6">
+			<div className="h-[390px] bg-neutral-01 border border-neutral-05 rounded-lg py-6">
 				<TokenPriceTracker data={activities} />
 			</div>
 		</div>
@@ -178,7 +178,7 @@ const TokenPriceTracker = ({ data }) => {
 	return (
 		<div className="mt-10">
 			{data.length <= 0 ? (
-				<IconEmptyPriceHistory size={100} className="mx-auto my-10" />
+				<IconEmptyPriceHistory size={150} className="mx-auto my-16" />
 			) : (
 				<div className="max-h-full">
 					<ResponsiveContainer width="100%" height={300}>
