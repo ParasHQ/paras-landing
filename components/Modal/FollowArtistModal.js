@@ -41,12 +41,12 @@ const FollowArtistModal = ({ show, onClose, userProfile, currentUser, typeFollow
 			}
 		)
 
-		if (res.data.data.length === LIMIT) {
+		if (res.data.data.results.length === LIMIT) {
 			setPage(1)
 			setHasMore(true)
 		}
 
-		setData(res.data.data)
+		setData(res.data.data.results)
 		setIsRefreshing(false)
 	}
 
@@ -64,7 +64,7 @@ const FollowArtistModal = ({ show, onClose, userProfile, currentUser, typeFollow
 				params: followParams(page),
 			}
 		)
-		const dataRes = await res.data.data
+		const dataRes = await res.data.data.results
 		const newData = [...data, ...dataRes]
 
 		setData(newData)
