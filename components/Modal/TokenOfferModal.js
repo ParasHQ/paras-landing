@@ -19,6 +19,7 @@ import { useForm } from 'react-hook-form'
 import { trackClickPlaceOffer, trackOfferToken, trackOfferTokenImpression } from 'lib/ga'
 import { InputText } from 'components/Common/form'
 import cachios from 'cachios'
+import TokenTradeModal from './TokenTradeModal'
 
 const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess, tokenType = `token` }) => {
 	const store = useStore()
@@ -36,6 +37,7 @@ const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess, tokenTyp
 	}))
 
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
+	const [showTradeModal, setShowTradeModal] = useState(false)
 	const [isOffering, setIsOffering] = useState(false)
 	const [showLogin, setShowLogin] = useState(false)
 	const [highestOffer, setHighestOffer] = useState(null)
@@ -173,11 +175,7 @@ const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess, tokenTyp
 		<>
 			<Modal isShow={show} closeOnBgClick={false} closeOnEscape={false} close={onClose}>
 				<div className="max-w-[504px] w-full bg-neutral-03 text-white rounded-lg mx-auto p-6">
-					<form
-						onSubmit={handleSubmit((bidQuantity) =>
-							creatorData?.flag ? setShowBannedConfirm(true) : onPlaceOffer(bidQuantity)
-						)}
-					>
+					<form onSubmit={handleSubmit((bidQuantity) => onPlaceOffer(bidQuantity))}>
 						<div className="relative mb-5">
 							<p className="text-sm font-bold text-center">Make Offer</p>
 							<button
@@ -283,15 +281,12 @@ const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess, tokenTyp
 								<div className="flex flex-row justify-between items-center">
 									<p className="text-sm">Total Payment</p>
 									<div className="inline-flex">
-										<p className="bg-[#1300BA80] text-sm text-neutral-10 font-bold truncate p-1">{`${prettyBalance(
-											currentOffer ? formatNearAmount(currentOffer) : 0,
-											24,
-											4
-										)} Ⓝ`}</p>
+										<p className="bg-[#1300BA80] text-sm text-neutral-10 font-bold truncate p-1">
+											{currentOffer} Ⓝ
+										</p>
 										{data?.price !== '0' && store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">
-												($
-												{/* {prettyBalance(JSBI.BigInt(data.price) * store.nearUsdPrice, 24, 2)}) */}
+												(~${currentOffer * store.nearUsdPrice})
 											</div>
 										)}
 									</div>
@@ -335,7 +330,10 @@ const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess, tokenTyp
 							<div className="w-full border-b border-neutral-05 mb-2 ml-2"></div>
 						</div>
 
-						<button className="w-full flex flex-row justify-center items-center mb-6">
+						<button
+							className="w-full flex flex-row justify-center items-center mb-6"
+							onClick={() => setShowTradeModal(true)}
+						>
 							<p className="text-4xl">+</p>
 							<p className="text-sm underline">Add Your NFT for Trade</p>
 						</button>
@@ -361,14 +359,8 @@ const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess, tokenTyp
 					</form>
 				</div>
 			</Modal>
-			{/* {showBannedConfirm && (
-				<BannedConfirmModal
-					creatorData={creatorData}
-					action={onBuyToken}
-					setIsShow={(e) => setShowBannedConfirm(e)}
-					onClose={onClose}
-				/>
-			)} */}
+
+			<TokenTradeModal show={showTradeModal} data={data} onClose={() => setShowTradeModal(false)} />
 			<LoginModal onClose={() => setShowLogin(false)} show={showLogin} />
 		</>
 	)

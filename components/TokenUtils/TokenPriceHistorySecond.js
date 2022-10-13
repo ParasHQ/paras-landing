@@ -34,18 +34,17 @@ const TokenPriceHistorySecond = ({ localToken }) => {
 	const [activities, setActivities] = useState([])
 	const [isDropDown, setIsDropDown] = useState(true)
 	const [avgPrice, setAvgPrice] = useState()
-	const [selectPriceHistory, setSelectPriceHistory] = useState('all-time')
-	const [chartFilter, setChartFilter] = useState(ChartFilterEnum.ONE_DAY)
+	const [chartFilter, setChartFilter] = useState(ChartFilterEnum.ALL_TIME)
 	const [chartCurrency, setChartCurrency] = useState(ChartCurrencyEnum.NEAR)
 
 	useEffect(() => {
 		fetchDataActivities()
-	}, [localToken, selectPriceHistory])
+	}, [localToken, chartFilter])
 
 	const fetchDataActivities = async () => {
 		const params = {
 			__skip: 0,
-			__limit: 12,
+			__limit: 100,
 			token_id: localToken.token_id,
 			contract_id: localToken.contract_id,
 			type: 'market_sales',
@@ -57,18 +56,27 @@ const TokenPriceHistorySecond = ({ localToken }) => {
 
 		const newData = res.data.data.results
 
-		switch (selectPriceHistory) {
-			case 'all-time':
+		switch (chartFilter) {
+			case ChartFilterEnum.ALL_TIME:
 				filterPriceHistory(newData, 0)
 				return
-			case 'last-30-days':
+			case ChartFilterEnum.ONE_YEAR:
+				filterPriceHistory(newData, 365)
+				return
+			case ChartFilterEnum.SIX_MONTH:
+				filterPriceHistory(newData, 180)
+				return
+			case ChartFilterEnum.THREE_MONTH:
+				filterPriceHistory(newData, 90)
+				return
+			case ChartFilterEnum.ONE_MONTH:
 				filterPriceHistory(newData, 30)
 				return
-			case 'last-14-days':
-				filterPriceHistory(newData, 14)
-				return
-			case 'last-7-days':
+			case ChartFilterEnum.SEVEN_DAY:
 				filterPriceHistory(newData, 7)
+				return
+			case ChartFilterEnum.ONE_DAY:
+				filterPriceHistory(newData, 1)
 				return
 		}
 	}
@@ -97,14 +105,14 @@ const TokenPriceHistorySecond = ({ localToken }) => {
 
 		const results = data
 			.filter((x) => {
-				const elementDateTime = new Date(x.msg.datetime).getTime()
-				if (elementDateTime <= currentDateTime && elementDateTime > selectHistoryDateTime) {
+				const elementDateTime = new Date(x.issued_at).getTime()
+				if (elementDateTime <= currentDateTime && elementDateTime >= selectHistoryDateTime) {
 					return true
 				}
 				return false
 			})
 			.sort((a, b) => {
-				return new Date(b.msg.datetime) - new Date(a.msg.datetime)
+				return a.issued_at - b.issued_at
 			})
 
 		filterAvgPrice(results)
@@ -121,7 +129,7 @@ const TokenPriceHistorySecond = ({ localToken }) => {
 	}
 
 	return (
-		<div className="bg-neutral-04 border border-neutral-05 rounded-lg my-6 px-5 py-6">
+		<div className="bg-neutral-04 border border-neutral-05 rounded-lg my-6 px-5 pt-6 pb-7">
 			<div className="mb-6">
 				<p className="font-bold text-xl text-neutral-10">Price History</p>
 				<p className="font-normal text-xs text-neutral-10 mt-2">
@@ -129,7 +137,7 @@ const TokenPriceHistorySecond = ({ localToken }) => {
 				</p>
 			</div>
 
-			<div className="flex flex-row justify-between items-center">
+			<div className="flex flex-row justify-between items-center mb-2">
 				<div className="grid grid-cols-2 bg-neutral-01 border border-neutral-05 rounded-lg p-1">
 					{Object.keys(ChartCurrencyEnum).map((curr) => (
 						<button
@@ -159,7 +167,9 @@ const TokenPriceHistorySecond = ({ localToken }) => {
 				</div>
 			</div>
 
-			<TokenPriceTracker data={activities} />
+			<div className="bg-neutral-01 border border-neutral-05 rounded-lg py-6">
+				<TokenPriceTracker data={activities} />
+			</div>
 		</div>
 	)
 }
@@ -168,26 +178,22 @@ const TokenPriceTracker = ({ data }) => {
 	return (
 		<div className="mt-10">
 			{data.length <= 0 ? (
-				<div className="bg-neutral-01 border border-neutral-05 rounded-lg py-10">
-					<IconEmptyPriceHistory size={100} className="mx-auto" />
-				</div>
+				<IconEmptyPriceHistory size={100} className="mx-auto my-10" />
 			) : (
-				<div className="max-h-full mt-10">
-					<ResponsiveContainer width="100%" height="50%" aspect={3}>
-						<AreaChart data={data} margin={{ top: 5, right: 20, left: 35, bottom: 35 }}>
+				<div className="max-h-full">
+					<ResponsiveContainer width="100%" height={300}>
+						<AreaChart data={data} margin={{ top: 5, right: 20, left: 10, bottom: 35 }}>
 							<defs>
 								<linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
-									<stop offset="0%" stopColor="#9996bc" stopOpacity={0.5} />
-									<stop offset="50%" stopColor="#594fb2" stopOpacity={0.5} />
-									<stop offset="100%" stopColor="#1300BA" stopOpacity={0.15} />
-									<stop offset="100%" stopColor="#1300" stopOpacity={0} />
+									<stop offset="0%" stopColor="#9185FF" stopOpacity={0.25} />
+									<stop offset="100%" stopColor="#9185FF" stopOpacity={0} />
 								</linearGradient>
 							</defs>
-							<CartesianGrid strokeDasharray="3 3" />
+							<CartesianGrid strokeDasharray="3 3" stroke="#3A4251" />
 							<YAxis
 								domain={[0, 'auto']}
-								axisLine={false}
-								tickLine={true}
+								axisLine={true}
+								tickLine={false}
 								tickMargin={2}
 								stroke="#F9F9F9"
 								tickFormatter={(x) => {
@@ -199,19 +205,27 @@ const TokenPriceTracker = ({ data }) => {
 									position="insideLeft"
 									angle={-90}
 									fill={'#F9F9F9'}
-									style={{ fontSize: 15, left: 100 }}
+									style={{ fontSize: 15, marginLeft: 50 }}
 								/>
 							</YAxis>
 							<XAxis
-								dataKey="msg.datetime"
-								axisLine={false}
+								dataKey="issued_at"
+								interval={1}
+								axisLine={true}
 								tickLine={false}
 								tickMargin={8}
-								stroke="rgba(255, 255, 255, 0.6)"
+								stroke="#F9F9F9"
 								tickFormatter={(x) => {
-									return `${new Date(x).getMonth() + 1}/${new Date(x).getDate()}`
+									return `${new Date(x).getHours().toString()}`
 								}}
-							/>
+							>
+								<Label
+									value={'Time Period'}
+									position="bottom"
+									fill={'#F9F9F9'}
+									style={{ fontSize: 15, left: 100 }}
+								/>
+							</XAxis>
 							<Tooltip content={<CustomTooltip />} />
 							<Area
 								type="linear"
@@ -234,24 +248,27 @@ const TokenPriceTracker = ({ data }) => {
 const CustomTooltip = ({ active, payload }) => {
 	if (active && payload && payload.length) {
 		return (
-			<div className="bg-gray-900 text-neutral-10 p-2 rounded-md">
+			<div className="bg-[#1300ba80] border border-[#9185FF] text-neutral-10 p-2 rounded-md">
 				{payload.map((p, idx) => {
 					return (
 						<div key={idx}>
 							<div>
-								<p className="font-bold text-sm text-center">
-									{new Date(p.payload.msg.datetime)
-										.toLocaleString('en-US', { month: 'long' })
-										.substring(0, 3)}{' '}
-									{`${new Date(p.payload.msg.datetime).getDate()}, ${new Date(
-										p.payload.msg.datetime
-									).getFullYear()}`}
+								<p className="font-bold text-xs text-center">
+									{`${new Date(p.payload.issued_at).toLocaleDateString('en-US', {
+										month: 'long',
+									})} ${new Date(p.payload.issued_at).getDate()} ${new Date(
+										p.payload.issued_at
+									).getFullYear()}, ${new Date(p.payload.issued_at)
+										.toTimeString()
+										.split(':')
+										.splice(0, 2)
+										.join(':')}`}
 								</p>
 							</div>
 							<div>
-								<span className="capitalize text-sm">Price</span>
+								<span className="capitalize text-xs">Price</span>
 								{' : '}
-								<span className="font-bold">
+								<span className="font-bold text-sm">
 									{formatNearAmount(p.payload.price.$numberDecimal)} Ⓝ
 								</span>
 							</div>

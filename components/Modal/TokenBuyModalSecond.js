@@ -3,11 +3,16 @@ import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 import LoginModal from './LoginModal'
-import { GAS_FEE_150 } from 'config/constants'
+import { GAS_FEE_150, GAS_FEE, STORAGE_MINT_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
-import { trackBuyToken, trackBuyTokenImpression, trackClickBuyButton } from 'lib/ga'
+import {
+	trackBuyTokenSeries,
+	trackBuyToken,
+	trackBuyTokenImpression,
+	trackClickBuyButton,
+} from 'lib/ga'
 import useProfileData from 'hooks/useProfileData'
 import BannedConfirmModal from './BannedConfirmModal'
 import useStore from 'lib/store'
@@ -39,6 +44,56 @@ const TokenBuyModalSecond = ({ show, onClose, data }) => {
 			trackBuyTokenImpression(data.token_id)
 		}
 	}, [show])
+
+	const onBuyNftOrSeries = async () => {
+		if (data.token_id) {
+			onBuyToken()
+		} else {
+			onBuySeries()
+		}
+	}
+
+	const onBuySeries = async () => {
+		if (!currentUser) {
+			setShowLogin(true)
+			return
+		}
+		setIsBuying(true)
+		const params = {
+			token_series_id: data.token_series_id,
+			receiver_id: currentUser,
+		}
+
+		const attachedDeposit = JSBI.add(JSBI.BigInt(data.price), JSBI.BigInt(STORAGE_MINT_FEE))
+
+		trackBuyTokenSeries(data.token_series_id)
+		trackClickBuyButton(data.token_series_id)
+
+		try {
+			const res = await signAndSendTransaction({
+				receiverId: data.contract_id,
+				actions: [
+					{
+						type: 'FunctionCall',
+						params: {
+							methodName: `nft_buy`,
+							args: params,
+							gas: GAS_FEE,
+							deposit: attachedDeposit.toString(),
+						},
+					},
+				],
+			})
+			if (res) {
+				onClose()
+				setTransactionRes([res])
+			}
+			setIsBuying(false)
+		} catch (err) {
+			sentryCaptureException(err)
+			setIsBuying(false)
+		}
+	}
 
 	const onBuyToken = async () => {
 		if (!currentUser) {
@@ -215,7 +270,7 @@ const TokenBuyModalSecond = ({ show, onClose, data }) => {
 							<Button
 								variant="primary"
 								className={'text-sm w-full pl-9 text-center'}
-								onClick={onBuyToken}
+								onClick={onBuyNftOrSeries}
 							>
 								Complete Purchase
 							</Button>
@@ -226,7 +281,7 @@ const TokenBuyModalSecond = ({ show, onClose, data }) => {
 			{showBannedConfirm && (
 				<BannedConfirmModal
 					creatorData={creatorData}
-					action={onBuyToken}
+					action={onBuyNftOrSeries}
 					setIsShow={(e) => setShowBannedConfirm(e)}
 					onClose={onClose}
 				/>

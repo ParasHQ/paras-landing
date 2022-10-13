@@ -114,6 +114,8 @@ const TokenTransactionHistory = ({ localToken }) => {
 			return <IconForbidden size={20} />
 		} else if (activity.type === 'nft_transfer') {
 			return <IconListing size={20} />
+		} else if (activity.type === 'add_offer') {
+			return <IconListing size={20} />
 		}
 	}
 
@@ -130,6 +132,10 @@ const TokenTransactionHistory = ({ localToken }) => {
 			return <p className="text-xs text-neutral-10 bg-[#400000] rounded-sm p-1">Remove Listing</p>
 		} else if (activity.type === 'nft_transfer') {
 			return <p className="text-xs text-neutral-10 bg-[#002344] rounded-sm p-1">Transfer</p>
+		} else if (activity.type === 'add_offer') {
+			return <p className="text-xs text-neutral-10 bg-[#434400] rounded-sm p-1">Offer</p>
+		} else {
+			return <p className="text-xs text-neutral-10 bg-[#434400] rounded-sm p-1">{activity.type}</p>
 		}
 	}
 
@@ -215,8 +221,12 @@ const TokenTransactionHistory = ({ localToken }) => {
 																  )} Ⓝ`
 																: '---'}
 														</p>
-														<p className="text-neutral-10 text-sm">{activity.from}</p>
-														<p className="text-neutral-10 text-sm">{activity.to}</p>
+														<p className="text-neutral-10 text-sm">
+															{prettyTruncate(activity.from, 10, 'address')}
+														</p>
+														<p className="text-neutral-10 text-sm">
+															{prettyTruncate(activity.to, 10, 'address')}
+														</p>
 														<p className="text-neutral-10 text-sm">
 															{timeAgo.format(activity.issued_at)}
 														</p>
@@ -239,8 +249,12 @@ const TokenTransactionHistory = ({ localToken }) => {
 																  )} Ⓝ`
 																: '---'}
 														</p>
-														<p className="text-neutral-10 text-sm">{activity.from}</p>
-														<p className="text-neutral-10 text-sm">{activity.to}</p>
+														<p className="text-neutral-10 text-sm">
+															{prettyTruncate(activity.from, 10, 'address')}
+														</p>
+														<p className="text-neutral-10 text-sm">
+															{prettyTruncate(activity.to, 10, 'address')}
+														</p>
 														<p className="text-neutral-10 text-sm">
 															{timeAgo.format(activity.issued_at)}
 														</p>

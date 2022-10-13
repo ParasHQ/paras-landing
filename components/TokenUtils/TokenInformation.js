@@ -19,6 +19,7 @@ import TabOwnersSecond from 'components/Tabs/TabOwnersSecond'
 import TabOffersSecond from 'components/Tabs/TabOffersSecond'
 import TokenInfoCopy from 'components/TokenInfoCopy'
 import CopyLink from 'components/Common/CopyLink'
+import Tooltip from 'components/Common/Tooltip'
 
 const TextCopyEnum = {
 	TOKEN_ID: 'token_id',
@@ -30,14 +31,21 @@ const TokenInformation = ({ localToken }) => {
 	const { localeLn } = useIntl()
 
 	const [tab, setTab] = useState(TabEnum.INFO)
-	const [textCopied, setTextCopied] = useState(null)
 	const [fetching, setFetching] = useState(null)
+	const [textCopied, setTextCopied] = useState(null)
+	const [lockedTxFee, setLockedTxFee] = useState('')
 	const [collectionStats, setCollectionStats] = useState(null)
 
 	useEffect(() => {
 		fetchCollectionStats()
 		fetchOffers()
 	}, [])
+
+	useEffect(() => {
+		if (!localToken.transaction_fee) return
+		const calcLockedTxFee = (localToken?.transaction_fee / 10000) * 100
+		setLockedTxFee(calcLockedTxFee.toString())
+	}, [localToken.transaction_fee])
 
 	const fetchCollectionStats = async () => {
 		setFetching(TabEnum.DESCRIPTION)
@@ -80,7 +88,7 @@ const TokenInformation = ({ localToken }) => {
 			</div>
 
 			{tab === TabEnum.INFO && (
-				<div className="grid grid-rows-6 bg-neutral-01 border border-neutral-05 rounded-lg p-2 pb-10  ">
+				<div className="grid grid-rows-6 bg-neutral-01 border border-neutral-05 rounded-lg p-2 pb-10 h-[326px]">
 					<div className="inline-flex justify-between items-center p-1">
 						<div className="w-1/3">
 							<p className="text-white text-sm">Collection</p>
@@ -96,7 +104,7 @@ const TokenInformation = ({ localToken }) => {
 							</a>
 						</Link>
 					</div>
-					<div className="group inline-flex justify-between items-center p-1">
+					<div className="inline-flex justify-between items-center p-1">
 						<div className="w-1/3">
 							<p className="text-white text-sm">Royalty</p>
 						</div>
@@ -114,18 +122,28 @@ const TokenInformation = ({ localToken }) => {
 									<p className="text-neutral-10">None</p>
 								)}
 							</p>
-							<IconInfoSecond size={20} color={'#F9F9F9'} />
+							<Tooltip
+								id="royalty"
+								show={true}
+								text={'Royalty will be given to artists'}
+								place="top"
+								className={'bg-neutral-01 border border-neutral-05 rounded-lg p-1'}
+								width="30"
+							>
+								<IconInfoSecond size={20} color={'#F9F9F9'} />
+							</Tooltip>
 						</div>
-						<span className="group-hover:opacity-100 transition-opacity bg-neutral-01 border border-neutral-10 p-2 text-sm mb-10 text-neutral-10 rounded-md absolute right-20 opacity-0 mx-auto">
-							Royalty will split amongst account ids.
-						</span>
 					</div>
 					<div className="inline-flex justify-between items-center p-1">
 						<div className="w-1/3">
-							<p className="text-white text-sm">Token ID</p>
+							<p className="text-white text-sm">
+								{localToken.token_id ? 'Token ID' : 'Token Series ID'}
+							</p>
 						</div>
 						<div className="w-2/3 inline-flex flex-row justify-between bg-neutral-01 border border-neutral-05 hover:bg-neutral-05 hover:border-neutral-10 rounded-lg cursor-pointer p-2">
-							<p className="text-white text-sm">{localToken.token_id}</p>
+							<p className="text-white text-sm">
+								{localToken.token_id || localToken.token_series_id}
+							</p>
 							<IconCopySecond size={20} color={'#F9F9F9'} />
 						</div>
 					</div>
@@ -164,21 +182,23 @@ const TokenInformation = ({ localToken }) => {
 							Copied
 						</span>
 					</div>
-					<div className="inline-flex justify-between items-center p-1">
-						<div className="w-1/3">
-							<p className="text-white text-sm">Locked Fee</p>
+					{localToken.transaction_fee && (
+						<div className="inline-flex justify-between items-center p-1">
+							<div className="w-1/3">
+								<p className="text-white text-sm">Locked Fee</p>
+							</div>
+							<div className="w-2/3 inline-flex flex-row justify-between bg-neutral-01 border border-neutral-05 hover:bg-neutral-05 hover:border-neutral-10 rounded-lg cursor-pointer p-2">
+								<p className="text-white text-sm">{lockedTxFee} %</p>
+								<IconInfoSecond size={20} color={'#F9F9F9'} />
+							</div>
 						</div>
-						<div className="w-2/3 inline-flex flex-row justify-between bg-neutral-01 border border-neutral-05 hover:bg-neutral-05 hover:border-neutral-10 rounded-lg cursor-pointer p-2">
-							<p className="text-white text-sm"></p>
-							<IconInfoSecond size={20} color={'#F9F9F9'} />
-						</div>
-					</div>
+					)}
 				</div>
 			)}
 
 			{tab === TabEnum.DESCRIPTION && (
-				<div className="max-h-80 overflow-y-auto">
-					<div className="bg-neutral-01 border border-neutral-05 rounded-lg py-6">
+				<div className="overflow-y-auto">
+					<div className="h-[326px] bg-neutral-01 border border-neutral-05 rounded-lg py-6">
 						{fetching === TabEnum.DESCRIPTION && (
 							<div className="w-full">
 								<IconLoaderSecond size={30} className="mx-auto animate-spin" />
@@ -188,7 +208,7 @@ const TokenInformation = ({ localToken }) => {
 						{fetching === null && localToken.description ? (
 							<p className="text-sm text-neutral-10">{localToken.description}</p>
 						) : (
-							<IconEmptyDescription size={100} className="mx-auto my-4" />
+							<IconEmptyDescription size={150} className="mx-auto mt-11 mb-6" />
 						)}
 
 						<div className="flex flex-row justify-around items-center pt-6">
@@ -241,8 +261,8 @@ const TokenInformation = ({ localToken }) => {
 			)}
 
 			{tab === TabEnum.OWNERS && (
-				<div className="max-h-80 overflow-y-auto">
-					<div className="bg-neutral-01 border border-neutral-05 rounded-lg p-1">
+				<div className="overflow-y-auto">
+					<div className="h-[326px] bg-neutral-01 border border-neutral-05 rounded-lg p-1">
 						{fetching === TabEnum.OWNERS && (
 							<div className="w-full">
 								<IconLoaderSecond size={30} className="mx-auto animate-spin" />
@@ -255,8 +275,8 @@ const TokenInformation = ({ localToken }) => {
 			)}
 
 			{tab === TabEnum.OFFERS && (
-				<div className="max-h-80 overflow-y-auto">
-					<div className="bg-neutral-01 border border-neutral-05 rounded-lg p-1">
+				<div className="overflow-y-auto">
+					<div className="h-[326px] bg-neutral-01 border border-neutral-05 rounded-lg p-1">
 						{fetching === TabEnum.OFFERS && (
 							<div className="w-full">
 								<IconLoaderSecond size={30} className="mx-auto animate-spin" />

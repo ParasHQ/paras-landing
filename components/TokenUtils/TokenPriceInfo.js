@@ -13,11 +13,19 @@ import { parseNearAmount, formatNearAmount } from 'near-api-js/lib/utils/format'
 import IconClock from 'components/Icons/component/IconClock'
 import IconBid from 'components/Icons/component/IconBid'
 
-const TokenPriceInfo = ({ localToken, onShowBuyModal, onShowBidModal, onShowOfferModal }) => {
+const TokenPriceInfo = ({
+	localToken,
+	onShowBuyModal,
+	onShowBidModal,
+	onShowOfferModal,
+	onShowMintModal,
+	onShowUpdatePriceModal,
+}) => {
 	const { localeLn } = useIntl()
-	const store = useStore()
 	const router = useRouter()
-	const currentUser = useStore((state) => state.currentUser)
+	const store = useStore()
+	const currentUser = store.currentUser
+
 	const [isEndedTime, setIsEndedTime] = useState(false)
 	const [isEndedAuction, setIsEndedAuction] = useState(false)
 	const [days, setDays] = useState('-')
@@ -74,6 +82,17 @@ const TokenPriceInfo = ({ localToken, onShowBuyModal, onShowBidModal, onShowOffe
 			}
 		})
 	}, [localToken])
+
+	const isCreator = () => {
+		if (!currentUser) {
+			return false
+		}
+
+		return (
+			currentUser === localToken.metadata.creator_id ||
+			(!localToken.metadata.creator_id && currentUser === localToken.contract_id)
+		)
+	}
 
 	const nanoSecToDate = (timestamp) => {
 		const sliceNanoSec = String(timestamp).slice(0, 13)
@@ -157,11 +176,11 @@ const TokenPriceInfo = ({ localToken, onShowBuyModal, onShowBidModal, onShowOffe
 
 	return (
 		<div
-			className={`bg-neutral-04 rounded-lg ${
+			className={`bg-neutral-04 rounded-lg mt-6 ${
 				localToken.bidder_list && localToken.bidder_list?.length > 1 && 'pb-2'
 			}`}
 		>
-			<div className="bg-neutral-03 border border-neutral-05 rounded-lg my-4 p-5">
+			<div className="min-h-56 bg-neutral-03 border border-neutral-05 rounded-lg my-4 p-5">
 				{localToken?.is_auction && (
 					<div className="bg-neutral-01 border border-neutral-05 rounded-lg w-full flex flex-row justify-between items-center p-2 mb-4">
 						<div className="inline-flex items-center">
@@ -193,10 +212,12 @@ const TokenPriceInfo = ({ localToken, onShowBuyModal, onShowBidModal, onShowOffe
 				{/* Logic to show Price */}
 				{!localToken.price && !localToken.is_auction && (
 					<div className="block mb-10">
-						<div>
-							<div className="line-through text-red-600">
-								<p className="text-4xl font-bold text-gray-100">{localeLn('SALE')}</p>
-							</div>
+						<div className="inline-flex">
+							<IconPriceTag size={20} stroke={'#F9F9F9'} />
+							<p className="text-white font-light ml-2">{localeLn('CurrentPrice')}</p>
+						</div>
+						<div className="line-through text-red-600 my-3">
+							<p className="text-4xl font-bold text-gray-100">{localeLn('SALE')}</p>
 						</div>
 					</div>
 				)}
@@ -313,21 +334,37 @@ const TokenPriceInfo = ({ localToken, onShowBuyModal, onShowBidModal, onShowOffe
 				)}
 
 				{/* Logic to show Button */}
-				{localToken.owner_id !== currentUser && !localToken.price && !localToken.is_auction && (
-					<Button variant="ghost" className={'w-full'} onClick={onShowOfferModal}>
-						Make Offer
-					</Button>
-				)}
-				{localToken.owner_id !== currentUser && localToken.price && !localToken.is_auction && (
+				{isCreator() && (
 					<div className="md:grid grid-cols-2 gap-x-6">
-						<Button variant={'second'} onClick={onShowOfferModal}>
-							Make Offer
+						<Button variant={'second'} onClick={onShowUpdatePriceModal}>
+							Update Price
 						</Button>
-						<Button variant={'primary'} onClick={onShowBuyModal}>
-							Buy Now
+						<Button variant={'primary'} onClick={onShowMintModal}>
+							Mint
 						</Button>
 					</div>
 				)}
+				{localToken.owner_id &&
+					localToken.owner_id !== currentUser &&
+					!localToken.price &&
+					!localToken.is_auction && (
+						<Button variant="ghost" className={'w-full'} onClick={onShowOfferModal}>
+							Make Offer
+						</Button>
+					)}
+				{localToken.owner_id &&
+					localToken.owner_id !== currentUser &&
+					localToken.price &&
+					!localToken.is_auction && (
+						<div className="md:grid grid-cols-2 gap-x-6">
+							<Button variant={'second'} onClick={onShowOfferModal}>
+								Make Offer
+							</Button>
+							<Button variant={'primary'} onClick={onShowBuyModal}>
+								Buy Now
+							</Button>
+						</div>
+					)}
 				{localToken.owner_id !== currentUser &&
 					localToken.price &&
 					localToken.is_auction &&

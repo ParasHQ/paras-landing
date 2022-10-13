@@ -136,9 +136,8 @@ const TabOffersSecond = ({ localToken }) => {
 		setIsFetching(false)
 	}
 
-	console.log(offers)
 	if (!isFetching && offers.length <= 0) {
-		return <IconEmptyOffer size={100} className="mx-auto my-4" />
+		return <IconEmptyOffer size={150} className="mx-auto my-16" />
 	}
 
 	return (

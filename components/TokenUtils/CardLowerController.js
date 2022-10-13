@@ -16,7 +16,7 @@ const CardLowerController = ({ localToken }) => {
 	const currentUser = useStore((state) => state.currentUser)
 
 	const [isLiked, setIsLiked] = useState(false)
-	const [defaultLikes, setDefaultLikes] = useState(false)
+	const [defaultLikes, setDefaultLikes] = useState(0)
 	const [showLoginModal, setShowLoginModal] = useState(false)
 
 	useEffect(() => {
@@ -27,7 +27,7 @@ const CardLowerController = ({ localToken }) => {
 
 			setDefaultLikes(localToken?.total_likes)
 		}
-	}, localToken)
+	}, [JSON.stringify(localToken)])
 
 	const onCloseLoginModal = () => {
 		setShowLoginModal(false)
@@ -102,7 +102,6 @@ const CardLowerController = ({ localToken }) => {
 									: likeToken(localToken.contract_id, localToken.token_series_id, 'detail')
 							}}
 						>
-							{/* <IconLoveOutline stroke={'#F9F9F9'} size={20} /> */}
 							<IconLove
 								size={17}
 								color={isLiked ? '#c51104' : 'transparent'}

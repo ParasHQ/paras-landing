@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { IconDots } from 'components/Icons'
 import { useRouter } from 'next/router'
+import { useIntl } from 'hooks/useIntl'
 import { parseImgUrl, prettyTruncate } from 'utils/common'
 import Link from 'next/link'
 import Media from 'components/Common/Media'
@@ -11,7 +12,9 @@ import TokenShareModalSecond from 'components/Modal/TokenShareModalSecond'
 import TokenMoreModalSecond from 'components/Modal/TokenMoreModalSecond'
 
 const TokenHeadSecond = ({ localToken, onShowTradeModal }) => {
+	console.log(localToken)
 	const router = useRouter()
+	const { localeLn } = useIntl()
 
 	const [showShareModal, setShowShareModal] = useState(false)
 	const [showMoreModal, setShowMoreModal] = useState(false)
@@ -20,7 +23,7 @@ const TokenHeadSecond = ({ localToken, onShowTradeModal }) => {
 		<div className="relative bg-neutral-04 rounded-lg">
 			<div className="bg-neutral-03 text-white rounded-lg border border-neutral-05 px-5 pt-6 pb-3 mb-4">
 				<div className="flex flex-row justify-between items-center">
-					<p className="font-bold text-3xl">TES</p>
+					<p className="font-bold text-3xl">{localToken.metadata.title}</p>
 					<div className="flex flex-row">
 						<button
 							className="border border-neutral-09 rounded-l-lg rounded-r-none rounded-lg p-1"
@@ -43,16 +46,18 @@ const TokenHeadSecond = ({ localToken, onShowTradeModal }) => {
 					</div>
 				</div>
 
-				<div className="bg-neutral-01 border border-neutral-05 rounded-lg p-2 mt-2">
-					<p className="text-sm">
-						Owned by{' '}
-						<Link href={`/${localToken.owner_id}`}>
-							<a className="font-bold underline cursor-pointer">
-								{prettyTruncate(localToken.owner_id, 40, 'address')}
-							</a>
-						</Link>
-					</p>
-				</div>
+				{localToken.owner_id && (
+					<div className="bg-neutral-01 border border-neutral-05 rounded-lg p-2 mt-2">
+						<p className="text-sm">
+							Owned by{' '}
+							<Link href={`/${localToken.owner_id}`}>
+								<a className="font-bold underline cursor-pointer">
+									{prettyTruncate(localToken.owner_id, 40, 'address')}
+								</a>
+							</Link>
+						</p>
+					</div>
+				)}
 
 				<div className="grid grid-cols-2 gap-x-3 mt-2">
 					<div className="border border-neutral-05 rounded-lg">
@@ -126,7 +131,7 @@ const TokenHeadSecond = ({ localToken, onShowTradeModal }) => {
 								</div>
 							</div>
 							<div className="justify-self-end mr-2">
-								<Link href={`/${localToken.metadata?.collection_id || localToken.contract_id}`}>
+								<Link href={`/${localToken.metadata?.creator_id}`}>
 									<a>
 										<IconOut size={25} stroke={'#F9F9F9'} />
 									</a>
@@ -155,9 +160,22 @@ const TokenHeadSecond = ({ localToken, onShowTradeModal }) => {
 
 			<div className="grid grid-cols-3 gap-x-4 items-center justify-center px-4 pb-6">
 				<div className="bg-neutral-01 border border-neutral-05 rounded-lg py-2 px-4">
-					<p className="text-neutral-10 text-center text-sm">
-						Edition <span className="bg-primary p-1 font-bold">#1</span> of 10
-					</p>
+					{localToken.edition_id ? (
+						<p className="text-neutral-10 text-center text-sm">
+							Edition <span className="bg-primary p-1 font-bold">{localToken.edition_id}</span> of{' '}
+							{localToken.metadata?.copies || localeLn('OpenEdition')}
+						</p>
+					) : localToken.copies || localToken.metadata?.copies ? (
+						<p className="text-neutral-10 text-center text-sm">
+							Edition of{' '}
+							{localToken.copies || localToken.metadata?.copies || localeLn('OpenEdition')}
+						</p>
+					) : (
+						localToken.contract_id === process.env.NFT_CONTRACT_ID ||
+						(process.env.WHITELIST_CONTRACT_ID.split(',').includes(localToken.contract_id) && (
+							<p className="text-neutral-10 text-center text-sm">Open Edition</p>
+						))
+					)}
 				</div>
 				<div className="bg-neutral-01 border border-neutral-05 rounded-lg py-2 px-4">
 					<p className="text-neutral-10 text-center text-sm">

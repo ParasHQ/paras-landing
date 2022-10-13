@@ -1,11 +1,13 @@
 import { useState } from 'react'
+import { GAS_FEE, STORAGE_ADD_MARKET_FEE, STORAGE_APPROVE_FEE } from 'config/constants'
+import { useToast } from 'hooks/useToast'
 import Modal from 'components/Common/Modal'
 import { IconX } from 'components/Icons'
 import { useForm } from 'react-hook-form'
+import ParasRequest from 'lib/ParasRequest'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 import useStore from 'lib/store'
 import JSBI from 'jsbi'
-import { STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import { sentryCaptureException } from 'lib/sentry'
 import useProfileData from 'hooks/useProfileData'
 import { parseImgUrl } from 'utils/common'
@@ -13,6 +15,7 @@ import Link from 'next/link'
 import Card from 'components/Card/Card'
 import { InputText } from 'components/Common/form'
 import Button from 'components/Common/Button'
+import { checkTokenUrl } from 'utils/common'
 
 const TokenTradeModal = ({ data, show, onClose }) => {
 	const { currentUser, setTransactionRes } = useStore((state) => ({
@@ -22,13 +25,178 @@ const TokenTradeModal = ({ data, show, onClose }) => {
 	}))
 	const { errors, register, handleSubmit, watch, setValue } = useForm()
 	const creatorData = useProfileData(data.metadata.creator_id)
+	const toast = useToast()
 
+	const [tradedTokenUrl, setTradedTokenUrl] = useState(null)
 	const [tradedToken, setTradedToken] = useState([])
-	const [isTrading, setIsTrading] = useState(false)
+	const [isAdding, setIsAdding] = useState(false)
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
-	const { signAndSendTransactions, viewFunction } = useWalletSelector()
+	const { signAndSendTransaction, signAndSendTransactions, viewFunction } = useWalletSelector()
 
-	const onTrade = async () => {}
+	const onTradeNFT = async () => {
+		setIsAdding(true)
+
+		const tokenType = data.token_id ? 'token' : 'tokenSeries'
+		const hasDepositStorage = await hasStorageBalance()
+
+		try {
+			const depositParams = {
+				receiver_id: currentUser,
+			}
+
+			const params = {
+				account_id: process.env.MARKETPLACE_CONTRACT_ID,
+			}
+
+			if (tokenType === 'token') {
+				params.token_id = tradedToken[0].split('/')[1]
+				params.msg = JSON.stringify({
+					market_type: 'add_trade',
+					seller_nft_contract_id: data.contract_id,
+					seller_token_id: data.token_id,
+				})
+			} else {
+				params.token_id = tradedToken[0].split('/')[1]
+				params.msg = JSON.stringify({
+					market_type: 'add_trade',
+					seller_nft_contract_id: data.contract_id,
+					seller_token_series_id: data.token_series_id,
+				})
+			}
+
+			let res
+			if (hasDepositStorage) {
+				res = await signAndSendTransaction({
+					receiverId: tradedToken[0].split('::')[0],
+					actions: [
+						{
+							type: 'FunctionCall',
+							params: {
+								methodName: `nft_approve`,
+								args: params,
+								gas: GAS_FEE,
+								deposit: STORAGE_APPROVE_FEE,
+							},
+						},
+					],
+				})
+				if (res) {
+					setIsAdding(false)
+					onClose()
+					setTransactionRes([res])
+				}
+			} else {
+				const txs = []
+				txs.push({
+					receiverId: process.env.MARKETPLACE_CONTRACT_ID,
+					actions: [
+						{
+							type: 'FunctionCall',
+							params: {
+								methodName: 'storage_deposit',
+								contractId: process.env.MARKETPLACE_CONTRACT_ID,
+								args: depositParams,
+								attachedDeposit: STORAGE_ADD_MARKET_FEE,
+								gas: GAS_FEE,
+							},
+						},
+					],
+				})
+				txs.push({
+					receiverId: tradedToken[0].split('::')[0],
+					actions: [
+						{
+							type: 'FunctionCall',
+							params: {
+								methodName: 'nft_approve',
+								args: params,
+								attachedDeposit: STORAGE_APPROVE_FEE,
+								gas: GAS_FEE,
+							},
+						},
+					],
+				})
+				const res = await signAndSendTransactions({ transactions: txs })
+				if (res.error && res.error.includes('reject')) {
+					setIsAdding(false)
+				} else if (res.response) {
+					setIsAdding(false)
+					onClose()
+					setTransactionRes(res?.response)
+				}
+			}
+		} catch (err) {
+			setIsAdding(false)
+			sentryCaptureException(err)
+		}
+	}
+
+	const onAddTradedToken = async (urlToken) => {
+		let _urlToken = urlToken.replace(
+			/^((https?|ftp|smtp):\/\/)?(www\.)?(paras\.id|localhost:\d+|marketplace-v2-testnet\.paras\.id|testnet\.paras\.id)\/token\//,
+			''
+		)
+		if (urlToken === '') {
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">Please fill your Token URL</div>,
+				type: 'error',
+				duration: 2500,
+			})
+			setIsAdding(false)
+			return
+		}
+
+		if (urlToken && !checkTokenUrl(urlToken)) {
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">Please enter valid Token URL</div>,
+				type: 'error',
+				duration: 2500,
+			})
+			setIsAdding(false)
+			return
+		}
+		const [contract_id, token_id] = _urlToken.split('/')
+		const _owner = await getOwnerTradedToken(contract_id, token_id)
+		if (_owner?.length === 0) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">You are not the owner of the card</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsAdding(false)
+			return
+		}
+		if (!_owner[0].is_creator) {
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						The creator of this card is not verified
+					</div>
+				),
+				type: 'error',
+				duration: 2500,
+			})
+			setIsAdding(false)
+			return
+		}
+		setTradedToken([_urlToken])
+	}
+
+	const getOwnerTradedToken = async (contractId, tokenId) => {
+		const params = {
+			contract_id: contractId.split('::')[0],
+			token_id: tokenId ?? contractId.split('::')[1],
+			owner_id: currentUser,
+		}
+
+		const resp = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
+			params: params,
+			ttl: 60,
+		})
+		return resp.data.data.results
+	}
 
 	const hasStorageBalance = async () => {
 		try {
@@ -68,7 +236,7 @@ const TokenTradeModal = ({ data, show, onClose }) => {
 				<div className="max-w-[504px] w-full bg-neutral-03 text-white rounded-lg mx-auto p-6">
 					<form
 						onSubmit={handleSubmit((bidQuantity) =>
-							creatorData?.flag ? setShowBannedConfirm(true) : onTrade(bidQuantity)
+							creatorData?.flag ? setShowBannedConfirm(true) : onTradeNFT(bidQuantity)
 						)}
 					>
 						<div className="relative mb-5">
@@ -128,17 +296,27 @@ const TokenTradeModal = ({ data, show, onClose }) => {
 
 							<div>
 								<p className="text-neutral-10 text-sm mb-2">NFT Link</p>
-								<InputText
-									name="offerAmount"
-									step="any"
-									ref={register({
-										required: true,
-									})}
-									className={`${
-										errors.offerAmount && 'error'
-									} w-full text-sm bg-neutral-04 border border-neutral-06 hover:bg-neutral-05 focus:bg-neutral-04 focus:border-neutral-07 mb-2`}
-									placeholder="i.e.: https://paras.id/token/x.paras.near:1|"
-								/>
+								<div className="flex flex-row justify-between">
+									<InputText
+										name="tradedToken"
+										step="any"
+										ref={register({
+											required: true,
+										})}
+										className={`${
+											errors.tradedToken && 'error'
+										} w-full text-sm bg-neutral-04 border border-neutral-06 hover:bg-neutral-05 focus:bg-neutral-04 focus:border-neutral-07 mb-2`}
+										placeholder="i.e.: https://paras.id/token/x.paras.near:1|"
+									/>
+									<Button
+										variant="second"
+										size="sm"
+										className={'ml-2 mb-2 py-1 text-xs text-neutral-10'}
+										onClick={() => onAddTradedToken(watch('tradedToken'))}
+									>
+										Check
+									</Button>
+								</div>
 								<Link href={`/${currentUser}`}>
 									<a className="w-full">
 										<p className="text-neutral-10 text-sm underline text-right">
@@ -159,9 +337,8 @@ const TokenTradeModal = ({ data, show, onClose }) => {
 								<Button
 									variant="primary"
 									className={'text-sm w-full pl-12 text-center'}
-									isDisabled={isTrading}
-									isLoading={isTrading}
 									type="submit"
+									isDisabled={isAdding}
 								>
 									Complete Trade
 								</Button>

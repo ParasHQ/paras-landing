@@ -101,7 +101,7 @@ const TabOwnersSecond = ({ localToken }) => {
 	}
 
 	if (fetching === null && owners.length <= 0) {
-		return <IconEmptyOwners size={100} className="mx-auto my-4" />
+		return <IconEmptyOwners size={150} className="mx-auto my-16" />
 	}
 
 	return (

@@ -35,7 +35,7 @@ const TokenAttributesSecond = ({ localToken }) => {
 	}
 
 	return (
-		<div className="bg-neutral-03 text-white rounded-lg border border-neutral-05 py-6 px-5 mb-8">
+		<div className="h-[610px] bg-neutral-03 text-white rounded-lg border border-neutral-05 py-6 px-5 mb-8">
 			<p className="font-bold text-xl mb-2">Attributes</p>
 			<p className="font-normal text-xs mb-6">
 				Some of the characteristics that determine the rarity score
@@ -49,7 +49,7 @@ const TokenAttributesSecond = ({ localToken }) => {
 				</div>
 			</div>
 
-			<div className="max-h-80 overflow-y-auto">
+			<div className="h-[448px] overflow-y-auto bg-neutral-01 border border-neutral-05 rounded-lg">
 				{attributes.length <= 0 ? (
 					<IconEmptyAttribute size={100} className="mx-auto my-4" />
 				) : (
@@ -61,7 +61,7 @@ const TokenAttributesSecond = ({ localToken }) => {
 							})}]`}
 						>
 							<a
-								className="flex flex-row justify-between items-center bg-neutral-01 border border-neutral-05 rounded-lg px-3 py-4 my-2"
+								className="flex flex-row justify-between items-center bg-neutral-01 border-b border-neutral-05 px-3 py-4 my-2 mx-3"
 								onClick={() =>
 									trackClickAttributes(
 										localToken.token_id || localToken.token_series_id,
