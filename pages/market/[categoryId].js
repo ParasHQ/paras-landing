@@ -157,6 +157,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 					_id_next: lastData._id,
 					updated_at_next: params.__sort.includes('updated_at') ? lastData.updated_at : null,
 					lowest_price_next: params.__sort.includes('lowest_price') ? lastData.lowest_price : null,
+					total_likes_next: params.__sort.includes('total_likes') ? lastData.total_likes : null,
 				},
 			})
 		}
@@ -377,6 +378,8 @@ const tokensParams = (query) => {
 			parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 		...(query.updated_at_next &&
 			parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+		...(query.total_likes_next &&
+			parsedSortQuery.includes('total_likes') && { total_likes_next: query.total_likes_next }),
 		...(query.min_copies && { min_copies: query.min_copies }),
 		...(query.max_copies && { max_copies: query.max_copies }),
 	}

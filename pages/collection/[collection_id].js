@@ -58,6 +58,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 	const [lowestPriceNextOwned, setLowestPriceNextOwned] = useState(null)
 	const [rankNext, setRankNext] = useState(null)
 	const [scoreNext, setScoreNext] = useState(null)
+	const [totalLikesNext, setTotalLikesNext] = useState(null)
+	const [totalLikesNextOwned, setTotalLikesNextOwned] = useState(null)
 	const [endedSoonestNext, setEndedSoonestNext] = useState(null)
 	const [endedSoonestNextOwned, setEndedSoonestNextOwned] = useState(null)
 	const [updatedAtNext, setUpdatedAtNext] = useState(null)
@@ -159,6 +161,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			params.__sort.includes('ended_at') &&
 				setEndedSoonestNextOwned(lastData.sorted_auction_token?.ended_at)
 			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
+			params.__sort.includes('total_likes') && setTotalLikesNextOwned(lastData.total_likes)
 		}
 		setIsFetchingOwned(false)
 	}
@@ -179,6 +182,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						_id_next: idNext,
 						lowest_price_next: lowestPriceNext,
 						updated_at_next: updatedAtNext,
+						total_likes_next: totalLikesNext,
 						ended_soonest_next: endedSoonestNext,
 						rank_next: rankNext,
 						score_next: scoreNext,
@@ -207,6 +211,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 			params.__sort.includes('metadata.rank') && setRankNext(lastData.metadata.rank)
 			params.__sort.includes('ended_at') &&
 				setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
+			params.__sort.includes('total_likes') && setTotalLikesNext(lastData.total_likes)
 			params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
 		}
 		setIsFetching(false)
@@ -307,6 +312,8 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 			...(query.updated_at_next &&
 				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+			...(query.total_likes_next &&
+				parsedSortQuery.includes('total_likes') && { total_likes_next: query.total_likes_next }),
 			...(query.rank_next &&
 				parsedSortQuery.includes('metadata.rank') && { rank_next: query.rank_next }),
 			...(query.min_copies && { min_copies: query.min_copies }),
@@ -367,6 +374,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 				params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 				params.__sort.includes('metadata.rank') && setRankNext(lastData.metadata.rank)
+				params.__sort.includes('total_likes') && setTotalLikesNext(lastData.total_likes)
 				params.__sort.includes('ended_at') &&
 					setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
 				params.__sort.includes('metadata.score') && setScoreNext(lastData.metadata.score)
@@ -387,6 +395,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 				const lastData = res.data.data.results[res.data.data.results.length - 1]
 				setIdNextOwned(lastData._id)
+				params.__sort.includes('total_likes') && setTotalLikesNextOwned(lastData.total_likes)
 				params.__sort.includes('price') && setLowestPriceNextOwned(lastData.lowest_price)
 				params.__sort.includes('ended_at') &&
 					setEndedSoonestNextOwned(lastData.sorted_auction_token?.ended_at)

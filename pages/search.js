@@ -32,6 +32,7 @@ export default function SearchPage({ searchQuery }) {
 	const [idNext, setIdNext] = useState(null)
 	const [lowestPriceNext, setLowestPriceNext] = useState(null)
 	const [updatedAtNext, setUpdatedAtNext] = useState(null)
+	const [totalLikesNext, setTotalLikesNext] = useState(null)
 	const [isFetching, setIsFetching] = useState(false)
 	const [hasMore, setHasMore] = useState(false)
 
@@ -82,6 +83,7 @@ export default function SearchPage({ searchQuery }) {
 					setIdNext(lastData._id)
 					params.__sort.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 					params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+					params.__sort.includes('total_likes') && setTotalLikesNext(lastData.total_likes)
 				}
 			} else {
 				setHasMore(false)
@@ -166,6 +168,7 @@ export default function SearchPage({ searchQuery }) {
 			_id_next: idNext,
 			lowest_price_next: lowestPriceNext,
 			updated_at_next: updatedAtNext,
+			total_likes: totalLikesNext,
 		})
 		const res = await ParasRequest(`${process.env.V2_API_URL}/token-series`, {
 			params: params,
@@ -182,6 +185,7 @@ export default function SearchPage({ searchQuery }) {
 			setHasMore(true)
 			params.__sort?.includes('updated_at') && setUpdatedAtNext(lastData.updated_at)
 			params.__sort?.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
+			params.__sort.includes('total_likes') && setTotalLikesNext(lastData.total_likes)
 		}
 		setIsFetching(false)
 	}
@@ -501,6 +505,8 @@ const tokensParams = (query) => {
 			parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 		...(query.updated_at_next &&
 			parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+		...(query.total_likes_next &&
+			parsedSortQuery.includes('total_likes') && { total_likes_next: query.total_likes_next }),
 		...(query.min_copies && { min_copies: query.min_copies }),
 		...(query.max_copies && { max_copies: query.max_copies }),
 	}
