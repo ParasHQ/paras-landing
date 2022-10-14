@@ -12,7 +12,6 @@ import TokenShareModalSecond from 'components/Modal/TokenShareModalSecond'
 import TokenMoreModalSecond from 'components/Modal/TokenMoreModalSecond'
 
 const TokenHeadSecond = ({ localToken, onShowTradeModal }) => {
-	console.log(localToken)
 	const router = useRouter()
 	const { localeLn } = useIntl()
 

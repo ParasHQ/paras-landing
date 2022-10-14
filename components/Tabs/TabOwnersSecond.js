@@ -326,23 +326,23 @@ const Owner = ({
 			</div>
 			<div className="col-span-3 inline-flex py-4 justify-end">
 				{currentUser !== token.owner_id && token.price && token.is_auction && (
-					<Button size={'sm'} onClick={onShowBidModal}>
+					<Button variant="second" size={'sm'} onClick={onShowBidModal}>
 						Bid
 					</Button>
 				)}
 				{currentUser !== token.owner_id && !token.price && (
-					<Button size={'sm'} onClick={onShowOfferModal}>
+					<Button variant="second" size={'sm'} onClick={onShowOfferModal}>
 						Offer
 					</Button>
 				)}
 				{currentUser !== token.owner_id && token.price && (
-					<Button size={'sm'} onClick={onShowBuyModal}>
+					<Button variant="second" size={'sm'} onClick={onShowBuyModal}>
 						Buy Now
 					</Button>
 				)}
 				k
 				{currentUser === token.owner_id && (
-					<Button size={'sm'} onClick={onShowUpdateListingModal}>
+					<Button variant="second" size={'sm'} onClick={onShowUpdateListingModal}>
 						Update
 					</Button>
 				)}

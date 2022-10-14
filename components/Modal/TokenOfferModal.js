@@ -9,7 +9,7 @@ import useStore from 'lib/store'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 import Media from 'components/Common/Media'
 import { parseImgUrl, prettyTruncate, prettyBalance } from 'utils/common'
-import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
+import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import Link from 'next/link'
 import IconInfoSecond from 'components/Icons/component/IconInfoSecond'
@@ -19,9 +19,9 @@ import { InputText } from 'components/Common/form'
 import cachios from 'cachios'
 import TokenTradeModal from './TokenTradeModal'
 
-const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess, tokenType = `token` }) => {
+const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess }) => {
 	const store = useStore()
-	const { errors, register, handleSubmit, watch, setValue } = useForm({
+	const { errors, register, handleSubmit } = useForm({
 		defaultValues: {
 			offerAmount,
 		},
@@ -328,7 +328,10 @@ const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess, tokenTyp
 
 						<button
 							className="w-full flex flex-row justify-center items-center mb-6"
-							onClick={() => setShowTradeModal(true)}
+							onClick={() => {
+								onClose()
+								setShowTradeModal(true)
+							}}
 						>
 							<p className="text-4xl">+</p>
 							<p className="text-sm underline">Add Your NFT for Trade</p>

@@ -244,37 +244,37 @@ const TokenSingle = ({
 
 	const onClickSeeDetails = async (choosenToken) => {
 		const token = (await mutate()) || choosenToken
-		if (currentVariant == 0) {
-			let platform = navigator.userAgent.includes('iPhone')
-			if (platform) {
-				router.push(`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}`)
-				return
-			}
-			router.push(
-				{
-					pathname: router.pathname,
-					query: {
-						...router.query,
-						tokenId: token.token_id,
-						contractId: token.contract_id,
-					},
-				},
-				`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
-					token.token_id && encodeURIComponent(token.token_id)
-				}`,
-				{
-					shallow: true,
-					scroll: false,
-				}
-			)
-		} else {
-			saveScrollPosition(tokens)
-			router.push(
-				`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
-					token.token_id && encodeURIComponent(token.token_id)
-				}`
-			)
-		}
+		// if (currentVariant == 0) {
+		// 	let platform = navigator.userAgent.includes('iPhone')
+		// 	if (platform) {
+		// 		router.push(`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}`)
+		// 		return
+		// 	}
+		// 	router.push(
+		// 		{
+		// 			pathname: router.pathname,
+		// 			query: {
+		// 				...router.query,
+		// 				tokenId: token.token_id,
+		// 				contractId: token.contract_id,
+		// 			},
+		// 		},
+		// 		`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
+		// 			token.token_id && encodeURIComponent(token.token_id)
+		// 		}`,
+		// 		{
+		// 			shallow: true,
+		// 			scroll: false,
+		// 		}
+		// 	)
+		// } else {
+		saveScrollPosition(tokens)
+		router.push(
+			`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
+				token.token_id && encodeURIComponent(token.token_id)
+			}`
+		)
+		// }
 	}
 
 	const onCloseModal = () => {

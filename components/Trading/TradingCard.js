@@ -8,6 +8,7 @@ const TradingCard = ({
 	setTradedToken,
 	onClickTradingCard,
 	afterCreate = false,
+	isNewDesign = false,
 }) => {
 	const [token, setToken] = useState(null)
 
@@ -66,6 +67,7 @@ const TradingCard = ({
 							is_creator: token.is_creator,
 							mime_type: token.metadata.mime_type,
 						}}
+						isNewDesign={isNewDesign}
 					/>
 				</div>
 				{!afterCreate && (
@@ -113,6 +115,7 @@ const TradingCard = ({
 						is_creator: token.is_creator,
 						mime_type: token.metadata.mime_type,
 					}}
+					isNewDesign={isNewDesign}
 				/>
 				{!afterCreate && (
 					<div

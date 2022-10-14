@@ -26,6 +26,7 @@ import RPCStatus from 'components/Common/RPCStatus'
 import { WalletSelectorContextProvider } from 'components/Common/WalletSelector'
 import RaffleLoyaltyModalGroup from 'components/Common/RaffleRoyaltyModalGroup'
 import Head from 'next/head'
+import SuccessTransactionModalSecond from 'components/Modal/SuccessTransactionModalSecond'
 
 const MAX_ACTIVITY_DELAY = 5
 
@@ -255,7 +256,7 @@ function MyApp({ Component, pageProps }) {
 							<WalletSelectorContextProvider>
 								<RaffleLoyaltyModalGroup>
 									<Component {...pageProps} />
-									<SuccessTransactionModal />
+									<SuccessTransactionModalSecond />
 								</RaffleLoyaltyModalGroup>
 							</WalletSelectorContextProvider>
 						</ToastProvider>

@@ -173,7 +173,6 @@ const TokenDetailNewSecond = ({ token }) => {
 				data={token}
 				onClose={onCloseModal}
 			/>
-			{/* <SuccessTransactionModalSecond /> */}
 			<LoginModal onClose={() => setShowLoginModal(false)} show={showLoginModal} />
 		</>
 	)

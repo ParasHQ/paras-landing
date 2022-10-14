@@ -228,47 +228,47 @@ const TokenSeriesSingle = ({
 	const onClickSeeDetails = async (choosenToken, additionalQuery) => {
 		const token = (await mutate()) || choosenToken
 		const lookupToken = token?.token
-		if (currentVariant == 0) {
-			if (typeCardList === 'top-rarity-token')
-				trackClickMoreCollection(lookupToken?.token_id || token.token_series_id)
-			let platform = navigator.userAgent.includes('iPhone')
-			if (platform) {
-				router.push(
-					`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
-						lookupToken?.token_id ? encodeURIComponent(lookupToken?.token_id) : ''
-					}`
-				)
-				return
-			}
-			router.push(
-				{
-					pathname: router.pathname,
-					query: {
-						...router.query,
-						...additionalQuery,
-						contractId: token.contract_id,
-						tokenSeriesId: token.token_series_id,
-						tokenId: lookupToken?.token_id || '',
-					},
-				},
-				`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
-					lookupToken?.token_id ? encodeURIComponent(lookupToken?.token_id) : ''
-				}`,
-				{
-					shallow: true,
-					scroll: false,
-				}
-			)
-		} else {
-			if (typeCardList !== 'top-rarity-token') {
-				saveScrollPosition(tokens)
-			}
-			router.push(
-				`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
-					lookupToken?.token_id ? encodeURIComponent(lookupToken?.token_id) : ''
-				}`
-			)
+		// if (currentVariant == 0) {
+		// 	if (typeCardList === 'top-rarity-token')
+		// 		trackClickMoreCollection(lookupToken?.token_id || token.token_series_id)
+		// 	let platform = navigator.userAgent.includes('iPhone')
+		// 	if (platform) {
+		// 		router.push(
+		// 			`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
+		// 				lookupToken?.token_id ? encodeURIComponent(lookupToken?.token_id) : ''
+		// 			}`
+		// 		)
+		// 		return
+		// 	}
+		// 	router.push(
+		// 		{
+		// 			pathname: router.pathname,
+		// 			query: {
+		// 				...router.query,
+		// 				...additionalQuery,
+		// 				contractId: token.contract_id,
+		// 				tokenSeriesId: token.token_series_id,
+		// 				tokenId: lookupToken?.token_id || '',
+		// 			},
+		// 		},
+		// 		`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
+		// 			lookupToken?.token_id ? encodeURIComponent(lookupToken?.token_id) : ''
+		// 		}`,
+		// 		{
+		// 			shallow: true,
+		// 			scroll: false,
+		// 		}
+		// 	)
+		// } else {
+		if (typeCardList !== 'top-rarity-token') {
+			saveScrollPosition(tokens)
 		}
+		router.push(
+			`/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}/${
+				lookupToken?.token_id ? encodeURIComponent(lookupToken?.token_id) : ''
+			}`
+		)
+		// }
 	}
 
 	const onCloseModal = () => {

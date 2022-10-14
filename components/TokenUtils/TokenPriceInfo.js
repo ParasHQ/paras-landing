@@ -215,7 +215,7 @@ const TokenPriceInfo = ({
 				)}
 
 				{/* Logic to show Price */}
-				{!localToken.price && !localToken.is_auction && (
+				{!localToken.lowest_price && !localToken.price && !localToken.is_auction && (
 					<div className="block mb-10">
 						<div className="inline-flex">
 							<IconPriceTag size={20} stroke={'#F9F9F9'} />
@@ -226,39 +226,7 @@ const TokenPriceInfo = ({
 						</div>
 					</div>
 				)}
-				{localToken.price && !localToken.is_auction && (
-					<div className="block mb-10">
-						<div className="inline-flex">
-							<IconPriceTag size={20} stroke={'#F9F9F9'} />
-							<p className="text-white font-light ml-2">{localeLn('StartingBid')}</p>
-						</div>
-
-						<div className="flex flex-row items-center my-3">
-							<p className="font-bold text-2xl text-neutral-10 truncate">{`${formatNearAmount(
-								localToken.price
-							)} Ⓝ`}</p>
-							{localToken?.price !== '0' && store.nearUsdPrice !== 0 && (
-								<div className="text-[10px] text-gray-400 truncate ml-2">
-									(~$
-									{prettyBalance(JSBI.BigInt(checkNextPriceBid('usd')) * store.nearUsdPrice, 24, 2)}
-									)
-								</div>
-							)}
-							{localToken?.price === '0' && localToken?.is_auction && !isEndedAuction && (
-								<div className="text-[9px] text-gray-400 truncate mt-1 ml-2">
-									~ $
-									{prettyBalance(
-										JSBI.BigInt(localToken?.amount ? localToken?.amount : localToken?.price) *
-											store.nearUsdPrice,
-										24,
-										2
-									)}
-								</div>
-							)}
-						</div>
-					</div>
-				)}
-				{localToken?.is_auction && (
+				{!localToken.lowest_price && localToken.price && localToken?.is_auction && (
 					<>
 						<div className="flex flex-row justify-between items-center mb-4">
 							{!localToken?.amount || (localToken?.bidder_list && localToken?.bidder_list === 0) ? (
@@ -337,6 +305,31 @@ const TokenPriceInfo = ({
 						</div>
 					</>
 				)}
+				{(localToken.lowest_price || localToken.price) && !localToken.is_auction && (
+					<div className="block mb-10">
+						<div className="inline-flex">
+							<IconPriceTag size={20} stroke={'#F9F9F9'} />
+							<p className="text-white font-light ml-2">{localeLn('CurrentPrice')}</p>
+						</div>
+
+						<div className="flex flex-row items-center my-3">
+							<p className="font-bold text-2xl text-neutral-10 truncate">{`${formatNearAmount(
+								localToken.price || localToken.lowest_price
+							)} Ⓝ`}</p>
+							{(localToken.lowest_price || localToken.price) && store.nearUsdPrice !== 0 && (
+								<div className="text-[10px] text-gray-400 truncate ml-2">
+									(~$
+									{prettyBalance(
+										JSBI.BigInt(localToken.lowest_price || localToken.price) * store.nearUsdPrice,
+										24,
+										2
+									)}
+									)
+								</div>
+							)}
+						</div>
+					</div>
+				)}
 
 				{/* Logic to show Button */}
 				{localToken.owner_id &&
@@ -386,13 +379,23 @@ const TokenPriceInfo = ({
 						</Button>
 					</div>
 				)}
-				{localToken.owner_id === currentUser && localToken.owner_id && (
+				{localToken.owner_id && localToken.owner_id === currentUser && localToken.is_auction && (
 					<>
 						<button className="w-full bg-transparent text-[#FF8E8E]" onClick={onShowRemoveAuction}>
 							Remove Auction
 						</button>
 						<div className="border-b border-[#FF8E8E] mx-56 -mt-2"></div>
 					</>
+				)}
+				{!localToken.owner_id && localToken.lowest_price && !isCreator() && (
+					<div className="md:grid grid-cols-2 gap-x-6">
+						<Button variant={'second'} onClick={onShowOfferModal}>
+							Make Offer
+						</Button>
+						<Button variant={'primary'} onClick={onShowBuyModal}>
+							Buy Now
+						</Button>
+					</div>
 				)}
 				{!localToken.owner_id && isCreator() && (
 					<div className="md:grid grid-cols-2 gap-x-6">
