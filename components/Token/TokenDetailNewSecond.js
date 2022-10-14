@@ -133,7 +133,7 @@ const TokenDetailNewSecond = ({ token }) => {
 					</div>
 				</div>
 			</div>
-			<div className="max-w-full bg-neutral-03 rounded-t-xl">
+			<div className="max-w-full bg-neutral-03 rounded-t-xl mt-10">
 				<TokenTransactionHistory localToken={token} />
 			</div>
 			<div className="max-w-full bg-neutral-03 border-t border-neutral-05">
