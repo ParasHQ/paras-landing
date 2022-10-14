@@ -27,6 +27,7 @@ const Creation = ({ userProfile, accountId }) => {
 	const [idNext, setIdNext] = useState(null)
 	const [lowestPriceNext, setLowestPriceNext] = useState(null)
 	const [endedSoonestNext, setEndedSoonestNext] = useState(null)
+	const [totalLikesNext, setTotalLikesNext] = useState(null)
 	const [updatedAtNext, setUpdatedAtNext] = useState(null)
 	const [isFetching, setIsFetching] = useState(false)
 	const [isFiltering, setIsFiltering] = useState(false)
@@ -70,6 +71,7 @@ const Creation = ({ userProfile, accountId }) => {
 			lowest_price_next: lowestPriceNext,
 			updated_at_next: updatedAtNext,
 			ended_soonest_next: endedSoonestNext,
+			total_likes_next: totalLikesNext,
 		})
 
 		const res = await ParasRequest.get(`${process.env.V2_API_URL}/token-series`, {
@@ -90,6 +92,7 @@ const Creation = ({ userProfile, accountId }) => {
 			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 			params.__sort.includes('ended_at') &&
 				setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
+			params.__sort.includes('total_likes') && setTotalLikesNext(lastData.total_likes)
 		}
 		setIsFetching(false)
 	}
@@ -127,6 +130,8 @@ const Creation = ({ userProfile, accountId }) => {
 				parsedSortQuery.includes('lowest_price') && { lowest_price_next: query.lowest_price_next }),
 			...(query.updated_at_next &&
 				parsedSortQuery.includes('updated_at') && { updated_at_next: query.updated_at_next }),
+			...(query.total_likes_next &&
+				parsedSortQuery.includes('total_likes') && { total_likes_next: query.total_likes_next }),
 			...(query.min_copies && { min_copies: query.min_copies }),
 			...(query.max_copies && { max_copies: query.max_copies }),
 		}
@@ -153,6 +158,7 @@ const Creation = ({ userProfile, accountId }) => {
 			params.__sort.includes('lowest_price') && setLowestPriceNext(lastData.lowest_price)
 			params.__sort.includes('ended_at') &&
 				setEndedSoonestNext(lastData.sorted_auction_token?.ended_at)
+			params.__sort.includes('total_likes') && setTotalLikesNext(lastData.total_likes)
 		}
 
 		setIsFiltering(false)

@@ -211,6 +211,8 @@ export const parseSortQuery = (sort, defaultMinPrice = false) => {
 		return 'metadata.rank::1'
 	} else if (sort === 'urgentAuction') {
 		return 'ended_at::1'
+	} else if (sort === 'mostLiked') {
+		return 'total_likes::-1'
 	}
 }
 
@@ -227,6 +229,8 @@ export const parseSortTokenQuery = (sort) => {
 		return 'metadata.rank::1'
 	} else if (sort === 'urgentAuction') {
 		return 'ended_at::1'
+	} else if (sort === 'mostLiked') {
+		return 'total_likes::-1'
 	} else {
 		return '_id::-1'
 	}

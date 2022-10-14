@@ -319,6 +319,10 @@ const filter = [
 		value: 'Rare to Common',
 	},
 	{
+		key: 'mostLiked',
+		value: 'Most Liked',
+	},
+	{
 		key: 'urgentAuction',
 		value: 'Ended Soonest Auction',
 	},
