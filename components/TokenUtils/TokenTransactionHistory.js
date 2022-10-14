@@ -1,6 +1,7 @@
 import axios from 'axios'
-import { IconArrowSmall, IconLoader } from 'components/Icons'
+import { IconArrowSmall } from 'components/Icons'
 import IconCheckbox from 'components/Icons/component/IconCheckbox'
+import IconCheckboxChecked from 'components/Icons/component/IconCheckboxChecked'
 import IconEmptyTransactionHistory from 'components/Icons/component/IconEmptyTransactionHistory'
 import IconForbidden from 'components/Icons/component/IconForbidden'
 import IconListing from 'components/Icons/component/IconListing'
@@ -14,38 +15,6 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { prettyBalance, prettyTruncate, timeAgo } from 'utils/common'
 
 const FETCH_LIMIT_ACTIVITIES = 100
-const HEADERS = [
-	{
-		id: 'type',
-		title: 'Transaction Type',
-		className: `flex w-4/6 lg:w-full flex-shrink-0 p-3 h-full`,
-	},
-	{
-		id: 'id',
-		title: 'Transaction ID',
-		className: `flex items-center w-2/6 lg:w-full flex-shrink-0 p-2 h-full`,
-	},
-	{
-		id: 'price',
-		title: 'Price',
-		className: `flex items-center w-2/6 lg:w-full flex-shrink-0 p-2 h-full`,
-	},
-	{
-		id: 'buyer',
-		title: 'Buyer',
-		className: `flex items-center w-2/6 lg:w-full flex-shrink-0 p-2 h-full`,
-	},
-	{
-		id: 'seller',
-		title: 'Seller',
-		className: `flex flex-col md:flex-row items-center w-2/6 md:w-full md:flex-shrink-0 p-3 md:p-0 lg:p-3 md:h-full`,
-	},
-	{
-		id: 'date',
-		title: 'Date',
-		className: `flex items-center w-2/6 lg:w-full flex-shrink-0 p-3 h-full`,
-	},
-]
 
 const FilterEnum = {
 	ALL: 'All',
@@ -56,19 +25,55 @@ const FilterEnum = {
 	REMOVE_LISTING: 'Remove Listing',
 }
 
+const FilterParam = {
+	ALL: null,
+	SALE: 'market_sales',
+	LISTING: 'market_update',
+	PLACE_OFFER: 'offer',
+	CANCEL_BID: 'bid',
+	REMOVE_LISTING: 'delete_market_data',
+}
+
 const TokenTransactionHistory = ({ localToken }) => {
 	const [activities, setActivities] = useState([])
 	const [isFetching, setIsFetching] = useState(false)
 	const [showFilterModal, setShowFilterModal] = useState(false)
-	const [filter, setFilter] = useState(['Sale'])
+	const [filter, setFilter] = useState(FilterEnum.ALL)
 	const [hasMore, setHasMore] = useState(true)
 
 	useEffect(() => {
 		fetchActivities()
 	}, [])
 
-	const fetchActivities = async () => {
-		if (!hasMore || isFetching) return
+	useEffect(() => {
+		fetchActivities(true)
+	}, [filter])
+
+	const parseFilter = () => {
+		let filterParam
+
+		if (filter === FilterEnum.ALL) {
+			filterParam = FilterParam.ALL
+		} else if (filter === FilterEnum.SALE) {
+			filterParam = FilterParam.SALE
+		} else if (filter === FilterEnum.LISTING) {
+			filterParam = FilterParam.LISTING
+		} else if (filter === FilterEnum.PLACE_OFFER) {
+			filterParam = FilterParam.PLACE_OFFER
+		} else if (filter === FilterEnum.CANCEL_BID) {
+			filterParam = FilterParam.CANCEL_BID
+		} else if (filter === FilterEnum.REMOVE_LISTING) {
+			filterParam = FilterParam.REMOVE_LISTING
+		}
+
+		return filterParam
+	}
+
+	const fetchActivities = async (initialFetch) => {
+		const _activities = initialFetch ? [] : activities
+		const _hasMore = initialFetch ? true : hasMore
+
+		if (!_hasMore || isFetching) return
 
 		setIsFetching(true)
 
@@ -78,13 +83,14 @@ const TokenTransactionHistory = ({ localToken }) => {
 					contract_id: localToken.contract_id,
 					token_series_id: localToken.token_series_id,
 					token_id: localToken.token_id,
+					type: parseFilter(),
 					__limit: FETCH_LIMIT_ACTIVITIES,
 					__sort: '_id::-1',
 				},
 			})
 
 			const newRes = await res.data.data.results
-			const concatActivities = [...activities, ...newRes]
+			const concatActivities = [..._activities, ...newRes]
 			setActivities(concatActivities)
 
 			if (newRes.length < FETCH_LIMIT_ACTIVITIES) {
@@ -98,8 +104,6 @@ const TokenTransactionHistory = ({ localToken }) => {
 
 		setIsFetching(false)
 	}
-
-	const sortFetchActivities = () => {}
 
 	const parseActivityIcon = (activity) => {
 		if (activity.type === 'add_market_data' && activity.price) {
@@ -153,7 +157,7 @@ const TokenTransactionHistory = ({ localToken }) => {
 						className="flex flex-row justify-between items-center bg-neutral-05 rounded-lg p-2"
 						onClick={() => setShowFilterModal(!showFilterModal)}
 					>
-						<p className="text-white text-sm mr-36">Filter</p>
+						<p className="text-white text-sm mr-36">{filter}</p>
 						<IconArrowSmall color={'#F9F9F9'} className="rotate-90" />
 					</button>
 					{showFilterModal && (
@@ -163,15 +167,15 @@ const TokenTransactionHistory = ({ localToken }) => {
 									key={x}
 									className="inline-flex gap-x-2 hover:bg-neutral-03 hover:border hover:border-neutral-05 hover:rounded-lg p-2"
 									onClick={() => {
-										if (filter.indexOf(FilterEnum[x]) !== -1) {
-											// const newFilter = filter.splice(filter.indexOf(FilterEnum[x]), 1)
-											// setFilter(newFilter)
-										} else {
-											// setFilter([...filter, FilterEnum[x]])
-										}
+										setShowFilterModal(!showFilterModal)
+										setFilter(FilterEnum[x])
 									}}
 								>
-									<IconCheckbox size={20} />
+									{filter === FilterEnum[x] ? (
+										<IconCheckboxChecked size={20} />
+									) : (
+										<IconCheckbox size={20} />
+									)}
 									<p className="text-neutral-10 text-sm">{FilterEnum[x]}</p>
 								</button>
 							))}
@@ -216,8 +220,12 @@ const TokenTransactionHistory = ({ localToken }) => {
 														</p>
 														<p className="text-neutral-10 text-sm">
 															{activity.price
-																? `${formatNearAmount(
-																		activity.price?.$numberDecimal || activity.price
+																? `${prettyBalance(
+																		formatNearAmount(
+																			activity.price?.$numberDecimal || activity.price
+																		),
+																		24,
+																		2
 																  )} Ⓝ`
 																: '---'}
 														</p>
@@ -244,8 +252,12 @@ const TokenTransactionHistory = ({ localToken }) => {
 														</p>
 														<p className="text-neutral-10 text-sm">
 															{activity.price
-																? `${formatNearAmount(
-																		activity.price?.$numberDecimal || activity.price
+																? `${prettyBalance(
+																		formatNearAmount(
+																			activity.price?.$numberDecimal || activity.price
+																		),
+																		24,
+																		2
 																  )} Ⓝ`
 																: '---'}
 														</p>
