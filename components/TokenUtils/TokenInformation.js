@@ -262,7 +262,7 @@ const TokenInformation = ({ localToken }) => {
 
 			{tab === TabEnum.OWNERS && (
 				<div className="overflow-y-auto">
-					<div className="h-[326px] bg-neutral-01 border border-neutral-05 rounded-lg p-1">
+					<div className="h-[326px]">
 						{fetching === TabEnum.OWNERS && (
 							<div className="w-full">
 								<IconLoaderSecond size={30} className="mx-auto animate-spin" />
