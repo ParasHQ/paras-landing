@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import useStore from 'lib/store'
 import { parseImgUrl, ModalEnum } from 'utils/common'
-import Button from 'components/Common/Button'
 import Card from 'components/Card/Card'
 import CardLowerController from 'components/TokenUtils/CardLowerController'
 import TokenAttributesSecond from 'components/TokenUtils/TokenAttributesSecond'
@@ -22,7 +21,6 @@ import TokenUpdateListing from 'components/Modal/TokenUpdateListing'
 import TokenTransferModalSecond from 'components/Modal/TokenTransferModalSecond'
 import TokenRemoveAuction from 'components/Modal/TokenRemoveAuction'
 import TokenAuctionModal from 'components/Modal/TokenAuctionModal'
-import SuccessTransactionModalSecond from 'components/Modal/SuccessTransactionModalSecond'
 import LoginModal from 'components/Modal/LoginModal'
 
 const TokenDetailNewSecond = ({ token }) => {

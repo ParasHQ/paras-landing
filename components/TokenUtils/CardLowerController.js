@@ -4,7 +4,6 @@ import { mutate } from 'swr'
 import { trackLikeToken, trackUnlikeToken } from 'lib/ga'
 import { abbrNum } from 'utils/common'
 import ButtonOutline from 'components/Common/ButtonOutline'
-import { parseImgUrl } from 'utils/common'
 import IconLove from 'components/Icons/component/IconLove'
 import IconFullscreen from 'components/Icons/component/IconFullscreen'
 import IconView from 'components/Icons/component/IconView'
@@ -137,35 +136,7 @@ const CardLowerController = ({ localToken }) => {
 			<MediaModal
 				show={showMediaModal}
 				onClose={() => setShowMediaModal(false)}
-				imgUrl={parseImgUrl(localToken.metadata.media, null, {
-					width: `600`,
-					useOriginal: process.env.APP_ENV === 'production' ? false : true,
-					isMediaCdn: localToken.isMediaCdn,
-				})}
-				audioUrl={
-					localToken.metadata.mime_type &&
-					localToken.metadata.mime_type.includes('audio') &&
-					localToken.metadata?.animation_url
-				}
-				threeDUrl={
-					localToken.metadata.mime_type &&
-					localToken.metadata.mime_type.includes('model') &&
-					localToken.metadata.animation_url
-				}
-				iframeUrl={
-					localToken.metadata.mime_type &&
-					localToken.metadata.mime_type.includes('iframe') &&
-					localToken.metadata.animation_url
-				}
-				imgBlur={localToken.metadata.blurhash}
-				token={{
-					title: localToken.metadata.title,
-					collection: localToken.metadata.collection || localToken.contract_id,
-					copies: localToken.metadata.copies,
-					creatorId: localToken.metadata.creator_id || localToken.contract_id,
-					is_creator: localToken.is_creator,
-					mime_type: localToken.metadata.mime_type,
-				}}
+				token={localToken}
 			/>
 			<LoginModal show={showLoginModal} onClose={onCloseLoginModal} />
 		</div>
