@@ -26,6 +26,7 @@ import {
 import { createAction } from '@paras-wallet-selector/wallet-utils'
 import SignMesssageModal from 'components/Modal/SignMessageModal'
 import { sentryCaptureException } from 'lib/sentry'
+import { setupMeteorWallet } from '@paras-wallet-selector/meteor-wallet'
 
 const WalletSelectorContext = React.createContext(null)
 
@@ -46,6 +47,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				setupNearWallet({ iconUrl: window.location.origin + '/assets/near-wallet-icon.png' }),
 				setupSender({ iconUrl: window.location.origin + '/assets/sender-icon.png' }),
 				setupMyNearWallet({ iconUrl: window.location.origin + '/assets/my-near-wallet-icon.png' }),
+				setupMeteorWallet({ iconUrl: window.location.origin + '/assets/meteor-wallet-icon.png' }),
 			],
 		})
 		const _modal = setupModal(_selector, { contractId: nearConfig.contractName })
