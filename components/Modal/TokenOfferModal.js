@@ -9,7 +9,7 @@ import useStore from 'lib/store'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 import Media from 'components/Common/Media'
 import { parseImgUrl, prettyTruncate, prettyBalance } from 'utils/common'
-import { parseNearAmount } from 'near-api-js/lib/utils/format'
+import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
 import JSBI from 'jsbi'
 import Link from 'next/link'
 import IconInfoSecond from 'components/Icons/component/IconInfoSecond'
@@ -223,7 +223,7 @@ const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess }) => {
 										<>
 											<p className="font-bold text-sm text-neutral-10 truncate">{`${prettyBalance(
 												highestOffer,
-												0,
+												24,
 												4
 											)} Ⓝ`}</p>
 
@@ -278,7 +278,9 @@ const TokenOfferModal = ({ show, onClose, data, offerAmount, onSuccess }) => {
 									<p className="text-sm">Total Payment</p>
 									<div className="inline-flex">
 										<p className="bg-[#1300BA80] text-sm text-neutral-10 font-bold truncate p-1">
-											{currentOffer} Ⓝ
+											{parseFloat(currentOffer) +
+												parseFloat(formatNearAmount(STORAGE_ADD_MARKET_FEE))}{' '}
+											Ⓝ
 										</p>
 										{store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">

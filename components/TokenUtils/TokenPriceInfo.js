@@ -397,7 +397,7 @@ const TokenPriceInfo = ({
 						</Button>
 					</div>
 				)}
-				{!localToken.owner_id && isCreator() && (
+				{!localToken.owner_id && isCreator() && !localToken.is_non_mintable && (
 					<div className="md:grid grid-cols-2 gap-x-6">
 						<Button variant={'second'} onClick={onShowUpdatePriceModal}>
 							Update Price
@@ -406,6 +406,16 @@ const TokenPriceInfo = ({
 							Mint
 						</Button>
 					</div>
+				)}
+				{!localToken.owner_id && isCreator() && localToken.is_non_mintable && (
+					<Button variant={'second'} className={'w-full'} onClick={onShowOfferModal}>
+						Make Offer
+					</Button>
+				)}
+				{!localToken.owner_id && !isCreator() && localToken.is_non_mintable && (
+					<Button variant={'second'} className={'w-full'} onClick={onShowOfferModal}>
+						Make Offer
+					</Button>
 				)}
 			</div>
 

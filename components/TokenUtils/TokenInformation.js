@@ -1,38 +1,26 @@
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
-import useToken from 'hooks/useToken'
 import IconCopySecond from 'components/Icons/component/IconCopySecond'
 import IconInfoSecond from 'components/Icons/component/IconInfoSecond'
-import { sentryCaptureException } from 'lib/sentry'
 import IconOut from 'components/Icons/component/IconOut'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import IconEmptyDescription from 'components/Icons/component/IconEmptyDescription'
-import cachios from 'cachios'
 import ParasRequest from 'lib/ParasRequest'
 import IconLoaderSecond from 'components/Icons/component/IconLoaderSecond'
-import useStore from 'lib/store'
 import { useIntl } from 'hooks/useIntl'
-import ProfileImageBadge from 'components/Common/ProfileImageBadge'
-import { parseImgUrl, prettyBalance, prettyTruncate, TabEnum } from 'utils/common'
-import Button from 'components/Common/Button'
+import { prettyBalance, prettyTruncate, TabEnum } from 'utils/common'
 import TabOwnersSecond from 'components/Tabs/TabOwnersSecond'
 import TabOffersSecond from 'components/Tabs/TabOffersSecond'
-import TokenInfoCopy from 'components/TokenInfoCopy'
-import CopyLink from 'components/Common/CopyLink'
 import Tooltip from 'components/Common/Tooltip'
-
-const TextCopyEnum = {
-	TOKEN_ID: 'token_id',
-	CONTRACT_ID: 'contract_id',
-	MEDIA: 'media',
-}
+import ReactTooltip from 'react-tooltip'
+import IconCheckGreen from 'components/Icons/component/IconCheckGreen'
 
 const TokenInformation = ({ localToken }) => {
 	const { localeLn } = useIntl()
 
 	const [tab, setTab] = useState(TabEnum.INFO)
 	const [fetching, setFetching] = useState(null)
-	const [textCopied, setTextCopied] = useState(null)
+	const [isCopied, setIsCopied] = useState(false)
 	const [lockedTxFee, setLockedTxFee] = useState('')
 	const [collectionStats, setCollectionStats] = useState(null)
 
@@ -140,47 +128,102 @@ const TokenInformation = ({ localToken }) => {
 								{localToken.token_id ? 'Token ID' : 'Token Series ID'}
 							</p>
 						</div>
-						<div className="w-2/3 inline-flex flex-row justify-between bg-neutral-01 border border-neutral-05 hover:bg-neutral-05 hover:border-neutral-10 rounded-lg cursor-pointer p-2">
+						<button
+							className="w-2/3 inline-flex flex-row justify-between bg-neutral-01 border border-neutral-05 hover:bg-neutral-05 hover:border-neutral-10 rounded-lg cursor-pointer p-2"
+							onClick={() => {
+								navigator.clipboard.writeText(localToken?.token_id || localToken.token_series_id)
+								setIsCopied(true)
+								setTimeout(() => setIsCopied(false), 1500)
+							}}
+							data-tip
+							data-for="token-id"
+						>
 							<p className="text-white text-sm">
 								{localToken.token_id || localToken.token_series_id}
 							</p>
 							<IconCopySecond size={20} color={'#F9F9F9'} />
-						</div>
+						</button>
+
+						<ReactTooltip
+							id="token-id"
+							place="top"
+							className="bg-neutral-01 border border-neutral-10 rounded-lg px-6 text-neutral-10"
+						>
+							{isCopied ? (
+								<div className="relative inline-flex">
+									<IconCheckGreen size={20} className="-mt-1 mr-1 -mb-4" />
+									<p className="text-neutral-10 text-xs">Copied</p>
+								</div>
+							) : (
+								<p className="text-neutral-10 text-xs">Copy</p>
+							)}
+						</ReactTooltip>
 					</div>
 					<div className="inline-flex justify-between items-center p-1">
 						<div className="w-1/3">
 							<p className="text-white text-sm">Smart Contract</p>
 						</div>
-						<div className="w-2/3 inline-flex flex-row justify-between bg-neutral-01 border border-neutral-05 hover:bg-neutral-05 hover:border-neutral-10 rounded-lg cursor-pointer p-2">
+						<button
+							className="w-2/3 inline-flex flex-row justify-between bg-neutral-01 border border-neutral-05 hover:bg-neutral-05 hover:border-neutral-10 rounded-lg cursor-pointer p-2"
+							onClick={() => {
+								navigator.clipboard.writeText(localToken.contract_id)
+								setIsCopied(true)
+								setTimeout(() => setIsCopied(false), 1500)
+							}}
+							data-tip
+							data-for="smart-contract"
+						>
 							<p className="text-white text-sm">{localToken.contract_id}</p>
 							<IconCopySecond size={20} color={'#F9F9F9'} />
-						</div>
+						</button>
+
+						<ReactTooltip
+							id="smart-contract"
+							place="top"
+							className="bg-neutral-01 border border-neutral-10 rounded-lg px-6 text-neutral-10"
+						>
+							{isCopied ? (
+								<div className="relative inline-flex">
+									<IconCheckGreen size={20} className="-mt-1 mr-1 -mb-4" />
+									<p className="text-neutral-10 text-xs">Copied</p>
+								</div>
+							) : (
+								<p className="text-neutral-10 text-xs">Copy</p>
+							)}
+						</ReactTooltip>
 					</div>
 					<div className="group inline-flex justify-between items-center p-1">
 						<div className="w-1/3">
 							<p className="text-white text-sm">NFT Link</p>
 						</div>
-						<div className="w-2/3 inline-flex flex-row justify-between bg-neutral-01 border border-neutral-05 hover:bg-neutral-05 hover:border-neutral-10 rounded-lg cursor-pointer p-2">
-							<CopyLink
-								link={parseImgUrl(localToken.metadata.media, null, {
-									useOriginal: process.env.APP_ENV === 'production' ? true : false,
-								})}
-								afterCopy={() => {
-									setTextCopied(TextCopyEnum.MEDIA)
-									setTimeout(() => {
-										setTextCopied(null)
-									}, 2500)
-								}}
-							>
-								<p className="text-white text-sm">
-									{prettyTruncate(localToken.metadata.media, 30)}
-								</p>
-							</CopyLink>
+						<button
+							className="w-2/3 inline-flex flex-row justify-between bg-neutral-01 border border-neutral-05 hover:bg-neutral-05 hover:border-neutral-10 rounded-lg cursor-pointer p-2"
+							onClick={() => {
+								navigator.clipboard.writeText(localToken.metadata?.media)
+								setIsCopied(true)
+								setTimeout(() => setIsCopied(false), 1500)
+							}}
+							data-tip
+							data-for="image-link"
+						>
+							<p className="text-white text-sm">{prettyTruncate(localToken.metadata?.media, 30)}</p>
 							<IconCopySecond size={20} color={'#F9F9F9'} />
-						</div>
-						<span className="before:opacity-100 transition-opacity bg-neutral-01 border border-neutral-10 p-2 text-sm text-neutral-10 rounded-md absolute right-20 opacity-0 mx-auto">
-							Copied
-						</span>
+						</button>
+
+						<ReactTooltip
+							id="image-link"
+							place="top"
+							className="bg-neutral-01 border border-neutral-10 rounded-lg px-6 text-neutral-10"
+						>
+							{isCopied ? (
+								<div className="relative inline-flex">
+									<IconCheckGreen size={20} className="-mt-1 mr-1 -mb-4" />
+									<p className="text-neutral-10 text-xs">Copied</p>
+								</div>
+							) : (
+								<p className="text-neutral-10 text-xs">Copy</p>
+							)}
+						</ReactTooltip>
 					</div>
 					{localToken.transaction_fee && (
 						<div className="inline-flex justify-between items-center p-1">
@@ -198,15 +241,15 @@ const TokenInformation = ({ localToken }) => {
 
 			{tab === TabEnum.DESCRIPTION && (
 				<div className="overflow-y-auto">
-					<div className="h-[326px] bg-neutral-01 border border-neutral-05 rounded-lg py-6">
+					<div className="h-[326px] flex flex-col justify-between bg-neutral-01 border border-neutral-05 rounded-lg py-6">
 						{fetching === TabEnum.DESCRIPTION && (
 							<div className="w-full">
 								<IconLoaderSecond size={30} className="mx-auto animate-spin" />
 							</div>
 						)}
 
-						{fetching === null && localToken.description ? (
-							<p className="text-sm text-neutral-10">{localToken.description}</p>
+						{localToken.metadata?.description ? (
+							<p className="text-sm text-neutral-10 p-4">{localToken.metadata?.description}</p>
 						) : (
 							<IconEmptyDescription size={150} className="mx-auto mt-11 mb-6" />
 						)}
@@ -276,7 +319,7 @@ const TokenInformation = ({ localToken }) => {
 
 			{tab === TabEnum.OFFERS && (
 				<div className="overflow-y-auto">
-					<div className="h-[326px] bg-neutral-01 border border-neutral-05 rounded-lg p-1">
+					<div className="h-[326px]">
 						{fetching === TabEnum.OFFERS && (
 							<div className="w-full">
 								<IconLoaderSecond size={30} className="mx-auto animate-spin" />

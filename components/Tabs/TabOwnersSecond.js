@@ -109,7 +109,7 @@ const TabOwnersSecond = ({ localToken }) => {
 	}
 
 	return (
-		<div className="bg-neutral-01 border border-neutral-05 rounded-lg p-1">
+		<div className="min-h-[326px] bg-neutral-01 border border-neutral-05 rounded-lg p-1">
 			<div className="flex flex-row justify-between items-center p-1">
 				<div className="inline-flex items-center">
 					<IconSort size={20} stroke={'#F9F9F9'} className="mb-1" />

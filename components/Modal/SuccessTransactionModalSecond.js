@@ -222,11 +222,17 @@ const SuccessTransactionModalSecond = () => {
 					}
 
 					if (msgParse.market_type === 'add_trade') {
+						const params = msgParse?.seller_token_id
+							? {
+									contract_id: msgParse.seller_nft_contract_id,
+									token_id: msgParse.seller_token_id,
+							  }
+							: {
+									contract_id: msgParse.seller_nft_contract_id,
+									token_series_id: msgParse.seller_token_series_id,
+							  }
 						const resTradedToken = await ParasRequest.get(`${process.env.V2_API_URL}/token`, {
-							params: {
-								contract_id: msgParse.seller_nft_contract_id,
-								token_id: msgParse.seller_token_id,
-							},
+							params: params,
 						})
 
 						setTradedToken(resTradedToken.data.data.results[0])
@@ -291,14 +297,6 @@ const SuccessTransactionModalSecond = () => {
 		const query = router.query
 		delete query.transactionHashes
 		router.replace({ pathname: router.pathname, query }, undefined, { shallow: true })
-	}
-
-	const onClickSeeToken = () => {
-		const url = `/token/${token.contract_id}::${encodeURIComponent(token.token_series_id)}${
-			token.token_id ? `/${encodeURIComponent(token.token_id)}` : ''
-		}${txDetail.method_name === 'add_offer' ? '?tab=offers' : ''}`
-		router.push(url)
-		onCloseModal()
 	}
 
 	const titleText = () => {
@@ -375,7 +373,7 @@ const SuccessTransactionModalSecond = () => {
 						</p>
 					</div>
 					{tradedToken ? (
-						<div className="mb-4">
+						<div className="flex flex-row justify-around mb-4">
 							<div className="w-1/2 m-auto h-56">
 								<Card
 									imgUrl={parseImgUrl(token?.metadata.media, null, {
@@ -410,10 +408,10 @@ const SuccessTransactionModalSecond = () => {
 									isNewDesign={true}
 								/>
 							</div>
-							{/* <div>
+							<div className="self-center">
 								<IconTrade size={30} />
-							</div> */}
-							{/* <div className="w-1/2 m-auto h-56">
+							</div>
+							<div className="w-1/2 m-auto h-56">
 								<Card
 									imgUrl={parseImgUrl(tradedToken?.metadata.media, null, {
 										width: `600`,
@@ -446,7 +444,7 @@ const SuccessTransactionModalSecond = () => {
 									}}
 									isNewDesign={true}
 								/>
-							</div> */}
+							</div>
 						</div>
 					) : (
 						<div className="mb-4">

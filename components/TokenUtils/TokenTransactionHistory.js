@@ -230,10 +230,10 @@ const TokenTransactionHistory = ({ localToken }) => {
 																: '---'}
 														</p>
 														<p className="text-neutral-10 text-sm">
-															{prettyTruncate(activity.from, 10, 'address')}
+															{prettyTruncate(activity.from, 15, 'address')}
 														</p>
 														<p className="text-neutral-10 text-sm">
-															{prettyTruncate(activity.to, 10, 'address')}
+															{prettyTruncate(activity.to, 15, 'address')}
 														</p>
 														<p className="text-neutral-10 text-sm">
 															{timeAgo.format(activity.issued_at)}
@@ -262,10 +262,10 @@ const TokenTransactionHistory = ({ localToken }) => {
 																: '---'}
 														</p>
 														<p className="text-neutral-10 text-sm">
-															{prettyTruncate(activity.from, 10, 'address')}
+															{prettyTruncate(activity.from, 15, 'address')}
 														</p>
 														<p className="text-neutral-10 text-sm">
-															{prettyTruncate(activity.to, 10, 'address')}
+															{prettyTruncate(activity.to, 15, 'address')}
 														</p>
 														<p className="text-neutral-10 text-sm">
 															{timeAgo.format(activity.issued_at)}

@@ -122,9 +122,12 @@ const TokenHeadSecond = ({ localToken, onShowTradeModal }) => {
 								/>
 								<div className="flex flex-col justify-between items-stretch ml-2">
 									<p className="text-xs font-thin mb-2">Creator</p>
-									<Link href={`/${localToken.metadata?.creator_id}`}>
+									<Link href={`/${localToken.metadata?.creator_id || localToken.contract_id}`}>
 										<a className="text-sm font-bold truncate">
-											{prettyTruncate(localToken.metadata?.creator_id, 20)}
+											{prettyTruncate(
+												localToken.metadata?.creator_id || localToken.contract_id,
+												20
+											)}
 										</a>
 									</Link>
 								</div>
