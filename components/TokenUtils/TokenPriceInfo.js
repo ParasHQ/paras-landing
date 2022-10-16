@@ -210,48 +210,77 @@ const TokenPriceInfo = ({
 						</div>
 					</div>
 				)}
-				{!localToken.lowest_price && localToken.price && localToken?.is_auction && (
-					<>
-						<div className="flex flex-row justify-between items-center mb-4">
-							{!localToken?.amount || (localToken?.bidder_list && localToken?.bidder_list === 0) ? (
+				{!localToken.lowest_price &&
+					(localToken.price || localToken?.amount) &&
+					localToken?.is_auction && (
+						<>
+							<div className="flex flex-row justify-between items-center mb-4">
+								{!localToken?.amount ||
+								(localToken?.bidder_list && localToken?.bidder_list === 0) ? (
+									<div className="block">
+										<div className="inline-flex">
+											<IconBid size={20} stroke={'#F9F9F9'} />
+											<p className="text-white font-light ml-2">{localeLn('CurrentBid')}</p>
+										</div>
+
+										<div className="flex flex-row items-center">
+											<p className="font-bold text-2xl text-neutral-10 truncate">{`${prettyBalance(
+												localToken?.price?.$numberDecimal || localToken?.price,
+												24,
+												4
+											)} Ⓝ`}</p>
+											{localToken?.price && localToken?.price !== '0' && store.nearUsdPrice !== 0 && (
+												<div className="text-[10px] text-gray-400 truncate ml-2">
+													(~$
+													{prettyBalance(localToken?.price, 24, 2)})
+												</div>
+											)}
+										</div>
+									</div>
+								) : (
+									<div className="block">
+										<div className="inline-flex">
+											<IconBid size={20} stroke={'#F9F9F9'} />
+											<p className="text-white font-light ml-2">{localeLn('CurrentBid')}</p>
+										</div>
+
+										<div className="flex flex-row items-center">
+											<p className="font-bold text-2xl text-neutral-10 truncate">{`${prettyBalance(
+												localToken?.amount?.$numberDecimal,
+												24,
+												4
+											)} Ⓝ`}</p>
+											{localToken?.amount && store.nearUsdPrice !== 0 && (
+												<div className="text-[10px] text-gray-400 truncate ml-2">
+													(~$
+													{prettyBalance(
+														JSBI.BigInt(localToken?.amount?.$numberDecimal) * store.nearUsdPrice,
+														24,
+														2
+													)}
+													)
+												</div>
+											)}
+										</div>
+									</div>
+								)}
 								<div className="block">
 									<div className="inline-flex">
-										<IconBid size={20} stroke={'#F9F9F9'} />
-										<p className="text-white font-light ml-2">{localeLn('CurrentBid')}</p>
+										<p className="text-white font-light">{localeLn('Next Bid')}</p>
+										<IconArrowSmall size={26} className="pb-1" />
 									</div>
 
 									<div className="flex flex-row items-center">
 										<p className="font-bold text-2xl text-neutral-10 truncate">{`${prettyBalance(
-											localToken?.price?.$numberDecimal || localToken?.price,
-											24,
+											checkNextPriceBid('near', localToken),
+											0,
 											4
 										)} Ⓝ`}</p>
-										{localToken?.price && localToken?.price !== '0' && store.nearUsdPrice !== 0 && (
-											<div className="text-[10px] text-gray-400 truncate ml-2">
-												(~$
-												{prettyBalance(localToken?.price, 24, 2)})
-											</div>
-										)}
-									</div>
-								</div>
-							) : (
-								<div className="block">
-									<div className="inline-flex">
-										<IconBid size={20} stroke={'#F9F9F9'} />
-										<p className="text-white font-light ml-2">{localeLn('CurrentBid')}</p>
-									</div>
-
-									<div className="flex flex-row items-center">
-										<p className="font-bold text-2xl text-neutral-10 truncate">{`${prettyBalance(
-											localToken?.amount?.$numberDecimal,
-											24,
-											4
-										)} Ⓝ`}</p>
-										{localToken?.amount && store.nearUsdPrice !== 0 && (
+										{localToken?.price !== '0' && store.nearUsdPrice !== 0 && (
 											<div className="text-[10px] text-gray-400 truncate ml-2">
 												(~$
 												{prettyBalance(
-													JSBI.BigInt(localToken?.amount?.$numberDecimal) * store.nearUsdPrice,
+													JSBI.BigInt(checkNextPriceBid('usd')) * store.nearUsdPrice,
 													24,
 													2
 												)}
@@ -260,35 +289,9 @@ const TokenPriceInfo = ({
 										)}
 									</div>
 								</div>
-							)}
-							<div className="block">
-								<div className="inline-flex">
-									<p className="text-white font-light">{localeLn('Next Bid')}</p>
-									<IconArrowSmall size={26} className="pb-1" />
-								</div>
-
-								<div className="flex flex-row items-center">
-									<p className="font-bold text-2xl text-neutral-10 truncate">{`${prettyBalance(
-										checkNextPriceBid('near', localToken),
-										0,
-										4
-									)} Ⓝ`}</p>
-									{localToken?.price !== '0' && store.nearUsdPrice !== 0 && (
-										<div className="text-[10px] text-gray-400 truncate ml-2">
-											(~$
-											{prettyBalance(
-												JSBI.BigInt(checkNextPriceBid('usd')) * store.nearUsdPrice,
-												24,
-												2
-											)}
-											)
-										</div>
-									)}
-								</div>
 							</div>
-						</div>
-					</>
-				)}
+						</>
+					)}
 				{(localToken.lowest_price || localToken.price) && !localToken.is_auction && (
 					<div className="block mb-10">
 						<div className="inline-flex">

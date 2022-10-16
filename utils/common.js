@@ -434,4 +434,5 @@ export const ModalEnum = Object.freeze({
 	TRANSFER: 'transfer',
 	REMOVE_AUCTION: 'remove_auction',
 	ACCEPT_OFFER: 'accept_offer',
+	REJECT_OFFER: 'reject_offer',
 })

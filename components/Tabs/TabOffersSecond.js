@@ -25,6 +25,7 @@ import IconEmptyOffer from 'components/Icons/component/IconEmptyOffer'
 import AcceptOfferModal from 'components/Modal/AcceptOfferModal'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import IconLoaderSecond from 'components/Icons/component/IconLoaderSecond'
+import RejectOfferModal from 'components/Modal/RejectOfferModal'
 
 const FETCH_TOKENS_LIMIT = 12
 
@@ -290,8 +291,8 @@ const TabOffersSecond = ({ localToken }) => {
 				hasMore={hasMore}
 				loader={<IconLoaderSecond size={20} />}
 			>
-				<div className="grid grid-cols-4 py-2 px-4 mt-1">
-					<p className="text-xs text-neutral-10 col-span-2">Offered by</p>
+				<div className="grid grid-cols-3 py-2 px-4 mt-1">
+					<p className="text-xs text-neutral-10">Offered by</p>
 					<p className="text-xs text-neutral-10">Price</p>
 					<p className="text-xs text-neutral-10">Offer Date</p>
 					<div className="col-span-4 border-b border-b-neutral-03 my-1"></div>
@@ -310,89 +311,8 @@ const TabOffersSecond = ({ localToken }) => {
 								onShowModal={() => {
 									setShowModal(ModalEnum.ACCEPT_OFFER)
 								}}
-								localToken={localToken}
-							/>
-							<Offer
-								key={offer._id}
-								offer={offer}
-								token={localToken}
-								fetchOffer={() => fetchOffers(true)}
-								hideButton={!isOwned}
-								acceptOffer={acceptOffer}
-								acceptTrade={acceptTrade}
-								setActiveOffer={setActiveOffer}
-								onShowModal={() => {
-									setShowModal(ModalEnum.ACCEPT_OFFER)
-								}}
-								localToken={localToken}
-							/>
-							<Offer
-								key={offer._id}
-								offer={offer}
-								token={localToken}
-								fetchOffer={() => fetchOffers(true)}
-								hideButton={!isOwned}
-								acceptOffer={acceptOffer}
-								acceptTrade={acceptTrade}
-								setActiveOffer={setActiveOffer}
-								onShowModal={() => {
-									setShowModal(ModalEnum.ACCEPT_OFFER)
-								}}
-								localToken={localToken}
-							/>
-							<Offer
-								key={offer._id}
-								offer={offer}
-								token={localToken}
-								fetchOffer={() => fetchOffers(true)}
-								hideButton={!isOwned}
-								acceptOffer={acceptOffer}
-								acceptTrade={acceptTrade}
-								setActiveOffer={setActiveOffer}
-								onShowModal={() => {
-									setShowModal(ModalEnum.ACCEPT_OFFER)
-								}}
-								localToken={localToken}
-							/>
-							<Offer
-								key={offer._id}
-								offer={offer}
-								token={localToken}
-								fetchOffer={() => fetchOffers(true)}
-								hideButton={!isOwned}
-								acceptOffer={acceptOffer}
-								acceptTrade={acceptTrade}
-								setActiveOffer={setActiveOffer}
-								onShowModal={() => {
-									setShowModal(ModalEnum.ACCEPT_OFFER)
-								}}
-								localToken={localToken}
-							/>
-							<Offer
-								key={offer._id}
-								offer={offer}
-								token={localToken}
-								fetchOffer={() => fetchOffers(true)}
-								hideButton={!isOwned}
-								acceptOffer={acceptOffer}
-								acceptTrade={acceptTrade}
-								setActiveOffer={setActiveOffer}
-								onShowModal={() => {
-									setShowModal(ModalEnum.ACCEPT_OFFER)
-								}}
-								localToken={localToken}
-							/>
-							<Offer
-								key={offer._id}
-								offer={offer}
-								token={localToken}
-								fetchOffer={() => fetchOffers(true)}
-								hideButton={!isOwned}
-								acceptOffer={acceptOffer}
-								acceptTrade={acceptTrade}
-								setActiveOffer={setActiveOffer}
-								onShowModal={() => {
-									setShowModal(ModalEnum.ACCEPT_OFFER)
+								onShowRejectModal={() => {
+									setShowModal(ModalEnum.REJECT_OFFER)
 								}}
 								localToken={localToken}
 							/>
@@ -410,6 +330,16 @@ const TabOffersSecond = ({ localToken }) => {
 				token={localToken}
 				data={activeOffer}
 			/>
+
+			<RejectOfferModal
+				show={showModal === ModalEnum.REJECT_OFFER}
+				onClose={() => {
+					setActiveOffer(null)
+					setShowModal(null)
+				}}
+				token={localToken}
+				data={activeOffer}
+			/>
 		</div>
 	)
 }
@@ -419,6 +349,7 @@ const Offer = ({
 	localToken,
 	fetchOffer,
 	onShowModal,
+	onShowRejectModal,
 	setActiveOffer,
 	hideButton,
 	acceptTrade,
@@ -592,7 +523,7 @@ const Offer = ({
 
 	return (
 		<>
-			<div className="inline-flex items-center w-full py-2 col-span-2">
+			<div className="inline-flex items-center w-full py-2">
 				<ProfileImageBadge
 					imgUrl={profile.imgUrl}
 					level={profile?.level}
@@ -678,18 +609,31 @@ const Offer = ({
 					</Button>
 				)}
 				{!hideButton && offer.buyer_id !== currentUser && isEnableForAccept && (
-					<Button
-						variant="second"
-						size={'xs'}
-						onClick={() => {
-							isNFTTraded ? acceptTrade(offer) : setActiveOffer(offer)
-							onShowModal()
-						}}
-						hideButton={hideButton}
-						className="ml-2"
-					>
-						<p className="text-xs p-1">Accept</p>
-					</Button>
+					<div className="inline-flex gap-x-2">
+						{offer.token_id && (
+							<button
+								className="text-xs text-neutral-10 underline"
+								onClick={() => {
+									setActiveOffer(offer)
+									onShowRejectModal()
+								}}
+							>
+								Reject
+							</button>
+						)}
+						<Button
+							variant="second"
+							size={'xs'}
+							onClick={() => {
+								isNFTTraded ? acceptTrade(offer) : setActiveOffer(offer)
+								onShowModal()
+							}}
+							hideButton={hideButton}
+							className="ml-2"
+						>
+							<p className="text-xs p-1">Accept</p>
+						</Button>
+					</div>
 				)}
 			</div>
 			<div className="col-span-4 border-b border-b-neutral-04 mb-2"></div>
