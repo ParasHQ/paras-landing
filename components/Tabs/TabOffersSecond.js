@@ -280,7 +280,11 @@ const TabOffersSecond = ({ localToken }) => {
 	}
 
 	if (!isFetching && offers.length <= 0) {
-		return <IconEmptyOffer size={150} className="mx-auto my-16" />
+		return (
+			<div className="min-h-[326px] bg-neutral-01 border border-neutral-05 rounded-lg p-1">
+				<IconEmptyOffer size={150} className="mx-auto my-16" />
+			</div>
+		)
 	}
 
 	return (

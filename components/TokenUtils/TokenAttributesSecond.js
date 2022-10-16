@@ -35,7 +35,7 @@ const TokenAttributesSecond = ({ localToken }) => {
 	}
 
 	return (
-		<div className="h-[610px] bg-neutral-03 text-white rounded-lg border border-neutral-05 py-6 px-5 mb-8">
+		<div className="h-[610px] bg-neutral-03 text-white rounded-lg border border-neutral-05 py-6 px-5 mb-6">
 			<p className="font-bold text-xl mb-2">Attributes</p>
 			<p className="font-normal text-xs mb-6">
 				Some of the characteristics that determine the rarity score

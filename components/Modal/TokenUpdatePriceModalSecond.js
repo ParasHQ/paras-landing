@@ -190,11 +190,9 @@ const TokenUpdatePriceModalSecond = ({ data, show, onClose }) => {
 							<div className="flex flex-row justify-between items-center p-2">
 								<p className="text-sm text-neutral-10">Current Price</p>
 								<div className="inline-flex">
-									<p className="font-bold text-sm text-neutral-10 truncate">{`${prettyBalance(
-										data.price ? formatNearAmount(data.price) : '0',
-										0,
-										4
-									)} Ⓝ`}</p>
+									<p className="font-bold text-sm text-neutral-10 truncate">
+										{data.price ? `${prettyBalance(formatNearAmount(data.price), 0, 4)} Ⓝ` : 'None'}
+									</p>
 									{data?.price && store.nearUsdPrice !== 0 && (
 										<div className="text-[10px] text-gray-400 truncate ml-2">
 											($

@@ -16,6 +16,8 @@ import TokenBuyModalSecond from 'components/Modal/TokenBuyModalSecond'
 import TokenUpdateListing from 'components/Modal/TokenUpdateListing'
 import IconEmptyOwners from 'components/Icons/component/IconEmptyOwners'
 import LoginModal from 'components/Modal/LoginModal'
+import IconCheckbox from 'components/Icons/component/IconCheckbox'
+import IconCheckboxChecked from 'components/Icons/component/IconCheckboxChecked'
 
 const FETCH_TOKENS_LIMIT = 100
 const OwnerSortEnum = [
@@ -26,6 +28,10 @@ const OwnerSortEnum = [
 	{ key: 'priceasc', title: 'Price low to high' },
 	{ key: 'pricedesc', title: 'Price high to low' },
 ]
+const FilterEnum = {
+	BUY: 'Buy',
+	OFFER: 'Offer',
+}
 
 const TabOwnersSecond = ({ localToken }) => {
 	const { currentUser } = useStore()
@@ -36,6 +42,7 @@ const TabOwnersSecond = ({ localToken }) => {
 	const [ownerSortBy, setOwnerSortBy] = useState(OwnerSortEnum[4])
 	const [fetching, setFetching] = useState(null)
 	const [showLoginModal, setShowLoginModal] = useState(false)
+	const [filter, setFilter] = useState(null)
 
 	useEffect(() => {
 		fetchOwners([], null)
@@ -44,6 +51,10 @@ const TabOwnersSecond = ({ localToken }) => {
 	useEffect(() => {
 		changeSortBy(ownerSortBy)
 	}, [ownerSortBy])
+
+	useEffect(() => {
+		fetchOwners([], null)
+	}, [filter])
 
 	const changeSortBy = (sortby) => {
 		let tempTokens = owners.slice()
@@ -80,14 +91,22 @@ const TabOwnersSecond = ({ localToken }) => {
 
 		setFetching(TabEnum.OWNERS)
 
+		let params = {
+			token_series_id: localToken.token_series_id,
+			contract_id: localToken.contract_id,
+			_id_next: idNext,
+			__limit: FETCH_TOKENS_LIMIT,
+			__sort: 'price::1',
+		}
+
+		if (filter === FilterEnum.BUY) {
+			params.has_price = true
+		} else if (filter === FilterEnum.OFFER) {
+			params.has_price = false
+		}
+
 		const resp = await cachios.get(`${process.env.V2_API_URL}/token`, {
-			params: {
-				token_series_id: localToken.token_series_id,
-				contract_id: localToken.contract_id,
-				_id_next: idNext,
-				__limit: FETCH_TOKENS_LIMIT,
-				__sort: 'price::1',
-			},
+			params: params,
 			ttl: 120,
 		})
 
@@ -105,7 +124,11 @@ const TabOwnersSecond = ({ localToken }) => {
 	}
 
 	if (fetching === null && owners.length <= 0) {
-		return <IconEmptyOwners size={150} className="mx-auto my-16" />
+		return (
+			<div className="min-h-[326px] bg-neutral-01 border border-neutral-05 rounded-lg p-1">
+				<IconEmptyOwners size={150} className="mx-auto my-16" />
+			</div>
+		)
 	}
 
 	return (
@@ -116,22 +139,22 @@ const TabOwnersSecond = ({ localToken }) => {
 					<p className="text-xs text-neutral-10">Filter & Sort</p>
 				</div>
 				<div className="relative inline-flex gap-x-6">
-					<div className="flex flex-row items-center gap-x-2">
-						<input
-							type="checkbox"
-							className="w-auto border-neutral-10 rounded-lg"
-							style={{ backgroundColor: '#151719' }}
-						/>
-						<p className="text-xs text-neutral-10">Buy</p>
-					</div>
-					<div className="flex flex-row items-center gap-x-2">
-						<input
-							type="checkbox"
-							className="w-auto border-neutral-10 rounded-lg"
-							style={{ backgroundColor: '#151719' }}
-						/>
-						<p className="text-xs text-neutral-10">Offer</p>
-					</div>
+					{Object.keys(FilterEnum).map((x) => (
+						<button
+							key={x}
+							className="inline-flex gap-x-2 hover:bg-neutral-03 hover:border hover:border-neutral-05 hover:rounded-lg p-2"
+							onClick={() => {
+								setFilter(filter === FilterEnum[x] ? null : FilterEnum[x])
+							}}
+						>
+							{filter === FilterEnum[x] ? (
+								<IconCheckboxChecked size={20} />
+							) : (
+								<IconCheckbox size={20} />
+							)}
+							<p className="text-neutral-10 text-sm">{FilterEnum[x]}</p>
+						</button>
+					))}
 					<div
 						className="relative flex flex-row justify-between items-center bg-neutral-01 border border-neutral-05 rounded-lg p-2 cursor-pointer"
 						onClick={() => setShowOwnerSortModal(!showOwnerSortModal)}

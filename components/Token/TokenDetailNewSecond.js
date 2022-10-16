@@ -22,6 +22,7 @@ import TokenTransferModalSecond from 'components/Modal/TokenTransferModalSecond'
 import TokenRemoveAuction from 'components/Modal/TokenRemoveAuction'
 import TokenAuctionModal from 'components/Modal/TokenAuctionModal'
 import LoginModal from 'components/Modal/LoginModal'
+import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 
 const TokenDetailNewSecond = ({ token }) => {
 	const store = useStore()
@@ -36,7 +37,12 @@ const TokenDetailNewSecond = ({ token }) => {
 
 	return (
 		<>
-			<div className="relative max-w-6xl m-auto pt-16 px-4">
+			<div className="relative max-w-6xl m-auto pt-8 px-4">
+				{token.flag && (
+					<div className="w-full bg-[#A32323] text-neutral-10 rounded-lg text-center text-sm p-2 mb-4">
+						This card has been flagged as fraud. Proceed with your own risk.
+					</div>
+				)}
 				<div className="md:grid auto-rows-auto grid-cols-7 gap-x-14">
 					<div className="row-span-6 col-start-1 col-end-4">
 						<div className="w-full h-auto text-white mb-4">
@@ -139,6 +145,8 @@ const TokenDetailNewSecond = ({ token }) => {
 			<div className="max-w-full bg-neutral-03 border-t border-neutral-05">
 				<TokenMoreCollectionSecond localToken={token} />
 			</div>
+
+			<ButtonScrollTop className={'bg-neutral-04 border border-neutral-05 right-28 bottom-5'} />
 
 			{/* Modals Component */}
 			<TokenBuyModalSecond show={showModal === ModalEnum.BUY} data={token} onClose={onCloseModal} />

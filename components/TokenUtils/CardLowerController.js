@@ -11,6 +11,8 @@ import useStore from 'lib/store'
 import ParasRequest from 'lib/ParasRequest'
 import LoginModal from 'components/Modal/LoginModal'
 import MediaModal from 'components/Modal/MediaModal'
+import { IconArrow, IconArrowSmall } from 'components/Icons'
+import Link from 'next/link'
 
 const CardLowerController = ({ localToken }) => {
 	const { localeLn } = useIntl()
@@ -92,46 +94,57 @@ const CardLowerController = ({ localToken }) => {
 	}
 
 	return (
-		<div className="flex flex-row justify-between items-center mb-8">
-			<div className="flex flex-row text-white items-center">
-				<ButtonOutline
-					content={
-						<div
-							className="flex flex-row items-center"
-							onClick={() => {
-								isLiked
-									? unlikeToken(localToken.contract_id, localToken.token_series_id, 'detail')
-									: likeToken(localToken.contract_id, localToken.token_series_id, 'detail')
-							}}
-						>
-							<IconLove
-								size={17}
-								color={isLiked ? '#c51104' : 'transparent'}
-								stroke={isLiked ? 'none' : 'white'}
-								className="mr-2"
-							/>
-							<p className="text-neutral-10 text-sm">{abbrNum(defaultLikes ?? 0, 1)} Likes</p>
-						</div>
-					}
-				/>
-				<div className="mx-2">
-					<IconView stroke={'#F9F9F9'} size={24} />
+		<div className="mb-6">
+			<div className="flex flex-row justify-between items-center">
+				<div className="flex flex-row text-white items-center">
+					<ButtonOutline
+						content={
+							<div
+								className="flex flex-row items-center"
+								onClick={() => {
+									isLiked
+										? unlikeToken(localToken.contract_id, localToken.token_series_id, 'detail')
+										: likeToken(localToken.contract_id, localToken.token_series_id, 'detail')
+								}}
+							>
+								<IconLove
+									size={17}
+									color={isLiked ? '#c51104' : 'transparent'}
+									stroke={isLiked ? 'none' : 'white'}
+									className="mr-2"
+								/>
+								<p className="text-neutral-10 text-sm">{abbrNum(defaultLikes ?? 0, 1)} Likes</p>
+							</div>
+						}
+					/>
+					<div className="mx-2">
+						<IconView stroke={'#F9F9F9'} size={24} />
+					</div>
+					<p>{localToken.view || 0} </p>
+					<p>{localeLn('Views')}</p>
 				</div>
-				<p>{localToken.view || 0} </p>
-				<p>{localeLn('Views')}</p>
+
+				<div className="justify-self-end">
+					<ButtonOutline
+						content={
+							<div className="flex flex-row items-center">
+								<IconFullscreen size={20} stroke={'#F9F9F9'} />
+								<p className="ml-3">View art</p>
+							</div>
+						}
+						onClick={() => setShowMediaModal(true)}
+					/>
+				</div>
 			</div>
 
-			<div className="justify-self-end">
-				<ButtonOutline
-					content={
-						<div className="flex flex-row items-center">
-							<IconFullscreen size={20} stroke={'#F9F9F9'} />
-							<p className="ml-3">View art</p>
-						</div>
-					}
-					onClick={() => setShowMediaModal(true)}
-				/>
-			</div>
+			{localToken.token_id && (
+				<Link href={`/token/${localToken.contract_id}::${localToken.token_series_id}`}>
+					<a className="inline-flex w-full justify-between text-neutral-10 rounded-lg border border-neutral-10 p-2 mt-6">
+						<IconArrow size={20} className="rotate-0" />
+						<p className="text-sm">See Token Series</p>
+					</a>
+				</Link>
+			)}
 
 			<MediaModal
 				show={showMediaModal}

@@ -186,7 +186,9 @@ const TokenTransactionHistory = ({ localToken }) => {
 			<div>
 				<div className="bg-neutral-01 border border-neutral-05 rounded-lg pt-4 pb-10 px-4">
 					{activities.length <= 0 ? (
-						<IconEmptyTransactionHistory size={150} className="mx-auto" />
+						<div className="relative h-[438px]">
+							<IconEmptyTransactionHistory size={150} className="absolute top-32 right-[40%]" />
+						</div>
 					) : (
 						<div>
 							<div className="grid grid-cols-7 gap-x-1 border border-neutral-05 rounded-lg p-4">
