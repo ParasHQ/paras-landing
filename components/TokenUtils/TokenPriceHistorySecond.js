@@ -1,5 +1,4 @@
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
-import { trackClosePriceHistory, trackOpenPriceHistory } from 'lib/ga'
 import { prettyBalance } from 'utils/common'
 import {
 	Area,
@@ -12,6 +11,8 @@ import {
 	YAxis,
 } from 'recharts'
 import { useEffect, useState } from 'react'
+import JSBI from 'jsbi'
+import useStore from 'lib/store'
 import ParasRequest from 'lib/ParasRequest'
 import IconEmptyPriceHistory from 'components/Icons/component/IconEmptyPriceHistory'
 
@@ -31,9 +32,9 @@ const ChartFilterEnum = {
 }
 
 const TokenPriceHistorySecond = ({ localToken }) => {
+	const store = useStore()
+
 	const [activities, setActivities] = useState([])
-	const [isDropDown, setIsDropDown] = useState(true)
-	const [avgPrice, setAvgPrice] = useState()
 	const [chartFilter, setChartFilter] = useState(ChartFilterEnum.ALL_TIME)
 	const [chartCurrency, setChartCurrency] = useState(ChartCurrencyEnum.NEAR)
 
@@ -43,89 +44,58 @@ const TokenPriceHistorySecond = ({ localToken }) => {
 
 	const fetchDataActivities = async () => {
 		const params = {
-			__skip: 0,
-			__limit: 100,
-			token_id: localToken.token_id,
+			days: parseDays(),
 			contract_id: localToken.contract_id,
-			type: 'market_sales',
 		}
 
-		const res = await ParasRequest.get(`${process.env.V2_API_URL}/activities`, {
+		if (localToken.token_id) {
+			params.token_id = localToken.token_id
+		} else {
+			params.token_series_id = localToken.token_series_id
+		}
+
+		const res = await ParasRequest.get(`${process.env.V2_API_URL}/price-history`, {
 			params: params,
 		})
 
 		const newData = res.data.data.results
+		if (!newData) {
+			setActivities([])
+			return
+		}
 
+		const parseData = Object.keys(newData)
+			.map((data) => {
+				const dataSplit = data.split(' ')
+				const key =
+					chartFilter === ChartFilterEnum.ONE_DAY
+						? `${dataSplit[2]}, ${dataSplit[1]} ${dataSplit[3]}, ${dataSplit[4]}`
+						: `${dataSplit[2]}, ${dataSplit[1]} ${dataSplit[3]}`
+				newData[data].key = key
+				return newData[data]
+			})
+			.sort((a, b) => a.issued_at - b.issued_at)
+
+		setActivities(parseData)
+	}
+
+	const parseDays = () => {
 		switch (chartFilter) {
 			case ChartFilterEnum.ALL_TIME:
-				filterPriceHistory(newData, 0)
-				return
+				return null
 			case ChartFilterEnum.ONE_YEAR:
-				filterPriceHistory(newData, 365)
-				return
+				return 365
 			case ChartFilterEnum.SIX_MONTH:
-				filterPriceHistory(newData, 180)
-				return
+				return 180
 			case ChartFilterEnum.THREE_MONTH:
-				filterPriceHistory(newData, 90)
-				return
+				return 90
 			case ChartFilterEnum.ONE_MONTH:
-				filterPriceHistory(newData, 30)
-				return
+				return 30
 			case ChartFilterEnum.SEVEN_DAY:
-				filterPriceHistory(newData, 7)
-				return
+				return 7
 			case ChartFilterEnum.ONE_DAY:
-				filterPriceHistory(newData, 1)
-				return
+				return 1
 		}
-	}
-
-	const filterAvgPrice = (data) => {
-		var price = data.map((item) => parseFloat(item.price.$numberDecimal)),
-			average =
-				price.reduce(function (sum, value) {
-					return sum + value
-				}, 0) / price.length
-
-		setAvgPrice(average.toFixed(2))
-	}
-
-	const filterPriceHistory = (data, days) => {
-		const currentDate = new Date()
-		const currentDateTime = currentDate.getTime()
-		const selectHistoryDate = new Date(currentDate.setDate(currentDate.getDate() - days))
-		const selectHistoryDateTime = selectHistoryDate.getTime()
-
-		if (days === 0) {
-			filterAvgPrice(data)
-			setActivities(data.reverse())
-			return
-		}
-
-		const results = data
-			.filter((x) => {
-				const elementDateTime = new Date(x.issued_at).getTime()
-				if (elementDateTime <= currentDateTime && elementDateTime >= selectHistoryDateTime) {
-					return true
-				}
-				return false
-			})
-			.sort((a, b) => {
-				return a.issued_at - b.issued_at
-			})
-
-		filterAvgPrice(results)
-		setActivities(results)
-	}
-
-	const onCLickDropdown = () => {
-		setIsDropDown(!isDropDown)
-		if (isDropDown) {
-			trackOpenPriceHistory(localToken.token_id || localToken.token_series_id)
-			return
-		}
-		trackClosePriceHistory(localToken.token_id || localToken.token_series_id)
 	}
 
 	return (
@@ -168,13 +138,13 @@ const TokenPriceHistorySecond = ({ localToken }) => {
 			</div>
 
 			<div className="h-[390px] bg-neutral-01 border border-neutral-05 rounded-lg py-6">
-				<TokenPriceTracker data={activities} />
+				<TokenPriceTracker data={activities} chartCurrency={chartCurrency} store={store} />
 			</div>
 		</div>
 	)
 }
 
-const TokenPriceTracker = ({ data }) => {
+const TokenPriceTracker = ({ data, chartCurrency, store }) => {
 	return (
 		<div className="mt-10">
 			{data.length <= 0 ? (
@@ -182,7 +152,7 @@ const TokenPriceTracker = ({ data }) => {
 			) : (
 				<div className="max-h-full">
 					<ResponsiveContainer width="100%" height={300}>
-						<AreaChart data={data} margin={{ top: 5, right: 20, left: 10, bottom: 35 }}>
+						<AreaChart data={data} margin={{ top: 10, right: 20, left: 10, bottom: 35 }}>
 							<defs>
 								<linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
 									<stop offset="0%" stopColor="#9185FF" stopOpacity={0.25} />
@@ -196,8 +166,11 @@ const TokenPriceTracker = ({ data }) => {
 								tickLine={false}
 								tickMargin={2}
 								stroke="#F9F9F9"
+								fontSize={12}
 								tickFormatter={(x) => {
-									return prettyBalance(x / 10 ** 24, 0)
+									return chartCurrency === ChartCurrencyEnum.NEAR
+										? prettyBalance(x / 10 ** 24, 0)
+										: prettyBalance(JSBI.BigInt(x) * store.nearUsdPrice, 24, 0)
 								}}
 							>
 								<Label
@@ -209,15 +182,14 @@ const TokenPriceTracker = ({ data }) => {
 								/>
 							</YAxis>
 							<XAxis
-								dataKey="issued_at"
-								interval={1}
+								dataKey="key"
+								interval={0}
 								axisLine={true}
 								tickLine={false}
 								tickMargin={8}
 								stroke="#F9F9F9"
-								tickFormatter={(x) => {
-									return `${new Date(x).getHours().toString()}`
-								}}
+								fontSize={12}
+								width={10}
 							>
 								<Label
 									value={'Time Period'}
@@ -226,12 +198,12 @@ const TokenPriceTracker = ({ data }) => {
 									style={{ fontSize: 15, left: 100 }}
 								/>
 							</XAxis>
-							<Tooltip content={<CustomTooltip />} />
+							<Tooltip content={<CustomTooltip chartCurrency={chartCurrency} store={store} />} />
 							<Area
-								type="linear"
+								type="natural"
 								stackId="1"
-								dataKey="price.$numberDecimal"
-								dot={false}
+								dataKey="average_price"
+								dot={{ strokeWidth: 1 }}
 								stroke="#3389ff"
 								strokeWidth={3}
 								fillOpacity={1}
@@ -245,7 +217,7 @@ const TokenPriceTracker = ({ data }) => {
 	)
 }
 
-const CustomTooltip = ({ active, payload }) => {
+const CustomTooltip = ({ active, payload, chartCurrency, store }) => {
 	if (active && payload && payload.length) {
 		return (
 			<div className="bg-[#1300ba80] border border-[#9185FF] text-neutral-10 p-2 rounded-md">
@@ -253,23 +225,48 @@ const CustomTooltip = ({ active, payload }) => {
 					return (
 						<div key={idx}>
 							<div>
-								<p className="font-bold text-xs text-center">
-									{`${new Date(p.payload.issued_at).toLocaleDateString('en-US', {
-										month: 'long',
-									})} ${new Date(p.payload.issued_at).getDate()} ${new Date(
-										p.payload.issued_at
-									).getFullYear()}, ${new Date(p.payload.issued_at)
-										.toTimeString()
-										.split(':')
-										.splice(0, 2)
-										.join(':')}`}
-								</p>
+								<p className="font-bold text-xs text-center">{p.payload.key}</p>
 							</div>
 							<div>
-								<span className="capitalize text-xs">Price</span>
+								<span className="capitalize text-xs">Highest Price</span>
 								{' : '}
 								<span className="font-bold text-sm">
-									{formatNearAmount(p.payload.price.$numberDecimal)} Ⓝ
+									{chartCurrency === ChartCurrencyEnum.NEAR
+										? formatNearAmount(p.payload.highest_price, 2) + ' Ⓝ'
+										: '$ ' +
+										  prettyBalance(
+												JSBI.BigInt(p.payload.highest_price) * store.nearUsdPrice,
+												24,
+												0
+										  )}
+								</span>
+							</div>
+							<div>
+								<span className="capitalize text-xs">Average Price</span>
+								{' : '}
+								<span className="font-bold text-sm">
+									{chartCurrency === ChartCurrencyEnum.NEAR
+										? formatNearAmount(p.payload.average_price, 2) + ' Ⓝ'
+										: '$ ' +
+										  prettyBalance(
+												JSBI.BigInt(p.payload.average_price) * store.nearUsdPrice,
+												24,
+												0
+										  )}
+								</span>
+							</div>
+							<div>
+								<span className="capitalize text-xs">Lowest Price</span>
+								{' : '}
+								<span className="font-bold text-sm">
+									{chartCurrency === ChartCurrencyEnum.NEAR
+										? formatNearAmount(p.payload.lowest_price, 2) + ' Ⓝ'
+										: '$ ' +
+										  prettyBalance(
+												JSBI.BigInt(p.payload.lowest_price) * store.nearUsdPrice,
+												24,
+												0
+										  )}
 								</span>
 							</div>
 						</div>

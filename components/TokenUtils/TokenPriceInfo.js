@@ -146,17 +146,6 @@ const TokenPriceInfo = ({
 		return list[list.length - 1]
 	}
 
-	const checkUserBid = () => {
-		let userBid = []
-		localToken?.bidder_list?.map((item) => {
-			if (item.bidder === currentUser) {
-				userBid.push(item.bidder)
-			}
-		})
-
-		return userBid[0]
-	}
-
 	const hasBid = () => {
 		localToken?.bidder_list?.map((bid) => {
 			if (bid.bidder === currentUser) {
@@ -167,18 +156,6 @@ const TokenPriceInfo = ({
 		})
 	}
 
-	const highestBid = () => {
-		const bidderList = localToken?.bidder_list
-
-		if (bidderList && bidderList.length > 0) {
-			const highestBidder = bidderList[bidderList.length - 1].bidder
-
-			if (highestBidder === currentUser) return true
-		}
-
-		return false
-	}
-
 	return (
 		<div
 			className={`bg-neutral-04 rounded-lg mt-6 ${
@@ -186,7 +163,14 @@ const TokenPriceInfo = ({
 			}`}
 		>
 			<div className="min-h-56 bg-neutral-03 border border-neutral-05 rounded-lg my-4 p-5">
-				{localToken?.is_auction && (
+				{localToken?.is_auction && isEndedAuction && (
+					<div className="bg-neutral-01 border border-neutral-05 rounded-lg w-full flex flex-row justify-between items-center p-2 mb-4">
+						<div className="inline-flex items-center">
+							<p className="text-xs text-neutral-10 mr-2">Auction Ends...</p>
+						</div>
+					</div>
+				)}
+				{localToken?.is_auction && !isEndedAuction && (
 					<div className="bg-neutral-01 border border-neutral-05 rounded-lg w-full flex flex-row justify-between items-center p-2 mb-4">
 						<div className="inline-flex items-center">
 							<IconClock size={22} stroke={'#F9F9F9'} className="mr-2" />
@@ -335,6 +319,7 @@ const TokenPriceInfo = ({
 				{localToken.owner_id &&
 					localToken.owner_id !== currentUser &&
 					!localToken.price &&
+					!localToken.lowest_price &&
 					!localToken.is_auction && (
 						<Button variant="ghost" className={'w-full'} onClick={onShowOfferModal}>
 							Make Offer
@@ -342,7 +327,7 @@ const TokenPriceInfo = ({
 					)}
 				{localToken.owner_id &&
 					localToken.owner_id !== currentUser &&
-					localToken.price &&
+					(localToken.price || localToken.lowest_price) &&
 					!localToken.is_auction && (
 						<div className="md:grid grid-cols-2 gap-x-6">
 							<Button variant={'second'} onClick={onShowOfferModal}>
@@ -412,11 +397,14 @@ const TokenPriceInfo = ({
 						Make Offer
 					</Button>
 				)}
-				{!localToken.owner_id && !isCreator() && localToken.is_non_mintable && (
-					<Button variant={'second'} className={'w-full'} onClick={onShowOfferModal}>
-						Make Offer
-					</Button>
-				)}
+				{!localToken.owner_id &&
+					!isCreator() &&
+					!localToken.lowest_price &&
+					localToken.is_non_mintable && (
+						<Button variant={'second'} className={'w-full'} onClick={onShowOfferModal}>
+							Make Offer
+						</Button>
+					)}
 			</div>
 
 			{localToken.bidder_list && localToken.bidder_list?.length > 0 && (
