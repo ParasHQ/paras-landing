@@ -25,12 +25,15 @@ import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from 'components/Modal/BannedConfirmModal'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 import ProfileImageBadge from 'components/Common/ProfileImageBadge'
+import RejectOfferModal from 'components/Modal/RejectOfferModal'
+import ParasRequest from 'lib/ParasRequest'
 
 const FETCH_TOKENS_LIMIT = 12
 
 const Offer = ({
 	data,
 	onAcceptOffer,
+	onRejectOffer,
 	hideButton,
 	fetchOffer,
 	localToken,
@@ -272,38 +275,65 @@ const Offer = ({
 						</div>
 					)}
 					{!hideButton && data.buyer_id !== currentUser && isEnableForAccept && (
-						<div>
-							<Button
-								size="sm"
-								className="w-full"
-								onClick={() => {
-									isNFTTraded
-										? (setBannedConfirmData({
-												isShowBannedConfirm: true,
-												creator: creatorTradeToken,
-												isFlagged:
-													creatorTradeToken.flag &&
-													(creatorTradeToken.flag === 'banned' ||
-														creatorTradeToken.flag === 'rugpull' ||
-														creatorTradeToken.flag === 'hacked' ||
-														creatorTradeToken.flag === 'scam')
-														? true
-														: false,
-										  }),
-										  setOfferBuyerData(data))
-										: onAcceptOffer(data)
-								}}
-								hideButton={hideButton}
-							>
-								Accept
-							</Button>
-						</div>
+						<>
+							{data.status === 'rejected' ? (
+								<div className="flex items-center gap-4">
+									<div>
+										<p
+											className="cursor-pointer hover:underline hover:text-neutral-300 hover:text-opacity-90"
+											onClick={() => onRejectOffer(data)}
+										>
+											Reject
+										</p>
+									</div>
+									<div>
+										<Button
+											size="sm"
+											className="w-full"
+											onClick={() => {
+												isNFTTraded
+													? (setBannedConfirmData({
+															isShowBannedConfirm: true,
+															creator: creatorTradeToken,
+															isFlagged:
+																creatorTradeToken.flag &&
+																(creatorTradeToken.flag === 'banned' ||
+																	creatorTradeToken.flag === 'rugpull' ||
+																	creatorTradeToken.flag === 'hacked' ||
+																	creatorTradeToken.flag === 'scam')
+																	? true
+																	: false,
+													  }),
+													  setOfferBuyerData(data))
+													: onAcceptOffer(data)
+											}}
+											hideButton={hideButton}
+										>
+											Accept
+										</Button>
+									</div>
+								</div>
+							) : (
+								<div>
+									<Button size="sm" variant="error" className="w-full" isDisabled>
+										Rejected
+									</Button>
+								</div>
+							)}
+						</>
 					)}
 					{data.buyer_id === currentUser && (
-						<div>
-							<Button size="sm" className="w-full" onClick={deleteOffer} hideButton={hideButton}>
-								Delete
-							</Button>
+						<div className="flex items-center gap-4">
+							{data.status === 'rejected' && (
+								<div>
+									<p className="text-sm text-red-400 cursor-default">Rejected</p>
+								</div>
+							)}
+							<div>
+								<Button size="sm" className="w-full" onClick={deleteOffer} hideButton={hideButton}>
+									Delete
+								</Button>
+							</div>
 						</div>
 					)}
 				</div>
@@ -354,6 +384,7 @@ const TabOffers = ({ localToken }) => {
 	const [activeOffer, setActiveOffer] = useState(null)
 	const [storageFee, setStorageFee] = useState(STORAGE_APPROVE_FEE)
 	const [isAcceptingOffer, setIsAcceptingOffer] = useState(false)
+	const [isRejectingOffer, setIsRejectingOffer] = useState(false)
 	const [offerBuyerData, setOfferBuyerData] = useState(null)
 	const toast = useToast()
 	const { localeLn } = useIntl()
@@ -374,6 +405,11 @@ const TabOffers = ({ localToken }) => {
 	const onAcceptOffer = (offer) => {
 		setActiveOffer(offer)
 		setShowModal('acceptOffer')
+	}
+
+	const onRejectOffer = (offer) => {
+		setActiveOffer(offer)
+		setShowModal('rejectOffer')
 	}
 
 	const onDismissModal = () => {
@@ -474,6 +510,38 @@ const TabOffers = ({ localToken }) => {
 		}
 	}
 
+	const rejectOffer = async () => {
+		try {
+			setIsRejectingOffer(true)
+			await ParasRequest.post(`${process.env.V2_API_URL}/offers/reject`, {
+				contract_id: activeOffer.contract_id,
+				buyer_id: activeOffer.buyer_id,
+				token_id: activeOffer.token_id,
+			})
+
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{`Successfully rejected of ${acceptOffer.token_id}`}
+					</div>
+				),
+				type: 'success',
+				duration: 2500,
+			})
+			setShowModal(null)
+		} catch (err) {
+			sentryCaptureException(err)
+			const msg = err.response?.data?.message || `Something went wrong, try again later`
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{msg}</div>,
+				type: 'error',
+				duration: 2500,
+			})
+			setIsRejectingOffer(false)
+			return
+		}
+	}
+
 	const acceptTrade = async () => {
 		const [, tradeType, tokenId] = isOwned.split('::')
 		const params = {
@@ -488,6 +556,7 @@ const TabOffers = ({ localToken }) => {
 		})
 
 		try {
+			setIsRejectingOffer(false)
 			const res = await signAndSendTransaction({
 				receiverId: offerBuyerData.contract_id,
 				actions: [
@@ -623,6 +692,7 @@ const TabOffers = ({ localToken }) => {
 							<Offer
 								data={x}
 								onAcceptOffer={() => onAcceptOffer(x)}
+								onRejectOffer={() => onRejectOffer(x)}
 								hideButton={!isOwned}
 								fetchOffer={() => fetchOffers(true)}
 								localToken={localToken}
@@ -646,6 +716,16 @@ const TabOffers = ({ localToken }) => {
 					storageFee={storageFee}
 					onSubmitForm={acceptOffer}
 					isLoading={isAcceptingOffer}
+				/>
+			)}
+			{showModal === 'rejectOffer' && (
+				<RejectOfferModal
+					show={showModal === 'buy'}
+					onClose={onDismissModal}
+					token={localToken}
+					data={activeOffer}
+					onSubmitForm={rejectOffer}
+					isLoading={isRejectingOffer}
 				/>
 			)}
 		</div>
