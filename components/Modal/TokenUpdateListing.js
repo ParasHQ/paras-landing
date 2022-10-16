@@ -4,9 +4,7 @@ import Modal from 'components/Common/Modal'
 import LoginModal from './LoginModal'
 import { GAS_FEE, GAS_FEE_200, STORAGE_APPROVE_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
-import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
-import useProfileData from 'hooks/useProfileData'
 import useStore from 'lib/store'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 import Media from 'components/Common/Media'
@@ -16,13 +14,12 @@ import JSBI from 'jsbi'
 import Link from 'next/link'
 import IconInfoSecond from 'components/Icons/component/IconInfoSecond'
 import { useForm } from 'react-hook-form'
-import { trackRemoveListingToken, trackUpdateListingToken } from 'lib/ga'
+import { trackUpdateListingToken } from 'lib/ga'
 import { InputText } from 'components/Common/form'
 
-const TokenUpdateListing = ({ data, show, onClose, onSuccess }) => {
+const TokenUpdateListing = ({ data, show, onClose }) => {
 	const store = useStore()
-	const { localeLn } = useIntl()
-	const { errors, register, handleSubmit, watch, setValue } = useForm()
+	const { errors, register, handleSubmit } = useForm()
 	const { signAndSendTransactions, viewFunction } = useWalletSelector()
 	const { currentUser, userBalance, setTransactionRes } = useStore((state) => ({
 		currentUser: state.currentUser,

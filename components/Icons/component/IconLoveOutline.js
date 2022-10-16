@@ -1,7 +1,7 @@
 import React from 'react'
 import { iconDefaultProps } from '../IconProps'
 
-const IconLoveOutline = ({ size, color, stroke, ...props }) => (
+const IconLoveOutline = ({ size, stroke, ...props }) => (
 	<svg
 		width={size}
 		height={size}

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import Button from 'components/Common/Button'
 import Modal from 'components/Common/Modal'
 import LoginModal from './LoginModal'
-import { GAS_FEE, STORAGE_MINT_FEE } from 'config/constants'
+import { GAS_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
 import { sentryCaptureException } from 'lib/sentry'
 import useStore from 'lib/store'
@@ -10,14 +10,14 @@ import { useWalletSelector } from 'components/Common/WalletSelector'
 import Media from 'components/Common/Media'
 import { parseImgUrl, prettyTruncate, prettyBalance } from 'utils/common'
 import { formatNearAmount, parseNearAmount } from 'near-api-js/lib/utils/format'
-import { trackRemoveListingTokenSeries, trackUpdateListingTokenSeries } from 'lib/ga'
+import { trackUpdateListingTokenSeries } from 'lib/ga'
 import JSBI from 'jsbi'
 import Link from 'next/link'
 import IconInfoSecond from 'components/Icons/component/IconInfoSecond'
 import { useForm } from 'react-hook-form'
 import { InputText } from 'components/Common/form'
 
-const TokenUpdatePriceModalSecond = ({ data, show, onClose, onSuccess }) => {
+const TokenUpdatePriceModalSecond = ({ data, show, onClose }) => {
 	const store = useStore()
 	const { errors, register, handleSubmit } = useForm()
 	const { viewFunction, signAndSendTransaction } = useWalletSelector()

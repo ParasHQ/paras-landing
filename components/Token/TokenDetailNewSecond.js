@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import useStore from 'lib/store'
 import { parseImgUrl, ModalEnum } from 'utils/common'
 import Card from 'components/Card/Card'

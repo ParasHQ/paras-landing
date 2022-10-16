@@ -19,7 +19,7 @@ import Link from 'next/link'
 import IconInfoSecond from 'components/Icons/component/IconInfoSecond'
 import { InputText } from 'components/Common/form'
 
-const TokenTransferModalSecond = ({ data, show, onClose, onSuccess }) => {
+const TokenTransferModalSecond = ({ data, show, onClose }) => {
 	const toast = useToast()
 	const store = useStore()
 	const { localeLn } = useIntl()

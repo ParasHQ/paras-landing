@@ -20,7 +20,7 @@ const ConfirmEnum = {
 	REMOVE: 'remove',
 }
 
-const TokenRemoveAuction = ({ data, show, onClose, onSuccess }) => {
+const TokenRemoveAuction = ({ data, show, onClose }) => {
 	const store = useStore()
 	const toast = useToast()
 	const { localeLn } = useIntl()

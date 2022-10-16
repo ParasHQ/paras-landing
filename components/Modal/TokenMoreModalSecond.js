@@ -1,4 +1,4 @@
-const TokenMoreModalSecond = ({ show, localToken, onClose, onShowTradeModal }) => {
+const TokenMoreModalSecond = ({ show, onShowTradeModal }) => {
 	if (!show) {
 		return null
 	}

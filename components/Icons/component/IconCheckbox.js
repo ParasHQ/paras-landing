@@ -1,7 +1,7 @@
 import React from 'react'
 import { iconDefaultProps } from '../IconProps'
 
-const IconCheckbox = ({ size, color, ...props }) => (
+const IconCheckbox = ({ size, ...props }) => (
 	<svg
 		width={size}
 		height={size}

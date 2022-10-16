@@ -9,9 +9,7 @@ import { useWalletSelector } from 'components/Common/WalletSelector'
 import useStore from 'lib/store'
 import JSBI from 'jsbi'
 import { sentryCaptureException } from 'lib/sentry'
-import { parseImgUrl } from 'utils/common'
 import Link from 'next/link'
-import Card from 'components/Card/Card'
 import { InputText } from 'components/Common/form'
 import Button from 'components/Common/Button'
 import { checkTokenUrl } from 'utils/common'
@@ -24,7 +22,7 @@ const TokenTradeModal = ({ data, show, onClose }) => {
 		setTransactionRes: state.setTransactionRes,
 	}))
 	const { signAndSendTransaction, signAndSendTransactions, viewFunction } = useWalletSelector()
-	const { errors, register, handleSubmit, watch } = useForm()
+	const { errors, register } = useForm()
 	const toast = useToast()
 
 	const [urlToken, setUrlToken] = useState(null)

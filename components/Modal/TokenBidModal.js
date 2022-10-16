@@ -4,7 +4,6 @@ import Button from 'components/Common/Button'
 import LoginModal from './LoginModal'
 import { GAS_FEE, STORAGE_ADD_MARKET_FEE } from 'config/constants'
 import { IconX } from 'components/Icons'
-import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import useStore from 'lib/store'
 import { useWalletSelector } from 'components/Common/WalletSelector'
@@ -19,7 +18,7 @@ import { InputText } from 'components/Common/form'
 
 const TokenBidModal = ({ show, data, onClose, onSuccess }) => {
 	const store = useStore()
-	const { errors, register, handleSubmit, watch, setValue } = useForm()
+	const { errors, register, handleSubmit } = useForm()
 	const { signAndSendTransaction, viewFunction } = useWalletSelector()
 	const { currentUser, userBalance, setTransactionRes } = useStore((state) => ({
 		currentUser: state.currentUser,

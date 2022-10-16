@@ -1,16 +1,13 @@
 import Button from 'components/Common/Button'
 import IconEmptyMoreCollection from 'components/Icons/component/IconEmptyMoreCollection'
 import React, { useEffect, useState } from 'react'
-import { IconDownArrow } from 'components/Icons'
-import CardTopRarityListLoader from 'components/Card/CardTopRarityListLoader'
-import router from 'next/router'
 import CardList from 'components/TokenSeries/CardList'
 import ParasRequest from 'lib/ParasRequest'
 import IconLoaderSecond from 'components/Icons/component/IconLoaderSecond'
 
 const LIMIT = 10
 
-const TokenMoreCollectionSecond = ({ localToken, className }) => {
+const TokenMoreCollectionSecond = ({ localToken }) => {
 	const [moreFromCollections, setMoreFromCollections] = useState([])
 	const [isLoading, setIsLoading] = useState(true)
 
