@@ -338,7 +338,7 @@ const Bid = ({ data, type, freshFetch }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						{`Successfully rejected of ${acceptOffer.token_id}`}
+						{`Successfully rejected of ${data.token_id}`}
 					</div>
 				),
 				type: 'success',

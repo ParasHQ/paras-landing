@@ -524,7 +524,7 @@ const TabOffers = ({ localToken }) => {
 			toast.show({
 				text: (
 					<div className="font-semibold text-center text-sm">
-						{`Successfully rejected of ${acceptOffer.token_id}`}
+						{`Successfully rejected of ${activeOffer.token_id}`}
 					</div>
 				),
 				type: 'success',
