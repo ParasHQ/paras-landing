@@ -276,16 +276,18 @@ const Offer = ({
 					)}
 					{!hideButton && data.buyer_id !== currentUser && isEnableForAccept && (
 						<>
-							{data.status === 'rejected' ? (
+							{data.status !== 'rejected' ? (
 								<div className="flex items-center gap-4">
-									<div>
-										<p
-											className="cursor-pointer hover:underline hover:text-neutral-300 hover:text-opacity-90"
-											onClick={() => onRejectOffer(data)}
-										>
-											Reject
-										</p>
-									</div>
+									{data.token_id && (
+										<div>
+											<p
+												className="cursor-pointer hover:underline hover:text-neutral-300 hover:text-opacity-90"
+												onClick={() => onRejectOffer(data)}
+											>
+												Reject
+											</p>
+										</div>
+									)}
 									<div>
 										<Button
 											size="sm"

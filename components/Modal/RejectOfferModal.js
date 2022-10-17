@@ -30,7 +30,7 @@ const RejectOfferModal = ({ onClose, token, data, isLoading, onSubmitForm }) => 
 						)}
 					</div>
 					<p className="text-white mt-4 text-sm text-center opacity-90 px-4">
-						<b>{data.buyer_id}</b> still possible to make another offer for
+						<b>{data.buyer_id}</b> {' still possible to make another offer for '}
 						{token.metadata.title}
 					</p>
 
