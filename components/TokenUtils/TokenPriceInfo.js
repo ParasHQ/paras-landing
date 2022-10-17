@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Media from 'components/Common/Media'
@@ -26,7 +25,6 @@ const TokenPriceInfo = ({
 	onShowRemoveAuction,
 }) => {
 	const { localeLn } = useIntl()
-	const router = useRouter()
 	const store = useStore()
 	const currentUser = store.currentUser
 
@@ -38,13 +36,6 @@ const TokenPriceInfo = ({
 	const [secs, setSecs] = useState('-')
 	const [historyBid, setHistoryBid] = useState([])
 	const [showBidderList, setShowBidderList] = useState(false)
-
-	useEffect(() => {
-		if (!localToken.is_auction) {
-			delete router.query.tab
-			router.push(router)
-		}
-	}, [localToken])
 
 	useEffect(() => {
 		let histBid = []
@@ -86,7 +77,7 @@ const TokenPriceInfo = ({
 				}
 			}
 		})
-	}, [localToken])
+	}, [isEndedTime])
 
 	const isCreator = () => {
 		if (!currentUser) {
