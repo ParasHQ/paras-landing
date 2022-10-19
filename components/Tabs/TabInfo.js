@@ -254,7 +254,16 @@ const TabInfo = ({ localToken, isNFT }) => {
 				</div>
 			)}
 			<div className="bg-gray-800 text-gray-100  mt-3 p-3 rounded-md shadow-md">
-				<p className="text-sm text-white font-bold mb-2">{localeLn('TokenInfo')}</p>
+				<div className="flex items-center justify-between mb-2">
+					<p className="text-sm text-white font-bold">{localeLn('TokenInfo')}</p>
+					{localToken.category_ids &&
+						localToken.category_ids?.filter((category) => category.includes('card4card'))[0] &&
+						localToken.is_bought && (
+							<div className="cursor-pointer relative flex rounded-md bg-primary bg-opacity-70 text-white py-1 px-2 text-xs">
+								Card already owned
+							</div>
+						)}
+				</div>
 				<div className="flex justify-between text-sm">
 					<p>Smart Contract</p>
 					<TokenInfoCopy text={localToken.contract_id} small />

@@ -78,6 +78,7 @@ const MarketPage = ({ serverQuery }) => {
 		setIsFiltering(true)
 		const params = tokensParams({
 			...(query || serverQuery),
+			account_id: currentUser,
 			liked_by: currentUser,
 		})
 		const res = await ParasRequest(`${process.env.V2_API_URL}/token-series`, {
@@ -114,6 +115,7 @@ const MarketPage = ({ serverQuery }) => {
 		}
 		setIsFetching(true)
 		const params = tokensParams({
+			account_id: currentUser,
 			...(router.query || serverQuery),
 			...(initialFetch
 				? { liked_by: currentUser }

@@ -118,6 +118,12 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 						<p className="text-white mt-4 text-sm text-center opacity-90 px-4">
 							{localeLn('RedirectedToconfirm')}
 						</p>
+						<div className="mt-4 p-3 w-full bg-[rgba(234,197,83,0.4)] rounded-md flex items-center justify-center">
+							<img src="/warningYellow.png" alt="" className="w-5 h-5 object-contain" />
+							<p className="mx-1 text-white font-light text-xs">
+								You already have another edition of this card
+							</p>
+						</div>
 						<div className="mt-6">
 							<Button
 								size="md"

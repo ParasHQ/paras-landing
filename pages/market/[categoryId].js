@@ -124,6 +124,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 
 		setIsFetching(true)
 		const params = tokensParams({
+			account_id: currentUser,
 			...(router.query || serverQuery),
 			..._page,
 		})

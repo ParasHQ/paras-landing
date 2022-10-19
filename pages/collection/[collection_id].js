@@ -294,6 +294,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 
 		params = {
 			...params,
+			account_id: currentUser,
 			collection_id: collectionId,
 			exclude_total_burn: true,
 			lookup_likes: true,

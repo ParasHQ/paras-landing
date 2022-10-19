@@ -846,7 +846,7 @@ const NewPage = () => {
 								</div>
 								<div className="">
 									<Button className="mt-4" onClick={uploadImageMetadata} isFullWidth>
-										{localeLn('Create')}
+										{router.query.category_id.includes('card4card') ? `Submit` : localeLn('Create')}
 									</Button>
 									<Button
 										variant="ghost"
@@ -1320,7 +1320,12 @@ const NewPage = () => {
 											ref={register({
 												required: true,
 												min: 1,
-												validate: (value) => Number.isInteger(Number(value)),
+												validate: {
+													roundedNumber: (value) => Number.isInteger(Number(value)),
+													...(router.query.category_id.includes('card4card') && {
+														c4cMore100Copies: (value) => Number(value) >= 100,
+													}),
+												},
 											})}
 											className={`${errors.supply && 'error'}`}
 											placeholder="Number of copies"
@@ -1332,7 +1337,12 @@ const NewPage = () => {
 											{errors.supply?.type === 'min' && 'Minimum 1 copy'}
 										</div>
 										<div className="mt-2 text-sm text-red-500">
-											{errors.supply?.type === 'validate' && 'Only use rounded number'}
+											{errors.supply?.type === 'roundedNumber' && 'Only use rounded number'}
+										</div>
+										<div className="mt-2 text-sm text-red-500">
+											{router.query.category_id.includes('card4card') &&
+												errors.supply?.type === 'c4cMore100Copies' &&
+												'Your edition must be at least 100 copies.'}
 										</div>
 									</div>
 									<div className="mt-4">
@@ -1450,6 +1460,11 @@ const NewPage = () => {
 														required: true,
 														min: 0,
 														max: 999999999,
+														...(router.query.category_id.includes('card4card') && {
+															validate: {
+																c4cMaxPrice: (v) => Number(v) <= 0.01,
+															},
+														}),
 													})}
 													className={errors.amount && 'error'}
 													placeholder="Card price per pcs"
@@ -1457,6 +1472,11 @@ const NewPage = () => {
 												<div className="font-bold absolute right-0 top-0 bottom-0 flex items-center justify-center">
 													<div className="pr-4">Ⓝ</div>
 												</div>
+											</div>
+											<div className="mt-2 text-sm text-red-500">
+												{router.query.category_id.includes('card4card') &&
+													errors.amount?.type === 'c4cMaxPrice' &&
+													'Your maximum price must be 0.01 Ⓝ'}
 											</div>
 											{store.nearUsdPrice !== 0 && (
 												<p>
