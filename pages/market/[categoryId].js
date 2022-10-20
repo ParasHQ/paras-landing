@@ -10,11 +10,11 @@ import CardListLoader from 'components/Card/CardListLoader'
 import { parseImgUrl, parseSortQuery, sanitizeHTML, setDataLocalStorage } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CategoryList from 'components/CategoryList'
-import AddCategoryModal from 'components/Modal/AddCategoryModal'
 import { useIntl } from 'hooks/useIntl'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import FilterMarket from 'components/Filter/FilterMarket'
 import FilterDisplay from 'components/Filter/FilterDisplay'
+import AddExistCardCategoryModal from 'components/Modal/AddExistCardCategoryModal'
 
 const LIMIT = 12
 
@@ -236,11 +236,10 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 			</Head>
 			<Nav />
 			{showAddModal && (
-				<AddCategoryModal
+				<AddExistCardCategoryModal
 					onClose={() => setShowAddModal(false)}
-					categoryName={categoryDetail.name}
-					categoryId={categoryId}
 					curators={categoryDetail.curators}
+					categoryId={categoryId}
 				/>
 			)}
 			<div className="max-w-6xl relative m-auto py-12">

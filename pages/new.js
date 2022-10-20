@@ -846,7 +846,9 @@ const NewPage = () => {
 								</div>
 								<div className="">
 									<Button className="mt-4" onClick={uploadImageMetadata} isFullWidth>
-										{router.query.category_id.includes('card4card') ? `Submit` : localeLn('Create')}
+										{router.query.category_id?.includes('card4card')
+											? `Submit`
+											: localeLn('Create')}
 									</Button>
 									<Button
 										variant="ghost"
@@ -1322,7 +1324,7 @@ const NewPage = () => {
 												min: 1,
 												validate: {
 													roundedNumber: (value) => Number.isInteger(Number(value)),
-													...(router.query.category_id.includes('card4card') && {
+													...(router.query.category_id?.includes('card4card') && {
 														c4cMore100Copies: (value) => Number(value) >= 100,
 													}),
 												},
@@ -1340,7 +1342,7 @@ const NewPage = () => {
 											{errors.supply?.type === 'roundedNumber' && 'Only use rounded number'}
 										</div>
 										<div className="mt-2 text-sm text-red-500">
-											{router.query.category_id.includes('card4card') &&
+											{router.query.category_id?.includes('card4card') &&
 												errors.supply?.type === 'c4cMore100Copies' &&
 												'Your edition must be at least 100 copies.'}
 										</div>
@@ -1460,7 +1462,7 @@ const NewPage = () => {
 														required: true,
 														min: 0,
 														max: 999999999,
-														...(router.query.category_id.includes('card4card') && {
+														...(router.query.category_id?.includes('card4card') && {
 															validate: {
 																c4cMaxPrice: (v) => Number(v) <= 0.01,
 															},
@@ -1474,7 +1476,7 @@ const NewPage = () => {
 												</div>
 											</div>
 											<div className="mt-2 text-sm text-red-500">
-												{router.query.category_id.includes('card4card') &&
+												{router.query.category_id?.includes('card4card') &&
 													errors.amount?.type === 'c4cMaxPrice' &&
 													'Your maximum price must be 0.01 Ⓝ'}
 											</div>
