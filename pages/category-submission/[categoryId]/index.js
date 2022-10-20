@@ -155,7 +155,7 @@ const CategorySubmission = () => {
 					!isReachingEnd && !isValidating && setSize(size + 1)
 				}
 			}
-	}, [submissionsData])
+	}, [submissionsData, size])
 
 	return (
 		<div className="min-h-screen bg-black">

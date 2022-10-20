@@ -239,6 +239,7 @@ const MarketPage = ({ serverQuery }) => {
 const tokensParams = (query) => {
 	const parsedSortQuery = parseSortQuery(query.sort)
 	const params = {
+		account_id: query.account_id,
 		exclude_total_burn: true,
 		__sort: parsedSortQuery,
 		__limit: LIMIT,

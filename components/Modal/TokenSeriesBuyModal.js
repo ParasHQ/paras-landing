@@ -14,6 +14,8 @@ import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from './BannedConfirmModal'
 import useStore from 'lib/store'
 import { useWalletSelector } from 'components/Common/WalletSelector'
+import useSWRImmutable from 'swr/immutable'
+import ParasRequest from 'lib/ParasRequest'
 
 const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
@@ -73,6 +75,21 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 		}
 	}
 
+	const { data: ownedToken } = useSWRImmutable(
+		data && currentUser
+			? {
+					contract_id: data.contract_id,
+					token_series_id: data.token_series_id,
+					owner_id: currentUser,
+			  }
+			: null,
+		(key) => {
+			return ParasRequest.get(`${process.env.V2_API_URL}/token`, {
+				params: key,
+			})
+		}
+	)
+
 	return (
 		<>
 			<Modal isShow={show} closeOnBgClick={false} closeOnEscape={false} close={onClose}>
@@ -118,12 +135,15 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 						<p className="text-white mt-4 text-sm text-center opacity-90 px-4">
 							{localeLn('RedirectedToconfirm')}
 						</p>
-						<div className="mt-4 p-3 w-full bg-[rgba(234,197,83,0.4)] rounded-md flex items-center justify-center">
-							<img src="/warningYellow.png" alt="" className="w-5 h-5 object-contain" />
-							<p className="mx-1 text-white font-light text-xs">
-								You already have another edition of this card
-							</p>
-						</div>
+						{data.category_ids?.filter((category) => category.includes('card4card'))[0] &&
+							(data.is_bought || ownedToken?.data.data.results[0]) && (
+								<div className="mt-4 p-3 w-full bg-[rgba(234,197,83,0.4)] rounded-md flex items-center justify-center">
+									<img src="/warningYellow.png" alt="" className="w-5 h-5 object-contain" />
+									<p className="mx-1 text-white font-light text-xs">
+										You already have another edition of this card
+									</p>
+								</div>
+							)}
 						<div className="mt-6">
 							<Button
 								size="md"

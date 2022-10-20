@@ -615,7 +615,7 @@ const TokenSeriesSingle = ({
 						)}
 						{token.category_ids &&
 							token.category_ids?.filter((category) => category.includes('card4card'))[0] &&
-							(token.is_bought || ownedToken?.data.data.results.length !== 0) && (
+							(token.is_bought || ownedToken?.data.data.results[0]) && (
 								<div
 									className="cursor-pointer relative"
 									onMouseOver={() => setShowC4cTooltip(true)}

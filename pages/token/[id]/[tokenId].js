@@ -25,6 +25,7 @@ const TokenPage = ({ errorCode, initial }) => {
 		params: {
 			lookup_likes: true,
 			liked_by: currentUser,
+			account_id: currentUser,
 		},
 	})
 	const [isEndedTime, setIsEndedTime] = useState(false)

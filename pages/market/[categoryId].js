@@ -66,7 +66,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 				setCategoryDetail(detail)
 			}
 		}
-	}, [categoryId])
+	}, [categoryId, currentUser])
 
 	useEffect(() => {
 		if (
@@ -365,6 +365,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 const tokensParams = (query) => {
 	const parsedSortQuery = parseSortQuery(query.sort)
 	const params = {
+		account_id: query.account_id,
 		category_id: query.categoryId,
 		exclude_total_burn: true,
 		__sort: parsedSortQuery,

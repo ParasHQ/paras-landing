@@ -34,6 +34,7 @@ import IconLove from 'components/Icons/component/IconLove'
 import axios from 'axios'
 import ParasRequest from 'lib/ParasRequest'
 import { mutate } from 'swr'
+import useSWRImmutable from 'swr/immutable'
 import { Canvas } from '@react-three/fiber'
 import { Model1 } from 'components/Model3D/ThreeDModel'
 import FileType from 'file-type/browser'
@@ -158,6 +159,21 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 			</div>
 		)
 	}
+
+	const { data: ownedToken } = useSWRImmutable(
+		token && currentUser
+			? {
+					contract_id: token.contract_id,
+					token_series_id: token.token_series_id,
+					owner_id: currentUser,
+			  }
+			: null,
+		(key) => {
+			return ParasRequest.get(`${process.env.V2_API_URL}/token`, {
+				params: key,
+			})
+		}
+	)
 
 	const onDismissModal = () => {
 		setShowModal(null)
@@ -569,7 +585,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 								</h1>
 								{token.category_ids &&
 									token.category_ids?.filter((category) => category.includes('card4card'))[0] &&
-									token.is_bought && (
+									(token.is_bought || ownedToken?.data.data.results[0]) && (
 										<div
 											className="cursor-pointer relative"
 											onMouseOver={() => setShowC4cTooltip(true)}
