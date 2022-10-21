@@ -278,7 +278,7 @@ const Offer = ({
 						<>
 							{data.status !== 'rejected' ? (
 								<div className="flex items-center gap-4">
-									{data.token_id && (
+									{data.token_id && (!data.type || data.type !== 'trade') && (
 										<div>
 											<p
 												className="cursor-pointer hover:underline hover:text-neutral-300 hover:text-opacity-90"

@@ -833,7 +833,7 @@ const Bid = ({ data, type, freshFetch }) => {
 								<>
 									{data.status !== 'rejected' ? (
 										<div className="flex items-center gap-4">
-											{data.token_id && (
+											{(data.token_id && (!data.type || data.type !== 'trade'))(
 												<div>
 													<p
 														className="cursor-pointer text-white hover:underline hover:text-neutral-300 hover:text-opacity-90"
