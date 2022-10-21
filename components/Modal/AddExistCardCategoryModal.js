@@ -36,22 +36,12 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 		return res.data.data
 	}
 
-	// const fetchTokens = async (key) => {
-	// 	const res = await ParasRequest.get(`${process.env.V2_API_URL}/token-series`, { params: key })
-	// 	return res.data.data.results
-	// }
-
 	const isDisabledSubmit = !agreement || selectedTokens.length === 0 || isSubmitting
 
 	const { data: _tokens } = useSWRImmutable(
 		currentUser ? { account_id: currentUser } : null,
 		fetchTokens
 	)
-
-	// const { data: _tokens } = useSWRImmutable(
-	// 	currentUser ? getKeyTokensNonInfinite : null,
-	// 	fetchTokens
-	// )
 
 	const onSelected = () => {
 		setSelectedTokens(
@@ -121,14 +111,16 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 	}
 
 	useEffect(() => {
-		const tokenTemp = _tokens?.flatMap((data) => data?.data.map((token) => token))
+		const tokenTemp = _tokens
+			?.filter((data) => data.data.length > 0)
+			.flatMap((data) => data?.data?.map((token) => token))
 		const collTemp = _tokens?.map((data) => ({
 			collection: data?.collection,
 			collection_id: data?.collection_id,
 		}))
-		setTokens(tokenTemp)
-		setAllTokens(tokenTemp)
-		setCollections(collTemp)
+		setTokens(tokenTemp || [])
+		setAllTokens(tokenTemp || [])
+		setCollections(collTemp || [])
 	}, [_tokens])
 
 	return (
@@ -142,12 +134,12 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 						<IconX className="cursor-pointer" />
 					</div>
 				</div>
-				<div className="mt-2 opacity-75 text-[11px] md:text-sm">
+				<div className="mt-2 text-opacity-75 text-[11px] md:text-sm">
 					Curators will review your card submission. Only cards that meet the Card4Card requirements
 					are displayed.
 				</div>
 				{selectedTokens.length > 0 && (
-					<div className="mt-4 opacity-75 text-[11px] md:text-sm">
+					<div className="mt-4 text-opacity-75 text-[11px] md:text-sm">
 						<p>Your selected card(s)</p>
 						<div className="grid grid-cols-4 md:grid-cols-5 border rounded-md p-2 gap-2 max-h-[160px] overflow-y-scroll">
 							{selectedTokens.map((selected, index) => {
@@ -170,8 +162,11 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 						</div>
 					</div>
 				)}
-				<div className="mt-4 text-gray-100 opacity-75">
+				<div className="mt-4 text-gray-100 text-opacity-75">
 					<div className="flex items-center justify-between">
+						{tooltipCollection && (
+							<div className="fixed inset-0 z-10" onClick={() => setTooltipCollection(false)} />
+						)}
 						<div className="flex items-center cursor-pointer relative z-20">
 							<div
 								className="flex items-center justify-between space-x-2 min-w-[100px]"
@@ -183,12 +178,16 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 							{tooltipCollection && (
 								<div
 									id="filterCollections"
-									className="absolute z-20 bg-cyan-blue-1 top-full mt-2 left-0 max-h-[216px] overflow-y-scroll rounded-md text-sm min-w-[180px]"
+									className="absolute z-20 bg-cyan-blue-1 top-full mt-2 left-0 max-h-[200px] overflow-y-scroll rounded-md text-sm min-w-[180px]"
 								>
 									<div
 										className="p-3 hover:bg-gray-500 cursor-pointer flex items-center whitespace-nowrap"
 										onClick={() => {
-											setTokens(AllTokens)
+											setTokens(
+												AllTokens.filter(
+													(token) => !selectedTokens.map((data) => data._id).includes(token._id)
+												)
+											)
 											setFilterCollection('All Collections')
 										}}
 									>
@@ -202,6 +201,11 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 													`p-3 hover:bg-gray-500 cursor-pointer flex items-center whitespace-nowrap`
 												)}
 												onClick={() => {
+													setTokens(
+														AllTokens.filter(
+															(token) => !selectedTokens.map((data) => data._id).includes(token._id)
+														)
+													)
 													setTokens((tokens) =>
 														tokens.filter((token) => token.metadata.collection === coll.collection)
 													)
@@ -214,23 +218,41 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 								</div>
 							)}
 						</div>
-						<div className="flex items-center underline cursor-pointer" onClick={onSelected}>
-							Select
-						</div>
+						{tokens?.length > 0 && (
+							<div className="flex items-center underline cursor-pointer" onClick={onSelected}>
+								Select
+							</div>
+						)}
 					</div>
 					{tokens?.length === 0 ? (
 						<div className="flex items-center justify-center h-[200px] w-full text-xs">
 							<div className="flex flex-col items-center">
 								<IconEmptyCardSubmitCategory size={63} />
-								<p className="text-center mt-2 w-52">
-									You don&apos;t have a card that meets the{` `}
-									<a href="">
-										<span className="underline cursor-pointer">Card4Card requirements.</span>
-									</a>
-								</p>
-								<Link href={`/new`}>
-									<p className="mt-4 text-center underline cursor-pointer">Submit New Card?</p>
-								</Link>
+								{tokens.length === 0 ? (
+									<>
+										{tokens.filter((token) => token.metadata.collection === filterCollection)
+											.length === 0 && (
+											<p className="text-center mt-2 w-52">
+												This Collection does not contain any cards that meets the{` `}
+												<a href="">
+													<span className="underline cursor-pointer">Card4Card requirements.</span>
+												</a>
+											</p>
+										)}
+									</>
+								) : (
+									<>
+										<p className="text-center mt-2 w-52">
+											You don&apos;t have a card that meets the{` `}
+											<a href="">
+												<span className="underline cursor-pointer">Card4Card requirements.</span>
+											</a>
+										</p>
+										<Link href={`/new`}>
+											<p className="mt-4 text-center underline cursor-pointer">Submit New Card?</p>
+										</Link>
+									</>
+								)}
 							</div>
 						</div>
 					) : (
@@ -260,7 +282,7 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 						</div>
 					)}
 				</div>
-				<div className="mt-4 text-gray-100 opacity-75 flex items-center space-x-4">
+				<div className="mt-4 text-gray-100 text-opacity-75 flex items-center space-x-4">
 					<input
 						id="agreement"
 						type="checkbox"

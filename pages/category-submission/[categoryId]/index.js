@@ -40,12 +40,12 @@ const CategorySubmission = () => {
 			__skip: index * LIMIT,
 			...(sortAttributes === 'recent' && { __sort: 'issued_at::-1' }),
 			...(sortAttributes === 'latest' && { __sort: 'issued_at::1' }),
-			...(sortAttributes === 'az' && { __sort: 'token.metadata.title::1' }),
-			...(sortAttributes === 'za' && { __sort: 'token.metadata,title::-1' }),
+			...(sortAttributes === 'az' && { __sort: 'token_series.metadata.title::1' }),
+			...(sortAttributes === 'za' && { __sort: 'token_series.metadata.title::-1' }),
 			...(sortAttributes === 'lowest_price' && { __sort: 'token_series.price::1' }),
 			...(sortAttributes === 'highest_price' && { __sort: 'token_series.price::-1' }),
-			...(sortAttributes === 'lowest_amount' && { __sort: 'token.metadata.copies::1' }),
-			...(sortAttributes === 'highest_amount' && { __sort: 'token.metadata.copies::-1' }),
+			...(sortAttributes === 'lowest_amount' && { __sort: 'token_series.metadata.copies::1' }),
+			...(sortAttributes === 'highest_amount' && { __sort: 'token_series.metadata.copies::-1' }),
 		}
 		if (index === 0) return params
 		const lastData = prevData[prevData.length - 1]
