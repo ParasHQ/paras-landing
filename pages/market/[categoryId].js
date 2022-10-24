@@ -15,6 +15,7 @@ import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import FilterMarket from 'components/Filter/FilterMarket'
 import FilterDisplay from 'components/Filter/FilterDisplay'
 import AddExistCardCategoryModal from 'components/Modal/AddExistCardCategoryModal'
+import AddCategoryModal from 'components/Modal/AddCategoryModal'
 
 const LIMIT = 12
 
@@ -235,13 +236,21 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 				/>
 			</Head>
 			<Nav />
-			{showAddModal && (
-				<AddExistCardCategoryModal
-					onClose={() => setShowAddModal(false)}
-					curators={categoryDetail.curators}
-					categoryId={categoryId}
-				/>
-			)}
+			{showAddModal &&
+				(categoryId.includes('card4card') ? (
+					<AddExistCardCategoryModal
+						onClose={() => setShowAddModal(false)}
+						curators={categoryDetail.curators}
+						categoryId={categoryId}
+					/>
+				) : (
+					<AddCategoryModal
+						onClose={() => setShowAddModal(false)}
+						curators={categoryDetail.curators}
+						categoryName={categoryDetail.name}
+						categoryId={categoryId}
+					/>
+				))}
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="grid grid-cols-3 mb-4">
 					<h1 className="col-start-1 md:col-start-2 col-span-2 md:col-span-1 pl-5 md:pl-0 text-4xl font-bold text-gray-100 text-left md:text-center">
