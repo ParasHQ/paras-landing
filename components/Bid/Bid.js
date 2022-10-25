@@ -817,9 +817,11 @@ const Bid = ({ data, type, freshFetch }) => {
 									<p className="opacity-75">{prettyTruncate(token?.metadata?.collection, 30)}</p>
 									<div className="mt-4 mb-6">
 										{store.currentUser !== data.buyer_id
-											? `You received ${prettyBalance(data.price, 24, 4)} Ⓝ offer from ${
-													data.buyer_id
-											  }`
+											? `You received ${prettyBalance(
+													data.price,
+													24,
+													4
+											  )} Ⓝ offer from ${prettyTruncate(data.buyer_id, 20, 'address')}`
 											: `You offer ${prettyBalance(data.price, 24, 4)} Ⓝ`}
 									</div>
 									<p className="mt-2 text-sm opacity-50 mb-6 md:mb-0">
@@ -833,7 +835,7 @@ const Bid = ({ data, type, freshFetch }) => {
 								<>
 									{data.status !== 'rejected' ? (
 										<div className="flex items-center gap-4">
-											{(data.token_id && (!data.type || data.type !== 'trade'))(
+											{data.token_id && (!data.type || data.type !== 'trade') && (
 												<div>
 													<p
 														className="cursor-pointer text-white hover:underline hover:text-neutral-300 hover:text-opacity-90"
