@@ -22,7 +22,6 @@ const CategorySubmission = () => {
 	const LIMIT = 8
 	const [submissions, setSubmissions] = useState(null)
 	const [selectedSubmissions, setSelectedSubmissions] = useState({})
-	const [selectedAllSubmissions, setSelectedAllSubmissions] = useState(false)
 	const [showMultipleModal, setShowMultipleModal] = useState('')
 	const [isMultipleLoading, setIsMultipleLoading] = useState(false)
 	const [sortAttributes, setSortAttributes] = useState('')
@@ -128,7 +127,11 @@ const CategorySubmission = () => {
 	const onSubmitMultipleSubmission = async (type) => {
 		setIsMultipleLoading(true)
 		const params = submissionsData
-			.filter((submission) => Object.keys(selectedSubmissions).includes(submission._id))
+			.filter(
+				(submission) =>
+					Object.keys(selectedSubmissions).includes(submission._id) &&
+					selectedSubmissions[submission._id] === true
+			)
 			.map((submission) => {
 				return {
 					contract_id: submission.contract_id,
@@ -195,8 +198,7 @@ const CategorySubmission = () => {
 					{categoryId && categoryId.split('-').join(' ')}
 				</div>
 				<div className="flex items-center justify-end mt-4 space-x-2 flex-wrap">
-					{(Object.keys(selectedSubmissions).some((selected) => selectedSubmissions[selected]) ||
-						selectedAllSubmissions) && (
+					{Object.keys(selectedSubmissions).some((selected) => selectedSubmissions[selected]) && (
 						<>
 							<Button size="md" variant="primary" onClick={() => setShowMultipleModal('accept')}>
 								{localeLn('Accept')}
@@ -207,9 +209,9 @@ const CategorySubmission = () => {
 						</>
 					)}
 					<SelectAllSubmission
+						submissionsData={submissionsData}
+						selectedSubmissions={selectedSubmissions}
 						setSelectedSubmissions={setSelectedSubmissions}
-						selectedAllSubmissions={selectedAllSubmissions}
-						setSelectedAllSubmissions={setSelectedAllSubmissions}
 					/>
 					<SortBySubmission sortAttributes={sortAttributes} setSortAttributes={setSortAttributes} />
 				</div>
@@ -222,7 +224,6 @@ const CategorySubmission = () => {
 									updateData={updateSubmissionData}
 									selectedSubmissions={selectedSubmissions}
 									setSelectedSubmissions={setSelectedSubmissions}
-									selectedAllSubmissions={selectedAllSubmissions}
 								/>
 							</div>
 						))}
@@ -245,7 +246,6 @@ const SubmissionDetail = ({
 	updateData,
 	selectedSubmissions,
 	setSelectedSubmissions,
-	selectedAllSubmissions,
 }) => {
 	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
@@ -331,7 +331,7 @@ const SubmissionDetail = ({
 						type="checkbox"
 						className="w-4 h-4 my-auto mr-1"
 						onChange={() => handleSelect(submission._id)}
-						checked={selectedAllSubmissions || selectedSubmissions[submission._id] === true}
+						checked={selectedSubmissions[submission._id] === true}
 					/>
 				</div>
 				<div className="w-full md:w-40 md:mr-6">
