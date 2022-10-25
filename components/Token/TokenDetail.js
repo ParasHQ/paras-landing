@@ -76,7 +76,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 	}, [JSON.stringify(token)])
 
 	useEffect(() => {
-		setActiveTab('info')
+		if (isAuctionEnds) setActiveTab('info')
 	}, [isAuctionEnds])
 
 	const _showInfoUpdatingAuction = () => {
@@ -108,11 +108,6 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 			getIframe()
 		}
 	}, [])
-
-	useEffect(() => {
-		setActiveTab('info')
-		setTokenDisplay('detail')
-	}, [router.query.tokenId])
 
 	useEffect(() => {
 		const viewGetOffer = async () => {
