@@ -20,7 +20,6 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 	const toast = useToast()
 	const [filterCollection, setFilterCollection] = useState('All Collections')
 	const [tooltipCollection, setTooltipCollection] = useState(false)
-	const [tempSelectedTokens, setTempSelectedTokens] = useState({})
 	const [selectedTokens, setSelectedTokens] = useState([])
 	const [AllTokens, setAllTokens] = useState([])
 	const [tokens, setTokens] = useState([])
@@ -43,36 +42,19 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 		fetchTokens
 	)
 
-	const onSelected = () => {
-		setSelectedTokens(
-			selectedTokens.concat(
-				tokens.filter((token) => {
-					const tempArr = Object.keys(tempSelectedTokens)
-					return tempSelectedTokens[token._id] === true && tempArr.includes(token._id)
-				})
-			)
-		)
-		setTokens((prev) =>
-			prev.filter((token) => {
-				const tempArr = Object.keys(tempSelectedTokens)
-				return tempSelectedTokens[token._id] === false || !tempArr.includes(token._id)
-			})
-		)
-		setTempSelectedTokens({})
+	const onSelectAll = (e) => {
+		if (e.target.checked) setSelectedTokens(tokens)
+		else setSelectedTokens([])
 	}
 
-	const onRemoveSelected = (id) => {
-		let temp = [...selectedTokens]
-		temp = temp.filter((token) => token._id !== id)
-		setSelectedTokens(temp)
-		setTokens(tokens.concat(selectedTokens.filter((token) => token._id === id)))
+	const onSelectOne = (token) => {
+		if (!selectedTokens.filter((data) => data._id === token._id)[0])
+			setSelectedTokens((prev) => [...prev, token])
+		else setSelectedTokens((prev) => prev.filter((data) => data._id !== token._id))
 	}
 
-	const onToBeSelected = (_id) => {
-		setTempSelectedTokens((prev) => ({
-			...prev,
-			[_id]: !prev[_id],
-		}))
+	const onRemoveOne = (token) => {
+		setSelectedTokens((prev) => prev.filter((data) => data._id !== token._id))
 	}
 
 	const handleSubmit = async () => {
@@ -141,7 +123,7 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 				{selectedTokens.length > 0 && (
 					<div className="mt-4 text-opacity-75 text-[11px] md:text-sm">
 						<p>Your selected card(s)</p>
-						<div className="grid grid-cols-4 md:grid-cols-5 border rounded-md p-2 gap-2 max-h-[160px] overflow-y-scroll">
+						<div className="grid grid-cols-4 md:grid-cols-5 border rounded-md p-2 gap-2 max-h-[160px] overflow-y-auto">
 							{selectedTokens.map((selected, index) => {
 								return (
 									<div key={index} className="w-16 h-16 mx-auto relative">
@@ -152,7 +134,7 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 										/>
 										<div
 											className="absolute w-5 h-5 rounded-full bg-white bg-opacity-40 -top-1 -right-1 flex items-center justify-center pl-[2px] pt-[2px] cursor-pointer"
-											onClick={() => onRemoveSelected(selected._id)}
+											onClick={() => onRemoveOne(selected)}
 										>
 											<IconX size={18} color="white" />
 										</div>
@@ -219,8 +201,15 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 							)}
 						</div>
 						{tokens?.length > 0 && (
-							<div className="flex items-center underline cursor-pointer" onClick={onSelected}>
-								Select
+							<div className="flex items-center">
+								<input
+									id="selectAllExisting"
+									type="checkbox"
+									className="w-4 h-4 my-auto mr-1"
+									onChange={(e) => onSelectAll(e)}
+									checked={selectedTokens.length === tokens.length}
+								/>
+								<label htmlFor="selectAllExisting">Select All</label>
 							</div>
 						)}
 					</div>
@@ -258,13 +247,13 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 					) : (
 						<div
 							id="existingCardCategory"
-							className="mt-2 grid grid-cols-3 md:grid-cols-5 gap-2 w-full max-h-[230px] overflow-y-scroll"
+							className="mt-2 grid grid-cols-3 md:grid-cols-5 gap-2 w-full max-h-[230px] overflow-y-auto"
 						>
 							{tokens?.map((token, idx) => (
 								<div
 									key={idx}
 									className="w-20 h-20 mx-auto relative cursor-pointer"
-									onClick={() => onToBeSelected(token?._id)}
+									onClick={() => onSelectOne(token)}
 								>
 									<img
 										src={parseImgUrl(token?.metadata?.media)}
@@ -273,10 +262,17 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 									/>
 									<div
 										className={clsx(
-											`w-4 h-4 rounded-full border border-white absolute top-1 right-1`,
-											tempSelectedTokens[token?._id] ? `bg-primary` : ``
+											`w-4 h-4 z-10 rounded-full border border-white text-white text-[10px] absolute top-1 right-1 flex items-center justify-center`,
+											selectedTokens.filter((data) => data._id === token._id)[0] ? `bg-primary` : ``
 										)}
-									/>
+									>
+										{selectedTokens.filter((data) => data._id === token._id)[0]
+											? `${selectedTokens.findIndex((data) => data._id === token._id) + 1}`
+											: ``}
+									</div>
+									{selectedTokens.filter((data) => data._id === token._id)[0] && (
+										<div className="absolute inset-0 bg-black bg-opacity-60" />
+									)}
 								</div>
 							))}
 						</div>

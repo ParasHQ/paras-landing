@@ -172,24 +172,23 @@ const CategorySubmission = () => {
 					backgroundSize: 'cover',
 				}}
 			></div>
-			{showMultipleModal === 'accept' && (
+			{showMultipleModal !== '' && (
 				<SubmissionSubmitModal
-					type="accept"
-					multiple
+					type={showMultipleModal}
+					multiple={
+						Object.keys(selectedSubmissions).filter((data) => selectedSubmissions[data]).length > 1
+					}
 					onClose={() => setShowMultipleModal('')}
 					categoryId={categoryId}
 					isLoading={isMultipleLoading}
 					onSubmitSubmission={onSubmitMultipleSubmission}
-				/>
-			)}
-			{showMultipleModal === 'reject' && (
-				<SubmissionSubmitModal
-					type="reject"
-					multiple
-					onClose={() => setShowMultipleModal('')}
-					categoryId={categoryId}
-					isLoading={isMultipleLoading}
-					onSubmitSubmission={onSubmitMultipleSubmission}
+					token={
+						submissionsData.filter(
+							(data) =>
+								data._id ===
+								Object.keys(selectedSubmissions).filter((data) => selectedSubmissions[data])[0]
+						)[0]?.token_series
+					}
 				/>
 			)}
 			<div className="max-w-6xl relative m-auto p-4">
@@ -302,19 +301,9 @@ const SubmissionDetail = ({
 
 	return (
 		<>
-			{showModal === 'accept' && (
+			{showModal !== '' && (
 				<SubmissionSubmitModal
-					type="accept"
-					onClose={() => setShowModal('')}
-					categoryId={submission.category_id}
-					isLoading={isLoading}
-					onSubmitSubmission={onSubmitSubmission}
-					token={localToken}
-				/>
-			)}
-			{showModal === 'reject' && (
-				<SubmissionSubmitModal
-					type="reject"
+					type={showModal}
 					onClose={() => setShowModal('')}
 					categoryId={submission.category_id}
 					isLoading={isLoading}

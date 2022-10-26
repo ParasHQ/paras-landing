@@ -20,7 +20,7 @@ const SubmissionSubmitModal = ({
 				<div className="mb-6 m-auto text-gray-400">
 					<span>{type === 'accept' ? `You are going to accept ` : localeLn('GoingToReject')} </span>
 					<span className="font-bold text-white">
-						{multiple ? `multiple selected cards` : token?.metadata.title}
+						{multiple ? `multiple selected cards` : token?.metadata?.title}
 					</span>
 					<span>
 						{' '}
