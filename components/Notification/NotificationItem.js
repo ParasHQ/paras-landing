@@ -300,7 +300,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 	if (notif.type === 'notification_rejected') {
 		return (
 			<div>
-				<Link href={url}>
+				<Link href={`${url}?tab=offers`}>
 					<a>
 						<div
 							className="cursor-pointer notification-item"
