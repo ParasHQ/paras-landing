@@ -270,6 +270,127 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		)
 	}
 
+	if (notif.type === 'notification_confirm_rejection') {
+		return (
+			<div>
+				<Link href={url}>
+					<a>
+						<div
+							className="cursor-pointer notification-item"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={token.metadata?.media} />
+							<div className="pl-2 text-gray-300">
+								{'You have rejected '}
+								<span className="font-medium text-gray-100">
+									{prettyTruncate(notif.from, 14, 'address')}
+								</span>
+								<span className="font-medium text-gray-100">{notif.price}</span>
+								{' offer for '}
+								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
+							</div>
+							<NotificationTime time={notif.issued_at} />
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_rejected') {
+		return (
+			<div>
+				<Link href={`${url}?tab=offers`}>
+					<a>
+						<div
+							className="cursor-pointer notification-item"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={token.metadata?.media} />
+							<div className="pl-2 text-gray-300">
+								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
+								{' that you offered has been rejected by '}
+								<span className="font-medium text-gray-100">
+									{prettyTruncate(token.owner_id, 14, 'address')}
+								</span>
+								<span className="font-xs">{' Please update or cancel your offer'}</span>
+							</div>
+							<NotificationTime time={notif.issued_at} />
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_offer_card_has_been_sold') {
+		return (
+			<div>
+				<Link href={url}>
+					<a>
+						<div
+							className="cursor-pointer notification-item"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={token.metadata?.media} />
+							<div className="pl-2 text-gray-300">
+								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
+								{' has been sold by '}
+								<span className="font-semibold">{prettyTruncate(notif.to, 14, 'address')}</span>
+							</div>
+							<NotificationTime time={notif.issued_at} />
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_offer_reminder_seller') {
+		return (
+			<div>
+				<Link href={url}>
+					<a>
+						<div
+							className="cursor-pointer notification-item"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={token.metadata?.media} />
+							<div className="pl-2 text-gray-300">
+								{'your has not decided on the offers received of '}
+								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
+								{' (more than 14 days)'}
+							</div>
+							<NotificationTime time={notif.issued_at} />
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_offer_reminder_buyer') {
+		return (
+			<div>
+				<Link href={url}>
+					<a>
+						<div
+							className="cursor-pointer notification-item"
+							onClick={() => notificationModal(false)}
+						>
+							<NotificationImage media={token.metadata?.media} />
+							<div className="pl-2 text-gray-300">
+								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
+								{' the artist has not decided on the offers received (more than 7 days)'}
+							</div>
+							<NotificationTime time={notif.issued_at} />
+						</div>
+					</a>
+				</Link>
+			</div>
+		)
+	}
+
 	// Commented since there are changes in the PRD
 	//
 	// if (notif.type === 'notification_raffle_begin') {

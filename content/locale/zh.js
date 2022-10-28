@@ -195,6 +195,7 @@ const CardInfo = {
 	NotAllowedToBuy:
 		'You are not allowed to buy this card at the moment. Only whitelisted account can buy this card',
 	AboutToAcceptBid: '您即将接受报价',
+	AboutToRejectOffer: '您即将拒绝来自',
 	From: '从',
 	RoyaltyForArtist: '艺术家版税',
 	ServiceFee: '服务费',
