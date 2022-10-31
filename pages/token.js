@@ -27,10 +27,9 @@ export default function Home() {
 	const store = useStore()
 	const { viewFunction } = useWalletSelector()
 
-	useEffect(async () => {
+	useEffect(() => {
 		const getFarms = async () => {
 			try {
-				console.log('masuk')
 				const poolList = await viewFunction({
 					receiverId: process.env.FARM_CONTRACT_ID,
 					methodName: 'list_seeds_info',
@@ -39,13 +38,6 @@ export default function Home() {
 						limit: 1,
 					},
 				})
-				// const poolList = await near.wallet
-				// 	.account()
-				// 	.viewFunction(process.env.FARM_CONTRACT_ID, `list_seeds_info`, {
-				// 		from_index: 0,
-				// 		limit: 1,
-				// 	})
-				console.log('poolList', poolList)
 
 				const data = poolList[process.env.PARAS_TOKEN_CONTRACT]
 
