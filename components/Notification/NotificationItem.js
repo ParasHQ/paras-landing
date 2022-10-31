@@ -357,7 +357,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-300">
-								{'your has not decided on the offers received of '}
+								{'you has not decided on the offers received of '}
 								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
 								{' (more than 14 days)'}
 							</div>
