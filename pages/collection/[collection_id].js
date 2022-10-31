@@ -599,7 +599,9 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						className="absolute top-0 left-0 w-full h-36 md:h-72 bg-center bg-cover bg-dark-primary-2"
 						style={{
 							backgroundImage: `url(${parseImgUrl(
-								collection.cover ? collection.cover : collection.image
+								collection.cover ? collection.cover : collection.image,
+								undefined,
+								{ width: 1500, seeDetails: true }
 							)})`,
 						}}
 					/>

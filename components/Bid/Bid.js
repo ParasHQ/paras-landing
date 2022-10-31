@@ -29,6 +29,9 @@ import ReactCardFlip from 'react-card-flip'
 import { flagColor, flagText } from 'constants/flag'
 import BannedConfirmModal from 'components/Modal/BannedConfirmModal'
 import { useWalletSelector } from 'components/Common/WalletSelector'
+import Button from 'components/Common/Button'
+import RejectOfferModal from 'components/Modal/RejectOfferModal'
+import ParasRequest from 'lib/ParasRequest'
 
 const Bid = ({ data, type, freshFetch }) => {
 	const store = useStore()
@@ -36,6 +39,7 @@ const Bid = ({ data, type, freshFetch }) => {
 	const [token, setToken] = useState(null)
 	const [showModal, setShowModal] = useState('')
 	const [isEnableForAccept, setIsEnableForAccept] = useState(true)
+	const [isRejectingOffer, setIsRejectingOffer] = useState(false)
 	const isNFTTraded = data?.type && data?.type === 'trade'
 
 	const [isOwned, setIsOwned] = useState(false)
@@ -322,6 +326,38 @@ const Bid = ({ data, type, freshFetch }) => {
 		}
 	}
 
+	const rejectOffer = async () => {
+		try {
+			setIsRejectingOffer(true)
+			await ParasRequest.post(`${process.env.V2_API_URL}/offers/reject`, {
+				contract_id: data.contract_id,
+				buyer_id: data.buyer_id,
+				token_id: data.token_id,
+			})
+
+			toast.show({
+				text: (
+					<div className="font-semibold text-center text-sm">
+						{`Successfully rejected of ${data.token_id}`}
+					</div>
+				),
+				type: 'success',
+				duration: 2500,
+			})
+			setShowModal(null)
+		} catch (err) {
+			sentryCaptureException(err)
+			const msg = err.response?.data?.message || `Something went wrong, try again later`
+			toast.show({
+				text: <div className="font-semibold text-center text-sm">{msg}</div>,
+				type: 'error',
+				duration: 2500,
+			})
+			setIsRejectingOffer(false)
+			return
+		}
+	}
+
 	const acceptTrade = async () => {
 		const [, tradeType, tokenId] = isOwned.split('::')
 		const params = {
@@ -475,6 +511,16 @@ const Bid = ({ data, type, freshFetch }) => {
 					token={token}
 					storageFee={storageFee}
 					onSubmitForm={acceptOffer}
+				/>
+			)}
+			{showModal === 'rejectBid' && (
+				<RejectOfferModal
+					show={showModal === 'buy'}
+					onClose={() => setShowModal('')}
+					token={token}
+					data={data}
+					onSubmitForm={rejectOffer}
+					isLoading={isRejectingOffer}
 				/>
 			)}
 			{showModal === 'updateBid' && (
@@ -771,9 +817,11 @@ const Bid = ({ data, type, freshFetch }) => {
 									<p className="opacity-75">{prettyTruncate(token?.metadata?.collection, 30)}</p>
 									<div className="mt-4 mb-6">
 										{store.currentUser !== data.buyer_id
-											? `You received ${prettyBalance(data.price, 24, 4)} Ⓝ offer from ${
-													data.buyer_id
-											  }`
+											? `You received ${prettyBalance(
+													data.price,
+													24,
+													4
+											  )} Ⓝ offer from ${prettyTruncate(data.buyer_id, 20, 'address')}`
 											: `You offer ${prettyBalance(data.price, 24, 4)} Ⓝ`}
 									</div>
 									<p className="mt-2 text-sm opacity-50 mb-6 md:mb-0">
@@ -784,27 +832,52 @@ const Bid = ({ data, type, freshFetch }) => {
 						</div>
 						<div className="flex flex-col items-center">
 							{store.currentUser !== data.buyer_id ? (
-								<button
-									onClick={() => {
-										isNFTTraded
-											? setBannedConfirmData({
-													isShowBannedConfirm: true,
-													creator: creatorTradeToken,
-													isFlagged:
-														creatorTradeToken.flag &&
-														(creatorTradeToken.flag === 'banned' ||
-															creatorTradeToken.flag === 'rugpull' ||
-															creatorTradeToken.flag === 'hacked' ||
-															creatorTradeToken.flag === 'scam')
-															? true
-															: false,
-											  })
-											: setShowModal('acceptBid')
-									}}
-									className="font-semibold w-32 rounded-md border-2 border-primary bg-primary text-white mb-2"
-								>
-									{localeLn('Accept')}
-								</button>
+								<>
+									{data.status !== 'rejected' ? (
+										<div className="flex items-center gap-4">
+											{data.token_id && (!data.type || data.type !== 'trade') && (
+												<div>
+													<p
+														className="cursor-pointer text-white hover:underline hover:text-neutral-300 hover:text-opacity-90"
+														onClick={() => setShowModal('rejectBid')}
+													>
+														Reject
+													</p>
+												</div>
+											)}
+											<div>
+												<Button
+													size="sm"
+													className="w-full"
+													onClick={() => {
+														isNFTTraded
+															? setBannedConfirmData({
+																	isShowBannedConfirm: true,
+																	creator: creatorTradeToken,
+																	isFlagged:
+																		creatorTradeToken.flag &&
+																		(creatorTradeToken.flag === 'banned' ||
+																			creatorTradeToken.flag === 'rugpull' ||
+																			creatorTradeToken.flag === 'hacked' ||
+																			creatorTradeToken.flag === 'scam')
+																			? true
+																			: false,
+															  })
+															: setShowModal('acceptBid')
+													}}
+												>
+													Accept
+												</Button>
+											</div>
+										</div>
+									) : (
+										<div>
+											<Button size="sm" variant="error" className="w-full" isDisabled>
+												Rejected
+											</Button>
+										</div>
+									)}
+								</>
 							) : (
 								<>
 									{data?.type !== 'trade' && (

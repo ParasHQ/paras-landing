@@ -131,9 +131,16 @@ const TokenPage = ({ errorCode, initial }) => {
 			<Nav />
 			<div className="relative max-w-6xl m-auto pt-16 px-4">
 				{currentVariant == 0 ? (
-					<TokenDetail token={token} isAuctionEnds={isEndedTime} />
+					<TokenDetail
+						key={`${initial?.contract_id}::${initial?.token_series_id}/${initial?.token_id}`}
+						token={token}
+						isAuctionEnds={isEndedTime}
+					/>
 				) : (
-					<TokenDetailNew token={token} />
+					<TokenDetailNew
+						key={`${initial?.contract_id}::${initial?.token_series_id}/${initial?.token_id}`}
+						token={token}
+					/>
 				)}
 			</div>
 			<Footer />

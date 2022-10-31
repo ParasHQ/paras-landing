@@ -186,6 +186,7 @@ const CardInfo = {
 	NotAllowedToList: `Vous n'êtes pas autorisé à mettre cette carte en vente pour l'instant`,
 	NotAllowedToBuy: `Vous n'êtes pas autorisé à acheter cette carte pour l'instant. Seul les comptes sur la liste d'attente peuvent acheter cette carte.`,
 	AboutToAcceptBid: `Vous êtes sur le point d'accepter l'offre de`,
+	AboutToRejectOffer: `Vous êtes sur le point de rejeter l'offre de`,
 	From: 'De',
 	RoyaltyForArtist: `Royalties pour l'artiste`,
 	ServiceFee: 'Frais de service',
