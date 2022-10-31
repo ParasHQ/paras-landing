@@ -43,6 +43,7 @@
 		"cachios": "^3.0.0",
 		"capitalize": "^2.0.4",
 		"cids": "^1.1.5",
+		"clsx": "^1.2.1",
 		"compressorjs": "^1.0.7",
 		"croppie": "^2.6.5",
 		"dayjs": "^1.11.5",
