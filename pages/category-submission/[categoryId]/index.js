@@ -20,7 +20,6 @@ import useSWRInfinite from 'swr/infinite'
 
 const CategorySubmission = () => {
 	const LIMIT = 8
-	const [submissions, setSubmissions] = useState(null)
 	const [selectedSubmissions, setSelectedSubmissions] = useState({})
 	const [showMultipleModal, setShowMultipleModal] = useState('')
 	const [isMultipleLoading, setIsMultipleLoading] = useState(false)
@@ -119,11 +118,6 @@ const CategorySubmission = () => {
 	const isReachingEnd =
 		isEmpty || (_submissionsData && _submissionsData[_submissionsData.length - 1]?.length < LIMIT)
 
-	const updateSubmissionData = (_id) => {
-		const updatedData = submissions.filter((sbm) => sbm._id !== _id)
-		setSubmissions(updatedData)
-	}
-
 	const onSubmitMultipleSubmission = async (type) => {
 		setIsMultipleLoading(true)
 		const params = submissionsData
@@ -220,9 +214,9 @@ const CategorySubmission = () => {
 							<div key={submission._id} className="text-white">
 								<SubmissionDetail
 									submission={submission}
-									updateData={updateSubmissionData}
 									selectedSubmissions={selectedSubmissions}
 									setSelectedSubmissions={setSelectedSubmissions}
+									mutate={mutate}
 								/>
 							</div>
 						))}
@@ -240,12 +234,7 @@ const CategorySubmission = () => {
 
 export default CategorySubmission
 
-const SubmissionDetail = ({
-	submission,
-	updateData,
-	selectedSubmissions,
-	setSelectedSubmissions,
-}) => {
+const SubmissionDetail = ({ submission, selectedSubmissions, setSelectedSubmissions, mutate }) => {
 	const router = useRouter()
 	const [isLoading, setIsLoading] = useState(false)
 	const [showModal, setShowModal] = useState('')
@@ -284,7 +273,7 @@ const SubmissionDetail = ({
 		try {
 			await ParasRequest.put(`${process.env.V2_API_URL}/categories/tokens/${type}`, params)
 			setShowModal('')
-			updateData(submission._id)
+			mutate()
 		} catch (error) {
 			sentryCaptureException(error)
 		}
