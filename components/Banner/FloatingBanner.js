@@ -30,7 +30,7 @@ const FloatingBanner = () => {
 
 	return (
 		<>
-			{data.is_active && (
+			{data?.is_active && (
 				<Fragment>
 					<div
 						ref={bannerRef}
