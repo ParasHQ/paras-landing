@@ -18,7 +18,7 @@ steps:
     args:
       [
         '-c',
-        'docker pull gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}-latest || exit 0',
+        'docker pull gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA} || exit 0',
       ]
 
   - id: 'build image'
@@ -28,17 +28,11 @@ steps:
         'build',
         '-t',
         'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}',
-        '-t',
-        'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}-latest',
         '--cache-from',
-        'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}-latest',
+        'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}',
         '.',
       ]
     timeout: '1600s'
-
-  - id: 'push latest image'
-    name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}-latest']
 
   - id: 'push image'
     name: 'gcr.io/cloud-builders/docker'
