@@ -22,7 +22,7 @@ steps:
         || exit 0
 
   - id: 'build image'
-    name: 'gcr.io/cloud-builders/docker'
+    name: 'gcr.io/cloud-builders/docker@sha256:75fbc4da3bf1d9a5461db1dfafc4463bc30de88aaed6693097fd906deb73cd08'
     args:
       - build
       - '-t'
