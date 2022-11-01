@@ -11,7 +11,11 @@ const LoyaltyMechanism = () => {
 
 			<div className="mx-4 md:mx-16 my-6">
 				<div className="my-6">
-					<div className="flex">
+					<div className="flex relative">
+						<img
+							className="pointer-events-none absolute w-12 -left-8"
+							src="https://paras-cdn.imgix.net/bafkreieuoyaupjag5dgjkz76l2e2v4qdcfn6cq33wvrtdbunpy2aas5yya"
+						/>
 						<p className="loyalty-mechanism-number">1</p>
 						<p className="loyalty-mechanism-text">
 							Loyalty level will be determined based on the amount of $PARAS locked & the locked
@@ -21,7 +25,7 @@ const LoyaltyMechanism = () => {
 					<div className="text-center my-4">
 						<div>
 							<img
-								className="my-4 md:my-12 mx-auto"
+								className="my-4 md:my-12 mx-auto pointer-events-none"
 								src="https://paras-cdn.imgix.net/bafkreifu5bjpwp2n2pesjangyhc4h4q7prkmms2yal7o5zphh57ekl3gsi"
 							/>
 						</div>
@@ -37,15 +41,25 @@ const LoyaltyMechanism = () => {
 							</a>
 							.
 						</p>
+						<div>
+							<img
+								className="my-4 md:my-12 mx-auto pointer-events-none"
+								src="https://paras-cdn.imgix.net/bafkreihbwx6jkrxwegvogqy36m34mdcmpcxkvmziukemlrdv6grxfvyg7a"
+							/>
+						</div>
 					</div>
 				</div>
 
 				<div className="my-6">
-					<div className="flex">
+					<div className="flex relative">
+						<img
+							className="pointer-events-none absolute w-12 -left-8"
+							src="https://paras-cdn.imgix.net/bafkreieuoyaupjag5dgjkz76l2e2v4qdcfn6cq33wvrtdbunpy2aas5yya"
+						/>
 						<p className="loyalty-mechanism-number">2</p>
 						<p className="loyalty-mechanism-text">
 							Silver, Gold, and Platinum members will have a chance to sign up and enter an
-							exclusive raffle on 19th–25th September.
+							exclusive raffle on the 14th–27th of November.
 						</p>
 					</div>
 					<div>
@@ -61,7 +75,7 @@ const LoyaltyMechanism = () => {
 								appear on the home screen.
 							</p>
 							<img
-								className="m-auto my-4"
+								className="m-auto my-4 pointer-events-none"
 								src="https://paras-cdn.imgix.net/bafkreidr72bc26na4qgsr3pprbcxghefz7qri2arztexhvr6qot46zs7jy"
 							/>
 						</div>
@@ -71,7 +85,7 @@ const LoyaltyMechanism = () => {
 								raffle announcement. Click ‘Sign Up’ to join the exclusive raffle.
 							</p>
 							<img
-								className="m-auto my-4"
+								className="m-auto my-4 pointer-events-none"
 								src="https://paras-cdn.imgix.net/bafkreifr6uiqs5m6nc5k25zmwtzuk5elbmfqjp2a4rwg3amzrj2ylpio3i"
 							/>
 						</div>
@@ -88,20 +102,21 @@ const LoyaltyMechanism = () => {
 					</div>
 					<div className="md:flex text-center justify-center items-center mt-8">
 						<img
-							className="m-auto"
+							className="m-auto pointer-events-none"
 							src="https://paras-cdn.imgix.net/bafkreihnolfcz3uxsw67bhfdq4hilg4axsqhzp5jirgz5iel5fyurnq5vi"
 						/>
 						<img
-							className="m-auto"
+							className="m-auto pointer-events-none"
 							src="https://paras-cdn.imgix.net/bafkreiecmt6ab5az2yqfwn4au6o2xikuxphv2n5akvfrdpskmd5qosz7mi"
 						/>
 						<img
-							className="m-auto"
+							className="m-auto pointer-events-none"
 							src="https://paras-cdn.imgix.net/bafkreib5somhf4ht7d4ygnon6tgls45ytxharnod7k3yldhxdvw2axnps4"
 						/>
 					</div>
 					<p className="text-center">
-						The more $PARAS you lock, the higher your probability to win the raffle
+						The more $PARAS you lock & the longer your locked staking period, the higher your
+						probability to win the raffle
 					</p>
 				</div>
 				<div>
@@ -111,8 +126,8 @@ const LoyaltyMechanism = () => {
 					</div>
 					<div>
 						<img
-							className="my-4 md:my-12 mx-auto"
-							src="https://paras-cdn.imgix.net/bafkreierkobcoxdtdj5coxx3iq45t33yoywv3p3qexghvg6inqcl7kxyxe"
+							className="my-4 md:my-12 mx-auto pointer-events-none"
+							src="https://paras-cdn.imgix.net/bafkreievq5c2cwn4c6fyakwqd2ef6gbvj32qj2z7xqonp27olnzs7yowlu"
 						/>
 					</div>
 				</div>
@@ -121,13 +136,13 @@ const LoyaltyMechanism = () => {
 					<div className="flex">
 						<p className="loyalty-mechanism-number">5</p>
 						<p className="loyalty-mechanism-text">
-							September raffle period will be held as follows:
+							November raffle period will be held as follows:
 						</p>
 					</div>
 					<div className="my-4 md:my-12 mx-auto">
 						<img
-							className="mx-auto mb-4"
-							src="https://paras-cdn.imgix.net/bafkreidaeidyhwmauk6htnifjegcfrqzjbqhiaikeyyx6g7xedri7hjh7y"
+							className="mx-auto mb-4 pointer-events-none"
+							src="https://paras-cdn.imgix.net/bafkreihzpbir2qzrfb4l7dveltb5lvvacz63uybbjconm3xlizhif6qllu"
 						/>
 						<p className="text-center">
 							Please check the{' '}

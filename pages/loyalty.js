@@ -80,7 +80,7 @@ export default function Loyalty() {
 			></div>
 			<Nav />
 			<div className="max-w-6xl m-auto">
-				<div className="relative mx-4 my-12 bg-[#20124D]">
+				<div className="relative md:mx-4 md:my-12 bg-[#20124D]">
 					<div
 						className="py-4 md:py-12 relative"
 						style={{ background: 'linear-gradient(180deg, #4E29AA 0%, #20124D 100%)' }}
@@ -142,7 +142,7 @@ export default function Loyalty() {
 							</p>
 							{/* <p className="font-bold py-16 text-center text-xl">Coming Soon</p> */}
 							<div className="my-8 flex items-center justify-center md:space-x-8 mx-4 md:mx-28 flex-wrap">
-								{data?.raffle.reward.wl_spot.map((nft) => (
+								{data?.raffle.reward.wl_spot.map?.((nft) => (
 									<div className="w-1/2 md:w-1/4 mb-6 p-2" key={nft.name}>
 										<div className="w-28 h-28 md:h-44 md:w-44 rounded-md border-4 border-[#20124D] m-auto">
 											<a href={nft.link} target="_blank" rel="noreferrer">
@@ -156,7 +156,7 @@ export default function Loyalty() {
 						</div>
 					</div>
 
-					<LoyaltyLeaderboard />
+					<LoyaltyLeaderboard raffleId={data?.raffle._id} />
 
 					{/* Mechanism */}
 					<LoyaltyMechanism />
