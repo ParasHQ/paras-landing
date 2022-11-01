@@ -14,13 +14,7 @@ steps:
 
   - id: 'pull latest image'
     name: 'gcr.io/cloud-builders/docker'
-    args:
-      [
-        'pull',
-        'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}:latest',
-        '||',
-        'exit 0',
-      ]
+    args: ['pull', 'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}:latest']
 
   - id: 'build image'
     name: 'gcr.io/cloud-builders/docker'
