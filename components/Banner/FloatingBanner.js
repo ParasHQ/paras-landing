@@ -39,7 +39,7 @@ const FloatingBanner = () => {
 						<Link href={`${data?.open_link}`}>
 							<div className="absolute right-0">
 								<div className="cursor-pointer">
-									<img src={parseImgUrl(data.image)} />
+									<img src={parseImgUrl(data?.image)} />
 								</div>
 							</div>
 						</Link>
@@ -48,7 +48,7 @@ const FloatingBanner = () => {
 						<Link href={`${data?.open_link}`}>
 							<div className="absolute right-0">
 								<div className="cursor-pointer">
-									<img src={parseImgUrl(data.image)} />
+									<img src={parseImgUrl(data?.image)} />
 								</div>
 							</div>
 						</Link>
