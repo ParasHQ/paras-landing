@@ -2,7 +2,7 @@ steps:
   - id: 'install node lts'
     name: 'gcr.io/cloud-builders/npm:node-16.18.0'
     entrypoint: 'npm'
-    args: ['install']
+    args: ['install', '--legacy-peer-deps']
 
   - id: 'get env from configmap'
     name: 'gcr.io/cloud-builders/kubectl'
