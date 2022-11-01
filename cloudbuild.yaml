@@ -14,13 +14,12 @@ steps:
 
   - id: 'pull latest image'
     name: 'gcr.io/cloud-builders/docker'
-    entrypoint: 'bash'
     args:
       [
-        '-c',
-        '>-',
-        'docker pull gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}:latest',
-        '|| exit 0',
+        'pull',
+        'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}:latest',
+        '||',
+        'exit 0',
       ]
 
   - id: 'build image'
