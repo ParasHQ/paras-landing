@@ -24,6 +24,8 @@ steps:
         'build',
         '-t',
         'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-${SHORT_SHA}',
+        '--cache-from',
+        'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-latest',
         '-t',
         'gcr.io/${PROJECT_ID}/${_SERVICE_NAME}:${_PR_NUMBER}-latest',
         '--cache-from',
