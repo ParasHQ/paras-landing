@@ -13,8 +13,8 @@ steps:
       - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-testnet'
 
   - id: 'install node lts'
-    name: 'gcr.io/cloud-builders/npm:node-16.18.0'
-    entrypoint: 'npm'
+    name: 'node:16.13.0'
+    entrypoint: npm
     args: ['install', '--legacy-peer-deps']
 
   - id: 'build image'
