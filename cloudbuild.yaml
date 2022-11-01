@@ -1,9 +1,4 @@
 steps:
-  - id: 'install node lts'
-    name: 'gcr.io/cloud-builders/npm:node-16.18.0'
-    entrypoint: 'npm'
-    args: ['install', '--legacy-peer-deps']
-
   - id: 'get env from configmap'
     name: 'gcr.io/cloud-builders/kubectl'
     entrypoint: sh
@@ -16,6 +11,11 @@ steps:
       - 'CLOUDSDK_COMPUTE_REGION=asia-southeast1-a'
       - 'CLOUDSDK_COMPUTE_ZONE=asia-southeast1-a'
       - 'CLOUDSDK_CONTAINER_CLUSTER=cluster-testnet'
+
+  - id: 'install node lts'
+    name: 'gcr.io/cloud-builders/npm:node-16.18.0'
+    entrypoint: 'npm'
+    args: ['install', '--legacy-peer-deps']
 
   - id: 'build image'
     name: 'gcr.io/cloud-builders/docker'
