@@ -15,6 +15,8 @@ import {
 } from 'lib/ga'
 import LoyaltyMechanism from 'components/Loyalty/LoyaltyMechanism'
 import LoyaltyLeaderboard from 'components/Loyalty/LoyaltyLeaderboard'
+import LoyaltyFAQ from 'components/Loyalty/LoyaltyFAQ'
+import LoyaltyTC from 'components/Loyalty/LoyaltyTC'
 
 const url = `${process.env.V2_API_URL}/raffle/current`
 const fetchData = () => axios.get(url).then((res) => res.data)
@@ -86,7 +88,7 @@ export default function Loyalty() {
 						style={{ background: 'linear-gradient(180deg, #4E29AA 0%, #20124D 100%)' }}
 					>
 						<img
-							src="https://paras-cdn.imgix.net/bafkreievunopbghyvakrsccb4jkxyeukimknqq5nxhxggbze7u6cdbppdq"
+							src="https://paras-cdn.imgix.net/bafybeiamb47hdmkix7sn3yqdttbdryat2xaql3e25uj3nlhgi2a2tqnahe"
 							className="absolute top-10 left-0 h-full"
 						/>
 						<img
@@ -172,6 +174,15 @@ export default function Loyalty() {
 						>
 							Start Locked Staking
 						</a>
+					</div>
+					<div className="bg-white">
+						<div className="md:w-2/3 m-auto">
+							<LoyaltyFAQ />
+							<div className="px-8 md:px-16 bg-white">
+								<hr className="border-dashed" />
+							</div>
+							<LoyaltyTC />
+						</div>
 					</div>
 				</div>
 			</div>

@@ -2,7 +2,7 @@ import { trackClickHowToLoyalty, trackClickTCLoyalty } from 'lib/ga'
 
 const LoyaltyMechanism = () => {
 	return (
-		<div className="m-4 md:m-6 mt-16 md:mt-16 bg-white pb-8 rounded-xl">
+		<div id="mechanism" className="m-4 md:m-6 mt-16 md:mt-16 bg-white pb-8 rounded-xl">
 			<div>
 				<p className="font-bold text-center text-2xl text-white py-4 bg-[#674EA7] rounded-xl">
 					Loyalty Program Mechanism
@@ -26,7 +26,7 @@ const LoyaltyMechanism = () => {
 						<div>
 							<img
 								className="my-4 md:my-12 mx-auto pointer-events-none"
-								src="https://paras-cdn.imgix.net/bafkreifu5bjpwp2n2pesjangyhc4h4q7prkmms2yal7o5zphh57ekl3gsi"
+								src="https://paras-cdn.imgix.net/bafkreie3jmgft7weljeiyadc7czxsxosqhfi3rly5xzlbc5jvjarx3tedy"
 							/>
 						</div>
 						<p>Users who stake $PARAS without locking it will be considered as Bronze level.</p>
@@ -44,7 +44,7 @@ const LoyaltyMechanism = () => {
 						<div>
 							<img
 								className="my-4 md:my-12 mx-auto pointer-events-none"
-								src="https://paras-cdn.imgix.net/bafkreihbwx6jkrxwegvogqy36m34mdcmpcxkvmziukemlrdv6grxfvyg7a"
+								src="https://paras-cdn.imgix.net/bafkreid4lbtqrqgw5clj7owy5hpjtuih7benm3fs46xcv5epvkxa5tc4ai"
 							/>
 						</div>
 					</div>
