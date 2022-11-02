@@ -92,7 +92,7 @@ const LoyaltyLeaderboard = ({ raffleId }) => {
 						src={`https://paras-cdn.imgix.net/${myRankImge[myRank?.data?.raffle_type || 'bronze']}`}
 					/>
 				</div>
-				{myRank ? (
+				{myRank?.data && myRank?.rank ? (
 					<LeaderboardColumn data={myRank.data} idx={myRank.rank - 1} />
 				) : (
 					<div className="text-white text-center text-sm">
