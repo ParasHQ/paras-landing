@@ -67,6 +67,7 @@ const Creation = ({ userProfile, accountId }) => {
 
 		const params = tokensParams({
 			...router.query,
+			account_id: currentUser,
 			_id_next: idNext,
 			lowest_price_next: lowestPriceNext,
 			updated_at_next: updatedAtNext,
@@ -113,6 +114,7 @@ const Creation = ({ userProfile, accountId }) => {
 	const tokensParams = (query) => {
 		const parsedSortQuery = parseSortQuery(query.sort)
 		const params = {
+			account_id: currentUser,
 			exclude_total_burn: true,
 			creator_id: accountId,
 			__limit: LIMIT,

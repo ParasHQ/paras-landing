@@ -5,6 +5,7 @@ import Button from 'components/Common/Button'
 import router from 'next/router'
 import CardList from 'components/TokenSeries/CardList'
 import ParasRequest from 'lib/ParasRequest'
+import useStore from 'lib/store'
 
 const LIMIT = 7
 
@@ -12,6 +13,7 @@ const TokenMoreCollection = ({ localToken, className }) => {
 	const [isDropDown, setIsDropDown] = useState(true)
 	const [topRarity, setTopRarity] = useState([])
 	const [isLoading, setIsLoading] = useState(true)
+	const currentUser = useStore((state) => state.currentUser)
 
 	useEffect(() => {
 		const auctionParams = {
@@ -19,6 +21,7 @@ const TokenMoreCollection = ({ localToken, className }) => {
 				? localToken.metadata.collection_id
 				: localToken.contract_id,
 			exclude_total_burn: true,
+			account_id: currentUser,
 			__sort: 'metadata.score::-1',
 			__limit: LIMIT,
 		}

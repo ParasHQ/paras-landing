@@ -10,10 +10,14 @@ import cachios from 'cachios'
 import StillReferenceModal from 'components/Modal/StillReferenceModal'
 import Tooltip from 'components/Common/Tooltip'
 import { IconInfo, IconQuestion, IconSpin } from 'components/Icons'
+import useSWRImmutable from 'swr/immutable'
+import useStore from 'lib/store'
+import ParasRequest from 'lib/ParasRequest'
 
 const TabInfo = ({ localToken, isNFT }) => {
 	const { localeLn } = useIntl()
 	const router = useRouter()
+	const currentUser = useStore((state) => state.currentUser)
 	const [showModal, setShowModal] = useState('')
 	const [attributeRarity, setAttributeRarity] = useState([])
 	const [lockedTxFee, setLockedTxFee] = useState('')
@@ -34,6 +38,24 @@ const TabInfo = ({ localToken, isNFT }) => {
 			getRarity(localToken.metadata.attributes)
 		}
 	}, [attributeRarity])
+
+	const { data: ownedToken } = useSWRImmutable(
+		localToken &&
+			currentUser &&
+			localToken.category_ids &&
+			localToken.category_ids.some((data) => data.includes('card4card'))
+			? {
+					contract_id: localToken.contract_id,
+					token_series_id: localToken.token_series_id,
+					owner_id: currentUser,
+			  }
+			: null,
+		(key) => {
+			return ParasRequest.get(`${process.env.V2_API_URL}/token`, {
+				params: key,
+			})
+		}
+	)
 
 	const getRarity = async (attributes) => {
 		const res = await cachios.post(`${process.env.V2_API_URL}/rarity`, {
@@ -254,7 +276,16 @@ const TabInfo = ({ localToken, isNFT }) => {
 				</div>
 			)}
 			<div className="bg-gray-800 text-gray-100  mt-3 p-3 rounded-md shadow-md">
-				<p className="text-sm text-white font-bold mb-2">{localeLn('TokenInfo')}</p>
+				<div className="flex items-center justify-between mb-2">
+					<p className="text-sm text-white font-bold">{localeLn('TokenInfo')}</p>
+					{localToken.category_ids &&
+						localToken.category_ids?.filter((category) => category.includes('card4card'))[0] &&
+						(localToken.is_bought || ownedToken?.data.data.results[0]) && (
+							<div className="cursor-pointer relative flex rounded-md bg-primary bg-opacity-70 text-white py-1 px-2 text-xs">
+								Card already owned
+							</div>
+						)}
+				</div>
 				<div className="flex justify-between text-sm">
 					<p>Smart Contract</p>
 					<TokenInfoCopy text={localToken.contract_id} small />

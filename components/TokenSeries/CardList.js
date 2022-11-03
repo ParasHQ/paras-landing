@@ -20,6 +20,8 @@ import { useToast } from 'hooks/useToast'
 import IconLove from 'components/Icons/component/IconLove'
 import LoginModal from 'components/Modal/LoginModal'
 import { trackClickMoreCollection, trackLikeToken, trackUnlikeToken } from 'lib/ga'
+import { IconCard4Card } from 'components/Icons'
+import useSWRImmutable from 'swr/immutable'
 
 const CardList = ({
 	name = 'default',
@@ -146,6 +148,24 @@ const TokenSeriesSingle = ({
 		},
 	})
 
+	const { data: ownedToken } = useSWRImmutable(
+		_token &&
+			currentUser &&
+			_token.category_ids &&
+			_token.category_ids.some((data) => data.includes('card4card'))
+			? {
+					contract_id: _token.contract_id,
+					token_series_id: _token.token_series_id,
+					owner_id: currentUser,
+			  }
+			: null,
+		(key) => {
+			return ParasRequest.get(`${process.env.V2_API_URL}/token`, {
+				params: key,
+			})
+		}
+	)
+
 	const store = useStore()
 	const router = useRouter()
 	const [activeToken, setActiveToken] = useState(null)
@@ -154,6 +174,7 @@ const TokenSeriesSingle = ({
 	const [defaultLikes, setDefaultLikes] = useState(0)
 	const [showLogin, setShowLogin] = useState(false)
 	const [currentVariant, setVariant] = useState(0)
+	const [showC4cTooltip, setShowC4cTooltip] = useState(false)
 	const { localeLn } = useIntl()
 	const toast = useToast()
 
@@ -595,6 +616,22 @@ const TokenSeriesSingle = ({
 								</p>
 							</div>
 						)}
+						{token.category_ids &&
+							token.category_ids?.filter((category) => category.includes('card4card'))[0] &&
+							(token.is_bought || ownedToken?.data.data.results[0]) && (
+								<div
+									className="cursor-pointer relative"
+									onMouseOver={() => setShowC4cTooltip(true)}
+									onMouseLeave={() => setShowC4cTooltip(false)}
+								>
+									<IconCard4Card size={18} color="white" />
+									{showC4cTooltip && (
+										<div className="absolute right-full transition top-0 rounded-md bg-dark-primary-1 border border-cyan-blue-1 p-2 text-[11px] text-white w-40 text-left">
+											You already have another edition of this card.
+										</div>
+									)}
+								</div>
+							)}
 					</div>
 					<div className="flex justify-between md:items-baseline">
 						{!token.token?.is_auction ||
