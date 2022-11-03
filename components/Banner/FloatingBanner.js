@@ -15,27 +15,16 @@ const FloatingBanner = () => {
 		window.addEventListener('scroll', (ev) => {
 			if (ev.isTrusted) {
 				bannerRef.current.style.setProperty('transform', 'translate(70px)')
-				bannerRef.current.style.setProperty('transition-duration', '.5s')
-				debounce(() => {
+				bannerRef.current.style.setProperty('transition-duration', '.3s')
+				bannerRef.current.style.setProperty('transition-timing-function', 'ease-out')
+				setTimeout(() => {
 					bannerRef.current.style.setProperty('transform', 'translate(-50px)')
-					bannerRef.current.style.setProperty('transition-duration', '.5s')
+					bannerRef.current.style.setProperty('transition-duration', '.3s')
+					bannerRef.current.style.setProperty('transition-timing-function', 'ease-out')
 				}, 300)
 			}
 		})
 	}, [])
-
-	const debounce = (func, timeout) => {
-		let timer
-
-		return function (...args) {
-			const context = this
-			if (timer) clearTimeout(timer)
-			timer = setTimeout(() => {
-				timer = null
-				func.apply(context, args)
-			}, timeout)
-		}
-	}
 
 	if ((!data && isValidating) || data.length === 0) {
 		return null
@@ -47,7 +36,7 @@ const FloatingBanner = () => {
 				<Fragment>
 					<div
 						ref={bannerRef}
-						className="block md:hidden h-36 w-24 p-4 md:m-auto z-20 fixed -right-8 md:right-36 bottom-5 transform -translate-x-1/2 ease-out duration-300 md:left-auto md:transform-none cursor-pointer"
+						className="block md:hidden h-36 w-24 p-4 md:m-auto z-20 fixed -right-8 md:right-36 bottom-5 transform -translate-x-1/2 md:left-auto md:transform-none cursor-pointer"
 					>
 						<Link href={`${data?.open_link}`}>
 							<div className="absolute right-0">
@@ -57,7 +46,7 @@ const FloatingBanner = () => {
 							</div>
 						</Link>
 					</div>
-					<div className="hidden md:block h-36 w-24 p-4 md:m-auto z-20 fixed -right-8 md:right-36 bottom-5 transform -translate-x-1/2 ease-out duration-300 md:left-auto md:transform-none cursor-pointer">
+					<div className="hidden md:block h-36 w-24 p-4 md:m-auto z-20 fixed -right-8 md:right-36 bottom-5 transform -translate-x-1/2 md:left-auto md:transform-none cursor-pointer">
 						<Link href={`${data?.open_link}`}>
 							<div className="absolute right-0">
 								<div className="cursor-pointer">
