@@ -171,6 +171,7 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 												)
 											)
 											setFilterCollection('All Collections')
+											setTooltipCollection(false)
 										}}
 									>
 										All Collections
@@ -192,6 +193,7 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 														tokens.filter((token) => token.metadata.collection === coll.collection)
 													)
 													setFilterCollection(coll.collection)
+													setTooltipCollection(false)
 												}}
 											>
 												{coll.collection}
@@ -247,7 +249,7 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 					) : (
 						<div
 							id="existingCardCategory"
-							className="mt-2 grid grid-cols-3 md:grid-cols-5 gap-2 w-full max-h-[230px] overflow-y-auto"
+							className="mt-2 grid grid-cols-3 md:grid-cols-5 gap-2 w-full max-h-[150px] overflow-y-auto"
 						>
 							{tokens?.map((token, idx) => (
 								<div
