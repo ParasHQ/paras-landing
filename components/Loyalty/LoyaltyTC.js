@@ -2,7 +2,7 @@ const LoyaltyTC = () => {
 	return (
 		<div className="bg-white p-8 pl-12 md:pl-16">
 			<p className="text-3xl font-bold mb-2">Terms & Conditions</p>
-			<ul className="list-decimal text-sm md:text-base">
+			<ul className="list-decimal text-sm md:text-base text-justify">
 				<div className="my-2">
 					<li>
 						Loyalty level will be determined based on the amount of $PARAS locked staking & the
