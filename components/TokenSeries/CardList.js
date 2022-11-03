@@ -149,7 +149,10 @@ const TokenSeriesSingle = ({
 	})
 
 	const { data: ownedToken } = useSWRImmutable(
-		_token && currentUser
+		_token &&
+			currentUser &&
+			_token.category_ids &&
+			_token.category_ids.some((data) => data.includes('card4card'))
 			? {
 					contract_id: _token.contract_id,
 					token_series_id: _token.token_series_id,

@@ -76,7 +76,10 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 	}
 
 	const { data: ownedToken } = useSWRImmutable(
-		data && currentUser
+		data &&
+			currentUser &&
+			data.category_ids &&
+			data.category_ids.some((data) => data.includes('card4card'))
 			? {
 					contract_id: data.contract_id,
 					token_series_id: data.token_series_id,

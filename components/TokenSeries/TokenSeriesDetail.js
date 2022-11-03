@@ -161,7 +161,10 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	}
 
 	const { data: ownedToken } = useSWRImmutable(
-		token && currentUser
+		token &&
+			currentUser &&
+			token.category_ids &&
+			token.category_ids.some((data) => data.includes('card4card'))
 			? {
 					contract_id: token.contract_id,
 					token_series_id: token.token_series_id,

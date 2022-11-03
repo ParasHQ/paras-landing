@@ -40,7 +40,10 @@ const TabInfo = ({ localToken, isNFT }) => {
 	}, [attributeRarity])
 
 	const { data: ownedToken } = useSWRImmutable(
-		localToken && currentUser
+		localToken &&
+			currentUser &&
+			localToken.category_ids &&
+			localToken.category_ids.some((data) => data.includes('card4card'))
 			? {
 					contract_id: localToken.contract_id,
 					token_series_id: localToken.token_series_id,
