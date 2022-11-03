@@ -104,6 +104,8 @@ const LoyaltyLeaderboard = ({ raffleId }) => {
 							<span>
 								<a
 									className="font-bold"
+									target="_blank"
+									rel="noreferrer"
 									href="https://paras.id/publication/how-to-do-locked-staking-6311c2d10de00d001cd7a05a"
 								>
 									here

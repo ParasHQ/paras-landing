@@ -44,7 +44,7 @@ const LoyaltyMechanism = () => {
 						<div>
 							<img
 								className="my-4 md:my-12 mx-auto pointer-events-none"
-								src="https://paras-cdn.imgix.net/bafkreid4lbtqrqgw5clj7owy5hpjtuih7benm3fs46xcv5epvkxa5tc4ai"
+								src="https://paras-cdn.imgix.net/bafkreieekr3cswi6ojuuaej2fadeykbqno3iwlh42lydlu4tuhg4dhv2ry"
 							/>
 						</div>
 					</div>
@@ -127,7 +127,7 @@ const LoyaltyMechanism = () => {
 					<div>
 						<img
 							className="my-4 md:my-12 mx-auto pointer-events-none"
-							src="https://paras-cdn.imgix.net/bafkreih5u4fdm2jytr5xqs2ujq73cpklrac7qbtps76qzi7lc3flq7pxni"
+							src="https://paras-cdn.imgix.net/bafkreibpx3p56f225snptfps6qce6gfreaer4ftuevlko7m4hld5seyzpa"
 						/>
 					</div>
 				</div>
