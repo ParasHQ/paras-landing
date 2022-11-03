@@ -156,6 +156,16 @@ export default function Loyalty() {
 								))}
 							</div>
 						</div>
+						<div className="my-8">
+							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16 mb-8">Tokens</p>
+							<div className="w-28 h-28 md:h-44 md:w-44 rounded-md m-auto">
+								<img
+									className="h-full w-full object-cover"
+									src="https://paras-cdn.imgix.net/bafkreigijfnsv2hdwwwaxdtxveq75kmlijgt4baxk2dmocbjwuajjgitcy"
+								/>
+								<p className="font-bold py-4 text-center md:text-xl">$PARAS</p>
+							</div>
+						</div>
 					</div>
 
 					<LoyaltyLeaderboard raffleId={data?.raffle._id} />
