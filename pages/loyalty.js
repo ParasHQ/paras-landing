@@ -127,8 +127,18 @@ export default function Loyalty() {
 					<div className="m-4 md:m-6 bg-white pb-8 rounded-xl">
 						<div>
 							<p className="font-bold text-center text-2xl text-white py-4 bg-[#674EA7] rounded-xl">
-								September's Rewards
+								November's Rewards
 							</p>
+						</div>
+						<div className="my-8">
+							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16 mb-8">Tokens</p>
+							<div className="w-28 h-28 md:h-44 md:w-44 rounded-md m-auto">
+								<img
+									className="h-full w-full object-cover"
+									src="https://paras-cdn.imgix.net/bafkreigijfnsv2hdwwwaxdtxveq75kmlijgt4baxk2dmocbjwuajjgitcy"
+								/>
+							</div>
+							<p className="font-bold py-4 text-center md:text-xl">12,222 $PARAS</p>
 						</div>
 						<div className="my-8">
 							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16">
@@ -140,7 +150,7 @@ export default function Loyalty() {
 						</div>
 						<div className="my-8">
 							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16">
-								WL Spots & Free NFTs from New & Upcoming Projects
+								NFTs from New Collections
 							</p>
 							{/* <p className="font-bold py-16 text-center text-xl">Coming Soon</p> */}
 							<div className="my-8 flex items-center justify-center md:space-x-8 mx-4 md:mx-28 flex-wrap">
@@ -154,16 +164,6 @@ export default function Loyalty() {
 										<p className="font-bold py-4 text-center md:text-xl">{nft.name}</p>
 									</div>
 								))}
-							</div>
-						</div>
-						<div className="my-8">
-							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16 mb-8">Tokens</p>
-							<div className="w-28 h-28 md:h-44 md:w-44 rounded-md m-auto">
-								<img
-									className="h-full w-full object-cover"
-									src="https://paras-cdn.imgix.net/bafkreigijfnsv2hdwwwaxdtxveq75kmlijgt4baxk2dmocbjwuajjgitcy"
-								/>
-								<p className="font-bold py-4 text-center md:text-xl">$PARAS</p>
 							</div>
 						</div>
 					</div>

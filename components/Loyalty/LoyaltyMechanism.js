@@ -127,7 +127,7 @@ const LoyaltyMechanism = () => {
 					<div>
 						<img
 							className="my-4 md:my-12 mx-auto pointer-events-none"
-							src="https://paras-cdn.imgix.net/bafkreibpx3p56f225snptfps6qce6gfreaer4ftuevlko7m4hld5seyzpa"
+							src="https://paras-cdn.imgix.net/bafkreianehv6jm4xrdqdj4vs7hci52nwmpfgvtt3ja4wf75x6qmpp4mgva"
 						/>
 					</div>
 				</div>
