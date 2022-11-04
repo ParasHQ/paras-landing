@@ -14,6 +14,7 @@ import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
 import { IconSpin } from 'components/Icons'
+import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
 const CategorySubmission = () => {
 	const [submissions, setSubmissions] = useState(null)
@@ -254,7 +255,19 @@ const SubmissionDetail = ({ submission, updateData }) => {
 						/>
 					</Link>
 				</div>
-				<div className="mt-4 text-white">
+				<div className="flex flex-col justify-center text-white">
+					<div className="flex items-center space-x-2 mb-4">
+						<div className="text-[10px] font-normal text-white bg-dark-primary-2 border border-dark-primary-8 rounded-md pt-1 py-1 px-2">
+							{localToken?.metadata.copies
+								? `Edition of ${localToken?.metadata.copies}`
+								: `Open Edition`}
+						</div>
+						<div className="text-[10px] font-normal text-white bg-dark-primary-2 border border-dark-primary-8 rounded-md pt-1 py-1 px-2">
+							{localToken?.price
+								? `Sale on ${formatNearAmount(localToken?.price)} Ⓝ`
+								: `Not for sale`}
+						</div>
+					</div>
 					<div className="overflow-hidden truncate">
 						<Link
 							href={{
