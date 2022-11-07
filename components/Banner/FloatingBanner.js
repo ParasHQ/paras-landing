@@ -48,7 +48,8 @@ const FloatingBanner = () => {
 			end = window.scrollY
 			distance = end - start
 
-			if (distance > 10) {
+			const distanceAbs = Math.abs(distance)
+			if (distanceAbs > 10) {
 				callback()
 			}
 		}, refresh)
