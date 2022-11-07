@@ -10,7 +10,7 @@ import Link from 'next/link'
 import clsx from 'clsx'
 import { useEffect } from 'react'
 import Button from 'components/Common/Button'
-import useSWRImmutable from 'swr/immutable'
+import useSWR from 'swr'
 import { sentryCaptureException } from 'lib/sentry'
 import { useToast } from 'hooks/useToast'
 
@@ -37,7 +37,7 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 
 	const isDisabledSubmit = !agreement || selectedTokens.length === 0 || isSubmitting
 
-	const { data: _tokens } = useSWRImmutable(
+	const { data: _tokens, mutate } = useSWR(
 		currentUser ? { account_id: currentUser } : null,
 		fetchTokens
 	)
@@ -79,6 +79,7 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 				type: 'success',
 				duration: 2000,
 			})
+			mutate()
 			setIsSubmitting(false)
 		} catch (err) {
 			sentryCaptureException(err)
