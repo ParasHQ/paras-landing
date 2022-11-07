@@ -3783,12 +3783,12 @@ isstream@~0.1.2:
   resolved "https://registry.yarnpkg.com/isstream/-/isstream-0.1.2.tgz#47e63f7af55afa6f92e1500e690eb8b8529c099a"
   integrity sha1-R+Y/evVa+m+S4VAOaQ64uFKcCZo=
 
-javascript-time-ago@^2.3.2:
-  version "2.3.9"
-  resolved "https://registry.yarnpkg.com/javascript-time-ago/-/javascript-time-ago-2.3.9.tgz#4f6d143590396f4efbba9399f8013a7b86ef3e66"
-  integrity sha512-AhVoLXsN+CRNjVaTM837zIN/8uRzGy2G/8MTNw24bjBFpWyqMeGQCAoI5HOED7UKCqK2fuXDuAugBbmbODpzkA==
+javascript-time-ago@^2.5.9:
+  version "2.5.9"
+  resolved "https://registry.yarnpkg.com/javascript-time-ago/-/javascript-time-ago-2.5.9.tgz#3c5d8012cd493d764c6b26a0ffe6e8b20afcf1fe"
+  integrity sha512-pQ8mNco/9g9TqWXWWjP0EWl6i/lAQScOyEeXy5AB+f7MfLSdgyV9BJhiOD1zrIac/lrxPYOWNbyl/IW8CW5n0A==
   dependencies:
-    relative-time-format "^1.0.5"
+    relative-time-format "^1.1.6"
 
 jest-worker@27.0.0-next.5:
   version "27.0.0-next.5"
@@ -5827,10 +5827,10 @@ regexpp@^3.1.0:
   resolved "https://registry.yarnpkg.com/regexpp/-/regexpp-3.2.0.tgz#0425a2768d8f23bad70ca4b90461fa2f1213e1b2"
   integrity sha512-pq2bWo9mVD43nbts2wGv17XLiNLya+GklZ8kaDLV2Z08gDCsGpnKn9BFMepvWuHCbyVvY7J5o5+BVvoQbmlJLg==
 
-relative-time-format@^1.0.5:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/relative-time-format/-/relative-time-format-1.0.6.tgz#4956f6aa161f63cbab8a7f2d8b2e92d7b6a888a3"
-  integrity sha512-voemOJLxlKun4P1fAo4PEg2WXNGjhqfE/G8Xen4gcy24Hyu/djn5bT5axmhx4MnjynoZ8f0HCOjk3RZpsY6X/g==
+relative-time-format@^1.1.6:
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/relative-time-format/-/relative-time-format-1.1.6.tgz#724a5fbc3794b8e0471b6b61419af2ce699eb9f1"
+  integrity sha512-aCv3juQw4hT1/P/OrVltKWLlp15eW1GRcwP1XdxHrPdZE9MtgqFpegjnTjLhi2m2WI9MT/hQQtE+tjEWG1hgkQ==
 
 request@^2.88.2:
   version "2.88.2"
