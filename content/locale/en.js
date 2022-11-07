@@ -151,6 +151,7 @@ const CardInfo = {
 	CollectDigitalCard: 'Collect Digital Art Card that you can truly own.',
 	GoToLogin: 'Go to Login',
 	ConfirmBuy: 'Confirm Buy',
+	SelectBuyTransaction: 'Select Buy Transaction',
 	ConfirmBid: 'Confirm Auction Bid',
 	Warning: 'Warning',
 	AreYouSureBuy: 'Are you sure to buy this card?',

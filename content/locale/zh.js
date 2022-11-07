@@ -151,6 +151,7 @@ const CardInfo = {
 	CollectDigitalCard: 'Collect Digital Art Card that you can truly own.',
 	GoToLogin: '去登录',
 	ConfirmBuy: '确认购买',
+	SelectBuyTransaction: '选择购买交易',
 	ConfirmBid: '确认拍卖出价',
 	Warning: '警告',
 	AreYouSureBuy: '你确定你会买这张卡吗？',

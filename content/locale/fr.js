@@ -146,6 +146,7 @@ const CardInfo = {
 	CollectDigitalCard: `Collectionner des cartes d'art digital que vous pouvez réellement posséder.`,
 	GoToLogin: 'Aller à la connexion',
 	ConfirmBuy: `Confirmer l'achat`,
+	SelectBuyTransaction: `Sélectionnez la transaction d'achat`,
 	ConfirmBid: `Confirmer l'enchère`,
 	BuyQuantityAvailable: 'Acheter quantité disponible à la vente',
 	YouWillRedirectedTo:

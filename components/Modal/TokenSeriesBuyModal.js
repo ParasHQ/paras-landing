@@ -16,10 +16,12 @@ import useStore from 'lib/store'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 import useSWRImmutable from 'swr/immutable'
 import ParasRequest from 'lib/ParasRequest'
+import BuyOptionModal from './BuyOptionModal'
 
 const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 	const [showLogin, setShowLogin] = useState(false)
 	const [showBannedConfirm, setShowBannedConfirm] = useState(false)
+	const [showBuyOption, setShowBuyOption] = useState(false)
 	const [isBuying, setIsBuying] = useState(false)
 	const { currentUser, setTransactionRes } = useStore()
 	const creatorData = useProfileData(data.metadata.creator_id)
@@ -151,7 +153,9 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 							<Button
 								size="md"
 								isFullWidth
-								onClick={() => (creatorData?.flag ? setShowBannedConfirm(true) : onBuyToken())}
+								onClick={() =>
+									creatorData?.flag ? setShowBannedConfirm(true) : setShowBuyOption(true)
+								}
 								isDisabled={isBuying}
 								isLoading={isBuying}
 							>
@@ -170,6 +174,18 @@ const TokenSeriesBuyModal = ({ show, onClose, data }) => {
 					action={onBuyToken}
 					setIsShow={(e) => setShowBannedConfirm(e)}
 					onClose={onClose}
+				/>
+			)}
+			{showBuyOption && (
+				<BuyOptionModal
+					show={showBuyOption}
+					onClose={() => {
+						setShowBuyOption(false)
+						onClose()
+					}}
+					data={data}
+					action={onBuyToken}
+					currentUser={currentUser}
 				/>
 			)}
 			<LoginModal onClose={() => setShowLogin(false)} show={showLogin} />

@@ -148,6 +148,7 @@ const CardInfo = {
 	CollectDigitalCard: 'Colecciona Tarjetas de Arte Digital que tu verdaderamente puedes poseer.',
 	GoToLogin: 'Ir a inicio de sesión',
 	ConfirmBuy: 'Confirmar Compra',
+	SelectBuyTransaction: 'Seleccionar transacción de compra',
 	ConfirmBid: 'Confirmar Oferta de Subasta',
 	Warning: 'Advertencia',
 	AreYouSureBuy: 'Estás segura de comprar esta tarjeta?',
