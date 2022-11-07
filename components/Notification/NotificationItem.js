@@ -300,7 +300,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 	if (notif.type === 'notification_rejected') {
 		return (
 			<div>
-				<Link href={url}>
+				<Link href={`${url}?tab=offers`}>
 					<a>
 						<div
 							className="cursor-pointer notification-item"
@@ -357,7 +357,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 						>
 							<NotificationImage media={token.metadata?.media} />
 							<div className="pl-2 text-gray-300">
-								{'your has not decided on the offers received of '}
+								{'you have not decided on the offers received of '}
 								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
 								{' (more than 14 days)'}
 							</div>
@@ -933,6 +933,25 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 			</div>
 		)
 	}
+
+	if (notif.type === 'notification_card4card_user_disqualified') {
+		return (
+			<div>
+				<div className="notification-item" onClick={() => notificationModal(false)}>
+					<div className="text-gray-300 mt-2">
+						<p className="text-sm font-bold">
+							Sorry, you have been disqualified from the C4C competition.
+						</p>
+						<p className="text-xs font-normal">
+							<span>You collected the same NFT more than once</span>
+						</p>
+					</div>
+					<NotificationTime time={notif.issued_at} />
+				</div>
+			</div>
+		)
+	}
+
 	return null
 }
 

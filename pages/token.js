@@ -14,25 +14,30 @@ import AnimatedNumber from 'react-awesome-animated-number'
 import 'react-awesome-animated-number/dist/index.css'
 import { sentryCaptureException } from 'lib/sentry'
 import { IconShare } from 'components/Icons'
+import { useWalletSelector } from 'components/Common/WalletSelector'
 
 export default function Home() {
-	const store = useStore()
-	const [apr, setAPR] = useState(getRandomInt(10, 100))
+	const [apr, setAPR] = useState(0)
 	const [curPrice, setCurPrice] = useState(Math.random())
 	const [curSupply, setCurSupply] = useState(getRandomInt(10000000, 50000000))
 	const [curMarketCap, setCurMarket] = useState(getRandomInt(10000000, 50000000))
 	const [totalSupply, setTotalSupply] = useState(getRandomInt(10000000, 50000000))
+
 	const { localeLn } = useIntl()
+	const store = useStore()
+	const { viewFunction } = useWalletSelector()
 
 	useEffect(() => {
 		const getFarms = async () => {
 			try {
-				const poolList = await near.wallet
-					.account()
-					.viewFunction(process.env.FARM_CONTRACT_ID, `list_seeds_info`, {
+				const poolList = await viewFunction({
+					receiverId: process.env.FARM_CONTRACT_ID,
+					methodName: 'list_seeds_info',
+					args: {
 						from_index: 0,
 						limit: 1,
-					})
+					},
+				})
 
 				const data = poolList[process.env.PARAS_TOKEN_CONTRACT]
 
@@ -199,10 +204,8 @@ export default function Home() {
 			}
 		}
 
-		if (store.initialized) {
-			getFarms()
-			getPrice()
-		}
+		getFarms()
+		getPrice()
 	}, [store.initialized])
 
 	const getParasPrice = async () => {
@@ -298,7 +301,7 @@ export default function Home() {
 							<AnimatedNumber
 								className="font-bold text-white overflow-hidden"
 								size={32}
-								value={`${prettyBalance(apr, 0, 0)}%`}
+								value={apr !== 0 ? `${prettyBalance(apr, 0, 0)}%` : '--'}
 							/>
 							{} APR
 						</div>
@@ -435,7 +438,10 @@ export default function Home() {
 				<div className="mt-32 max-w-3xl mx-auto text-white rounded-xl bg-primary bg-opacity-15 flex items-center flex-wrap">
 					<div className="w-full lg:w-2/3 p-4 lg:p-8">
 						<p className="mt-4 rounded-md bg-blue-500 inline-block px-2 py-1">
-							Earn up to <span className="font-bold text-xl">{prettyBalance(apr, 0, 0)}% APR</span>
+							Earn up to{' '}
+							<span className="font-bold text-xl">
+								{apr !== 0 ? `${prettyBalance(apr, 0, 0)}%` : '--'} APR
+							</span>
 						</p>
 						<p className="mt-4 text-3xl font-bold text-white">Marketplace Rewards Program</p>
 						<p className="mt-4">
