@@ -24,6 +24,7 @@ const TokenSeriesPage = ({ errorCode, initial }) => {
 		params: {
 			lookup_likes: true,
 			liked_by: currentUser,
+			account_id: currentUser,
 		},
 	})
 

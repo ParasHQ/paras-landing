@@ -10,11 +10,12 @@ import CardListLoader from 'components/Card/CardListLoader'
 import { parseImgUrl, parseSortQuery, sanitizeHTML, setDataLocalStorage } from 'utils/common'
 import { parseNearAmount } from 'near-api-js/lib/utils/format'
 import CategoryList from 'components/CategoryList'
-import AddCategoryModal from 'components/Modal/AddCategoryModal'
 import { useIntl } from 'hooks/useIntl'
 import ButtonScrollTop from 'components/Common/ButtonScrollTop'
 import FilterMarket from 'components/Filter/FilterMarket'
 import FilterDisplay from 'components/Filter/FilterDisplay'
+import AddExistCardCategoryModal from 'components/Modal/AddExistCardCategoryModal'
+import AddCategoryModal from 'components/Modal/AddCategoryModal'
 
 const LIMIT = 12
 
@@ -66,7 +67,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 				setCategoryDetail(detail)
 			}
 		}
-	}, [categoryId])
+	}, [categoryId, currentUser])
 
 	useEffect(() => {
 		if (
@@ -124,6 +125,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 
 		setIsFetching(true)
 		const params = tokensParams({
+			account_id: currentUser,
 			...(router.query || serverQuery),
 			..._page,
 		})
@@ -234,14 +236,21 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 				/>
 			</Head>
 			<Nav />
-			{showAddModal && (
-				<AddCategoryModal
-					onClose={() => setShowAddModal(false)}
-					categoryName={categoryDetail.name}
-					categoryId={categoryId}
-					curators={categoryDetail.curators}
-				/>
-			)}
+			{showAddModal &&
+				(categoryId.includes('card4card') ? (
+					<AddExistCardCategoryModal
+						onClose={() => setShowAddModal(false)}
+						curators={categoryDetail.curators}
+						categoryId={categoryId}
+					/>
+				) : (
+					<AddCategoryModal
+						onClose={() => setShowAddModal(false)}
+						curators={categoryDetail.curators}
+						categoryName={categoryDetail.name}
+						categoryId={categoryId}
+					/>
+				))}
 			<div className="max-w-6xl relative m-auto py-12">
 				<div className="grid grid-cols-3 mb-4">
 					<h1 className="col-start-1 md:col-start-2 col-span-2 md:col-span-1 pl-5 md:pl-0 text-4xl font-bold text-gray-100 text-left md:text-center">
@@ -365,6 +374,7 @@ export default function Category({ serverQuery, categoryList, _categoryDetail })
 const tokensParams = (query) => {
 	const parsedSortQuery = parseSortQuery(query.sort)
 	const params = {
+		account_id: query.account_id,
 		category_id: query.categoryId,
 		exclude_total_burn: true,
 		__sort: parsedSortQuery,

@@ -3,7 +3,7 @@ import Scrollbars from 'react-custom-scrollbars'
 import { formatNearAmount } from 'near-api-js/lib/utils/format'
 
 import Button from 'components/Common/Button'
-import { IconDots, IconLoader } from 'components/Icons'
+import { IconCard4Card, IconDots, IconLoader } from 'components/Icons'
 import TabInfo from 'components/Tabs/TabInfo'
 import TabOwners from 'components/Tabs/TabOwners'
 
@@ -34,6 +34,7 @@ import IconLove from 'components/Icons/component/IconLove'
 import axios from 'axios'
 import ParasRequest from 'lib/ParasRequest'
 import { mutate } from 'swr'
+import useSWRImmutable from 'swr/immutable'
 import { Canvas } from '@react-three/fiber'
 import { Model1 } from 'components/Model3D/ThreeDModel'
 import FileType from 'file-type/browser'
@@ -58,6 +59,7 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 	const [showLove, setShowLove] = useState(false)
 	const [fileType, setFileType] = useState(token?.metadata?.mime_type)
 	const { viewFunction } = useWalletSelector()
+	const [showC4cTooltip, setShowC4cTooltip] = useState(false)
 
 	useEffect(() => {
 		if (!process.env.WHITELIST_CONTRACT_ID.split(';').includes(token?.contract_id)) {
@@ -157,6 +159,24 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 			</div>
 		)
 	}
+
+	const { data: ownedToken } = useSWRImmutable(
+		token &&
+			currentUser &&
+			token.category_ids &&
+			token.category_ids.some((data) => data.includes('card4card'))
+			? {
+					contract_id: token.contract_id,
+					token_series_id: token.token_series_id,
+					owner_id: currentUser,
+			  }
+			: null,
+		(key) => {
+			return ParasRequest.get(`${process.env.V2_API_URL}/token`, {
+				params: key,
+			})
+		}
+	)
 
 	const onDismissModal = () => {
 		setShowModal(null)
@@ -562,10 +582,27 @@ const TokenSeriesDetail = ({ token, className, isAuctionEnds }) => {
 									{token.metadata.copies ? `Edition of ${token.metadata.copies}` : `Open Edition`}
 								</p>
 							</div>
-
-							<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-4 break-all">
-								{prettyTruncate(token.metadata.title, 28)}
-							</h1>
+							<div className="flex items-center">
+								<h1 className="mt-2 text-xl md:text-2xl font-bold text-white tracking-tight pr-2 break-all">
+									{prettyTruncate(token.metadata.title, 28)}
+								</h1>
+								{token.category_ids &&
+									token.category_ids?.filter((category) => category.includes('card4card'))[0] &&
+									(token.is_bought || ownedToken?.data.data.results[0]) && (
+										<div
+											className="cursor-pointer relative"
+											onMouseOver={() => setShowC4cTooltip(true)}
+											onMouseLeave={() => setShowC4cTooltip(false)}
+										>
+											<IconCard4Card size={24} color="white" />
+											{showC4cTooltip && (
+												<div className="absolute left-full transition top-0 rounded-md bg-dark-primary-1 border border-cyan-blue-1 p-2 text-[11px] text-white w-40 text-left">
+													You already have another edition of this card.
+												</div>
+											)}
+										</div>
+									)}
+							</div>
 							<div className="mt-1 text-white flex">
 								<p className="mr-1">by</p>
 								<ArtistVerified token={token} />
