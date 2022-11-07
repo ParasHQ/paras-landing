@@ -27,7 +27,13 @@ const BuyOptionModal = ({ show, onClose, data, action, currentUser }) => {
 						<p className="whitespace-nowrap text-center text-xl font-semibold">Buy with NEAR</p>
 					</div>
 					<a
-						href={`https://checkout.ramper.xyz/buy?redirect_url=https%3A%2F%2Framper.xyz&network=mainnet&token_series_id=${data.token_series_id}&contract_address=x.paras.near&user_wallet_address=${currentUser}`}
+						href={`https://checkout.ramper.xyz/buy?redirect_url=${
+							location.protocol + '//' + location.host
+						}/${currentUser}&network=${
+							process.env.APP_ENV === 'production' ? 'mainnet' : 'testnet'
+						}&token_series_id=${data.token_series_id}&contract_address=${
+							process.env.NFT_CONTRACT_ID
+						}&user_wallet_address=${currentUser}`}
 						target="_blank"
 						rel="noreferrer"
 						onClick={onClose}
