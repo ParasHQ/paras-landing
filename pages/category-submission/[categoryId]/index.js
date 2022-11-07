@@ -7,7 +7,7 @@ import Card from 'components/Card/Card'
 import Footer from 'components/Footer'
 import Nav from 'components/Nav'
 import { useToast } from 'hooks/useToast'
-import { parseImgUrl, timeAgo } from 'utils/common'
+import { parseImgUrl, prettyTruncate, timeAgo } from 'utils/common'
 import { useIntl } from 'hooks/useIntl'
 import { sentryCaptureException } from 'lib/sentry'
 import TokenSeriesDetailModal from 'components/TokenSeries/TokenSeriesDetailModal'
@@ -362,7 +362,7 @@ const SubmissionDetail = ({ submission, selectedSubmissions, setSelectedSubmissi
 								title={localToken?.metadata?.title}
 								className="text-2xl font-bold border-b-2 border-transparent hover:border-gray-100"
 							>
-								{localToken?.metadata?.title}
+								{prettyTruncate(localToken?.metadata?.title, 15)}
 							</a>
 						</Link>
 					</div>
