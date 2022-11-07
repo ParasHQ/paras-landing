@@ -337,10 +337,8 @@ const SubmissionDetail = ({ submission, selectedSubmissions, setSelectedSubmissi
 								: `Open Edition`}
 						</div>
 						<div className="text-[10px] font-normal text-white bg-dark-primary-2 border border-dark-primary-8 rounded-md pt-1 py-1 px-2">
-							{submission.token_series
-								? `Sale on ${formatNearAmount(
-										submission.token_series.price ? submission.token_series.price.$numberDecimal : 0
-								  )} Ⓝ`
+							{submission.token_series.price
+								? `Sale on ${formatNearAmount(submission.token_series.price)} Ⓝ`
 								: `Not for sale`}
 						</div>
 					</div>
