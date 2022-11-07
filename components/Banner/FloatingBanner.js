@@ -97,7 +97,7 @@ const FloatingBanner = () => {
 							</div>
 						</Link>
 					</div>
-					<div className="hidden md:block h-36 w-24 p-4 md:m-auto z-20 fixed -right-8 md:right-36 bottom-5 transform -translate-x-1/2 md:left-auto md:transform-none cursor-pointer">
+					<div className="hidden md:block h-32 w-32 p-4 md:m-auto z-20 fixed -right-8 md:right-32 bottom-10 transform -translate-x-1/2 md:left-auto md:transform-none cursor-pointer">
 						<Link href={`${data?.open_link}`}>
 							<div className="absolute right-0">
 								<div className="cursor-pointer">
