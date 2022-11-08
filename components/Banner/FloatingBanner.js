@@ -87,7 +87,7 @@ const FloatingBanner = () => {
 				<Fragment>
 					<div
 						ref={bannerRef}
-						className="flex justify-center items-center md:hidden h-32 w-32 z-20 fixed -right-8 md:right-36 bottom-5 transform -translate-x-1/2 cursor-pointer"
+						className="flex justify-center items-center md:hidden h-32 w-32 z-20 fixed -right-8 md:right-36 bottom-8 transform -translate-x-1/2 cursor-pointer"
 					>
 						<Link href={`${data?.open_link}`}>
 							<div>
