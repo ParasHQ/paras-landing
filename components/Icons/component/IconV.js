@@ -1,13 +1,14 @@
 import React from 'react'
 import { iconDefaultProps } from '../IconProps'
 
-const IconV = ({ size, color, ...props }) => (
+const IconV = ({ size, color, className, ...props }) => (
 	<svg
 		viewBox="0 0 11 7"
 		fill={color}
 		width={size}
 		height={size}
 		xlmns="http://www.w3.org/2000/svg"
+		className={className}
 		{...props}
 	>
 		<path

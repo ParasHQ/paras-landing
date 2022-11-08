@@ -943,6 +943,25 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 			</div>
 		)
 	}
+
+	if (notif.type === 'notification_card4card_user_disqualified') {
+		return (
+			<div>
+				<div className="notification-item" onClick={() => notificationModal(false)}>
+					<div className="text-gray-300 mt-2">
+						<p className="text-sm font-bold">
+							Sorry, you have been disqualified from the C4C competition.
+						</p>
+						<p className="text-xs font-normal">
+							<span>You collected the same NFT more than once</span>
+						</p>
+					</div>
+					<NotificationTime time={notif.issued_at} />
+				</div>
+			</div>
+		)
+	}
+
 	return null
 }
 

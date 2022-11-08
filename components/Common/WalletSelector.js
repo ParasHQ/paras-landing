@@ -136,6 +136,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		const userProfileResp = await ParasRequest.get(`${process.env.V2_API_URL}/profiles`, {
 			params: {
 				accountId: currentUser.accountId,
+				is_cached: false,
 			},
 		})
 		const userProfileResults = userProfileResp.data.data.results
