@@ -18,8 +18,8 @@ const LoyaltyMechanism = () => {
 						/>
 						<p className="loyalty-mechanism-number">1</p>
 						<p className="loyalty-mechanism-text">
-							Loyalty level will be determined based on the amount of $PARAS locked & the locked
-							staking duration.
+							Loyalty level will be determined based on the amount of $PARAS locked. Users who
+							locked $PARAS for 90 days get additional points for the raffle
 						</p>
 					</div>
 					<div className="text-center my-4">
@@ -127,7 +127,7 @@ const LoyaltyMechanism = () => {
 					<div>
 						<img
 							className="my-4 md:my-12 mx-auto pointer-events-none"
-							src="https://paras-cdn.imgix.net/bafkreih566vpqtmsbimv2b6wqhcerxelvp2ibyrmo2vxu246tzpv2cfc54"
+							src="https://paras-cdn.imgix.net/bafkreidf4ahoin2v2nchqc5uzgy6eq3lxlg72uxfnz2fyu2x2kvut4wlpq"
 						/>
 					</div>
 				</div>

@@ -142,7 +142,7 @@ export default function Loyalty() {
 						</div>
 						<div className="my-8">
 							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16">
-								NFTs from Paras Top 10 Collections
+								NFTs from Paras Top Collections
 							</p>
 							<RewardNFT data={data?.raffle.reward.nft.platinum} level="Platinum" />
 							<RewardNFT data={data?.raffle.reward.nft.gold} level="Gold" />
