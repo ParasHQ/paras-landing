@@ -15,6 +15,8 @@ import {
 } from 'lib/ga'
 import LoyaltyMechanism from 'components/Loyalty/LoyaltyMechanism'
 import LoyaltyLeaderboard from 'components/Loyalty/LoyaltyLeaderboard'
+import LoyaltyFAQ from 'components/Loyalty/LoyaltyFAQ'
+import LoyaltyTC from 'components/Loyalty/LoyaltyTC'
 
 const url = `${process.env.V2_API_URL}/raffle/current`
 const fetchData = () => axios.get(url).then((res) => res.data)
@@ -86,7 +88,7 @@ export default function Loyalty() {
 						style={{ background: 'linear-gradient(180deg, #4E29AA 0%, #20124D 100%)' }}
 					>
 						<img
-							src="https://paras-cdn.imgix.net/bafkreievunopbghyvakrsccb4jkxyeukimknqq5nxhxggbze7u6cdbppdq"
+							src="https://paras-cdn.imgix.net/bafybeiamb47hdmkix7sn3yqdttbdryat2xaql3e25uj3nlhgi2a2tqnahe"
 							className="absolute top-10 left-0 h-full"
 						/>
 						<img
@@ -125,12 +127,22 @@ export default function Loyalty() {
 					<div className="m-4 md:m-6 bg-white pb-8 rounded-xl">
 						<div>
 							<p className="font-bold text-center text-2xl text-white py-4 bg-[#674EA7] rounded-xl">
-								September's Rewards
+								November's Rewards
 							</p>
 						</div>
 						<div className="my-8">
+							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16 mb-8">Tokens</p>
+							<div className="w-28 h-28 md:h-44 md:w-44 rounded-md m-auto">
+								<img
+									className="h-full w-full object-cover"
+									src="https://paras-cdn.imgix.net/bafkreigijfnsv2hdwwwaxdtxveq75kmlijgt4baxk2dmocbjwuajjgitcy"
+								/>
+							</div>
+							<p className="font-bold py-4 text-center md:text-xl">12,222 $PARAS</p>
+						</div>
+						<div className="my-8">
 							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16">
-								NFTs from Paras Top 10 Collections
+								NFTs from Paras Top Collections
 							</p>
 							<RewardNFT data={data?.raffle.reward.nft.platinum} level="Platinum" />
 							<RewardNFT data={data?.raffle.reward.nft.gold} level="Gold" />
@@ -138,7 +150,7 @@ export default function Loyalty() {
 						</div>
 						<div className="my-8">
 							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16">
-								WL Spots & Free NFTs from New & Upcoming Projects
+								NFTs from New Collections
 							</p>
 							{/* <p className="font-bold py-16 text-center text-xl">Coming Soon</p> */}
 							<div className="my-8 flex items-center justify-center md:space-x-8 mx-4 md:mx-28 flex-wrap">
@@ -172,6 +184,15 @@ export default function Loyalty() {
 						>
 							Start Locked Staking
 						</a>
+					</div>
+					<div className="bg-white">
+						<div className="md:w-2/3 m-auto">
+							<LoyaltyFAQ />
+							<div className="px-8 md:px-16 bg-white">
+								<hr className="border-dashed" />
+							</div>
+							<LoyaltyTC />
+						</div>
 					</div>
 				</div>
 			</div>
