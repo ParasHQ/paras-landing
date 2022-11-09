@@ -9,6 +9,8 @@ const rankImage = [
 	'bafkreidz44zrozu6a6wkt6yfwllubpgyddde2e4rpd44m5mbav4l6kundi',
 ]
 
+const DAYS_IN_MILISECONDS = 86400000
+
 const LeaderboardColumn = ({ data, idx }) => {
 	return (
 		<div
@@ -39,7 +41,9 @@ const LeaderboardColumn = ({ data, idx }) => {
 			</div>
 			<div className="flex-shrink-0 w-2/12 md:w-auto col-span-2">
 				<p className="flex items-center justify-center">
-					{data.locked_duration ? `${data.locked_duration} days` : ''}
+					{data.locked_duration
+						? `${parseInt(data.locked_duration / DAYS_IN_MILISECONDS)} days`
+						: ''}
 				</p>
 			</div>
 			<div className="flex-shrink-0 w-2/12 md:w-auto col-span-2 font-normal flex items-center gap-1 justify-center">

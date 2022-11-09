@@ -57,7 +57,13 @@ const useLeaderboardLoyalty = ({ raffleId, currentUser }) => {
 		mutateGold: mutateLbGold,
 		mutateLbSilver: mutateLbSilver,
 		isValidating: isValidatingPlatinum || isValidatingGold || isValidatingSilver,
-		myRank: !isEmptyObject(platinumRes?.account_id) ? platinumRes?.account_id : null,
+		myRank: !isEmptyObject(platinumRes?.account_id)
+			? platinumRes?.account_id
+			: !isEmptyObject(goldRes?.account_id)
+			? goldRes?.account_id
+			: !isEmptyObject(silverRes?.account_id)
+			? silverRes?.account_id
+			: null,
 	}
 }
 

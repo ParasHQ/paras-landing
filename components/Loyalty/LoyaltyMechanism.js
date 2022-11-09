@@ -2,7 +2,7 @@ import { trackClickHowToLoyalty, trackClickTCLoyalty } from 'lib/ga'
 
 const LoyaltyMechanism = () => {
 	return (
-		<div className="m-4 md:m-6 mt-16 md:mt-16 bg-white pb-8 rounded-xl">
+		<div id="mechanism" className="m-4 md:m-6 mt-16 md:mt-16 bg-white pb-8 rounded-xl">
 			<div>
 				<p className="font-bold text-center text-2xl text-white py-4 bg-[#674EA7] rounded-xl">
 					Loyalty Program Mechanism
@@ -18,15 +18,15 @@ const LoyaltyMechanism = () => {
 						/>
 						<p className="loyalty-mechanism-number">1</p>
 						<p className="loyalty-mechanism-text">
-							Loyalty level will be determined based on the amount of $PARAS locked & the locked
-							staking duration.
+							Loyalty level will be determined based on the amount of $PARAS locked. Users who
+							locked $PARAS for 90 days get additional points for the raffle
 						</p>
 					</div>
 					<div className="text-center my-4">
 						<div>
 							<img
 								className="my-4 md:my-12 mx-auto pointer-events-none"
-								src="https://paras-cdn.imgix.net/bafkreifu5bjpwp2n2pesjangyhc4h4q7prkmms2yal7o5zphh57ekl3gsi"
+								src="https://paras-cdn.imgix.net/bafkreie3jmgft7weljeiyadc7czxsxosqhfi3rly5xzlbc5jvjarx3tedy"
 							/>
 						</div>
 						<p>Users who stake $PARAS without locking it will be considered as Bronze level.</p>
@@ -44,7 +44,7 @@ const LoyaltyMechanism = () => {
 						<div>
 							<img
 								className="my-4 md:my-12 mx-auto pointer-events-none"
-								src="https://paras-cdn.imgix.net/bafkreihbwx6jkrxwegvogqy36m34mdcmpcxkvmziukemlrdv6grxfvyg7a"
+								src="https://paras-cdn.imgix.net/bafkreieekr3cswi6ojuuaej2fadeykbqno3iwlh42lydlu4tuhg4dhv2ry"
 							/>
 						</div>
 					</div>
@@ -127,7 +127,7 @@ const LoyaltyMechanism = () => {
 					<div>
 						<img
 							className="my-4 md:my-12 mx-auto pointer-events-none"
-							src="https://paras-cdn.imgix.net/bafkreievq5c2cwn4c6fyakwqd2ef6gbvj32qj2z7xqonp27olnzs7yowlu"
+							src="https://paras-cdn.imgix.net/bafkreidf4ahoin2v2nchqc5uzgy6eq3lxlg72uxfnz2fyu2x2kvut4wlpq"
 						/>
 					</div>
 				</div>
