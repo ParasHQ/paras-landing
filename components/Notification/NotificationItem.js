@@ -514,6 +514,31 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		)
 	}
 
+	if (notif.type === 'notification_raffle_won_paras_token') {
+		return (
+			<div>
+				<div className="notification-item" onClick={() => notificationModal(false)}>
+					<div className="text-gray-300">
+						<p className="text-base font-bold">
+							Congratulations {prettyTruncate(notif.to, 14, 'address')},
+						</p>
+						<p>
+							<span>You have won </span>
+							<span>
+								{(notif.msg.amount_paras_token / 10 ** 18).toLocaleString('en-US')} $PARAS from
+								Paras Loyalty raffle! Read more about the rewards{' '}
+								<a className="font-bold cursor-pointer" href={notif.msg.winners_publication_url}>
+									here
+								</a>
+							</span>
+						</p>
+					</div>
+					<NotificationTime time={notif.issued_at} />
+				</div>
+			</div>
+		)
+	}
+
 	if (notif.type === 'nft_transfer' && notif.from === null) {
 		return (
 			<div>
