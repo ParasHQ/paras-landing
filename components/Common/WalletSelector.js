@@ -27,6 +27,7 @@ import { createAction } from '@paras-wallet-selector/wallet-utils'
 import SignMesssageModal from 'components/Modal/SignMessageModal'
 import { sentryCaptureException } from 'lib/sentry'
 import { setupMeteorWallet } from '@paras-wallet-selector/meteor-wallet'
+import { loadDynamicWombiScript } from 'lib/loadDynamicWombiScript'
 
 const WalletSelectorContext = React.createContext(null)
 
@@ -99,6 +100,9 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			.subscribe((nextAccounts) => {
 				const accountId = nextAccounts.find((account) => account.active)?.accountId || null
 				setupUser({ accountId: accountId })
+				loadDynamicWombiScript((WA) => {
+					if (accountId) WA.setWallet(accountId)
+				})
 			})
 
 		return () => {
