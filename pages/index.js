@@ -9,6 +9,7 @@ import HomeFeaturedBanner from 'components/Home/HomeFeaturedBanner'
 import HomeBanner from 'components/Home/HomeBanner'
 import HomeAuctionList from 'components/Home/HomeAuctionList'
 import HomeLaunchpad from 'components/Home/HomeLaunchpad'
+import FloatingBanner from 'components/Banner/FloatingBanner'
 
 export default function Home() {
 	const { localeLn } = useIntl()
@@ -86,6 +87,7 @@ export default function Home() {
 			</div>
 
 			<Footer />
+			<FloatingBanner />
 		</div>
 	)
 }
