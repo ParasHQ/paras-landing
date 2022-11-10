@@ -32,6 +32,7 @@ const moduleExports = {
 		FARM_CONTRACT_ID: process.env.FARM_CONTRACT_ID,
 		TRANSAK_API_KEY: process.env.TRANSAK_API_KEY,
 		TRANSAK_API_SECRET: process.env.TRANSAK_API_SECRET,
+		WOMBI_ANALYTICS: process.env.WOMBI_ANALYTICS,
 	},
 	async redirects() {
 		return [
