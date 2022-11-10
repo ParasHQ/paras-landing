@@ -20,15 +20,15 @@ const FloatingBanner = () => {
 			'scroll',
 			async () => {
 				handleScrollOffset(async () => {
-					bannerRef.current.style.setProperty('transform', 'translate(70px)')
-					bannerRef.current.style.setProperty('transition-duration', '.3s')
-					bannerRef.current.style.setProperty('transition-timing-function', 'ease-out')
+					bannerRef.current?.style.setProperty('transform', 'translate(70px)')
+					bannerRef.current?.style.setProperty('transition-duration', '.3s')
+					bannerRef.current?.style.setProperty('transition-timing-function', 'ease-out')
 
 					await waitForScrollEnd()
 
-					bannerRef.current.style.setProperty('transform', 'translate(-50px)')
-					bannerRef.current.style.setProperty('transition-duration', '.3s')
-					bannerRef.current.style.setProperty('transition-timing-function', 'ease-out')
+					bannerRef.current?.style.setProperty('transform', 'translate(-50px)')
+					bannerRef.current?.style.setProperty('transition-duration', '.3s')
+					bannerRef.current?.style.setProperty('transition-timing-function', 'ease-out')
 				}, 100)
 			},
 			false
@@ -77,7 +77,7 @@ const FloatingBanner = () => {
 		})
 	}
 
-	if ((!data && isValidating) || data.length === 0) {
+	if ((!data && isValidating) || data?.length === 0) {
 		return null
 	}
 
