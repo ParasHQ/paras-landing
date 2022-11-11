@@ -308,6 +308,14 @@ const User = () => {
 							>
 								Apply for Launchpad
 							</a>
+							<a
+								className="cursor-pointer p-2 text-gray-100 rounded-md button-wrapper block"
+								href="https://form.asana.com/?k=cnO_WAYZfPPietVNqj95Aw&d=1202107963522482"
+								target={'_blank'}
+								rel="noreferrer"
+							>
+								Apply for Listing
+							</a>
 
 							<hr className="my-2" />
 							<Link href={`/${store.currentUser}`}>
