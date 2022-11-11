@@ -10,11 +10,13 @@ import { STAKE_PARAS_URL } from 'constants/common'
 import { useEffect } from 'react'
 import {
 	trackViewLPLoyalty,
-	trackClickHowToLoyalty,
-	trackClickTCLoyalty,
 	trackClickBottomButtonLockedStaking,
 	trackClickTopButtonLockedStaking,
 } from 'lib/ga'
+import LoyaltyMechanism from 'components/Loyalty/LoyaltyMechanism'
+import LoyaltyLeaderboard from 'components/Loyalty/LoyaltyLeaderboard'
+import LoyaltyFAQ from 'components/Loyalty/LoyaltyFAQ'
+import LoyaltyTC from 'components/Loyalty/LoyaltyTC'
 
 const url = `${process.env.V2_API_URL}/raffle/current`
 const fetchData = () => axios.get(url).then((res) => res.data)
@@ -80,13 +82,13 @@ export default function Loyalty() {
 			></div>
 			<Nav />
 			<div className="max-w-6xl m-auto">
-				<div className="relative mx-4 my-12 bg-[#20124D]">
+				<div className="relative md:mx-4 md:my-12 bg-[#20124D]">
 					<div
 						className="py-4 md:py-12 relative"
 						style={{ background: 'linear-gradient(180deg, #4E29AA 0%, #20124D 100%)' }}
 					>
 						<img
-							src="https://paras-cdn.imgix.net/bafkreievunopbghyvakrsccb4jkxyeukimknqq5nxhxggbze7u6cdbppdq"
+							src="https://paras-cdn.imgix.net/bafybeiamb47hdmkix7sn3yqdttbdryat2xaql3e25uj3nlhgi2a2tqnahe"
 							className="absolute top-10 left-0 h-full"
 						/>
 						<img
@@ -125,12 +127,22 @@ export default function Loyalty() {
 					<div className="m-4 md:m-6 bg-white pb-8 rounded-xl">
 						<div>
 							<p className="font-bold text-center text-2xl text-white py-4 bg-[#674EA7] rounded-xl">
-								September's Rewards
+								November's Rewards
 							</p>
 						</div>
 						<div className="my-8">
+							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16 mb-8">Tokens</p>
+							<div className="w-28 h-28 md:h-44 md:w-44 rounded-md m-auto">
+								<img
+									className="h-full w-full object-cover"
+									src="https://paras-cdn.imgix.net/bafkreigijfnsv2hdwwwaxdtxveq75kmlijgt4baxk2dmocbjwuajjgitcy"
+								/>
+							</div>
+							<p className="font-bold py-4 text-center md:text-xl">12,222 $PARAS</p>
+						</div>
+						<div className="my-8">
 							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16">
-								NFTs from Paras Top 10 Collections
+								NFTs from Paras Top Collections
 							</p>
 							<RewardNFT data={data?.raffle.reward.nft.platinum} level="Platinum" />
 							<RewardNFT data={data?.raffle.reward.nft.gold} level="Gold" />
@@ -138,11 +150,11 @@ export default function Loyalty() {
 						</div>
 						<div className="my-8">
 							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16">
-								WL Spots & Free NFTs from New & Upcoming Projects
+								NFTs from New Collections
 							</p>
 							{/* <p className="font-bold py-16 text-center text-xl">Coming Soon</p> */}
 							<div className="my-8 flex items-center justify-center md:space-x-8 mx-4 md:mx-28 flex-wrap">
-								{data?.raffle.reward.wl_spot.map((nft) => (
+								{data?.raffle.reward.wl_spot.map?.((nft) => (
 									<div className="w-1/2 md:w-1/4 mb-6 p-2" key={nft.name}>
 										<div className="w-28 h-28 md:h-44 md:w-44 rounded-md border-4 border-[#20124D] m-auto">
 											<a href={nft.link} target="_blank" rel="noreferrer">
@@ -156,151 +168,10 @@ export default function Loyalty() {
 						</div>
 					</div>
 
+					<LoyaltyLeaderboard raffleId={data?.raffle._id} />
+
 					{/* Mechanism */}
-					<div className="m-4 md:m-6 mt-16 bg-white pb-8 rounded-xl">
-						<div>
-							<p className="font-bold text-center text-2xl text-white py-4 bg-[#674EA7] rounded-xl">
-								Loyalty Program Mechanism
-							</p>
-						</div>
-
-						<div className="mx-4 md:mx-16 my-6">
-							<div className="my-6">
-								<div className="flex">
-									<p className="loyalty-mechanism-number">1</p>
-									<p className="loyalty-mechanism-text">
-										Loyalty level will be determined based on the amount of $PARAS locked.
-									</p>
-								</div>
-								<div className="text-center my-4">
-									<div>
-										<img
-											className="my-4 md:my-12 mx-auto"
-											src="https://paras-cdn.imgix.net/bafkreifu5bjpwp2n2pesjangyhc4h4q7prkmms2yal7o5zphh57ekl3gsi"
-										/>
-									</div>
-									<p>
-										Users who stake $PARAS without locking it will be considered as Bronze level.
-									</p>
-									<p>
-										Learn more on how to do locked staking{' '}
-										<a
-											href="https://paras.id/publication/how-to-do-locked-staking-6311c2d10de00d001cd7a05a"
-											className="text-blue-700 underline"
-											onClick={trackClickHowToLoyalty}
-										>
-											here
-										</a>
-										.
-									</p>
-								</div>
-							</div>
-
-							<div className="my-6">
-								<div className="flex">
-									<p className="loyalty-mechanism-number">2</p>
-									<p className="loyalty-mechanism-text">
-										Silver, Gold, and Platinum members will have a chance to sign up and enter an
-										exclusive raffle on 19th–25th September.
-									</p>
-								</div>
-								<div>
-									<div className="text-center my-4">
-										<p className="md:w-3/4 md:m-auto">
-											Silver, Gold, Platinum members can log in to{' '}
-											<span>
-												<a href="https://paras.id" className="text-blue-700 underline">
-													Paras Marketplace
-												</a>
-											</span>
-											, and sign up to the exclusive raffle through a whitelisted pop up banner that
-											will appear on the home screen.
-										</p>
-										<img
-											className="m-auto my-4"
-											src="https://paras-cdn.imgix.net/bafkreidr72bc26na4qgsr3pprbcxghefz7qri2arztexhvr6qot46zs7jy"
-										/>
-									</div>
-									<div className="text-center my-4 ">
-										<p className="md:w-3/4 md:m-auto">
-											If you’re missing the pop-up banner, check your notification box and look for
-											the raffle announcement. Click ‘Sign Up’ to join the exclusive raffle.
-										</p>
-										<img
-											className="m-auto my-4"
-											src="https://paras-cdn.imgix.net/bafkreifr6uiqs5m6nc5k25zmwtzuk5elbmfqjp2a4rwg3amzrj2ylpio3i"
-										/>
-									</div>
-								</div>
-							</div>
-
-							<div className="my-6">
-								<div className="flex">
-									<p className="loyalty-mechanism-number">3</p>
-									<p className="loyalty-mechanism-text">
-										All Silver, Gold, and Platinum members who has signed up for the raffle will be
-										put into separate raffle pools.
-									</p>
-								</div>
-								<div className="md:flex text-center justify-center items-center mt-8">
-									<img
-										className="m-auto"
-										src="https://paras-cdn.imgix.net/bafkreihnolfcz3uxsw67bhfdq4hilg4axsqhzp5jirgz5iel5fyurnq5vi"
-									/>
-									<img
-										className="m-auto"
-										src="https://paras-cdn.imgix.net/bafkreiecmt6ab5az2yqfwn4au6o2xikuxphv2n5akvfrdpskmd5qosz7mi"
-									/>
-									<img
-										className="m-auto"
-										src="https://paras-cdn.imgix.net/bafkreib5somhf4ht7d4ygnon6tgls45ytxharnod7k3yldhxdvw2axnps4"
-									/>
-								</div>
-								<p className="text-center">
-									The more $PARAS you lock, the higher your probability to win the raffle
-								</p>
-							</div>
-							<div>
-								<div className="flex">
-									<p className="loyalty-mechanism-number">4</p>
-									<p className="loyalty-mechanism-text">
-										Each raffle pool will have different rewards.
-									</p>
-								</div>
-								<div>
-									<img
-										className="my-4 md:my-12 mx-auto"
-										src="https://paras-cdn.imgix.net/bafkreierkobcoxdtdj5coxx3iq45t33yoywv3p3qexghvg6inqcl7kxyxe"
-									/>
-								</div>
-							</div>
-
-							<div className="my-6">
-								<div className="flex">
-									<p className="loyalty-mechanism-number">5</p>
-									<p className="loyalty-mechanism-text">
-										September raffle period will be held as follows:
-									</p>
-								</div>
-								<div className="my-4 md:my-12 mx-auto">
-									<img
-										className="mx-auto mb-4"
-										src="https://paras-cdn.imgix.net/bafkreidaeidyhwmauk6htnifjegcfrqzjbqhiaikeyyx6g7xedri7hjh7y"
-									/>
-									<p className="text-center">
-										Please check the{' '}
-										<a
-											href="https://guide.paras.id/terms-and-conditions/loyalty-program"
-											className="text-blue-700 underline"
-											onClick={trackClickTCLoyalty}
-										>
-											Terms & Conditions of Paras Loyalty.
-										</a>
-									</p>
-								</div>
-							</div>
-						</div>
-					</div>
+					<LoyaltyMechanism />
 
 					<div className="py-16 text-center">
 						<p className="text-white text-2xl">Join Paras Loyalty & Grab Your Rewards!</p>
@@ -314,21 +185,21 @@ export default function Loyalty() {
 							Start Locked Staking
 						</a>
 					</div>
+					<div className="bg-white">
+						<div className="md:w-2/3 m-auto">
+							<LoyaltyFAQ />
+							<div className="px-8 md:px-16 bg-white">
+								<hr className="border-dashed" />
+							</div>
+							<LoyaltyTC />
+						</div>
+					</div>
 				</div>
 			</div>
 
 			<Footer />
 		</div>
 	)
-}
-
-export async function getServerSideProps() {
-	return {
-		redirect: {
-			destination: '/',
-			permanent: false,
-		},
-	}
 }
 
 const RewardNFT = ({ data, level }) => {

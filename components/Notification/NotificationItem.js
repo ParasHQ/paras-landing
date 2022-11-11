@@ -90,8 +90,17 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		return (
 			<div className="notification-item">
 				<div className="text-gray-300 select-none">
-					<p className="font-bold text-base">Congratulations, </p>
-					<p>{`You're now a ${capitalize(notif.msg.current_level)} Member!`}</p>
+					<p className="font-bold text-base">{`Congrats! You're now a ${capitalize(
+						notif.msg.current_level
+					)} Member!`}</p>
+					<p>
+						<span>You can register for a raffle on 14-27 Nov, 2022. Read more here 👉 </span>
+						<span>
+							<Link href="/loyalty">
+								<a className="font-bold">Loyalty</a>
+							</Link>
+						</span>
+					</p>
 				</div>
 				<NotificationTime time={notif.issued_at} />
 			</div>
@@ -118,25 +127,26 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 		)
 	}
 
-	if (notif.type === 'notification_raffle_new_cycle') {
-		return (
-			<div className="w-full notification-item">
-				<div className="text-gray-300 select-none w-full">
-					<p className="font-bold text-base">Exclusive Rewards Are Waiting For You!</p>
-					<p className="text-sm">
-						<span>{`Find out this month's Paras Loyalty rewards `}</span>
-						<span>
-							<Link href="/loyalty">
-								<a className="font-bold">here</a>
-							</Link>
-						</span>
-						.
-					</p>
-				</div>
-				<NotificationTime time={notif.issued_at} />
-			</div>
-		)
-	}
+	// Omitted
+	// if (notif.type === 'notification_raffle_new_cycle') {
+	// 	return (
+	// 		<div className="w-full notification-item">
+	// 			<div className="text-gray-300 select-none w-full">
+	// 				<p className="font-bold text-base">Exclusive Rewards Are Waiting For You!</p>
+	// 				<p className="text-sm">
+	// 					<span>{`Find out this month's Paras Loyalty rewards `}</span>
+	// 					<span>
+	// 						<Link href="/loyalty">
+	// 							<a className="font-bold">here</a>
+	// 						</Link>
+	// 					</span>
+	// 					.
+	// 				</p>
+	// 			</div>
+	// 			<NotificationTime time={notif.issued_at} />
+	// 		</div>
+	// 	)
+	// }
 
 	if (notif.type === 'notification_level_down') {
 		return (
@@ -492,6 +502,31 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							<span>
 								{notif.msg.card_name} from Paras Loyalty! We will send it to your account in 1x24
 								hours. Read more about the rewards{' '}
+								<a className="font-bold cursor-pointer" href={notif.msg.winners_publication_url}>
+									here
+								</a>
+							</span>
+						</p>
+					</div>
+					<NotificationTime time={notif.issued_at} />
+				</div>
+			</div>
+		)
+	}
+
+	if (notif.type === 'notification_raffle_won_paras_token') {
+		return (
+			<div>
+				<div className="notification-item" onClick={() => notificationModal(false)}>
+					<div className="text-gray-300">
+						<p className="text-base font-bold">
+							Congratulations {prettyTruncate(notif.to, 14, 'address')},
+						</p>
+						<p>
+							<span>You have won </span>
+							<span>
+								{(notif.msg.amount_paras_token / 10 ** 18).toLocaleString('en-US')} $PARAS from
+								Paras Loyalty raffle! Read more about the rewards{' '}
 								<a className="font-bold cursor-pointer" href={notif.msg.winners_publication_url}>
 									here
 								</a>

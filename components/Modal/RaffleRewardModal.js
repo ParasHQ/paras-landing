@@ -59,6 +59,17 @@ const RaffleRewardModal = () => {
 									</a>
 								</span>
 							</>
+						) : data.type === 'notification_raffle_won_paras_token' ? (
+							<>
+								<span>You have won </span>
+								<span>
+									{(data.msg.amount_paras_token / 10 ** 18).toLocaleString('en-US')} $PARAS from
+									Paras Loyalty raffle! Read more about the rewards{' '}
+									<a className="font-bold cursor-pointer" href={data.msg.winners_publication_url}>
+										here
+									</a>
+								</span>
+							</>
 						) : (
 							<>
 								<span>You have won 1 </span>
