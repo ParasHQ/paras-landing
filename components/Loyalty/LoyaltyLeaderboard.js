@@ -93,7 +93,9 @@ const LoyaltyLeaderboard = ({ raffleId }) => {
 					/>
 				</div>
 				{myRank?.data && myRank?.rank ? (
-					<LeaderboardColumn data={myRank.data} idx={myRank.rank - 1} />
+					<div className="overflow-x-auto no-scrollbar">
+						<LeaderboardColumn data={myRank.data} idx={myRank.rank - 1} />
+					</div>
 				) : (
 					<div className="text-white text-center text-sm">
 						<p className="font-bold">
