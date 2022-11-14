@@ -27,6 +27,7 @@ import { createAction } from '@paras-wallet-selector/wallet-utils'
 import SignMesssageModal from 'components/Modal/SignMessageModal'
 import { sentryCaptureException } from 'lib/sentry'
 import { setupMeteorWallet } from '@paras-wallet-selector/meteor-wallet'
+import { setupHereWallet } from '@paras-wallet-selector/here-wallet'
 import { loadDynamicWombiScript } from 'lib/loadDynamicWombiScript'
 
 const WalletSelectorContext = React.createContext(null)
@@ -49,6 +50,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				setupSender({ iconUrl: window.location.origin + '/assets/sender-icon.png' }),
 				setupMyNearWallet({ iconUrl: window.location.origin + '/assets/my-near-wallet-icon.png' }),
 				setupMeteorWallet({ iconUrl: window.location.origin + '/assets/meteor-wallet-icon.png' }),
+				setupHereWallet({ iconUrl: window.location.origin + '/assets/here-wallet-icon.png' }),
 			],
 		})
 		const _modal = setupModal(_selector, { contractId: nearConfig.contractName })
