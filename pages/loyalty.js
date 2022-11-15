@@ -88,7 +88,7 @@ export default function Loyalty() {
 						style={{ background: 'linear-gradient(180deg, #4E29AA 0%, #20124D 100%)' }}
 					>
 						<img
-							src="https://paras-cdn.imgix.net/bafybeiamb47hdmkix7sn3yqdttbdryat2xaql3e25uj3nlhgi2a2tqnahe"
+							src="https://paras-cdn.imgix.net/bafkreigoz4rgm4b6rajfq54syr455yd4chr7hjsmu6brgwuzqer2uesgem"
 							className="absolute top-10 left-0 h-full"
 						/>
 						<img
