@@ -28,14 +28,14 @@ const HomeBanner = () => {
 		}
 	}, [refDesktop, data])
 
-	if ((!data && isValidating) || data.length === 0) {
+	if ((!data && isValidating) || data?.length === 0) {
 		return null
 	}
 
 	return (
 		<div className="rounded-xl overflow-hidden mb-12 w-full">
 			<Carousel showStatus={false} showThumbs={false} autoPlay infiniteLoop className="w-full">
-				{data.map((item, idx) => (
+				{data?.map((item, idx) => (
 					// eslint-disable-next-line react/jsx-no-target-blank
 					<a key={idx} href={`${item.openLink}`} target="_blank">
 						<div
