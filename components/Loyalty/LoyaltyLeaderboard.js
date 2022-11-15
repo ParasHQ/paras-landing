@@ -85,7 +85,7 @@ const LoyaltyLeaderboard = ({ raffleId }) => {
 			</div>
 
 			{/* My rank */}
-			<div className="mt-24 md:m-4 md:mt-24 rounded-3xl border-[6px] border-[#36216A] p-8 py-6 relative">
+			<div className="mt-24 md:m-4 md:mt-24 rounded-3xl border-[6px] border-[#36216A] p-2 md:p-8 md:py-6 relative">
 				<div className="absolute -top-20 inset-x-0 w-full">
 					<img
 						className="pointer-events-none w-48 m-auto"
