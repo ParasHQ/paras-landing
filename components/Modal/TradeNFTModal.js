@@ -140,7 +140,7 @@ const TradeNFTModal = ({ data, show, onClose, tokenType, fromUpdate = false }) =
 							params: {
 								methodName: 'nft_approve',
 								args: params,
-								attachedDeposit: STORAGE_APPROVE_FEE,
+								deposit: STORAGE_APPROVE_FEE,
 								gas: GAS_FEE,
 							},
 						},
