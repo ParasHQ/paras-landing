@@ -463,6 +463,16 @@
     near-api-js "0.44.2"
     rxjs "~7.4.0"
 
+"@paras-wallet-selector/here-wallet@^5.0.3":
+  version "5.0.3"
+  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/here-wallet/-/here-wallet-5.0.3.tgz#79a84dce929447ced67bf11c6a43ff9d743c2702"
+  integrity sha512-e35LpAeIjC3eosZ80OIi8iOVjr88IODd6F9UtUEMHhe33KMS/7Po+E8OgmfXc81jSFzr8kBC1gigHp0q5VjGVA==
+  dependencies:
+    "@paras-wallet-selector/core" "5.0.3"
+    "@paras-wallet-selector/wallet-utils" "5.0.3"
+    bn.js "^5.2.0"
+    rxjs "~7.4.0"
+
 "@paras-wallet-selector/meteor-wallet@^5.0.3":
   version "5.0.3"
   resolved "https://registry.yarnpkg.com/@paras-wallet-selector/meteor-wallet/-/meteor-wallet-5.0.3.tgz#05a3a9899b321cd420c76a119936b0c80eccacee"
