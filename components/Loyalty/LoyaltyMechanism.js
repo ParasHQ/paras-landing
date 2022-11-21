@@ -19,7 +19,7 @@ const LoyaltyMechanism = () => {
 						<p className="loyalty-mechanism-number">1</p>
 						<p className="loyalty-mechanism-text">
 							Loyalty level will be determined based on the amount of $PARAS locked. Users who
-							locked $PARAS for 90 days get additional points for the raffle
+							locked $PARAS for 90 days get additional points for the raffle.
 						</p>
 					</div>
 					<div className="text-center my-4">

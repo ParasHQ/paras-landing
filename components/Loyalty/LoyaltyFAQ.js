@@ -84,12 +84,8 @@ const LoyaltyFAQ = () => {
 					<ul className="list-disc">
 						<li>
 							Discord:{' '}
-							<a
-								href="https://discord.com/invite/vWR2XBNupg"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								https://discord.com/invite/vWR2XBNupg
+							<a href="https://discord.paras.id" target="_blank" rel="noopener noreferrer">
+								https://discord.paras.id
 							</a>
 						</li>
 						<li>

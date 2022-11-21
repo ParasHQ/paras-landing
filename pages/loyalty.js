@@ -88,7 +88,7 @@ export default function Loyalty() {
 						style={{ background: 'linear-gradient(180deg, #4E29AA 0%, #20124D 100%)' }}
 					>
 						<img
-							src="https://paras-cdn.imgix.net/bafybeiamb47hdmkix7sn3yqdttbdryat2xaql3e25uj3nlhgi2a2tqnahe"
+							src="https://paras-cdn.imgix.net/bafkreigoz4rgm4b6rajfq54syr455yd4chr7hjsmu6brgwuzqer2uesgem"
 							className="absolute top-10 left-0 h-full"
 						/>
 						<img
@@ -153,9 +153,9 @@ export default function Loyalty() {
 								NFTs from New Collections
 							</p>
 							{/* <p className="font-bold py-16 text-center text-xl">Coming Soon</p> */}
-							<div className="my-8 flex items-center justify-center md:space-x-8 mx-4 md:mx-28 flex-wrap">
+							<div className="my-8 flex items-center justify-center mx-4 md:mx-28 flex-wrap">
 								{data?.raffle.reward.wl_spot.map?.((nft) => (
-									<div className="w-1/2 md:w-1/4 mb-6 p-2" key={nft.name}>
+									<div className="w-1/2 md:w-1/4 mb-6 p-2 md:mx-4" key={nft.name}>
 										<div className="w-28 h-28 md:h-44 md:w-44 rounded-md border-4 border-[#20124D] m-auto">
 											<a href={nft.link} target="_blank" rel="noreferrer">
 												<img className="h-full w-full object-cover" src={parseImgUrl(nft.media)} />

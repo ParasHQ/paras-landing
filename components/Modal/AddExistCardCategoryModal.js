@@ -10,7 +10,7 @@ import Link from 'next/link'
 import clsx from 'clsx'
 import { useEffect } from 'react'
 import Button from 'components/Common/Button'
-import useSWRImmutable from 'swr/immutable'
+import useSWR from 'swr'
 import { sentryCaptureException } from 'lib/sentry'
 import { useToast } from 'hooks/useToast'
 
@@ -37,7 +37,7 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 
 	const isDisabledSubmit = !agreement || selectedTokens.length === 0 || isSubmitting
 
-	const { data: _tokens } = useSWRImmutable(
+	const { data: _tokens, mutate } = useSWR(
 		currentUser ? { account_id: currentUser } : null,
 		fetchTokens
 	)
@@ -79,6 +79,7 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 				type: 'success',
 				duration: 2000,
 			})
+			mutate()
 			setIsSubmitting(false)
 		} catch (err) {
 			sentryCaptureException(err)
@@ -225,7 +226,7 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 											.length === 0 && (
 											<p className="text-center mt-2 w-52">
 												This Collection does not contain any cards that meets the{` `}
-												<a href="">
+												<a href="https://bit.ly/c4cnov22 ">
 													<span className="underline cursor-pointer">Card4Card requirements.</span>
 												</a>
 											</p>
@@ -235,7 +236,7 @@ const AddExistCardCategoryModal = ({ onClose, categoryName, categoryId }) => {
 									<>
 										<p className="text-center mt-2 w-52">
 											You don&apos;t have a card that meets the{` `}
-											<a href="">
+											<a href="https://bit.ly/c4cnov22 ">
 												<span className="underline cursor-pointer">Card4Card requirements.</span>
 											</a>
 										</p>

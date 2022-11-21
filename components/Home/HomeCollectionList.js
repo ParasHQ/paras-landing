@@ -73,7 +73,7 @@ const HomeCollectionList = ({ showDetails }) => {
 				className="flex flex-nowrap overflow-scroll snap-x -mx-3 disable-scrollbars"
 				onScroll={onScroll}
 			>
-				{data.map((collection) => (
+				{data?.map((collection) => (
 					<CollectionItem
 						key={collection._id}
 						collection={collection}

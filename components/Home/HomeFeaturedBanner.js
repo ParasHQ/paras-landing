@@ -48,7 +48,7 @@ const HomeFeaturedBanner = () => {
 		}
 	}
 
-	if (!FeaturedData && isValidating) {
+	if ((!FeaturedData && isValidating) || !FeaturedData) {
 		return (
 			<div className="md:flex mt-8">
 				<div className="md:w-1/2 md:mr-4 mb-4 md:mb-0">

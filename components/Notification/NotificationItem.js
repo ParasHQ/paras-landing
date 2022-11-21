@@ -6,13 +6,14 @@ import { capitalize, parseImgUrl, prettyTruncate, shortTimeAgo } from 'utils/com
 import Media from 'components/Common/Media'
 import { STAKE_PARAS_URL } from 'constants/common'
 
-const NotificationImage = ({ media }) => {
+const NotificationImage = ({ media, isMediaCdn }) => {
 	return (
 		<div className="w-16 flex-shrink-0 rounded-md overflow-hidden bg-primary shadow-inner">
 			<Media
 				url={parseImgUrl(media, null, {
 					width: '200',
 					useOriginal: process.env.APP_ENV !== 'production',
+					isMediaCdn,
 				})}
 				videoControls={false}
 				videoMuted={true}
@@ -83,7 +84,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 	const url = `/token/${notif.contract_id}::${
 		notif.type === 'notification_add_trade' || notif.type === 'accept_trade'
 			? encodeURIComponent(notif.token_id?.split(':')[0])
-			: encodeURIComponent(notif.token_series_id)
+			: encodeURIComponent(notif.token_series_id) || encodeURIComponent(notif.token_id)
 	}${notif.token_id ? `/${encodeURIComponent(notif.token_id)}` : ''}`
 
 	if (notif.type === 'notification_level_up') {
@@ -289,7 +290,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 							<div className="pl-2 text-gray-300">
 								{'You have rejected '}
 								<span className="font-medium text-gray-100">
@@ -316,7 +317,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 							<div className="pl-2 text-gray-300">
 								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
 								{' that you offered has been rejected by '}
@@ -342,7 +343,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 							<div className="pl-2 text-gray-300">
 								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
 								{' has been sold by '}
@@ -365,7 +366,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 							<div className="pl-2 text-gray-300">
 								{'you have not decided on the offers received of '}
 								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
@@ -388,7 +389,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 							<div className="pl-2 text-gray-300">
 								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
 								{' the artist has not decided on the offers received (more than 7 days)'}
@@ -548,7 +549,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 							<div className="pl-2 text-gray-300">
 								{`Creator minted ${token.metadata?.title} to ${prettyTruncate(
 									notif.to,
@@ -573,7 +574,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 							<div className="pl-2 text-gray-300">
 								burned <span className="font-medium text-gray-100">{token.metadata?.title}</span>
 							</div>
@@ -595,7 +596,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								className="cursor-pointer notification-item"
 								onClick={() => notificationModal(false)}
 							>
-								<NotificationImage media={token.metadata?.media} />
+								<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 								<div className="pl-2 text-gray-300">
 									sold <span className="font-medium text-gray-100">{token.metadata?.title}</span>
 									{' to '}
@@ -621,7 +622,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								className="cursor-pointer notification-item"
 								onClick={() => notificationModal(false)}
 							>
-								<NotificationImage media={token.metadata?.media} />
+								<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 								<div className="pl-2 text-gray-300">
 									bought <span className="font-medium text-gray-100">{token.metadata?.title}</span>{' '}
 									from{' '}
@@ -647,7 +648,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 								className="cursor-pointer notification-item"
 								onClick={() => notificationModal(false)}
 							>
-								<NotificationImage media={token.metadata?.media} />
+								<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 								<div className="pl-2 text-gray-300">
 									received{' '}
 									<span className="font-medium text-gray-100">{token.metadata?.title} </span>
@@ -674,7 +675,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 							{notif.to === currentUser ? (
 								<div className="pl-2 text-gray-200">
 									bought <span className="font-medium text-gray-100">{token.metadata?.title}</span>
@@ -711,7 +712,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 							<div className="pl-2 text-gray-200">
 								received {formatNearAmount(notif.royalty)} Ⓝ royalty from{' '}
 								<span className="font-medium text-gray-100">{token.metadata?.title}</span> secondary
@@ -734,7 +735,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 							<div className="pl-2 text-gray-100">
 								<span className="font-semibold">{prettyTruncate(notif.from, 14, 'address')}</span>{' '}
 								offer <span className="font-medium text-gray-100">{token.metadata?.title}</span>
@@ -758,7 +759,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 							<div className="pl-2 text-gray-100">
 								<span className="font-semibold">{prettyTruncate(notif.from, 14, 'address')}</span>{' '}
 								bid <span className="font-medium text-gray-100">{token.metadata?.title}</span>
@@ -785,7 +786,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 							<div className="pl-2 text-gray-100">
 								<span className="font-semibold">{prettyTruncate(notif.from, 14, 'address')}</span>{' '}
 								bid <span className="font-medium text-gray-100">{token.metadata?.title}</span>
@@ -812,7 +813,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 							<div className="pl-2 text-gray-100">
 								Token <span className="font-medium">{token.metadata?.title}</span> submission has
 								been accepted
@@ -835,7 +836,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 							<div className="pl-2 text-gray-100">
 								Token <span className="font-semibold">{token.metadata?.title}</span> submission has
 								been rejected from <span className="font-semibold">{notif.msg.category_name}</span>{' '}
@@ -884,7 +885,10 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={tradedToken.metadata?.media} />
+							<NotificationImage
+								media={tradedToken.metadata?.media}
+								isMediaCdn={token.isMediaCdn}
+							/>
 							<div className="pl-2 text-gray-100">
 								<span className="font-semibold">
 									{prettyTruncate(notif.msg.params.sender_id, 14, 'address')}
@@ -909,7 +913,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 							<div className="pl-2 text-gray-100">
 								<span className="font-semibold">{prettyTruncate(notif.from, 14, 'address')}</span>{' '}
 								outbid <span className="font-semibold text-gray-100">{token.metadata?.title}</span>{' '}
@@ -931,7 +935,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							className="cursor-pointer notification-item"
 							onClick={() => notificationModal(false)}
 						>
-							<NotificationImage media={token.metadata?.media} />
+							<NotificationImage media={token.metadata?.media} isMediaCdn={token.isMediaCdn} />
 							<div className="pl-2 text-gray-300">
 								<span className="font-medium text-gray-100">{token.metadata?.title}</span>
 								{' that you offered was sold to '}

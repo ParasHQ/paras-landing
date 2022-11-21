@@ -35,9 +35,7 @@ const LeaderboardColumn = ({ data, idx }) => {
 				</Link>
 			</div>
 			<div className="flex-shrink-0 w-2/12 md:w-auto col-span-2 flex items-center justify-center">
-				<p>
-					{data.locked_amount ? `${(data.locked_amount / 10 ** 18).toLocaleString('en-US')} ℗` : ''}
-				</p>
+				<p>{data.locked_amount ? `${data.locked_amount.toLocaleString('en-US')} ℗` : ''}</p>
 			</div>
 			<div className="flex-shrink-0 w-2/12 md:w-auto col-span-2">
 				<p className="flex items-center justify-center">
@@ -47,7 +45,7 @@ const LeaderboardColumn = ({ data, idx }) => {
 				</p>
 			</div>
 			<div className="flex-shrink-0 w-2/12 md:w-auto col-span-2 font-normal flex items-center gap-1 justify-center">
-				{data.duration_points ? (
+				{data.duration_points !== undefined ? (
 					<>
 						<p>{data.duration_points?.toLocaleString('en-US')}</p>
 						<IconTrophy size={12} />
