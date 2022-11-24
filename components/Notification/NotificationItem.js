@@ -89,8 +89,6 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 			: encodeURIComponent(notif.token_series_id) || encodeURIComponent(notif.token_id)
 	}${notif.token_id ? `/${encodeURIComponent(notif.token_id)}` : ''}`
 
-	notif.type = 'notification_raffle_won_nft'
-
 	if (notif.type === 'notification_level_up') {
 		return (
 			<div className="notification-item">
