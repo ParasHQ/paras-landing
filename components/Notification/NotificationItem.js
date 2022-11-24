@@ -511,23 +511,25 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							</span>
 						</p>
 					</div>
-					<div className="ml-2">
-						<Button
-							size="sm"
-							onClick={(e) => {
-								e.preventDefault()
-								e.stopPropagation()
-							}}
-						>
-							<TwitterShareButton
-								title={notif.msg.twitterShareContent}
-								url={notif.msg.twitterShareLink}
-								className="flex items-center w-full"
+					{notif.msg.twitterShareContent && notif.msg.twitterShareLink && (
+						<div className="ml-2">
+							<Button
+								size="sm"
+								onClick={(e) => {
+									e.preventDefault()
+									e.stopPropagation()
+								}}
 							>
-								Share
-							</TwitterShareButton>
-						</Button>
-					</div>
+								<TwitterShareButton
+									title={notif.msg.twitterShareContent}
+									url={notif.msg.twitterShareLink}
+									className="flex items-center w-full"
+								>
+									Share
+								</TwitterShareButton>
+							</Button>
+						</div>
+					)}
 					<NotificationTime time={notif.issued_at} />
 				</div>
 			</div>
@@ -553,23 +555,25 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							</span>
 						</p>
 					</div>
-					<div className="ml-2">
-						<Button
-							size="sm"
-							onClick={(e) => {
-								e.preventDefault()
-								e.stopPropagation()
-							}}
-						>
-							<TwitterShareButton
-								title={notif.msg.twitterShareContent}
-								url={notif.msg.twitterShareLink}
-								className="flex items-center w-full"
+					{notif.msg.twitterShareContent && notif.msg.twitterShareLink && (
+						<div className="ml-2">
+							<Button
+								size="sm"
+								onClick={(e) => {
+									e.preventDefault()
+									e.stopPropagation()
+								}}
 							>
-								Share
-							</TwitterShareButton>
-						</Button>
-					</div>
+								<TwitterShareButton
+									title={notif.msg.twitterShareContent}
+									url={notif.msg.twitterShareLink}
+									className="flex items-center w-full"
+								>
+									Share
+								</TwitterShareButton>
+							</Button>
+						</div>
+					)}
 					<NotificationTime time={notif.issued_at} />
 				</div>
 			</div>

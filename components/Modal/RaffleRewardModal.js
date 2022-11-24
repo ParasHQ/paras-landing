@@ -85,24 +85,26 @@ const RaffleRewardModal = () => {
 							</>
 						)}
 					</p>
-					<div className="mt-2">
-						<Button
-							size="sm"
-							className="px-6"
-							onClick={(e) => {
-								e.preventDefault()
-								e.stopPropagation()
-							}}
-						>
-							<TwitterShareButton
-								title={data?.msg.twitterShareContent}
-								url={data?.msg.twitterShareLink}
-								className="flex items-center w-full"
+					{data?.msg.twitterShareContent && data?.msg.twitterShareLink && (
+						<div className="mt-2">
+							<Button
+								size="sm"
+								className="px-6"
+								onClick={(e) => {
+									e.preventDefault()
+									e.stopPropagation()
+								}}
 							>
-								Share
-							</TwitterShareButton>
-						</Button>
-					</div>
+								<TwitterShareButton
+									title={data?.msg.twitterShareContent}
+									url={data?.msg.twitterShareLink}
+									className="flex items-center w-full"
+								>
+									Share
+								</TwitterShareButton>
+							</Button>
+						</div>
+					)}
 				</div>
 			</div>
 		</div>
