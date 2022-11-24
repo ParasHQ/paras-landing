@@ -3,6 +3,8 @@ import useSWR from 'swr'
 import { IconX } from 'components/Icons'
 import useStore from 'lib/store'
 import ParasRequest from 'lib/ParasRequest'
+import { TwitterShareButton } from 'react-share'
+import Button from 'components/Common/Button'
 
 const RaffleRewardModal = () => {
 	const [showModal, setShowModal] = useState(false)
@@ -83,6 +85,24 @@ const RaffleRewardModal = () => {
 							</>
 						)}
 					</p>
+					<div className="mt-2">
+						<Button
+							size="sm"
+							className="px-6"
+							onClick={(e) => {
+								e.preventDefault()
+								e.stopPropagation()
+							}}
+						>
+							<TwitterShareButton
+								title={data?.msg.twitterShareContent}
+								url={data?.msg.twitterShareLink}
+								className="flex items-center w-full"
+							>
+								Share
+							</TwitterShareButton>
+						</Button>
+					</div>
 				</div>
 			</div>
 		</div>
