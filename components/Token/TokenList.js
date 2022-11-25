@@ -527,7 +527,7 @@ const TokenSingle = ({
 												</div>
 											)}
 										</div>
-										{price && !isEndedTime && (
+										{price && !isEndedTime && store.nearUsdPrice !== 0 && (
 											<div
 												className={`${
 													token?.is_auction ? 'text-[9px]' : 'text-xs'

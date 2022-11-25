@@ -186,7 +186,8 @@ const TokenCurrentPrice = ({ localToken, className, typeCurrentPrice }) => {
 							<div className="flex">
 								{localToken.price === '0'
 									? localeLn('Free')
-									: localToken.price && (
+									: localToken.price &&
+									  store.nearUsdPrice !== 0 && (
 											<p>
 												{prettyBalance(localToken.price, 24, 4)}
 												<span className="pl-1">Ⓝ</span>
