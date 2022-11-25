@@ -248,7 +248,9 @@ const CurrentBid = ({ initial = {}, endedAuction, setShowModal }) => {
 									{prettyBalance(token?.price?.$numberDecimal || token?.price, 24, 2)} Ⓝ
 								</p>
 								<span className="text-[13px] font-normal text-gray-400 pt-2">
-									(${prettyBalance(JSBI.BigInt(token?.price * store.nearUsdPrice), 24, 4)})
+									{store.nearUsdPrice !== 0 && (
+										<>(${prettyBalance(JSBI.BigInt(token?.price * store.nearUsdPrice), 24, 4)})</>
+									)}
 								</span>
 							</div>
 						</div>
@@ -266,9 +268,11 @@ const CurrentBid = ({ initial = {}, endedAuction, setShowModal }) => {
 									)}{' '}
 									Ⓝ
 								</p>
-								<span className="text-[13px] font-normal text-gray-400 pt-2">
-									(${prettyBalance(JSBI.BigInt(token?.price * store.nearUsdPrice), 24, 4)})
-								</span>
+								{store.nearUsdPrice !== 0 && (
+									<span className="text-[13px] font-normal text-gray-400 pt-2">
+										(${prettyBalance(JSBI.BigInt(token?.price * store.nearUsdPrice), 24, 4)})
+									</span>
+								)}
 							</div>
 						</div>
 					)}
@@ -294,17 +298,20 @@ const CurrentBid = ({ initial = {}, endedAuction, setShowModal }) => {
 										)
 									</div>
 								)}
-								{token?.price === '0' && token?.is_auction && !endedAuction && (
-									<div className="text-[9px] text-gray-400 truncate mt-1">
-										~ $
-										{prettyBalance(
-											JSBI.BigInt(token?.amount ? token?.amount : token?.price) *
-												store.nearUsdPrice,
-											24,
-											2
-										)}
-									</div>
-								)}
+								{token?.price === '0' &&
+									token?.is_auction &&
+									!endedAuction &&
+									store.nearUsdPrice !== 0 && (
+										<div className="text-[9px] text-gray-400 truncate mt-1">
+											~ $
+											{prettyBalance(
+												JSBI.BigInt(token?.amount ? token?.amount : token?.price) *
+													store.nearUsdPrice,
+												24,
+												2
+											)}
+										</div>
+									)}
 							</div>
 						</div>
 					</div>
