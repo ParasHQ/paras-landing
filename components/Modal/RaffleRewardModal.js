@@ -49,18 +49,10 @@ const RaffleRewardModal = () => {
 					</p>
 					<p className="text-white pr-2 text-sm mt-2">
 						{data.type === 'notification_raffle_won_nft' ? (
-							<>
-								<span>
-									You have won a ${data.msg.card_name} from Paras Loyalty! We will send it to your
-									account in 1x24 hours.
-								</span>
-								<span>
-									Read more about the rewards{' '}
-									<a className="font-bold cursor-pointer" href={data.msg.winners_publication_url}>
-										here
-									</a>
-								</span>
-							</>
+							<span>
+								You have won a ${data.msg.card_name} from Paras Loyalty! We will send it to your
+								account in 1x24 hours.
+							</span>
 						) : data.type === 'notification_raffle_won_paras_token' ? (
 							<>
 								<span>You have won </span>
