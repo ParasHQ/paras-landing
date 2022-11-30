@@ -511,7 +511,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							</span>
 						</p>
 					</div>
-					{notif.msg.twitterShareContent && notif.msg.twitterShareLink && (
+					{(notif.msg.twitterShareContent || notif.msg.twitterShareLink) && (
 						<div className="ml-2">
 							<Button
 								size="sm"
@@ -522,7 +522,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							>
 								<TwitterShareButton
 									title={notif.msg.twitterShareContent}
-									url={notif.msg.twitterShareLink}
+									url={notif.msg.twitterShareLink || ' '}
 									className="flex items-center w-full"
 								>
 									Share
@@ -555,7 +555,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							</span>
 						</p>
 					</div>
-					{notif.msg.twitterShareContent && notif.msg.twitterShareLink && (
+					{(notif.msg.twitterShareContent || notif.msg.twitterShareLink) && (
 						<div className="ml-2">
 							<Button
 								size="sm"
@@ -566,7 +566,7 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							>
 								<TwitterShareButton
 									title={notif.msg.twitterShareContent}
-									url={notif.msg.twitterShareLink}
+									url={notif.msg.twitterShareLink || ' '}
 									className="flex items-center w-full"
 								>
 									Share

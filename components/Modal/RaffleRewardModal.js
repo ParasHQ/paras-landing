@@ -85,7 +85,7 @@ const RaffleRewardModal = () => {
 							</>
 						)}
 					</p>
-					{data?.msg.twitterShareContent && data?.msg.twitterShareLink && (
+					{(data?.msg.twitterShareContent || data?.msg.twitterShareLink) && (
 						<div className="mt-2">
 							<Button
 								size="sm"
@@ -97,7 +97,7 @@ const RaffleRewardModal = () => {
 							>
 								<TwitterShareButton
 									title={data?.msg.twitterShareContent}
-									url={data?.msg.twitterShareLink}
+									url={data?.msg.twitterShareLink || ' '}
 									className="flex items-center w-full"
 								>
 									Share
