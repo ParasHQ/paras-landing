@@ -737,17 +737,20 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 																)}
 															</div>
 														)}
-														{token.price === '0' && token?.is_auction && !isAuctionEnds && (
-															<div className="text-[9px] text-gray-400 truncate mt-1">
-																~ $
-																{prettyBalance(
-																	JSBI.BigInt(token?.amount ? token?.amount : token.price) *
-																		store.nearUsdPrice,
-																	24,
-																	2
-																)}
-															</div>
-														)}
+														{token.price === '0' &&
+															store.nearUsdPrice !== 0 &&
+															token?.is_auction &&
+															!isAuctionEnds && (
+																<div className="text-[9px] text-gray-400 truncate mt-1">
+																	~ $
+																	{prettyBalance(
+																		JSBI.BigInt(token?.amount ? token?.amount : token.price) *
+																			store.nearUsdPrice,
+																		24,
+																		2
+																	)}
+																</div>
+															)}
 													</div>
 												</div>
 											</div>
