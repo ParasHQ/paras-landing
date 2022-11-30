@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react'
 import { capitalize, parseImgUrl, prettyTruncate, shortTimeAgo } from 'utils/common'
 import Media from 'components/Common/Media'
 import { STAKE_PARAS_URL } from 'constants/common'
+import Button from 'components/Common/Button'
+import { TwitterShareButton } from 'react-share'
 
 const NotificationImage = ({ media, isMediaCdn }) => {
 	return (
@@ -509,6 +511,25 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 							</span>
 						</p>
 					</div>
+					{(notif.msg.twitterShareContent || notif.msg.twitterShareLink) && (
+						<div className="ml-2">
+							<Button
+								size="sm"
+								onClick={(e) => {
+									e.preventDefault()
+									e.stopPropagation()
+								}}
+							>
+								<TwitterShareButton
+									title={notif.msg.twitterShareContent}
+									url={notif.msg.twitterShareLink || ' '}
+									className="flex items-center w-full"
+								>
+									Share
+								</TwitterShareButton>
+							</Button>
+						</div>
+					)}
 					<NotificationTime time={notif.issued_at} />
 				</div>
 			</div>
@@ -526,14 +547,33 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 						<p>
 							<span>You have won </span>
 							<span>
-								{(notif.msg.amount_paras_token / 10 ** 18).toLocaleString('en-US')} $PARAS from
-								Paras Loyalty raffle! Read more about the rewards{' '}
+								{notif.msg.amount_paras_token.toLocaleString('en-US')} $PARAS from Paras Loyalty
+								raffle! Read more about the rewards{' '}
 								<a className="font-bold cursor-pointer" href={notif.msg.winners_publication_url}>
 									here
 								</a>
 							</span>
 						</p>
 					</div>
+					{(notif.msg.twitterShareContent || notif.msg.twitterShareLink) && (
+						<div className="ml-2">
+							<Button
+								size="sm"
+								onClick={(e) => {
+									e.preventDefault()
+									e.stopPropagation()
+								}}
+							>
+								<TwitterShareButton
+									title={notif.msg.twitterShareContent}
+									url={notif.msg.twitterShareLink || ' '}
+									className="flex items-center w-full"
+								>
+									Share
+								</TwitterShareButton>
+							</Button>
+						</div>
+					)}
 					<NotificationTime time={notif.issued_at} />
 				</div>
 			</div>
