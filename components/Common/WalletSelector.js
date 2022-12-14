@@ -31,12 +31,25 @@ import { setupHereWallet } from '@paras-wallet-selector/here-wallet'
 import { loadDynamicWombiScript } from 'lib/loadDynamicWombiScript'
 
 const WalletSelectorContext = React.createContext(null)
+const EAllowedMethod = Object.freeze({
+	buy: 'buy',
+	nft_buy: 'nft_buy',
+	accept_bid: 'accept_bid',
+	nft_approve: 'nft_approve',
+	nft_mint_and_approve: 'nft_mint_and_approve',
+})
+
+const EAllowedMarketType = Object.freeze({
+	accept_offer: 'accept_offer',
+	accept_offer_paras_series: 'accept_offer_paras_series',
+})
 
 export const WalletSelectorContextProvider = ({ children }) => {
 	const [selector, setSelector] = useState(null)
 	const [modal, setModal] = useState(null)
 	const [authToken, setAuthToken] = useState(null)
 	const [showRamperSignModal, setShowRamperSignModal] = useState(false)
+	const [selectedWallet, setSelectedWallet] = useState(null)
 	const store = useStore()
 	const authSession = useRef()
 
@@ -96,16 +109,31 @@ export const WalletSelectorContextProvider = ({ children }) => {
 
 		const subscription = selector.store.observable
 			.pipe(
-				map((state) => state.accounts),
+				map((state) => state),
 				distinctUntilChanged()
 			)
-			.subscribe((nextAccounts) => {
-				const accountId = nextAccounts.find((account) => account.active)?.accountId || null
+			.subscribe(({ accounts, selectedWalletId }) => {
+				setSelectedWallet(selectedWalletId)
+				const accountId = accounts.find((account) => account.active)?.accountId || null
 				setupUser({ accountId: accountId })
 				loadDynamicWombiScript((WA) => {
 					if (accountId) WA.setWallet(accountId)
 				})
 			})
+
+		selector.on('signedIn', async (ev) => {
+			await ParasRequest.post(
+				`${process.env.V2_API_URL}/analytics/login`,
+				{
+					wallet: ev.walletId,
+				},
+				{
+					headers: {
+						Authorization: await generateAuthToken(ev.accounts[0].accountId),
+					},
+				}
+			)
+		})
 
 		return () => {
 			subscription.unsubscribe()
@@ -290,6 +318,12 @@ export const WalletSelectorContextProvider = ({ children }) => {
 	}
 
 	const signAndSendTransactions = async ({ transactions = [] }) => {
+		await Promise.all(
+			transactions.map((params) => {
+				_postTransactionAnalytic(params)
+			})
+		)
+
 		const activeWallet = getActiveWallet()
 		if (activeWallet === 'wallet-selector') {
 			const wallet = await selector.wallet()
@@ -302,6 +336,8 @@ export const WalletSelectorContextProvider = ({ children }) => {
 	}
 
 	const signAndSendTransaction = async ({ receiverId, actions = [] }) => {
+		await _postTransactionAnalytic(actions, receiverId)
+
 		const activeWallet = getActiveWallet()
 		if (activeWallet === 'wallet-selector') {
 			const wallet = await selector.wallet()
@@ -350,6 +386,71 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		return localStorage.setItem('PARAS_ACTIVE_WALLET', wallet)
 	}
 
+	const _parseMethodToPayload = (action, receiverId) => {
+		let payload
+
+		const args = action.params.args
+		if (action.params.methodName === EAllowedMethod.buy) {
+			payload = {
+				contract_id: args.nft_contract_id,
+				token_id: args.token_id,
+				wallet: selectedWallet,
+			}
+		} else if (action.params.methodName === EAllowedMethod.nft_buy) {
+			payload = {
+				contract_id: receiverId,
+				token_series_id: args.token_series_id,
+				wallet: selectedWallet,
+			}
+		} else if (action.params.methodName === EAllowedMethod.accept_bid) {
+			payload = {
+				contract_id: args.nft_contract_id,
+				token_id: args.token_id,
+				wallet: selectedWallet,
+			}
+		} else if (action.params.methodName === EAllowedMethod.nft_mint_and_approve) {
+			payload = {
+				contract_id: receiverId,
+				token_series_id: args.token_series_id,
+				wallet: selectedWallet,
+			}
+		} else if (action.params.methodName === EAllowedMethod.nft_approve) {
+			if (!args.msg) {
+				return
+			}
+
+			const parsedMsg = JSON.parse(args.msg)
+			if (parsedMsg.market_type === EAllowedMarketType.accept_offer) {
+				payload = {
+					contract_id: receiverId,
+					token_id: args.token_id,
+					wallet: selectedWallet,
+				}
+			} else if (parsedMsg.market_type === EAllowedMarketType.accept_offer_paras_series) {
+				payload = {
+					contract_id: receiverId,
+					token_series_id: args.token_series_id,
+					wallet: selectedWallet,
+				}
+			}
+		}
+
+		return payload
+	}
+
+	const _postTransactionAnalytic = async (actions, receiverId) => {
+		await Promise.all(
+			actions.map(async (x) => {
+				if (x.type !== 'FunctionCall') {
+					return
+				}
+
+				const payload = _parseMethodToPayload(x, receiverId)
+				await ParasRequest.post(`${process.env.V2_API_URL}/analytics/pending-tx`, payload)
+			})
+		)
+	}
+
 	return (
 		<WalletSelectorContext.Provider
 			value={{
@@ -361,6 +462,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				viewFunction,
 				signAndSendTransaction,
 				signAndSendTransactions,
+				selectedWallet,
 			}}
 		>
 			<SignMesssageModal

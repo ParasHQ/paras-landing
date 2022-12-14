@@ -17,6 +17,7 @@ import { trackNFTLendingClick, trackTransakButton } from 'lib/ga'
 import { useWalletSelector } from 'components/Common/WalletSelector'
 import { openWallet, signOut } from '@ramper/near'
 import ProfileImageBadge from 'components/Common/ProfileImageBadge'
+import ParasRequest from 'lib/ParasRequest'
 
 export function openTransak(fetchNearBalance, toast, accountId) {
 	const transak = new transakSDK(
@@ -63,7 +64,7 @@ const User = () => {
 	const [showAccountModal, setShowAccountModal] = useState(false)
 	const [showUserModal, setShowUserModal] = useState(null)
 
-	const { selector, modal, getAccountBalance, viewFunction } = useWalletSelector()
+	const { selector, modal, getAccountBalance, viewFunction, selectedWallet } = useWalletSelector()
 
 	const { localeLn } = useIntl()
 
@@ -141,6 +142,10 @@ const User = () => {
 	}
 
 	const _signOut = async () => {
+		await ParasRequest.post(`${process.env.V2_API_URL}/analytics/logout`, {
+			wallet: selectedWallet,
+		})
+
 		const activeWallet = localStorage.getItem('PARAS_ACTIVE_WALLET')
 		if (activeWallet === 'ramper') {
 			signOut()
