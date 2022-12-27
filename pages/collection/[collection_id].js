@@ -136,6 +136,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 						price_next: lowestPriceNextOwned,
 						ended_soonest_next: endedSoonestNextOwned,
 						owner_id: currentUser,
+						rank_next: rankNext,
 				  }),
 		})
 
@@ -398,6 +399,7 @@ const CollectionPage = ({ collectionId, collection, serverQuery }) => {
 				setIdNextOwned(lastData._id)
 				params.__sort.includes('total_likes') && setTotalLikesNextOwned(lastData.total_likes)
 				params.__sort.includes('price') && setLowestPriceNextOwned(lastData.lowest_price)
+				params.__sort.includes('metadata.rank') && setRankNext(lastData.metadata.rank)
 				params.__sort.includes('ended_at') &&
 					setEndedSoonestNextOwned(lastData.sorted_auction_token?.ended_at)
 			}
