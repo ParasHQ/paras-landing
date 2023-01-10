@@ -124,6 +124,8 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				},
 			}
 		)
+
+		router.push(window.location.origin, '', { shallow: true })
 	}
 
 	useEffect(() => {
