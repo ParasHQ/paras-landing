@@ -106,8 +106,6 @@ export const WalletSelectorContextProvider = ({ children }) => {
 	}
 
 	const trackSignIn = async () => {
-		if (router.query && Object.keys(router.query).length === 0) return
-
 		const isLogin = router.query.login === 'true'
 
 		if (!isLogin) return
