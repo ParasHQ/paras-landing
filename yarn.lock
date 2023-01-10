@@ -430,10 +430,10 @@
     near-api-js "0.44.2"
     rxjs "~7.4.0"
 
-"@paras-wallet-selector/core@5.1.1-beta2":
-  version "5.1.1-beta2"
-  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/core/-/core-5.1.1-beta2.tgz#1c0f03931d972569297a55db446054f64c2a46f6"
-  integrity sha512-IFGFqbmdWVOG4YBFM8rUYrxsDq7Iku+aFlgjRBGWxekdY9X5MQbgxJVxC1zFebjjftStsi7k9Os51QWboh4URQ==
+"@paras-wallet-selector/core@5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/core/-/core-5.1.1.tgz#80f885919b10e90ab11f59a6423631400cea57b2"
+  integrity sha512-omX3o9y0+QSY6NPFAof1CJqJ11QtJJXFK8aLEuqOW9vSKrXbFS4t+S7/6xfHzdEmu7pSaVJtpIfv6m5xD9Qtgw==
   dependencies:
     near-api-js "0.44.2"
     rxjs "~7.4.0"
@@ -448,57 +448,57 @@
     bn.js "^5.2.0"
     rxjs "~7.4.0"
 
-"@paras-wallet-selector/meteor-wallet@5.1.1-beta2":
-  version "5.1.1-beta2"
-  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/meteor-wallet/-/meteor-wallet-5.1.1-beta2.tgz#61a6b6c7ad43c33d7d61c28ba745b259a0fa7dd1"
-  integrity sha512-TCTz+oKMdFxup6J7aSzNwneuAIZfT3Sc+vwTqt6QN2jxWMNjb8sEE8H1VXYk4r2W+OXdQ3jSE1F9csAp2k/qOg==
+"@paras-wallet-selector/meteor-wallet@5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/meteor-wallet/-/meteor-wallet-5.1.1.tgz#7e2774df587fbc4ad1cb2a4838ab2a3203febae1"
+  integrity sha512-L9szKDxkDIt5SvSx8hl97TcQfxTwXyLDNqL1N0xfQXWb37nhYwEx2IJ6Qc5WrLJlMo4TJNlB/psTuRXP/PWncw==
   dependencies:
     "@meteorwallet/sdk" "^0.6.0"
-    "@paras-wallet-selector/core" "5.1.1-beta2"
-    "@paras-wallet-selector/wallet-utils" "5.1.1-beta2"
+    "@paras-wallet-selector/core" "5.1.1"
+    "@paras-wallet-selector/wallet-utils" "5.1.1"
     bn.js "^5.2.0"
     rxjs "~7.4.0"
 
-"@paras-wallet-selector/modal-ui@5.1.1-beta2":
-  version "5.1.1-beta2"
-  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/modal-ui/-/modal-ui-5.1.1-beta2.tgz#25a9cdeb83372acd7f4f7b1a069e16209b4bf49e"
-  integrity sha512-vkhHtAnU1/05ayD/jx1y1VThC1yHJgvX1Fss983l8c7Ln7EoLoimvSBQQ580BCjPcHE6M1Eak9lqDO30Ov5i1Q==
+"@paras-wallet-selector/modal-ui@5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/modal-ui/-/modal-ui-5.1.1.tgz#daeedd321eacecd44bf1d22e341c15b11e7aa89c"
+  integrity sha512-bwxP4nzQT+gUi+j0myWLaDgSVyfEuJQPz4pY9FqWsTZ6YwH6BkQ6lFRkGytIwt2mMnOerCUlrd1SIz+YDdrduQ==
   dependencies:
-    "@paras-wallet-selector/core" "5.1.1-beta2"
+    "@paras-wallet-selector/core" "5.1.1"
     near-api-js "0.44.2"
     react "^17.0.2"
     react-dom "^17.0.2"
     rxjs "~7.4.0"
 
-"@paras-wallet-selector/my-near-wallet@5.1.1-beta2":
-  version "5.1.1-beta2"
-  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/my-near-wallet/-/my-near-wallet-5.1.1-beta2.tgz#cc71b2c6764e346ba50da2d0c9520a15ae36ed25"
-  integrity sha512-Gok1+ANEyRrIWFJUDMLTEo9VumMjOgNaZNBCm6+GOE5DMjinmxPXHZV4VolpOgiNaeSv2s+RKHtSuwekvAweJw==
+"@paras-wallet-selector/my-near-wallet@5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/my-near-wallet/-/my-near-wallet-5.1.1.tgz#13d3bd3f9359bbdbbaa169205270681b9e84b038"
+  integrity sha512-6jQhwVaQU4Bomm77XebyOG4jiGOmf2B0EmsgQbCaXlqlGbTWy7Tj8VslUSZ4aS14tjhosbco0YxiXiSBRfXxiQ==
   dependencies:
-    "@paras-wallet-selector/core" "5.1.1-beta2"
-    "@paras-wallet-selector/wallet-utils" "5.1.1-beta2"
+    "@paras-wallet-selector/core" "5.1.1"
+    "@paras-wallet-selector/wallet-utils" "5.1.1"
     bn.js "^5.2.0"
     near-api-js "0.44.2"
     rxjs "~7.4.0"
 
-"@paras-wallet-selector/near-wallet@5.1.1-beta2":
-  version "5.1.1-beta2"
-  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/near-wallet/-/near-wallet-5.1.1-beta2.tgz#23b8fea45640903ebbb5e51b87aa497222bc74a5"
-  integrity sha512-QECc3MZbq/ml4hV8R3j9Czp8JXsRs8TsdVcCGx+4We9fKyuiDVcpL7GcxaWekBLabClAZgZqdaoxZ/kPdLrQmw==
+"@paras-wallet-selector/near-wallet@5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/near-wallet/-/near-wallet-5.1.1.tgz#8752e67b7487a034a563a6558f48023b373ca987"
+  integrity sha512-IVXu0zTTTi5Z0VmRQVUEUtjIMPAz5rs43Fp61tVTxTQv2Nxjdb4hh91Y51TaoAVyikh4BB3RPzcrBpWql5c06w==
   dependencies:
-    "@paras-wallet-selector/core" "5.1.1-beta2"
-    "@paras-wallet-selector/my-near-wallet" "5.1.1-beta2"
-    "@paras-wallet-selector/wallet-utils" "5.1.1-beta2"
+    "@paras-wallet-selector/core" "5.1.1"
+    "@paras-wallet-selector/my-near-wallet" "5.1.1"
+    "@paras-wallet-selector/wallet-utils" "5.1.1"
     bn.js "^5.2.0"
     near-api-js "0.44.2"
     rxjs "~7.4.0"
 
-"@paras-wallet-selector/sender@5.1.1-beta2":
-  version "5.1.1-beta2"
-  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/sender/-/sender-5.1.1-beta2.tgz#f97a6586dbc4e6fd2e3c7c35363dc51119b83f6e"
-  integrity sha512-X7dMSAtdiQAOnZHUYws4HD0J+gJb2GIZF7N/u3up0N8Xcrdj07ZWr/JCigjw3ke/8YYiseYYo+DBDOHU6Io2zQ==
+"@paras-wallet-selector/sender@5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/sender/-/sender-5.1.1.tgz#11cbc1d2d69bd941f02ac50d2506f060c1bd4272"
+  integrity sha512-iC/01z7yzRkUS1chGpPFihxZfaTrfJh/7hgn4e1QDn8IavPlnycrlnPNZFk8vxIo0hpObAg+mI3eJKlFjevocA==
   dependencies:
-    "@paras-wallet-selector/core" "5.1.1-beta2"
+    "@paras-wallet-selector/core" "5.1.1"
     is-mobile "^3.0.0"
     near-api-js "0.44.2"
     rxjs "~7.4.0"
@@ -513,12 +513,12 @@
     near-api-js "0.44.2"
     rxjs "~7.4.0"
 
-"@paras-wallet-selector/wallet-utils@5.1.1-beta2":
-  version "5.1.1-beta2"
-  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/wallet-utils/-/wallet-utils-5.1.1-beta2.tgz#bcd1f26aec3a665fcd9a4444cb3b6fb4d3551f00"
-  integrity sha512-Gg+p3Dolt+kgzCIq4ebxYp2POTkGeVyYcZTdHs8v/A/id/oWR2gH/Bv3L6ib0Ju0e9Fzc0xI458YsRiTxkH8fA==
+"@paras-wallet-selector/wallet-utils@5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@paras-wallet-selector/wallet-utils/-/wallet-utils-5.1.1.tgz#2822c3b8e271679ad3b5244ffc20686d3fd2eeba"
+  integrity sha512-WEgjpdrGOBHMWFWZ4qS51j9RlOT1veQNjR+gZ1IkTQATW1H+PEVAUnfX5JFjtcPkSbTfjIGRsSCNKS9O9hPCjA==
   dependencies:
-    "@paras-wallet-selector/core" "5.1.1-beta2"
+    "@paras-wallet-selector/core" "5.1.1"
     bn.js "^5.2.0"
     near-api-js "0.44.2"
     rxjs "~7.4.0"
