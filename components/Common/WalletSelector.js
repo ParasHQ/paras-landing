@@ -29,6 +29,7 @@ import { sentryCaptureException } from 'lib/sentry'
 import { setupMeteorWallet } from '@paras-wallet-selector/meteor-wallet'
 import { setupHereWallet } from '@paras-wallet-selector/here-wallet'
 import { loadDynamicWombiScript } from 'lib/loadDynamicWombiScript'
+import { useRouter } from 'next/router'
 
 const WalletSelectorContext = React.createContext(null)
 const EAllowedMethod = Object.freeze({
@@ -52,6 +53,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 	const [selectedWallet, setSelectedWallet] = useState(null)
 	const store = useStore()
 	const authSession = useRef()
+	const router = useRouter()
 
 	const init = useCallback(async () => {
 		const nearConfig = getConfig(process.env.APP_ENV || 'development')
@@ -59,9 +61,15 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			network: nearConfig.networkId,
 			debug: process.env.NODE_ENV !== 'production',
 			modules: [
-				setupNearWallet({ iconUrl: window.location.origin + '/assets/near-wallet-icon.png' }),
+				setupNearWallet({
+					iconUrl: window.location.origin + '/assets/near-wallet-icon.png',
+					successUrl: window.location.origin + '?login=true',
+				}),
 				setupSender({ iconUrl: window.location.origin + '/assets/sender-icon.png' }),
-				setupMyNearWallet({ iconUrl: window.location.origin + '/assets/my-near-wallet-icon.png' }),
+				setupMyNearWallet({
+					iconUrl: window.location.origin + '/assets/my-near-wallet-icon.png',
+					successUrl: window.location.origin + '?login=true',
+				}),
 				setupMeteorWallet({ iconUrl: window.location.origin + '/assets/meteor-wallet-icon.png' }),
 				setupHereWallet({ iconUrl: window.location.origin + '/assets/here-wallet-icon.png' }),
 			],
@@ -96,6 +104,31 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			setupUser({ accountId: user?.wallets.near.publicKey }, 'ramper')
 		}
 	}
+
+	const trackSignIn = async () => {
+		if (router.query && Object.keys(router.query).length === 0) return
+
+		const isLogin = router.query.login === 'true'
+
+		if (!isLogin) return
+		if (!selectedWallet) return
+
+		await ParasRequest.post(
+			`${process.env.V2_API_URL}/analytics/login`,
+			{
+				wallet: selectedWallet,
+			},
+			{
+				headers: {
+					Authorization: await generateAuthToken(store.currentUser),
+				},
+			}
+		)
+	}
+
+	useEffect(() => {
+		trackSignIn()
+	}, [router.query.login])
 
 	useEffect(() => {
 		init()
