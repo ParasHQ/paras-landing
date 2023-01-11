@@ -128,7 +128,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		trackSignIn()
-	}, [router.query.login])
+	}, [router.query.login, store.currentUser, selectedWallet])
 
 	useEffect(() => {
 		init()
