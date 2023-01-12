@@ -89,6 +89,16 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 			: encodeURIComponent(notif.token_series_id) || encodeURIComponent(notif.token_id)
 	}${notif.token_id ? `/${encodeURIComponent(notif.token_id)}` : ''}`
 
+	const timePeriodRaffle =
+		notif.type === 'notification_level_up' &&
+		new Date(notif?.msg?.raffle?.started_at || `0`).getDate() +
+			`-` +
+			new Date(notif?.msg?.raffle?.ended_at || `0`).getDate() +
+			` ` +
+			new Date(notif?.msg?.raffle?.ended_at || `0`).toLocaleString('default', {
+				month: `short`,
+			})
+
 	if (notif.type === 'notification_level_up') {
 		return (
 			<div className="notification-item">
@@ -97,7 +107,9 @@ const NotificationItem = ({ notif, currentUser, notificationModal }) => {
 						notif.msg.current_level
 					)} Member!`}</p>
 					<p>
-						<span>You can register for a raffle on 14-27 Nov, 2022. Read more here 👉 </span>
+						<span>
+							You can register for a raffle on {timePeriodRaffle}, 2022. Read more here 👉{' '}
+						</span>
 						<span>
 							<Link href="/loyalty">
 								<a className="font-bold">Loyalty</a>
