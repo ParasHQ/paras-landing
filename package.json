@@ -72,7 +72,7 @@
 		"react-hook-form": "^6.10.0",
 		"react-horizontal-scrolling-menu": "^2.7.0",
 		"react-infinite-scroll-component": "^5.1.0",
-		"react-intl": "^5.9.2",
+		"react-intl": "^6.2.5",
 		"react-linkify": "^1.0.0-alpha",
 		"react-responsive-carousel": "^3.2.23",
 		"react-share": "^4.3.1",
