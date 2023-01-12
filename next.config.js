@@ -33,6 +33,7 @@ const moduleExports = {
 		TRANSAK_API_KEY: process.env.TRANSAK_API_KEY,
 		TRANSAK_API_SECRET: process.env.TRANSAK_API_SECRET,
 		WOMBI_ANALYTICS: process.env.WOMBI_ANALYTICS,
+		APP_ID_RAMPER: process.env.APP_ID_RAMPER,
 	},
 	async redirects() {
 		return [

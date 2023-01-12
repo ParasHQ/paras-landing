@@ -30,6 +30,7 @@ import { setupMeteorWallet } from '@paras-wallet-selector/meteor-wallet'
 import { setupHereWallet } from '@paras-wallet-selector/here-wallet'
 import { loadDynamicWombiScript } from 'lib/loadDynamicWombiScript'
 import { useRouter } from 'next/router'
+import { APP_ID_RAMPER } from 'constants/config'
 
 const WalletSelectorContext = React.createContext(null)
 const EAllowedMethod = Object.freeze({
@@ -98,6 +99,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			walletProviders: [],
 			network: nearConfig.networkId,
 			theme: THEME.DARK,
+			appId: APP_ID_RAMPER,
 		})
 		const user = getUser()
 		if (getActiveWallet() === 'ramper') {
