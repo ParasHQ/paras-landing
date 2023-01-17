@@ -150,6 +150,10 @@ const User = () => {
 		if (activeWallet === 'ramper') {
 			signOut()
 			localStorage.removeItem('RAMPER_SIGNED_MSG')
+		} else if (activeWallet === 'here-wallet') {
+			const wallet = await selector.wallet()
+			await wallet.signOut()
+			localStorage.removeItem('HERE_SIGNED_MSG')
 		} else {
 			const wallet = await selector.wallet()
 			await wallet.signOut()
