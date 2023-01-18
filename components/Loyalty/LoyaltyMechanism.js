@@ -59,7 +59,7 @@ const LoyaltyMechanism = () => {
 						<p className="loyalty-mechanism-number">2</p>
 						<p className="loyalty-mechanism-text">
 							Silver, Gold, and Platinum members will have a chance to sign up and enter an
-							exclusive raffle on the 14th–27th of November.
+							exclusive raffle on the 23th Jan - 5th February.
 						</p>
 					</div>
 					<div>
@@ -136,13 +136,13 @@ const LoyaltyMechanism = () => {
 					<div className="flex">
 						<p className="loyalty-mechanism-number">5</p>
 						<p className="loyalty-mechanism-text">
-							November raffle period will be held as follows:
+							February raffle period will be held as follows:
 						</p>
 					</div>
 					<div className="my-4 md:my-12 mx-auto">
 						<img
 							className="mx-auto mb-4 pointer-events-none"
-							src="https://paras-cdn.imgix.net/bafkreihzpbir2qzrfb4l7dveltb5lvvacz63uybbjconm3xlizhif6qllu"
+							src="https://paras-cdn.imgix.net/bafybeif4bjfo3pr5owfbywoq2kh6anfqmhzzkzqlbscvhw53e4qyo6jhfe"
 						/>
 						<p className="text-center">
 							Please check the{' '}
