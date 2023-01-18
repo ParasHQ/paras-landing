@@ -873,7 +873,7 @@ const TokenDetail = ({ token, className, isAuctionEnds }) => {
 								</Button>
 							</div>
 						)}
-						{token.owner_id !== currentUser && !token.price && (
+						{token.owner_id !== currentUser && !token.price && !token.is_auction && (
 							<Button size="md" onClick={onClickOffer} isFullWidth variant="secondary">
 								{hasBid ? `Update Offer` : `Make Offer`}
 							</Button>
