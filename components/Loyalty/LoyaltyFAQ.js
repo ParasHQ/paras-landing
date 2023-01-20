@@ -53,7 +53,7 @@ const LoyaltyFAQ = () => {
 						.
 					</p>
 					<p className="text-sm md:text-base my-3">
-						For November’s raffle, you can register from the 23rd January until the 5th February,
+						For January’s raffle, you can register from the 23rd January until the 5th February,
 						2023.
 					</p>
 					<p className="text-sm md:text-base my-3">
