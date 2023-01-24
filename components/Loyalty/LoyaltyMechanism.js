@@ -127,7 +127,7 @@ const LoyaltyMechanism = () => {
 					<div>
 						<img
 							className="my-4 md:my-12 mx-auto pointer-events-none"
-							src="https://paras-cdn.imgix.net/bafkreidf4ahoin2v2nchqc5uzgy6eq3lxlg72uxfnz2fyu2x2kvut4wlpq"
+							src="https://paras-cdn.imgix.net/bafybeifjh5k37qwq3hjuc6bbyicpoc6v4ci3zxqpmi2tb7kmi6iiyxph6a"
 						/>
 					</div>
 				</div>
@@ -142,7 +142,7 @@ const LoyaltyMechanism = () => {
 					<div className="my-4 md:my-12 mx-auto">
 						<img
 							className="mx-auto mb-4 pointer-events-none"
-							src="https://paras-cdn.imgix.net/bafybeif4bjfo3pr5owfbywoq2kh6anfqmhzzkzqlbscvhw53e4qyo6jhfe"
+							src="https://paras-cdn.imgix.net/bafybeiah46uv33uvtlwsssvvkhb3ljnny2ndey4yprbqkq46y7przavrie"
 						/>
 						<p className="text-center">
 							Please check the{' '}
