@@ -307,7 +307,40 @@ export const WalletSelectorContextProvider = ({ children }) => {
 
 		if (walletType === 'wallet-selector') {
 			const wallet = await selector.wallet()
-			signedMsg = await wallet.signMessage({ message: msgBuf })
+			if (wallet.id === 'here-wallet') {
+				const hereSignedMsg = JSON.parse(localStorage.getItem('HERE_SIGNED_MSG'))
+				if (hereSignedMsg && hereSignedMsg.accountId === accountId) {
+					signedMsg = hereSignedMsg.signedMsg
+				} else {
+					const wallet = await selector.wallet()
+					signedMsg = await wallet.signMessage({ message: msgBuf })
+				}
+
+				if (!signedMsg) {
+					signOut()
+					localStorage.removeItem('HERE_SIGNED_MSG')
+					localStorage.removeItem('PARAS_ACTIVE_WALLET')
+
+					window.location.replace(window.location.origin + window.location.pathname)
+					return
+				}
+
+				// save the signed message to local storage
+				const signedMsgString = JSON.stringify({ accountId, signedMsg })
+				localStorage.setItem('HERE_SIGNED_MSG', signedMsgString)
+
+				if (hereSignedMsg) {
+					signedMsg.publicKey.data = new Uint8Array(
+						Object.values(hereSignedMsg.signedMsg.publicKey.data.data)
+					)
+					signedMsg.signature = new Uint8Array(Object.values(hereSignedMsg.signedMsg.signature))
+				} else {
+					signedMsg.publicKey.data = new Uint8Array(Object.values(signedMsg.publicKey.data))
+					signedMsg.signature = new Uint8Array(Object.values(signedMsg.signature))
+				}
+			} else {
+				signedMsg = await wallet.signMessage({ message: msgBuf })
+			}
 		}
 
 		if (walletType === 'ramper') {
@@ -342,6 +375,9 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		const pubKey = Buffer.from(signedMsg.publicKey.data).toString('hex')
 		const signature = Buffer.from(signedMsg.signature).toString('hex')
 		const payload = [accountId, pubKey, signature]
+		if (signedMsg.message) {
+			payload.push(Buffer.from(signedMsg.message).toString('hex'))
+		}
 		const _authToken = Base64.encode(payload.join('&'))
 
 		setAuthToken(_authToken)
