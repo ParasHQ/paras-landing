@@ -127,7 +127,7 @@ export default function Loyalty() {
 					<div className="m-4 md:m-6 bg-white pb-8 rounded-xl">
 						<div>
 							<p className="font-bold text-center text-2xl text-white py-4 bg-[#674EA7] rounded-xl">
-								November's Rewards
+								February's Rewards
 							</p>
 						</div>
 						<div className="my-8">
@@ -152,7 +152,6 @@ export default function Loyalty() {
 							<p className="loyalty-mechanism-text text-center mx-4 md:mx-16">
 								NFTs from New Collections
 							</p>
-							{/* <p className="font-bold py-16 text-center text-xl">Coming Soon</p> */}
 							<div className="my-8 flex items-center justify-center mx-4 md:mx-28 flex-wrap">
 								{data?.raffle.reward.wl_spot.map?.((nft) => (
 									<div className="w-1/2 md:w-1/4 mb-6 p-2 md:mx-4" key={nft.name}>
@@ -267,13 +266,4 @@ const RewardNFT = ({ data, level }) => {
 			</div>
 		</>
 	)
-}
-
-export async function getServerSideProps() {
-	return {
-		redirect: {
-			destination: '/',
-			permanent: false,
-		},
-	}
 }
