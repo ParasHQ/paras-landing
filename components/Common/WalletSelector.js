@@ -130,7 +130,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		trackSignIn()
-	}, [router.query.login, store.currentUser, selectedWallet])
+	}, [router.query.login, store.currentUser, selectedWallet, authToken])
 
 	useEffect(() => {
 		init()
@@ -311,6 +311,9 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				const hereSignedMsg = JSON.parse(localStorage.getItem('HERE_SIGNED_MSG'))
 				if (hereSignedMsg && hereSignedMsg.accountId === accountId) {
 					signedMsg = hereSignedMsg.signedMsg
+				} else if (!showRamperSignModal) {
+					setShowRamperSignModal(true)
+					return
 				} else {
 					const wallet = await selector.wallet()
 					signedMsg = await wallet.signMessage({ message: msgBuf })
@@ -538,7 +541,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		>
 			<SignMesssageModal
 				show={showRamperSignModal}
-				onClick={async () => setupUser({ accountId: store.currentUser }, 'ramper')}
+				onClick={async () => setupUser({ accountId: store.currentUser }, getActiveWallet())}
 			/>
 			{children}
 		</WalletSelectorContext.Provider>
