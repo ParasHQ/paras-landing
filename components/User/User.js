@@ -153,6 +153,7 @@ const User = () => {
 		} else {
 			const wallet = await selector.wallet()
 			await wallet.signOut()
+			localStorage.removeItem('HERE_SIGNED_MSG')
 		}
 		localStorage.removeItem('PARAS_ACTIVE_WALLET')
 
