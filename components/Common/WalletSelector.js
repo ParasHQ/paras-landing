@@ -50,7 +50,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 	const [selector, setSelector] = useState(null)
 	const [modal, setModal] = useState(null)
 	const [authToken, setAuthToken] = useState(null)
-	const [showRamperSignModal, setShowRamperSignModal] = useState(false)
+	const [showSignMsgModal, setShowSignMsgModal] = useState(false)
 	const [selectedWallet, setSelectedWallet] = useState(null)
 	const store = useStore()
 	const authSession = useRef()
@@ -130,7 +130,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 
 	useEffect(() => {
 		trackSignIn()
-	}, [router.query.login, store.currentUser, selectedWallet, authToken])
+	}, [router.query.login, store.currentUser, selectedWallet])
 
 	useEffect(() => {
 		init()
@@ -311,8 +311,8 @@ export const WalletSelectorContextProvider = ({ children }) => {
 				const hereSignedMsg = JSON.parse(localStorage.getItem('HERE_SIGNED_MSG'))
 				if (hereSignedMsg && hereSignedMsg.accountId === accountId) {
 					signedMsg = hereSignedMsg.signedMsg
-				} else if (!showRamperSignModal) {
-					setShowRamperSignModal(true)
+				} else if (!showSignMsgModal) {
+					setShowSignMsgModal(true)
 					return
 				} else {
 					const wallet = await selector.wallet()
@@ -350,8 +350,8 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			const ramperSignedMsg = JSON.parse(localStorage.getItem('RAMPER_SIGNED_MSG'))
 			if (ramperSignedMsg && ramperSignedMsg.accountId === accountId) {
 				signedMsg = ramperSignedMsg.signedMsg
-			} else if (!showRamperSignModal) {
-				setShowRamperSignModal(true)
+			} else if (!showSignMsgModal) {
+				setShowSignMsgModal(true)
 				return
 			} else {
 				const nearConfig = getConfig(process.env.APP_ENV || 'development')
@@ -384,7 +384,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		const _authToken = Base64.encode(payload.join('&'))
 
 		setAuthToken(_authToken)
-		setShowRamperSignModal(false)
+		setShowSignMsgModal(false)
 
 		ParasRequest.defaults.headers.common['Authorization'] = _authToken
 
@@ -540,7 +540,7 @@ export const WalletSelectorContextProvider = ({ children }) => {
 			}}
 		>
 			<SignMesssageModal
-				show={showRamperSignModal}
+				show={showSignMsgModal}
 				onClick={async () => setupUser({ accountId: store.currentUser }, getActiveWallet())}
 			/>
 			{children}
