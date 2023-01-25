@@ -54,7 +54,11 @@ const CategorySubmission = () => {
 				issued_at_next: lastData.issued_at,
 			}),
 			...((sortAttributes === 'lowest_price' || sortAttributes === 'highest_price') && {
-				token_series_price_next: lastData.token_series ? lastData.token.token_series.price : null,
+				token_series_price_next: lastData.token_series
+					? lastData.token.token_series.price
+						? lastData.token_series.price.$numberDecimal
+						: null
+					: null,
 			}),
 			...((sortAttributes === 'lowest_amount' || sortAttributes === 'highest_amount') && {
 				token_metadata_copy_next: lastData.token_series
@@ -334,7 +338,7 @@ const SubmissionDetail = ({ submission, selectedSubmissions, setSelectedSubmissi
 						</div>
 						<div className="text-[10px] font-normal text-white bg-dark-primary-2 border border-dark-primary-8 rounded-md pt-1 py-1 px-2">
 							{submission.token_series.price
-								? `Sale on ${formatNearAmount(submission.token_series.price)} Ⓝ`
+								? `Sale on ${formatNearAmount(submission.token_series.price.$numberDecimal)} Ⓝ`
 								: `Not for sale`}
 						</div>
 					</div>
