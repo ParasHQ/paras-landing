@@ -1540,10 +1540,10 @@ bytes@3.1.0:
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.0.tgz#f6cf7933a360e0588fa9fde85651cdc7f805d1f6"
   integrity sha512-zauLjrfCG+xvoyaqLoV8bLVXXNGC4JqlxFCutSDWA6fJrTo2ZuvLYTqZ7aHBLZSMOopbzwv8f+wZcVzfVTI2Dg==
 
-cachios@^3.0.0:
-  version "3.1.3"
-  resolved "https://registry.yarnpkg.com/cachios/-/cachios-3.1.3.tgz#e8ac8ef1207358f6527d6669cc6cbdf5e6e6a170"
-  integrity sha512-wrZIMQ7X/EK1xWIfc4f0dbSyQdCDYkN7AYLqMw8zDbFvNCnd+UsB17geuZZIbsF0Oe+H2xBwTZNjNZnYvL2eXQ==
+cachios@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/cachios/-/cachios-4.0.0.tgz#6a80a2e79bb6b3f02ba552664707d599b5258eb9"
+  integrity sha512-tpKLpWaVveFFXq/gOt5qC/h+pppHrN/yR2sndRSZINxBsUoHPAWlMw2Q++ZoYWzPB7a4a8DW+2/pTinKNqkGOA==
   dependencies:
     axios "^0.27.0 || ^0.26.0 || ^0.25.0 || ^0.24.0 || ^0.23.0 || ^0.22.0 || ^0.21.0 || ^0.20.0 || ^0.19.0 || ^0.18.0"
     node-cache "^5.0.0 || ^4.1.1"
