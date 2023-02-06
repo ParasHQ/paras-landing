@@ -53,7 +53,7 @@
 		"file-type": "^16.5.3",
 		"generate-avatar": "^1.4.10",
 		"javascript-time-ago": "^2.3.2",
-		"js-base64": "^3.5.2",
+		"js-base64": "^3.7.4",
 		"js-cookie": "^2.2.1",
 		"jsbi": "^3.1.4",
 		"near-api-js": "^0.44.2",
