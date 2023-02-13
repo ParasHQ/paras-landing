@@ -3669,10 +3669,10 @@ jest-worker@27.0.0-next.5:
     merge-stream "^2.0.0"
     supports-color "^8.0.0"
 
-js-base64@^3.5.2:
-  version "3.7.3"
-  resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-3.7.3.tgz#2e784bb0851636bf1e99ef12e4f3a8a8c9b7639f"
-  integrity sha512-PAr6Xg2jvd7MCR6Ld9Jg3BmTcjYsHEBx1VlwEwULb/qowPf5VD9kEMagj23Gm7JRnSvE/Da/57nChZjnvL8v6A==
+js-base64@^3.7.5:
+  version "3.7.5"
+  resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-3.7.5.tgz#21e24cf6b886f76d6f5f165bfcd69cc55b9e3fca"
+  integrity sha512-3MEt5DTINKqfScXKfJFrRbxkrnk2AxPWGBL/ycjz4dK8iqiSJ06UxD8jh8xuh6p10TX4t2+7FsBYVxxQbMg+qA==
 
 js-cookie@^2.2.1:
   version "2.2.1"
