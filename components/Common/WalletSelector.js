@@ -415,7 +415,10 @@ export const WalletSelectorContextProvider = ({ children }) => {
 		const activeWallet = getActiveWallet()
 		if (activeWallet === 'wallet-selector') {
 			const wallet = await selector.wallet()
-			return wallet.signAndSendTransaction({ receiverId: receiverId, actions: actions })
+			return wallet.signAndSendTransaction({
+				...(receiverId && { receiverId: receiverId }),
+				actions: actions,
+			})
 		}
 
 		if (activeWallet === 'ramper') {
