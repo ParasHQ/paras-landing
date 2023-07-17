@@ -50,7 +50,7 @@
 		"dayjs": "^1.11.5",
 		"debounce": "^1.2.1",
 		"draft-js": "^0.11.7",
-		"file-type": "^16.5.3",
+		"file-type": "^18.5.0",
 		"generate-avatar": "^1.4.10",
 		"javascript-time-ago": "^2.3.2",
 		"js-base64": "^3.5.2",
